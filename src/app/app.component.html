@@ -1,7 +1,7 @@
 <md-sidenav-container>
 
   <md-sidenav #sidenav mode="push">
-    <div class="branding"><img [src]="logo"/> <span>Angular Starter</span></div>
+    <div routerLink="" class="branding"><img [src]="logo"/> <span>D2 Checklist</span></div>
     <md-nav-list>
       <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()"
          [routerLink]="[item.link]" routerLinkActive="active">
@@ -18,7 +18,7 @@
       </button>
 
       <span routerLink="" class="branding spacer hidden-md-up text-center"><img
-        [src]="logo"/> Angular Starter</span>
+        [src]="logo"/> D2 Checklist</span>
       <span routerLink="" class="branding spacer hidden-sm-down"><img
         [src]="logo"/> D2 Checklist</span>
 
@@ -30,8 +30,8 @@
       </span>
 
       <button md-button class="sign-in-button"
-              *ngIf="!isAuthenticated"
-              (click)="onLoginClick()">
+              *ngIf="!isAuthenticated"       
+              mdTooltip="Coming soon, access private endpoint info" mdTooltipPosition="before">
         Sign in
       </button>
 

@@ -1,6 +1,6 @@
 import { browser, by, element } from 'protractor';
 
-export class AngularNgrxMaterialStarterPage {
+export class D2ChecklistStarterPage {
   navigateTo() {
     return browser.get('/');
   }

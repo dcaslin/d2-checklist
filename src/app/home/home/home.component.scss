@@ -1,0 +1,48 @@
+@import 'styles-variables';
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+    text-transform: uppercase;
+  }
+
+.container-fluid {
+  padding: 100px 0;
+  margin: 20px;
+}
+
+
+.body-text {
+  width: 700px;
+  margin: 50px auto 0 auto;
+  padding-bottom: 50px;
+  font-size: 0.9em;
+  letter-spacing: .01px;
+  overflow-wrap: break-word;
+  z-index: 1;
+
+}
+
+
+@media (max-width: map-get($grid-breakpoints, md)) {
+  .body-text {
+      width: auto;
+    }
+}
+
+@media (max-width: map-get($grid-breakpoints, sm)) {
+  .container-fluid {
+    padding: 40px 0;
+
+   
+  }
+  h1 {
+    line-height: 1em;
+  }
+
+  .body-text {
+    width: auto;
+    margin: 40px auto 0 auto;
+    padding-bottom: 40px;
+  }
+}

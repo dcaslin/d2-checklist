@@ -3783,6 +3783,10 @@ negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
 
+ng2-adsense@^4.0.12:
+  version "4.0.12"
+  resolved "https://registry.yarnpkg.com/ng2-adsense/-/ng2-adsense-4.0.12.tgz#1fcd82eab12dc7a7dd4f73ae91867cd63e7aaefa"
+
 no-case@^2.2.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.1.tgz#7aeba1c73a52184265554b7dc03baf720df80081"

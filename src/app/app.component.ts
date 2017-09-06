@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { OverlayContainer } from '@angular/material';
 import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
@@ -24,6 +25,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @HostBinding('class') componentCssClass;
 
+
   version = env.versions.app;
   year = new Date().getFullYear();
   logo = require('../assets/logo.png');
@@ -37,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
   isAuthenticated;
 
   constructor(public overlayContainer: OverlayContainer,
-              private store: Store<any>) {
+              private store: Store<any>, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -53,6 +55,19 @@ export class AppComponent implements OnInit, OnDestroy {
       .select(selectorAuth)
       .takeUntil(this.unsubscribe$)
       .subscribe(auth => this.isAuthenticated = auth.isAuthenticated);
+    this.router.events
+      .filter(event => event instanceof NavigationEnd)
+      .takeUntil(this.unsubscribe$)
+      .subscribe(
+        (navEnd: NavigationEnd) =>{
+          try{
+              (window as any).ga('send', 'pageview', navEnd.urlAfterRedirects);
+            }
+            catch(e){
+              console.log(e);
+            }
+        }
+      );
   }
 
   ngOnDestroy(): void {

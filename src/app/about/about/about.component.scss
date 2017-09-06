@@ -1,0 +1,82 @@
+@import 'styles-variables';
+
+
+
+.container-fluid {
+  padding: 100px 0;
+  margin: 20px;
+
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em;
+    text-transform: uppercase;
+  }
+
+.actions {
+  text-align: center;
+  margin: 50px;
+  z-index: 1;
+
+  span {
+    display: inline-block;
+    font-weight: bold;
+    padding: 10px;
+  }
+
+  a {
+    margin: 0 0 10px 0;
+  }
+}
+
+.get-started {
+  width: 700px;
+  margin: 50px auto 0 auto;
+  padding-bottom: 50px;
+  font-size: 0.9em;
+  letter-spacing: .01px;
+  overflow-wrap: break-word;
+  z-index: 1;
+
+  code {
+    display: inline-block;
+    word-wrap: break-word;
+    white-space: normal;
+    margin: 0 0 10px 0;
+  }
+}
+
+
+@media (max-width: map-get($grid-breakpoints, md)) {
+  .get-started {
+      width: auto;
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, sm)) {
+  .container-fluid {
+    padding: 40px 0;
+  }
+  h1 {
+    line-height: 1em;
+  }
+
+  .actions {
+    margin: 40px 0 0 0;
+
+    span {
+      padding: 0 0 10px 0;
+    }
+
+    a {
+      width: 100%;
+    }
+  }
+
+  .get-started {
+    width: auto;
+    margin: 40px auto 0 auto;
+    padding-bottom: 40px;
+  }
+}
