@@ -1,17 +1,13 @@
 @import 'styles-variables';
 
-h1 {
-    text-align: center;
-    font-size: 3em;
-    text-transform: uppercase;
-  }
-
 .container-fluid {
-  padding: 100px 0;
   margin: 20px;
 }
 
-
+.mat-select{
+      margin-top: -7px;
+ }
+    
 .body-text {
   width: 700px;
   margin: 50px auto 0 auto;
@@ -23,6 +19,10 @@ h1 {
 
 }
 
+.searchField{
+  margin-bottom: 10px;
+}
+
 
 @media (max-width: map-get($grid-breakpoints, md)) {
   .body-text {
@@ -31,18 +31,10 @@ h1 {
 }
 
 @media (max-width: map-get($grid-breakpoints, sm)) {
-  .container-fluid {
-    padding: 40px 0;
 
-   
-  }
-  h1 {
-    line-height: 1em;
-  }
 
   .body-text {
     width: auto;
     margin: 40px auto 0 auto;
-    padding-bottom: 40px;
   }
 }

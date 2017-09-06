@@ -6,6 +6,7 @@
 const packageJson = require('../../package.json');
 
 export const environment = {
+  apiKey: "c0e2cdba952945ec8a988fcfcf47441e",
   production: false,
   versions: {
     app: packageJson.version,

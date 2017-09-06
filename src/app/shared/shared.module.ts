@@ -15,7 +15,8 @@ import {
   MdCardModule,
   MdListModule,
   MdIconModule,
-  MdTooltipModule
+  MdTooltipModule,
+  MdSnackBarModule
 } from '@angular/material';
 
 import { BigInputComponent } from './big-input/big-input.component';
@@ -39,7 +40,8 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MdListModule,
     MdMenuModule,
     MdIconModule,
-    MdTooltipModule
+    MdTooltipModule,
+    MdSnackBarModule
   ],
   declarations: [
     BigInputComponent,

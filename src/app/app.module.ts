@@ -4,6 +4,8 @@ import { NgModule } from '@angular/core';
 
 import { AdsenseModule } from 'ng2-adsense';
 
+import { BungieService } from './service/bungie.service';
+import { NotificationService } from './service/notification.service';
 
 
 import { SharedModule } from '@app/shared';
@@ -14,7 +16,7 @@ import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
+import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent } from './app.component';
 
 @NgModule({
   imports: [
@@ -37,9 +39,13 @@ import { AppComponent } from './app.component';
     AppRoutingModule
   ],
   declarations: [
-    AppComponent
+    AppComponent,
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
   ],
-  providers: [],
+  entryComponents: [
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
+  ],
+  providers: [BungieService, NotificationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
