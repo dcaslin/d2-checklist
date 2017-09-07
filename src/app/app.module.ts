@@ -1,15 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpModule } from '@angular/http';
 import { NgModule } from '@angular/core';
+
 
 import { AdsenseModule } from 'ng2-adsense';
 
 import { BungieService } from './service/bungie.service';
+import { StorageService } from './service/storage.service';
+import { DestinyCacheService } from './service/destiny-cache.service';
 import { NotificationService } from './service/notification.service';
+import { ParseService } from './service/parse.service';
 
 
 import { SharedModule } from '@app/shared';
-import { CoreModule } from '@app/core';
 
 import { HomeModule } from './home';
 import { SettingsModule } from './settings';
@@ -23,12 +27,11 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     // angular
     BrowserAnimationsModule,
     BrowserModule,
+    HttpModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-4577479845324857',
-      adSlot: 6246523328 //responsive right 7862857321 responsive banner
+      adSlot: 7862857321 //7862857321 responsive right 6246523328 responsive banner
     }),
-    // core & shared
-    CoreModule,
     SharedModule,
 
     AboutModule,
@@ -45,7 +48,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   entryComponents: [
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
   ],
-  providers: [BungieService, NotificationService],
+  providers: [BungieService, StorageService, NotificationService, DestinyCacheService, ParseService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

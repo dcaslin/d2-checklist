@@ -1,9 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { StorageService } from '../../service/storage.service';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-
-import { selectorSettings, actionChangeTheme } from '../settings.reducer';
 
 @Component({
   selector: 'anms-settings',
@@ -13,30 +10,50 @@ import { selectorSettings, actionChangeTheme } from '../settings.reducer';
 export class SettingsComponent implements OnInit, OnDestroy {
 
   private unsubscribe$: Subject<void> = new Subject<void>();
-  theme: string;
+  theme: string =  "default-theme";
+  disableads: boolean = false;
 
   themes = [
-    { value: 'DEFAULT-THEME', label: 'Default' },
-    { value: 'LIGHT-THEME', label: 'Light' },
-    { value: 'BLACK-THEME', label: 'Black' },
+    { value: 'default-theme', label: 'Default' },
+    { value: 'light-theme', label: 'Light' },
+    { value: 'black-theme', label: 'Black' },
   ];
 
-  constructor(private store: Store<any>) {
-    store.select(selectorSettings)
+  adChoices = [
+    { value: false, label: 'Show Ads' },
+    { value: true, label: 'Disable Ads' }
+  ];
+
+  constructor(private storageService: StorageService) {
+    this.theme = this.storageService.getItem("theme", "default-theme");
+    this.disableads = this.storageService.getItem("disableads", false);
+
+    this.storageService.settingFeed
       .takeUntil(this.unsubscribe$)
-      .subscribe(({ theme }) => this.theme = theme);
+      .subscribe(
+      x => {
+        if (x.theme != null) {
+          this.theme = x.theme;
+        }
+        if (x.disableads != null) {
+          this.disableads = x.disableads;
+        }
+      });
+    this.storageService.refresh();
   }
 
   ngOnInit() {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
   onThemeSelect({ value }) {
-    this.store.dispatch(actionChangeTheme(value));
+    this.storageService.setItem("theme", value);
+  }
+  
+  onDisableAdsSelect({ value }) {
+    this.storageService.setItem("disableads", value);
   }
 
 }

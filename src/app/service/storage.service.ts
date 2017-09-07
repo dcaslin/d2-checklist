@@ -1,18 +1,39 @@
 import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs/Rx';
 
-const APP_PREFIX = 'ANMS-';
+
+export interface Action {
+  type: string;
+  payload: any;
+}
+
+
+const APP_PREFIX = 'D2STATE-';
 
 @Injectable()
-export class LocalStorageService {
+export class StorageService {  
+  private settingSub = new Subject();
+  public settingFeed: Observable<any>;
 
-  constructor() {}
+
+  constructor() {
+    this.settingFeed = this.settingSub.asObservable() as Observable<Notification>;
+  }
 
   setItem(key: string, value: any) {
     localStorage.setItem(`${APP_PREFIX}${key}`, JSON.stringify(value));
+    let emitMe = {};
+    emitMe[key] = value; 
+    this.settingSub.next(emitMe);
   }
 
-  getItem(key: string) {
-    return JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`));
+  getItem(key: string, defVal?:any) {
+    let val = JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`));
+    if (val==null) return defVal;
+  }
+
+  refresh(){
+    this.settingSub.next(StorageService.loadInitialState());
   }
 
   static loadInitialState() {
@@ -34,7 +55,7 @@ export class LocalStorageService {
           });
         }
         return state;
-      }, undefined);
+      }, {});
   }
 
 }

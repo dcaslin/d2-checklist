@@ -1,23 +1,41 @@
 <div class="container-fluid">
+  <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
   <div class="body-text" [ngClass]="animateOnRouteEnter">
-    
-      <br/>
-      <div class="row">
-        <md-select class="col-md-6 searchField" [(ngModel)]="selectedPlatform" placeholder="Platform"> 
-          <md-option *ngFor="let p of platforms" [value]="p">
-            {{ p.name }}
-          </md-option>
-        </md-select>
-        &emsp;
-        <md-form-field class="col-md-6 searchField" class="gt">
-          <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag">
-        </md-form-field>
-        &emsp;
-        <button md-mini-fab color="primary searchField" (click)="searchPlayer()" color="primary"><md-icon>search</md-icon></button>
-      </div>
-      <p>
-          {{selectedPlatform.desc}} {{gamerTag}}
-      </p>
+
+    <br/>
+    <div class="row">
+      <md-select class="col-md-6 searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+        <md-option *ngFor="let p of platforms" [value]="p">
+          {{ p.name }}
+        </md-option>
+      </md-select>
+      &emsp;
+      <md-form-field class="col-md-6 searchField" class="gt">
+        <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="searchPlayer()">
+      </md-form-field>
+      &emsp;
+      <button md-mini-fab color="primary searchField" (click)="searchPlayer()" color="primary"><md-icon>search</md-icon></button>
+    </div>
+
+    <ng-container *ngIf="player!=null">
+      <h4>{{player.profile.userInfo.displayName}} - Last played: {{player.profile.dateLastPlayed| date:'short'}} </h4>
+      <md-card class="char-card" *ngFor="let char of player.characters">
+        <md-card-header>
+          <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+          <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp; Light {{char.light}}
+
+          </md-card-title>
+          <md-card-subtitle>{{char.minutesPlayedTotal}} mins played</md-card-subtitle>
+        </md-card-header>
+        <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
+          <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
+          </md-progress-bar>
+
+        </div>
+
+
+      </md-card>
+    </ng-container>
 
   </div>
 </div>
