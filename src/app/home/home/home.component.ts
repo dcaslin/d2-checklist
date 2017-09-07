@@ -70,6 +70,9 @@ export class HomeComponent implements OnInit, OnDestroy {
             this.loading = false;
           })
         }
+        else {
+          this.loading = false;
+        }
       })
       .catch((x) => {
         this.loading = false;
