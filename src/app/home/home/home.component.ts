@@ -36,6 +36,9 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (x.defaultplatform != null) {
           this.setPlatform(x.defaultplatform);
         }
+        if (x.defaultgt != null) {
+          this.gamerTag = x.defaultgt;
+        }
       });
     this.storageService.refresh();
 
@@ -82,6 +85,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   onPlatformChange() {
     this.storageService.setItem("defaultplatform", this.selectedPlatform.type);
+  }
+
+  onGtChange() {
+    this.storageService.setItem("defaultgt", this.gamerTag);
   }
 
   private sub: any;
