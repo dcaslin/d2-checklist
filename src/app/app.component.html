@@ -48,7 +48,7 @@
     </md-toolbar>
 
     <div class="content">
-      <div class="mainCol" [@routerTransition]="o.isActivated && o.activatedRoute.routeConfig.path">
+      <div class="mainCol">
         <router-outlet #o="outlet"></router-outlet>
       </div>
        <div class="rightCol" *ngIf="!disableads">

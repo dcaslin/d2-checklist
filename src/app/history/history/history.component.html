@@ -1,0 +1,60 @@
+<div class="container-fluid">
+  <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+  <div class="body-text" [ngClass]="animateOnRouteEnter">
+
+
+    <h2 class="centerMe">Activity History</h2>
+
+    <br/>
+    <div class="centerMe">
+      <md-select class="searchField" [(ngModel)]="selectedMode" placeholder="Mode">
+        <md-option *ngFor="let p of activityModes" [value]="p">
+          {{ p.name }}
+        </md-option>
+      </md-select>
+      &emsp;
+      <md-select class="searchField" [(ngModel)]="selectedMaxResults" placeholder="Max Results">
+        <md-option *ngFor="let p of maxResults" [value]="p">
+          {{ p }}
+        </md-option>
+      </md-select>
+      &emsp;
+      
+      <button md-mini-fab title="Activity History" (click)="history()"><md-icon>history</md-icon></button>
+    </div>
+    <div class="table-container">
+      
+        <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
+
+          <ng-container cdkColumnDef="period">
+            <md-header-cell *cdkHeaderCellDef md-sort-header>Date</md-header-cell>
+            <md-cell *cdkCellDef="let row">
+              {{row.period|date:'short'}} <br> {{row.instanceId}}
+            </md-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="desc">
+            <md-header-cell *cdkHeaderCellDef md-sort-header>Type</md-header-cell>
+            <md-cell *cdkCellDef="let row">
+              {{row.desc}}
+            </md-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="completed">
+            <md-header-cell *cdkHeaderCellDef>Result</md-header-cell>
+            <md-cell *cdkCellDef="let row">
+              <div *ngIf="row.completed==1">Completed</div>
+            </md-cell>
+          </ng-container>
+
+          <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+          <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+        </md-table>
+        <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+        </md-paginator>
+    </div>
+
+  </div>
+
+
+
+
+</div>

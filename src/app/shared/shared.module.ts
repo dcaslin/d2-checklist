@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule  } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
   MdButtonModule,
   MdToolbarModule,
@@ -17,11 +17,17 @@ import {
   MdIconModule,
   MdTooltipModule,
   MdSnackBarModule,
-  MdProgressBarModule
+  MdProgressBarModule,
+
+  MdSortModule,
+  MdPaginatorModule,
+  MdTableModule
 } from '@angular/material';
 
-import { BigInputComponent } from './big-input/big-input.component';
-import { BigInputActionComponent } from './big-input/big-input-action.component';
+import {
+  CdkTableModule
+} from '@angular/cdk/table/';
+
 
 @NgModule({
   imports: [
@@ -44,10 +50,13 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MdTooltipModule,
     MdSnackBarModule,
     MdProgressBarModule,
+
+    MdSortModule,
+    MdPaginatorModule,
+    MdTableModule,
+    CdkTableModule
   ],
   declarations: [
-    BigInputComponent,
-    BigInputActionComponent
   ],
   exports: [
     CommonModule,
@@ -69,8 +78,10 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MdTooltipModule,
     MdProgressBarModule,
 
-    BigInputComponent,
-    BigInputActionComponent
+    MdSortModule,
+    MdPaginatorModule,
+    MdTableModule,
+    CdkTableModule
   ]
 })
 export class SharedModule { }

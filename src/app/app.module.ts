@@ -2,7 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpModule } from '@angular/http';
 import { NgModule } from '@angular/core';
-
+import {RouterModule, RouteReuseStrategy} from '@angular/router';
+import {StickyReuseStrategy} from './sticky-reuse-strategy';
 
 import { AdsenseModule } from 'ng2-adsense';
 
@@ -16,6 +17,8 @@ import { ParseService } from './service/parse.service';
 import { SharedModule } from '@app/shared';
 
 import { HomeModule } from './home';
+import { HistoryModule } from './history';
+import { PGCRModule } from './pgcr';
 import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 
@@ -37,6 +40,8 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     AboutModule,
     SettingsModule,
     HomeModule,
+    HistoryModule,
+    PGCRModule,
 
     // app
     AppRoutingModule
@@ -48,7 +53,8 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   entryComponents: [
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
   ],
-  providers: [BungieService, StorageService, NotificationService, DestinyCacheService, ParseService],
+  providers: [BungieService, StorageService, NotificationService, DestinyCacheService, ParseService,
+    {provide: RouteReuseStrategy, useClass: StickyReuseStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

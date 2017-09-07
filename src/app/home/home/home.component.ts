@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { SearchResult, BungieService, Platform } from "../../service/bungie.service";
-import { Player } from "../../service/parse.service";
+import { Player, Character } from "../../service/parse.service";
 import { StorageService } from '../../service/storage.service';
 
 @Component({
@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   player: Player;
 
-  constructor(private bungieService: BungieService, private storageService: StorageService, private route: ActivatedRoute) {
+  constructor(private bungieService: BungieService, private storageService: StorageService, private route: ActivatedRoute, private router: Router) {
     this.platforms = bungieService.getPlatforms();
     this.selectedPlatform = this.platforms[0];
 
@@ -55,13 +55,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  public history(c: Character){
+    this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
+  }
+
   public searchPlayer(): void {
     if (this.selectedPlatform == null) {
-      console.log("1");
       return;
     }
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
-      console.log("2");
       return;
     }
     this.loading = true;
