@@ -1,10 +1,9 @@
 <md-sidenav-container>
 
   <md-sidenav #sidenav mode="push">
-    <div routerLink="" class="branding"><img [src]="logo"/> <span>D2 Checklist</span></div>
+    <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
     <md-nav-list>
-      <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()"
-         [routerLink]="[item.link]" routerLinkActive="active">
+      <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
         {{item.label}}
       </a>
     </md-nav-list>
@@ -29,15 +28,11 @@
         </button>
       </span>
 
-      <button md-button class="sign-in-button"
-              *ngIf="!isAuthenticated"       
-              mdTooltip="Coming soon, access private endpoint info" mdTooltipPosition="before">
+      <button md-button class="sign-in-button" *ngIf="!isAuthenticated" mdTooltip="Coming soon, access private endpoint info" mdTooltipPosition="before">
         Sign in
       </button>
 
-      <button *ngIf="isAuthenticated"
-              md-icon-button
-              [mdMenuTriggerFor]="toolbarUserMenu">
+      <button *ngIf="isAuthenticated" md-icon-button [mdMenuTriggerFor]="toolbarUserMenu">
         <md-icon>person</md-icon>
       </button>
       <md-menu #toolbarUserMenu="mdMenu">
@@ -52,11 +47,20 @@
       </button>
     </md-toolbar>
 
-    <div class="content"
-         [@routerTransition]="o.isActivated && o.activatedRoute.routeConfig.path">
-      <router-outlet #o="outlet"></router-outlet>
+    <div class="content">
+      <div class="mainCol" [@routerTransition]="o.isActivated && o.activatedRoute.routeConfig.path">
+        <router-outlet #o="outlet"></router-outlet>
+      </div>
+       <div class="rightCol" *ngIf="!disableads">
+        <small class="adText">Advertisement</small>
+        <ng-adsense adFormat="vertical" adSlot="7862857321"></ng-adsense>
+      </div> 
     </div>
 
+
+    <div class="bottomAdRow" *ngIf="!disableads">
+        <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
+    </div>
     <div class="footer">
       <div class="row">
         <div class="col-sm-12 links">
@@ -64,8 +68,7 @@
             <i class="fa fa-reddit fa-2x" aria-hidden="true"></i>
             <span>Reddit</span>
           </a>
-          <a href="https://bitbucket.org/dcaslin/d2-checklist/"
-             target="_blank">
+          <a href="https://bitbucket.org/dcaslin/d2-checklist/" target="_blank">
             <i class="fa fa-bitbucket fa-2x" aria-hidden="true"></i>
             <span>Source</span>
           </a>
@@ -73,23 +76,22 @@
             <i class="fa fa-twitter fa-2x" aria-hidden="true"></i>
             <span>Twitter</span>
           </a>
-          
+
           <a mdTooltip="destinychecklistnet at gmail.com" mdTooltipPosition="above">
             <i class="fa fa-envelope fa-2x" aria-hidden="true"></i>
             <span>Email</span>
-          </a>    
+          </a>
           <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank">
             <i class="fa fa-paypal fa-2x" aria-hidden="true"></i>
             <span>Donate</span>
-          </a>      
+          </a>
         </div>
       </div>
       <div class="row">
         <div class="col-12 signature">
-          &#169; {{year}} - Destiny Checklist 
-          | <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a>
-          | Not affiliated with Bungie or Destiny
-          
+          &#169; {{year}} - Destiny Checklist | <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a> |
+          Not affiliated with Bungie or Destiny
+
         </div>
       </div>
     </div>

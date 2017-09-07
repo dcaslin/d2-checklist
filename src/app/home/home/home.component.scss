@@ -7,6 +7,24 @@
 .mat-select{
       margin-top: -7px;
  }
+  
+
+ .ll{
+   float: right;
+ }
+
+.center-spinner {
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  width: 100px; /* Need a specific value to work */
+}
+
+.char-card{
+  margin-bottom: 10px;
+}
     
 .body-text {
   width: 700px;
@@ -17,6 +35,10 @@
   overflow-wrap: break-word;
   z-index: 1;
 
+}
+
+.player-header-image {
+  background-size: cover;
 }
 
 .searchField{
@@ -38,3 +60,5 @@
     margin: 40px auto 0 auto;
   }
 }
+
+

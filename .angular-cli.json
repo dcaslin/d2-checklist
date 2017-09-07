@@ -24,7 +24,10 @@
       "stylePreprocessorOptions": {
         "includePaths": ["./", "./themes"]
       },
-      "scripts": [],
+      "scripts": [
+        "../node_modules/jszip/dist/jszip.min.js",
+        "../node_modules/jszip-utils/dist/jszip-utils.js"
+      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

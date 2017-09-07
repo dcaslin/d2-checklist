@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '@app/core';
+import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 
 @Component({
   selector: 'anms-about',

@@ -1,7 +1,6 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { OverlayContainer } from '@angular/material';
-import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/map';
@@ -9,12 +8,11 @@ import 'rxjs/add/operator/filter';
 
 
 import { MdSnackBar } from '@angular/material';
-
-import { login, logout, selectorAuth, routerTransition } from '@app/core';
+import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
-
-import { selectorSettings } from './settings';
 import { NotificationService } from './service/notification.service';
+import { StorageService } from './service/storage.service';
+import { DestinyCacheService } from './service/destiny-cache.service';
 
 @Component({
   selector: 'anms-root',
@@ -27,6 +25,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   @HostBinding('class') componentCssClass;
+
+  disableads: boolean;
 
 
   version = env.versions.app;
@@ -41,23 +41,57 @@ export class AppComponent implements OnInit, OnDestroy {
   ];
   isAuthenticated;
 
-  constructor(private notificationService: NotificationService, public overlayContainer: OverlayContainer,
-    private store: Store<any>, private router: Router, public snackBar: MdSnackBar) {
+  constructor(private notificationService: NotificationService, private storageService: StorageService, private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
+    private router: Router, public snackBar: MdSnackBar) {
+
+    this.componentCssClass = 'default-theme';
+    this.overlayContainer.themeClass = 'default-theme';
+
+    this.storageService.settingFeed
+      .takeUntil(this.unsubscribe$)
+      .subscribe(
+      x => {
+        if (x.theme != null) {
+          console.log("Loaded theme: " + x.theme);
+          this.componentCssClass = x.theme;
+          this.overlayContainer.themeClass = x.theme;
+        }
+        if (x.disableads != null) {
+          console.log("Loaded ads: " + x.disableads);
+          this.disableads = x.disableads;
+        }
+      });
+    //emit current settings
+    this.storageService.refresh();
+
+    this.notificationService.notifyFeed
+      .takeUntil(this.unsubscribe$)
+      .subscribe(
+      x => {
+        if (x.mode === "success") {
+          let snackRef = this.snackBar.openFromComponent(SuccessSnackbarComponent, {
+            duration: 2000
+          });
+          snackRef.instance.message = x.message;
+        }
+        else if (x.mode === "info") {
+          let snackRef = this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            duration: 2000
+          });
+          snackRef.instance.message = x.message;
+        }
+        else if (x.mode === "error") {
+          let snackRef = this.snackBar.openFromComponent(WarnSnackbarComponent, {
+            duration: 5000
+          });
+          snackRef.instance.message = x.message;
+        }
+      });
+
+
   }
 
-  ngOnInit(): void { 
-    this.store
-      .select(selectorSettings)
-      .takeUntil(this.unsubscribe$)
-      .map(({ theme }) => (theme!=null)?theme.toLowerCase():null)
-      .subscribe(theme => {
-        this.componentCssClass = theme;
-        this.overlayContainer.themeClass = theme;
-      });
-    this.store
-      .select(selectorAuth)
-      .takeUntil(this.unsubscribe$)
-      .subscribe(auth => this.isAuthenticated = auth.isAuthenticated);
+  ngOnInit(): void {
     this.router.events
       .filter(event => event instanceof NavigationEnd)
       .takeUntil(this.unsubscribe$)
@@ -71,32 +105,15 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       );
-    this.notificationService.notifyFeed
-      .takeUntil(this.unsubscribe$)
-      .subscribe(
-      x => {
-        if (x.mode === "success") {
-          let snackRef = this.snackBar.openFromComponent(SuccessSnackbarComponent, {
-            duration: 2000
-          });
-          snackRef.instance.message = x.message;
-        }
-
-        else if (x.mode === "info") {
-          let snackRef = this.snackBar.openFromComponent(InfoSnackbarComponent, {
-            duration: 2000
-          });
-          snackRef.instance.message = x.message;
-        }
-        else if (x.mode === "error") {
-          let snackRef = this.snackBar.openFromComponent(WarnSnackbarComponent, {
-            duration: 5000
-          });
-          snackRef.instance.message = x.message;
-        }
-
-
+    this.destinyCacheService.init().then(() => {
+      this.notificationService.info("Cache loaded");
+    })
+      .catch((err) => {
+        console.dir(err);
+        this.notificationService.fail("Failed to load destiny manifest.");
       });
+
+
   }
 
 
@@ -106,11 +123,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onLoginClick() {
-    this.store.dispatch(login());
+    //Login
   }
 
   onLogoutClick() {
-    this.store.dispatch(logout());
+    //Logout
   }
 
 }

@@ -62,6 +62,51 @@ md-sidenav {
   }
 }
 
+.mainCol {
+  order: 1;
+  flex-grow: 1;
+  flex-shrink: 1;
+  // background-color: orange;
+}
+
+.rightCol {
+    order: 2;  
+    width: 300px;
+    min-height: 600px;
+    // background-color:green;
+}
+
+.bottomAdRow{
+    display: none;
+    visibility: hidden;
+}
+
+.adText {
+  opacity: 0.5;
+  text-align: center;
+}
+
+@media (max-width: 1279px) {
+  .rightCol {
+      width: 120px;
+  }
+}
+
+
+@media (max-width: 960px) {
+  .rightCol {
+      display: none;
+      visibility: hidden;
+  }
+    
+  .bottomAdRow{
+    text-align: center;
+    display: inline;
+    visibility: visible;
+  }
+
+}
+
 .wrapper {
   z-index: -2;
   min-height: 100%;
@@ -70,7 +115,9 @@ md-sidenav {
 
   .content {
     flex: 1 0 auto;
-    position: relative;
+    flex-basis: auto;
+    display: inline-flex;
+    overflow: hidden;
   }
 
   .footer {

@@ -4,38 +4,43 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestMethod, RequestOptions, ResponseContentType } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
-import { NotificationService } from '../service/notification.service';
+import { NotificationService } from './notification.service';
+import { Player, ParseService } from './parse.service';
 
 import { environment } from '../../environments/environment';
 
 const API_ROOT: string = "https://www.bungie.net/Platform/";
 
-export class Platform{
+export class Platform {
     name: string;
     type: number;
     desc: string;
 
-    constructor(type: number, name: string, desc: string){
+    constructor(type: number, name: string, desc: string) {
         this.type = type;
         this.name = name;
         this.desc = desc;
     }
+}
+export interface SearchResult {
+    iconPath: string;
+    membershipType: number;
+    membershipId: string;
+    displayName: string;
 }
 
 
 @Injectable()
 export class BungieService {
 
-
-
-    constructor(private http: Http, private notificationService: NotificationService) {
+    constructor(private http: Http, private notificationService: NotificationService, private parseService: ParseService) {
     }
 
-    public getPlatforms(): Platform[]{
+    public getPlatforms(): Platform[] {
         return [
             new Platform(2, "PSN", "Playstation"),
             new Platform(1, "XBL", "Xbox"),
-            new Platform(3, "BNET", "Battle.net")
+            new Platform(4, "BNET", "Battle.net")
         ];
 
     }
@@ -67,26 +72,57 @@ export class BungieService {
         }
     }
 
+    private static parseBungieResponse(j: any): any {
+        if (j.ErrorCode && j.ErrorCode != 1) {
+            throw new Error(j.Message);
+        }
+        if (!j.ErrorCode) {
+            throw new Error("Unexpected response from Bungie");
+        }
+        return j.Response;
+    }
 
-    public searchPlayer(platform: number, gt: string): Promise<void> {
+    public getChars(p: SearchResult): Promise<Player> {
         const self: BungieService = this;
-
-        
-        // return this.http.get(
-        //     "https://www.bungie.net/Platform/Destiny2/2/Profile/4611686018452182455/?components=100"
-            //"https://www.bungie.net/Platform/Destiny2/1/Profile/4611686018434964640/?components=100"
-            //, BungieService.buildPublicReqOptions())
-        //return this.http.get("https://www.bungie.net/Platform/Destiny2/2/Profile/4611686018452182455?components=Profiles,Characters", BungieService.buildPublicReqOptions())
-        //return this.http.get("https://www.bungie.net/D1/Platform/Destiny/1/Account/4611686018434964640/", BungieService.buildPublicReqOptions())
-        return this.http.get(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt)+"/", BungieService.buildPublicReqOptions())
+        return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" + p.membershipId + "/?components=Profiles,Characters", BungieService.buildPublicReqOptions())
             .map(
             function (res) {
                 const j: any = res.json();
+                const resp = BungieService.parseBungieResponse(j);
                 console.dir(j);
+                
+                return self.parseService.parsePlayer(resp);
+
+
+
             }).toPromise().catch(
             function (err) {
                 console.log('Error Searching for player');
                 self.handleError(err);
+                return null;
+            });
+    }
+
+    public searchPlayer(platform: number, gt: string): Promise<SearchResult> {
+        const self: BungieService = this;
+        return this.http.get(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/", BungieService.buildPublicReqOptions())
+            .map(
+            function (res) {
+                const j: any = res.json();
+                const resp = BungieService.parseBungieResponse(j);
+                console.dir(j);
+                self.notificationService.success("Found " + resp.length + " players");
+                if (resp.length == 0) return null;
+                if (resp.length > 1) {
+                    self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
+                }
+                return resp[0];
+
+            }).toPromise().catch(
+            function (err) {
+                console.log('Error Searching for player');
+                self.handleError(err);
+                return null;
             });
     }
 

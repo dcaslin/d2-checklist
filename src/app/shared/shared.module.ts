@@ -16,7 +16,8 @@ import {
   MdListModule,
   MdIconModule,
   MdTooltipModule,
-  MdSnackBarModule
+  MdSnackBarModule,
+  MdProgressBarModule
 } from '@angular/material';
 
 import { BigInputComponent } from './big-input/big-input.component';
@@ -41,7 +42,8 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MdMenuModule,
     MdIconModule,
     MdTooltipModule,
-    MdSnackBarModule
+    MdSnackBarModule,
+    MdProgressBarModule,
   ],
   declarations: [
     BigInputComponent,
@@ -65,6 +67,7 @@ import { BigInputActionComponent } from './big-input/big-input-action.component'
     MdToolbarModule,
     MdIconModule,
     MdTooltipModule,
+    MdProgressBarModule,
 
     BigInputComponent,
     BigInputActionComponent
