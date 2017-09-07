@@ -16,12 +16,10 @@
 
 @import 'styles-reset.scss-theme';
 @import 'app/app.component.scss-theme';
-@import 'app/shared/big-input/big-input.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include anms-styles-reset-theme($theme);
   @include anms-app-component-theme($theme);
-  @include anms-big-input-component-theme($theme);
 }
 
 .default-theme {
@@ -37,4 +35,38 @@
 .black-theme {
   @include angular-material-theme($anms-black-theme);
   @include custom-components-theme($anms-black-theme);
+}
+
+
+.break-easy{
+  word-break: break-all;
+}
+
+
+.data-header {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 24px;
+  font-size: 20px;
+}
+.mat-table {
+  display: table;
+
+  > .mat-header-row, > .mat-row {
+    display: table-row;
+    padding: 5px;
+    border: none;
+
+    > .mat-header-cell, > .mat-cell {
+      display: table-cell;
+      height: 48px;
+      padding: 5px;
+      width: 200px;
+      text-align: left;
+      vertical-align: middle;
+
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    }
+  }
 }

@@ -1,0 +1,11 @@
+<div class="container-fluid">
+  <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+  <div class="body-text" [ngClass]="animateOnRouteEnter">
+
+
+    <h2 class="centerMe">PGCR</h2>
+    <div>{{data|json}}</div>
+  </div>
+
+
+</div>

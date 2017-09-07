@@ -1,0 +1,42 @@
+@import 'styles-variables';
+
+.container-fluid {
+  margin: 20px;
+}
+
+.center-spinner {
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  width: 100px; /* Need a specific value to work */
+}
+
+.centerMe{
+  text-align: center;
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+
+.player-header-image {
+  background-size: cover;
+}
+
+.searchField{
+  margin-bottom: 10px;
+}
+
+
+.body-text {
+  width: auto;
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
