@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
@@ -23,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   player: Player;
 
-  constructor(private bungieService: BungieService, private storageService: StorageService) {
+  constructor(private bungieService: BungieService, private storageService: StorageService, private route: ActivatedRoute) {
     this.platforms = bungieService.getPlatforms();
     this.selectedPlatform = this.platforms[0];
 
@@ -83,7 +84,26 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.storageService.setItem("defaultplatform", this.selectedPlatform.type);
   }
 
+  private sub: any;
   ngOnInit() {
+    this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
+      const platform: string = params['platform'];
+      if (platform==null) return;
+
+      
+      this.platforms.forEach((p: Platform) => {
+        if ((p.type+"") == platform) {
+          this.selectedPlatform = p;
+        }
+        else if (p.desc.toLowerCase() == platform.toLowerCase()){
+          this.selectedPlatform = p;
+        }
+      });
+      
+      const gt: string = params['gt'];
+      this.gamerTag = gt;
+      this.searchPlayer();
+    });
   }
 
   ngOnDestroy(): void {
