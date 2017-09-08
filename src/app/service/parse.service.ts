@@ -44,6 +44,7 @@ export class ParseService {
         act.period = a.period;
         act.referenceId = a.activityDetails.referenceId;
         act.instanceId = a.activityDetails.instanceId;
+        act.mode = ParseService.lookupMode(a.activityDetails.mode);
         act.type = "";
         let desc: any = this.destinyCacheService.cache.Activity[act.referenceId];
         if (desc) {
@@ -76,15 +77,16 @@ export class ParseService {
             act.score = ParseService.getBasicValue(a.values.score);
 
 
-        }
-        act.isPvP = desc.isPvP;        
+        }  
         act.isPrivate = a.activityDetails.isPrivate;
-        if (act.isPvP){
-            act.desc = "PvP "+act.type+": "+act.name;
+        if (desc.isPvP){
+            act.pvType = "PvP";
         }
         else{
-            act.desc = "PvE "+act.type+": "+act.name;
+            act.pvType = "PvE";
         }
+
+        act.desc = act.mode+": "+act.name;
         if (act.isPrivate){
             act.desc+="(Private)";
         }
@@ -116,15 +118,144 @@ export class ParseService {
         return new Player(profile, chars);
     }
 
+    private parsePGCREntry(e: any): PGCREntry{
+        let r:PGCREntry = new PGCREntry();
+        r.characterId = e.characterId;
+        r.standing = e.standing;
+        r.score = ParseService.getBasicValue(e.score);
+        if (e.values){
+
+            r.kills = ParseService.getBasicValue(e.values.kills);
+            r.deaths = ParseService.getBasicValue(e.values.deaths);
+            r.assists = ParseService.getBasicValue(e.values.assists);
+            r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
+        }
+        r.characterClass = e.player.characterClass;
+        r.characterLevel = e.player.characterLevel;
+        r.lightLevel = e.player.lightLevel;
+        if (!r.fireteamId) r.fireteamId = -1;
+        if (!r.score) r.score = 0;
+
+        r.user = {
+            'membershipType': e.player.destinyUserInfo.membershipType,
+            'membershipId': e.player.destinyUserInfo.membershipId,
+            'displayName': e.player.destinyUserInfo.displayName,
+            'icon' : e.player.destinyUserInfo.iconPath
+        };
+
+        return r;
+    }
+
+    public parsePGCR(p:any):PGCR{
+        let r:PGCR = new PGCR();
+        r.period = p.period;
+        r.referenceId = p.activityDetails.referenceId;
+        r.instanceId = p.activityDetails.instanceId;
+        r.mode = ParseService.lookupMode(p.activityDetails.mode);
+
+        let desc: any = this.destinyCacheService.cache.Activity[r.referenceId];
+        if (desc){
+            r.name = desc.displayProperties.name;
+            r.level = desc.activityLevel;
+        }
+        else{
+            r.name = "redacted";
+        }
+
+        r.isPrivate = p.activityDetails.isPrivate;
+        r.entries = [];
+        p.entries.forEach((ent)=>{
+            r.entries.push(this.parsePGCREntry(ent));
+        });
+
+        let teamList = {};
+
+        r.entries.forEach((ent)=>{
+            let list = teamList[ent.fireteamId];
+            if (list==null){
+                teamList[ent.fireteamId] = [];
+                list = teamList[ent.fireteamId];
+            } 
+            list.push(ent);
+        });
+
+        let cntr:number = 0;
+        Object.keys(teamList).forEach((key)=>{
+            cntr++;
+
+            let list = teamList[key];
+            list.forEach((ent)=>{
+                ent.fireteam = cntr;
+            });
+        });
+        r.entries.sort(function(a, b) { 
+            return b.score-a.score;
+        })
+
+        return r;
+        
+    }
+
+    public static lookupMode(mode:number):string{
+        if (mode==0) return "All";
+        if (mode==2) return "Story";
+        if (mode==3) return "Strike";
+        if (mode==5) return "All PvP";
+        if (mode==6) return "Patrol";
+        if (mode==7) return "All PvE";
+        if (mode==10) return "Control";
+        if (mode==12) return "Team";
+        if (mode==16) return "Nightfall";
+        if (mode==17) return "Heroic";
+        if (mode==18) return "Strikes";
+        if (mode==37) return "Survival";
+        if (mode==38) return "Countdown";
+        if (mode==40) return "Social";
+        return "unknown";
+    }
+
 
 }
 
+export class PGCREntry{
+    standing:number;
+    score:number;
+    values: any;
+    user: UserInfo;
+
+    characterId:string;
+    characterClass: string;
+    characterLevel: number;
+    lightLevel: number;
+
+    kills: number; 
+    deaths: number;
+    assists: number;
+    fireteamId: number;
+    fireteam: string;
+
+}
+
+export class PGCR {
+    period: string;
+    //Acitivity Details
+    referenceId: number;
+    instanceId: string;
+    mode: string;
+    name: string; //from referenceId
+    isPrivate: boolean;
+    entries: PGCREntry[];
+    level: number;
+    //TODO teams    
+}
 
 export class Activity {
     period: string;
     type: string;
+    mode: string;
     name: string;
     desc: string;
+    pvType: string;
     completed: number;
     timePlayedSeconds: number;
     playerCount: number;
@@ -138,10 +269,8 @@ export class Activity {
     activityLightLevel: number;
     referenceId: number;
     instanceId: string;
-    mode: number;
     activityTypeHashOverride: number;
     isPrivate: boolean;
-    isPvP: boolean;
 
 
     constructor() {
@@ -235,5 +364,6 @@ interface UserInfo {
     membershipType: number;
     membershipId: string;
     displayName: string;
+    icon: string;
 }
 

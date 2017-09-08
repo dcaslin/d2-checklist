@@ -146,7 +146,7 @@ export class BungieService {
                 const j: any = res.json();
                 const resp = BungieService.parseBungieResponse(j);
                 console.dir(resp);
-                return resp;
+                return self.parseService.parsePGCR(resp);
             }).toPromise().catch(
             function (err) {
                 console.log('Error Searching for player');

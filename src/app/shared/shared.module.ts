@@ -24,6 +24,9 @@ import {
   MdTableModule
 } from '@angular/material';
 
+
+import { MomentModule } from 'angular2-moment';
+
 import {
   CdkTableModule
 } from '@angular/cdk/table/';
@@ -33,6 +36,8 @@ import {
   imports: [
     CommonModule,
     FormsModule,
+
+    MomentModule,
 
     MdButtonModule,
     MdToolbarModule,
@@ -61,6 +66,7 @@ import {
   exports: [
     CommonModule,
     FormsModule,
+    MomentModule,
 
     MdButtonModule,
     MdMenuModule,

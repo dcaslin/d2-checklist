@@ -66,6 +66,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
       return;
     }
+
+    this.player = null;
     this.loading = true;
     this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag)
       .then((p: SearchResult) => {

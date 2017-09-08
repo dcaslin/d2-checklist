@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
@@ -7,6 +7,7 @@ import { BungieService, Platform, ActivityMode } from "../../service/bungie.serv
 import { Character } from "../../service/parse.service";
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MdPaginator, MdSort } from '@angular/material';
+import {DurationPipe} from 'angular2-moment';;
 
 @Component({
   selector: 'anms-history',
@@ -35,9 +36,9 @@ export class HistoryComponent implements OnInit, OnDestroy {
   @ViewChild(MdSort) sort: MdSort;
 
 
-  displayedColumns = ['period', 'desc', 'completed'];
+  displayedColumns = ['period', 'mode', 'name', 'timePlayedSeconds'];
 
-  constructor(private bungieService: BungieService, private route: ActivatedRoute) {
+  constructor(private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
     this.platforms = bungieService.getPlatforms();
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
@@ -56,12 +57,19 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  pgcr(instanceId: string){
+
+    this.router.navigate(['/pgcr', instanceId]);
+  }
+
   private sub: any;
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
 
     this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
       const platform: string = params['platform'];
+
+      this.database.setData([]);
       if (platform == null) return;
       let selPlatform = null;
       this.platforms.forEach((p: Platform) => {
