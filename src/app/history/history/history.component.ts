@@ -7,19 +7,18 @@ import { BungieService, Platform, ActivityMode } from "../../service/bungie.serv
 import { Character } from "../../service/parse.service";
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MdPaginator, MdSort } from '@angular/material';
-import {DurationPipe} from 'angular2-moment';;
+import { DurationPipe } from 'angular2-moment';
+import { ChildComponent } from '../../shared/child.component';
+import { StorageService } from '../../service/storage.service';
 
 @Component({
   selector: 'anms-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss']
 })
-export class HistoryComponent implements OnInit, OnDestroy {
+export class HistoryComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
-  private unsubscribe$: Subject<void> = new Subject<void>();
-
-  loading: boolean = false;
   platforms: Platform[];
   activityModes: ActivityMode[];
   maxResults: number[];
@@ -35,10 +34,10 @@ export class HistoryComponent implements OnInit, OnDestroy {
   @ViewChild(MdPaginator) paginator: MdPaginator;
   @ViewChild(MdSort) sort: MdSort;
 
-
   displayedColumns = ['period', 'mode', 'name', 'timePlayedSeconds'];
 
-  constructor(private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
+  constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
+    super(storageService);
     this.platforms = bungieService.getPlatforms();
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
@@ -48,7 +47,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
 
   public history() {
     this.loading = true;
-    this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId, this.selectedMode.type, this.selectedMaxResults).then((rows:any[]) => {
+    this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId, this.selectedMode.type, this.selectedMaxResults).then((rows: any[]) => {
 
       this.database.setData(rows);
       this.loading = false;
@@ -57,7 +56,7 @@ export class HistoryComponent implements OnInit, OnDestroy {
     });
   }
 
-  pgcr(instanceId: string){
+  pgcr(instanceId: string) {
 
     this.router.navigate(['/pgcr', instanceId]);
   }
@@ -89,12 +88,6 @@ export class HistoryComponent implements OnInit, OnDestroy {
       }
 
     });
-  }
-
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 }

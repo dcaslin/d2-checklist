@@ -1,31 +1,50 @@
-<div class="childContainer">
-  <div class="row">
-    <div class="col-sm-12"><h1>Settings</h1></div>
-  </div>
-  <br>
-  <div class="row">
-    <md-select class="col-md-6" placeholder="Select theme" name="theme"
-               [ngModel]="theme" (change)="onThemeSelect($event)">
-      <md-option *ngFor="let t of themes" [value]="t.value">
-        {{t.label}}
-      </md-option>
-    </md-select>
-  </div>
-  <br>
-  <div class="row">
-    <md-select class="col-md-6" placeholder="Ad Options" name="disableads"
-               [ngModel]="disableads" (change)="onDisableAdsSelect($event)">
-      <md-option *ngFor="let t of adChoices" [value]="t.value">
-        {{t.label}}
-      </md-option>
-    </md-select>
-  </div>
-  <br>
-  <p class="note" *ngIf="disableads===true">You've disabled ads. If you end up finding this site or any of the other DestinyChecklist sites helpful, please consider making a donation with the link below:
-    <br><br>
-    <a md-raised-button color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
-      <i class="fa fa-paypal"></i> Donate
-    </a>
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
 
-  </p>
+ 
+      <div class="row">
+        <div class="col-sm-12">
+          <h1>Settings</h1>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <md-select class="col-md-6" placeholder="Select theme" name="theme" [ngModel]="theme" (change)="onThemeSelect($event)">
+          <md-option *ngFor="let t of themes" [value]="t.value">
+            {{t.label}}
+          </md-option>
+        </md-select>
+      </div>
+      <br>
+      <div class="row">
+        <md-select class="col-md-6" placeholder="Ad Options" name="disableads" [ngModel]="disableads" (change)="onDisableAdsSelect($event)">
+          <md-option *ngFor="let t of adChoices" [value]="t.value">
+            {{t.label}}
+          </md-option>
+        </md-select>
+      </div>
+      <br>
+      
+      <p class="note" *ngIf="disableads===true">
+        You've disabled ads. If you end up finding this site or any of the other DestinyChecklist sites helpful, please consider
+        making a donation with the link below:
+        <br><br>
+        <a md-raised-button color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
+          <i class="fa fa-paypal"></i> Donate
+        </a>
+      </p> 
+    </div>
+
+    <div  *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
+  </div>
+
 </div>

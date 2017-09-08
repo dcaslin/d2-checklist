@@ -48,19 +48,9 @@
     </md-toolbar>
 
     <div class="content">
-      <div class="mainCol">
-        <router-outlet #o="outlet"></router-outlet>
-      </div>
-       <div class="rightCol" *ngIf="!disableads">
-        <small class="adText">Advertisement</small>
-        <ng-adsense adFormat="vertical" adSlot="7862857321"></ng-adsense>
-      </div> 
+        <router-outlet #o="outlet"></router-outlet>      
     </div>
 
-
-    <div class="bottomAdRow" *ngIf="!disableads">
-        <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
-    </div>
     <div class="footer">
       <div class="row">
         <div class="col-sm-12 links">

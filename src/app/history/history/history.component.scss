@@ -1,19 +1,10 @@
 @import 'styles-variables';
 
-.container-fluid {
-  margin: 5px;
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
 }
-
-.center-spinner {
-  position: absolute; 
-  left: 0; 
-  right: 0; 
-  margin-left: auto; 
-  margin-right: auto; 
-  width: 100px; /* Need a specific value to work */
-}
-
-
 .player-header-image {
   background-size: cover;
 }

@@ -1,17 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StorageService } from '../../service/storage.service';
 import { Subject } from 'rxjs/Subject';
+import { ChildComponent } from '../../shared/child.component';
 
 @Component({
   selector: 'anms-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit, OnDestroy {
+export class SettingsComponent extends ChildComponent implements OnInit, OnDestroy {
 
-  private unsubscribe$: Subject<void> = new Subject<void>();
-  theme: string =  "default-theme";
-  disableads: boolean = false;
+  theme: string = "default-theme";
 
   themes = [
     { value: 'default-theme', label: 'Default' },
@@ -24,9 +23,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     { value: true, label: 'Disable Ads' }
   ];
 
-  constructor(private storageService: StorageService) {
+  constructor(storageService: StorageService) {
+    super(storageService);
     this.theme = this.storageService.getItem("theme", "default-theme");
-    this.disableads = this.storageService.getItem("disableads", false);
 
     this.storageService.settingFeed
       .takeUntil(this.unsubscribe$)
@@ -35,9 +34,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
         if (x.theme != null) {
           this.theme = x.theme;
         }
-        if (x.disableads != null) {
-          this.disableads = x.disableads;
-        }
       });
     this.storageService.refresh();
   }
@@ -45,13 +41,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  ngOnDestroy(): void {
-  }
-
   onThemeSelect({ value }) {
     this.storageService.setItem("theme", value);
   }
-  
+
   onDisableAdsSelect({ value }) {
     this.storageService.setItem("disableads", value);
   }

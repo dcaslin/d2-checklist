@@ -33,10 +33,10 @@ export class StorageService {
   }
 
   refresh(){
-    this.settingSub.next(StorageService.loadInitialState());
+    this.settingSub.next(StorageService.load());
   }
 
-  static loadInitialState() {
+  static load() {
     return Object.keys(localStorage)
       .reduce((state: any, storageKey) => {
         if (storageKey.includes(APP_PREFIX)) {

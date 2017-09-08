@@ -42,6 +42,14 @@
   word-break: break-all;
 }
 
+.center-spinner {
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  width: 100px; /* Need a specific value to work */
+}
 
 .data-header {
   min-height: 64px;
@@ -71,17 +79,84 @@
   }
 }
 
-.childContainer{
-  display: table;
-  min-width: 300px;
-  text-align: center;
-  margin-left: auto; 
-  margin-right: auto; 
-  padding: 20px;
-}
-
 .centerMe{
   text-align: center;
   margin-left: auto; 
   margin-right: auto; 
+}
+
+
+.childComponent{
+  height: 100%;
+  flex: 1 0 auto;
+
+  
+  display: flex;
+  flex-direction: column;
+  // background-color: purple;
+}
+
+.childVert{
+  order: 1;
+  flex: 1 1 auto;
+
+  display: inline-flex;
+  flex-direction: row;
+  // background-color: yellow;
+}
+
+.adRight{
+  order: 2;
+  width: 300px;
+  min-height: 300px;
+  flex-grow: 0;
+  // background-color: red;
+}
+
+.main{
+  order: 1;
+  height: 100%;
+  padding: 20px;
+  
+  text-align: center;
+  margin-left: auto; 
+  margin-right: auto;
+  // background-color: green;
+}
+
+
+.adText {
+  opacity: 0.5;
+  text-align: center;
+}
+
+
+.adBottom{
+  order: 2;
+  display: none;
+  visibility: hidden;
+  text-align: center;
+  // background-color: gray;
+}
+
+@media (max-width: 1279px) {
+  .adRight {
+      width: 120px;
+  }
+}
+
+
+
+@media (max-width: 960px) {
+  .adRight {
+      display: none;
+      visibility: hidden;
+  }
+    
+  .adBottom{
+    display: inline;
+    visibility: visible;
+    height: 110px;
+  }
+
 }

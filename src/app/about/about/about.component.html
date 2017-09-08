@@ -1,34 +1,50 @@
-<div class="container-fluid">
-  <h1>Destiny 2 Checklist</h1>
-  <div class="actions">
-    <a md-raised-button color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
-      <i class="fa fa-paypal"></i> Donate
-    </a>
-    <a md-raised-button [ngClass]="animateOnRouteEnter" href="https://www.reddit.com/r/destinychecklistnet">
-      <i class="fa fa-reddit"></i> /r/destinychecklistnet
-    </a>        
-    <a md-raised-button [ngClass]="animateOnRouteEnter" target="_blank" href="https://bitbucket.org/dcaslin/d2-checklist/">
-      <i class="fa fa-bitbucket"></i> Source Code
-    </a>
-  </div>
-  <div class="get-started" [ngClass]="animateOnRouteEnter">
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
 
-    <section class="mat-body-2">
-      Hello! I'll add functionality out to this as I can in the coming days weeks. I aim to serve the same needs that helped folks
-      with Destiny 1 at <a href="https://www.destinychecklist.net">DestinyChecklist.net</a>. Main goals to start will
-      be:
-      <br><br>
-      <ul>
-        <li>Checking on your and your friend's progress, rewards and copmletions</li>
-        <li>Supporting clan tracking and rewards</li>
-        <li>Helping you progress in PvE </li>
-      </ul>
-    </section>
-    <section class="mat-body-2">
-      <p>Still getting stuff put together around here. You can see my <a href="https://www.destinychecklist.net/about" target="_blank">about page on DestinyChecklist.net</a> (my D1 hobby site) for most of the important info.</p>
-      <!--<p>The main way I pay server bills for this site is with ads. But... I've added a feature to let you disable ads from the settings page on the site, so feel free to do so!</p>-->
-    </section>
-    
+      <h1>Destiny 2 Checklist</h1>
+      <div class="actions">
+        <a md-raised-button color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
+          <i class="fa fa-paypal"></i> Donate
+        </a>
+        <a md-raised-button [ngClass]="animateOnRouteEnter" href="https://www.reddit.com/r/destinychecklistnet">
+          <i class="fa fa-reddit"></i> /r/destinychecklistnet
+        </a>
+        <a md-raised-button [ngClass]="animateOnRouteEnter" target="_blank" href="https://bitbucket.org/dcaslin/d2-checklist/">
+          <i class="fa fa-bitbucket"></i> Source Code
+        </a>
+      </div>
+      <div class="get-started" [ngClass]="animateOnRouteEnter">
+
+        <section class="mat-body-2">
+          Hello! I'll add functionality out to this as I can in the coming days weeks. I aim to serve the same needs that helped folks
+          with Destiny 1 at <a href="https://www.destinychecklist.net">DestinyChecklist.net</a>. Main goals to
+          start will be:
+          <br><br>
+          <ul>
+            <li>Checking on your and your friend's progress, rewards and copmletions</li>
+            <li>Supporting clan tracking and rewards</li>
+            <li>Helping you progress in PvE </li>
+          </ul>
+        </section>
+        <section class="mat-body-2">
+          <p>Still getting stuff put together around here. You can see my <a href="https://www.destinychecklist.net/about" target="_blank">about page on DestinyChecklist.net</a>            (my D1 hobby site) for most of the important info.</p>
+          <!--<p>The main way I pay server bills for this site is with ads. But... I've added a feature to let you disable ads from the settings page on the site, so feel free to do so!</p>-->
+        </section>
+
+      </div>
+
+
+
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
   </div>
 </div>
-

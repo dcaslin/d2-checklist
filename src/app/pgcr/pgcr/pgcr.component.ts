@@ -4,23 +4,23 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
+import { ChildComponent } from '../../shared/child.component';
+import { StorageService } from '../../service/storage.service';
 
 @Component({
   selector: 'pgcr-history',
   templateUrl: './pgcr.component.html',
   styleUrls: ['./pgcr.component.scss']
 })
-export class PGCRComponent implements OnInit, OnDestroy {
+export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-
-  private unsubscribe$: Subject<void> = new Subject<void>();
 
   instanceId: string;
   data: any;
   loading: boolean = false;
 
-  constructor(private bungieService: BungieService, private route: ActivatedRoute) {
-
+  constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute) {
+    super(storageService);
   }
 
   private load() {
@@ -41,11 +41,4 @@ export class PGCRComponent implements OnInit, OnDestroy {
       this.load();
     });
   }
-
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
-  }
-
 }

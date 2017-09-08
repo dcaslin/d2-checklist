@@ -1,26 +1,19 @@
 @import 'styles-variables';
 
-.container-fluid {
-  margin: 20px;
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
 }
+
 
 .mat-select{
       margin-top: -7px;
  }
   
-
  .ll{
    float: right;
  }
-
-.center-spinner {
-  position: absolute; 
-  left: 0; 
-  right: 0; 
-  margin-left: auto; 
-  margin-right: auto; 
-  width: 100px; /* Need a specific value to work */
-}
 
 .char-card{
   margin-bottom: 10px;
@@ -34,7 +27,6 @@
   letter-spacing: .01px;
   overflow-wrap: break-word;
   z-index: 1;
-
 }
 
 .player-header-image {

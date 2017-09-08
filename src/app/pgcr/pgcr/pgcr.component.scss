@@ -1,13 +1,10 @@
 @import 'styles-variables';
 
 
-.center-spinner {
-  position: absolute; 
-  left: 0; 
-  right: 0; 
-  margin-left: auto; 
-  margin-right: auto; 
-  width: 100px; /* Need a specific value to work */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
 }
 
 .stat-val{

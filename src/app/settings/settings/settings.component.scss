@@ -1,12 +1,10 @@
-.container {
-  margin-top: 20px;
-}
-
-h1 {
-  margin: 0 0 20px 0;
-  text-transform: uppercase;
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  // background-color: gold;
 }
 
 .note{
-  max-width: 400px;
+  max-width: 500px;
 }
