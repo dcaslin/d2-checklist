@@ -1,12 +1,11 @@
 @import 'styles-variables';
 
-
-
-.container-fluid {
-  padding: 100px 0;
-  margin: 20px;
-
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
 }
+
 
 h1 {
     text-align: center;
@@ -36,6 +35,7 @@ h1 {
   padding-bottom: 50px;
   font-size: 0.9em;
   letter-spacing: .01px;
+  text-align: left;
   overflow-wrap: break-word;
   z-index: 1;
 

@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import {RouterModule, RouteReuseStrategy} from '@angular/router';
 import {StickyReuseStrategy} from './sticky-reuse-strategy';
 
-import { AdsenseModule } from 'ng2-adsense';
 
 import { BungieService } from './service/bungie.service';
 import { StorageService } from './service/storage.service';
@@ -31,10 +30,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     BrowserAnimationsModule,
     BrowserModule,
     HttpModule,
-    AdsenseModule.forRoot({
-      adClient: 'ca-pub-4577479845324857',
-      adSlot: 7862857321 //7862857321 responsive right 6246523328 responsive banner
-    }),
+
     SharedModule,
 
 

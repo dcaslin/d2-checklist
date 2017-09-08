@@ -6,25 +6,24 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { SearchResult, BungieService, Platform } from "../../service/bungie.service";
 import { Player, Character } from "../../service/parse.service";
 import { StorageService } from '../../service/storage.service';
+import {ChildComponent} from '../../shared/child.component';
 
 @Component({
   selector: 'anms-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-
-  private unsubscribe$: Subject<void> = new Subject<void>();
 
   platforms: Platform[];
   selectedPlatform: Platform;
   gamerTag: string;
-  loading: boolean = false;
 
   player: Player;
 
-  constructor(private bungieService: BungieService, private storageService: StorageService, private route: ActivatedRoute, private router: Router) {
+  constructor(private bungieService: BungieService, storageService: StorageService, private route: ActivatedRoute, private router: Router) {
+    super(storageService);
     this.platforms = bungieService.getPlatforms();
     this.selectedPlatform = this.platforms[0];
 
@@ -115,11 +114,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.gamerTag = gt;
       this.searchPlayer();
     });
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
   }
 
 }

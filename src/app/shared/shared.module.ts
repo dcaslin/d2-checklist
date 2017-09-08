@@ -25,6 +25,7 @@ import {
 } from '@angular/material';
 
 
+import { AdsenseModule } from 'ng2-adsense';
 import { MomentModule } from 'angular2-moment';
 
 import {
@@ -38,6 +39,10 @@ import {
     FormsModule,
 
     MomentModule,
+    AdsenseModule.forRoot({
+      adClient: 'ca-pub-4577479845324857',
+      adSlot: 7862857321 //7862857321 responsive right 6246523328 responsive banner
+    }),
 
     MdButtonModule,
     MdToolbarModule,
@@ -67,6 +72,7 @@ import {
     CommonModule,
     FormsModule,
     MomentModule,
+    AdsenseModule,
 
     MdButtonModule,
     MdMenuModule,

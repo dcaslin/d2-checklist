@@ -1,47 +1,48 @@
-<div class="">
-  <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
-  <div class="body-text" [ngClass]="animateOnRouteEnter">
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
 
 
-    <h2 class="centerMe">Activity History</h2>
+      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <div class="body-text" [ngClass]="animateOnRouteEnter">
+        <h2 class="centerMe">Activity History</h2>
+        <br/>
+        <div class="centerMe">
+          <md-select class="searchField" [(ngModel)]="selectedMode" placeholder="Mode">
+            <md-option *ngFor="let p of activityModes" [value]="p">
+              {{ p.name }}
+            </md-option>
+          </md-select>
+          &emsp;
+          <md-select class="searchField" [(ngModel)]="selectedMaxResults" placeholder="Max Results">
+            <md-option *ngFor="let p of maxResults" [value]="p">
+              {{ p }}
+            </md-option>
+          </md-select>
+          &emsp;
 
-    <br/>
-    <div class="centerMe">
-      <md-select class="searchField" [(ngModel)]="selectedMode" placeholder="Mode">
-        <md-option *ngFor="let p of activityModes" [value]="p">
-          {{ p.name }}
-        </md-option>
-      </md-select>
-      &emsp;
-      <md-select class="searchField" [(ngModel)]="selectedMaxResults" placeholder="Max Results">
-        <md-option *ngFor="let p of maxResults" [value]="p">
-          {{ p }}
-        </md-option>
-      </md-select>
-      &emsp;
-      
-      <button md-mini-fab title="Activity History" (click)="history()"><md-icon>history</md-icon></button>
-    </div>
-    <div class="table-container">
-      
-        <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
+          <button md-mini-fab title="Activity History" (click)="history()"><md-icon>history</md-icon></button>
+        </div>
+        <div class="table-container">
 
-          <ng-container cdkColumnDef="period">
-            <md-header-cell *cdkHeaderCellDef md-sort-header>Date</md-header-cell>
-            <md-cell *cdkCellDef="let row">
+          <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
+
+            <ng-container cdkColumnDef="period">
+              <md-header-cell *cdkHeaderCellDef md-sort-header>Date</md-header-cell>
+              <md-cell *cdkCellDef="let row">
                 <button md-button href="javascript:void()" color="primary" (click)="pgcr(row.instanceId)">
                   {{row.period|date:'short'}} 
                 </button>
-            </md-cell>
-          </ng-container>
-          <ng-container cdkColumnDef="mode">
-            <md-header-cell *cdkHeaderCellDef md-sort-header>Mode</md-header-cell>
-            <md-cell *cdkCellDef="let row">
-              {{row.mode}}
-              <br>
-            </md-cell>
-          </ng-container>
-          <ng-container cdkColumnDef="name">
+              </md-cell>
+            </ng-container>
+            <ng-container cdkColumnDef="mode">
+              <md-header-cell *cdkHeaderCellDef md-sort-header>Mode</md-header-cell>
+              <md-cell *cdkCellDef="let row">
+                {{row.mode}}
+                <br>
+              </md-cell>
+            </ng-container>
+            <ng-container cdkColumnDef="name">
               <md-header-cell *cdkHeaderCellDef md-sort-header>Name</md-header-cell>
               <md-cell *cdkCellDef="let row">
                 {{row.name}}
@@ -49,22 +50,36 @@
               </md-cell>
             </ng-container>
             <ng-container cdkColumnDef="timePlayedSeconds">
-                <md-header-cell class="hidden-xs" *cdkHeaderCellDef md-sort-header>Duration</md-header-cell>
-                <md-cell class="hidden-xs" *cdkCellDef="let row">
-                  {{ row.timePlayedSeconds | amDuration:'seconds' }}
-                </md-cell>
-              </ng-container>
+              <md-header-cell class="hidden-xs" *cdkHeaderCellDef md-sort-header>Duration</md-header-cell>
+              <md-cell class="hidden-xs" *cdkCellDef="let row">
+                {{ row.timePlayedSeconds | amDuration:'seconds' }}
+              </md-cell>
+            </ng-container>
 
-          <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
-          <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
-        </md-table>
-        <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
-        </md-paginator>
+            <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+            <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+          </md-table>
+          <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          </md-paginator>
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
 
   </div>
-
-
-
-
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
+  </div>
 </div>
