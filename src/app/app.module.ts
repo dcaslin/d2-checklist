@@ -15,6 +15,7 @@ import { ParseService } from './service/parse.service';
 
 import { SharedModule } from '@app/shared';
 
+import {ChildComponent} from './shared/child.component';
 import { HomeModule } from './home';
 import { HistoryModule } from './history';
 import { PGCRModule } from './pgcr';
@@ -45,6 +46,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   ],
   declarations: [
     AppComponent,
+    ChildComponent,
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
   ],
   entryComponents: [
