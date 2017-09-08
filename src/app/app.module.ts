@@ -37,6 +37,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     }),
     SharedModule,
 
+
     AboutModule,
     SettingsModule,
     HomeModule,

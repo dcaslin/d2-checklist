@@ -1,10 +1,47 @@
-<div class="container-fluid">
+<div class="childContainer">
   <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
-  <div class="body-text" [ngClass]="animateOnRouteEnter">
+  <div style="display: table" [ngClass]="animateOnRouteEnter">
 
+    <ng-container *ngIf="data!=null">
+      <h2>
+        PGCR: {{data.mode}} - {{data.name}}
+        <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
+        <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
+      </h2>
+      <md-list style="text-align: left">
+        <!-- <h3 md-subheader>Game Info</h3>
+        <md-list-item>
+            <h2 md-line>{{data.mode}} {{data.name}}
+            </h2>
+        </md-list-item>
+        <md-divider></md-divider> -->
+        <h3 md-subheader>Players</h3>
 
-    <h2 class="centerMe">PGCR</h2>
-    <div>{{data|json}}</div>
+        <ng-container *ngFor="let entry of data.entries">
+          <md-list-item>
+            <!-- <md-icon md-list-icon>face</md-icon> -->
+            <img mdListAvatar [src]="'//www.bungie.net'+entry.user.icon">
+
+            <h4 md-line>{{entry.user.displayName}} {{entry.characterClass}} Lvl {{entry.characterLevel}}
+              <span *ngIf="entry.light>0">-  Light {{entry.light}}</span>
+            </h4>
+            <p md-line>
+
+              <span class="mat-chip stat-val"  *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
+              <span class="mat-chip stat-val" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
+              <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
+              <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
+              <span class="mat-chip stat-val" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+            </p>
+          </md-list-item>
+
+          <md-divider></md-divider>
+
+        </ng-container>
+      </md-list>
+
+      </ng-container>
+
   </div>
 
 

@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="">
   <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
   <div class="body-text" [ngClass]="animateOnRouteEnter">
 
@@ -29,21 +29,31 @@
           <ng-container cdkColumnDef="period">
             <md-header-cell *cdkHeaderCellDef md-sort-header>Date</md-header-cell>
             <md-cell *cdkCellDef="let row">
-              {{row.period|date:'short'}} <br> {{row.instanceId}}
+                <button md-button href="javascript:void()" color="primary" (click)="pgcr(row.instanceId)">
+                  {{row.period|date:'short'}} 
+                </button>
             </md-cell>
           </ng-container>
-          <ng-container cdkColumnDef="desc">
-            <md-header-cell *cdkHeaderCellDef md-sort-header>Type</md-header-cell>
+          <ng-container cdkColumnDef="mode">
+            <md-header-cell *cdkHeaderCellDef md-sort-header>Mode</md-header-cell>
             <md-cell *cdkCellDef="let row">
-              {{row.desc}}
+              {{row.mode}}
+              <br>
             </md-cell>
           </ng-container>
-          <ng-container cdkColumnDef="completed">
-            <md-header-cell *cdkHeaderCellDef>Result</md-header-cell>
-            <md-cell *cdkCellDef="let row">
-              <div *ngIf="row.completed==1">Completed</div>
-            </md-cell>
-          </ng-container>
+          <ng-container cdkColumnDef="name">
+              <md-header-cell *cdkHeaderCellDef md-sort-header>Name</md-header-cell>
+              <md-cell *cdkCellDef="let row">
+                {{row.name}}
+                <i class="fa fa-check" *ngIf="row.completed>0"></i>
+              </md-cell>
+            </ng-container>
+            <ng-container cdkColumnDef="timePlayedSeconds">
+                <md-header-cell class="hidden-xs" *cdkHeaderCellDef md-sort-header>Duration</md-header-cell>
+                <md-cell class="hidden-xs" *cdkCellDef="let row">
+                  {{ row.timePlayedSeconds | amDuration:'seconds' }}
+                </md-cell>
+              </ng-container>
 
           <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
           <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>

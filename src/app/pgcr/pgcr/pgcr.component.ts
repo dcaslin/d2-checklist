@@ -19,7 +19,6 @@ export class PGCRComponent implements OnInit, OnDestroy {
   data: any;
   loading: boolean = false;
 
-
   constructor(private bungieService: BungieService, private route: ActivatedRoute) {
 
   }
