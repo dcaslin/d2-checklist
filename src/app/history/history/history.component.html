@@ -30,9 +30,9 @@
             <ng-container cdkColumnDef="period">
               <md-header-cell *cdkHeaderCellDef md-sort-header>Date</md-header-cell>
               <md-cell *cdkCellDef="let row">
-                <button md-button href="javascript:void()" color="primary" (click)="pgcr(row.instanceId)">
+                <a href="javascript:void()" color="primary" (click)="pgcr(row.instanceId)">
                   {{row.period|date:'short'}} 
-                </button>
+                </a>
               </md-cell>
             </ng-container>
             <ng-container cdkColumnDef="mode">
