@@ -58,7 +58,18 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
   }
 
-  public searchPlayer(): void {
+  public routeSearch(): void{
+    if (this.selectedPlatform == null) {
+      return;
+    }
+    if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
+      return;
+    }
+    this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
+  }
+  
+
+  public performSearch(): void {
     if (this.selectedPlatform == null) {
       return;
     }
@@ -112,7 +123,7 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
       
       const gt: string = params['gt'];
       this.gamerTag = gt;
-      this.searchPlayer();
+      this.performSearch();
     });
   }
 

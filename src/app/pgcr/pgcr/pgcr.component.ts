@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
@@ -19,8 +19,15 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
   data: any;
   loading: boolean = false;
 
-  constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute) {
+  constructor(storageService: StorageService, private bungieService: BungieService, 
+    private route: ActivatedRoute, private router: Router) {
     super(storageService);
+  }
+
+  private loadPlayer(platform, gt){
+
+    this.router.navigate([platform, gt]);
+    //this.router.navigate
   }
 
   private load() {

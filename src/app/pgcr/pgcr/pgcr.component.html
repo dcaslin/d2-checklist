@@ -11,20 +11,16 @@
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </h2>
           <md-list style="text-align: left">
-            <!-- <h3 md-subheader>Game Info</h3>
-        <md-list-item>
-            <h2 md-line>{{data.mode}} {{data.name}}
-            </h2>
-        </md-list-item>
-        <md-divider></md-divider> -->
+           
             <h3 md-subheader>Players</h3>
 
             <ng-container *ngFor="let entry of data.entries">
               <md-list-item>
-                <!-- <md-icon md-list-icon>face</md-icon> -->
                 <img mdListAvatar [src]="'//www.bungie.net'+entry.user.icon">
-
-                <h4 md-line>{{entry.user.displayName}} {{entry.characterClass}} Lvl {{entry.characterLevel}}
+                <h4 md-line>
+                  <a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a>
+                  
+                  {{entry.characterClass}} Lvl {{entry.characterLevel}}
                   <span *ngIf="entry.light>0">-  Light {{entry.light}}</span>
                 </h4>
                 <p md-line>

@@ -1,35 +1,43 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-
-
-
-
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
-
         <br/>
-        <div class="centerMe">
-          <md-select class="searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+        <div style="text-align: center">
+          <md-select style="min-width: 235px" class="searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
             <md-option *ngFor="let p of platforms" [value]="p">
               {{ p.name }}
             </md-option>
           </md-select>
           &emsp;
           <md-form-field class="searchField" class="gt">
-            <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="searchPlayer()" (change)="onGtChange()">
+            <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
           </md-form-field>
           &emsp;
-          <button md-mini-fab color="primary searchField" (click)="searchPlayer()" color="primary"><md-icon>search</md-icon></button>
+          <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
         </div>
+        <ng-container *ngIf="player==null">
+          <h4>Coming Soon</h4>
+          <ul style="text-align: left; max-width: 500px">
+            <li>Sign in to view private endpoints</li>
+            <li>View Milestones (that checklist of completions that we're all here for, (may require sign-in until bug is fixed in Bungie API)</li>
+            <li>Sign in to view faction progressions for you or others (sign-in not needed once Bungie fixes bug)</li>
+            <li>View clain progress (may be dependent on future Bungie API release)</li>
+          </ul>
+        </ng-container>
 
         <ng-container *ngIf="player!=null">
           <h4>{{player.profile.userInfo.displayName}} - Last played: {{player.profile.dateLastPlayed| date:'short'}} </h4>
           <md-card class="char-card" *ngFor="let char of player.characters">
             <md-card-header>
               <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
-              <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp; Light {{char.light}}&emsp;
-                <button md-mini-fab title="Activity History" (click)="history(char)"><md-icon>history</md-icon></button>
+              <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp; 
+                <span style="white-space:nowrap;">Light {{char.light}}&emsp;
+                  <button md-mini-fab title="Activity History" (click)="history(char)">
+                    <md-icon>history</md-icon>
+                  </button>
+                </span>
               </md-card-title>
               <md-card-subtitle>Time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins) </md-card-subtitle>
             </md-card-header>
