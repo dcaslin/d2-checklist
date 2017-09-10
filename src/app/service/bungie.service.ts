@@ -76,10 +76,10 @@ export class BungieService implements OnDestroy {
 
                     if (memberships != null && memberships.length > 0) {
                         //TODO testing
-                        let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
-                        fake.membershipType = 2;
-                        fake.platformName = "PSN";
-                        memberships.push(fake);
+                        // let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
+                        // fake.membershipType = 2;
+                        // fake.platformName = "PSN";
+                        // memberships.push(fake);
 
                         let platform: number = 2;
                         let sPlatform: string = localStorage.getItem("preferredPlatform");
