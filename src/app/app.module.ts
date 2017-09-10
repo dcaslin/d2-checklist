@@ -6,6 +6,7 @@ import {RouterModule, RouteReuseStrategy} from '@angular/router';
 import {StickyReuseStrategy} from './sticky-reuse-strategy';
 
 
+import { AuthService } from './service/auth.service';
 import { BungieService } from './service/bungie.service';
 import { StorageService } from './service/storage.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
@@ -17,6 +18,7 @@ import { SharedModule } from '@app/shared';
 
 import {ChildComponent} from './shared/child.component';
 import { HomeModule } from './home';
+import { AuthModule } from './auth';
 import { HistoryModule } from './history';
 import { PGCRModule } from './pgcr';
 import { SettingsModule } from './settings';
@@ -40,6 +42,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     HomeModule,
     HistoryModule,
     PGCRModule,
+    AuthModule,
 
     // app
     AppRoutingModule
@@ -52,7 +55,8 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   entryComponents: [
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
   ],
-  providers: [BungieService, StorageService, NotificationService, DestinyCacheService, ParseService,
+  providers: [BungieService, AuthService, StorageService, NotificationService, 
+    DestinyCacheService, ParseService,
     {provide: RouteReuseStrategy, useClass: StickyReuseStrategy}],
   bootstrap: [AppComponent]
 })

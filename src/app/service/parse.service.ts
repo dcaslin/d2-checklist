@@ -136,14 +136,29 @@ export class ParseService {
         if (!r.fireteamId) r.fireteamId = -1;
         if (!r.score) r.score = 0;
 
-        r.user = {
-            'membershipType': e.player.destinyUserInfo.membershipType,
-            'membershipId': e.player.destinyUserInfo.membershipId,
-            'displayName': e.player.destinyUserInfo.displayName,
-            'icon' : e.player.destinyUserInfo.iconPath
+        r.user = this.parseUserInfo(e.player.destinyUserInfo);
+        return r;
+    }
+
+    public parseUserInfo(i: any): UserInfo{
+        let platformName: string = "";
+        if (i.membershipType==1){
+            platformName = "XBL";
+        }
+        else if (i.membershipType==2){
+            platformName = "PSN";
+        }
+        else if (i.membershipType==4){
+            platformName = "BNET";
+        }
+        return {
+            'membershipType': i.membershipType,
+            'membershipId': i.membershipId,
+            'displayName': i.displayName,
+            'icon' : i.iconPath,
+            'platformName': platformName 
         };
 
-        return r;
     }
 
     public parsePGCR(p:any):PGCR{
@@ -360,9 +375,10 @@ interface Profile {
     characterIds: string[];
 }
 
-interface UserInfo {
+export interface UserInfo {
     membershipType: number;
     membershipId: string;
+    platformName: string;
     displayName: string;
     icon: string;
 }

@@ -14,7 +14,7 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
 
   themes = [
     { value: 'default-theme', label: 'Default' },
-    { value: 'light-theme', label: 'Light' },
+    { value: 'light-theme', label: 'Pink' },
     { value: 'black-theme', label: 'Black' },
   ];
 

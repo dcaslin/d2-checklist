@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home';
+import { AuthComponent } from './auth';
 import { HistoryComponent } from './history';
 import { PGCRComponent } from './pgcr';
 import { AboutComponent } from './about';
@@ -16,7 +17,13 @@ const routes: Routes = [
   , {
     path: 'home',
     component: HomeComponent
-  }, {
+  }, 
+  {
+    path: 'auth',
+    component: AuthComponent
+  },
+  
+  {
     path: 'settings',
     component: SettingsComponent
   }, {

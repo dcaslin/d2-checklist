@@ -21,14 +21,15 @@
           <h4>Coming Soon</h4>
           <ul style="text-align: left; max-width: 500px">
             <li>Sign in to view private endpoints</li>
-            <li>View Milestones (that checklist of completions that we're all here for, (may require sign-in until bug is fixed in Bungie API)</li>
-            <li>Sign in to view faction progressions for you or others (sign-in not needed once Bungie fixes bug)</li>
-            <li>View clain progress (may be dependent on future Bungie API release)</li>
+            <li>View Milestones (checklist of completions, may require sign-in until bug is fixed in Bungie API)</li>
+            <li>View faction progressions for you or others (sign-in not needed once Bungie fixes bug)</li>
+            <li>View clan progress (may be dependent on future Bungie API release)</li>
           </ul>
         </ng-container>
 
         <ng-container *ngIf="player!=null">
-          <h4>{{player.profile.userInfo.displayName}} - Last played: {{player.profile.dateLastPlayed| date:'short'}} </h4>
+          <h4>{{player.profile.userInfo.displayName}} - 
+            Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago </h4>
           <md-card class="char-card" *ngFor="let char of player.characters">
             <md-card-header>
               <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
