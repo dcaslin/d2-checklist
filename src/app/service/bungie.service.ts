@@ -1,11 +1,13 @@
 /**
  * Created by Dave on 12/21/2016.
  */
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Headers, Http, RequestMethod, RequestOptions, ResponseContentType } from '@angular/http';
+import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
-import { Player, Character, ParseService } from './parse.service';
+import { AuthInfo, AuthService } from './auth.service';
+import { Player, Character, ParseService, UserInfo } from './parse.service';
 
 import { environment } from '../../environments/environment';
 
@@ -42,13 +44,76 @@ export interface SearchResult {
     displayName: string;
 }
 
+export class SelectedUser {
+    selectedUser: UserInfo;
+    availUsers: UserInfo[];
+}
+
 
 @Injectable()
-export class BungieService {
+export class BungieService implements OnDestroy {
+    private selectedUserSub = new Subject();
+    public selectedUserFeed: Observable<SelectedUser>;
 
-    constructor(private http: Http, private notificationService: NotificationService, private parseService: ParseService) {
+    private unsubscribe$: Subject<void> = new Subject<void>();
+    authInfo: AuthInfo;
+
+    selectedUser: SelectedUser;
+
+    constructor(private http: Http,
+        private notificationService: NotificationService,
+        private authService: AuthService,
+        private parseService: ParseService) {
+
+        this.selectedUserFeed = this.selectedUserSub.asObservable() as Observable<SelectedUser>;
+
+        this.authService.authFeed.takeUntil(this.unsubscribe$).subscribe((ai: AuthInfo) => {
+            this.authInfo = ai;
+            if (ai != null) {
+                this.getBungieMembershipsById(ai.memberId).then((memberships: UserInfo[]) => {
+                    let selectedUser: SelectedUser = new SelectedUser();
+                    selectedUser.availUsers = memberships;
+
+                    if (memberships != null && memberships.length > 0) {
+                        //TODO testing
+                        let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
+                        fake.membershipType = 2;
+                        fake.platformName = "PSN";
+                        memberships.push(fake);
+
+                        let platform: number = 2;
+                        let sPlatform: string = localStorage.getItem("preferredPlatform");
+                        if (sPlatform != null) {
+                            platform = parseInt(sPlatform);
+                        }
+                        memberships.forEach(m => {
+                            if (m.membershipType == platform) {
+                                selectedUser.selectedUser = m;
+                            }
+                        });
+                        if (this.selectedUser == null) {
+                            selectedUser.selectedUser = memberships[0];
+                        }
+                    }
+                    this.selectedUser = selectedUser;
+                    this.emitUsers();
+                });
+            }
+            else {
+                this.selectedUser = null;
+                this.emitUsers();
+            }
+        });
     }
 
+    public selectUser(u: UserInfo) {
+        this.selectedUser.selectedUser = u;
+        this.emitUsers();
+    }
+
+    private emitUsers() {
+        this.selectedUserSub.next(this.selectedUser);
+    }
 
     public getActivityModes(): ActivityMode[] {
         return [
@@ -79,15 +144,40 @@ export class BungieService {
 
     }
 
-    private static buildPublicReqOptions(): RequestOptions {
-        return new RequestOptions(
-            {
-                method: RequestMethod.Get,
-                responseType: ResponseContentType.Json,
-                headers: new Headers({
-                    'X-API-Key': environment.apiKey
-                })
-            });
+    private buildReqOptions(): Promise<RequestOptions> {
+        return this.authService.getKey().then(x => {
+            if (x == null) {
+                return new RequestOptions(
+                    {
+                        method: RequestMethod.Get,
+                        responseType: ResponseContentType.Json,
+                        headers: new Headers({
+                            'X-API-Key': environment.bungie.apiKey,
+                        })
+                    });
+            } else {
+                return new RequestOptions(
+                    {
+                        method: RequestMethod.Get,
+                        responseType: ResponseContentType.Json,
+                        headers: new Headers({
+                            'X-API-Key': environment.bungie.apiKey,
+                            'Authorization': "Bearer " + x
+                        })
+                    });
+            }
+        }).catch(err => {
+            console.dir(err);
+            return new RequestOptions(
+                {
+                    method: RequestMethod.Get,
+                    responseType: ResponseContentType.Json,
+                    headers: new Headers({
+                        'X-API-Key': environment.bungie.apiKey,
+                    })
+                });
+
+        });
     }
 
     private handleError(err) {
@@ -118,41 +208,46 @@ export class BungieService {
 
     public getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<any[]> {
         const self: BungieService = this;
-        return this.http.get(API_ROOT + 'Destiny2/' + membershipType + "/Account/" + membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" + count + "&mode=" + mode + "&page=" + page,
-            BungieService.buildPublicReqOptions()).map(
-            function (res) {
-                const j: any = res.json();
-                const resp = BungieService.parseBungieResponse(j);
-                console.dir(resp);
-                if (resp.activities) {
-                    console.log(resp.activities.length);
 
-                    return self.parseService.parseActivities(resp.activities);
-                }
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/' + membershipType + "/Account/" + membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" + count + "&mode=" + mode + "&page=" + page,
+                opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    if (resp.activities) {
+                        console.log(resp.activities.length);
 
-                return [];
-            }).toPromise().catch(
-            function (err) {
-                console.log('Error Searching for player');
-                self.handleError(err);
-                return [];
-            });
+                        return self.parseService.parseActivities(resp.activities);
+                    }
+
+                    return [];
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error Searching for player');
+                    self.handleError(err);
+                    return [];
+                });
+        });
     }
 
     public getPGCR(instanceId: string): Promise<any> {
         const self: BungieService = this;
-        return this.http.get(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId+"/", BungieService.buildPublicReqOptions()).map(
-            function (res) {
-                const j: any = res.json();
-                const resp = BungieService.parseBungieResponse(j);
-                console.dir(resp);
-                return self.parseService.parsePGCR(resp);
-            }).toPromise().catch(
-            function (err) {
-                console.log('Error Searching for player');
-                self.handleError(err);
-                return null;
-            });
+
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return self.parseService.parsePGCR(resp);
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error Searching for player');
+                    self.handleError(err);
+                    return null;
+                });
+        });
+
     }
 
     public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number): Promise<any[]> {
@@ -180,51 +275,88 @@ export class BungieService {
 
     }
 
-
-
-
     public getChars(p: SearchResult): Promise<Player> {
         const self: BungieService = this;
-        return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" + p.membershipId + "/?components=Profiles,Characters", BungieService.buildPublicReqOptions())
-            .map(
-            function (res) {
-                const j: any = res.json();
-                const resp = BungieService.parseBungieResponse(j);
-                console.dir(j);
 
-                return self.parseService.parsePlayer(resp);
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" + p.membershipId + "/?components=Profiles,Characters,CharacterProgressions,CharacterEquipment,CharacterActivities", opt)
+                .map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    console.dir(j);
+
+                    return self.parseService.parsePlayer(resp);
 
 
 
-            }).toPromise().catch(
-            function (err) {
-                console.log('Error Searching for player');
-                self.handleError(err);
-                return null;
-            });
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error Searching for player');
+                    self.handleError(err);
+                    return null;
+                });
+        });
+
     }
 
     public searchPlayer(platform: number, gt: string): Promise<SearchResult> {
         const self: BungieService = this;
-        return this.http.get(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/", BungieService.buildPublicReqOptions())
-            .map(
-            function (res) {
-                const j: any = res.json();
-                const resp = BungieService.parseBungieResponse(j);
-                console.dir(j);
-                self.notificationService.success("Found " + resp.length + " players");
-                if (resp.length == 0) return null;
-                if (resp.length > 1) {
-                    self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
-                }
-                return resp[0];
 
-            }).toPromise().catch(
-            function (err) {
-                console.log('Error Searching for player');
-                self.handleError(err);
-                return null;
-            });
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/", opt)
+                .map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    self.notificationService.success("Found " + resp.length + " players");
+                    if (resp.length == 0) return null;
+                    if (resp.length > 1) {
+                        self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
+                    }
+                    return resp[0];
+
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error Searching for player');
+                    self.handleError(err);
+                    return null;
+                });
+        });
+
     }
+
+    private getBungieMembershipsById(bungieId: string): Promise<UserInfo[]> {
+        const self: BungieService = this;
+
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'User/GetMembershipsById/' + bungieId + "/-1/", opt)
+                .map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+
+                    let aUser: UserInfo[] = [];
+                    resp.destinyMemberships.forEach(u => {
+                        aUser.push(self.parseService.parseUserInfo(u));
+                    });
+                    self.notificationService.success("Found " + aUser.length + " players");
+                    return aUser;
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error looking up memberships');
+                    self.handleError(err);
+                    return [];
+                });
+        });
+
+    }
+
+
+    ngOnDestroy(): void {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
+    }
+
 
 }

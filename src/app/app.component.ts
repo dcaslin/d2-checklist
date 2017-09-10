@@ -12,6 +12,8 @@ import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
+import { BungieService, SelectedUser} from './service/bungie.service';
+import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 
 @Component({
@@ -28,7 +30,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   disableads: boolean;
 
-
   version = env.versions.app;
   year = new Date().getFullYear();
   logo = require('../assets/logo.png');
@@ -39,25 +40,38 @@ export class AppComponent implements OnInit, OnDestroy {
     ...this.navigation,
     { link: 'settings', label: 'Settings' }
   ];
-  isAuthenticated;
 
-  constructor(private notificationService: NotificationService, private storageService: StorageService, private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
+  //signed on info
+  loggingOn = true;
+  signedOnUser: SelectedUser = null;
+
+  constructor(private notificationService: NotificationService, private storageService: StorageService, 
+    private authService: AuthService,
+    private bungieService: BungieService,
+    private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MdSnackBar) {
 
     this.componentCssClass = 'default-theme';
     this.overlayContainer.themeClass = 'default-theme';
+
+
+
+    this.bungieService.selectedUserFeed.takeUntil(this.unsubscribe$).subscribe((selectedUser: SelectedUser)=>{
+      this.signedOnUser = selectedUser;
+      this.loggingOn = false;
+    });
+    
+    this.logon(false);
 
     this.storageService.settingFeed
       .takeUntil(this.unsubscribe$)
       .subscribe(
       x => {
         if (x.theme != null) {
-          console.log("Loaded theme: " + x.theme);
           this.componentCssClass = x.theme;
           this.overlayContainer.themeClass = x.theme;
         }
         if (x.disableads != null) {
-          console.log("Loaded ads: " + x.disableads);
           this.disableads = x.disableads;
         }
       });
@@ -87,8 +101,6 @@ export class AppComponent implements OnInit, OnDestroy {
           snackRef.instance.message = x.message;
         }
       });
-
-
   }
 
   ngOnInit(): void {
@@ -112,22 +124,28 @@ export class AppComponent implements OnInit, OnDestroy {
         console.dir(err);
         this.notificationService.fail("Failed to load destiny manifest.");
       });
-
-
   }
-
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
 
+  logon(force: boolean){
+    this.authService.getCurrentMemberId(force);
+  }
+
+  selectUser(user){
+    this.bungieService.selectUser(user);
+  }
+
   onLoginClick() {
-    //Login
+    this.logon(true);
+    
   }
 
   onLogoutClick() {
-    //Logout
+    this.authService.signOut();
   }
 
 }

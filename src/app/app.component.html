@@ -28,14 +28,30 @@
         </button>
       </span>
 
-      <button md-button class="sign-in-button" *ngIf="!isAuthenticated" mdTooltip="Coming soon, access private endpoint info" mdTooltipPosition="before">
+      <button md-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" mdTooltip="Grants access to private endpoints and some bugged public data too"
+        mdTool tipPosition="before" (click)="onLoginClick()">
         Sign in
       </button>
 
-      <button *ngIf="isAuthenticated" md-icon-button [mdMenuTriggerFor]="toolbarUserMenu">
-        <md-icon>person</md-icon>
+      <button *ngIf="signedOnUser!=null" md-button
+        [mdTooltip]="this.signedOnUser.selectedUser.displayName" 
+        mdTooltipPosition="before"
+        [mdMenuTriggerFor]="toolbarUserMenu">
+        <md-icon *ngIf="this.signedOnUser.availUsers.length==1">person</md-icon>
+        <md-icon *ngIf="this.signedOnUser.availUsers.length>1">supervisor_account</md-icon>
+        <span class="hidden-sm-down">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
+        
       </button>
       <md-menu #toolbarUserMenu="mdMenu">
+
+        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.availUsers.length>1">
+          <button md-menu-item *ngFor="let avail of this.signedOnUser.availUsers"
+          [disabled]="avail == this.signedOnUser.selectedUser" (click)="selectUser(avail)">
+            <md-icon>account_circle</md-icon>
+            <span>{{avail.platformName}}</span>
+          </button>
+        </ng-container>
+
         <button md-menu-item (click)="onLogoutClick()">
           <md-icon>power_settings_new</md-icon>
           <span>Logout</span>
@@ -48,7 +64,7 @@
     </md-toolbar>
 
     <div class="content">
-        <router-outlet #o="outlet"></router-outlet>      
+      <router-outlet #o="outlet"></router-outlet>
     </div>
 
     <div class="footer">
