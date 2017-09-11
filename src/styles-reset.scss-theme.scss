@@ -33,6 +33,10 @@
     color: mat-color($primary);
   }
 
+  .secondary-text{
+    color: mat-color($foreground, secondary-text);
+  }
+
   table.responsive-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;
