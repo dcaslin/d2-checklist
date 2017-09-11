@@ -18,6 +18,7 @@ import { SharedModule } from '@app/shared';
 
 import {ChildComponent} from './shared/child.component';
 import { HomeModule } from './home';
+import { PlayerModule } from './player';
 import { AuthModule } from './auth';
 import { HistoryModule } from './history';
 import { PGCRModule } from './pgcr';
@@ -36,10 +37,10 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
 
     SharedModule,
 
-
     AboutModule,
     SettingsModule,
     HomeModule,
+    PlayerModule,
     HistoryModule,
     PGCRModule,
     AuthModule,

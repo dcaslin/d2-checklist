@@ -2,19 +2,8 @@
   <div class="childVert">
     <div class="main">
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
-
       <h1>Auth</h1>
       <p *ngIf="msg!=null">{{msg}}</p>
-      
     </div>
-    <div *ngIf="disableads===false" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
-
-  </div>
-  <div *ngIf="disableads===false" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
   </div>
 </div>
