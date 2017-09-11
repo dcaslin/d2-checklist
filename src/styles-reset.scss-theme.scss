@@ -3,7 +3,10 @@
 @mixin anms-styles-reset-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
   $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
 
   a {
     color: mat-color($foreground, text);
@@ -17,5 +20,103 @@
     color: mat-color($accent, lighter-contrast);
     background-color: mat-color($accent, lighter);
   }
+
+  .accent-text{
+    color: mat-color($accent, 700);
+  }
+  
+  .warn-text{
+    color: mat-color($warn);
+  }
+  
+  .primary-text{
+    color: mat-color($primary);
+  }
+
+  table.responsive-table {
+    border: 1px solid mat-color($background, disabled-list-option);
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 700px;
+    table-layout: fixed;
+    & caption {
+      font-size: 1.5em;
+      margin: .5em 0 .75em;
+    }
+    & tr {
+      background:  mat-color($background, card);
+      border: 1px solid mat-color($background, unselected-chip);
+      
+      padding: .35em;
+    }
+    & td {
+      padding: .625em;
+      text-align: center;
+    }
+    & td.lead {
+      padding: .625em;
+      text-align: center;
+      font-weight: bold;
+    }
+    & th {
+      padding: .625em;
+      text-align: center;
+      font-size: .85em;
+      letter-spacing: .1em;
+      color: mat-color($foreground, secondary-text);
+      //text-transform: uppercase;
+    }
+  }
+  
+  @media screen and (max-width: 600px) {
+    table.responsive-table {
+      border: 0;
+      & caption {
+        font-size: 1.3em;
+      }
+      & thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+      & tr {
+        border-bottom: 3px solid mat-color($background, status-bar);
+        display: block;
+        margin-bottom: .625em;
+      }
+      & td {
+        border-bottom: 1px solid mat-color($background, status-bar);
+        display: block;
+        font-size: .8em;
+        text-align: right;
+      }
+      & td.lead {
+        font-weight: bold;
+        border-bottom: 1px solid mat-color($background, status-bar);
+        display: block;
+        font-size: .8em;
+        text-align: right;
+      }
+      & td:before {
+        content: attr(data-label);
+        float: left;
+        //font-weight: bold;
+        //text-transform: uppercase;
+      }
+      & td:last-child {
+        border-bottom: 0;
+      }
+    } 
+  }
+  
+  
+
 }
 

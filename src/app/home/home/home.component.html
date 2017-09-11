@@ -77,7 +77,7 @@
                 <h4>There's a Bungie API bug blocking access otherwise.<br><br> Sorry about that.</h4>
               </div>
 
-              <table class="table" *ngIf="player.milestoneList.length>0">
+              <table class="responsive-table" *ngIf="player.milestoneList.length>0">
                 <thead>
                   <tr>
                     <th scope="col">Actvity</th>
@@ -88,11 +88,11 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td [attr.data-label]="Activity">{{mileStoneName.name}}</td>
+                    <td class="lead" [attr.data-label]="Activity">{{mileStoneName.name}}</td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                            <i class="mat-primary mat-option.mat-selected fa fa-check"></i>
+                            <i class="accent-text mat-option.mat-selected fa fa-check"></i>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false">
                               <i class="fa fa-times"></i>
