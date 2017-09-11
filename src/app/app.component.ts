@@ -12,7 +12,7 @@ import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
-import { BungieService, SelectedUser} from './service/bungie.service';
+import { BungieService, SelectedUser } from './service/bungie.service';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 
@@ -45,7 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
   loggingOn = true;
   signedOnUser: SelectedUser = null;
 
-  constructor(private notificationService: NotificationService, private storageService: StorageService, 
+  constructor(private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
     private bungieService: BungieService,
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
@@ -56,11 +56,11 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
 
-    this.bungieService.selectedUserFeed.takeUntil(this.unsubscribe$).subscribe((selectedUser: SelectedUser)=>{
+    this.bungieService.selectedUserFeed.takeUntil(this.unsubscribe$).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser = selectedUser;
       this.loggingOn = false;
     });
-    
+
     this.logon(false);
 
     this.storageService.settingFeed
@@ -103,6 +103,14 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
+  myProfile() {
+    if (this.signedOnUser != null) {
+      this.router.navigate([this.signedOnUser.selectedUser.membershipType,
+        this.signedOnUser.selectedUser.displayName]);
+    }
+  }
+
+
   ngOnInit(): void {
     this.router.events
       .filter(event => event instanceof NavigationEnd)
@@ -131,17 +139,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  logon(force: boolean){
+  logon(force: boolean) {
     this.authService.getCurrentMemberId(force);
   }
 
-  selectUser(user){
+  selectUser(user) {
     this.bungieService.selectUser(user);
   }
 
   onLoginClick() {
     this.logon(true);
-    
+
   }
 
   onLogoutClick() {

@@ -4,7 +4,7 @@
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br/>
-        <div style="text-align: center">
+        <div class="centerMe">
           <md-select style="min-width: 235px" class="searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
             <md-option *ngFor="let p of platforms" [value]="p">
               {{ p.name }}
@@ -17,36 +17,102 @@
           &emsp;
           <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
         </div>
-        <ng-container *ngIf="player==null">
-          <h4>Coming Soon</h4>
-          <ul style="text-align: left; max-width: 500px">
-            <li>Sign in to view private endpoints</li>
-            <li>View Milestones (checklist of completions, may require sign-in until bug is fixed in Bungie API)</li>
-            <li>View faction progressions for you or others (sign-in not needed once Bungie fixes bug)</li>
-            <li>View clan progress (may be dependent on future Bungie API release)</li>
+        <div class="notes" *ngIf="player==null">
+          <h4 class="centerMe">Important Note</h4>
+          <ul>
+            <li>There is currently a bug in many parts of the Bungie API that requires you to sign in to view information that
+              should be otherwise publicly available. This includes things like weekly completions, currently playing status
+              and faction progress.
+            </li>
           </ul>
-        </ng-container>
+          <h4 class="centerMe">Coming Soon</h4>
+          <ul>
+            <li>
+              <del>Sign in to view private endpoints</del> - Done!</li>
+            <li>View Milestones (checklist of completions, will require sign-in until bug is fixed in Bungie API)</li>
+            <li>View faction progressions for you or others (sign-in not needed once Bungie fixes bug)</li>
+            <li>View clan progress (may be dependent on future Bungie API release; clan endpoints aren't out right now)</li>
+          </ul>
+        </div>
 
         <ng-container *ngIf="player!=null">
-          <h4>{{player.profile.userInfo.displayName}} - 
-            Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago </h4>
-          <md-card class="char-card" *ngFor="let char of player.characters">
-            <md-card-header>
-              <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
-              <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp; 
-                <span style="white-space:nowrap;">Light {{char.light}}&emsp;
-                  <button md-mini-fab title="Activity History" (click)="history(char)">
-                    <md-icon>history</md-icon>
-                  </button>
-                </span>
-              </md-card-title>
-              <md-card-subtitle>Time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins) </md-card-subtitle>
-            </md-card-header>
-            <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
-              <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
-              </md-progress-bar>
-            </div>
-          </md-card>
+          <h4>{{player.profile.userInfo.displayName}} -
+            <span *ngIf="player.currentActivity==null">
+              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago 
+            </span>
+            <span *ngIf="player.currentActivity!=null">
+                <mark>Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | 
+                Started {{today| amDifference:player.currentActivity.dateActivityStarted| amDuration:'ms'}} ago</mark>
+            </span>
+          </h4>
+
+          <md-tab-group>
+            <md-tab label="Chars">
+
+              <md-card class="char-card" *ngFor="let char of player.characters">
+                <md-card-header>
+                  <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+                  <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
+                    <span style="white-space:nowrap;">Light {{char.light}}&emsp;
+                    <button md-mini-fab mdTooltip="Activity History" (click)="history(char)">
+                      <md-icon>history</md-icon>
+                    </button>
+                  </span>
+                  </md-card-title>
+                  <md-card-subtitle>Time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins)
+                  </md-card-subtitle>
+                </md-card-header>
+
+                <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
+                  <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
+                  </md-progress-bar>
+                </div>
+              </md-card>
+
+            </md-tab>
+            <md-tab label="Checklist">
+              <div *ngIf="player.milestoneList.length==0">
+                <br>
+                <h1>Nothing here? Try signing in. </h1>
+                <h4>There's a Bungie API bug blocking access otherwise.<br><br> Sorry about that.</h4>
+              </div>
+
+              <table class="table" *ngIf="player.milestoneList.length>0">
+                <thead>
+                  <tr>
+                    <th scope="col">Actvity</th>
+                    <th scope="col" *ngFor="let char of player.characters">
+                      {{char.className}} - {{char.light}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let mileStoneName of player.milestoneList">
+                    <td [attr.data-label]="Activity">{{mileStoneName.name}}</td>
+                    <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                      <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                            <i class="mat-primary mat-option.mat-selected fa fa-check"></i>
+                          </ng-container>
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false">
+                              <i class="fa fa-times"></i>
+                            </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                        N/A
+                      </ng-container>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+            </md-tab>
+            <md-tab label="Progress">
+              <br>
+              <h1>Coming soon!</h1>
+
+            </md-tab>
+          </md-tab-group>
         </ng-container>
       </div>
 
