@@ -19,7 +19,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
 
-  @ViewChild(MdTabGroup) tabs: MdTabGroup;
+  @ViewChild('maintabs') tabs: MdTabGroup;
 
   platforms: Platform[];
   selectedPlatform: Platform;

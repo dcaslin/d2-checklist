@@ -29,7 +29,7 @@
         </h4>
 
 
-        <md-tab-group (selectChange)='changeTab($event)'>
+        <md-tab-group #maintabs (selectChange)='changeTab($event)'>
           <md-tab label="Chars">
 
             <ng-container *ngIf="player!=null">
@@ -76,7 +76,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [mdTooltip]="mileStoneName.desc" [attr.data-label]="Activity">{{mileStoneName.name}} 
+                    <td class="lead" [mdTooltip]="mileStoneName.desc" [attr.data-label]="Activity">{{mileStoneName.name}}
                     </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
@@ -99,8 +99,46 @@
           </md-tab>
           <md-tab label="Progress">
             <ng-container *ngIf="player!=null">
-              <br>
-              <h1>Coming soon!</h1>
+
+              <md-tab-group>
+                <md-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+
+
+                  <div *ngIf="char.factions==null || char.factions.length==0">
+                    <br>
+                    <h1>Nothing here? Try signing in. </h1>
+                    <h4>There's a Bungie API bug blocking access otherwise.<br><br> Sorry about that.</h4>
+                  </div>
+                  <ng-container *ngIf="char.factions!=null && char.factions.length>0">
+
+
+                    <md-card class="char-card" *ngFor="let faction of char.factions">
+
+
+
+                      <md-card-header>
+                        <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + faction.icon + ')'"></div>
+                        <md-card-title>{{faction.name}} &ensp; {{faction.level}}</md-card-title>
+                        <md-card-subtitle>{{faction.percentToNextLevel|percent}} to level {{faction.level+1}}
+                        </md-card-subtitle>
+                      </md-card-header>
+
+                      <div>
+                        <md-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
+                        </md-progress-bar>
+                      </div>
+                    </md-card>
+
+                  </ng-container>
+
+
+
+
+
+
+                </md-tab>
+              </md-tab-group>
+
             </ng-container>
 
           </md-tab>
