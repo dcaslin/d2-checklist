@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import 'rxjs/add/operator/toPromise';
+import { environment as env } from '@env/environment';
 
 declare let JSZip: any;
 declare let JSZipUtils: any;
@@ -14,7 +15,7 @@ export class DestinyCacheService {
   init(): Promise<any> {
     let self: DestinyCacheService = this;
     return new Promise(function (resolve, reject) {
-      JSZipUtils.getBinaryContent("/assets/destiny2.zip", function (err, data) {
+      JSZipUtils.getBinaryContent("/assets/destiny2.zip?v="+env.versions.app, function (err, data) {
         if (err) {
           reject(err);
           return;

@@ -58,10 +58,36 @@ export class ParseService {
         }
     }
 
+    private parseProgression(p:_Progression): Progression{
+        let desc = this.destinyCacheService.cache.Faction[p.factionHash];
+        if (desc != null) {
+            console.dir(desc);
+            
+            let prog:Progression = new Progression();
+            prog.icon = desc.displayProperties.icon;
+            prog.hash = p.progressionHash;
+            prog.name = desc.displayProperties.name;
+            prog.currentProgress = p.currentProgress;
+            prog.dailyLimit = p.dailyLimit;
+            prog.dailyProgress = p.dailyProgress;
+            prog.weeklyLimit= p.weeklyLimit;
+            prog.weeklyProgress = p.weeklyProgress;
+            prog.levelCap = p.levelCap;
+            prog.level = p.level;
+            prog.percentToNextLevel = p.progressToNextLevel/p.nextLevelAt;
+            return prog;
+        }
+        else{
+            return null;
+        }
+        
+
+    }
+
     private populateProgressions(c: Character, _prog: any): void {
         console.dir(_prog);
         console.log("prog");
-        let parsedMilestones:{ [key: string]: Milestone } = {};
+        let parsedMilestones: { [key: string]: Milestone } = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
                 let ms: _Milestone = _prog.milestones[key];
@@ -80,8 +106,8 @@ export class ParseService {
                         console.log(description);
                     }
                     if (ms.availableQuests != null && ms.availableQuests.length == 1 && name != null && name.trim().length > 0) {
-                        let q:_AvailableQuest = ms.availableQuests[0];
-                        let m:Milestone = new Milestone();
+                        let q: _AvailableQuest = ms.availableQuests[0];
+                        let m: Milestone = new Milestone();
                         m.name = name;
                         m.description = description;
                         m.hash = key;
@@ -92,12 +118,30 @@ export class ParseService {
 
             });
         }
+        c.milestones = parsedMilestones;
+
+        let factions: Progression[] = [];
+        if (_prog.factions != null) {
+            Object.keys(_prog.factions).forEach((key) => {
+                let p: _Progression = _prog.factions[key];
+                let prog: Progression = this.parseProgression(p);
+                if (prog!=null){
+                    factions.push(prog);
+                }
+
+            });
+
+        }
+        factions.sort(function (a, b) {
+            return b.percentToNextLevel - a.percentToNextLevel;
+        })
+        c.factions = factions;
+
         //factions
         //milestones
         //progressions
         //quests?
         //uninstancedItemObjectives
-        c.milestones = parsedMilestones;
         //c.progression = saveMe;
 
 
@@ -200,8 +244,8 @@ export class ParseService {
             Object.keys(oProgs).forEach((key) => {
                 let curChar: Character = charsDict[key];
                 this.populateProgressions(curChar, oProgs[key]);
-                if (curChar.milestones!=null){
-                    Object.keys(curChar.milestones).forEach(key2=>{
+                if (curChar.milestones != null) {
+                    Object.keys(curChar.milestones).forEach(key2 => {
 
                         mileStoneHashSet[key2] = curChar.milestones[key2];
                     });
@@ -209,9 +253,9 @@ export class ParseService {
             });
         }
 
-        let milestoneList:MileStoneName[] = [];
+        let milestoneList: MileStoneName[] = [];
 
-        Object.keys(mileStoneHashSet).forEach(key=>{
+        Object.keys(mileStoneHashSet).forEach(key => {
             milestoneList.push({
                 key: key,
                 name: mileStoneHashSet[key].name,
@@ -240,7 +284,7 @@ export class ParseService {
         Object.keys(charsDict).forEach((key) => {
             chars.push(charsDict[key]);
         });
-        
+
 
 
         return new Player(profile, chars, currentActivity, milestoneList);
@@ -445,7 +489,7 @@ export class Player {
     }
 }
 
-export interface MileStoneName{
+export interface MileStoneName {
     key: string;
     name: string;
     desc: string;
@@ -473,10 +517,11 @@ export class Character {
 
     currentActivity: CurrentActivity;
     milestones: { [key: string]: Milestone };
+    factions: Progression[];
     progression: any;
 }
 
-class Milestone{
+class Milestone {
     hash: string;
     name: string;
     description: string;
@@ -561,3 +606,36 @@ interface _QuestStatus {
     started: boolean;
 }
 
+interface _Progression {
+    factionHash: number;
+    progressionHash: number;
+    dailyProgress: number;
+    dailyLimit: number;
+    weeklyProgress: number;
+    weeklyLimit: number;
+    currentProgress: number;
+    level: number;
+    levelCap: number;
+    stepIndex: number;
+    progressToNextLevel: number;
+    nextLevelAt: number;
+}
+
+class Progression{
+    icon: string;
+    name: string;
+    hash: number;
+    progressionHash: number;
+    level: number;
+    levelCap: number;
+
+    dailyProgress: number;
+    dailyLimit: number;
+    weeklyProgress: number;
+    weeklyLimit: number;
+    currentProgress: number;
+
+    percentToNextLevel: number;
+
+
+}
