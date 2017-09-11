@@ -76,7 +76,8 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [attr.data-label]="Activity">{{mileStoneName.name}}</td>
+                    <td class="lead" [mdTooltip]="mileStoneName.desc" [attr.data-label]="Activity">{{mileStoneName.name}} 
+                    </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
                         <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">

@@ -65,19 +65,25 @@ export class ParseService {
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
                 let ms: _Milestone = _prog.milestones[key];
+                if (ms.endDate == null) return;
                 let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
                 if (desc != null) {
+                    // if (desc.friendlyName==null) return;
                     let name: string = "";
-                    if (desc.friendlyName != null) {
-                        name = desc.friendlyName;
-                    }
-                    else if (desc.displayProperties != null) {
+                    let description: string = "";
+                    // if (desc.friendlyName != null) {
+                    //     name = desc.friendlyName;
+                    // }
+                    if (desc.displayProperties != null) {
                         name = desc.displayProperties.name;
+                        description = desc.displayProperties.description;
+                        console.log(description);
                     }
                     if (ms.availableQuests != null && ms.availableQuests.length == 1 && name != null && name.trim().length > 0) {
                         let q:_AvailableQuest = ms.availableQuests[0];
                         let m:Milestone = new Milestone();
                         m.name = name;
+                        m.description = description;
                         m.hash = key;
                         m.complete = q.status.completed;
                         parsedMilestones[key] = m;
@@ -197,7 +203,7 @@ export class ParseService {
                 if (curChar.milestones!=null){
                     Object.keys(curChar.milestones).forEach(key2=>{
 
-                        mileStoneHashSet[key2] = curChar.milestones[key2].name;
+                        mileStoneHashSet[key2] = curChar.milestones[key2];
                     });
                 }
             });
@@ -208,7 +214,8 @@ export class ParseService {
         Object.keys(mileStoneHashSet).forEach(key=>{
             milestoneList.push({
                 key: key,
-                name: mileStoneHashSet[key]
+                name: mileStoneHashSet[key].name,
+                desc: mileStoneHashSet[key].description
             });
         });
 
@@ -441,6 +448,7 @@ export class Player {
 export interface MileStoneName{
     key: string;
     name: string;
+    desc: string;
 }
 
 export class Character {
@@ -471,6 +479,7 @@ export class Character {
 class Milestone{
     hash: string;
     name: string;
+    description: string;
     complete: boolean;
 }
 
