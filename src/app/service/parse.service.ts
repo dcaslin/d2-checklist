@@ -25,16 +25,85 @@ export class ParseService {
         char.gender = this.destinyCacheService.cache.Gender[c.genderHash].displayProperties.name;
         char.race = this.destinyCacheService.cache.Race[c.raceHash].displayProperties.name;
         char.className = this.destinyCacheService.cache.Class[c.classHash].displayProperties.name;
-
-        //TODO level progression, if it even makes sense
         return char;
+    }
 
+    private populateActivities(c: Character, _act: any): void {
+
+        console.dir(_act);
+        console.log("act");
+        let hash: number = _act.currentActivityHash;
+
+        if (hash != 0) {
+            let act: CurrentActivity = new CurrentActivity();
+            act.dateActivityStarted = _act.dateActivityStarted;
+
+            let desc: any = this.destinyCacheService.cache.Activity[hash];
+            if (desc) {
+                act.name = desc.displayProperties.name;
+                if (desc.activityTypeHash) {
+                    let typeDesc: any = this.destinyCacheService.cache.ActivityType[desc.activityTypeHash];
+                    if (typeDesc != null) {
+                        act.type = typeDesc.displayProperties.name;
+                    }
+                }
+                act.activityLevel = desc.activityLevel;
+                act.activityLightLevel = desc.activityLightLevel;
+            }
+
+            //ignore in orbit
+            if (act.name != null && act.name.trim().length > 0) {
+                c.currentActivity = act;
+            }
+        }
+    }
+
+    private populateProgressions(c: Character, _prog: any): void {
+        console.dir(_prog);
+        console.log("prog");
+        let parsedMilestones:{ [key: string]: Milestone } = {};
+        if (_prog.milestones != null) {
+            Object.keys(_prog.milestones).forEach((key) => {
+                let ms: _Milestone = _prog.milestones[key];
+                let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
+                if (desc != null) {
+                    let name: string = "";
+                    if (desc.friendlyName != null) {
+                        name = desc.friendlyName;
+                    }
+                    else if (desc.displayProperties != null) {
+                        name = desc.displayProperties.name;
+                    }
+                    if (ms.availableQuests != null && ms.availableQuests.length == 1 && name != null && name.trim().length > 0) {
+                        let q:_AvailableQuest = ms.availableQuests[0];
+                        let m:Milestone = new Milestone();
+                        m.name = name;
+                        m.hash = key;
+                        m.complete = q.status.completed;
+                        parsedMilestones[key] = m;
+                    }
+                }
+
+            });
+        }
+        //factions
+        //milestones
+        //progressions
+        //quests?
+        //uninstancedItemObjectives
+        c.milestones = parsedMilestones;
+        //c.progression = saveMe;
+
+
+        //first let's handle milestones
 
     }
 
+
+
     private static getBasicValue(val: any): number {
-        if (val==null) return null;
-        if (val.basic==null) return;
+        if (val == null) return null;
+        if (val.basic == null) return;
         return val.basic.value;
     }
 
@@ -65,8 +134,8 @@ export class ParseService {
             }
             act.activityLevel = desc.activityLevel;
             act.activityLightLevel = desc.activityLightLevel;
-        }        
-        if (a.values){
+        }
+        if (a.values) {
             act.completed = ParseService.getBasicValue(a.values.completed);
             act.timePlayedSeconds = ParseService.getBasicValue(a.values.timePlayedSeconds);
             act.playerCount = ParseService.getBasicValue(a.values.playerCount);
@@ -77,18 +146,18 @@ export class ParseService {
             act.score = ParseService.getBasicValue(a.values.score);
 
 
-        }  
+        }
         act.isPrivate = a.activityDetails.isPrivate;
-        if (desc.isPvP){
+        if (desc.isPvP) {
             act.pvType = "PvP";
         }
-        else{
+        else {
             act.pvType = "PvE";
         }
 
-        act.desc = act.mode+": "+act.name;
-        if (act.isPrivate){
-            act.desc+="(Private)";
+        act.desc = act.mode + ": " + act.name;
+        if (act.isPrivate) {
+            act.desc += "(Private)";
         }
         //act.values = a.values;
         return act;
@@ -109,21 +178,73 @@ export class ParseService {
         if (resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
         if (resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
         const profile: Profile = resp.profile.data;
-        const oChars: any = resp.characters.data;
-        let chars: Character[] = [];
 
+        let charsDict: any = {};
+
+
+        const oChars: any = resp.characters.data;
         Object.keys(oChars).forEach((key) => {
-            chars.push(this.parseCharacter(oChars[key]));
+            charsDict[key] = this.parseCharacter(oChars[key]);
         });
-        return new Player(profile, chars);
+
+        let mileStoneHashSet: any = {};
+
+        if (resp.characterProgressions && resp.characterProgressions.data) {
+            const oProgs: any = resp.characterProgressions.data;
+            Object.keys(oProgs).forEach((key) => {
+                let curChar: Character = charsDict[key];
+                this.populateProgressions(curChar, oProgs[key]);
+                if (curChar.milestones!=null){
+                    Object.keys(curChar.milestones).forEach(key2=>{
+
+                        mileStoneHashSet[key2] = curChar.milestones[key2].name;
+                    });
+                }
+            });
+        }
+
+        let milestoneList:MileStoneName[] = [];
+
+        Object.keys(mileStoneHashSet).forEach(key=>{
+            milestoneList.push({
+                key: key,
+                name: mileStoneHashSet[key]
+            });
+        });
+
+        let currentActivity: CurrentActivity = null;
+
+        if (resp.characterActivities && resp.characterActivities.data) {
+            const oActs: any = resp.characterActivities.data;
+            Object.keys(oActs).forEach((key) => {
+                let curChar: Character = charsDict[key];
+                this.populateActivities(curChar, oActs[key]);
+                if (curChar.currentActivity != null) {
+                    currentActivity = curChar.currentActivity;
+                }
+            });
+        }
+
+
+        // //progressions
+        // if ()
+
+        let chars: Character[] = [];
+        Object.keys(charsDict).forEach((key) => {
+            chars.push(charsDict[key]);
+        });
+        
+
+
+        return new Player(profile, chars, currentActivity, milestoneList);
     }
 
-    private parsePGCREntry(e: any): PGCREntry{
-        let r:PGCREntry = new PGCREntry();
+    private parsePGCREntry(e: any): PGCREntry {
+        let r: PGCREntry = new PGCREntry();
         r.characterId = e.characterId;
         r.standing = e.standing;
         r.score = ParseService.getBasicValue(e.score);
-        if (e.values){
+        if (e.values) {
 
             r.kills = ParseService.getBasicValue(e.values.kills);
             r.deaths = ParseService.getBasicValue(e.values.deaths);
@@ -140,110 +261,110 @@ export class ParseService {
         return r;
     }
 
-    public parseUserInfo(i: any): UserInfo{
+    public parseUserInfo(i: any): UserInfo {
         let platformName: string = "";
-        if (i.membershipType==1){
+        if (i.membershipType == 1) {
             platformName = "XBL";
         }
-        else if (i.membershipType==2){
+        else if (i.membershipType == 2) {
             platformName = "PSN";
         }
-        else if (i.membershipType==4){
+        else if (i.membershipType == 4) {
             platformName = "BNET";
         }
         return {
             'membershipType': i.membershipType,
             'membershipId': i.membershipId,
             'displayName': i.displayName,
-            'icon' : i.iconPath,
-            'platformName': platformName 
+            'icon': i.iconPath,
+            'platformName': platformName
         };
 
     }
 
-    public parsePGCR(p:any):PGCR{
-        let r:PGCR = new PGCR();
+    public parsePGCR(p: any): PGCR {
+        let r: PGCR = new PGCR();
         r.period = p.period;
         r.referenceId = p.activityDetails.referenceId;
         r.instanceId = p.activityDetails.instanceId;
         r.mode = ParseService.lookupMode(p.activityDetails.mode);
 
         let desc: any = this.destinyCacheService.cache.Activity[r.referenceId];
-        if (desc){
+        if (desc) {
             r.name = desc.displayProperties.name;
             r.level = desc.activityLevel;
         }
-        else{
+        else {
             r.name = "redacted";
         }
 
         r.isPrivate = p.activityDetails.isPrivate;
         r.entries = [];
-        p.entries.forEach((ent)=>{
+        p.entries.forEach((ent) => {
             r.entries.push(this.parsePGCREntry(ent));
         });
 
         let teamList = {};
 
-        r.entries.forEach((ent)=>{
+        r.entries.forEach((ent) => {
             let list = teamList[ent.fireteamId];
-            if (list==null){
+            if (list == null) {
                 teamList[ent.fireteamId] = [];
                 list = teamList[ent.fireteamId];
-            } 
+            }
             list.push(ent);
         });
 
-        let cntr:number = 0;
-        Object.keys(teamList).forEach((key)=>{
+        let cntr: number = 0;
+        Object.keys(teamList).forEach((key) => {
             cntr++;
 
             let list = teamList[key];
-            list.forEach((ent)=>{
+            list.forEach((ent) => {
                 ent.fireteam = cntr;
             });
         });
-        r.entries.sort(function(a, b) { 
-            return b.score-a.score;
+        r.entries.sort(function (a, b) {
+            return b.score - a.score;
         })
 
         return r;
-        
+
     }
 
-    public static lookupMode(mode:number):string{
-        if (mode==0) return "All";
-        if (mode==2) return "Story";
-        if (mode==3) return "Strike";
-        if (mode==5) return "All PvP";
-        if (mode==6) return "Patrol";
-        if (mode==7) return "All PvE";
-        if (mode==10) return "Control";
-        if (mode==12) return "Team";
-        if (mode==16) return "Nightfall";
-        if (mode==17) return "Heroic";
-        if (mode==18) return "Strikes";
-        if (mode==37) return "Survival";
-        if (mode==38) return "Countdown";
-        if (mode==40) return "Social";
+    public static lookupMode(mode: number): string {
+        if (mode == 0) return "All";
+        if (mode == 2) return "Story";
+        if (mode == 3) return "Strike";
+        if (mode == 5) return "All PvP";
+        if (mode == 6) return "Patrol";
+        if (mode == 7) return "All PvE";
+        if (mode == 10) return "Control";
+        if (mode == 12) return "Team";
+        if (mode == 16) return "Nightfall";
+        if (mode == 17) return "Heroic";
+        if (mode == 18) return "Strikes";
+        if (mode == 37) return "Survival";
+        if (mode == 38) return "Countdown";
+        if (mode == 40) return "Social";
         return "unknown";
     }
 
 
 }
 
-export class PGCREntry{
-    standing:number;
-    score:number;
+export class PGCREntry {
+    standing: number;
+    score: number;
     values: any;
     user: UserInfo;
 
-    characterId:string;
+    characterId: string;
     characterClass: string;
     characterLevel: number;
     lightLevel: number;
 
-    kills: number; 
+    kills: number;
     deaths: number;
     assists: number;
     fireteamId: number;
@@ -262,6 +383,15 @@ export class PGCR {
     entries: PGCREntry[];
     level: number;
     //TODO teams    
+}
+
+
+export class CurrentActivity {
+    dateActivityStarted: string;
+    name: string;
+    type: string;
+    activityLevel: number;
+    activityLightLevel: number;
 }
 
 export class Activity {
@@ -296,12 +426,21 @@ export class Activity {
 
 export class Player {
     profile: Profile;
+    currentActivity: CurrentActivity;
     characters: Character[];
+    milestoneList: MileStoneName[];
 
-    constructor(profile: Profile, characters: Character[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[]) {
         this.profile = profile;
         this.characters = characters;
+        this.currentActivity = currentActivity;
+        this.milestoneList = milestoneList;
     }
+}
+
+export interface MileStoneName{
+    key: string;
+    name: string;
 }
 
 export class Character {
@@ -322,11 +461,17 @@ export class Character {
     gender: string;
     className: string;
 
-
     levelProgression: LevelProgression;
 
+    currentActivity: CurrentActivity;
+    milestones: { [key: string]: Milestone };
+    progression: any;
+}
 
-
+class Milestone{
+    hash: string;
+    name: string;
+    complete: boolean;
 }
 
 interface _Character {
@@ -381,5 +526,29 @@ export interface UserInfo {
     platformName: string;
     displayName: string;
     icon: string;
+}
+
+export interface _Milestone {
+    milestoneHash: number;
+    availableQuests: _AvailableQuest[];
+    startDate: string;
+    endDate: string;
+}
+
+interface _AvailableQuest {
+    questItemHash: number;
+    status: _QuestStatus;
+}
+
+
+interface _QuestStatus {
+    questHash: number;
+    stepHash: number;
+    stepObjectives: any[];
+    tracked: boolean;
+    itemInstanceId: string;
+    completed: boolean;
+    redeemed: boolean;
+    started: boolean;
 }
 

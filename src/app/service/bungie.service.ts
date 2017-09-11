@@ -279,17 +279,16 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" + p.membershipId + "/?components=Profiles,Characters,CharacterProgressions,CharacterEquipment,CharacterActivities", opt)
+            return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" + 
+            p.membershipId + 
+            //CharacterEquipment
+            "/?components=Profiles,Characters,CharacterProgressions,,CharacterActivities", opt)
                 .map(
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
                     console.dir(j);
-
                     return self.parseService.parsePlayer(resp);
-
-
-
                 }).toPromise().catch(
                 function (err) {
                     console.log('Error Searching for player');
@@ -309,8 +308,11 @@ export class BungieService implements OnDestroy {
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
-                    self.notificationService.success("Found " + resp.length + " players");
-                    if (resp.length == 0) return null;
+                    //self.notificationService.success("Found " + resp.length + " players");
+                    if (resp.length == 0){ 
+                        self.notificationService.fail("No player found for "+gt+". Typo? Try another platform?");
+                        return null;
+                    }
                     if (resp.length > 1) {
                         self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
                     }
@@ -340,7 +342,7 @@ export class BungieService implements OnDestroy {
                     resp.destinyMemberships.forEach(u => {
                         aUser.push(self.parseService.parseUserInfo(u));
                     });
-                    self.notificationService.success("Found " + aUser.length + " players");
+                    //self.notificationService.success("Found " + aUser.length + " players");
                     return aUser;
                 }).toPromise().catch(
                 function (err) {

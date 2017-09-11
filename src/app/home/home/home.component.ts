@@ -65,7 +65,13 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
       return;
     }
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
+    if (this.selectedPlatform.type == this.route.snapshot.params.platform &&
+      this.gamerTag == this.route.snapshot.params.gt){
+        this.performSearch();
+      }
+      else{
+        this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
+      }
   }
   
 
@@ -77,7 +83,7 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
       return;
     }
 
-    this.player = null;
+    //this.player = null;
     this.loading = true;
     this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag)
       .then((p: SearchResult) => {
@@ -90,6 +96,7 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
         }
         else {
           this.loading = false;
+          this.player = null;
         }
       })
       .catch((x) => {
