@@ -31,14 +31,18 @@ export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy 
       const code: string = queryParams['code'];
       const state: string = queryParams['state'];
 
-      this.msg = code+" "+state;
+      this.msg = "Authenticating to Bungie";
       if (code!=null){
         this.authService.fetchTokenFromCode(code, state).then((success:boolean)=>{
+          
+          this.msg = "Success: "+success;
           if (success){
             this.router.navigate(["/home"]);
           }
           console.log("Success fetching token: "+success);
 
+        }).catch(x=>{
+          this.msg = JSON.stringify(x);
         });
       }
     });

@@ -1,0 +1,128 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <div class="body-text" [ngClass]="animateOnRouteEnter">
+        <br/>
+        <div class="centerMe">
+          <md-select style="min-width: 235px" class="searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+            <md-option *ngFor="let p of platforms" [value]="p">
+              {{ p.name }}
+            </md-option>
+          </md-select>
+          &emsp;
+          <md-form-field class="searchField" class="gt">
+            <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
+          </md-form-field>
+          &emsp;
+          <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
+        </div>
+
+        <h4 *ngIf="player!=null">{{player.profile.userInfo.displayName}} -
+          <span *ngIf="player.currentActivity==null">
+              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago 
+            </span>
+          <span *ngIf="player.currentActivity!=null">
+                <mark>Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | 
+                Started {{today| amDifference:player.currentActivity.dateActivityStarted| amDuration:'ms'}} ago</mark>
+            </span>
+        </h4>
+
+
+        <md-tab-group (selectChange)='changeTab($event)'>
+          <md-tab label="Chars">
+
+            <ng-container *ngIf="player!=null">
+
+              <md-card class="char-card" *ngFor="let char of player.characters">
+                <md-card-header>
+                  <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+                  <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
+                    <span style="white-space:nowrap;">Light {{char.light}}&emsp;
+                    <button md-mini-fab mdTooltip="Activity History" (click)="history(char)">
+                      <md-icon>history</md-icon>
+                    </button>
+                  </span>
+                  </md-card-title>
+                  <md-card-subtitle>Time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins)
+                  </md-card-subtitle>
+                </md-card-header>
+
+                <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
+                  <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
+                  </md-progress-bar>
+                </div>
+              </md-card>
+            </ng-container>
+
+          </md-tab>
+          <md-tab label="Checklist">
+            <ng-container *ngIf="player!=null">
+
+              <div *ngIf="player.milestoneList.length==0">
+                <br>
+                <h1>Nothing here? Try signing in. </h1>
+                <h4>There's a Bungie API bug blocking access otherwise.<br><br> Sorry about that.</h4>
+              </div>
+
+              <table class="responsive-table" *ngIf="player.milestoneList.length>0">
+                <thead>
+                  <tr>
+                    <th scope="col">Actvity</th>
+                    <th scope="col" *ngFor="let char of player.characters">
+                      {{char.className}} - {{char.light}}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let mileStoneName of player.milestoneList">
+                    <td class="lead" [attr.data-label]="Activity">{{mileStoneName.name}}</td>
+                    <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                      <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                          <i class="accent-text mat-option.mat-selected fa fa-check"></i>
+                        </ng-container>
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false">
+                          <i class="fa fa-times"></i>
+                        </ng-container>
+                      </ng-container>
+                      <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                        N/A
+                      </ng-container>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </ng-container>
+
+          </md-tab>
+          <md-tab label="Progress">
+            <ng-container *ngIf="player!=null">
+              <br>
+              <h1>Coming soon!</h1>
+            </ng-container>
+
+          </md-tab>
+        </md-tab-group>
+
+      </div>
+
+
+
+
+
+
+
+
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
+  </div>
+</div>

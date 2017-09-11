@@ -167,9 +167,10 @@ export class AuthService {
             function (err) {
                 let errMsg = AuthService.parseError(err);
                 self.notificationService.fail(err);
-                console.log('Error getting Auth token: ' + errMsg);
-                console.dir(err);
-                return false;
+                throw(errMsg);
+                // console.log('Error getting Auth token: ' + errMsg);
+                // console.dir(err);
+                // return false;
             });
     }
 

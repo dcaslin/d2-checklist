@@ -14,9 +14,8 @@
    float: right;
  }
 
-.notes{
-  text-align: left; 
-  max-width: 500px;
+.char-card{
+  margin-bottom: 10px;
 }
 
 .body-text {
@@ -26,6 +25,10 @@
   letter-spacing: .01px;
   overflow-wrap: break-word;
   z-index: 1;
+}
+
+.player-header-image {
+  background-size: cover;
 }
 
 .searchField{
@@ -49,4 +52,9 @@
 
 .mat-chip{
   margin-bottom: 5px;
+}
+
+.notes{
+  text-align: left; 
+  max-width: 500px;
 }

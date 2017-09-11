@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home';
+import { PlayerComponent } from './player';
 import { AuthComponent } from './auth';
 import { HistoryComponent } from './history';
 import { PGCRComponent } from './pgcr';
@@ -36,7 +37,11 @@ const routes: Routes = [
   },
   {
     path: ':platform/:gt',
-    component: HomeComponent
+    component: PlayerComponent
+  },
+  {
+    path: ':platform/:gt/:tab',
+    component: PlayerComponent
   },
   {
     path: 'history/:platform/:memberId/:characterId',
