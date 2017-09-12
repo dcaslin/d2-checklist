@@ -142,31 +142,29 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.currentGt = newGt;
       this.currentPlatform = newPlatform;
 
+      let redirPlat: number = null;
+
       this.platforms.forEach((p: Platform) => {
         if ((p.type + "") == newPlatform) {
           this.selectedPlatform = p;
         }
-        else if (p.desc.toLowerCase() == newPlatform.toLowerCase()) {
-          this.selectedPlatform = p;
+        else if (p.name.toLowerCase() == newPlatform.toLowerCase()) {
+          redirPlat = p.type;
         }
       });
 
       //bad request, send them home
-      if (this.selectedPlatform == null) {
+      if (this.selectedPlatform == null && redirPlat == null) {
         this.router.navigate(["home"]);
         return;
       }
-
-
       this.gamerTag = newGt;
 
-
       const tab: string = params['tab'];
-      if (tab != null) {
-        this.selectedTab = tab.trim().toLowerCase();
-      }
-      else {
-        this.selectedTab = null;
+      this.selectedTab = tab.trim().toLowerCase();
+
+      if (redirPlat!=null){
+        this.router.navigate([redirPlat, newGt, tab]);
       }
 
       if (searchAgain==true) {

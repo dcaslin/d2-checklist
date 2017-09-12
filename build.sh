@@ -1,1 +1,1 @@
-ng build --prod
+ng build --prod --output-path dist-prod
