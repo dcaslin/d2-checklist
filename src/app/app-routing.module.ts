@@ -37,7 +37,7 @@ const routes: Routes = [
   },
   {
     path: ':platform/:gt',
-    component: PlayerComponent
+    redirectTo: ':platform/:gt/chars'
   },
   {
     path: ':platform/:gt/:tab',
