@@ -95,6 +95,9 @@ export class BungieService implements OnDestroy {
                             selectedUser.selectedUser = memberships[0];
                         }
                     }
+                    else{
+                        this.authService.signOut();
+                    }
                     this.selectedUser = selectedUser;
                     this.emitUsers();
                 });
