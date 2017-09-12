@@ -1,7 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-# /dist we want this for deploy
+/dist
 /tmp
 /out-tsc
 
