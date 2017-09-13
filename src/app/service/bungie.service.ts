@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMember } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -35,36 +35,38 @@ export class BungieService implements OnDestroy {
         this.authService.authFeed.takeUntil(this.unsubscribe$).subscribe((ai: AuthInfo) => {
             this.authInfo = ai;
             if (ai != null) {
-                this.getBungieMembershipsById(ai.memberId).then((memberships: UserInfo[]) => {
-                    let selectedUser: SelectedUser = new SelectedUser();
-                    selectedUser.availUsers = memberships;
-
-                    if (memberships != null && memberships.length > 0) {
-                        //TODO testing
-                        // let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
-                        // fake.membershipType = 2;
-                        // fake.platformName = "PSN";
-                        // memberships.push(fake);
-
-                        let platform: number = 2;
-                        let sPlatform: string = localStorage.getItem("preferredPlatform");
-                        if (sPlatform != null) {
-                            platform = parseInt(sPlatform);
-                        }
-                        memberships.forEach(m => {
-                            if (m.membershipType == platform) {
-                                selectedUser.selectedUser = m;
-                            }
-                        });
-                        if (this.selectedUser == null) {
-                            selectedUser.selectedUser = memberships[0];
-                        }
-                    }
-                    else{
+                this.getBungieMembershipsById(ai.memberId).then((membership: BungieMembership) => {
+                    if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length == 0) {
                         this.authService.signOut();
+                        return;
+                    }
+                    let selectedUser: SelectedUser = new SelectedUser();
+                    selectedUser.membership = membership;
+
+                    //TODO testing
+                    // let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
+                    // fake.membershipType = 2;
+                    // fake.platformName = "PSN";
+                    // memberships.push(fake);
+
+                    let platform: number = 2;
+                    let sPlatform: string = localStorage.getItem("preferredPlatform");
+                    if (sPlatform != null) {
+                        platform = parseInt(sPlatform);
+                    }
+                    membership.destinyMemberships.forEach(m => {
+                        if (m.membershipType == platform) {
+                            selectedUser.selectedUser = m;
+                        }
+                    });
+                    if (this.selectedUser == null) {
+                        selectedUser.selectedUser = membership.destinyMemberships[0];
                     }
                     this.selectedUser = selectedUser;
                     this.emitUsers();
+
+                    //after the fact search for clan
+                    this.setClanId(membership);
                 });
             }
             else {
@@ -75,20 +77,50 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public searchBungiePlayer(name: string, preferredPlatform: number):Promise<BungieMember>{
+    // public searchBungiePlayer(name: string, preferredPlatform: number):Promise<BungieMember[]>{
+    //     const self: BungieService = this;
+    //     return this.buildReqOptions().then(opt => {
+    //         return this.http.get(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
+    //             .map(
+    //             function (res) {
+    //                 const j: any = res.json();
+    //                 const resp = BungieService.parseBungieResponse(j);
+    //                 return self.parseService.parseBungieMembers(resp, preferredPlatform);
+    //             }).toPromise().catch(
+    //             function (err) {
+    //                 console.log('Error Searching for player');
+    //                 self.handleError(err);
+    //                 return [];
+    //             });
+    //     });
+    // }
+
+    //TODO get clan members https://www.bungie.net/Platform/GroupV2/1985678/Members/?currentPage=1&memberType=0
+
+
+    private setClanId(membership: BungieMembership) {
+        //https://www.bungie.net/Platform/GroupV2/User/254/2283837/0/1/
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'User/SearchUsers/q=' + encodeURIComponent(name), opt)
-                .map(
+            return this.http.get(API_ROOT + 'GroupV2/User/254/' + membership.bungieId + "/0/1/",
+                opt).map(
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
-                    return this.parseService.parseBungieMembers(resp, preferredPlatform);
+                    console.log("Clan!");
+                    console.dir(resp);
+                    resp.results.forEach(r=>{
+                        if (r.group!=null && r.group.groupType==1){
+                            membership.clanId = r.group.groupId;
+                        }
+                    });
+                    self.emitUsers();
+                    return;
                 }).toPromise().catch(
                 function (err) {
-                    console.log('Error Searching for player');
-                    self.handleError(err);
-                    return [];
+                    console.log("Error finding clan id");
+                    console.dir(err);
+                    return;
                 });
         });
     }
@@ -256,10 +288,10 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" + 
-            p.membershipId + 
-            //CharacterEquipment
-            "/?components=Profiles,Characters,CharacterProgressions,,CharacterActivities", opt)
+            return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" +
+                p.membershipId +
+                //CharacterEquipment
+                "/?components=Profiles,Characters,CharacterProgressions,,CharacterActivities", opt)
                 .map(
                 function (res) {
                     const j: any = res.json();
@@ -286,8 +318,8 @@ export class BungieService implements OnDestroy {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
                     //self.notificationService.success("Found " + resp.length + " players");
-                    if (resp.length == 0){ 
-                        self.notificationService.fail("No player found for "+gt+". Typo? Try another platform?");
+                    if (resp.length == 0) {
+                        self.notificationService.fail("No player found for " + gt + ". Typo? Try another platform?");
                         return null;
                     }
                     if (resp.length > 1) {
@@ -305,7 +337,7 @@ export class BungieService implements OnDestroy {
 
     }
 
-    private getBungieMembershipsById(bungieId: string): Promise<UserInfo[]> {
+    private getBungieMembershipsById(bungieId: string): Promise<BungieMembership> {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
@@ -315,17 +347,12 @@ export class BungieService implements OnDestroy {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
 
-                    let aUser: UserInfo[] = [];
-                    resp.destinyMemberships.forEach(u => {
-                        aUser.push(self.parseService.parseUserInfo(u));
-                    });
-                    //self.notificationService.success("Found " + aUser.length + " players");
-                    return aUser;
+                    return self.parseService.parseBungieMembership(resp);
                 }).toPromise().catch(
                 function (err) {
                     console.log('Error looking up memberships');
                     self.handleError(err);
-                    return [];
+                    return null;
                 });
         });
 

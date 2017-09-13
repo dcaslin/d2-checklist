@@ -3,6 +3,12 @@
   <md-sidenav #sidenav mode="push">
     <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
     <md-nav-list>
+      <!-- <a md-list-item (click)="sidenav.close();myClan()"  *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+            My Clan
+          </a> -->
+      <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
+            My Info
+          </a>
       <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
         {{item.label}}
       </a>
@@ -22,8 +28,15 @@
         [src]="logo"/> D2 Checklist</span>
 
       <span class="hidden-sm-down">
-        <button md-button class="nav-button" *ngFor="let item of navigation"
-            [routerLink]="[item.link]" routerLinkActive="active">
+          <button md-button class="nav-button" 
+          mdTooltip="Coming soon!" tipPosition="before"
+          (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+              <span>My Clan</span>
+      </button>
+      <button md-button class="nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
+          <span>My Info</span>
+        </button>
+      <button md-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
           {{item.label}}
         </button>
       </span>
@@ -35,21 +48,14 @@
 
       <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" md-button [mdTooltip]="this.signedOnUser.selectedUser.displayName"
         mdTooltipPosition="before" [mdMenuTriggerFor]="toolbarUserMenu">
-        <md-icon *ngIf="this.signedOnUser.availUsers.length==1">person</md-icon>
-        <md-icon *ngIf="this.signedOnUser.availUsers.length>1">supervisor_account</md-icon>
+        <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length==1">person</md-icon>
+        <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length>1">supervisor_account</md-icon>
         <span class="hidden-sm-down">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
         
       </button>
       <md-menu #toolbarUserMenu="mdMenu">
-
-        <button md-menu-item (click)="myProfile()" *ngIf="this.signedOnUser!=null">
-              <md-icon>bookmark_border</md-icon>
-              <span>My Info</span>
-            </button>
-
-        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.availUsers.length>1">
-
-          <button md-menu-item *ngFor="let avail of this.signedOnUser.availUsers" [disabled]="avail == this.signedOnUser.selectedUser"
+        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
+          <button md-menu-item *ngFor="let avail of this.signedOnUser.membership.destinyMemberships" [disabled]="avail == this.signedOnUser.selectedUser"
             (click)="selectUser(avail)">
             <md-icon>account_circle</md-icon>
             <span>{{avail.platformName}}</span>
