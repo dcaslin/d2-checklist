@@ -4,7 +4,7 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Milestone, Activity,
     Profile, Player, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform
+    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo
 } from './model';
 @Injectable()
 export class ParseService {
@@ -62,9 +62,8 @@ export class ParseService {
             }
         }
     }
-
-    private parseProgression(p: _Progression): Progression {
-        let desc = this.destinyCacheService.cache.Faction[p.factionHash];
+    // factionHash
+    private parseProgression(p: _Progression, desc: any): Progression {
         if (desc != null) {
             console.dir(desc);
 
@@ -72,6 +71,7 @@ export class ParseService {
             prog.icon = desc.displayProperties.icon;
             prog.hash = p.progressionHash;
             prog.name = desc.displayProperties.name;
+            prog.desc = desc.displayProperties.description;
             prog.currentProgress = p.currentProgress;
             prog.dailyLimit = p.dailyLimit;
             prog.dailyProgress = p.dailyProgress;
@@ -129,7 +129,7 @@ export class ParseService {
         if (_prog.factions != null) {
             Object.keys(_prog.factions).forEach((key) => {
                 let p: _Progression = _prog.factions[key];
-                let prog: Progression = this.parseProgression(p);
+                let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Faction[p.factionHash]);
                 if (prog != null) {
                     factions.push(prog);
                 }
@@ -295,6 +295,46 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList);
     }
 
+    public parseClanInfo(j: any): ClanInfo {
+
+        let c: ClanInfo = new ClanInfo();
+        c.groupId = j.groupId;
+        c.name = j.name;
+        c.creationDate = j.creationDate;
+        c.memberCount = j.memberCount;
+        c.avatarPath = j.avatarPath;
+        c.bannerPath = j.bannerPath;
+        let progs: Progression[] = [];
+        if (j.clanInfo != null && j.clanInfo.d2ClanProgressions != null) {
+            Object.keys(j.clanInfo.d2ClanProgressions).forEach((key) => {
+                let p: _Progression = j.clanInfo.d2ClanProgressions[key];
+                let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
+                if (prog != null) {
+                    progs.push(prog);
+                }
+
+            });
+
+        }
+        c.progressions = progs;
+        return c;
+    }
+
+    public parseClanMembers(members: any[]): BungieGroupMember[] {
+        if (members == null) return [];
+        let returnMe: BungieGroupMember[] = [];
+        members.forEach(x => {
+            let b: BungieGroupMember = new BungieGroupMember();
+            b.groupId = x.groupId;
+            b.isOnline = x.isOnline;
+            b.memberType = x.memberType;
+            b.destinyUserInfo = this.parseUserInfo(x.destinyUserInfo);
+            b.bungieNetUserInfo = x.bungieNetUserInfo;
+            returnMe.push(b);
+        });
+        return returnMe;
+    }
+
     private parsePGCREntry(e: any): PGCREntry {
         let r: PGCREntry = new PGCREntry();
         r.characterId = e.characterId;
@@ -438,8 +478,8 @@ export class ParseService {
 
                 bnet = new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM);
             }
-            if (xbl == null && psn ==null && bnet==null ) return;
-            
+            if (xbl == null && psn == null && bnet == null) return;
+
             returnMe.push(new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet));
 
         });

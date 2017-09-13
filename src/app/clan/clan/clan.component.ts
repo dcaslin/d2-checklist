@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player } from "../../service/model";
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo } from "../../service/model";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
@@ -17,7 +17,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
   
   id: string;
-
+  info: ClanInfo;
+  members: BungieGroupMember[] = [];
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router) {
@@ -25,6 +26,24 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
   
   private load(){
+    this.loading = true;
+
+    this.bungieService.getClanInfo(this.id).then(i=>{
+      this.info = i;
+      if (i!=null){
+        this.bungieService.getClanMembers(this.id).then(x=>{
+          this.members = x;
+          console.dir(x);
+          this.loading = false;
+        });
+      }
+      else{
+        this.loading = false;
+      }
+        
+    }).catch((x) => {
+      this.loading = false;
+    });
   }
 
   private sub: any;

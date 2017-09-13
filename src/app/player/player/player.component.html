@@ -54,7 +54,7 @@
                   <div md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
                   <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
                     <span style="white-space:nowrap;">Light {{char.light}}&emsp;
-                    <button md-mini-fab mdTooltip="Activity History" (click)="history(char)">
+                    <button md-mini-fab title="Activity History" (click)="history(char)">
                       <md-icon>history</md-icon>
                     </button>
                   </span>

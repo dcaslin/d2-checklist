@@ -24,10 +24,27 @@ export class SelectedUser {
     membership: BungieMembership;
 }
 
-export class BungieMembership{
+export class BungieMembership {
     bungieId: string;
     clanId: string;
     destinyMemberships: UserInfo[];
+}
+
+export class BungieGroupMember {
+    memberType: number;
+    isOnline: boolean;
+    groupId: string;
+    destinyUserInfo: UserInfo;
+    bungieNetUserInfo: BungieNetUserInfo;
+    joinDate: string;
+}
+
+export interface BungieNetUserInfo {
+    supplementalDisplayName: string;
+    iconPath: string;
+    membershipType: number;
+    membershipId: string;
+    displayName: string;
 }
 
 export interface UserInfo {
@@ -61,7 +78,7 @@ export class Player {
     }
 }
 
-export interface MileStoneName{
+export interface MileStoneName {
     key: string;
     name: string;
     desc: string;
@@ -108,7 +125,7 @@ export interface LevelProgression {
 }
 
 
-export class Milestone{
+export class Milestone {
     hash: string;
     name: string;
     description: string;
@@ -197,15 +214,15 @@ export class Platform {
 }
 
 
-export class BungieMember{
+export class BungieMember {
     name: string;
     id: string;
     noClan: boolean = false;
     xbl: BungieMemberPlatform;
     psn: BungieMemberPlatform;
     bnet: BungieMemberPlatform;
-    
-    constructor(name: string, id: string, xbl: BungieMemberPlatform, psn: BungieMemberPlatform, bnet: BungieMemberPlatform){
+
+    constructor(name: string, id: string, xbl: BungieMemberPlatform, psn: BungieMemberPlatform, bnet: BungieMemberPlatform) {
         this.id = id;
         this.name = name;
         this.xbl = xbl;
@@ -214,21 +231,32 @@ export class BungieMember{
     }
 }
 
-export class BungieMemberPlatform{
+export class BungieMemberPlatform {
     name: string;
     platform: Platform;
     defunct: boolean = false;
 
-    constructor(name: string, platform: Platform){
+    constructor(name: string, platform: Platform) {
         this.name = name;
         this.platform = platform;
     }
 }
 
+export class ClanInfo{
+    
+    groupId: string;
+    name: string;
+    creationDate: string;
+    memberCount: number;
+    avatarPath: string;
+    bannerPath: string;
+    progressions: Progression[];
+}
 
-export class Progression{
+export class Progression {
     icon: string;
     name: string;
+    desc: string;
     hash: number;
     progressionHash: number;
     level: number;
@@ -246,21 +274,20 @@ export class Progression{
 }
 
 
-export class Const{
-    
-        public static XBL_PLATFORM = new Platform(1, "XBL", "Xbox");
-        public static PSN_PLATFORM = new Platform(2, "PSN", "Playstation");
-        public static BNET_PLATFORM = new Platform(4, "BNET", "Battle.net");
-    
-        public static PLATFORMS_ARRAY = [
-            Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM
-        ];
-    
-        public static PLATFORMS_DICT = {
-            "1": Const.XBL_PLATFORM,
-            "2": Const.PSN_PLATFORM,
-            "4": Const.BNET_PLATFORM
-        }
-    
+export class Const {
+
+    public static XBL_PLATFORM = new Platform(1, "XBL", "Xbox");
+    public static PSN_PLATFORM = new Platform(2, "PSN", "Playstation");
+    public static BNET_PLATFORM = new Platform(4, "BNET", "Battle.net");
+
+    public static PLATFORMS_ARRAY = [
+        Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM
+    ];
+
+    public static PLATFORMS_DICT = {
+        "1": Const.XBL_PLATFORM,
+        "2": Const.PSN_PLATFORM,
+        "4": Const.BNET_PLATFORM
     }
-    
+
+}
