@@ -9,6 +9,7 @@ import { PGCRComponent } from './pgcr';
 import { AboutComponent } from './about';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
+import { ClanComponent } from './clan';
 
 const routes: Routes = [
   {
@@ -19,25 +20,29 @@ const routes: Routes = [
   , {
     path: 'home',
     component: HomeComponent
-  }, 
+  },
   {
     path: 'auth',
     component: AuthComponent
   },
-  
+
   {
     path: 'settings',
     component: SettingsComponent
   }, {
     path: 'about',
     component: AboutComponent
-  },{
+  }, {
     path: 'search',
     component: BungieSearchComponent
   }
-  ,{
+  , {
     path: 'search/:name',
     component: BungieSearchComponent
+  }
+  , {
+    path: 'clan/:id',
+    component: ClanComponent
   },
   {
     path: 'pgcr/:instanceId',

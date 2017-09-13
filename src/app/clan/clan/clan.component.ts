@@ -4,47 +4,36 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player } from "../../service/model";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
 @Component({
-  selector: 'pgcr-history',
-  templateUrl: './pgcr.component.html',
-  styleUrls: ['./pgcr.component.scss']
+  selector: 'clan-history',
+  templateUrl: './clan.component.html',
+  styleUrls: ['./clan.component.scss']
 })
-export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
+export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
+  
+  id: string;
 
-  instanceId: string;
-  data: any;
 
-  constructor(storageService: StorageService, private bungieService: BungieService, 
+  constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
   }
-
-  private loadPlayer(platform, gt){
-
-    this.router.navigate([platform, gt]);
-    //this.router.navigate
-  }
-
-  private load() {
-    console.log("Load");
-    this.loading = true;
-    this.bungieService.getPGCR(this.instanceId).then((res) => {
-      this.data = res;
-      this.loading = false;
-    }).catch((x) => {
-      this.loading = false;
-    });
+  
+  private load(){
   }
 
   private sub: any;
   ngOnInit() {
     this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
-      this.instanceId = params['instanceId'];
-      this.load();
+      this.id = params['id'];
+      if (this.id!= null) {
+        this.load();
+      }
     });
   }
 }

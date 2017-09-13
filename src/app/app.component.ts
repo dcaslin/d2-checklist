@@ -103,10 +103,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   myClan() {
-    // if (this.signedOnUser != null) {
-    //   console.log(this.signedOnUser.membership.clanId);
-    //   this.router.navigate(["clan", this.signedOnUser.membership.clanId]);
-    // }
+    if (this.signedOnUser != null) {
+      console.log(this.signedOnUser.membership.clanId);
+      this.router.navigate(["clan", this.signedOnUser.membership.clanId]);
+    }
   }
 
   myProfile() {
