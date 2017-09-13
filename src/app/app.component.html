@@ -3,9 +3,9 @@
   <md-sidenav #sidenav mode="push">
     <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
     <md-nav-list>
-      <!-- <a md-list-item (click)="sidenav.close();myClan()"  *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+      <a md-list-item (click)="sidenav.close();myClan()"  *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
             My Clan
-          </a> -->
+          </a>
       <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
             My Info
           </a>
@@ -29,7 +29,6 @@
 
       <span class="hidden-sm-down">
           <button md-button class="nav-button" 
-          mdTooltip="Coming soon!" tipPosition="before"
           (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
               <span>My Clan</span>
       </button>

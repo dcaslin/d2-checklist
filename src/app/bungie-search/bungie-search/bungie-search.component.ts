@@ -19,8 +19,6 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   name: string;
   accounts: BungieMember[] = null;
 
-  loading: boolean = false;
-
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
@@ -54,7 +52,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
         member.noClan = true;
       }
       else{
-        alert("Clan: "+x);
+        this.router.navigate(["clan", x]);
       }
 
     });
