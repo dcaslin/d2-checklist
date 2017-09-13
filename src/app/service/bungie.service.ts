@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -77,7 +77,7 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public searchBungieUsers(name: string):Promise<BungieMember[]>{
+    public searchBungieUsers(name: string): Promise<BungieMember[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
             return this.http.get(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
@@ -97,7 +97,45 @@ export class BungieService implements OnDestroy {
 
     //TODO get clan members https://www.bungie.net/Platform/GroupV2/1985678/Members/?currentPage=1&memberType=0
 
-    public getClanId(bungieId: string): Promise<string>{
+
+    public getClanInfo(clanId: string): Promise<any>{
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'GroupV2/' + clanId + "/",
+                opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return self.parseService.parseClanInfo(resp.detail);
+                }).toPromise().catch(
+                function (err) {
+                    console.log("Error finding clan members");
+                    console.dir(err);
+                    return [];
+                });
+        });
+    }
+
+    //clans never > 100
+    public getClanMembers(clanId: string): Promise<BungieGroupMember[]> {
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'GroupV2/' + clanId + "/Members/?currentPage=1&memberType=0",
+                opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return self.parseService.parseClanMembers(resp.results);
+                }).toPromise().catch(
+                function (err) {
+                    console.log("Error finding clan members");
+                    console.dir(err);
+                    return [];
+                });
+        });
+    }
+
+    public getClanId(bungieId: string): Promise<string> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
             return this.http.get(API_ROOT + 'GroupV2/User/254/' + bungieId + "/0/1/",
@@ -106,8 +144,8 @@ export class BungieService implements OnDestroy {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
                     let clanId = null;
-                    resp.results.forEach(r=>{
-                        if (r.group!=null && r.group.groupType==1){
+                    resp.results.forEach(r => {
+                        if (r.group != null && r.group.groupType == 1) {
                             clanId = r.group.groupId;
                         }
                     });
@@ -124,8 +162,8 @@ export class BungieService implements OnDestroy {
 
     private setClanId(membership: BungieMembership) {
         const self: BungieService = this;
-        this.getClanId(membership.bungieId).then(c=>{
-            if (c!=null){
+        this.getClanId(membership.bungieId).then(c => {
+            if (c != null) {
                 membership.clanId = c;
                 self.emitUsers();
 

@@ -6,3 +6,23 @@
   flex-direction: column;
   flex: 1 0 auto;
 }
+
+
+.clan-card{
+  margin-bottom: 10px;
+}
+
+
+.clan-header-image {
+  background-size: cover;
+}
+
+.body {
+  max-width: 700px;
+  margin: 10px auto 0 auto;
+  padding-bottom: 10px;
+  font-size: 0.9em;
+  letter-spacing: .01px;
+  overflow-wrap: break-word;
+  z-index: 1;
+}

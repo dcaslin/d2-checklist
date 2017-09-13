@@ -18,6 +18,7 @@ import {
   MdTooltipModule,
   MdSnackBarModule,
   MdProgressBarModule,
+  MdExpansionModule,
 
   MdSortModule,
   MdPaginatorModule,
@@ -60,6 +61,7 @@ import {
     MdTooltipModule,
     MdSnackBarModule,
     MdProgressBarModule,
+    MdExpansionModule,
 
     MdSortModule,
     MdPaginatorModule,
@@ -89,6 +91,7 @@ import {
     MdIconModule,
     MdTooltipModule,
     MdProgressBarModule,
+    MdExpansionModule,
 
     MdSortModule,
     MdPaginatorModule,

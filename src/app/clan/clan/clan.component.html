@@ -1,10 +1,60 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-        <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
-      <h1>Clan</h1>
-      {{id}}
-      
+      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <div class="body">
+        <h1>Clan</h1>
+        {{id}}
+
+
+        <ng-container *ngIf="info!=null">
+          <section class="mat-typography">
+            <h1>{{info.name}}</h1>
+            <div class="caption">Created: {{info.creationDate|date:'short'}}</div>
+            <div class="caption">{{info.memberCount}} members</div>
+          </section>
+
+
+          <ng-container *ngIf="info.progressions!=null">
+            <md-expansion-panel>
+              <md-expansion-panel-header>
+                <md-panel-title>
+                  Clan Progress
+                </md-panel-title>
+                <md-panel-description>
+                  Not fully active yet at Bungie
+                </md-panel-description>
+              </md-expansion-panel-header>
+              <br>
+              <md-card class="clan-card" *ngFor="let faction of info.progressions">
+
+                <md-card-header>
+                  <div *ngIf="faction.icon!=null" md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + faction.icon + ')'"></div>
+                  <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}}</md-card-title>
+                  <md-card-subtitle>{{faction.desc}}
+                  </md-card-subtitle>
+                </md-card-header>
+
+                <div>
+                  <md-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
+                  </md-progress-bar>
+                </div>
+              </md-card>
+
+            </md-expansion-panel>
+          </ng-container>
+
+        </ng-container>
+
+
+
+        <div *ngFor="let member of members">
+          {{member.destinyUserInfo.displayName}} -
+          <ng-container *ngIf="member.bungieNetUserInfo!=null">{{member.bungieNetUserInfo.displayName}}</ng-container>
+        </div>
+
+      </div>
+
     </div>
 
     <div *ngIf="disableads===false" class="adRight">
