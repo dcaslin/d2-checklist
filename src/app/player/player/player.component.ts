@@ -4,8 +4,8 @@ import { MdTabChangeEvent, MdTabGroup } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { SearchResult, BungieService, Platform } from "../../service/bungie.service";
-import { Player, Character } from "../../service/parse.service";
+import { BungieService } from "../../service/bungie.service";
+import { Player, Character, SearchResult, Platform, Const } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
@@ -39,7 +39,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     private notificationService: NotificationService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
-    this.platforms = bungieService.getPlatforms();
+    this.platforms = Const.PLATFORMS_ARRAY;
   }
 
   public history(c: Character) {

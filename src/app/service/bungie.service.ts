@@ -7,47 +7,12 @@ import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
-import { Player, Character, ParseService, UserInfo } from './parse.service';
+import { ParseService } from './parse.service';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMember } from './model';
 
 import { environment } from '../../environments/environment';
 
 const API_ROOT: string = "https://www.bungie.net/Platform/";
-
-export class Platform {
-    name: string;
-    type: number;
-    desc: string;
-
-    constructor(type: number, name: string, desc: string) {
-        this.type = type;
-        this.name = name;
-        this.desc = desc;
-    }
-}
-
-export class ActivityMode {
-    name: string;
-    type: number;
-    desc: string;
-
-    constructor(type: number, name: string, desc: string) {
-        this.type = type;
-        this.name = name;
-        this.desc = desc;
-    }
-}
-
-export interface SearchResult {
-    iconPath: string;
-    membershipType: number;
-    membershipId: string;
-    displayName: string;
-}
-
-export class SelectedUser {
-    selectedUser: UserInfo;
-    availUsers: UserInfo[];
-}
 
 
 @Injectable()
@@ -109,6 +74,25 @@ export class BungieService implements OnDestroy {
         });
     }
 
+
+    public searchBungiePlayer(name: string, preferredPlatform: number):Promise<BungieMember>{
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'User/SearchUsers/q=' + encodeURIComponent(name), opt)
+                .map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return this.parseService.parseBungieMembers(resp, preferredPlatform);
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error Searching for player');
+                    self.handleError(err);
+                    return [];
+                });
+        });
+    }
+
     public selectUser(u: UserInfo) {
         this.selectedUser.selectedUser = u;
         this.emitUsers();
@@ -135,16 +119,6 @@ export class BungieService implements OnDestroy {
             new ActivityMode(38, "Countdown", "Countdown"),
             new ActivityMode(40, "Social", "Social"),
         ];
-
-    }
-
-    public getPlatforms(): Platform[] {
-        return [
-            new Platform(2, "PSN", "Playstation"),
-            new Platform(1, "XBL", "Xbox"),
-            new Platform(4, "BNET", "Battle.net")
-        ];
-
     }
 
     private buildReqOptions(): Promise<RequestOptions> {
