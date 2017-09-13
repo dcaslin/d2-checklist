@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { BungieService, Platform, ActivityMode } from "../../service/bungie.service";
-import { Character } from "../../service/parse.service";
+import { BungieService } from "../../service/bungie.service";
+import { Character, Platform, ActivityMode, Const } from "../../service/model";
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MdPaginator, MdSort } from '@angular/material';
 import { DurationPipe } from 'angular2-moment';
@@ -38,7 +38,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
     super(storageService);
-    this.platforms = bungieService.getPlatforms();
+    this.platforms = Const.PLATFORMS_ARRAY;
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [100, 200, 500, 1000, 2000];
@@ -70,16 +70,9 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
       this.database.setData([]);
       if (platform == null) return;
-      let selPlatform = null;
-      this.platforms.forEach((p: Platform) => {
-        if ((p.type + "") == platform) {
-          selPlatform = p;
-        }
-        else if (p.desc.toLowerCase() == platform.toLowerCase()) {
-          selPlatform = p;
-        }
-      });
 
+      let selPlatform = Const.PLATFORMS_DICT[platform];
+      
       if (selPlatform != null) {
         this.membershipType = selPlatform.type;
         this.membershipId = params['memberId'];

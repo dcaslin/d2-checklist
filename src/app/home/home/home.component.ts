@@ -4,8 +4,7 @@ import { MdTabChangeEvent, MdTabGroup } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { SearchResult, BungieService, Platform } from "../../service/bungie.service";
-import { Player, Character } from "../../service/parse.service";
+import { Const, Platform } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import {ChildComponent} from '../../shared/child.component';
 
@@ -26,16 +25,14 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   gamerTag: string;
   dontSearch: boolean;
 
-  player: Player;
-
   navigation = [
     { link: 'checklist', label: 'Checklist' },
     { link: 'progress', label: 'Progress' }
   ];
 
-  constructor(private bungieService: BungieService, storageService: StorageService, private router: Router) {
+  constructor(storageService: StorageService, private router: Router) {
     super(storageService);
-    this.platforms = bungieService.getPlatforms();
+    this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
 
 
@@ -57,12 +54,7 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   private setPlatform(type: number) {
     //already set
     if (this.selectedPlatform != null && this.selectedPlatform.type === type) return;
-
-    this.platforms.forEach((p: Platform) => {
-      if (p.type === type) {
-        this.selectedPlatform = p;
-      }
-    });
+    this.selectedPlatform = Const.PLATFORMS_DICT[""+type];
   }
 
   public routeSearch(): void{

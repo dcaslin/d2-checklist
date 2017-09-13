@@ -5,14 +5,13 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
-
-
 import { MdSnackBar } from '@angular/material';
 import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
-import { BungieService, SelectedUser } from './service/bungie.service';
+import { BungieService } from './service/bungie.service';
+import { SelectedUser } from './service/model';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 

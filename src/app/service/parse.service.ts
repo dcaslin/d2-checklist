@@ -1,6 +1,9 @@
 
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
+import { Character, CurrentActivity, Progression, Milestone, Activity, 
+    Profile, Player, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression, 
+    BungieMember, BungieMemberPlatform, Const} from './model';
 @Injectable()
 export class ParseService {
 
@@ -402,131 +405,29 @@ export class ParseService {
     }
 
 
-}
-
-export class PGCREntry {
-    standing: number;
-    score: number;
-    values: any;
-    user: UserInfo;
-
-    characterId: string;
-    characterClass: string;
-    characterLevel: number;
-    lightLevel: number;
-
-    kills: number;
-    deaths: number;
-    assists: number;
-    fireteamId: number;
-    fireteam: string;
-
-}
-
-export class PGCR {
-    period: string;
-    //Acitivity Details
-    referenceId: number;
-    instanceId: string;
-    mode: string;
-    name: string; //from referenceId
-    isPrivate: boolean;
-    entries: PGCREntry[];
-    level: number;
-    //TODO teams    
-}
-
-
-export class CurrentActivity {
-    dateActivityStarted: string;
-    name: string;
-    type: string;
-    activityLevel: number;
-    activityLightLevel: number;
-}
-
-export class Activity {
-    period: string;
-    type: string;
-    mode: string;
-    name: string;
-    desc: string;
-    pvType: string;
-    completed: number;
-    timePlayedSeconds: number;
-    playerCount: number;
-    standing: number;
-    kills: number;
-    deaths: number;
-    assists: number;
-    score: number;
-
-    activityLevel: number;
-    activityLightLevel: number;
-    referenceId: number;
-    instanceId: string;
-    activityTypeHashOverride: number;
-    isPrivate: boolean;
-
-
-    constructor() {
-
+    public parseBungieMembers(results: _BungieMember[], preferredPlatform: number): BungieMember[]{
+                if (results==null) return null;
+                let returnMe: BungieMember[] = [];
+                results.forEach(r=>{
+                    if (r.isDeleted==true) return;
+                    let platforms: BungieMemberPlatform[] = [];
+                    if (r.xboxDisplayName!=null){
+                        platforms.push(new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM));
+        
+                    }
+                    if (r.psnDisplayName!=null){
+                        platforms.push(new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM));
+                    }
+                    if (r.blizzardDisplayName!=null){
+                        platforms.push(new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM));                
+                    }
+                    if (platforms.length==0) return;
+                    returnMe.push(new BungieMember(r.displayName, platforms));
+        
+                });
+                return returnMe;
+            }
     }
-}
-
-
-export class Player {
-    profile: Profile;
-    currentActivity: CurrentActivity;
-    characters: Character[];
-    milestoneList: MileStoneName[];
-
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[]) {
-        this.profile = profile;
-        this.characters = characters;
-        this.currentActivity = currentActivity;
-        this.milestoneList = milestoneList;
-    }
-}
-
-export interface MileStoneName {
-    key: string;
-    name: string;
-    desc: string;
-}
-
-export class Character {
-    membershipId: string;
-    membershipType: number;
-    characterId: string;
-    dateLastPlayed: string;
-    minutesPlayedThisSession: string;
-    minutesPlayedTotal: string;
-    light: number;
-    emblemBackgroundPath: string;
-    emblemPath: string;
-
-    baseCharacterLevel: number;
-    percentToNextLevel: number;
-
-    race: string;
-    gender: string;
-    className: string;
-
-    levelProgression: LevelProgression;
-
-    currentActivity: CurrentActivity;
-    milestones: { [key: string]: Milestone };
-    factions: Progression[];
-    progression: any;
-}
-
-class Milestone {
-    hash: string;
-    name: string;
-    description: string;
-    complete: boolean;
-}
 
 interface _Character {
     membershipId: string;
@@ -552,37 +453,7 @@ interface _Character {
     percentToNextLevel: number;
 }
 
-export interface LevelProgression {
-    progressionHash: number;
-    dailyProgress: number;
-    dailyLimit: number;
-    weeklyProgress: number;
-    weeklyLimit: number;
-    currentProgress: number;
-    level: number;
-    levelCap: number;
-    stepIndex: number;
-    progressToNextLevel: number;
-    nextLevelAt: number;
-}
-
-
-interface Profile {
-    userInfo: UserInfo;
-    dateLastPlayed: string;
-    versionsOwned: number;
-    characterIds: string[];
-}
-
-export interface UserInfo {
-    membershipType: number;
-    membershipId: string;
-    platformName: string;
-    displayName: string;
-    icon: string;
-}
-
-export interface _Milestone {
+interface _Milestone {
     milestoneHash: number;
     availableQuests: _AvailableQuest[];
     startDate: string;
@@ -621,21 +492,29 @@ interface _Progression {
     nextLevelAt: number;
 }
 
-class Progression{
-    icon: string;
-    name: string;
-    hash: number;
-    progressionHash: number;
-    level: number;
-    levelCap: number;
-
-    dailyProgress: number;
-    dailyLimit: number;
-    weeklyProgress: number;
-    weeklyLimit: number;
-    currentProgress: number;
-
-    percentToNextLevel: number;
-
-
-}
+    
+interface _BungieMember {
+    membershipId: string;
+    uniqueName: string;
+    displayName: string;
+    profilePicture: number;
+    profileTheme: number;
+    userTitle: number;
+    successMessageFlags: string;
+    isDeleted: boolean;
+    about: string;
+    firstAccess: string;
+    lastUpdate: string;
+    psnDisplayName: string;
+    xboxDisplayName: string;
+    showActivity: boolean;
+    locale: string;
+    localeInheritDefault: boolean;
+    showGroupMessaging: boolean;
+    profilePicturePath: string;
+    profileThemeName: string;
+    userTitleDisplay: string;
+    statusText: string;
+    statusDate: string;
+    blizzardDisplayName: string;
+  }
