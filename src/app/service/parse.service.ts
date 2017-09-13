@@ -4,7 +4,7 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Milestone, Activity,
     Profile, Player, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership
+    Const, BungieMembership, BungieMember, BungieMemberPlatform
 } from './model';
 @Injectable()
 export class ParseService {
@@ -420,28 +420,31 @@ export class ParseService {
     }
 
 
-    // public parseBungieMembers(results: _BungieMember[], preferredPlatform: number): BungieMember[] {
-    //     if (results == null) return null;
-    //     let returnMe: BungieMember[] = [];
-    //     results.forEach(r => {
-    //         if (r.isDeleted == true) return;
-    //         let platforms: BungieMemberPlatform[] = [];
-    //         if (r.xboxDisplayName != null) {
-    //             platforms.push(new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM));
+    public parseBungieMembers(results: _BungieMember[]): BungieMember[] {
+        if (results == null) return null;
+        let returnMe: BungieMember[] = [];
+        results.forEach(r => {
+            if (r.isDeleted == true) return;
+            let xbl: BungieMemberPlatform;
+            let psn: BungieMemberPlatform;
+            let bnet: BungieMemberPlatform;
+            if (r.xboxDisplayName != null) {
+                xbl = new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM);
+            }
+            if (r.psnDisplayName != null) {
+                psn = new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM);
+            }
+            if (r.blizzardDisplayName != null) {
 
-    //         }
-    //         if (r.psnDisplayName != null) {
-    //             platforms.push(new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM));
-    //         }
-    //         if (r.blizzardDisplayName != null) {
-    //             platforms.push(new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM));
-    //         }
-    //         if (platforms.length == 0) return;
-    //         returnMe.push(new BungieMember(r.displayName, platforms));
+                bnet = new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM);
+            }
+            if (xbl == null && psn ==null && bnet==null ) return;
+            
+            returnMe.push(new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet));
 
-    //     });
-    //     return returnMe;
-    // }
+        });
+        return returnMe;
+    }
 }
 
 interface _Character {

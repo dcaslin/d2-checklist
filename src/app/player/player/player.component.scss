@@ -18,6 +18,12 @@
   margin-bottom: 10px;
 }
 
+.button-row {
+  & button{  
+    margin-bottom: 10px;
+  }
+}
+
 .body-text {
   margin: 10px auto 0 auto;
   padding-bottom: 10px;

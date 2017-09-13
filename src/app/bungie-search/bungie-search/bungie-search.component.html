@@ -1,0 +1,74 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+        <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <h1>Search Bungie</h1>
+      <div class="note centerMe"><small>Wild-card search Bungie accounts by name. Note that sometimes these are different than gamertags. 
+        Not all Destiny accounts are active or in clans, so some links will strike themselves out when clicked.</small>
+        </div>
+
+      <div>
+
+        <md-form-field class="searchField">
+          <input mdInput placeholder="Bungie name" [(ngModel)]="name" (keyup.enter)="search()">
+        </md-form-field>
+        &emsp;
+        <button md-mini-fab color="primary searchField" (click)="search()" color="primary"><md-icon>search</md-icon></button>
+      </div>
+
+      <table class="responsive-table" *ngIf="accounts!=null && accounts.length>0">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Xbox</th>
+            <th scope="col">PSN</th>
+            <th scope="col">BNET</th>
+            <th scope="col">Clan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let account of accounts">
+            <td class="lead" data-label="Name">{{account.name}}</td>
+            <td data-label="Xbox">
+              <ng-container *ngIf="account.xbl!=null">
+                <a href="javascript:void(0)" *ngIf="!account.xbl.defunct" (click)="loadPlayer(account.xbl)">{{account.xbl.name}}</a>
+                <span class="strikethrough" *ngIf="account.xbl.defunct">{{account.xbl.name}}</span>
+              </ng-container>
+              <ng-container *ngIf="account.xbl==null">&nbsp;</ng-container>
+            </td>
+            <td data-label="Playstation">
+              <ng-container *ngIf="account.psn!=null">
+                <a href="javascript:void(0)" *ngIf="!account.psn.defunct"  (click)="loadPlayer(account.psn)">{{account.psn.name}}</a>
+                <span class="strikethrough" *ngIf="account.psn.defunct">{{account.psn.name}}</span>
+              </ng-container>
+              <ng-container *ngIf="account.psn==null">&nbsp;</ng-container>
+            </td>
+            <td data-label="BNet">
+              <ng-container *ngIf="account.bnet!=null">
+                <a href="javascript:void(0)" *ngIf="!account.bnet.defunct"  (click)="loadPlayer(account.bnet)">{{account.bnet.name}}</a>
+                <span class="strikethrough" *ngIf="account.bnet.defunct">{{account.bnet.name}}</span>
+              </ng-container>
+              <ng-container *ngIf="account.bnet==null">&nbsp;</ng-container>
+            </td>
+            <td data-label="Clan">
+                <a href="javascript:void(0)" *ngIf="!account.noClan"  (click)="loadClan(account)">Clan</a>
+                <span class="strikethrough" *ngIf="account.noClan">Clan</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
+  </div>
+
+</div>

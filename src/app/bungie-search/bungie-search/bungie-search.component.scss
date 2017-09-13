@@ -1,0 +1,21 @@
+@import 'styles-variables';
+
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+}
+
+.strikethrough{
+  text-decoration: line-through;
+}
+
+a:link {
+  text-decoration: underline;
+}
+
+.note{
+  max-width: 500px;
+  margin-bottom: 20px;
+}

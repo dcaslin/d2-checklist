@@ -18,6 +18,7 @@ import { SharedModule } from '@app/shared';
 
 import {ChildComponent} from './shared/child.component';
 import { HomeModule } from './home';
+import { BungieSearchModule } from './bungie-search';
 import { PlayerModule } from './player';
 import { AuthModule } from './auth';
 import { HistoryModule } from './history';
@@ -42,6 +43,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     HomeModule,
     PlayerModule,
     HistoryModule,
+    BungieSearchModule,
     PGCRModule,
     AuthModule,
 

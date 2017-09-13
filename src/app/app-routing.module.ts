@@ -8,6 +8,7 @@ import { HistoryComponent } from './history';
 import { PGCRComponent } from './pgcr';
 import { AboutComponent } from './about';
 import { SettingsComponent } from './settings';
+import { BungieSearchComponent } from './bungie-search';
 
 const routes: Routes = [
   {
@@ -30,6 +31,13 @@ const routes: Routes = [
   }, {
     path: 'about',
     component: AboutComponent
+  },{
+    path: 'search',
+    component: BungieSearchComponent
+  }
+  ,{
+    path: 'search/:name',
+    component: BungieSearchComponent
   },
   {
     path: 'pgcr/:instanceId',
