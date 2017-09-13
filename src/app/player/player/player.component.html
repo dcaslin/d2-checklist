@@ -18,6 +18,21 @@
           <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
         </div>
 
+
+        <ng-container *ngIf="player==null && !loading">
+          <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
+          <div class="button-row">
+            <ng-container *ngFor="let plat of platforms">
+              <button *ngIf="plat.type!=selectedPlatform.type" md-raised-button 
+                color="accent" (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
+            </ng-container>
+            <button md-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie Names</button>
+          </div>
+          <br>
+          <br>
+          <br>
+        </ng-container>
+
         <h4 *ngIf="player!=null">{{player.profile.userInfo.displayName}} -
           <span *ngIf="player.currentActivity==null">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago 

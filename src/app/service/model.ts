@@ -197,24 +197,33 @@ export class Platform {
 }
 
 
-// export class BungieMember{
-//     name: string;
-//     platforms: BungieMemberPlatform[];
-//     constructor(name: string, platforms: BungieMemberPlatform[]){
-//         this.name = name;
-//         this.platforms = platforms;
-//     }
-// }
+export class BungieMember{
+    name: string;
+    id: string;
+    noClan: boolean = false;
+    xbl: BungieMemberPlatform;
+    psn: BungieMemberPlatform;
+    bnet: BungieMemberPlatform;
+    
+    constructor(name: string, id: string, xbl: BungieMemberPlatform, psn: BungieMemberPlatform, bnet: BungieMemberPlatform){
+        this.id = id;
+        this.name = name;
+        this.xbl = xbl;
+        this.psn = psn;
+        this.bnet = bnet;
+    }
+}
 
-// export class BungieMemberPlatform{
-//     name: string;
-//     platform: Platform;
+export class BungieMemberPlatform{
+    name: string;
+    platform: Platform;
+    defunct: boolean = false;
 
-//     constructor(name: string, platform: Platform){
-//         this.name = name;
-//         this.platform = platform;
-//     }
-// }
+    constructor(name: string, platform: Platform){
+        this.name = name;
+        this.platform = platform;
+    }
+}
 
 
 export class Progression{
