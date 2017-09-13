@@ -21,9 +21,14 @@ export interface SearchResult {
 
 export class SelectedUser {
     selectedUser: UserInfo;
-    availUsers: UserInfo[];
+    membership: BungieMembership;
 }
 
+export class BungieMembership{
+    bungieId: string;
+    clanId: string;
+    destinyMemberships: UserInfo[];
+}
 
 export interface UserInfo {
     membershipType: number;
@@ -192,24 +197,24 @@ export class Platform {
 }
 
 
-export class BungieMember{
-    name: string;
-    platforms: BungieMemberPlatform[];
-    constructor(name: string, platforms: BungieMemberPlatform[]){
-        this.name = name;
-        this.platforms = platforms;
-    }
-}
+// export class BungieMember{
+//     name: string;
+//     platforms: BungieMemberPlatform[];
+//     constructor(name: string, platforms: BungieMemberPlatform[]){
+//         this.name = name;
+//         this.platforms = platforms;
+//     }
+// }
 
-export class BungieMemberPlatform{
-    name: string;
-    platform: Platform;
+// export class BungieMemberPlatform{
+//     name: string;
+//     platform: Platform;
 
-    constructor(name: string, platform: Platform){
-        this.name = name;
-        this.platform = platform;
-    }
-}
+//     constructor(name: string, platform: Platform){
+//         this.name = name;
+//         this.platform = platform;
+//     }
+// }
 
 
 export class Progression{

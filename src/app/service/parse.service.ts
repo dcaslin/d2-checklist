@@ -1,9 +1,11 @@
 
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
-import { Character, CurrentActivity, Progression, Milestone, Activity, 
-    Profile, Player, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression, 
-    BungieMember, BungieMemberPlatform, Const} from './model';
+import {
+    Character, CurrentActivity, Progression, Milestone, Activity,
+    Profile, Player, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
+    Const, BungieMembership
+} from './model';
 @Injectable()
 export class ParseService {
 
@@ -61,29 +63,29 @@ export class ParseService {
         }
     }
 
-    private parseProgression(p:_Progression): Progression{
+    private parseProgression(p: _Progression): Progression {
         let desc = this.destinyCacheService.cache.Faction[p.factionHash];
         if (desc != null) {
             console.dir(desc);
-            
-            let prog:Progression = new Progression();
+
+            let prog: Progression = new Progression();
             prog.icon = desc.displayProperties.icon;
             prog.hash = p.progressionHash;
             prog.name = desc.displayProperties.name;
             prog.currentProgress = p.currentProgress;
             prog.dailyLimit = p.dailyLimit;
             prog.dailyProgress = p.dailyProgress;
-            prog.weeklyLimit= p.weeklyLimit;
+            prog.weeklyLimit = p.weeklyLimit;
             prog.weeklyProgress = p.weeklyProgress;
             prog.levelCap = p.levelCap;
             prog.level = p.level;
-            prog.percentToNextLevel = p.progressToNextLevel/p.nextLevelAt;
+            prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
             return prog;
         }
-        else{
+        else {
             return null;
         }
-        
+
 
     }
 
@@ -128,7 +130,7 @@ export class ParseService {
             Object.keys(_prog.factions).forEach((key) => {
                 let p: _Progression = _prog.factions[key];
                 let prog: Progression = this.parseProgression(p);
-                if (prog!=null){
+                if (prog != null) {
                     factions.push(prog);
                 }
 
@@ -404,30 +406,43 @@ export class ParseService {
         return "unknown";
     }
 
+    public parseBungieMembership(resp: any) {
 
-    public parseBungieMembers(results: _BungieMember[], preferredPlatform: number): BungieMember[]{
-                if (results==null) return null;
-                let returnMe: BungieMember[] = [];
-                results.forEach(r=>{
-                    if (r.isDeleted==true) return;
-                    let platforms: BungieMemberPlatform[] = [];
-                    if (r.xboxDisplayName!=null){
-                        platforms.push(new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM));
-        
-                    }
-                    if (r.psnDisplayName!=null){
-                        platforms.push(new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM));
-                    }
-                    if (r.blizzardDisplayName!=null){
-                        platforms.push(new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM));                
-                    }
-                    if (platforms.length==0) return;
-                    returnMe.push(new BungieMember(r.displayName, platforms));
-        
-                });
-                return returnMe;
-            }
+        let returnMe: BungieMembership = new BungieMembership();
+        returnMe.bungieId = resp.bungieNetUser.membershipId;
+        let aUser: UserInfo[] = [];
+        resp.destinyMemberships.forEach(u => {
+            aUser.push(this.parseUserInfo(u));
+        });
+        returnMe.destinyMemberships = aUser;
+        return returnMe;
+
     }
+
+
+    // public parseBungieMembers(results: _BungieMember[], preferredPlatform: number): BungieMember[] {
+    //     if (results == null) return null;
+    //     let returnMe: BungieMember[] = [];
+    //     results.forEach(r => {
+    //         if (r.isDeleted == true) return;
+    //         let platforms: BungieMemberPlatform[] = [];
+    //         if (r.xboxDisplayName != null) {
+    //             platforms.push(new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM));
+
+    //         }
+    //         if (r.psnDisplayName != null) {
+    //             platforms.push(new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM));
+    //         }
+    //         if (r.blizzardDisplayName != null) {
+    //             platforms.push(new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM));
+    //         }
+    //         if (platforms.length == 0) return;
+    //         returnMe.push(new BungieMember(r.displayName, platforms));
+
+    //     });
+    //     return returnMe;
+    // }
+}
 
 interface _Character {
     membershipId: string;
@@ -492,7 +507,7 @@ interface _Progression {
     nextLevelAt: number;
 }
 
-    
+
 interface _BungieMember {
     membershipId: string;
     uniqueName: string;
@@ -517,4 +532,4 @@ interface _BungieMember {
     statusText: string;
     statusDate: string;
     blizzardDisplayName: string;
-  }
+}
