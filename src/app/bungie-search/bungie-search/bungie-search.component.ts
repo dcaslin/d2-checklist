@@ -58,7 +58,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
     });
   }
 
-  private search() {
+  search() {
     if (this.name!=null){
       this.router.navigate(["search", this.name]);
     }
