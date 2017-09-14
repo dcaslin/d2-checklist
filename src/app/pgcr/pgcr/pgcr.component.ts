@@ -30,7 +30,6 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private load() {
-    console.log("Load");
     this.loading = true;
     this.bungieService.getPGCR(this.instanceId).then((res) => {
       this.data = res;

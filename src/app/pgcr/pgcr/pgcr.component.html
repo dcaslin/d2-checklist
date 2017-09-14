@@ -16,7 +16,7 @@
 
             <ng-container *ngFor="let entry of data.entries">
               <md-list-item>
-                <img mdListAvatar [src]="'//www.bungie.net'+entry.user.icon">
+                <img *ngIf="entry.user.icon!=null" mdListAvatar [src]="'//www.bungie.net'+entry.user.icon">
                 <h4 md-line>
                   <a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a>
                   

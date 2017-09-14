@@ -105,7 +105,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   myClan() {
     if (this.signedOnUser != null) {
-      console.log(this.signedOnUser.membership.clanId);
       this.router.navigate(["clan", this.signedOnUser.membership.clanId]);
     }
   }
@@ -127,8 +126,8 @@ export class AppComponent implements OnInit, OnDestroy {
         try {
           (window as any).ga('send', 'pageview', navEnd.urlAfterRedirects);
         }
-        catch (e) {
-          console.log(e);
+        catch (err) {
+          console.dir(err);
         }
       }
       );

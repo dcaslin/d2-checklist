@@ -36,7 +36,6 @@ export class AuthService {
         let nonce: string = AuthService.randomString(10);
         localStorage.setItem("nonce", nonce);
         let url: string = environment.bungie.authUrl + "?client_id=" + environment.bungie.clientId + "&response_type=code&state=" + nonce;
-        console.log(url);
         window.location.href = url;
     }
 
@@ -127,6 +126,7 @@ export class AuthService {
             function (err) {
                 let errMsg = AuthService.parseError(err);
                 console.log('Error refreshing Auth token: ' + errMsg);
+                console.dir(err);
                 return null;
             });
     }
@@ -168,9 +168,6 @@ export class AuthService {
                 let errMsg = AuthService.parseError(err);
                 self.notificationService.fail(err);
                 throw(errMsg);
-                // console.log('Error getting Auth token: ' + errMsg);
-                // console.dir(err);
-                // return false;
             });
     }
 
@@ -189,10 +186,10 @@ export class AuthService {
                 return JSON.parse(sToken);
             }
         }
-        catch (x) {
-            console.log("Error loading token from storage: " + x);
+        catch (err) {
+            console.log("Error loading token from storage: " + err);
             localStorage.removeItem("authorization");
-            console.dir(x);
+            console.dir(err);
         }
         return null;
     }
