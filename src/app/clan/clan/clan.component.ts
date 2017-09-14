@@ -33,7 +33,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       if (i!=null){
         this.bungieService.getClanMembers(this.id).then(x=>{
           this.members = x;
-          console.dir(x);
           this.loading = false;
         });
       }

@@ -186,11 +186,12 @@ export class BungieService implements OnDestroy {
             new ActivityMode(0, "All", "All"), //None
             new ActivityMode(2, "Story", "Story"),
             new ActivityMode(3, "Strike", "Strike"),
+            new ActivityMode(4, "Raid", "Raid"),
             new ActivityMode(5, "AllPvP", "All PvP"),
             new ActivityMode(6, "Patrol", "Patrol"),
             new ActivityMode(7, "AllPvE", "All PvE"),
             new ActivityMode(10, "Control", "Control"),
-            new ActivityMode(12, "Team", "Team"),
+            new ActivityMode(12, "Clash", "Clash"),
             new ActivityMode(16, "Nightfall", "Nightfall"),
             new ActivityMode(17, "Heroic", "Heroic"),
             new ActivityMode(18, "Strikes", "All Strikes"),
@@ -343,7 +344,6 @@ export class BungieService implements OnDestroy {
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
-                    console.dir(j);
                     return self.parseService.parsePlayer(resp);
                 }).toPromise().catch(
                 function (err) {

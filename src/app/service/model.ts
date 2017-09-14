@@ -78,8 +78,23 @@ export class Player {
     }
 }
 
+export class MilestoneStatus {
+    hash: string;
+    complete: boolean;
+    pct: number;
+    info: string;
+
+    constructor(hash, complete, pct, info){
+        this.hash = hash;
+        this.complete = complete;
+        this.pct = pct;
+        this.info = info;
+    }
+}
+
 export interface MileStoneName {
     key: string;
+    type: string;
     name: string;
     desc: string;
 }
@@ -105,7 +120,7 @@ export class Character {
     levelProgression: LevelProgression;
 
     currentActivity: CurrentActivity;
-    milestones: { [key: string]: Milestone };
+    milestones: { [key: string]: MilestoneStatus };
     factions: Progression[];
 }
 
@@ -123,15 +138,6 @@ export interface LevelProgression {
     progressToNextLevel: number;
     nextLevelAt: number;
 }
-
-
-export class Milestone {
-    hash: string;
-    name: string;
-    description: string;
-    complete: boolean;
-}
-
 
 export class PGCR {
     period: string;
@@ -256,6 +262,7 @@ export class ClanInfo{
 export class Progression {
     icon: string;
     name: string;
+    info: string;
     desc: string;
     hash: number;
     progressionHash: number;

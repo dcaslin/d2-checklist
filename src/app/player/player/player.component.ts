@@ -69,8 +69,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   public changeTab(event: MdTabChangeEvent) {
     const tabName: string = event.tab.textLabel.toLowerCase();
-    console.log(event.index);
-    // this.dontSearch = true;
     this.selectedTab = tabName;
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
   }
@@ -79,16 +77,15 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   private setTab(): void {
     if (this.tabs==null) return;
     const tab: string = this.selectedTab;
-    console.log(tab);
     if (tab!=null){
       if (tab == "chars"){
-        this.tabs.selectedIndex = 0;
+        this.tabs.selectedIndex = 3;
       }
       else if (tab == "checklist"){
-        this.tabs.selectedIndex = 1;
+        this.tabs.selectedIndex = 0;
       }
       else if (tab == "progress"){
-        this.tabs.selectedIndex = 2;
+        this.tabs.selectedIndex = 1;
       }
     }
   }
@@ -109,8 +106,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           this.bungieService.getChars(p).then((x: Player) => {
             this.player = x;
             this.setTab();
-
-            console.log("Loaded chars");
             this.loading = false;
           })
         }

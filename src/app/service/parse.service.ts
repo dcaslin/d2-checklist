@@ -2,8 +2,8 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import {
-    Character, CurrentActivity, Progression, Milestone, Activity,
-    Profile, Player, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
+    Character, CurrentActivity, Progression, Activity,
+    Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
     Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo
 } from './model';
 @Injectable()
@@ -34,9 +34,6 @@ export class ParseService {
     }
 
     private populateActivities(c: Character, _act: any): void {
-
-        console.dir(_act);
-        console.log("act");
         let hash: number = _act.currentActivityHash;
 
         if (hash != 0) {
@@ -65,12 +62,30 @@ export class ParseService {
     // factionHash
     private parseProgression(p: _Progression, desc: any): Progression {
         if (desc != null) {
-            console.dir(desc);
 
             let prog: Progression = new Progression();
             prog.icon = desc.displayProperties.icon;
             prog.hash = p.progressionHash;
-            prog.name = desc.displayProperties.name;
+            let name = desc.displayProperties.name;
+            let info = "";
+            if (name == "Exodus Black AI") {
+                name = "Failsafe";
+                info = "Nessus";
+            }
+            else if (name == "Dead Zone Scout") { name = "Devrim"; info = "EDZ"; }
+            else if (name == "Vanguard Tactical") { name = "Zavala"; info = "Strikes"; }
+            else if (name == "Vanguard Research") { name = "Ikora"; info = "Research"; }
+            else if (name == "Fragmented Researcher") { name = "Asher"; info = "IO"; }
+            else if (name == "Field Commander") { name = "Sloane"; info = "Titan"; }
+            else if (name == "The Crucible") { name = "Crucible"; info = "Shaxx"; }
+            else if (name == "Gunsmith") { name = "Gunsmith"; info = "Banshee / Crucible"; }
+            else if (name == "Classified") { return null; }
+
+            prog.name = name;
+            prog.info = info;
+
+
+
             prog.desc = desc.displayProperties.description;
             prog.currentProgress = p.currentProgress;
             prog.dailyLimit = p.dailyLimit;
@@ -85,45 +100,80 @@ export class ParseService {
         else {
             return null;
         }
-
-
     }
 
-    private populateProgressions(c: Character, _prog: any): void {
-        console.dir(_prog);
-        console.log("prog");
-        let parsedMilestones: { [key: string]: Milestone } = {};
+
+    private static parseMilestoneType(t: number): string {
+        //tutorial and one-time
+        if (t == 1 || t == 2) return null;
+        if (t == 3) return "Weekly";
+        if (t == 4) return "Daily";
+        if (t == 5) return "Special";
+        return "Unknown";
+    }
+
+    private populateProgressions(c: Character, _prog: any, mileStoneDefs: any): void {
+        c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
+                //clan rewards special case
+                if (key == "4253138191") {
+                    console.log("TODO handle clan rewards");
+                    return;
+                }
                 let ms: _Milestone = _prog.milestones[key];
-                if (ms.endDate == null) return;
-                let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
-                if (desc != null) {
-                    // if (desc.friendlyName==null) return;
-                    let name: string = "";
-                    let description: string = "";
-                    // if (desc.friendlyName != null) {
-                    //     name = desc.friendlyName;
-                    // }
-                    if (desc.displayProperties != null) {
-                        name = desc.displayProperties.name;
-                        description = desc.displayProperties.description;
-                        console.log(description);
+                //add meta
+                if (mileStoneDefs[key] == null) {
+                    let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
+                    if (desc != null) {
+                        let name: string = "";
+                        let description: string = "";
+                        if (desc.displayProperties != null) {
+                            name = desc.displayProperties.name;
+                            description = desc.displayProperties.description;
+                        }
+                        if (name == null || name.trim().length == 0) {
+                            name = desc.friendlyName;
+                        }
+
+                        let type: string = ParseService.parseMilestoneType(desc.milestoneType);
+                        //null is tutorial or one-time, skip
+                        if (type == null) return;
+                        //skip classified for now
+                        if (name == null || name == "Classified") return;
+                        let milestoneName: MileStoneName = {
+                            key: key,
+                            type: type,
+                            name: name,
+                            desc: description
+                        };
+                        mileStoneDefs[key] = milestoneName;
                     }
-                    if (ms.availableQuests != null && ms.availableQuests.length == 1 && name != null && name.trim().length > 0) {
-                        let q: _AvailableQuest = ms.availableQuests[0];
-                        let m: Milestone = new Milestone();
-                        m.name = name;
-                        m.description = description;
-                        m.hash = key;
-                        m.complete = q.status.completed;
-                        parsedMilestones[key] = m;
+                    else {
+                        console.log("Unknown milestone: " + key);
+                        return;
                     }
                 }
 
+                let total = 0;
+                let complete = 0;
+                let info: string = "";
+
+                if (ms.availableQuests != null) {
+                    ms.availableQuests.forEach((q: _AvailableQuest) => {
+                        total++;
+                        if (q.status.completed) complete++;
+                    })
+                }
+                if (total == 0) total++;
+                let pct: number = complete / total;
+
+                let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, "");
+                c.milestones[key] = m;
+
+
             });
         }
-        c.milestones = parsedMilestones;
 
         let factions: Progression[] = [];
         if (_prog.factions != null) {
@@ -142,15 +192,10 @@ export class ParseService {
         })
         c.factions = factions;
 
-        //factions
-        //milestones
         //progressions
         //quests?
         //uninstancedItemObjectives
         //c.progression = saveMe;
-
-
-        //first let's handle milestones
 
     }
 
@@ -181,11 +226,12 @@ export class ParseService {
             }
             //TODO activityModeHash let modeDesc: any = this.destinyCacheService.cache.ActivityMode[desc.activityModeHash];
             if (a.activityDetails.activityTypeHashOverride) {
-                let typeDesc: any = this.destinyCacheService.cache.ActivityType[a.activityDetails.activityTypeHashOverride];
-                if (typeDesc != null) {
-                    console.log("Override: " + typeDesc.displayProperties.name);
-                    act.type = typeDesc.displayProperties.name;
-                }
+                console.log("Override: " + a.activityDetails.activityTypeHashOverride);
+                // let typeDesc: any = this.destinyCacheService.cache.ActivityType[a.activityDetails.activityTypeHashOverride];
+                // if (typeDesc != null) {
+                //     console.log("Override: " + typeDesc.displayProperties.name);
+                //     act.type = typeDesc.displayProperties.name;
+                // }
             }
             act.activityLevel = desc.activityLevel;
             act.activityLightLevel = desc.activityLightLevel;
@@ -242,30 +288,20 @@ export class ParseService {
             charsDict[key] = this.parseCharacter(oChars[key]);
         });
 
-        let mileStoneHashSet: any = {};
+        let mileStoneDefs: any = {};
 
         if (resp.characterProgressions && resp.characterProgressions.data) {
             const oProgs: any = resp.characterProgressions.data;
             Object.keys(oProgs).forEach((key) => {
                 let curChar: Character = charsDict[key];
-                this.populateProgressions(curChar, oProgs[key]);
-                if (curChar.milestones != null) {
-                    Object.keys(curChar.milestones).forEach(key2 => {
-
-                        mileStoneHashSet[key2] = curChar.milestones[key2];
-                    });
-                }
+                this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
             });
         }
 
+        //convert dictionary to array for UI
         let milestoneList: MileStoneName[] = [];
-
-        Object.keys(mileStoneHashSet).forEach(key => {
-            milestoneList.push({
-                key: key,
-                name: mileStoneHashSet[key].name,
-                desc: mileStoneHashSet[key].description
-            });
+        Object.keys(mileStoneDefs).forEach(key => {
+            milestoneList.push(mileStoneDefs[key]);
         });
 
         let currentActivity: CurrentActivity = null;
@@ -280,10 +316,6 @@ export class ParseService {
                 }
             });
         }
-
-
-        // //progressions
-        // if ()
 
         let chars: Character[] = [];
         Object.keys(charsDict).forEach((key) => {
@@ -432,15 +464,17 @@ export class ParseService {
         if (mode == 0) return "All";
         if (mode == 2) return "Story";
         if (mode == 3) return "Strike";
+        if (mode == 4) return "Strike";
         if (mode == 5) return "All PvP";
         if (mode == 6) return "Patrol";
         if (mode == 7) return "All PvE";
         if (mode == 10) return "Control";
-        if (mode == 12) return "Team";
+        if (mode == 12) return "Clash";
         if (mode == 16) return "Nightfall";
-        if (mode == 17) return "Heroic";
-        if (mode == 18) return "Strikes";
+        if (mode == 17) return "Heroic Nightfall";
+        if (mode == 18) return "All Strikes";
         if (mode == 37) return "Survival";
+        if (mode == 38) return "Countdown";
         if (mode == 38) return "Countdown";
         if (mode == 40) return "Social";
         return "unknown";

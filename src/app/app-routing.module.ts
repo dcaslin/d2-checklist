@@ -50,7 +50,7 @@ const routes: Routes = [
   },
   {
     path: ':platform/:gt',
-    redirectTo: ':platform/:gt/chars'
+    redirectTo: ':platform/:gt/checklist'
   },
   {
     path: ':platform/:gt/:tab',

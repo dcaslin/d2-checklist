@@ -38,7 +38,6 @@ export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy 
           if (success){
             this.router.navigate(["/home"]);
           }
-          console.log("Success fetching token: "+success);
 
         }).catch(x=>{
           this.msg = JSON.stringify(x);
