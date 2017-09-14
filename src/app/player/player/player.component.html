@@ -71,12 +71,16 @@
                     </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                        
                         <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                          <i class="accent-text mat-option.mat-selected fa fa-check"></i>
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </ng-container>
-                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false">
-                          <i class="fa fa-times"></i>
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                          <i class="fa fa-square-o"></i>
                         </ng-container>
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                            <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                          </ng-container>
                       </ng-container>
                       <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
                         N/A

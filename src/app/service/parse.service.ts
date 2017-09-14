@@ -157,7 +157,7 @@ export class ParseService {
 
                 let total = 0;
                 let complete = 0;
-                let info: string = "";
+                let info: string = null;
 
                 if (ms.availableQuests != null) {
                     ms.availableQuests.forEach((q: _AvailableQuest) => {
@@ -167,8 +167,11 @@ export class ParseService {
                 }
                 if (total == 0) total++;
                 let pct: number = complete / total;
+                if (pct>0 && pct<1){
+                    info = Math.floor(100*pct)+"% complete";
+                }
 
-                let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, "");
+                let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
                 c.milestones[key] = m;
 
 
