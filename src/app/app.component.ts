@@ -14,6 +14,7 @@ import { BungieService } from './service/bungie.service';
 import { SelectedUser } from './service/model';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
+import { ChildComponent } from './shared/child.component';
 
 @Component({
   selector: 'anms-root',
@@ -28,6 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   @HostBinding('class') componentCssClass;
 
   disableads: boolean;
+  isOldSafari: boolean = false;
 
   version = env.versions.app;
   year = new Date().getFullYear();
@@ -50,6 +52,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private bungieService: BungieService,
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MdSnackBar) {
+
+
+    this.isOldSafari = ChildComponent.isOldSafari();
 
     this.componentCssClass = 'default-theme';
     this.overlayContainer.themeClass = 'default-theme';

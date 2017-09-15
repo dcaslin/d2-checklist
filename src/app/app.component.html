@@ -76,7 +76,7 @@
       <router-outlet #o="outlet"></router-outlet>
     </div>
 
-    <div class="footer">
+    <div class="footer" *ngIf="isOldSafari==false">
       <div class="row">
         <div class="col-sm-12 links">
           <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank">

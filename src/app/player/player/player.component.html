@@ -64,14 +64,14 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [mdTooltip]="mileStoneName.desc" [attr.data-label]="Activity">
+                    <td class="lead" [mdTooltip]="mileStoneName.desc" data-label="Activity">
                       {{mileStoneName.name}}
                       <span class="caption">{{mileStoneName.type}}</span>
 
                     </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
-                        
+
                         <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
                           <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </ng-container>
@@ -79,13 +79,47 @@
                           <i class="fa fa-square-o"></i>
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
-                          </ng-container>
+                          <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                        </ng-container>
                       </ng-container>
                       <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
                         N/A
                       </ng-container>
                     </td>
+                  </tr>
+                  <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null">
+                    <td class="lead" mdTooltip="Shared clan rewards, one per account" data-label="Activity">Clan Milestones</td>
+                    <td [attr.colspan]="player.characters.length">
+
+                      <div class="clanMsRow">
+
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true"> 
+                            Nightfall <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==false">
+                            Nightfall <i class="fa fa-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true"> 
+                            Raid <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==false">
+                            Raid <i class="fa fa-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true"> 
+                            Crucible <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==false">
+                            Crucible <i class="fa fa-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true"> 
+                            Trials <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        </span>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==false">
+                            Trials <i class="fa fa-square-o"></i>
+                        </span>
+                      </div>
+                    </td>
+
                   </tr>
                 </tbody>
               </table>
@@ -127,34 +161,6 @@
                       </tr>
                     </tbody>
                   </table>
-                  <!-- 
-
-                  <ng-container *ngIf="char.factions!=null && char.factions.length>0">
-
-
-                    <md-card class="char-card" *ngFor="let faction of char.factions">
-
-
-
-                      <md-card-header>
-                        <div md-card-avatar *ngIf="faction.icon!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + faction.icon + ')'"></div>
-                        <md-card-title>{{faction.name}} &ensp; {{faction.level}}</md-card-title>
-                        <md-card-subtitle>{{faction.percentToNextLevel|percent}} to level {{faction.level+1}}
-                        </md-card-subtitle>
-                      </md-card-header>
-
-                      <div>
-                        <md-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
-                        </md-progress-bar>
-                      </div>
-                    </md-card>
-
-                  </ng-container> -->
-
-
-
-
-
 
                 </md-tab>
               </md-tab-group>
@@ -206,7 +212,7 @@
     </div>
 
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
+  <div *ngIf="disableads===false && isOldSafari===false" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
   </div>
