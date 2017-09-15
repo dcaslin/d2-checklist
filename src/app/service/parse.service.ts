@@ -398,6 +398,16 @@ export class ParseService {
             b.bungieNetUserInfo = x.bungieNetUserInfo;
             returnMe.push(b);
         });
+
+        
+        returnMe.sort(function (a, b) {
+            let bs:string = b.destinyUserInfo.displayName;
+            let as:string = a.destinyUserInfo.displayName;
+            if (bs<as) return 1;
+            if (bs>as) return -1;
+            return 0;
+        });
+
         return returnMe;
     }
 

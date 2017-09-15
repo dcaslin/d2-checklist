@@ -3,18 +3,9 @@
     <div class="main">
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
       <div class="body">
-        <h1>Clan</h1>
-        {{id}}
-
-
-        <ng-container *ngIf="info!=null">
-          <section class="mat-typography">
-            <h1>{{info.name}}</h1>
-            <div class="caption">Created: {{info.creationDate|date:'short'}}</div>
-            <div class="caption">{{info.memberCount}} members</div>
-          </section>
-
-
+        
+        <ng-container *ngIf="info!=null">  
+          <h1>{{info.name}}</h1>
           <ng-container *ngIf="info.progressions!=null">
             <md-expansion-panel>
               <md-expansion-panel-header>
@@ -22,7 +13,7 @@
                   Clan Progress
                 </md-panel-title>
                 <md-panel-description>
-                  Not fully active yet at Bungie
+                    Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
                 </md-panel-description>
               </md-expansion-panel-header>
               <br>
@@ -44,14 +35,39 @@
             </md-expansion-panel>
           </ng-container>
 
+          <br>
         </ng-container>
 
+        <table class="responsive-table">
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Clan XP</th>
+              <th>Nightfall</th>
+              <th>Raid</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of members">
+              <td class="lead">
+                <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName])">
+                  {{member.destinyUserInfo.displayName}}
+                </a>
+              </td>
+              <td colspan=3>Coming Soon</td>
+            </tr>
+          </tbody>
 
+        </table>
+
+<!-- 
 
         <div *ngFor="let member of members">
-          {{member.destinyUserInfo.displayName}} -
+          {{member.destinyUserInfo.displayName}}
+          {{member.destinyUserInfo.membershipType}}
+          {{member.destinyUserInfo.icon}}
           <ng-container *ngIf="member.bungieNetUserInfo!=null">{{member.bungieNetUserInfo.displayName}}</ng-container>
-        </div>
+        </div> -->
 
       </div>
 
