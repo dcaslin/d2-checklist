@@ -64,9 +64,14 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [mdTooltip]="mileStoneName.desc" data-label="Activity">
+                    <td class="lead" [mdTooltip]="mileStoneName.desc" >
                       {{mileStoneName.name}}
                       <span class="caption">{{mileStoneName.type}}</span>
+                      <div class="caption hidden-sm-down" *ngIf="mileStoneName.name=='Leviathan Raid'">
+                        Lifetime completions coming soon
+
+                      </div>
+
 
                     </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
