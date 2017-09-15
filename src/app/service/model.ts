@@ -109,21 +109,26 @@ export class Character {
     light: number;
     emblemBackgroundPath: string;
     emblemPath: string;
-
     baseCharacterLevel: number;
     percentToNextLevel: number;
-
     race: string;
     gender: string;
     className: string;
-
     levelProgression: LevelProgression;
-
     currentActivity: CurrentActivity;
     milestones: { [key: string]: MilestoneStatus };
+    clanMilestones: ClanMilestoneResults;
     factions: Progression[];
+
+    
 }
 
+export class ClanMilestoneResults{
+    nightfall: boolean;
+    raid: boolean;
+    crucible: boolean;
+    trials: boolean;
+}
 
 export interface LevelProgression {
     progressionHash: number;
@@ -141,6 +146,8 @@ export interface LevelProgression {
 
 export class PGCR {
     period: string;
+    activityDurationSeconds: number;
+    start: string;
     //Acitivity Details
     referenceId: number;
     instanceId: string;
@@ -203,8 +210,21 @@ export class PGCREntry {
     fireteamId: number;
     fireteam: string;
 
+    startSeconds: number;
+    activityDurationSeconds: number;
+    timePlayedSeconds: number;
+
+    weapons: PGCRWeaponData[];
+
 }
 
+export class PGCRWeaponData{
+    hash: string;
+    name: string;
+    type: string;
+    kills: number;
+    precPct: number;
+}
 
 
 export class Platform {

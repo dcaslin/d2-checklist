@@ -30,7 +30,7 @@
             <ng-container cdkColumnDef="period">
               <md-header-cell *cdkHeaderCellDef md-sort-header>Date</md-header-cell>
               <md-cell *cdkCellDef="let row">
-                <a href="javascript:void()" color="primary" (click)="pgcr(row.instanceId)">
+                <a href="javascript:void(0)" color="primary" (click)="pgcr(row.instanceId)">
                   {{row.period|date:'short'}} 
                 </a>
               </md-cell>
@@ -78,7 +78,7 @@
     </div>
 
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
+  <div *ngIf="disableads===false && isOldSafari===false" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
   </div>

@@ -2,7 +2,7 @@
   <div class="childVert">
     <div class="main">
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
-      <div [ngClass]="animateOnRouteEnter">
+      <div [ngClass]="animateOnRouteEnter" style="text-align:left">
 
         <ng-container *ngIf="data!=null">
           <h2>
@@ -10,50 +10,61 @@
             <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </h2>
-          <md-list style="text-align: left">
-           
-            <h3 md-subheader>Players</h3>
+          <div class="caption">
+            Start: {{data.start|date:'short'}} <br> Finish: {{data.period|date:'short'}} <br> Duration: {{ data.activityDurationSeconds
+            | amDuration:'seconds' }}
+          </div>
+          <md-divider></md-divider>
 
-            <ng-container *ngFor="let entry of data.entries">
-              <md-list-item>
-                <img *ngIf="entry.user.icon!=null" mdListAvatar [src]="'//www.bungie.net'+entry.user.icon">
-                <h4 md-line>
-                  <a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a>
-                  
-                  {{entry.characterClass}} Lvl {{entry.characterLevel}}
-                  <span *ngIf="entry.light>0">-  Light {{entry.light}}</span>
-                </h4>
-                <p md-line>
+          <md-card class="card" *ngFor="let entry of data.entries">
 
-                  <span class="mat-chip stat-val" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
-                  <span class="mat-chip stat-val" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
-                  <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
-                  <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
-                  <span class="mat-chip stat-val" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
-                </p>
-              </md-list-item>
+            <md-card-header>
+              <div *ngIf="entry.user.icon!=null" class="icon" md-card-avatar [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
+              <md-card-title>
+                <b><a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a></b>                {{entry.characterClass}} {{entry.lightLevel}}
+              </md-card-title>
+              <md-card-subtitle>
+                <span class="mat-chip stat-val" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
+                <span class="mat-chip stat-val" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
+                <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
+                <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
+                <span class="mat-chip stat-val" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+              </md-card-subtitle>
+            </md-card-header>
 
-              <md-divider></md-divider>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Kills</th>
+                  <th>Prec %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let w of entry.weapons">
+                  <td>{{w.name}}</td>
+                  <td>{{w.type}}</td>
+                  <td>{{w.kills}}</td>
+                  <td>{{w.precPct|percent}}</td>
+                </tr>
 
-            </ng-container>
-          </md-list>
+              </tbody>
+            </table>
+          </md-card>
+
+
 
         </ng-container>
-
       </div>
-
-
     </div>
-
     <div *ngIf="disableads===false" class="adRight">
       <small class="adText">Advertisement</small>
       <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
-
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
+  <div *ngIf="disableads===false && isOldSafari===false" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
   </div>
-
 </div>

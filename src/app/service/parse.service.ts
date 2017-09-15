@@ -4,7 +4,7 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo
+    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults
 } from './model';
 @Injectable()
 export class ParseService {
@@ -106,6 +106,8 @@ export class ParseService {
     private static parseMilestoneType(t: number): string {
         //tutorial and one-time
         if (t == 1 || t == 2) return null;
+        // if (t == 1) return "tut";
+        // if (t == 2) return "1-off";
         if (t == 3) return "Weekly";
         if (t == 4) return "Daily";
         if (t == 5) return "Special";
@@ -116,12 +118,39 @@ export class ParseService {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
+                let ms: _Milestone = _prog.milestones[key];
                 //clan rewards special case
                 if (key == "4253138191") {
-                    console.log("TODO handle clan rewards");
+
+                    let clanMilestones:ClanMilestoneResults  = new ClanMilestoneResults();
+                    ms.rewards.forEach(r => {
+                        //this week
+                        if (r.rewardCategoryHash == 1064137897){
+                            r.entries.forEach(rewEnt => {
+                                let rewEntKey = rewEnt.rewardEntryHash;
+                                let earned: boolean = rewEnt.earned;
+
+                                if (rewEntKey==3789021730){
+                                    clanMilestones.nightfall = earned;
+
+                                }
+                                else if (rewEntKey==2112637710){
+                                    clanMilestones.trials = earned;
+
+                                }
+                                else if (rewEntKey==2043403989){
+                                    clanMilestones.raid = earned;
+                                }
+                                else if (rewEntKey==964120289){
+                                    clanMilestones.crucible = earned;
+                                }
+                            });
+                        }
+                    });
+                    
+                    c.clanMilestones = clanMilestones;
                     return;
                 }
-                let ms: _Milestone = _prog.milestones[key];
                 //add meta
                 if (mileStoneDefs[key] == null) {
                     let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
@@ -141,6 +170,12 @@ export class ParseService {
                         if (type == null) return;
                         //skip classified for now
                         if (name == null || name == "Classified") return;
+
+                        //hotspot
+                        if (ms.milestoneHash == 463010297){
+                            name = this.destinyCacheService.cache.InventoryItem[ms.availableQuests[0].questItemHash].displayProperties.name;
+
+                        }
                         let milestoneName: MileStoneName = {
                             key: key,
                             type: type,
@@ -154,11 +189,9 @@ export class ParseService {
                         return;
                     }
                 }
-
                 let total = 0;
                 let complete = 0;
                 let info: string = null;
-
                 if (ms.availableQuests != null) {
                     ms.availableQuests.forEach((q: _AvailableQuest) => {
                         total++;
@@ -167,13 +200,12 @@ export class ParseService {
                 }
                 if (total == 0) total++;
                 let pct: number = complete / total;
-                if (pct>0 && pct<1){
-                    info = Math.floor(100*pct)+"% complete";
+                if (pct > 0 && pct < 1) {
+                    info = Math.floor(100 * pct) + "% complete";
                 }
 
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
                 c.milestones[key] = m;
-
 
             });
         }
@@ -195,10 +227,9 @@ export class ParseService {
         })
         c.factions = factions;
 
-        //progressions
-        //quests?
+        //progressions we'll ignore for now, factions has it all
+        //quests? are empty for now, check back later
         //uninstancedItemObjectives
-        //c.progression = saveMe;
 
     }
 
@@ -375,13 +406,43 @@ export class ParseService {
         r.characterId = e.characterId;
         r.standing = e.standing;
         r.score = ParseService.getBasicValue(e.score);
-        if (e.values) {
+        if (e.values != null) {
 
             r.kills = ParseService.getBasicValue(e.values.kills);
             r.deaths = ParseService.getBasicValue(e.values.deaths);
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
+
+            r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
+            r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
+            r.timePlayedSeconds = ParseService.getBasicValue(e.values.timePlayedSeconds);
+            r.weapons = [];
+            if (e.extended != null && e.extended.weapons != null) {
+                e.extended.weapons.forEach(w => {
+                    let data = new PGCRWeaponData();
+
+                    data.hash = w.referenceId;
+                    data.kills = ParseService.getBasicValue(w.values.uniqueWeaponKills);
+                    data.precPct = ParseService.getBasicValue(w.values.uniqueWeaponKillsPrecisionKills);
+
+                    let desc: any = this.destinyCacheService.cache.InventoryItem[data.hash];
+                    if (desc != null) {
+                        data.type = desc.itemTypeAndTierDisplayName;
+                        data.name = desc.displayProperties.name;
+                    }
+                    else {
+                        data.type = "Classified";
+                        data.name = "Classified";
+                    }
+                    r.weapons.push(data);
+
+                });
+            }
         }
+
+        r.weapons.sort(function (a, b) {
+            return b.kills - a.kills;
+        });
         r.characterClass = e.player.characterClass;
         r.characterLevel = e.player.characterLevel;
         r.lightLevel = e.player.lightLevel;
@@ -432,7 +493,12 @@ export class ParseService {
         r.isPrivate = p.activityDetails.isPrivate;
         r.entries = [];
         p.entries.forEach((ent) => {
-            r.entries.push(this.parsePGCREntry(ent));
+            let entry = this.parsePGCREntry(ent);
+            if (entry.activityDurationSeconds != null) {
+                r.activityDurationSeconds = entry.activityDurationSeconds;
+                r.start = new Date(Date.parse(r.period) - r.activityDurationSeconds * 1000).toUTCString();
+            }
+            r.entries.push(entry);
         });
 
         let teamList = {};
@@ -551,6 +617,7 @@ interface _Character {
 interface _Milestone {
     milestoneHash: number;
     availableQuests: _AvailableQuest[];
+    rewards: any; //special for clan
     startDate: string;
     endDate: string;
 }
