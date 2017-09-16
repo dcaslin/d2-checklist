@@ -103,7 +103,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag)
       .then((p: SearchResult) => {
         if (p != null) {
-          this.bungieService.getChars(p).then((x: Player) => {
+          this.bungieService.getChars(p.membershipType, p.membershipId, ['Profiles','Characters','CharacterProgressions','CharacterActivities']).then((x: Player) => {
             this.player = x;
             this.setTab();
             this.loading = false;

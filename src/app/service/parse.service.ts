@@ -128,6 +128,10 @@ export class ParseService {
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
                 let ms: _Milestone = _prog.milestones[key];
+                if (key == "534869653"){
+                    //ignore xur;
+                    return;
+                }
                 //clan rewards special case
                 if (key == "4253138191") {
 
@@ -319,8 +323,8 @@ export class ParseService {
     }
 
     public parsePlayer(resp: any): Player {
-        if (resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
-        if (resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
+        if (resp.profile!=null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
+        if (resp.characters!=null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
         const profile: Profile = resp.profile.data;
 
         let charsDict: any = {};
@@ -438,6 +442,16 @@ export class ParseService {
 
             r.kills = ParseService.getBasicValue(e.values.kills);
             r.deaths = ParseService.getBasicValue(e.values.deaths);
+
+            if (r.deaths==0){
+                r.kd = r.kills;
+            }
+            else{
+                r.kd = r.kills/r.deaths;
+            }
+
+
+
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
 
@@ -558,21 +572,38 @@ export class ParseService {
     }
 
     public static lookupMode(mode: number): string {
-        if (mode == 0) return "All";
+        if (mode == 0) return "None";
         if (mode == 2) return "Story";
         if (mode == 3) return "Strike";
-        if (mode == 4) return "Strike";
+        if (mode == 4) return "Raid";
         if (mode == 5) return "All PvP";
         if (mode == 6) return "Patrol";
         if (mode == 7) return "All PvE";
+        if (mode == 9) return "Reserved9";
         if (mode == 10) return "Control";
+        if (mode == 11) return "Reserved11";
         if (mode == 12) return "Clash";
+        if (mode == 13) return "Reserved13";
+        if (mode == 15) return "Reserved15";
         if (mode == 16) return "Nightfall";
         if (mode == 17) return "Heroic Nightfall";
         if (mode == 18) return "All Strikes";
+        if (mode == 19) return "Iron Banner";
+        if (mode == 20) return "Reserved20";
+        if (mode == 21) return "Reserved21";
+        if (mode == 22) return "Reserved22";
+        if (mode == 24) return "Reserved24";
+        if (mode == 25) return "Reserved25";
+        if (mode == 26) return "Reserved26";
+        if (mode == 27) return "Reserved27";
+        if (mode == 28) return "Reserved28";
+        if (mode == 29) return "Reserved29";
+        if (mode == 30) return "Reserved30";
+        if (mode == 31) return "Supremacy";
+        if (mode == 32) return "Reserved32";
         if (mode == 37) return "Survival";
         if (mode == 38) return "Countdown";
-        if (mode == 38) return "Countdown";
+        if (mode == 39) return "Trials";
         if (mode == 40) return "Social";
         return "unknown";
     }

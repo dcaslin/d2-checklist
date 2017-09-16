@@ -37,6 +37,7 @@ export class BungieGroupMember {
     destinyUserInfo: UserInfo;
     bungieNetUserInfo: BungieNetUserInfo;
     joinDate: string;
+    player: Player;
 }
 
 export interface BungieNetUserInfo {
@@ -209,6 +210,7 @@ export class PGCREntry {
     standing: number;
     score: number;
     values: any;
+    kd: number;
     user: UserInfo;
 
     characterId: string;

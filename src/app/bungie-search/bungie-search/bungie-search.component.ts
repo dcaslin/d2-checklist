@@ -29,7 +29,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
     this.bungieService.searchPlayer(a.platform.type, a.name).then((p: SearchResult) => {
       if (p != null) {
 
-        this.bungieService.getChars(p).then((x: Player) => {
+        this.bungieService.getChars(p.membershipType, p.membershipId, ["Profiles", "Characters"]).then((x: Player) => {
           this.loading = false;
           if (x!=null)
             this.router.navigate([a.platform.type, a.name]);
