@@ -25,10 +25,19 @@
    float: right;
  }
 
+.stat-chip-list{
+  max-width: 500px;
+}
 .stat-chip{
+  padding: 5px;
   margin-bottom: 5px !important;
+  display: inline-block;
 }
 
+.coming-soon-note{
+  font-size: smaller;
+  font-weight: lighter;
+}
 
 .char-card{
   margin-bottom: 10px;

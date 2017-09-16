@@ -21,7 +21,8 @@
             <md-card-header>
               <div *ngIf="entry.user.icon!=null" class="icon" md-card-avatar [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
               <md-card-title>
-                <b><a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a></b>                {{entry.characterClass}} {{entry.lightLevel}}
+                <b><a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a></b>
+                {{entry.characterClass}} {{entry.lightLevel}}  <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD<br></span>
               </md-card-title>
               <md-card-subtitle>
                 <span class="mat-chip stat-val" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>

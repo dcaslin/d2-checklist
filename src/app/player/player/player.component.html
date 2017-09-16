@@ -64,15 +64,12 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [mdTooltip]="mileStoneName.desc" >
+                    <td class="lead" [mdTooltip]="mileStoneName.desc">
                       {{mileStoneName.name}}
                       <span class="caption">{{mileStoneName.type}}</span>
-                      <div class="caption hidden-sm-down" *ngIf="mileStoneName.name=='Leviathan Raid'">
-                        Lifetime completions coming soon
-
+                      <div class="coming-soon-note hidden-sm-down" *ngIf="mileStoneName.name=='Leviathan Raid'">
+                        Lifetime completions coming soon!
                       </div>
-
-
                     </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
@@ -188,9 +185,8 @@
                                 </span>
                   </md-card-title>
                   <md-card-subtitle>
-                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>
+                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>                    
                     Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins)<br>
-                  
                   </md-card-subtitle>
                 </md-card-header>
 
@@ -200,21 +196,12 @@
                 </div>
                 <br>
 
-                <md-chip-list>
+                <div class="stat-chip-list">
+                    <ng-container *ngFor="let stat of char.stats; let i=index">
+                      <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [mdTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
+                    </ng-container>                  
+                </div>
 
-                  <ng-container *ngFor="let stat of char.stats">
-                      <md-chip class="stat-chip" *ngIf="stat.name!=null" [mdTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</md-chip>
-                  </ng-container>
-
-                    
-                  </md-chip-list>
-                <!-- <dl>
-                  <ng-container *ngFor="let stat of char.stats">
-                      <dt [mdTooltip]="stat.desc">{{stat.name}}</dt>
-                      <dd>{{stat.value}}</dd>
-                  </ng-container>
-                  
-                </dl> -->
               </md-card>
             </ng-container>
 

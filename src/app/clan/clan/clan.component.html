@@ -3,8 +3,8 @@
     <div class="main">
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
       <div class="body">
-        
-        <ng-container *ngIf="info!=null">  
+
+        <ng-container *ngIf="info!=null">
           <h1>{{info.name}}</h1>
           <ng-container *ngIf="info.progressions!=null">
             <md-expansion-panel>
@@ -12,8 +12,8 @@
                 <md-panel-title>
                   Clan Progress
                 </md-panel-title>
-                <md-panel-description>
-                    Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
+                <md-panel-description class="hidden-sm-down">
+                  Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
                 </md-panel-description>
               </md-expansion-panel-header>
               <br>
@@ -42,46 +42,54 @@
           <thead>
             <tr>
               <th>Member</th>
-              <th>Clan XP</th>
-              <th>Nightfall</th>
-              <th>Raid</th>
+              <ng-container *ngIf="modelPlayer!=null">
+                <th *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}</th>
+              </ng-container>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let member of members">
               <td class="lead">
                 <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName])">
-                  {{member.destinyUserInfo.displayName}}
+                  {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                 </a>
+
+                <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)"><i class="fa fa-refresh"></i></a>
               </td>
-              <td colspan=3>Coming Soon</td>
+              <ng-container *ngIf="member.player!=null">
+                <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
+                  <ng-container *ngFor="let char of member.player.characters">
+                      <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                            </ng-container>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                              <i class="fa fa-square-o"></i>
+                            </ng-container>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                              <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                            </ng-container>
+                      </ng-container>
+                  </ng-container>
+                </td>
+              </ng-container>
+              <ng-container *ngIf="member.player==null && modelPlayer!=null">
+                <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
+              </ng-container>
+
             </tr>
           </tbody>
-
         </table>
 
-<!-- 
-
-        <div *ngFor="let member of members">
-          {{member.destinyUserInfo.displayName}}
-          {{member.destinyUserInfo.membershipType}}
-          {{member.destinyUserInfo.icon}}
-          <ng-container *ngIf="member.bungieNetUserInfo!=null">{{member.bungieNetUserInfo.displayName}}</ng-container>
-        </div> -->
-
       </div>
-
     </div>
-
     <div *ngIf="disableads===false" class="adRight">
       <small class="adText">Advertisement</small>
       <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
-
   </div>
   <div *ngIf="disableads===false && isOldSafari===false" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adFormat="horizontal" adSlot="6246523328"></ng-adsense>
   </div>
-
 </div>

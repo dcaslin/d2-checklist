@@ -193,10 +193,13 @@ export class BungieService implements OnDestroy {
             new ActivityMode(10, "Control", "Control"),
             new ActivityMode(12, "Clash", "Clash"),
             new ActivityMode(16, "Nightfall", "Nightfall"),
-            new ActivityMode(17, "Heroic", "Heroic"),
-            new ActivityMode(18, "Strikes", "All Strikes"),
+            new ActivityMode(17, "Heroic Heroic", "Heroic Nightfall"),
+            new ActivityMode(18, "All Strikes", "All Strikes"),
+            new ActivityMode(19, "Iron Banner", "Iron Banner"),
+            new ActivityMode(31, "Supremacy", "Supremacy"),
             new ActivityMode(37, "Survival", "Survival"),
             new ActivityMode(38, "Countdown", "Countdown"),
+            new ActivityMode(38, "Trials", "Trials"),
             new ActivityMode(40, "Social", "Social"),
         ];
     }
@@ -332,14 +335,17 @@ export class BungieService implements OnDestroy {
 
     }
 
-    public getChars(p: SearchResult): Promise<Player> {
+    public getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?:boolean): Promise<Player> {
         const self: BungieService = this;
-
+//CharacterEquipment
+//Profiles,Characters,CharacterProgressions,,CharacterActivities
+        let sComp = components.join();
+        console.log("Components: "+sComp);
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' + p.membershipType + "/Profile/" +
-                p.membershipId +
-                //CharacterEquipment
-                "/?components=Profiles,Characters,CharacterProgressions,,CharacterActivities", opt)
+            return this.http.get(API_ROOT + 'Destiny2/' +membershipType + "/Profile/" +
+            membershipId +
+                
+                "/?components="+sComp, opt)
                 .map(
                 function (res) {
                     const j: any = res.json();
@@ -348,7 +354,9 @@ export class BungieService implements OnDestroy {
                 }).toPromise().catch(
                 function (err) {
                     console.log('Error Searching for player');
-                    self.handleError(err);
+                    if (!ignoreErrors){
+                        self.handleError(err);
+                    }
                     return null;
                 });
         });
