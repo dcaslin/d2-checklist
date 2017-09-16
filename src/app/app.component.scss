@@ -1,5 +1,17 @@
 @import 'styles-variables';
 
+
+.currency-icon{
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  display: inline-block;
+}
+
+.currency-chip{
+  margin-left: 10px;
+}
+
 md-sidenav-container {
   height: 100%;
 

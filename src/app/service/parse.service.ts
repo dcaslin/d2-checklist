@@ -4,7 +4,7 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, CharacterStat
+    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, CharacterStat, Currency
 } from './model';
 @Injectable()
 export class ParseService {
@@ -32,8 +32,8 @@ export class ParseService {
         char.race = this.destinyCacheService.cache.Race[c.raceHash].displayProperties.name;
         char.className = this.destinyCacheService.cache.Class[c.classHash].displayProperties.name;
         char.stats = [];
-        Object.keys(c.stats).forEach(key=>{
-            let val:number = c.stats[key];
+        Object.keys(c.stats).forEach(key => {
+            let val: number = c.stats[key];
             let desc: any = this.destinyCacheService.cache.Stat[key];
             let name = desc.displayProperties.name;
             let sDesc = desc.displayProperties.description;
@@ -128,39 +128,39 @@ export class ParseService {
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
                 let ms: _Milestone = _prog.milestones[key];
-                if (key == "534869653"){
+                if (key == "534869653") {
                     //ignore xur;
                     return;
                 }
                 //clan rewards special case
                 if (key == "4253138191") {
 
-                    let clanMilestones:ClanMilestoneResults  = new ClanMilestoneResults();
+                    let clanMilestones: ClanMilestoneResults = new ClanMilestoneResults();
                     ms.rewards.forEach(r => {
                         //this week
-                        if (r.rewardCategoryHash == 1064137897){
+                        if (r.rewardCategoryHash == 1064137897) {
                             r.entries.forEach(rewEnt => {
                                 let rewEntKey = rewEnt.rewardEntryHash;
                                 let earned: boolean = rewEnt.earned;
 
-                                if (rewEntKey==3789021730){
+                                if (rewEntKey == 3789021730) {
                                     clanMilestones.nightfall = earned;
 
                                 }
-                                else if (rewEntKey==2112637710){
+                                else if (rewEntKey == 2112637710) {
                                     clanMilestones.trials = earned;
 
                                 }
-                                else if (rewEntKey==2043403989){
+                                else if (rewEntKey == 2043403989) {
                                     clanMilestones.raid = earned;
                                 }
-                                else if (rewEntKey==964120289){
+                                else if (rewEntKey == 964120289) {
                                     clanMilestones.crucible = earned;
                                 }
                             });
                         }
                     });
-                    
+
                     c.clanMilestones = clanMilestones;
                     return;
                 }
@@ -185,8 +185,9 @@ export class ParseService {
                         if (name == null || name == "Classified") return;
 
                         //hotspot
-                        if (ms.milestoneHash == 463010297){
+                        if (ms.milestoneHash == 463010297) {
                             name = this.destinyCacheService.cache.InventoryItem[ms.availableQuests[0].questItemHash].displayProperties.name;
+                            description = "Complete public events at the designated location";
 
                         }
                         let milestoneName: MileStoneName = {
@@ -323,64 +324,71 @@ export class ParseService {
     }
 
     public parsePlayer(resp: any): Player {
-        if (resp.profile!=null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
-        if (resp.characters!=null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
-        const profile: Profile = resp.profile.data;
+        if (resp.profile != null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
+        if (resp.characters != null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
+
+        let profile: Profile;
+        if (resp.profile != null)
+            profile = resp.profile.data;
 
         let charsDict: any = {};
+        let milestoneList: MileStoneName[] = [];
+        let currentActivity: CurrentActivity = null;
+        let chars: Character[] = [];
+        if (resp.characters != null) {
+            const oChars: any = resp.characters.data;
+            Object.keys(oChars).forEach((key) => {
+                charsDict[key] = this.parseCharacter(oChars[key]);
+            });
+            let mileStoneDefs: any = {};
 
+            if (resp.characterProgressions && resp.characterProgressions.data) {
+                const oProgs: any = resp.characterProgressions.data;
+                Object.keys(oProgs).forEach((key) => {
+                    let curChar: Character = charsDict[key];
+                    this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
+                });
+            }
+            //convert dictionary to array for UI
+            Object.keys(mileStoneDefs).forEach(key => {
+                milestoneList.push(mileStoneDefs[key]);
+            });
 
-        const oChars: any = resp.characters.data;
-        Object.keys(oChars).forEach((key) => {
-            charsDict[key] = this.parseCharacter(oChars[key]);
-        });
+            if (resp.characterActivities && resp.characterActivities.data) {
+                const oActs: any = resp.characterActivities.data;
+                Object.keys(oActs).forEach((key) => {
+                    let curChar: Character = charsDict[key];
+                    this.populateActivities(curChar, oActs[key]);
+                    if (curChar.currentActivity != null) {
+                        currentActivity = curChar.currentActivity;
+                    }
+                });
+            }
+            Object.keys(charsDict).forEach((key) => {
+                chars.push(charsDict[key]);
+            });
 
-        let mileStoneDefs: any = {};
+            chars.sort((a, b) => {
+                let aD: number = Date.parse(a.dateLastPlayed);
+                let bD: number = Date.parse(b.dateLastPlayed);
+                if (aD < bD) return 1;
+                if (aD > bD) return -1;
+                return 0;
 
-        if (resp.characterProgressions && resp.characterProgressions.data) {
-            const oProgs: any = resp.characterProgressions.data;
-            Object.keys(oProgs).forEach((key) => {
-                let curChar: Character = charsDict[key];
-                this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
             });
         }
 
-        //convert dictionary to array for UI
-        let milestoneList: MileStoneName[] = [];
-        Object.keys(mileStoneDefs).forEach(key => {
-            milestoneList.push(mileStoneDefs[key]);
-        });
-
-        let currentActivity: CurrentActivity = null;
-
-        if (resp.characterActivities && resp.characterActivities.data) {
-            const oActs: any = resp.characterActivities.data;
-            Object.keys(oActs).forEach((key) => {
-                let curChar: Character = charsDict[key];
-                this.populateActivities(curChar, oActs[key]);
-                if (curChar.currentActivity != null) {
-                    currentActivity = curChar.currentActivity;
+        let currencies: Currency[] = [];
+        if (resp.profileCurrencies!=null){
+            resp.profileCurrencies.data.items.forEach(x=>{
+                let desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
+                if (desc!=null){
+                    currencies.push(new Currency(desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
                 }
             });
         }
 
-        let chars: Character[] = [];
-        Object.keys(charsDict).forEach((key) => {
-            chars.push(charsDict[key]);
-        });
-
-        chars.sort((a,b)=>{
-            let aD:number = Date.parse(a.dateLastPlayed);
-            let bD:number = Date.parse(b.dateLastPlayed);
-            if (aD<bD) return 1;
-            if (aD>bD) return -1;
-            return 0;
-
-        });
-
-
-
-        return new Player(profile, chars, currentActivity, milestoneList);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies);
     }
 
     public parseClanInfo(j: any): ClanInfo {
@@ -421,12 +429,12 @@ export class ParseService {
             returnMe.push(b);
         });
 
-        
+
         returnMe.sort(function (a, b) {
-            let bs:string = b.destinyUserInfo.displayName;
-            let as:string = a.destinyUserInfo.displayName;
-            if (bs<as) return 1;
-            if (bs>as) return -1;
+            let bs: string = b.destinyUserInfo.displayName;
+            let as: string = a.destinyUserInfo.displayName;
+            if (bs < as) return 1;
+            if (bs > as) return -1;
             return 0;
         });
 
@@ -443,11 +451,11 @@ export class ParseService {
             r.kills = ParseService.getBasicValue(e.values.kills);
             r.deaths = ParseService.getBasicValue(e.values.deaths);
 
-            if (r.deaths==0){
+            if (r.deaths == 0) {
                 r.kd = r.kills;
             }
-            else{
-                r.kd = r.kills/r.deaths;
+            else {
+                r.kd = r.kills / r.deaths;
             }
 
 

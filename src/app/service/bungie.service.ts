@@ -67,6 +67,9 @@ export class BungieService implements OnDestroy {
 
                     //after the fact search for clan
                     this.setClanId(membership);
+                    //after the fact currency check
+                    if (selectedUser.selectedUser!=null)
+                        this.setCurrencies(selectedUser);
                 });
             }
             else {
@@ -159,6 +162,16 @@ export class BungieService implements OnDestroy {
         });
     }
 
+    
+
+    private setCurrencies(selUser: SelectedUser) {
+        const self: BungieService = this;
+        
+        this.getChars(selUser.selectedUser.membershipType, selUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x=>{
+            selUser.selectedUserCurrencies = x.currencies;
+            self.emitUsers();
+        });
+    }
 
     private setClanId(membership: BungieMembership) {
         const self: BungieService = this;

@@ -21,6 +21,7 @@ export interface SearchResult {
 
 export class SelectedUser {
     selectedUser: UserInfo;
+    selectedUserCurrencies: Currency[];
     membership: BungieMembership;
 }
 
@@ -70,12 +71,26 @@ export class Player {
     currentActivity: CurrentActivity;
     characters: Character[];
     milestoneList: MileStoneName[];
+    currencies: Currency[];
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
         this.milestoneList = milestoneList;
+        this.currencies = currencies;
+    }
+}
+
+export class Currency{
+    name: string;
+    icon: string;
+    count: number;
+
+    constructor(name: string, icon:string, count: number){
+        this.name = name;
+        this.icon = icon;
+        this.count = count;
     }
 }
 
