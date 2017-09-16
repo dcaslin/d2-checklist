@@ -93,7 +93,7 @@
                     </td>
                   </tr>
                   <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null">
-                    <td class="lead" mdTooltip="Shared clan rewards, one per account" data-label="Activity">Clan Milestones</td>
+                    <td class="lead" mdTooltip="Shared clan rewards, one per account">Clan Milestones</td>
                     <td [attr.colspan]="player.characters.length">
 
                       <div class="clanMsRow">
@@ -187,7 +187,10 @@
                                   </button>
                                 </span>
                   </md-card-title>
-                  <md-card-subtitle>Time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins)
+                  <md-card-subtitle>
+                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>
+                    Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins)<br>
+                  
                   </md-card-subtitle>
                 </md-card-header>
 
@@ -195,6 +198,23 @@
                   <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
                   </md-progress-bar>
                 </div>
+                <br>
+
+                <md-chip-list>
+
+                  <ng-container *ngFor="let stat of char.stats">
+                      <md-chip class="stat-chip" *ngIf="stat.name!=null" [mdTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</md-chip>
+                  </ng-container>
+
+                    
+                  </md-chip-list>
+                <!-- <dl>
+                  <ng-container *ngFor="let stat of char.stats">
+                      <dt [mdTooltip]="stat.desc">{{stat.name}}</dt>
+                      <dd>{{stat.value}}</dd>
+                  </ng-container>
+                  
+                </dl> -->
               </md-card>
             </ng-container>
 
