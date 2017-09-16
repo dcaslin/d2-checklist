@@ -4,8 +4,42 @@
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
       <div class="body">
 
+        <ng-container *ngIf="info==null">
+          <h2>Loading clan info. This could take a while if your clan is large...</h2>
+        </ng-container>
+
         <ng-container *ngIf="info!=null">
           <h1>{{info.name}}</h1>
+
+          <md-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
+            <h2>Weekly Clan Bounties</h2>
+
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true"> 
+                                          Nightfall <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==false">
+                                          Nightfall <i class="fa fa-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==true"> 
+                                          Raid <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==false">
+                                          Raid <i class="fa fa-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==true"> 
+                                          Crucible <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==false">
+                                          Crucible <i class="fa fa-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==true"> 
+                                          Trials <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==false">
+                                          Trials <i class="fa fa-square-o"></i>
+                                      </span>
+          </md-card>
+
           <ng-container *ngIf="info.progressions!=null">
             <md-expansion-panel>
               <md-expansion-panel-header>
@@ -20,7 +54,7 @@
               <md-card class="clan-card" *ngFor="let faction of info.progressions">
 
                 <md-card-header>
-                  <div *ngIf="faction.icon!=null" md-card-avatar class="player-header-image" [style.background-image]="'url(//www.bungie.net' + faction.icon + ')'"></div>
+
                   <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}}</md-card-title>
                   <md-card-subtitle>{{faction.desc}}
                   </md-card-subtitle>
@@ -36,50 +70,59 @@
           </ng-container>
 
           <br>
-        </ng-container>
+          {{sort}}
 
-        <table class="responsive-table">
-          <thead>
-            <tr>
-              <th>Member</th>
-              <ng-container *ngIf="modelPlayer!=null">
-                <th *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}</th>
-              </ng-container>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let member of members">
-              <td class="lead">
-                <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName])">
+          <table class="responsive-table" *ngIf="this.members!=null">
+            <thead>
+              <tr>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></a>
+                </th>
+                <ng-container *ngIf="modelPlayer!=null">
+                  <th [mdTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}</th>
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let member of members">
+                <td class="lead">
+                  <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName])">
                   {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                 </a>
-
-                <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)"><i class="fa fa-refresh"></i></a>
-              </td>
-              <ng-container *ngIf="member.player!=null">
-                <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
-                  <ng-container *ngFor="let char of member.player.characters">
-                      <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                            </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                              <i class="fa fa-square-o"></i>
-                            </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                              <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
-                            </ng-container>
-                      </ng-container>
-                  </ng-container>
+                  <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)"><i class="fa fa-refresh"></i></a>
                 </td>
-              </ng-container>
-              <ng-container *ngIf="member.player==null && modelPlayer!=null">
-                <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
-              </ng-container>
+                <td *ngIf="member.player==null">N/A</td>
+                <ng-container *ngIf="member.player!=null">
+                  <td>
+                    {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                  </td>
+                  <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
+                    <ng-container *ngFor="let char of member.player.characters">
+                      <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        </ng-container>
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                          <i class="fa fa-square-o"></i>
+                        </ng-container>
+                        <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                          <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="member.player==null && modelPlayer!=null">
+                  <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
+                </ng-container>
 
-            </tr>
-          </tbody>
-        </table>
+              </tr>
+            </tbody>
+          </table>
+        </ng-container>
 
       </div>
     </div>

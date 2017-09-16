@@ -3,7 +3,10 @@
   <md-sidenav #sidenav mode="push">
     <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
     <md-nav-list>
-      <a md-list-item (click)="sidenav.close();myClan()"  *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+      <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
+            {{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}
+            </a>
+      <a md-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
             My Clan
           </a>
       <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
@@ -18,6 +21,7 @@
   <div class="wrapper">
 
     <md-toolbar color="primary">
+
       <button md-icon-button class="hidden-md-up" (click)="sidenav.open()">
         <md-icon>menu</md-icon>
       </button>
@@ -28,14 +32,8 @@
         [src]="logo"/> D2 Checklist</span>
 
       <span class="hidden-sm-down">
-          <button md-button class="nav-button" 
-          (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
-              <span>My Clan</span>
-      </button>
-      <button md-button class="nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
-          <span>My Info</span>
-        </button>
-      <button md-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
+       
+        <button md-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
           {{item.label}}
         </button>
       </span>
@@ -45,12 +43,9 @@
         Sign in
       </button>
 
-      <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" md-button [mdTooltip]="this.signedOnUser.selectedUser.displayName"
-        mdTooltipPosition="before" [mdMenuTriggerFor]="toolbarUserMenu">
+      <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" md-button [mdMenuTriggerFor]="toolbarUserMenu">
         <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length==1">person</md-icon>
         <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length>1">supervisor_account</md-icon>
-        <span class="hidden-sm-down">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
-        
       </button>
       <md-menu #toolbarUserMenu="mdMenu">
         <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
@@ -70,9 +65,35 @@
       <button md-icon-button routerLink="settings" class="hidden-sm-down">
         <md-icon>settings</md-icon>
       </button>
+      <md-toolbar-row  *ngIf="this.signedOnUser!=null" class="hidden-sm-down">
+        <span *ngIf="this.signedOnUser.selectedUser!=null">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
+        <span class="spacer"></span>
+
+        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUserCurrencies!=null">
+          <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
+            <span class="currency-chip" [mdTooltip]="c.count+' '+c.name">
+              <span>  {{c.count|number}}</span>
+              <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
+            </span>
+          </ng-container>
+
+
+        </ng-container>
+
+
+        <button md-button class="nav-button" (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+              <md-icon>flag</md-icon> My Clan
+          </button>
+        <button md-button class="nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
+              <md-icon>favorite</md-icon> My Info
+          </button>
+
+
+      </md-toolbar-row>
     </md-toolbar>
 
     <div class="content">
+
       <router-outlet #o="outlet"></router-outlet>
     </div>
 
