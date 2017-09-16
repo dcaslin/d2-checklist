@@ -119,8 +119,20 @@ export class Character {
     milestones: { [key: string]: MilestoneStatus };
     clanMilestones: ClanMilestoneResults;
     factions: Progression[];
-
+    stats: CharacterStat[];
     
+}
+
+export class CharacterStat{
+    name: string;
+    desc: string;
+    value: number;
+
+    constructor(name, desc, value){
+        this.name = name;
+        this.desc = desc;
+        this.value = value;
+    }
 }
 
 export class ClanMilestoneResults{

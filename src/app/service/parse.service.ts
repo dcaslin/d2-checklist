@@ -4,7 +4,7 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults
+    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, CharacterStat
 } from './model';
 @Injectable()
 export class ParseService {
@@ -21,6 +21,7 @@ export class ParseService {
         char.dateLastPlayed = c.dateLastPlayed;
         char.minutesPlayedThisSession = c.minutesPlayedThisSession;
         char.minutesPlayedTotal = c.minutesPlayedTotal;
+
         char.light = c.light;
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
@@ -30,6 +31,14 @@ export class ParseService {
         char.gender = this.destinyCacheService.cache.Gender[c.genderHash].displayProperties.name;
         char.race = this.destinyCacheService.cache.Race[c.raceHash].displayProperties.name;
         char.className = this.destinyCacheService.cache.Class[c.classHash].displayProperties.name;
+        char.stats = [];
+        Object.keys(c.stats).forEach(key=>{
+            let val:number = c.stats[key];
+            let desc: any = this.destinyCacheService.cache.Stat[key];
+            let name = desc.displayProperties.name;
+            let sDesc = desc.displayProperties.description;
+            char.stats.push(new CharacterStat(name, sDesc, val));
+        });
         return char;
     }
 
@@ -354,6 +363,15 @@ export class ParseService {
         let chars: Character[] = [];
         Object.keys(charsDict).forEach((key) => {
             chars.push(charsDict[key]);
+        });
+
+        chars.sort((a,b)=>{
+            let aD:number = Date.parse(a.dateLastPlayed);
+            let bD:number = Date.parse(b.dateLastPlayed);
+            if (aD<bD) return 1;
+            if (aD>bD) return -1;
+            return 0;
+
         });
 
 
