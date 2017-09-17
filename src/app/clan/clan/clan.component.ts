@@ -76,10 +76,10 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private sortData(): void{
-    if (this.sort=="memberAsc") this.members.sort(ClanComponent.compareName);
-    if (this.sort=="memberDesc") this.members.sort(ClanComponent.compareNameReverse);
-    if (this.sort=="dateAsc") this.members.sort(ClanComponent.compareDate);
-    if (this.sort=="dateDesc") this.members.sort(ClanComponent.compareDateReverse);
+    if (this.sort=="memberAsc") this.sortedMembers.sort(ClanComponent.compareName);
+    if (this.sort=="memberDesc") this.sortedMembers.sort(ClanComponent.compareNameReverse);
+    if (this.sort=="dateAsc") this.sortedMembers.sort(ClanComponent.compareDate);
+    if (this.sort=="dateDesc") this.sortedMembers.sort(ClanComponent.compareDateReverse);
   }
 
   public loadSpecificPlayer(target: BungieGroupMember) {
@@ -121,6 +121,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       if (i != null) {
         this.bungieService.getClanMembers(this.id).then(x => {
           this.members = x;
+          this.sortedMembers = x.slice(0);
           //TODO copy this array into the sorted target here
           this.loading = false;
           if (this.members.length > 0) {

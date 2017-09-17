@@ -12,7 +12,7 @@
           <h1>{{info.name}}</h1>
 
           <md-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
-            <h2>Weekly Clan Bounties</h2>
+            <h2 class="hidden-sm-down">Weekly Clan Bounties</h2>
 
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true"> 
                                           Nightfall <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
@@ -70,9 +70,14 @@
           </ng-container>
 
           <br>
-          {{sort}}
+          
+          <div class="mobile-button-row">
+              <button md-raised-button  (click)="toggleMemberSort()">Sort Name <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></button>
+              <button md-raised-button  (click)="toggleDateSort()">Sort Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></button>
+            </div>
+            
 
-          <table class="responsive-table" *ngIf="this.members!=null">
+          <table class="responsive-table" *ngIf="this.sortedMembers!=null">
             <thead>
               <tr>
                 <th>
@@ -87,7 +92,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let member of members">
+              <tr *ngFor="let member of sortedMembers">
                 <td class="lead">
                   <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName])">
                   {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
