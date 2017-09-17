@@ -79,6 +79,11 @@ export class BungieService implements OnDestroy {
         });
     }
 
+    public refreshCurrency(){
+        if (this.selectedUser!=null){
+            this.setCurrencies(this.selectedUser);
+        }
+    }
 
     public searchBungieUsers(name: string): Promise<BungieMember[]> {
         const self: BungieService = this;
