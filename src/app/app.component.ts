@@ -122,6 +122,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  refreshCurrency(){
+    this.bungieService.refreshCurrency();
+  }
+
 
   ngOnInit(): void {
     this.router.events

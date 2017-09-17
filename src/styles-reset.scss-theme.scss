@@ -7,6 +7,35 @@
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
 
+  // tool bar color overrides
+  // .mat-toolbar {
+  //   padding: 0px;
+  // }
+
+  // .mat-toolbar-row {
+  //   padding-left: 16px;
+  //   padding-right: 16px;
+  //   //background: mat-color($background, app-bar);
+  //   //color: mat-color($foreground, text);
+
+  //   &.mat-default{
+  //     background: mat-color($background, app-bar);
+  //     color: mat-color($foreground, text);
+  //   }
+
+  //   &.mat-primary {
+  //     @include _mat-toolbar-color($primary);
+  //   }
+
+  //   &.mat-accent {
+  //     @include _mat-toolbar-color($accent);
+  //   }
+
+  //   &.mat-warn {
+  //     @include _mat-toolbar-color($warn);
+  //   }
+  // }
+
 
   a {
     color: mat-color($foreground, text);

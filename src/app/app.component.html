@@ -65,17 +65,19 @@
       <button md-icon-button routerLink="settings" class="hidden-sm-down">
         <md-icon>settings</md-icon>
       </button>
-      <md-toolbar-row  *ngIf="this.signedOnUser!=null" class="hidden-sm-down">
+      <md-toolbar-row *ngIf="this.signedOnUser!=null" class="hidden-sm-down sub-row">
         <span *ngIf="this.signedOnUser.selectedUser!=null">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
         <span class="spacer"></span>
 
         <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUserCurrencies!=null">
+          <span class="currency-icons" (click)="refreshCurrency()">
           <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
             <span class="currency-chip" [mdTooltip]="c.count+' '+c.name">
-              <span>  {{c.count|number}}</span>
               <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-            </span>
-          </ng-container>
+          <span>  {{c.count|number}}</span>
+          </span>
+        </ng-container>
+        </span>
 
 
         </ng-container>
