@@ -130,6 +130,23 @@
 }
 
 
+.mobile-button-row {
+  display: none;
+  visibility: hidden;
+}
+
+
+@media screen and (max-width: 600px) {
+  .mobile-button-row {
+    display: flex;
+    visibility: visible;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 5px;
+  }
+}
+
+
 .adBottom{
   order: 2;
   display: none;
