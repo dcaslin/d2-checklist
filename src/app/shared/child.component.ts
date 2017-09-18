@@ -46,17 +46,14 @@ export class ChildComponent implements OnDestroy {
     public static isOldSafari(): boolean{
         try{
             let type:any = ChildComponent.getBrowserAndVersion();
-            console.dir(type);
             if (type.type=="safari"&& type.version<11){
-                console.log("Old Safari!");
                 return true;
             }
         }
         catch (err){
-            console.log("Error!");
+            console.log("Error checking browser version!");
             return false;
         }
-        console.log("Not Old Safari!");
         return false;
     }
 
