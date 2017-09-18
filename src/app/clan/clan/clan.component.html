@@ -55,7 +55,7 @@
 
                 <md-card-header>
 
-                  <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}}</md-card-title>
+                  <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}} &emsp; Remaining XP to get this week: <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b></md-card-title>
                   <md-card-subtitle>{{faction.desc}}
                   </md-card-subtitle>
                 </md-card-header>
