@@ -184,7 +184,7 @@ export class PGCR {
     isPrivate: boolean;
     entries: PGCREntry[];
     level: number;
-    //TODO teams    
+    //teams?
 }
 
 

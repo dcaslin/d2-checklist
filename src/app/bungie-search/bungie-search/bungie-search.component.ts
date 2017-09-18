@@ -69,7 +69,6 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
     this.loading = true;
     this.bungieService.searchBungieUsers(this.name)
       .then((x: BungieMember[]) => {
-        console.dir(x);
         this.accounts = x;
         this.loading = false;
       })

@@ -278,7 +278,7 @@ export class ParseService {
                     act.type = typeDesc.displayProperties.name;
                 }
             }
-            //TODO activityModeHash let modeDesc: any = this.destinyCacheService.cache.ActivityMode[desc.activityModeHash];
+            //activityModeHash let modeDesc: any = this.destinyCacheService.cache.ActivityMode[desc.activityModeHash];
             if (a.activityDetails.activityTypeHashOverride) {
                 console.log("Override: " + a.activityDetails.activityTypeHashOverride);
                 // let typeDesc: any = this.destinyCacheService.cache.ActivityType[a.activityDetails.activityTypeHashOverride];

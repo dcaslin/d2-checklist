@@ -43,7 +43,7 @@ export class BungieService implements OnDestroy {
                     let selectedUser: SelectedUser = new SelectedUser();
                     selectedUser.membership = membership;
 
-                    //TODO testing
+                    //For testing
                     // let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
                     // fake.membershipType = 2;
                     // fake.platformName = "PSN";
@@ -103,9 +103,51 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    //TODO get clan members https://www.bungie.net/Platform/GroupV2/1985678/Members/?currentPage=1&memberType=0
+
+    // Aggregate clan info: 
+    // https://www.bungie.net/Platform//Destiny2/Stats/AggregateClanStats/1985678
+    
+    public getClanStats(clanId: string): Promise<void>{
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + '/Destiny2/Stats/AggregateClanStats/' + clanId + "/",
+                opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return resp;
+                }).toPromise().catch(
+                function (err) {
+                    console.log("Error finding clan members");
+                    console.dir(err);
+                    return null;
+                });
+        });
+    }
 
 
+    // Leaderboards
+    // https://www.bungie.net/Platform/ Destiny2/Stats/Leaderboards/Clans/1985678
+
+    public getClanLeaderboards(clanId: string): Promise<void>{
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/",
+                opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return resp;
+                }).toPromise().catch(
+                function (err) {
+                    console.log("Error finding clan members");
+                    console.dir(err);
+                    return null;
+                });
+        });
+    }
+
+    //get clan members https://www.bungie.net/Platform/GroupV2/1985678/Members/?currentPage=1&memberType=0
     public getClanInfo(clanId: string): Promise<any>{
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
