@@ -90,6 +90,10 @@ export class ParseService {
             else if (name == "Gunsmith") { name = "Gunsmith"; info = "Banshee / Crucible"; }
             else if (name == "Classified") { return null; }
 
+            //fix names on clan progressions
+            if (p.progressionHash==3759191272) name="Guided Trials";
+            if (p.progressionHash==1273404180) name="Guided Nightfall";
+            if (p.progressionHash==3381682691) name="Guided Raid";
             prog.name = name;
             prog.info = info;
 
@@ -188,6 +192,8 @@ export class ParseService {
                         if (ms.milestoneHash == 463010297) {
                             name = this.destinyCacheService.cache.InventoryItem[ms.availableQuests[0].questItemHash].displayProperties.name;
                             description = "Complete public events at the designated location";
+                            //this is wrong in the DB
+                            type = "Weekly";
 
                         }
                         let milestoneName: MileStoneName = {
