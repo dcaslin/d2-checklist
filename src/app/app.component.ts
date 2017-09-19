@@ -54,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MdSnackBar) {
 
+      console.log("Tralalalala");
 
     this.isOldSafari = ChildComponent.isOldSafari();
 
