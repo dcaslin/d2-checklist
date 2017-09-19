@@ -125,7 +125,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
           this.sortedMembers = x.slice(0);
           this.loading = false;
           if (this.members.length > 0) {
-           // this.slowlyLoadRest();
+            this.slowlyLoadRest();
           }
         });
         // //also load clan stats and leaderboards
