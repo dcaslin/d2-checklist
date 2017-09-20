@@ -186,29 +186,31 @@
                 <md-card-header>
                   <div md-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
                   <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
-                    <span style="white-space:nowrap;">Light {{char.light}}&emsp;
-                                  <button md-mini-fab title="Activity History" (click)="history(char)">
-                                    <md-icon>history</md-icon>
-                                  </button>
-                                </span>
+                    <span style="white-space:nowrap;">Light {{char.light}}</span>
                   </md-card-title>
                   <md-card-subtitle>
-                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>                    
-                    Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}} mins)<br>
+                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>                    Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}}
+                    mins)<br>
                   </md-card-subtitle>
                 </md-card-header>
+                <md-card-content>
 
-                <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
-                  <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
-                  </md-progress-bar>
-                </div>
-                <br>
+                  <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
+                    <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
+                    </md-progress-bar>
+                  </div>
+                  <br>
 
-                <div class="stat-chip-list">
+                  <div class="stat-chip-list">
                     <ng-container *ngFor="let stat of char.stats; let i=index">
                       <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [mdTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
-                    </ng-container>                  
-                </div>
+                    </ng-container>
+                  </div>
+
+                </md-card-content>
+                <md-card-actions>
+                  <a md-button (click)="history(char)"><md-icon>history</md-icon> Activity History</a>
+                </md-card-actions>
 
               </md-card>
             </ng-container>
