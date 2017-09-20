@@ -115,6 +115,17 @@ export class BungieService implements OnDestroy {
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
+                    //array of 
+                    // {
+                    //     "mode": 7,
+                    //     "statId": "lbSingleGameKills",
+                    //     "value": {
+                    //         "basic": {
+                    //             "value": 0,
+                    //             "displayValue": "729"
+                    //         }
+                    //     }
+                    // }
                     return resp;
                 }).toPromise().catch(
                 function (err) {
@@ -129,10 +140,12 @@ export class BungieService implements OnDestroy {
     // Leaderboards
     // https://www.bungie.net/Platform/ Destiny2/Stats/Leaderboards/Clans/1985678
 
-    public getClanLeaderboards(clanId: string): Promise<void>{
+    //https://www.bungie.net/Platform/Destiny2/Stats/Leaderboards/Clans/1985678?maxtop=100&modes=2,4
+
+    public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<void>{
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/",
+            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop",
                 opt).map(
                 function (res) {
                     const j: any = res.json();

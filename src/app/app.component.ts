@@ -54,9 +54,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MdSnackBar) {
 
-      console.log("Tralalalala");
-
-    this.isOldSafari = ChildComponent.isOldSafari();
+      
+    //this.isOldSafari = ChildComponent.isOldSafari();
 
     this.componentCssClass = 'default-theme';
     this.overlayContainer.themeClass = 'default-theme';
@@ -129,13 +128,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    
     this.router.events
       .filter(event => event instanceof NavigationEnd)
       .takeUntil(this.unsubscribe$)
       .subscribe(
       (navEnd: NavigationEnd) => {
         try {
-          (window as any).ga('send', 'pageview', navEnd.urlAfterRedirects);
+          (window as any).ga('send', 'pageview', navEnd.urlAfterRedirects+"-"+(this.disableads?'disabledAds':'enabledAds'));
         }
         catch (err) {
           console.dir(err);
