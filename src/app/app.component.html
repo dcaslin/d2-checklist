@@ -1,3 +1,4 @@
+<div class="holder">
 <md-sidenav-container>
 
   <md-sidenav #sidenav mode="push">
@@ -94,12 +95,13 @@
       </md-toolbar-row>
     </md-toolbar>
 
-    <div class="content">
+    <router-outlet #o="outlet"></router-outlet>
+    <div class="push"></div>
 
-      <router-outlet #o="outlet"></router-outlet>
-    </div>
 
-    <div class="footer" *ngIf="isOldSafari==false">
+  </div>
+  
+  <div class="footer">
       <div class="row">
         <div class="col-sm-12 links">
           <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank">
@@ -128,12 +130,11 @@
       <div class="row">
         <div class="col-12 signature">
           &#169; {{year}} - Destiny Checklist | <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a> |
-          Not affiliated with Bungie or Destiny
+          Not affiliated with Bungie
 
         </div>
       </div>
     </div>
 
-  </div>
-
 </md-sidenav-container>
+</div>

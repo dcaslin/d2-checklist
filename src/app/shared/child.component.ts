@@ -61,7 +61,7 @@ export class ChildComponent implements OnDestroy {
 
     constructor(storageService: StorageService) {
 
-        this.isOldSafari = ChildComponent.isOldSafari();
+        //this.isOldSafari = ChildComponent.isOldSafari();
         this.storageService = storageService;
         this.disableads = this.storageService.getItem("disableads", false);
         this.storageService.settingFeed

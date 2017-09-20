@@ -1,5 +1,11 @@
 @import 'styles-variables';
 
+$footer-height: 160px;
+
+.holder{
+  height: 100%;
+}
+
 .sub-row{
    font-size: smaller;
    height: 40px;
@@ -86,75 +92,59 @@ md-sidenav {
 }
 
 
-
-  .content {
-    flex: 1 0 auto;
-    display: flex;
-    flex-direction: column;
-    // background-color: gray;
-  }
-
-
-  .main2 {
-    // min-width: 300px;
-    // min-height: 300px;
-    // background-color: cyan;
-    
-    background-color: green;
-    height: 100%;
-  }
-
-
 .wrapper {
   z-index: -2;
   min-height: 100%;
-  display: flex;
-  flex-direction: column;
+  margin-bottom: -$footer-height;
+}
 
-  .footer {
-    padding: 0 15px;
-    text-align: center;
-    z-index: 1;
+.footer, .push{
+  height: $footer-height;
+}
 
-    .row {
-      padding: 10px 0;
+.footer {
+  padding: 0 15px;
+  text-align: center;
+  z-index: 1;
 
-      .links {
-        a {
-          transition: padding 0.5s;
+  .row {
+    padding: 10px 0;
+
+    .links {
+      a {
+        transition: padding 0.5s;
+        display: inline-block;
+        padding: 20px 5px;
+
+        &:hover {
+          text-decoration: none;
+        }
+
+        span {
           display: inline-block;
-          padding: 20px 5px;
+          width: 70px;
+          padding: 0 0 0 5px;
+          overflow: hidden;
+          text-align: left;
+          white-space: nowrap;
+          transition: width 0.5s;
+        }
+      }
 
-          &:hover {
-            text-decoration: none;
-          }
+      @media (max-width: map-get($grid-breakpoints, md)) {
+        a {
+          padding: 20px;
 
           span {
-            display: inline-block;
-            width: 70px;
-            padding: 0 0 0 5px;
-            overflow: hidden;
-            text-align: left;
-            white-space: nowrap;
-            transition: width 0.5s;
+            width: 0;
+            padding: 0;
           }
         }
+      }
 
-        @media (max-width: map-get($grid-breakpoints, md)) {
-          a {
-            padding: 20px;
-
-            span {
-              width: 0;
-              padding: 0;
-            }
-          }
-        }
-
-        @media (max-width: map-get($grid-breakpoints, sm)) {
-          a {
-            padding: 20px 5px;
-          }
+      @media (max-width: map-get($grid-breakpoints, sm)) {
+        a {
+          padding: 20px 5px;
         }
       }
     }
