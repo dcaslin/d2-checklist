@@ -170,9 +170,11 @@
   }
     
   .adBottom{
+    min-width: 336px;
+    //background-color: pink;
     display: block;
     visibility: visible;
-    height: 260px;
+    height: 300px;
   }
 
 }
