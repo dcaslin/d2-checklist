@@ -10,7 +10,6 @@ import { Subject } from 'rxjs/Subject';
 export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
     disableads: boolean = false;
-    isOldSafari: boolean = false;
     loading: boolean = false;
 
     ua = '';
@@ -43,25 +42,24 @@ export class ChildComponent implements OnDestroy {
         }
     }
 
-    public static isOldSafari(): boolean{
-        try{
-            let type:any = ChildComponent.getBrowserAndVersion();
-            if (type.type=="safari"&& type.version<11){
-                return true;
-            }
-        }
-        catch (err){
-            console.log("Error checking browser version!");
-            return false;
-        }
-        return false;
-    }
+    // public static isOldSafari(): boolean{
+    //     try{
+    //         let type:any = ChildComponent.getBrowserAndVersion();
+    //         if (type.type=="safari"&& type.version<11){
+    //             return true;
+    //         }
+    //     }
+    //     catch (err){
+    //         console.log("Error checking browser version!");
+    //         return false;
+    //     }
+    //     return false;
+    // }
 
 
 
     constructor(storageService: StorageService) {
 
-        //this.isOldSafari = ChildComponent.isOldSafari();
         this.storageService = storageService;
         this.disableads = this.storageService.getItem("disableads", false);
         this.storageService.settingFeed
