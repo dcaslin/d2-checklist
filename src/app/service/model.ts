@@ -175,7 +175,7 @@ export interface LevelProgression {
 export class PGCR {
     period: string;
     activityDurationSeconds: number;
-    start: string;
+    finish: string;
     //Acitivity Details
     referenceId: number;
     instanceId: string;

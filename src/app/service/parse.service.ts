@@ -552,7 +552,8 @@ export class ParseService {
             let entry = this.parsePGCREntry(ent);
             if (entry.activityDurationSeconds != null) {
                 r.activityDurationSeconds = entry.activityDurationSeconds;
-                r.start = new Date(Date.parse(r.period) - r.activityDurationSeconds * 1000).toUTCString();
+                //TODO fix this, period is start, not finish
+                r.finish = new Date(Date.parse(r.period)+ r.activityDurationSeconds * 1000).toISOString();
             }
             r.entries.push(entry);
         });

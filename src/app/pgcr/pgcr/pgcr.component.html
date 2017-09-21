@@ -11,7 +11,7 @@
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </h2>
           <div class="caption">
-            Start: {{data.start|date:'short'}} <br> Finish: {{data.period|date:'short'}} <br> Duration: {{ data.activityDurationSeconds
+            Start: {{data.period|date:'short'}} <br> Finish: {{data.finish|date:'short'}} <br> Duration: {{ data.activityDurationSeconds
             | amDuration:'seconds' }}
           </div>
           <md-divider></md-divider>
