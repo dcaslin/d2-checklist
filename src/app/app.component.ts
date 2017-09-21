@@ -35,6 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   logo = require('../assets/logo.png');
   navigation = [
     { link: 'home', label: 'Home' },
+    { link: 'leaderboard/leviathan', label: 'Raid Leaderboard' },
     { link: 'search', label: 'Search Users' },
     { link: 'about', label: 'About' }
   ];

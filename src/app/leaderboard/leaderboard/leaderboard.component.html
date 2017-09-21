@@ -2,25 +2,51 @@
   <div class="childVert">
     <div class="main">
       <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
-      <div class="body-text" [ngClass]="animateOnRouteEnter">
-        <h2 class="centerMe">
-          <a href="javascript:void(0)" (click)="getData()">Leaderboard</a></h2>
-        <div class="table-container">
-          <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
-            <ng-container cdkColumnDef="end">
-              <md-header-cell *cdkHeaderCellDef md-sort-header>Complete</md-header-cell>
-              <md-cell *cdkCellDef="let row">
-                <a href="javascript:void(0)" color="primary" (click)="pgcr(row.pgcr)">
-                  {{row.end|date:'short'}} 
-                </a>
-              </md-cell>
-            </ng-container>
-            <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
-            <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
-          </md-table>
-          <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
-          </md-paginator>
-        </div>
+
+      <h1>Leviathan Raid Leaderboard</h1>
+      <div class="note"><small>Below are the top 1000 first finishers of the Leviathan Raid on Xbox and Playstation. Type part of a gamertag below to filter the list on a name. Completion dates are presented in your local timezone.</small>
+      </div>
+      <div>
+        <md-form-field class="searchField">
+          <input mdInput #filter placeholder="Filter users">
+        </md-form-field>
+      </div>
+
+      <div class="table-container">
+        <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
+          <ng-container cdkColumnDef="rank">
+            <md-header-cell class="rankCol" *cdkHeaderCellDef md-sort-header>Rank</md-header-cell>
+            <md-cell class="rankCol" *cdkCellDef="let row">
+              <a href="javascript:void(0)" color="primary" (click)="pgcr(row.pgcr)">
+                      {{row.rank}} 
+                    </a>
+            </md-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="end">
+            <md-header-cell *cdkHeaderCellDef class="hidden-md-down" md-sort-header>Complete</md-header-cell>
+            <md-cell *cdkCellDef="let row" class="hidden-md-down">
+              {{row.end|date:'short'}}
+            </md-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="fireteam">
+            <md-header-cell *cdkHeaderCellDef md-sort-header>Fireteam</md-header-cell>
+            <md-cell *cdkCellDef="let row">
+              <span class="name" *ngFor="let p of row.fireteam">
+                  <a href="javascript:void(0)" (click)="loadPlayer(p.membershipType, p.displayName)" >{{p.displayName}}</a>
+                </span>
+            </md-cell>
+          </ng-container>
+          <ng-container cdkColumnDef="durationMs">
+            <md-header-cell *cdkHeaderCellDef class="hidden-md-down" md-sort-header>Duration</md-header-cell>
+            <md-cell *cdkCellDef="let row" class="hidden-md-down">
+              {{ row.durationMs | amDuration:'milliseconds' }}
+            </md-cell>
+          </ng-container>
+          <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+          <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+        </md-table>
+        <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+        </md-paginator>
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">

@@ -50,6 +50,14 @@ const routes: Routes = [
     component: LeaderboardComponent
   },
   {
+    path: 'leaderboard/leviathan/:name',
+    component: LeaderboardComponent
+  },
+  {
+    path: 'leaderboard',
+    redirectTo: 'leaderboard/leviathan'
+  },
+  {
     path: 'pgcr/:instanceId',
     component: PGCRComponent
   },

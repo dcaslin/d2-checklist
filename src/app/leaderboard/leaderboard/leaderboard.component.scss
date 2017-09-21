@@ -11,14 +11,24 @@ a:link {
   text-decoration: underline;
 }
 
-.body-text {
-  width: auto;
-  margin-left: auto; 
-  margin-right: auto; 
-}
-
 .table-container {
   display: flex;
   flex-direction: column;
   min-width: 300px;
+}
+
+.rankCol{
+  width: 45px !important;
+}
+
+.name{
+  margin-right: 10px;
+}
+
+.note{
+  max-width: 500px;
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
 }
