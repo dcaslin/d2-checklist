@@ -1,0 +1,36 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <div class="body-text" [ngClass]="animateOnRouteEnter">
+        <h2 class="centerMe">
+          <a href="javascript:void(0)" (click)="getData()">Leaderboard</a></h2>
+        <div class="table-container">
+          <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
+            <ng-container cdkColumnDef="end">
+              <md-header-cell *cdkHeaderCellDef md-sort-header>Complete</md-header-cell>
+              <md-cell *cdkCellDef="let row">
+                <a href="javascript:void(0)" color="primary" (click)="pgcr(row.pgcr)">
+                  {{row.end|date:'short'}} 
+                </a>
+              </md-cell>
+            </ng-container>
+            <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
+            <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
+          </md-table>
+          <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          </md-paginator>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  </div>
+</div>

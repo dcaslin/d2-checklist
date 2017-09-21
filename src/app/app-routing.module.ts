@@ -10,6 +10,7 @@ import { AboutComponent } from './about';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
+import { LeaderboardComponent } from './leaderboard';
 
 const routes: Routes = [
   {
@@ -43,6 +44,10 @@ const routes: Routes = [
   , {
     path: 'clan/:id',
     component: ClanComponent
+  },
+  {
+    path: 'leaderboard/leviathan',
+    component: LeaderboardComponent
   },
   {
     path: 'pgcr/:instanceId',
