@@ -4,7 +4,7 @@
   <md-sidenav #sidenav mode="push">
     <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
     <md-nav-list>
-      <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
+      <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUser!=null">
             {{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}
             </a>
       <a md-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">

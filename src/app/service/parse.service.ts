@@ -139,6 +139,10 @@ export class ParseService {
                 //clan rewards special case
                 if (key == "4253138191") {
 
+                    //grab weekly reset from this
+                    c.startWeek = new Date(ms.startDate);
+                    c.endWeek = new Date(ms.endDate);
+
                     let clanMilestones: ClanMilestoneResults = new ClanMilestoneResults();
                     ms.rewards.forEach(r => {
                         //this week
@@ -261,7 +265,7 @@ export class ParseService {
         return val.basic.value;
     }
 
-    private parseActivity(a): any {
+    private parseActivity(a): Activity {
         let act: Activity = new Activity();
 
         act.period = a.period;
@@ -319,7 +323,7 @@ export class ParseService {
 
     }
 
-    public parseActivities(a: any[]): any[] {
+    public parseActivities(a: any[]): Activity[] {
         let returnMe: any[] = [];
         a.forEach((act) => {
             let parsed = this.parseActivity(act);
