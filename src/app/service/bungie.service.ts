@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName,Challenge,LeaderBoardList } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -116,7 +116,7 @@ export class BungieService implements OnDestroy {
         if (raidMilestoneName==null) return Promise.resolve(void[]);
 
         chars.forEach(c=>{
-            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 100).then((hist:Activity[])=>{
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 99).then((hist:Activity[])=>{
                 //TODO what is weekly reset
                 var totalRaid:number =0; 
                 hist.forEach(a=>{
@@ -179,15 +179,15 @@ export class BungieService implements OnDestroy {
 
     //https://www.bungie.net/Platform/Destiny2/Stats/Leaderboards/Clans/1985678?maxtop=100&modes=2,4
 
-    public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<void>{
+    public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<LeaderBoardList[]>{
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop",
+            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop="+max+"&modes="+mode,
                 opt).map(
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
-                    return resp;
+                    return self.parseService.parseLeaderBoard(resp);
                 }).toPromise().catch(
                 function (err) {
                     console.log("Error finding clan members");
@@ -376,6 +376,43 @@ export class BungieService implements OnDestroy {
         return j.Response;
     }
 
+    
+    public getPGCR(instanceId: string): Promise<any> {
+        const self: BungieService = this;
+
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return self.parseService.parsePGCR(resp);
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error Searching for player');
+                    self.handleError(err);
+                    return null;
+                });
+        });
+    }
+
+    public getChallenges(): Promise<Challenge[]>{
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/1/Profile/4611686018434964640/?components=CharacterProgressions', opt).map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    return self.parseService.parseChallenges(resp);
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error getting challenges for player');
+                    console.dir(err);
+                    return null;
+                });
+        });
+    }
+
+
     public getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<Activity[]> {
         const self: BungieService = this;
 
@@ -401,25 +438,6 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public getPGCR(instanceId: string): Promise<any> {
-        const self: BungieService = this;
-
-        return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt).map(
-                function (res) {
-                    const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
-                    return self.parseService.parsePGCR(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error Searching for player');
-                    self.handleError(err);
-                    return null;
-                });
-        });
-
-    }
-
     public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number): Promise<any[]> {
         let self = this;
         const MAX_PAGE_SIZE: number = 100;
@@ -431,12 +449,19 @@ export class BungieService implements OnDestroy {
             function processMatches(results: any[]) {
                 if (results == null || results.length == 0 || allMatches.length > max) {
                     resolve(allMatches);
+                    return;
                 }
                 else {
                     curPage++;
                     results.forEach(function (r) {
                         allMatches.push(r);
                     });
+
+                    if (allMatches.length > max){
+                        resolve(allMatches);
+                        return;
+                    }
+
                     return self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE).then(processMatches);
                 }
             }

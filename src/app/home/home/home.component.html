@@ -17,8 +17,20 @@
           &emsp;
           <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
         </div>
-        <div class="notes">
-          <h4 class="centerMe">New</h4>
+
+        <div class="info">
+          
+            <h4>Nightfall Challenges</h4>
+          <dl>
+            <ng-container *ngFor="let c of challenges">
+              <dt>{{c.name}}</dt>
+              <dd>{{c.desc}}</dd>
+            </ng-container>
+          </dl>
+
+
+          <h2>Site news</h2>
+          <h4>New features</h4>
           <ul>
             <li><a href="http://www.d2checklist.com/leaderboard/leviathan">Raid leaderboard!</a></li>
             <li><span class="warn-text">Note: There are problems with reporting weekly raid completions from Bungie. I've worked around this on the individual player page, but the clan page may report incorrectly.</span></li>
@@ -28,7 +40,7 @@
             <li>View your clan's progress and info. Sign in and click "My Clan". <a href="https://www.d2checklist.com/clan/1985678">Here's my clan, for example.</a></li>
             <li>View currencies for current on account, including legendary shards. Sign in and view menu on top right.</li>
           </ul>
-          <h4 class="centerMe">Coming Soon</h4>
+          <h4>Coming Soon</h4>
           <ul>
             <!-- <li>
               <del>Sign in to view private endpoints</del> - Done!</li>

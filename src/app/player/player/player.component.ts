@@ -42,6 +42,27 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.platforms = Const.PLATFORMS_ARRAY;
   }
 
+  
+  public historyPlayer(p: Player) {
+    let c: Character = p.characters[0];
+    this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
+  }
+
+  public getTrialsLink(p: Player){
+    let platformstr: string;
+    if (p.profile.userInfo.membershipType==1){
+      platformstr = "xbox";
+    }
+    else if (p.profile.userInfo.membershipType==2){
+      platformstr = "ps";
+    }
+    else if (p.profile.userInfo.membershipType==2){
+      platformstr = "bnet";
+    }
+    return "https://trials.report/report/"+platformstr+"/"+encodeURI(p.profile.userInfo.displayName);
+  }
+
+
   public history(c: Character) {
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
   }

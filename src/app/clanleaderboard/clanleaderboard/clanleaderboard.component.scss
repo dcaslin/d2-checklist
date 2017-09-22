@@ -4,35 +4,12 @@
 :host {
 }
 
-.clan-card{
-  text-align: left;
-  margin-bottom: 10px;
-}
-
 .button-row {
   & button{  
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
   }
-}
-
-.clanMs{
-  font-weight: bold;
-  font-size: larger;
-  margin-bottom: 5px;
-  margin-right: 10px;
-  margin-left: 10px;
-  
-}
-
-.clanMsRow{
-  text-align: left;
-}
-
-
-.clan-header-image {
-  background-size: cover;
 }
 
 .body {
@@ -43,4 +20,16 @@
   letter-spacing: .01px;
   overflow-wrap: break-word;
   z-index: 1;
+}
+
+.searchField{
+  margin-bottom: 10px;
+}
+
+.board{
+  min-width: 150px;
+}
+
+.tidy-table{
+  max-width: 600px !important;
 }

@@ -6,6 +6,8 @@ import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { Const, Platform } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
+import { BungieService } from "../../service/bungie.service";
+import { Challenge } from "../../service/model";
 import {ChildComponent} from '../../shared/child.component';
 
 @Component({
@@ -24,13 +26,14 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   selectedTab: string;
   gamerTag: string;
   dontSearch: boolean;
+  challenges: Challenge[] = [];
 
   navigation = [
     { link: 'checklist', label: 'Checklist' },
     { link: 'progress', label: 'Progress' }
   ];
 
-  constructor(storageService: StorageService, private router: Router) {
+  constructor(storageService: StorageService, private bungieService: BungieService, private router: Router) {
     super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
@@ -77,6 +80,9 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit() {
+    this.bungieService.getChallenges().then(c=>{
+      this.challenges = c;
+    })
 
    
   }

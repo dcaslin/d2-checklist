@@ -32,24 +32,28 @@
           <br>
         </ng-container>
 
-        <h4 *ngIf="player!=null">{{player.profile.userInfo.displayName}} -
-          <span *ngIf="player.currentActivity==null">
-              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago 
-              <ng-container *ngIf="player.profile.userInfo.membershipType==1">
-                &emsp;
-                <a class="underline" target="_blank" rel="noopener" 
-                [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
-                Message on Xbox Live
-              </a>
-                  
-                </ng-container>
+        <ng-container *ngIf="player!=null">
+          <h4>{{player.profile.userInfo.displayName}} -
+            <span *ngIf="player.currentActivity==null">
+              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago     
             </span>
-          <span *ngIf="player.currentActivity!=null">
+            <span *ngIf="player.currentActivity!=null">
                 <mark>Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | 
                 Started {{today| amDifference:player.currentActivity.dateActivityStarted| amDuration:'ms'}} ago</mark>
             </span>
-        </h4>
-
+          </h4>
+          <div class="button-row">
+            <a md-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
+                <md-icon>message</md-icon><span class="hidden-sm-down">Message on XBL</span>
+              </a>
+            <a md-button (click)="historyPlayer(player)">
+                <md-icon>history</md-icon><span class="hidden-sm-down">Activity History</span>
+            </a>
+            <a md-button [href]="getTrialsLink(player)" rel="noopener" target="_blank">
+              <md-icon>remove_red_eye</md-icon><span class="hidden-sm-down">Trials.Report</span>
+              </a>
+          </div>
+        </ng-container>
 
         <md-tab-group #maintabs (selectChange)='changeTab($event)'>
           <md-tab label="Checklist">
@@ -161,7 +165,7 @@
                     <tbody>
                       <tr *ngFor="let faction of char.factions">
                         <td class="lead" [mdTooltip]="faction.desc" data-label="">
-                          {{faction.name}}
+                          {{faction.name}} <span class="light">Level {{faction.level}} </span>
                           <span class="caption">{{faction.info}}</span>
                         </td>
                         <td data-label="">
@@ -174,6 +178,9 @@
                       </tr>
                     </tbody>
                   </table>
+
+                  <br>
+
 
                 </md-tab>
               </md-tab-group>
@@ -193,15 +200,20 @@
                   </md-card-title>
                   <md-card-subtitle>
                     Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>                    Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}}
-                    mins)<br>
+                    mins)
+                    <br>
                   </md-card-subtitle>
                 </md-card-header>
                 <md-card-content>
 
-                  <div>Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
+                  <div *ngIf="char.baseCharacterLevel<20">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
                     <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
                     </md-progress-bar>
                   </div>
+                  <div *ngIf="char.baseCharacterLevel>=20"><b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp;  {{char.legendProgression.percentToNextLevel|percent}} to level {{char.legendProgression.level+1}}
+                      <md-progress-bar color="accent" mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
+                      </md-progress-bar>
+                    </div>
                   <br>
 
                   <div class="stat-chip-list">
@@ -212,7 +224,8 @@
 
                 </md-card-content>
                 <md-card-actions>
-                  <a md-button (click)="history(char)"><md-icon>history</md-icon> Activity History</a>
+                  <a md-button (click)="history(char)">
+                    <md-icon>history</md-icon> Activity History</a>
                 </md-card-actions>
 
               </md-card>
