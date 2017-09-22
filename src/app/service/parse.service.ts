@@ -4,7 +4,7 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, CharacterStat, Currency
+    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, CharacterStat, Currency, Challenge, LeaderboardEntry, LeaderBoardList
 } from './model';
 @Injectable()
 export class ParseService {
@@ -40,6 +40,34 @@ export class ParseService {
             char.stats.push(new CharacterStat(name, sDesc, val));
         });
         return char;
+    }
+
+    public parseLeaderBoard(resp: any): LeaderBoardList[] {
+        //should only be one value
+        let mainKey: any = null;
+        Object.keys(resp).forEach(key => {
+            mainKey = resp[key];
+        });
+        var returnMe:LeaderBoardList[] = [];
+        if (mainKey != null) {
+            Object.keys(mainKey).forEach(key => {
+                let title: string = key.substring(2);
+                title = title.replace(/([A-Z])/g, ' $1');
+                let entries: LeaderboardEntry[] = [];
+                mainKey[key].entries.forEach(x => {
+                    let l: LeaderboardEntry = new LeaderboardEntry();
+                    l.characterClass = x.player.characterClass;
+                    l.light = x.player.lightLevel;
+                    l.characterId = x.characterId;
+                    l.destinyUserInfo = x.player.destinyUserInfo;
+                    l.rank = x.rank;
+                    l.value = x.value.basic.value;
+                    entries.push(l);
+                });
+                returnMe.push(new LeaderBoardList(title, entries));
+            });
+        }
+        return returnMe;
     }
 
     private populateActivities(c: Character, _act: any): void {
@@ -91,9 +119,9 @@ export class ParseService {
             else if (name == "Classified") { return null; }
 
             //fix names on clan progressions
-            if (p.progressionHash==3759191272) name="Guided Trials";
-            if (p.progressionHash==1273404180) name="Guided Nightfall";
-            if (p.progressionHash==3381682691) name="Guided Raid";
+            if (p.progressionHash == 3759191272) name = "Guided Trials";
+            if (p.progressionHash == 1273404180) name = "Guided Nightfall";
+            if (p.progressionHash == 3381682691) name = "Guided Raid";
             prog.name = name;
             prog.info = info;
 
@@ -244,8 +272,20 @@ export class ParseService {
                 }
 
             });
-
         }
+
+        //only progression we care about right now is Legend
+        if (_prog.progressions) {
+            Object.keys(_prog.progressions).forEach((key) => {
+                if (key == "2030054750") {
+
+                    let p: _Progression = _prog.progressions[key];
+                    let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
+                    c.legendProgression = prog;
+                }
+            });
+        }
+
         factions.sort(function (a, b) {
             return b.percentToNextLevel - a.percentToNextLevel;
         })
@@ -323,6 +363,19 @@ export class ParseService {
 
     }
 
+    public parseChallenges(resp: any): Challenge[] {
+
+        let ch: any[] = resp.characterProgressions.data["2305843009264730900"].milestones["2171429505"].availableQuests[0].challenges;
+        let returnMe: Challenge[] = [];
+        ch.forEach(c => {
+            let objDesc: any = this.destinyCacheService.cache.Objective[c.objective.objectiveHash];
+            console.dir(objDesc);
+            let challenge = new Challenge(objDesc.displayProperties.name, objDesc.displayProperties.description);
+            returnMe.push(challenge)
+        });
+        return returnMe;
+    }
+
     public parseActivities(a: any[]): Activity[] {
         let returnMe: any[] = [];
         a.forEach((act) => {
@@ -389,10 +442,10 @@ export class ParseService {
         }
 
         let currencies: Currency[] = [];
-        if (resp.profileCurrencies!=null){
-            resp.profileCurrencies.data.items.forEach(x=>{
+        if (resp.profileCurrencies != null) {
+            resp.profileCurrencies.data.items.forEach(x => {
                 let desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
-                if (desc!=null){
+                if (desc != null) {
                     currencies.push(new Currency(desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
                 }
             });
@@ -557,7 +610,7 @@ export class ParseService {
             if (entry.activityDurationSeconds != null) {
                 r.activityDurationSeconds = entry.activityDurationSeconds;
                 //TODO fix this, period is start, not finish
-                r.finish = new Date(Date.parse(r.period)+ r.activityDurationSeconds * 1000).toISOString();
+                r.finish = new Date(Date.parse(r.period) + r.activityDurationSeconds * 1000).toISOString();
             }
             r.entries.push(entry);
         });

@@ -57,6 +57,25 @@ export interface UserInfo {
     icon: string;
 }
 
+export class LeaderBoardList{
+    name: string;
+    entries: LeaderboardEntry[];
+
+    constructor(name:string, entries: LeaderboardEntry[]){
+        this.name = name;
+        this.entries = entries;
+    }
+}
+
+export class LeaderboardEntry{
+    destinyUserInfo: UserInfo;
+    characterId: string;
+    characterClass: string;
+    light: number;
+    rank: number;
+    value: number;
+}
+
 
 export interface Profile {
     userInfo: UserInfo;
@@ -131,15 +150,27 @@ export class Character {
     gender: string;
     className: string;
     levelProgression: LevelProgression;
+    legendProgression: Progression;
     currentActivity: CurrentActivity;
     milestones: { [key: string]: MilestoneStatus };
     clanMilestones: ClanMilestoneResults;
     factions: Progression[];
+    //progressions: Progression[];
     stats: CharacterStat[];
     startWeek: Date;
     endWeek: Date;
     lifetimeRaid: number = 0;
     
+}
+
+export class Challenge{
+    name: string;
+    desc: string;
+
+    constructor(name: string, desc: string){
+        this.name = name;
+        this.desc = desc;
+    }
 }
 
 export class CharacterStat{

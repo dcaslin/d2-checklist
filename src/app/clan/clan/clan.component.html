@@ -10,6 +10,11 @@
 
         <ng-container *ngIf="info!=null">
           <h1>{{info.name}}</h1>
+          <div class="button-row">
+
+              <button md-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
+              <button md-raised-button>Aggregate Stats (soon)</button>
+            </div>
 
           <md-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
             <h2 class="hidden-sm-down">Weekly Clan Bounties</h2>

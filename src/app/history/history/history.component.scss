@@ -22,3 +22,11 @@ a:link {
   flex-direction: column;
   min-width: 300px;
 }
+
+.button-row {
+  & button{  
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}

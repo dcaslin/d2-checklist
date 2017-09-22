@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { Character, Platform, ActivityMode, Const } from "../../service/model";
+import { Player, Character, Platform, ActivityMode, Const } from "../../service/model";
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MdPaginator, MdSort } from '@angular/material';
 import { DurationPipe } from 'angular2-moment';
@@ -19,7 +19,6 @@ import { StorageService } from '../../service/storage.service';
 export class HistoryComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
-  platforms: Platform[];
   activityModes: ActivityMode[];
   maxResults: number[];
   selectedMaxResults: number;
@@ -28,6 +27,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   membershipType: number;
   membershipId: string;
   characterId: string;
+  player: Player;
 
   database = new SortFilterDatabase([]);
   dataSource: SortFilterDataSource | null;
@@ -38,7 +38,6 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
     super(storageService);
-    this.platforms = Const.PLATFORMS_ARRAY;
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [100, 200, 500, 1000, 2000];
@@ -61,6 +60,10 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
     this.router.navigate(['/pgcr', instanceId]);
   }
 
+  selectChar(c: Character){
+    this.router.navigate(['history',this.membershipType, this.membershipId, c.characterId]);
+  }
+
   private sub: any;
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
@@ -76,6 +79,10 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
       if (selPlatform != null) {
         this.membershipType = selPlatform.type;
         this.membershipId = params['memberId'];
+        this.bungieService.getChars(this.membershipType, this.membershipId, ["Profiles", "Characters"], false).then(p=>{
+          this.player = p;
+
+        });
         this.characterId = params['characterId'];
         this.history();
       }
