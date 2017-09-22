@@ -7,9 +7,9 @@
   margin-bottom: 10px;
 }
 
-a:link {
-  text-decoration: underline;
-}
+// a:link {
+//   text-decoration: underline;
+// }
 
 .table-container {
   display: flex;
@@ -26,7 +26,9 @@ a:link {
 }
 
 .note{
-  max-width: 500px;
+  font-size: smaller;
+  font-weight: lighter;
+  max-width: 800px;
   text-align: left;
   margin-left: 10px;
   margin-right: 10px;
