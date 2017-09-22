@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -101,6 +101,43 @@ export class BungieService implements OnDestroy {
                     return [];
                 });
         });
+    }
+
+    public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]>{
+
+        let promises: Promise<void>[] = [];
+
+        let raidMilestoneName: MileStoneName = null;
+        msNames.forEach(m=>{
+            if (m.name=='Leviathan Raid'){
+                raidMilestoneName = m;
+            }
+        });
+        if (raidMilestoneName==null) return Promise.resolve(void[]);
+
+        chars.forEach(c=>{
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 100).then((hist:Activity[])=>{
+                //TODO what is weekly reset
+                var totalRaid:number =0; 
+                hist.forEach(a=>{
+                    //ignore not completed
+                    if (!a.completed) return;
+                    totalRaid++;
+                    let startDate:Date = new Date(a.period);
+                    if (startDate>c.startWeek){
+                        c.milestones[raidMilestoneName.key].complete = true;
+                    }
+                    
+                });
+                c.lifetimeRaid = totalRaid;
+
+            });
+            promises.push(p);
+
+        });
+
+        return Promise.all(promises);
+
     }
 
 
@@ -339,7 +376,7 @@ export class BungieService implements OnDestroy {
         return j.Response;
     }
 
-    public getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<any[]> {
+    public getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<Activity[]> {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {

@@ -136,6 +136,9 @@ export class Character {
     clanMilestones: ClanMilestoneResults;
     factions: Progression[];
     stats: CharacterStat[];
+    startWeek: Date;
+    endWeek: Date;
+    lifetimeRaid: number = 0;
     
 }
 
