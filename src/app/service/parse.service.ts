@@ -369,7 +369,6 @@ export class ParseService {
         let returnMe: Challenge[] = [];
         ch.forEach(c => {
             let objDesc: any = this.destinyCacheService.cache.Objective[c.objective.objectiveHash];
-            console.dir(objDesc);
             let challenge = new Challenge(objDesc.displayProperties.name, objDesc.displayProperties.description);
             returnMe.push(challenge)
         });
