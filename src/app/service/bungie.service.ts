@@ -423,8 +423,6 @@ export class BungieService implements OnDestroy {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
                     if (resp.activities) {
-                        console.log(resp.activities.length);
-
                         return self.parseService.parseActivities(resp.activities);
                     }
 
@@ -475,7 +473,6 @@ export class BungieService implements OnDestroy {
 //CharacterEquipment
 //Profiles,Characters,CharacterProgressions,,CharacterActivities
         let sComp = components.join();
-        console.log("Components: "+sComp);
         return this.buildReqOptions().then(opt => {
             return this.http.get(API_ROOT + 'Destiny2/' +membershipType + "/Profile/" +
             membershipId +
