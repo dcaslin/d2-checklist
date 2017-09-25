@@ -45,7 +45,6 @@ export class ClanLeaderboardComponent extends ChildComponent implements OnInit, 
       this.info = i;
       if (i != null) {
         this.bungieService.getClanLeaderboards(this.id, 100, this.selectedMode.type).then(x=>{
-          console.dir(x);
           this.list = x;
           this.selectedLeaderList = this.list[0];
           this.loading = false;
