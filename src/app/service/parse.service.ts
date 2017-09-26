@@ -4,7 +4,9 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform, BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, CharacterStat, Currency, Challenge, LeaderboardEntry, LeaderBoardList
+    Const, BungieMembership, BungieMember, BungieMemberPlatform, 
+    BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, 
+    CharacterStat, Currency, Challenge, LeaderboardEntry, LeaderBoardList, PGCRTeam
 } from './model';
 @Injectable()
 export class ParseService {
@@ -325,6 +327,12 @@ export class ParseService {
         return val.basic.value;
     }
 
+    private static getBasicDisplayValue(val: any): string {
+        if (val == null) return null;
+        if (val.basic == null) return;
+        return val.basic.displayValue;
+    }
+
     private parseActivity(a): Activity {
         let act: Activity = new Activity();
 
@@ -544,6 +552,7 @@ export class ParseService {
 
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
+            r.team = ParseService.getBasicDisplayValue(e.values.team);
 
             r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
             r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
@@ -634,29 +643,41 @@ export class ParseService {
             r.entries.push(entry);
         });
 
-        let teamList = {};
+        if (p.teams!=null){
+            r.teams = [];
+            p.teams.forEach(t=>{
+                let team = new PGCRTeam();
+                team.name = t.teamName;
+                team.standing = ParseService.getBasicDisplayValue(t.standing);
+                team.score = ParseService.getBasicValue(t.score);
+                r.teams.push(team);
+            })
+        }
+
+        let fireTeamList = {};
 
         r.entries.forEach((ent) => {
-            let list = teamList[ent.fireteamId];
+            let list = fireTeamList[ent.fireteamId];
             if (list == null) {
-                teamList[ent.fireteamId] = [];
-                list = teamList[ent.fireteamId];
+                fireTeamList[ent.fireteamId] = [];
+                list = fireTeamList[ent.fireteamId];
             }
             list.push(ent);
         });
 
         let cntr: number = 0;
-        Object.keys(teamList).forEach((key) => {
+        Object.keys(fireTeamList).forEach((key) => {
             cntr++;
 
-            let list = teamList[key];
+            let list = fireTeamList[key];
             list.forEach((ent) => {
                 ent.fireteam = cntr;
             });
         });
         r.entries.sort(function (a, b) {
             return b.score - a.score;
-        })
+        });
+
 
         return r;
 
