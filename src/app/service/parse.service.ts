@@ -232,7 +232,8 @@ export class ParseService {
                             key: key,
                             type: type,
                             name: name,
-                            desc: description
+                            desc: description,
+                            hasPartial: false
                         };
                         mileStoneDefs[key] = milestoneName;
                     }
@@ -244,18 +245,37 @@ export class ParseService {
                 let total = 0;
                 let complete = 0;
                 let info: string = null;
+                let oPct = 0;
                 if (ms.availableQuests != null) {
+                
                     ms.availableQuests.forEach((q: _AvailableQuest) => {
                         total++;
                         if (q.status.completed) complete++;
+                        if (q.status.completed == false && q.status.started == true){
+                            let oCntr=0;
+                            if (q.status.stepObjectives!=null){
+                                q.status.stepObjectives.forEach(o=>{
+                                    oCntr++;
+                                    let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                                    console.log(oCntr+": "+oDesc.progressDescription+": "+o.progress+"/"+oDesc.completionValue);
+                                    if (oDesc.completionValue!=null && oDesc.completionValue>0){
+                                        oPct = o.progress / oDesc.completionValue;
+                                    }
+                                });
+                            }
+                        }
+
+
                     })
                 }
                 if (total == 0) total++;
                 let pct: number = complete / total;
+                if (pct==0) pct = oPct;
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + "% complete";
+                    mileStoneDefs[key].hasPartial = true;
+                    console.log("haspartial");
                 }
-
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
                 c.milestones[key] = m;
 

@@ -132,6 +132,7 @@ export interface MileStoneName {
     type: string;
     name: string;
     desc: string;
+    hasPartial: boolean;
 }
 
 export class Character {

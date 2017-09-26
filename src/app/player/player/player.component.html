@@ -88,12 +88,16 @@
 
                         <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
                           <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+
+                          <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent}}</div>
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
                           <i class="fa fa-square-o"></i>
+                          <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent}}</div>
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
                           <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                          <div class="percent">{{char.milestones[mileStoneName.key].pct|percent}}</div>
                         </ng-container>
                         <div *ngIf="mileStoneName.name=='Leviathan Raid'">
                           {{char.lifetimeRaid}} lifetime
