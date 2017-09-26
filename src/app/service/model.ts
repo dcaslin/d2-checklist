@@ -132,6 +132,7 @@ export interface MileStoneName {
     type: string;
     name: string;
     desc: string;
+    hasPartial: boolean;
 }
 
 export class Character {
@@ -218,7 +219,14 @@ export class PGCR {
     isPrivate: boolean;
     entries: PGCREntry[];
     level: number;
-    //teams?
+    teams: PGCRTeam[];
+
+}
+
+export class PGCRTeam{
+    name: string;
+    standing: string;
+    score: number;
 }
 
 
@@ -272,6 +280,7 @@ export class PGCREntry {
     assists: number;
     fireteamId: number;
     fireteam: string;
+    team: string;
 
     startSeconds: number;
     activityDurationSeconds: number;
