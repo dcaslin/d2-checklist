@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { MdTabChangeEvent, MdTabGroup } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -7,18 +7,18 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { Const, Platform } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { BungieService } from "../../service/bungie.service";
-import { Challenge } from "../../service/model";
-import {ChildComponent} from '../../shared/child.component';
+import { Nightfall } from "../../service/model";
+import { ChildComponent } from '../../shared/child.component';
 
 @Component({
   selector: 'anms-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy {
+export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
-  
+
   @ViewChild(MdTabGroup) tabs: MdTabGroup;
 
   platforms: Platform[];
@@ -26,7 +26,7 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   selectedTab: string;
   gamerTag: string;
   dontSearch: boolean;
-  challenges: Challenge[] = [];
+  nightfall: Nightfall;
 
   navigation = [
     { link: 'checklist', label: 'Checklist' },
@@ -57,17 +57,17 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   private setPlatform(type: number) {
     //already set
     if (this.selectedPlatform != null && this.selectedPlatform.type === type) return;
-    this.selectedPlatform = Const.PLATFORMS_DICT[""+type];
+    this.selectedPlatform = Const.PLATFORMS_DICT["" + type];
   }
 
-  public routeSearch(): void{
+  public routeSearch(): void {
     if (this.selectedPlatform == null) {
       return;
     }
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
       return;
     }
-    
+
     this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
   }
 
@@ -80,11 +80,11 @@ export class HomeComponent  extends ChildComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit() {
-    this.bungieService.getChallenges().then(c=>{
-      this.challenges = c;
+    this.bungieService.getNightfall().then(nf => {
+      this.nightfall = nf;
     })
 
-   
+
   }
 
 }
