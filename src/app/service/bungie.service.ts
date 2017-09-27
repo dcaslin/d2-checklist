@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName,Challenge,LeaderBoardList } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -37,6 +37,7 @@ export class BungieService implements OnDestroy {
             if (ai != null) {
                 this.getBungieMembershipsById(ai.memberId).then((membership: BungieMembership) => {
                     if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length == 0) {
+                        console.log("No membership found for id, signing out.");
                         this.authService.signOut();
                         return;
                     }
@@ -68,7 +69,7 @@ export class BungieService implements OnDestroy {
                     //after the fact search for clan
                     this.setClanId(membership);
                     //after the fact currency check
-                    if (selectedUser.selectedUser!=null)
+                    if (selectedUser.selectedUser != null)
                         this.setCurrencies(selectedUser);
                 });
             }
@@ -79,8 +80,8 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public refreshCurrency(){
-        if (this.selectedUser!=null){
+    public refreshCurrency() {
+        if (this.selectedUser != null) {
             this.setCurrencies(this.selectedUser);
         }
     }
@@ -103,31 +104,31 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]>{
+    public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
 
         let promises: Promise<void>[] = [];
 
         let raidMilestoneName: MileStoneName = null;
-        msNames.forEach(m=>{
-            if (m.name=='Leviathan Raid'){
+        msNames.forEach(m => {
+            if (m.name == 'Leviathan Raid') {
                 raidMilestoneName = m;
             }
         });
-        if (raidMilestoneName==null) return Promise.resolve(void[]);
+        if (raidMilestoneName == null) return Promise.resolve(void []);
 
-        chars.forEach(c=>{
-            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 99).then((hist:Activity[])=>{
+        chars.forEach(c => {
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 99).then((hist: Activity[]) => {
                 //TODO what is weekly reset
-                var totalRaid:number =0; 
-                hist.forEach(a=>{
+                var totalRaid: number = 0;
+                hist.forEach(a => {
                     //ignore not completed
                     if (!a.completed) return;
                     totalRaid++;
-                    let startDate:Date = new Date(a.period);
-                    if (startDate>c.startWeek){
+                    let startDate: Date = new Date(a.period);
+                    if (startDate > c.startWeek) {
                         c.milestones[raidMilestoneName.key].complete = true;
                     }
-                    
+
                 });
                 c.lifetimeRaid = totalRaid;
 
@@ -143,8 +144,8 @@ export class BungieService implements OnDestroy {
 
     // Aggregate clan info: 
     // https://www.bungie.net/Platform//Destiny2/Stats/AggregateClanStats/1985678
-    
-    public getClanStats(clanId: string): Promise<void>{
+
+    public getClanStats(clanId: string): Promise<void> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
             return this.http.get(API_ROOT + '/Destiny2/Stats/AggregateClanStats/' + clanId + "/",
@@ -179,10 +180,10 @@ export class BungieService implements OnDestroy {
 
     //https://www.bungie.net/Platform/Destiny2/Stats/Leaderboards/Clans/1985678?maxtop=100&modes=2,4
 
-    public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<LeaderBoardList[]>{
+    public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<LeaderBoardList[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop="+max+"&modes="+mode,
+            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop=" + max + "&modes=" + mode,
                 opt).map(
                 function (res) {
                     const j: any = res.json();
@@ -198,7 +199,7 @@ export class BungieService implements OnDestroy {
     }
 
     //get clan members https://www.bungie.net/Platform/GroupV2/1985678/Members/?currentPage=1&memberType=0
-    public getClanInfo(clanId: string): Promise<any>{
+    public getClanInfo(clanId: string): Promise<any> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
             return this.http.get(API_ROOT + 'GroupV2/' + clanId + "/",
@@ -259,12 +260,12 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    
+
 
     private setCurrencies(selUser: SelectedUser) {
         const self: BungieService = this;
-        
-        this.getChars(selUser.selectedUser.membershipType, selUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x=>{
+
+        this.getChars(selUser.selectedUser.membershipType, selUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
             selUser.selectedUserCurrencies = x.currencies;
             self.emitUsers();
         });
@@ -376,7 +377,7 @@ export class BungieService implements OnDestroy {
         return j.Response;
     }
 
-    
+
     public getPGCR(instanceId: string): Promise<any> {
         const self: BungieService = this;
 
@@ -395,17 +396,17 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public getChallenges(): Promise<Challenge[]>{
+    public getNightfall(): Promise<Nightfall> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/1/Profile/4611686018434964640/?components=CharacterProgressions', opt).map(
+            return this.http.get(API_ROOT + 'Destiny2/Milestones/', opt).map(
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
-                    return self.parseService.parseChallenges(resp);
+                    return self.parseService.parseNightfall(resp);
                 }).toPromise().catch(
                 function (err) {
-                    console.log('Error getting challenges for player');
+                    console.log('Error getting nightfall');
                     console.dir(err);
                     return null;
                 });
@@ -455,7 +456,7 @@ export class BungieService implements OnDestroy {
                         allMatches.push(r);
                     });
 
-                    if (allMatches.length > max){
+                    if (allMatches.length > max) {
                         resolve(allMatches);
                         return;
                     }
@@ -468,16 +469,16 @@ export class BungieService implements OnDestroy {
 
     }
 
-    public getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?:boolean): Promise<Player> {
+    public getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean): Promise<Player> {
         const self: BungieService = this;
-//CharacterEquipment
-//Profiles,Characters,CharacterProgressions,,CharacterActivities
+        //CharacterEquipment
+        //Profiles,Characters,CharacterProgressions,,CharacterActivities
         let sComp = components.join();
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' +membershipType + "/Profile/" +
-            membershipId +
-                
-                "/?components="+sComp, opt)
+            return this.http.get(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" +
+                membershipId +
+
+                "/?components=" + sComp, opt)
                 .map(
                 function (res) {
                     const j: any = res.json();
@@ -486,7 +487,7 @@ export class BungieService implements OnDestroy {
                 }).toPromise().catch(
                 function (err) {
                     console.log('Error Searching for player');
-                    if (!ignoreErrors){
+                    if (!ignoreErrors) {
                         self.handleError(err);
                     }
                     return null;

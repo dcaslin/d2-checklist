@@ -41,6 +41,7 @@ export class AuthService {
 
     //called by auth page sign out
     public signOut() {
+        console.log("Signing out, deleting authorization");
         localStorage.removeItem("authorization");
         this.token = null;
         this.emit();

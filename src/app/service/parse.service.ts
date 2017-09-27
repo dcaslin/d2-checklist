@@ -6,7 +6,7 @@ import {
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
     Const, BungieMembership, BungieMember, BungieMemberPlatform, 
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, 
-    CharacterStat, Currency, Challenge, LeaderboardEntry, LeaderBoardList, PGCRTeam
+    CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc
 } from './model';
 @Injectable()
 export class ParseService {
@@ -391,16 +391,77 @@ export class ParseService {
 
     }
 
-    public parseChallenges(resp: any): Challenge[] {
 
-        let ch: any[] = resp.characterProgressions.data["2305843009264730900"].milestones["2171429505"].availableQuests[0].challenges;
-        let returnMe: Challenge[] = [];
-        ch.forEach(c => {
-            let objDesc: any = this.destinyCacheService.cache.Objective[c.objective.objectiveHash];
-            let challenge = new Challenge(objDesc.displayProperties.name, objDesc.displayProperties.description);
-            returnMe.push(challenge)
+
+    
+// Prism
+// Momentum
+// 3029674484 Torrent - Boundless power erupts from within. Your abilities recharge much faster. Use them to shatter your foes
+// 3974591367 Attrition - Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super
+
+// 2563004598 Timewarp - Zero Hour: The mission timer CANNOT be extended. Choose your battle carefully
+// 2777023090 Timewarp - Anomalies : Small vex cubes scatter among the strike, shooting one gains 30 seconds.
+// Killing time
+// Rings
+
+    private parseModifier(hash: string): NameDesc{
+        let jDesc = this.destinyCacheService.cache.ActivityModifier[hash];
+        let name: string = null;
+        let desc: string = null;
+        if (jDesc!=null){
+            name = jDesc.displayProperties.name;
+            desc = jDesc.displayProperties.description;
+        }
+        if (name!=null && name!="" && name!="Classified"){
+            return new NameDesc(name, desc);
+        }
+
+        if (hash=="3029674484"){
+            return new NameDesc("Torrent", "Boundless power erupts from within. Your abilities recharge much faster. Use them to shatter your foes");
+
+        }
+        if (hash=="3974591367"){
+            return new NameDesc("Attrition"," Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super");
+        }
+        if (hash=="2563004598"){
+            
+            return new NameDesc("Timewarp - Zero Hour","The mission timer CANNOT be extended. Choose your battle carefully");
+        }
+        if (hash=="2777023090"){
+            return new NameDesc("Timewarp - Anomalies"," Small vex cubes scatter among the strike, shooting one gains 30 seconds.");
+        }
+        return new NameDesc("Classified", "Keep it secret, keep it safe");
+    }
+
+    public parseNightfall(resp: any): Nightfall {
+
+        let q: any = resp["2171429505"].availableQuests[0];
+        let aHash = q.activity.activityHash;
+        let aDesc = this.destinyCacheService.cache.Activity[aHash];
+
+        let nf: Nightfall = new Nightfall();
+        nf.name = aDesc.displayProperties.name;
+        nf.desc = aDesc.displayProperties.description;
+        nf.image = aDesc.pgcrImage;
+        nf.tiers = [];
+        let firstTier: number;
+        q.activity.variants.forEach(v=>{
+            let vDesc: any = this.destinyCacheService.cache.Activity[v.activityHash];
+            if (firstTier==null) firstTier = v.activityHash;
+            nf.tiers.push(vDesc.activityLightLevel);
         });
-        return returnMe;
+        nf.modifiers = [];
+        q.activity.modifierHashes.forEach(mh=>{
+            nf.modifiers.push(this.parseModifier(mh));
+        });
+        nf.challenges = [];
+        q.challenges.forEach(c=>{
+            if (c.activityHash == firstTier){
+                let oDesc: any = this.destinyCacheService.cache.Objective[c.objectiveHash];
+                nf.challenges.push(new NameDesc(oDesc.displayProperties.name, oDesc.displayProperties.description));
+            }
+        });
+        return nf;
     }
 
     public parseActivities(a: any[]): Activity[] {
@@ -633,6 +694,7 @@ export class ParseService {
 
         r.isPrivate = p.activityDetails.isPrivate;
         r.entries = [];
+        let fireTeamCounts:any = {};
         p.entries.forEach((ent) => {
             let entry = this.parsePGCREntry(ent);
             if (entry.activityDurationSeconds != null) {
@@ -640,7 +702,15 @@ export class ParseService {
                 //TODO fix this, period is start, not finish
                 r.finish = new Date(Date.parse(r.period) + r.activityDurationSeconds * 1000).toISOString();
             }
+            if (fireTeamCounts[entry.fireteamId]==null){
+                fireTeamCounts[entry.fireteamId] = 0;
+            }
+            fireTeamCounts[entry.fireteamId] = fireTeamCounts[entry.fireteamId] +1;
             r.entries.push(entry);
+        });
+
+        r.entries.forEach(e=>{
+            e.fireteamSize = fireTeamCounts[e.fireteamId];
         });
 
         if (p.teams!=null){
@@ -651,7 +721,10 @@ export class ParseService {
                 team.standing = ParseService.getBasicDisplayValue(t.standing);
                 team.score = ParseService.getBasicValue(t.score);
                 r.teams.push(team);
-            })
+            });
+            r.teams.sort(function(a,b){
+                return b.score - a.score;
+            });
         }
 
         let fireTeamList = {};
@@ -675,7 +748,11 @@ export class ParseService {
             });
         });
         r.entries.sort(function (a, b) {
-            return b.score - a.score;
+            let returnMe = b.score - a.score;
+            if (returnMe==0){
+                returnMe = b.kills - a.kills;
+            }
+            return returnMe;
         });
 
 

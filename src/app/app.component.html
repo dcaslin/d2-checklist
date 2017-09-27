@@ -1,107 +1,110 @@
 <div class="holder">
-<md-sidenav-container>
+  <md-sidenav-container>
 
-  <md-sidenav #sidenav mode="push">
-    <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
-    <md-nav-list>
-      <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUser!=null">
+    <md-sidenav #sidenav mode="push">
+      <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
+      <md-nav-list>
+        <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUser!=null">
             {{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}
             </a>
-      <a md-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+        <a md-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
             My Clan
           </a>
-      <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
+        <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
             My Info
           </a>
-      <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
+        <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
         {{item.label}}
       </a>
-    </md-nav-list>
-  </md-sidenav>
+      </md-nav-list>
+    </md-sidenav>
 
-  <div class="wrapper">
+    <div class="wrapper">
 
-    <md-toolbar color="primary">
+      <md-toolbar color="primary">
 
-      <button md-icon-button class="hidden-md-up" (click)="sidenav.open()">
+        <button md-icon-button class="hidden-md-up" (click)="sidenav.open()">
         <md-icon>menu</md-icon>
       </button>
 
-      <span routerLink="" class="branding spacer hidden-md-up text-center"><img
+        <span routerLink="" class="branding spacer hidden-md-up text-center"><img
         [src]="logo"/> D2 Checklist</span>
-      <span routerLink="" class="branding spacer hidden-sm-down"><img
+        <span routerLink="" class="branding spacer hidden-sm-down"><img
         [src]="logo"/> D2 Checklist</span>
 
-      <span class="hidden-sm-down">
+        <span class="hidden-sm-down">
        
         <button md-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
           {{item.label}}
         </button>
       </span>
 
-      <button md-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" mdTooltip="Grants access to private endpoints and some bugged public data too"
-        mdTool tipPosition="before" (click)="onLoginClick()">
+        <button md-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" mdTooltip="Grants access to private endpoints and some bugged public data too"
+          mdTool tipPosition="before" (click)="onLoginClick()">
         Sign in
       </button>
 
-      <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" md-button [mdMenuTriggerFor]="toolbarUserMenu">
+        <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" md-button [mdMenuTriggerFor]="toolbarUserMenu">
         <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length==1">person</md-icon>
         <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length>1">supervisor_account</md-icon>
       </button>
-      <md-menu #toolbarUserMenu="mdMenu">
-        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
-          <button md-menu-item *ngFor="let avail of this.signedOnUser.membership.destinyMemberships" [disabled]="avail == this.signedOnUser.selectedUser"
-            (click)="selectUser(avail)">
+        <md-menu #toolbarUserMenu="mdMenu">
+          <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
+            <button md-menu-item *ngFor="let avail of this.signedOnUser.membership.destinyMemberships" [disabled]="avail == this.signedOnUser.selectedUser"
+              (click)="selectUser(avail)">
             <md-icon>account_circle</md-icon>
             <span>{{avail.platformName}}</span>
           </button>
-        </ng-container>
+          </ng-container>
 
-        <button md-menu-item (click)="onLogoutClick()">
+          <button md-menu-item (click)="onLogoutClick()">
           <md-icon>power_settings_new</md-icon>
           <span>Logout</span>
         </button>
-      </md-menu>
+        </md-menu>
 
-      <button md-icon-button routerLink="settings" class="hidden-sm-down">
+        <button md-icon-button routerLink="settings" class="hidden-sm-down">
         <md-icon>settings</md-icon>
       </button>
-      <md-toolbar-row *ngIf="this.signedOnUser!=null" class="hidden-sm-down sub-row">
-        <span *ngIf="this.signedOnUser.selectedUser!=null">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
-        <span class="spacer"></span>
+        <md-toolbar-row *ngIf="this.signedOnUser!=null" class="sub-row">
+          <span class="hidden-sm-down" *ngIf="this.signedOnUser.selectedUser!=null">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
+          <span class="spacer"></span>
 
-        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUserCurrencies!=null">
-          <span class="currency-icons" (click)="refreshCurrency()">
-          <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
-            <span class="currency-chip" [mdTooltip]="c.count+' '+c.name">
-              <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-          <span>  {{c.count|number}}</span>
+          <span *ngIf="this.signedOnUser.selectedUserCurrencies==null" (click)="refreshCurrency()">
+            Refresh currency
           </span>
-        </ng-container>
-        </span>
+
+          <ng-container *ngIf="this.signedOnUser.selectedUserCurrencies!=null">
+            <span class="currency-icons" (click)="refreshCurrency()">
+              <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
+                <span class="currency-chip" [mdTooltip]="c.count+' '+c.name">
+                  <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
+                <span>  {{c.count|number}}</span>
+                </span>
+              </ng-container>
+            </span>
+
+          </ng-container>
 
 
-        </ng-container>
-
-
-        <button md-button class="nav-button" (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+          <button md-button class="hidden-sm-down nav-button" (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
               <md-icon>flag</md-icon> My Clan
           </button>
-        <button md-button class="nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
+          <button md-button class="hidden-sm-down nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
               <md-icon>favorite</md-icon> My Info
           </button>
 
 
-      </md-toolbar-row>
-    </md-toolbar>
+        </md-toolbar-row>
+      </md-toolbar>
 
-    <router-outlet #o="outlet"></router-outlet>
-    <div class="push"></div>
+      <router-outlet #o="outlet"></router-outlet>
+      <div class="push"></div>
 
 
-  </div>
-  
-  <div class="footer">
+    </div>
+
+    <div class="footer">
       <div class="row">
         <div class="col-sm-12 links">
           <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank">
@@ -136,5 +139,5 @@
       </div>
     </div>
 
-</md-sidenav-container>
+  </md-sidenav-container>
 </div>

@@ -19,40 +19,46 @@
         </div>
 
         <div class="info">
-          
-            <h4>Nightfall Challenges</h4>
-          <dl>
-            <ng-container *ngFor="let c of challenges">
-              <dt>{{c.name}}</dt>
-              <dd>{{c.desc}}</dd>
-            </ng-container>
-          </dl>
 
+          <md-card *ngIf="nightfall!=null">
+            <md-card-header>
+              <div md-card-avatar class="nf-card-avatar" [style.background-image]="'url(//www.bungie.net' + nightfall.image + ')'"></div>
+              <md-card-title><h2>{{nightfall.name}}</h2></md-card-title>
+              <md-card-subtitle class="hidden-sm-down">{{nightfall.desc}}</md-card-subtitle>
+            </md-card-header>
+            <md-card-content>
+              <h4>Modifiers</h4>
 
-          <h2>Site news</h2>
-          <h4>New features</h4>
-          <ul>
-            <li><a href="http://www.d2checklist.com/leaderboard/leviathan">Raid leaderboard!</a></li>
-            <li><span class="warn-text">Note: There are problems with reporting weekly raid completions from Bungie. I've worked around this on the individual player page, but the clan page may report incorrectly.</span></li>
-            <li><a href="https://www.d2checklist.com/2/sc_Slayerage">Improved checklist and progressions</a></li>
-            <li><a href="https://www.d2checklist.com/search">Search Bungie users with wildcards</a></li>
-            <li>View activity history. Click the link for a character from <a href="http://www.d2checklist.com/2/sc_slayerage/chars">the char tab</a></li>
-            <li>View your clan's progress and info. Sign in and click "My Clan". <a href="https://www.d2checklist.com/clan/1985678">Here's my clan, for example.</a></li>
-            <li>View currencies for current on account, including legendary shards. Sign in and view menu on top right.</li>
-          </ul>
-          <h4>Coming Soon</h4>
-          <ul>
-            <!-- <li>
-              <del>Sign in to view private endpoints</del> - Done!</li>
-            <li>
-              <del>View Milestones (checklist of completions, will require sign-in until bug is fixed in Bungie API)</del> - Done!</li>
-            <li>
-              <del>View faction progressions for you or others (sign-in not needed once Bungie fixes bug)</del> - Done!</li>
-            <li><del>Handle the Leviathan Raid</del> - Done!</li>
-            <li><del>View clan progress and completions</del> - Done!</li> -->
-            <li>Clan leaderboards</li>
-            <li>Improved access to character activity</li>
-          </ul>
+              <ul>
+                <li *ngFor="let m of nightfall.modifiers"><b>{{m.name}}</b>&emsp;{{m.desc}}</li>
+              </ul>
+              <h4>Challenges</h4>
+              <ul>
+                <li *ngFor="let m of nightfall.challenges"><b>{{m.name}}</b>&emsp;{{m.desc}}</li>
+              </ul>
+            </md-card-content>
+          </md-card>
+
+          <md-card>
+            <md-card-header>
+              <md-card-title><h2>Site news</h2></md-card-title>
+            </md-card-header>
+            <md-card-content>
+              <h4>New features</h4>
+              <ul>
+                <li>Clan leaderboards</li>
+                <li>Improved access to character activity</li>
+                <li><a href="http://www.d2checklist.com/leaderboard/leviathan">Raid leaderboard!</a></li>
+                <li><span class="warn-text">Note: There are problems with reporting weekly raid completions from Bungie. I've worked around this on the individual player page, but the clan page may report incorrectly.</span></li>
+                <li><a href="https://www.d2checklist.com/2/sc_Slayerage">Improved checklist and progressions</a></li>
+                <li><a href="https://www.d2checklist.com/search">Search Bungie users with wildcards</a></li>
+                <li>View activity history. Click the link for a character from <a href="http://www.d2checklist.com/2/sc_slayerage/chars">the char tab</a></li>
+                <li>View your clan's progress and info. Sign in and click "My Clan". <a href="https://www.d2checklist.com/clan/1985678">Here's my clan, for example.</a></li>
+                <li>View currencies for current on account, including legendary shards. Sign in and view menu on top right.</li>
+              </ul>
+            </md-card-content>
+          </md-card>
+
         </div>
       </div>
     </div>

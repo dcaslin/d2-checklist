@@ -164,7 +164,18 @@ export class Character {
     
 }
 
-export class Challenge{
+export class Nightfall{
+    name: string;
+    desc: string;
+    tiers: number[];
+    modifiers: NameDesc[];
+    challenges: NameDesc[];
+    image: string;
+}
+
+
+
+export class NameDesc{
     name: string;
     desc: string;
 
@@ -279,7 +290,7 @@ export class PGCREntry {
     deaths: number;
     assists: number;
     fireteamId: number;
-    fireteam: string;
+    fireteamSize: number;
     team: string;
 
     startSeconds: number;

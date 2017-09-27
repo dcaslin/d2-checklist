@@ -168,6 +168,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onLogoutClick() {
+    console.log("Logout clicked, signing out.");
     this.authService.signOut();
   }
 
