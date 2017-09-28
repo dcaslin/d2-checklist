@@ -4,8 +4,8 @@ import { DestinyCacheService } from './destiny-cache.service';
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform, 
-    BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults, 
+    Const, BungieMembership, BungieMember, BungieMemberPlatform,
+    BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc
 } from './model';
 @Injectable()
@@ -50,7 +50,7 @@ export class ParseService {
         Object.keys(resp).forEach(key => {
             mainKey = resp[key];
         });
-        var returnMe:LeaderBoardList[] = [];
+        var returnMe: LeaderBoardList[] = [];
         if (mainKey != null) {
             Object.keys(mainKey).forEach(key => {
                 let title: string = key.substring(2);
@@ -147,14 +147,14 @@ export class ParseService {
 
 
     private static parseMilestoneType(t: number): string {
-        //tutorial and one-time
-        if (t == 1 || t == 2) return null;
+        //?, tutorial and one-time
+        if (t == 0 || t == 1 || t == 2) return null;
         // if (t == 1) return "tut";
         // if (t == 2) return "1-off";
         if (t == 3) return "Weekly";
         if (t == 4) return "Daily";
         if (t == 5) return "Special";
-        return "Unknown";
+        return "Unknown: " + t;
     }
 
     private populateProgressions(c: Character, _prog: any, mileStoneDefs: any): void {
@@ -204,32 +204,60 @@ export class ParseService {
                 }
                 //add meta
                 if (mileStoneDefs[key] == null) {
+                    //skip one off faction stuff 
+                    if (key == "364880304" || key == "1718587363")
+                        return;
+
                     let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
+                    
                     if (desc != null) {
+
+                        
+                        let type: string = ParseService.parseMilestoneType(desc.milestoneType);
+                        //null is tutorial or one-time, skip
+                        if (type == null) return;
+
+
                         let name: string = "";
                         let description: string = "";
                         if (desc.displayProperties != null) {
                             name = desc.displayProperties.name;
                             description = desc.displayProperties.description;
                         }
+
+                        if (ms.availableQuests != null && ms.availableQuests.length == 1 && (description == null || description.trim().length == 0)) {
+                            let q = ms.availableQuests[0];
+                            let qDesc = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
+                            if (qDesc != null) {
+                                name = qDesc.displayProperties.name;
+                                description = qDesc.displayProperties.description;
+                                if (description == null || description.trim().length == 0) {
+                                    if (q.status.stepObjectives != null && q.status.stepObjectives.length == 1) {
+                                        let o = q.status.stepObjectives[0];
+                                        let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                                        description = oDesc.progressDescription;
+                                    }
+                                }
+                            }
+                        }
                         if (name == null || name.trim().length == 0) {
                             name = desc.friendlyName;
                         }
-
-                        let type: string = ParseService.parseMilestoneType(desc.milestoneType);
-                        //null is tutorial or one-time, skip
-                        if (type == null) return;
+                        if (key == "463010297" && (description==null || description=="")) {
+                            description = "Complete public events at the designated location";
+                        }
                         //skip classified for now
                         if (name == null || name == "Classified") return;
 
-                        //hotspot
-                        if (ms.milestoneHash == 463010297) {
-                            name = this.destinyCacheService.cache.InventoryItem[ms.availableQuests[0].questItemHash].displayProperties.name;
-                            description = "Complete public events at the designated location";
-                            //this is wrong in the DB
-                            type = "Weekly";
 
-                        }
+                        // //hotspot
+                        // if (ms.milestoneHash == 463010297) {
+                        //     name = this.destinyCacheService.cache.InventoryItem[ms.availableQuests[0].questItemHash].displayProperties.name;
+                        //     description = "Complete public events at the designated location";
+                        //     //this is wrong in the DB
+                        //     type = "Weekly";
+
+                        // }
                         let milestoneName: MileStoneName = {
                             key: key,
                             type: type,
@@ -249,18 +277,18 @@ export class ParseService {
                 let info: string = null;
                 let oPct = 0;
                 if (ms.availableQuests != null) {
-                
+
                     ms.availableQuests.forEach((q: _AvailableQuest) => {
                         total++;
                         if (q.status.completed) complete++;
-                        if (q.status.completed == false && q.status.started == true){
-                            let oCntr=0;
-                            if (q.status.stepObjectives!=null){
-                                q.status.stepObjectives.forEach(o=>{
+                        if (q.status.completed == false && q.status.started == true) {
+                            let oCntr = 0;
+                            if (q.status.stepObjectives != null) {
+                                q.status.stepObjectives.forEach(o => {
                                     oCntr++;
                                     let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-                                    console.log(oCntr+": "+oDesc.progressDescription+": "+o.progress+"/"+oDesc.completionValue);
-                                    if (oDesc.completionValue!=null && oDesc.completionValue>0){
+                                    console.log(oCntr + ": " + oDesc.progressDescription + ": " + o.progress + "/" + oDesc.completionValue);
+                                    if (oDesc.completionValue != null && oDesc.completionValue > 0) {
                                         oPct = o.progress / oDesc.completionValue;
                                     }
                                 });
@@ -272,7 +300,7 @@ export class ParseService {
                 }
                 if (total == 0) total++;
                 let pct: number = complete / total;
-                if (pct==0) pct = oPct;
+                if (pct == 0) pct = oPct;
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + "% complete";
                     mileStoneDefs[key].hasPartial = true;
@@ -393,42 +421,42 @@ export class ParseService {
 
 
 
-    
-// Prism
-// Momentum
-// 3029674484 Torrent - Boundless power erupts from within. Your abilities recharge much faster. Use them to shatter your foes
-// 3974591367 Attrition - Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super
 
-// 2563004598 Timewarp - Zero Hour: The mission timer CANNOT be extended. Choose your battle carefully
-// 2777023090 Timewarp - Anomalies : Small vex cubes scatter among the strike, shooting one gains 30 seconds.
-// Killing time
-// Rings
+    // Prism
+    // Momentum
+    // 3029674484 Torrent - Boundless power erupts from within. Your abilities recharge much faster. Use them to shatter your foes
+    // 3974591367 Attrition - Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super
 
-    private parseModifier(hash: string): NameDesc{
+    // 2563004598 Timewarp - Zero Hour: The mission timer CANNOT be extended. Choose your battle carefully
+    // 2777023090 Timewarp - Anomalies : Small vex cubes scatter among the strike, shooting one gains 30 seconds.
+    // Killing time
+    // Rings
+
+    private parseModifier(hash: string): NameDesc {
         let jDesc = this.destinyCacheService.cache.ActivityModifier[hash];
         let name: string = null;
         let desc: string = null;
-        if (jDesc!=null){
+        if (jDesc != null) {
             name = jDesc.displayProperties.name;
             desc = jDesc.displayProperties.description;
         }
-        if (name!=null && name!="" && name!="Classified"){
+        if (name != null && name != "" && name != "Classified") {
             return new NameDesc(name, desc);
         }
 
-        if (hash=="3029674484"){
+        if (hash == "3029674484") {
             return new NameDesc("Torrent", "Boundless power erupts from within. Your abilities recharge much faster. Use them to shatter your foes");
 
         }
-        if (hash=="3974591367"){
-            return new NameDesc("Attrition"," Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super");
+        if (hash == "3974591367") {
+            return new NameDesc("Attrition", " Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super");
         }
-        if (hash=="2563004598"){
-            
-            return new NameDesc("Timewarp - Zero Hour","The mission timer CANNOT be extended. Choose your battle carefully");
+        if (hash == "2563004598") {
+
+            return new NameDesc("Timewarp - Zero Hour", "The mission timer CANNOT be extended. Choose your battle carefully");
         }
-        if (hash=="2777023090"){
-            return new NameDesc("Timewarp - Anomalies"," Small vex cubes scatter among the strike, shooting one gains 30 seconds.");
+        if (hash == "2777023090") {
+            return new NameDesc("Timewarp - Anomalies", " Small vex cubes scatter among the strike, shooting one gains 30 seconds.");
         }
         return new NameDesc("Classified", "Keep it secret, keep it safe");
     }
@@ -445,18 +473,18 @@ export class ParseService {
         nf.image = aDesc.pgcrImage;
         nf.tiers = [];
         let firstTier: number;
-        q.activity.variants.forEach(v=>{
+        q.activity.variants.forEach(v => {
             let vDesc: any = this.destinyCacheService.cache.Activity[v.activityHash];
-            if (firstTier==null) firstTier = v.activityHash;
+            if (firstTier == null) firstTier = v.activityHash;
             nf.tiers.push(vDesc.activityLightLevel);
         });
         nf.modifiers = [];
-        q.activity.modifierHashes.forEach(mh=>{
+        q.activity.modifierHashes.forEach(mh => {
             nf.modifiers.push(this.parseModifier(mh));
         });
         nf.challenges = [];
-        q.challenges.forEach(c=>{
-            if (c.activityHash == firstTier){
+        q.challenges.forEach(c => {
+            if (c.activityHash == firstTier) {
                 let oDesc: any = this.destinyCacheService.cache.Objective[c.objectiveHash];
                 nf.challenges.push(new NameDesc(oDesc.displayProperties.name, oDesc.displayProperties.description));
             }
@@ -694,7 +722,7 @@ export class ParseService {
 
         r.isPrivate = p.activityDetails.isPrivate;
         r.entries = [];
-        let fireTeamCounts:any = {};
+        let fireTeamCounts: any = {};
         p.entries.forEach((ent) => {
             let entry = this.parsePGCREntry(ent);
             if (entry.activityDurationSeconds != null) {
@@ -702,27 +730,27 @@ export class ParseService {
                 //TODO fix this, period is start, not finish
                 r.finish = new Date(Date.parse(r.period) + r.activityDurationSeconds * 1000).toISOString();
             }
-            if (fireTeamCounts[entry.fireteamId]==null){
+            if (fireTeamCounts[entry.fireteamId] == null) {
                 fireTeamCounts[entry.fireteamId] = 0;
             }
-            fireTeamCounts[entry.fireteamId] = fireTeamCounts[entry.fireteamId] +1;
+            fireTeamCounts[entry.fireteamId] = fireTeamCounts[entry.fireteamId] + 1;
             r.entries.push(entry);
         });
 
-        r.entries.forEach(e=>{
+        r.entries.forEach(e => {
             e.fireteamSize = fireTeamCounts[e.fireteamId];
         });
 
-        if (p.teams!=null){
+        if (p.teams != null) {
             r.teams = [];
-            p.teams.forEach(t=>{
+            p.teams.forEach(t => {
                 let team = new PGCRTeam();
                 team.name = t.teamName;
                 team.standing = ParseService.getBasicDisplayValue(t.standing);
                 team.score = ParseService.getBasicValue(t.score);
                 r.teams.push(team);
             });
-            r.teams.sort(function(a,b){
+            r.teams.sort(function (a, b) {
                 return b.score - a.score;
             });
         }
@@ -749,7 +777,7 @@ export class ParseService {
         });
         r.entries.sort(function (a, b) {
             let returnMe = b.score - a.score;
-            if (returnMe==0){
+            if (returnMe == 0) {
                 returnMe = b.kills - a.kills;
             }
             return returnMe;
