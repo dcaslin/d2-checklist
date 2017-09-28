@@ -286,8 +286,7 @@ export class ParseService {
                             if (q.status.stepObjectives != null) {
                                 q.status.stepObjectives.forEach(o => {
                                     oCntr++;
-                                    let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-                                    console.log(oCntr + ": " + oDesc.progressDescription + ": " + o.progress + "/" + oDesc.completionValue);
+                                    let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];                                    
                                     if (oDesc.completionValue != null && oDesc.completionValue > 0) {
                                         oPct = o.progress / oDesc.completionValue;
                                     }
@@ -304,7 +303,6 @@ export class ParseService {
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + "% complete";
                     mileStoneDefs[key].hasPartial = true;
-                    console.log("haspartial");
                 }
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
                 c.milestones[key] = m;
@@ -399,6 +397,13 @@ export class ParseService {
             act.deaths = ParseService.getBasicValue(a.values.deaths);
             act.assists = ParseService.getBasicValue(a.values.assists);
             act.score = ParseService.getBasicValue(a.values.score);
+            act.completionReason =  ParseService.getBasicValue(a.values.completionReason);
+            if (desc.isPvP){
+                act.success = act.standing==0;
+            }
+            else{
+                act.success = act.completionReason == 0;
+            }
 
 
         }
@@ -646,6 +651,7 @@ export class ParseService {
             r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
             r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
             r.timePlayedSeconds = ParseService.getBasicValue(e.values.timePlayedSeconds);
+            r.completionReason = ParseService.getBasicValue(e.values.completionReason);
             r.weapons = [];
             if (e.extended != null && e.extended.weapons != null) {
                 e.extended.weapons.forEach(w => {
@@ -723,8 +729,21 @@ export class ParseService {
         r.isPrivate = p.activityDetails.isPrivate;
         r.entries = [];
         let fireTeamCounts: any = {};
+
+        let teamPveSuccess = false;
+        r.pve = !desc.isPvP;
+
         p.entries.forEach((ent) => {
             let entry = this.parsePGCREntry(ent);
+
+            //pve
+            if (r.pve){
+                if (entry.completionReason == 0){
+                    teamPveSuccess = true; 
+                }
+            }
+
+
             if (entry.activityDurationSeconds != null) {
                 r.activityDurationSeconds = entry.activityDurationSeconds;
                 //TODO fix this, period is start, not finish
@@ -736,6 +755,7 @@ export class ParseService {
             fireTeamCounts[entry.fireteamId] = fireTeamCounts[entry.fireteamId] + 1;
             r.entries.push(entry);
         });
+        r.pveSuccess = teamPveSuccess;
 
         r.entries.forEach(e => {
             e.fireteamSize = fireTeamCounts[e.fireteamId];
