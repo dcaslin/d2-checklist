@@ -60,7 +60,7 @@ export class BungieService implements OnDestroy {
                             selectedUser.selectedUser = m;
                         }
                     });
-                    if (this.selectedUser == null) {
+                    if (selectedUser.selectedUser == null) {
                         selectedUser.selectedUser = membership.destinyMemberships[0];
                     }
                     this.selectedUser = selectedUser;
@@ -69,8 +69,8 @@ export class BungieService implements OnDestroy {
                     //after the fact search for clan
                     this.setClanId(membership);
                     //after the fact currency check
-                    if (selectedUser.selectedUser != null)
-                        this.setCurrencies(selectedUser);
+                    if (this.selectedUser.selectedUser != null)
+                        this.setCurrencies();
                 });
             }
             else {
@@ -82,7 +82,7 @@ export class BungieService implements OnDestroy {
 
     public refreshCurrency() {
         if (this.selectedUser != null) {
-            this.setCurrencies(this.selectedUser);
+            this.setCurrencies();
         }
     }
 
@@ -262,11 +262,11 @@ export class BungieService implements OnDestroy {
 
 
 
-    private setCurrencies(selUser: SelectedUser) {
+    private setCurrencies() {
         const self: BungieService = this;
 
-        this.getChars(selUser.selectedUser.membershipType, selUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
-            selUser.selectedUserCurrencies = x.currencies;
+        this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
+            this.selectedUser.selectedUserCurrencies = x.currencies;
             self.emitUsers();
         });
     }
@@ -277,7 +277,6 @@ export class BungieService implements OnDestroy {
             if (c != null) {
                 membership.clanId = c;
                 self.emitUsers();
-
             }
 
         });

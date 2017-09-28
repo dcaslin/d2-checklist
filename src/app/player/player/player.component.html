@@ -79,9 +79,6 @@
                     <td class="lead" [mdTooltip]="mileStoneName.desc">
                       {{mileStoneName.name}}
                       <span class="caption">{{mileStoneName.type}}</span>
-                      <!-- <div class="coming-soon-note hidden-sm-down" *ngIf="mileStoneName.name=='Leviathan Raid'">
-                        Lifetime completions coming soon!
-                      </div> -->
                     </td>
                     <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                       <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
