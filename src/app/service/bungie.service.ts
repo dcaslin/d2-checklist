@@ -303,7 +303,7 @@ export class BungieService implements OnDestroy {
             new ActivityMode(10, "Control", "Control"),
             new ActivityMode(12, "Clash", "Clash"),
             new ActivityMode(16, "Nightfall", "Nightfall"),
-            new ActivityMode(17, "Heroic Heroic", "Heroic Nightfall"),
+            new ActivityMode(17, "Heroic Nightfall", "Heroic Nightfall"),
             new ActivityMode(18, "All Strikes", "All Strikes"),
             new ActivityMode(19, "Iron Banner", "Iron Banner"),
             new ActivityMode(31, "Supremacy", "Supremacy"),

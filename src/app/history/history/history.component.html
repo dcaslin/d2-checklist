@@ -50,7 +50,7 @@
               <md-header-cell *cdkHeaderCellDef md-sort-header>Name</md-header-cell>
               <md-cell *cdkCellDef="let row">
                 {{row.name}}
-                <i class="fa fa-check" *ngIf="row.completed>0"></i>
+                <i class="fa fa-check" *ngIf="row.success"></i>
               </md-cell>
             </ng-container>
             <ng-container cdkColumnDef="timePlayedSeconds">

@@ -231,6 +231,8 @@ export class PGCR {
     entries: PGCREntry[];
     level: number;
     teams: PGCRTeam[];
+    pveSuccess? : boolean;
+    pve: boolean;
 
 }
 
@@ -264,6 +266,8 @@ export class Activity {
     deaths: number;
     assists: number;
     score: number;
+    completionReason: number;
+    success: boolean;
 
     activityLevel: number;
     activityLightLevel: number;
@@ -292,6 +296,7 @@ export class PGCREntry {
     fireteamId: number;
     fireteamSize: number;
     team: string;
+    completionReason: number;
 
     startSeconds: number;
     activityDurationSeconds: number;

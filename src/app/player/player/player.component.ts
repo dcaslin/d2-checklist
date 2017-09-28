@@ -40,6 +40,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
+    this.selectedPlatform = this.platforms[0];
   }
 
   
@@ -77,10 +78,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
 
     //otherwise just re-route
-
-    if (this.selectedPlatform == null) {
-      return;
-    }
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
       return;
     }
@@ -112,10 +109,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   public performSearch(): void {
-    if (this.selectedPlatform == null) {
-      return;
-    }
-    if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
+    if (this.gamerTag == null || this.gamerTag.trim().length == 0) {
       return;
     }
 
@@ -160,45 +154,44 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
+      const tab: string = params['tab'];
 
-      let searchAgain: boolean = true;
+      //nothing changed
       if (this.currentGt == newGt && this.currentPlatform == newPlatform) {
-        searchAgain = false;
+        return;
       }
 
-      this.currentGt = newGt;
-      this.currentPlatform = newPlatform;
-
-      let redirPlat: number = null;
-
+      let oNewPlatform: Platform = null;
+      let redirected: boolean = false;
       this.platforms.forEach((p: Platform) => {
         if ((p.type + "") == newPlatform) {
-          this.selectedPlatform = p;
+          oNewPlatform = p;
         }
         else if (p.name.toLowerCase() == newPlatform.toLowerCase()) {
-          redirPlat = p.type;
+          this.router.navigate([p.type, newGt, tab]);
+          redirected = true;
         }
       });
 
-      //bad request, send them home
-      if (this.selectedPlatform == null && redirPlat == null) {
+      //we already redirected
+      if (redirected) return;
+
+      //invalid platform
+      if (oNewPlatform==null){
         this.router.navigate(["home"]);
         return;
       }
-      this.gamerTag = newGt;
 
-      const tab: string = params['tab'];
+      //we have a valid numeric platform, and a gamer tag, and a tab
+      this.currentGt = newGt;
+      this.currentPlatform = newPlatform;
+
+      this.selectedPlatform = oNewPlatform;
+
+      this.gamerTag = newGt;
       this.selectedTab = tab.trim().toLowerCase();
 
-      if (redirPlat!=null){
-        this.router.navigate([redirPlat, newGt, tab]);
-      }
-
-      if (searchAgain==true) {
-        this.performSearch();
-      }
-
-
+      this.performSearch();
     });
 
   }
