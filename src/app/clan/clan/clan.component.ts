@@ -96,6 +96,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       if (member.player==null) return false;
       if (member.player.characters==null) return false;
       if (member.player.characters.length==0) return false;
+      if (member.player.characters[0].milestones==null) return false;
       let comp:number =0;
       let total: number = 0;
       member.player.characters.forEach(char=>{
