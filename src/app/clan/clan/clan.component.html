@@ -12,9 +12,9 @@
           <h1>{{info.name}}</h1>
           <div class="button-row">
 
-              <button md-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
-              <button md-raised-button>Aggregate Stats (soon)</button>
-            </div>
+            <button md-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
+            <button md-raised-button>Aggregate Stats (soon)</button>
+          </div>
 
           <md-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
             <h2 class="hidden-sm-down">Weekly Clan Bounties</h2>
@@ -60,7 +60,8 @@
 
                 <md-card-header>
 
-                  <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}} &emsp; Remaining XP to get this week: <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b></md-card-title>
+                  <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}}
+                    &emsp; Remaining XP to get this week: <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b></md-card-title>
                   <md-card-subtitle>{{faction.desc}}
                   </md-card-subtitle>
                 </md-card-header>
@@ -75,12 +76,12 @@
           </ng-container>
 
           <br>
-          
+
           <div class="mobile-button-row">
-              <button md-raised-button  (click)="toggleMemberSort()">Sort Name <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></button>
-              <button md-raised-button  (click)="toggleDateSort()">Sort Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></button>
-            </div>
-            
+            <button md-raised-button (click)="toggleMemberSort()">Sort Name <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></button>
+            <button md-raised-button (click)="toggleDateSort()">Sort Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></button>
+          </div>
+
 
           <table class="responsive-table" *ngIf="this.sortedMembers!=null">
             <thead>
@@ -109,21 +110,26 @@
                   <td>
                     {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
                   </td>
-                  <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
-                    <ng-container *ngFor="let char of member.player.characters">
-                      <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
-                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                        </ng-container>
-                        <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                          <i class="fa fa-square-o"></i>
-                        </ng-container>
-                        <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                          <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                  <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null" [attr.colspan]="modelPlayer.milestoneList.length">
+                    Blocked by privacy settings
+                  </td>
+                  <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null">
+                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
+                      <ng-container *ngFor="let char of member.player.characters">
+                        <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          </ng-container>
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                            <i class="fa fa-square-o"></i>
+                          </ng-container>
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                            <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                          </ng-container>
                         </ng-container>
                       </ng-container>
-                    </ng-container>
-                  </td>
+                    </td>
+                  </ng-container>
                 </ng-container>
                 <ng-container *ngIf="member.player==null && modelPlayer!=null">
                   <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
