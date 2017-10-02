@@ -77,6 +77,18 @@
 
           <br>
 
+          <div class="filter-row">
+            <md-select *ngIf="modelPlayer!=null" [(ngModel)]="filterMode" (change)="filterPlayers()" placeholder="Filter players by activity">
+              <md-option value="none">Show All Players</md-option>
+              <md-option value="zero">Show only zero completions</md-option>
+              <md-option value="all">Show completely done</md-option>
+            </md-select>
+            <md-select *ngIf="modelPlayer!=null && filterMode!='none'" [(ngModel)]="filterActivity" (change)="filterPlayers()" placeholder="Activity">
+              <md-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{ mileStoneName.name }}</md-option>
+            </md-select>
+            <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
+          </div>
+
           <div class="mobile-button-row">
             <button md-raised-button (click)="toggleMemberSort()">Sort Name <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></button>
             <button md-raised-button (click)="toggleDateSort()">Sort Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></button>
@@ -93,7 +105,9 @@
                   <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
-                  <th [mdTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}</th>
+                  <th [mdTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
+
+                  </th>
                 </ng-container>
               </tr>
             </thead>
@@ -110,7 +124,8 @@
                   <td>
                     {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
                   </td>
-                  <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null" [attr.colspan]="modelPlayer.milestoneList.length">
+                  <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
+                    [attr.colspan]="modelPlayer.milestoneList.length">
                     Blocked by privacy settings
                   </td>
                   <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null">

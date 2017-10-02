@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo } from "../../service/model";
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo, MileStoneName } from "../../service/model";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
@@ -23,6 +23,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   modelPlayer: Player;
   sort: string = "memberAsc";
   playerCntr: 0;
+
+  filterMode: string = "none";
+  filterActivity: MileStoneName = null;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router) {
@@ -75,7 +78,35 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     return ClanComponent.compareName(a,b)*-1;
   }
 
+  private filterPlayers(){
+    if (this.filterMode=="none"){
+      this.filterActivity = null;
+    }
+    this.sortData();
+
+  }
+
   private sortData(): void{
+    //restore list
+    let temp = this.members.slice(0);
+    //filter list if necessary
+
+    this.sortedMembers = temp.filter(member=>{
+      if (this.filterActivity==null) return true;
+      if (member.player==null) return false;
+      if (member.player.characters==null) return false;
+      if (member.player.characters.length==0) return false;
+      let comp:number =0;
+      let total: number = 0;
+      member.player.characters.forEach(char=>{
+        total++;
+        if (char.milestones[this.filterActivity.key].complete) comp++;
+      });
+      if (this.filterMode=="zero" && comp==0) return true;
+      if (this.filterMode=="all" && comp==total) return true;
+      return false;
+    });
+
     if (this.sort=="memberAsc") this.sortedMembers.sort(ClanComponent.compareName);
     if (this.sort=="memberDesc") this.sortedMembers.sort(ClanComponent.compareNameReverse);
     if (this.sort=="dateAsc") this.sortedMembers.sort(ClanComponent.compareDate);
@@ -122,7 +153,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         //load the clan members
         this.bungieService.getClanMembers(this.id).then(x => {
           this.members = x;
-          this.sortedMembers = x.slice(0);
+          this.sortedMembers = this.members.slice(0);
           this.loading = false;
           if (this.members.length > 0) {
             this.slowlyLoadRest();
