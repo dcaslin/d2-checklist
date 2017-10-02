@@ -61,8 +61,8 @@
 
               <div *ngIf="player.milestoneList.length==0">
                 <br>
-                <h1>Nothing here? Try signing in. </h1>
-                <h4>There's a Bungie API bug blocking access otherwise.<br><br> Sorry about that.</h4>
+                <h1>Privacy</h1>
+                <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
               </div>
 
               <table class="responsive-table" *ngIf="player.milestoneList.length>0">
@@ -151,9 +151,9 @@
                 <md-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
 
                   <div *ngIf="char.factions==null || char.factions.length==0">
-                    <br>
-                    <h1>Nothing here? Try signing in. </h1>
-                    <h4>There's a Bungie API bug blocking access otherwise.<br><br> Sorry about that.</h4>
+                    <br>                    
+                    <h1>Privacy</h1>
+                    <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                   </div>
 
                   <table class="responsive-table" *ngIf="char.factions!=null && char.factions.length>0">
@@ -211,7 +211,7 @@
                     <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
                     </md-progress-bar>
                   </div>
-                  <div *ngIf="char.baseCharacterLevel>=20"><b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp;  {{char.legendProgression.percentToNextLevel|percent}} to level {{char.legendProgression.level+1}}
+                  <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=20"><b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp;  {{char.legendProgression.percentToNextLevel|percent}} to level {{char.legendProgression.level+1}}
                       <md-progress-bar color="accent" mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
                       </md-progress-bar>
                     </div>
