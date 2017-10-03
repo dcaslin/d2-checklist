@@ -456,6 +456,9 @@ export class ParseService {
         if (hash == "3974591367") {
             return new NameDesc("Attrition", " Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super");
         }
+        if (hash == "2809763955"){
+            return new NameDesc("Momentum", "Health and shield regeneration are disabled while standing still. Sprint to regenerate more quickly");
+        }
         if (hash == "2563004598") {
 
             return new NameDesc("Timewarp - Zero Hour", "The mission timer CANNOT be extended. Choose your battle carefully");
