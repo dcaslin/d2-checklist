@@ -44,6 +44,10 @@
                 amDuration:'ms'}} ago</mark>
             </span>
           </h4>
+
+          <div class="rankupRow" *ngIf="player!=null && player.rankups!=null && player.rankups.length>0" >
+           Enough tokens to rank up with: <span class="rankup accent-bg-text" *ngFor="let ru of player.rankups">{{ru}}</span>
+          </div>
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
               <mat-icon>message</mat-icon>
@@ -181,13 +185,19 @@
                     <tbody>
                       <tr *ngFor="let faction of char.factions">
                         <td class="lead" [matTooltip]="faction.desc" data-label="">
-                          {{faction.hash}} {{faction.name}}
+
+                          {{faction.name}}
                           <span class="light">Level {{faction.level}} </span>
+                          <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
+
                           <span class="caption">{{faction.info}}</span>
 
                         </td>
                         <td data-label="">
-                          Tokens Needed TNL {{faction.tokensNeeded}}
+
+                          <ng-container *ngIf="faction.tokensHeld!=null">{{faction.tokensHeld}} / {{faction.tokensNeeded}} tokens needed TNL</ng-container>
+                          <ng-container *ngIf="faction.tokensHeld==null">Tokens Needed TNL {{faction.tokensNeeded}} </ng-container>
+
                           <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                           <div>
                             <mat-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
@@ -219,8 +229,7 @@
                   </mat-card-title>
                   <mat-card-subtitle>
                     Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
-                    <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}}
-                    mins)
+                    <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60| number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
                     <br>
                   </mat-card-subtitle>
                 </mat-card-header>
@@ -230,7 +239,7 @@
                     <mat-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
                     </mat-progress-bar>
                   </div>
-                  
+
                   <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=20">
                     <b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
                     to level {{char.legendProgression.level+1}}
