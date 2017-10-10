@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MdTabChangeEvent, MdTabGroup } from '@angular/material';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
@@ -19,7 +19,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
 
-  @ViewChild(MdTabGroup) tabs: MdTabGroup;
+  @ViewChild(MatTabGroup) tabs: MatTabGroup;
 
   platforms: Platform[];
   selectedPlatform: Platform;

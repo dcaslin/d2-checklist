@@ -1,72 +1,76 @@
 <div class="holder">
-  <md-sidenav-container>
+  <mat-sidenav-container>
 
-    <md-sidenav #sidenav mode="push">
-      <div routerLink="" class="branding"><img [src]="logo" /> <span>D2 Checklist</span></div>
-      <md-nav-list>
-        <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUser!=null">
-            {{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}
-            </a>
-        <a md-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
-            My Clan
-          </a>
-        <a md-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
-            My Info
-          </a>
-        <a md-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
-        {{item.label}}
-      </a>
-      </md-nav-list>
-    </md-sidenav>
+    <mat-sidenav #sidenav mode="push">
+      <div routerLink="" class="branding">
+        <img [src]="logo" />
+        <span>D2 Checklist</span>
+      </div>
+      <mat-nav-list>
+        <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUser!=null">
+          {{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}
+        </a>
+        <a mat-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+          My Clan
+        </a>
+        <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
+          My Info
+        </a>
+        <a mat-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
+          {{item.label}}
+        </a>
+      </mat-nav-list>
+    </mat-sidenav>
 
     <div class="wrapper">
 
-      <md-toolbar color="primary">
+      <mat-toolbar color="primary">
 
-        <button md-icon-button class="hidden-md-up" (click)="sidenav.open()">
-        <md-icon>menu</md-icon>
-      </button>
+        <button mat-icon-button class="hidden-md-up" (click)="sidenav.open()">
+          <mat-icon>menu</mat-icon>
+        </button>
 
-        <span routerLink="" class="branding spacer hidden-md-up text-center"><img
-        [src]="logo"/> D2 Checklist</span>
-        <span routerLink="" class="branding spacer hidden-sm-down"><img
-        [src]="logo"/> D2 Checklist</span>
+        <span routerLink="" class="branding spacer hidden-md-up text-center">
+          <img [src]="logo" /> D2 Checklist</span>
+        <span routerLink="" class="branding spacer hidden-sm-down">
+          <img [src]="logo" /> D2 Checklist</span>
 
         <span class="hidden-sm-down">
-       
-        <button md-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
-          {{item.label}}
-        </button>
-      </span>
 
-        <button md-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" mdTooltip="Grants access to private endpoints and some bugged public data too"
-          mdTool tipPosition="before" (click)="onLoginClick()">
-        Sign in
-      </button>
-
-        <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" md-button [mdMenuTriggerFor]="toolbarUserMenu">
-        <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length==1">person</md-icon>
-        <md-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length>1">supervisor_account</md-icon>
-      </button>
-        <md-menu #toolbarUserMenu="mdMenu">
-          <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
-            <button md-menu-item *ngFor="let avail of this.signedOnUser.membership.destinyMemberships" [disabled]="avail == this.signedOnUser.selectedUser"
-              (click)="selectUser(avail)">
-            <md-icon>account_circle</md-icon>
-            <span>{{avail.platformName}}</span>
+          <button mat-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
+            {{item.label}}
           </button>
+        </span>
+
+        <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" 
+          matTooltip="Grants access to private endpoints and some bugged public data too"
+          matTooltipPosition="before" (click)="onLoginClick()">
+          Sign in
+        </button>
+
+        <button *ngIf="signedOnUser!=null && this.signedOnUser.selectedUser!=null" mat-button [matMenuTriggerFor]="toolbarUserMenu">
+          <mat-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length==1">person</mat-icon>
+          <mat-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length>1">supervisor_account</mat-icon>
+        </button>
+        <mat-menu #toolbarUserMenu="matMenu">
+          <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
+            <button mat-menu-item *ngFor="let avail of this.signedOnUser.membership.destinyMemberships" [disabled]="avail == this.signedOnUser.selectedUser"
+              (click)="selectUser(avail)">
+              <mat-icon>account_circle</mat-icon>
+              <span>{{avail.platformName}}</span>
+            </button>
           </ng-container>
 
-          <button md-menu-item (click)="onLogoutClick()">
-          <md-icon>power_settings_new</md-icon>
-          <span>Logout</span>
-        </button>
-        </md-menu>
+          <button mat-menu-item (click)="onLogoutClick()">
+            <mat-icon>power_settings_new</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
 
-        <button md-icon-button routerLink="settings" class="hidden-sm-down">
-        <md-icon>settings</md-icon>
-      </button>
-        <md-toolbar-row *ngIf="this.signedOnUser!=null" class="sub-row">
+        <button mat-icon-button routerLink="settings" class="hidden-sm-down">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-toolbar-row *ngIf="this.signedOnUser!=null" class="sub-row">
           <span class="hidden-sm-down" *ngIf="this.signedOnUser.selectedUser!=null">{{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}</span>
           <span class="spacer"></span>
 
@@ -77,9 +81,9 @@
           <ng-container *ngIf="this.signedOnUser.selectedUserCurrencies!=null">
             <span class="currency-icons" (click)="refreshCurrency()">
               <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
-                <span class="currency-chip" [mdTooltip]="c.count+' '+c.name">
+                <span class="currency-chip" [matTooltip]="c.count+' '+c.name">
                   <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-                <span>  {{c.count|number}}</span>
+                  <span> {{c.count|number}}</span>
                 </span>
               </ng-container>
             </span>
@@ -87,16 +91,16 @@
           </ng-container>
 
 
-          <button md-button class="hidden-sm-down nav-button" (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
-              <md-icon>flag</md-icon> My Clan
+          <button mat-button class="hidden-sm-down nav-button" (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+            <mat-icon>flag</mat-icon> My Clan
           </button>
-          <button md-button class="hidden-sm-down nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
-              <md-icon>favorite</md-icon> My Info
+          <button mat-button class="hidden-sm-down nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
+            <mat-icon>favorite</mat-icon> My Info
           </button>
 
 
-        </md-toolbar-row>
-      </md-toolbar>
+        </mat-toolbar-row>
+      </mat-toolbar>
 
       <router-outlet #o="outlet"></router-outlet>
       <div class="push"></div>
@@ -120,7 +124,7 @@
             <span>Twitter</span>
           </a>
 
-          <a mdTooltip="destinychecklistnet at gmail.com" mdTooltipPosition="above">
+          <a matTooltip="destinychecklistnet at gmail.com" matTooltipPosition="above">
             <i class="fa fa-envelope fa-2x" aria-hidden="true"></i>
             <span>Email</span>
           </a>
@@ -132,12 +136,12 @@
       </div>
       <div class="row">
         <div class="col-12 signature">
-          &#169; {{year}} - Destiny Checklist | <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a> |
-          Not affiliated with Bungie
+          &#169; {{year}} - Destiny Checklist |
+          <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a> | Not affiliated with Bungie
 
         </div>
       </div>
     </div>
 
-  </md-sidenav-container>
+  </mat-sidenav-container>
 </div>

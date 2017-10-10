@@ -6,7 +6,8 @@ import {
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
     Const, BungieMembership, BungieMember, BungieMemberPlatform,
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
-    CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc
+    CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
+    InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket
 } from './model';
 @Injectable()
 export class ParseService {
@@ -137,12 +138,26 @@ export class ParseService {
             prog.weeklyProgress = p.weeklyProgress;
             prog.levelCap = p.levelCap;
             prog.level = p.level;
+            prog.nextLevelAt = p.nextLevelAt;
+            prog.progressToNextLevel = p.progressToNextLevel;
+
+            let progNeeded = p.nextLevelAt - p.progressToNextLevel;
+
+            prog.tokensNeeded = ParseService.getTokensNeeded(p.progressionHash, progNeeded);
             prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
             return prog;
         }
         else {
             return null;
         }
+    }
+
+    private static getTokensNeeded(progressionHash: number, progNeeded: number): number {
+        //ikora
+        if (progressionHash == 3231773039){
+            return Math.ceil(progNeeded/1000);
+        }   
+        return Math.ceil(progNeeded/100);
     }
 
 
@@ -209,10 +224,10 @@ export class ParseService {
                         return;
 
                     let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
-                    
+
                     if (desc != null) {
 
-                        
+
                         let type: string = ParseService.parseMilestoneType(desc.milestoneType);
                         //null is tutorial or one-time, skip
                         if (type == null) return;
@@ -243,7 +258,7 @@ export class ParseService {
                         if (name == null || name.trim().length == 0) {
                             name = desc.friendlyName;
                         }
-                        if (key == "463010297" && (description==null || description=="")) {
+                        if (key == "463010297" && (description == null || description == "")) {
                             description = "Complete public events at the designated location";
                         }
                         //skip classified for now
@@ -286,7 +301,7 @@ export class ParseService {
                             if (q.status.stepObjectives != null) {
                                 q.status.stepObjectives.forEach(o => {
                                     oCntr++;
-                                    let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];                                    
+                                    let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                                     if (oDesc.completionValue != null && oDesc.completionValue > 0) {
                                         oPct = o.progress / oDesc.completionValue;
                                     }
@@ -397,11 +412,11 @@ export class ParseService {
             act.deaths = ParseService.getBasicValue(a.values.deaths);
             act.assists = ParseService.getBasicValue(a.values.assists);
             act.score = ParseService.getBasicValue(a.values.score);
-            act.completionReason =  ParseService.getBasicValue(a.values.completionReason);
-            if (desc.isPvP){
-                act.success = act.standing==0;
+            act.completionReason = ParseService.getBasicValue(a.values.completionReason);
+            if (desc.isPvP) {
+                act.success = act.standing == 0;
             }
-            else{
+            else {
                 act.success = act.completionReason == 0;
             }
 
@@ -456,7 +471,7 @@ export class ParseService {
         if (hash == "3974591367") {
             return new NameDesc("Attrition", " Health and shields regen slowly. Enemies have a chance of leaving wells of Light when they die, which fill health and super");
         }
-        if (hash == "2809763955"){
+        if (hash == "2809763955") {
             return new NameDesc("Momentum", "Health and shield regeneration are disabled while standing still. Sprint to regenerate more quickly");
         }
         if (hash == "2563004598") {
@@ -518,7 +533,7 @@ export class ParseService {
         if (resp.profile != null)
             profile = resp.profile.data;
 
-        let charsDict: any = {};
+        let charsDict: { [key: string]: Character } = {};
         let milestoneList: MileStoneName[] = [];
         let currentActivity: CurrentActivity = null;
         let chars: Character[] = [];
@@ -575,7 +590,183 @@ export class ParseService {
             });
         }
 
-        return new Player(profile, chars, currentActivity, milestoneList, currencies);
+        let gear: InventoryItem[] = [];
+        let vault: Character = new Character();
+        vault.className = "Vault";
+        let shared: Character = new Character();
+        shared.className = "Shared";
+
+        if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
+            Object.keys(resp.characterEquipment.data).forEach((key) => {
+                let char: Character = charsDict[key];
+                let items: _InventoryItem[] = resp.characterEquipment.data[key].items;
+                items.forEach(itm => {
+                    let parsed: InventoryItem = this.parseInvItem(itm, true, char, vault, resp.itemComponents);
+                    if (parsed != null) {
+                        gear.push(parsed);
+                    }
+                });
+
+            });
+        }
+        if (resp.characterInventories != null && resp.characterInventories.data != null) {
+            Object.keys(resp.characterInventories.data).forEach((key) => {
+                let char: Character = charsDict[key];
+                let items: _InventoryItem[] = resp.characterInventories.data[key].items;
+                items.forEach(itm => {
+                    let parsed: InventoryItem = this.parseInvItem(itm, false, char, vault, resp.itemComponents);
+                    if (parsed != null) {
+                        gear.push(parsed);
+                    }
+                });
+            });
+        }
+        if (resp.profileInventory != null && resp.profileInventory.data != null) {
+            //data/items[]
+            let items: _InventoryItem[] = resp.profileInventory.data.items;
+            items.forEach(itm => {
+                let parsed: InventoryItem = this.parseInvItem(itm, false, shared, vault, resp.itemComponents);
+                if (parsed != null) {
+                    gear.push(parsed);
+                }
+            });
+        }
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear);
+    }
+
+
+    private parseInvItem(itm: _InventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any) {
+        //vault bucket
+        if (itm.bucketHash == 138197802) {
+            owner = vaultChar;
+        }
+
+        let desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
+        if (desc == null) {
+            return null;
+            //return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
+        }
+
+        if (desc.itemType != ItemType.Weapon
+            && desc.itemType != ItemType.Armor
+            && desc.itemType != ItemType.Mod
+            //faction tokens and such
+            && (desc.inventory.bucketTypeHash != 1469714392)) {
+            return null;
+        }
+        let type: ItemType = desc.itemType;
+        if (desc.inventory.bucketTypeHash == 1469714392) {
+            type = ItemType.Consumable;
+        }
+
+        //TODO parse perks
+
+        let power: number = 0;
+        let damageType: DamageType = DamageType.None;
+        let perks: Perk[] = [];
+        let stats: InventoryStat[] = [];
+        let sockets: InventorySocket[] = [];
+
+        if (itemComp != null) {
+            if (itemComp.instances != null && itemComp.instances.data != null) {
+                let inst: _InventoryInstanceData = itemComp.instances.data[itm.itemInstanceId];
+                if (inst != null) {
+                    if (inst.primaryStat != null)
+                        power = inst.primaryStat.value;
+                    equipped = inst.isEquipped;
+                    damageType = inst.damageType;
+                }
+
+            }
+
+            if (itemComp.perks != null && itemComp.perks.data != null) {
+                let _i = itemComp.perks.data[itm.itemInstanceId];
+                if (_i != null) {
+                    let _perks: _InventoryPerk[] = itemComp.perks.data[itm.itemInstanceId].perks;
+                    _perks.forEach(_perk => {
+                        let pDesc = this.destinyCacheService.cache.Perk[_perk.perkHash];
+                        if (pDesc != null) {
+                            let perk = new Perk("" + _perk.perkHash, pDesc.displayProperties.name, pDesc.displayProperties.description, _perk.iconPath, _perk.isActive, _perk.visible);
+                            perks.push(perk);
+                        }
+                    });
+                }
+            }
+            if (itemComp.stats != null && itemComp.stats.data != null) {
+
+                let _i = itemComp.stats.data[itm.itemInstanceId];
+                if (_i != null) {
+                    let _stats: { [statHash: string]: _InventoryStat } = _i.stats;
+                    Object.keys(_stats).forEach((key) => {
+                        let _stat: _InventoryStat = _stats[key];
+                        let statDesc = this.destinyCacheService.cache.Stat[_stat.statHash];
+                        if (statDesc != null) {
+                            let stat = new InventoryStat(statDesc.displayProperties.name,
+                                statDesc.displayProperties.description, _stat.value);
+                            stats.push(stat);
+                        }
+                    });
+                }
+            }
+
+            if (itemComp.sockets != null && itemComp.sockets.data != null) {
+                let _i = itemComp.sockets.data[itm.itemInstanceId];
+                if (_i != null) {
+                    let _sockets: { [statHash: string]: _InventorySocket } = _i.sockets;
+                    Object.keys(_sockets).forEach((key) => {
+                        let plugs: InventoryPlug[] = [];
+                        let _socket: _InventorySocket = _sockets[key];
+                        //if (!_socket.isEnabled) return;
+                        let plugDesc = this.destinyCacheService.cache.InventoryItem[_socket.plugHash];
+                        if (plugDesc == null) return;
+                        let bonusLight = 0;
+                        plugDesc.investmentStats.forEach(s => {
+                            if (s.statTypeHash == 1935470627) {
+                                bonusLight = s.value;
+                            }
+                        });
+                        let plug: InventoryPlug = new InventoryPlug(_socket.plugHash + "",
+                            plugDesc.displayProperties.name, plugDesc.displayProperties.description, true);
+                        plugs.push(plug);
+                        if (_socket.reusablePlugHashes != null) {
+                            _socket.reusablePlugHashes.forEach(h => {
+                                //this one was selected and we're done
+                                if (h + "" == plug.hash) return;
+                                let plugDesc = this.destinyCacheService.cache.InventoryItem[h];
+                                if (plugDesc != null) {
+                                    let rPlug = new InventoryPlug(h + "", plugDesc.displayProperties.name,
+                                        plugDesc.displayProperties.description, false);
+                                    plugs.push(rPlug);
+                                }
+
+                            });
+                        }
+                        sockets.push(new InventorySocket(plugs, bonusLight));
+                    });
+                }
+            }
+            // objectives /data/itemInstanceId/stuff?
+            // talentGrids
+            // plugStates?
+        }
+
+        if (perks.length == 0 && desc.perks != null && desc.perks.length > 0) {
+            desc.perks.forEach(_perk => {
+                let pHash: string = _perk.perkHash;
+                let pDesc = this.destinyCacheService.cache.Perk[_perk.perkHash];
+                let perk = new Perk("" + _perk.perkHash, pDesc.displayProperties.name,
+                    pDesc.displayProperties.description, pDesc.displayProperties.icon, true, pDesc.isDisplayable);
+                perks.push(perk);
+
+
+            });
+        }
+
+
+        return new InventoryItem("" + itm.itemHash, desc.displayProperties.name,
+            equipped, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName, itm.quantity,
+            power, damageType, perks, stats, sockets
+        );
     }
 
     public parseClanInfo(j: any): ClanInfo {
@@ -740,9 +931,9 @@ export class ParseService {
             let entry = this.parsePGCREntry(ent);
 
             //pve
-            if (r.pve){
-                if (entry.completionReason == 0){
-                    teamPveSuccess = true; 
+            if (r.pve) {
+                if (entry.completionReason == 0) {
+                    teamPveSuccess = true;
                 }
             }
 
@@ -845,7 +1036,8 @@ export class ParseService {
         if (mode == 38) return "Countdown";
         if (mode == 39) return "Trials";
         if (mode == 40) return "Social";
-        return "unknown";
+        if (mode == 43) return "Iron Banner";
+        return "Unknown" + mode;
     }
 
     public parseBungieMembership(resp: any) {
@@ -978,4 +1170,48 @@ interface _BungieMember {
     statusText: string;
     statusDate: string;
     blizzardDisplayName: string;
+}
+
+interface _InventoryItem {
+    itemHash: number;
+    itemInstanceId: string;
+    quantity: number;
+    bindStatus: number;
+    location: number;
+    bucketHash: number;
+    transferStatus: number;
+    lockable: boolean;
+    state: number;
+}
+
+interface _InventoryInstanceData {
+    damageType: number; //YES
+    damageTypeHash: number; //YES
+    primaryStat: _InventoryStat; //YES
+    itemLevel: number;
+    quality: number;
+    isEquipped: boolean; //YES
+    canEquip: boolean;
+    equipRequiredLevel: number;
+    unlockHashesRequiredToEquip: number[];
+    cannotEquipReason: number;
+}
+
+interface _InventoryStat {
+    statHash: number;
+    value: number;
+    maximumValue: number;
+}
+
+interface _InventoryPerk {
+    perkHash: number;
+    iconPath: string;
+    isActive: boolean;
+    visible: boolean;
+}
+
+interface _InventorySocket {
+    plugHash: number;
+    isEnabled: boolean;
+    reusablePlugHashes: number[];
 }

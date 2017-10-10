@@ -1,7 +1,7 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-        <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <h1>Search Bungie</h1>
       <div class="note centerMe"><small>Wild-card search Bungie accounts by name. Note that sometimes these are different than gamertags. 
         Not all Destiny accounts are active or in clans, so some links will strike themselves out when clicked.</small>
@@ -9,11 +9,11 @@
 
       <div>
 
-        <md-form-field class="searchField">
-          <input mdInput placeholder="Bungie name" [(ngModel)]="name" (keyup.enter)="search()">
-        </md-form-field>
+        <mat-form-field class="searchField">
+          <input matInput placeholder="Bungie name" [(ngModel)]="name" (keyup.enter)="search()">
+        </mat-form-field>
         &emsp;
-        <button md-mini-fab color="primary searchField" (click)="search()" color="primary"><md-icon>search</md-icon></button>
+        <button mat-mini-fab color="primary searchField" (click)="search()" color="primary"><mat-icon>search</mat-icon></button>
       </div>
 
       <table class="responsive-table" *ngIf="accounts!=null && accounts.length>0">

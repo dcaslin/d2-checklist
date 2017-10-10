@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
-import { MdPaginator, MdSort } from '@angular/material';
+import { MatPaginator, MatSort } from '@angular/material';
 import { DurationPipe } from 'angular2-moment';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
@@ -21,9 +21,9 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
 
   database = new SortFilterDatabase([]);
   dataSource: SortFilterDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('filter') filter: ElementRef;
-  @ViewChild(MdSort) sort: MdSort;
+  @ViewChild(MatSort) sort: MatSort;
 
   filterName: string;
 

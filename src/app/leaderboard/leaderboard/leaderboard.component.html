@@ -1,7 +1,7 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
 
       <h1>Leviathan Raid Leaderboard</h1>
 
@@ -11,49 +11,49 @@
 
 
       <div>
-        <md-form-field class="searchField">
-          <input mdInput #filter placeholder="Filter users">
-        </md-form-field>
+        <mat-form-field class="searchField">
+          <input matInput #filter placeholder="Filter users">
+        </mat-form-field>
       </div>
 
       <div class="table-container">
-        <md-table class="centerMe" #table [dataSource]="dataSource" mdSort>
+        <mat-table class="centerMe" #table [dataSource]="dataSource" matSort>
           <ng-container cdkColumnDef="rank">
-            <md-header-cell class="rankCol" *cdkHeaderCellDef md-sort-header>Rank</md-header-cell>
-            <md-cell class="rankCol" *cdkCellDef="let row">
-              <a md-button  href="javascript:void(0)" (click)="pgcr(row.pgcr)">
+            <mat-header-cell class="rankCol" *cdkHeaderCellDef mat-sort-header>Rank</mat-header-cell>
+            <mat-cell class="rankCol" *cdkCellDef="let row">
+              <a mat-button  href="javascript:void(0)" (click)="pgcr(row.pgcr)">
                       {{row.rank}} 
                     </a>
-            </md-cell>
+            </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="end">
-            <md-header-cell *cdkHeaderCellDef class="hidden-md-down" md-sort-header>Complete</md-header-cell>
-            <md-cell *cdkCellDef="let row" class="hidden-md-down">
+            <mat-header-cell *cdkHeaderCellDef class="hidden-md-down" mat-sort-header>Complete</mat-header-cell>
+            <mat-cell *cdkCellDef="let row" class="hidden-md-down">
               {{row.end|date:'short'}}
-            </md-cell>
+            </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="fireteam">
-            <md-header-cell *cdkHeaderCellDef md-sort-header>Fireteam</md-header-cell>
-            <md-cell *cdkCellDef="let row">
+            <mat-header-cell *cdkHeaderCellDef mat-sort-header>Fireteam</mat-header-cell>
+            <mat-cell *cdkCellDef="let row">
               <span class="name" *ngFor="let p of row.fireteam">
                   <a href="javascript:void(0)" (click)="loadPlayer(p.membershipType, p.displayName)" >{{p.displayName}}</a>
                   <a class="accent-text" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
                     <i class="fa fa-twitch"></i>
                   </a>
                 </span>
-            </md-cell>
+            </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="durationMs">
-            <md-header-cell *cdkHeaderCellDef class="hidden-md-down" md-sort-header>Duration</md-header-cell>
-            <md-cell *cdkCellDef="let row" class="hidden-md-down">
+            <mat-header-cell *cdkHeaderCellDef class="hidden-md-down" mat-sort-header>Duration</mat-header-cell>
+            <mat-cell *cdkCellDef="let row" class="hidden-md-down">
               {{ row.durationMs | amDuration:'milliseconds' }}
-            </md-cell>
+            </mat-cell>
           </ng-container>
-          <md-header-row *cdkHeaderRowDef="displayedColumns"></md-header-row>
-          <md-row *cdkRowDef="let row; columns: displayedColumns;"></md-row>
-        </md-table>
-        <md-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
-        </md-paginator>
+          <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">

@@ -1,0 +1,147 @@
+<mat-tab-group>
+  <mat-tab label="Weapons">
+    <table class="tidy-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Stats</th>
+          <th>Sockets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let i of gear">
+          <tr *ngIf="i.type == ItemType.Weapon">
+            <td>
+              <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+              {{i.hash}} {{i.name}}
+              <br> {{i.typeString()}}|{{i.typeName}}
+              <br> {{i.power}} {{i.damageTypeString()}}
+
+              <br> Quantity: {{i.quantity}}
+              <br> Equipped: {{i.equipped}}
+              <br> Owner: {{i.owner.className}}
+            </td>
+            <td>
+              <ng-container *ngFor="let s of i.stats">
+                <div [matTooltip]="s.desc">{{s.name}}: {{s.value}}</div>
+              </ng-container>
+            </td>
+           <td>
+              <div *ngFor="let socket of i.sockets" class="socket">
+                {{socket.isPlus5}}
+
+                <span class="accent-text" *ngIf="socket.bonusLight>0">{{socket.bonusLight}}</span>
+                <span *ngFor="let plug of socket.plugs; let last = last" [matTooltip]="plug.desc" [class.text-muted]="!plug.active" [class.active]="plug.active">
+                  {{plug.name}}
+                  <ng-container *ngIf="!last">|</ng-container>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </mat-tab>
+  <mat-tab label="Armor">
+    <table class="tidy-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Stats</th>
+          <th>Sockets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let i of gear">
+          <tr *ngIf="i.type == ItemType.Armor">
+            <td>
+              <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+              {{i.hash}} {{i.name}}
+              <br> {{i.typeName}}
+              <br> {{i.power}}
+              <br> Equipped: {{i.equipped}}
+              <br> Owner: {{i.owner.className}}
+            </td>
+
+            <td>
+              <ng-container *ngFor="let s of i.stats">
+                <div [matTooltip]="s.desc">{{s.name}}: {{s.value}}</div>
+              </ng-container>
+            </td>
+            <td>
+              <div *ngFor="let socket of i.sockets" class="socket">
+                <span class="accent-text" *ngIf="socket.bonusLight>0">{{socket.bonusLight}}</span>
+                <span *ngFor="let plug of socket.plugs; let last = last" [matTooltip]="plug.desc" [class.text-muted]="!plug.active" [class.active]="plug.active">
+                  {{plug.name}}
+                  <ng-container *ngIf="!last">|</ng-container>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </mat-tab>
+  <mat-tab label="Mods">
+    <table class="tidy-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Perks</th>
+          <th>Sockets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let i of gear">
+          <tr *ngIf="i.type == ItemType.Mod">
+            <td>
+              <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+              {{i.hash}} {{i.name}}
+              <br> {{i.typeString()}}|{{i.typeName}}
+              <br> {{i.power}} {{i.damageTypeString()}}
+              <br> Quantity: {{i.quantity}}
+              <br> Equipped: {{i.equipped}}
+              <br> Owner: {{i.owner.className}}
+            </td>
+
+            <td>
+              <div *ngFor="let p of i.perks">{{p.hash}}: {{p.name}} - {{p.desc}}, {{p.active}},{{p.visible}}</div>
+            </td>
+            <td>
+              <div *ngFor="let socket of i.sockets">
+                <span *ngFor="let plug of socket.plugs">
+                  <{{plug.hash}} {{plug.name}} {{plug.active}}>
+                </span>
+              </div>
+            </td>
+
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </mat-tab>
+  <mat-tab label="Consumable">
+    <table class="tidy-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let i of gear">
+          <tr *ngIf="i.type == ItemType.Consumable">
+            <td>
+              <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+              {{i.hash}} {{i.name}}
+              <br> {{i.typeString()}}|{{i.typeName}}
+              <br> {{i.power}} {{i.damageTypeString()}}
+              <br> Quantity: {{i.quantity}}
+              <br> Equipped: {{i.equipped}}
+              <br> Owner: {{i.owner.className}}
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </mat-tab>
+</mat-tab-group>

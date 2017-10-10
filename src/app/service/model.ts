@@ -1,5 +1,4 @@
 
-
 export class ActivityMode {
     name: string;
     type: number;
@@ -57,17 +56,17 @@ export interface UserInfo {
     icon: string;
 }
 
-export class LeaderBoardList{
+export class LeaderBoardList {
     name: string;
     entries: LeaderboardEntry[];
 
-    constructor(name:string, entries: LeaderboardEntry[]){
+    constructor(name: string, entries: LeaderboardEntry[]) {
         this.name = name;
         this.entries = entries;
     }
 }
 
-export class LeaderboardEntry{
+export class LeaderboardEntry {
     destinyUserInfo: UserInfo;
     characterId: string;
     characterClass: string;
@@ -91,22 +90,69 @@ export class Player {
     characters: Character[];
     milestoneList: MileStoneName[];
     currencies: Currency[];
+    gear: any[];
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: any[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
         this.milestoneList = milestoneList;
         this.currencies = currencies;
+        this.gear = gear;
     }
 }
 
-export class Currency{
+export class InventoryItem {
+    readonly hash: string;
+    readonly name: string;
+    readonly equipped: boolean;
+    readonly icon: string;
+    readonly owner?: Character;
+    readonly type: ItemType;
+    readonly typeName: string;
+    readonly quantity: number;
+    readonly power: number;
+    readonly damageType: DamageType;
+    readonly perks: Perk[];
+    readonly stats: InventoryStat[];
+    readonly sockets: InventorySocket[];
+
+    //more to come, locked other stuff
+
+    damageTypeString(): string{
+        return DamageType[this.damageType];
+    }
+
+    typeString(): string{
+        return ItemType[this.type];
+    }
+
+    constructor(hash: string, name: string, equipped: boolean, owner: Character, 
+        icon: string, type: ItemType, typeName: string, quantity: number,
+        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[]
+    ) {
+        this.hash = hash;
+        this.name = name;
+        this.equipped = equipped;
+        this.owner = owner;
+        this.icon = icon;
+        this.type = type;
+        this.typeName = typeName;
+        this.quantity = quantity;
+        this.power = power;
+        this.damageType = damageType;
+        this.perks = perks;
+        this.stats = stats;
+        this.sockets = sockets;
+    }
+}
+
+export class Currency {
     name: string;
     icon: string;
     count: number;
 
-    constructor(name: string, icon:string, count: number){
+    constructor(name: string, icon: string, count: number) {
         this.name = name;
         this.icon = icon;
         this.count = count;
@@ -119,7 +165,7 @@ export class MilestoneStatus {
     pct: number;
     info: string;
 
-    constructor(hash, complete, pct, info){
+    constructor(hash, complete, pct, info) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
@@ -161,10 +207,10 @@ export class Character {
     startWeek: Date;
     endWeek: Date;
     lifetimeRaid: number = 0;
-    
+
 }
 
-export class Nightfall{
+export class Nightfall {
     name: string;
     desc: string;
     tiers: number[];
@@ -175,29 +221,29 @@ export class Nightfall{
 
 
 
-export class NameDesc{
+export class NameDesc {
     name: string;
     desc: string;
 
-    constructor(name: string, desc: string){
+    constructor(name: string, desc: string) {
         this.name = name;
         this.desc = desc;
     }
 }
 
-export class CharacterStat{
+export class CharacterStat {
     name: string;
     desc: string;
     value: number;
 
-    constructor(name, desc, value){
+    constructor(name, desc, value) {
         this.name = name;
         this.desc = desc;
         this.value = value;
     }
 }
 
-export class ClanMilestoneResults{
+export class ClanMilestoneResults {
     nightfall: boolean;
     raid: boolean;
     crucible: boolean;
@@ -231,12 +277,12 @@ export class PGCR {
     entries: PGCREntry[];
     level: number;
     teams: PGCRTeam[];
-    pveSuccess? : boolean;
+    pveSuccess?: boolean;
     pve: boolean;
 
 }
 
-export class PGCRTeam{
+export class PGCRTeam {
     name: string;
     standing: string;
     score: number;
@@ -306,7 +352,7 @@ export class PGCREntry {
 
 }
 
-export class PGCRWeaponData{
+export class PGCRWeaponData {
     hash: string;
     name: string;
     type: string;
@@ -356,8 +402,8 @@ export class BungieMemberPlatform {
     }
 }
 
-export class ClanInfo{
-    
+export class ClanInfo {
+
     groupId: string;
     name: string;
     creationDate: string;
@@ -373,6 +419,9 @@ export class Progression {
     info: string;
     desc: string;
     hash: number;
+    nextLevelAt: number;
+    progressToNextLevel: number;
+    tokensNeeded: number;
     progressionHash: number;
     level: number;
     levelCap: number;
@@ -404,5 +453,95 @@ export class Const {
         "2": Const.PSN_PLATFORM,
         "4": Const.BNET_PLATFORM
     }
+}
+
+export class InventoryStat {
+    readonly name: string;
+    readonly desc: string;
+    readonly value: number;
+
+    constructor(name, desc, value) {
+        this.name = name;
+        this.desc = desc;
+        this.value = value;
+    }
+}
+
+export class InventorySocket{
+    readonly plugs: InventoryPlug[];
+    readonly bonusLight: number;
+
+    constructor(plugs:InventoryPlug[], bonusLight: number){
+        this.plugs = plugs;
+        this.bonusLight = bonusLight;
+
+    }
+
+}
+
+export class InventoryPlug{
+    readonly hash: string;
+    readonly name: string;
+    readonly desc: string;
+    readonly active: boolean;
+
+    constructor(hash: string, name: string, desc: string, active: boolean){
+        this.hash = hash;
+        this.name = name;
+        this.desc = desc;
+        this.active = active;
+    }
+}
+
+export class Perk{
+
+    readonly hash: string;
+    readonly name: string;
+    readonly desc: string;
+    readonly icon: string;
+    readonly active: boolean;
+    readonly visible: boolean;
+
+    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, visible:boolean){
+        this.hash = hash;
+        this.name = name;
+        this.desc = desc;
+        this.icon = icon;
+        this.active = active;
+        this.visible = visible;
+    }
+    
+}
+
+export enum ItemType {
+    None = 0,
+    Currency = 1,
+    Armor = 2,
+    Weapon = 3,
+    Message = 7,
+    Engram = 8,
+    Consumable = 9,
+    ExchangeMaterial = 10,
+    MissionReward = 11,
+    QuestStep = 12,
+    QuestStepComplete = 13,
+    Emblem = 14,
+    Quest = 15,
+    Subclass = 16,
+    ClanBanner = 17,
+    Aura = 18,
+    Mod = 19
+}
+
+export enum DamageType{
+    None= 0,
+    Kinetic= 1,
+    Arc= 2,
+    Thermal= 3,
+    Void= 4,
+    Raid= 5
+}
+
+export class Socket{
 
 }
