@@ -6,7 +6,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { Player, Character, Platform, ActivityMode, Const } from "../../service/model";
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
-import { MdPaginator, MdSort } from '@angular/material';
+import { MatPaginator, MatSort } from '@angular/material';
 import { DurationPipe } from 'angular2-moment';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
@@ -31,8 +31,8 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   database = new SortFilterDatabase([]);
   dataSource: SortFilterDataSource | null;
-  @ViewChild(MdPaginator) paginator: MdPaginator;
-  @ViewChild(MdSort) sort: MdSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   displayedColumns = ['period', 'mode', 'name', 'timePlayedSeconds'];
 

@@ -168,7 +168,7 @@ export class BungieService implements OnDestroy {
                 }).toPromise().catch(
                 function (err) {
                     console.log("Error finding clan members");
-                    console.dir(err);
+                    self.handleError(err);
                     return null;
                 });
         });
@@ -192,7 +192,7 @@ export class BungieService implements OnDestroy {
                 }).toPromise().catch(
                 function (err) {
                     console.log("Error finding clan members");
-                    console.dir(err);
+                    self.handleError(err);
                     return null;
                 });
         });
@@ -230,7 +230,7 @@ export class BungieService implements OnDestroy {
                 }).toPromise().catch(
                 function (err) {
                     console.log("Error finding clan members");
-                    console.dir(err);
+                    self.handleError(err);
                     return [];
                 });
         });
@@ -254,7 +254,7 @@ export class BungieService implements OnDestroy {
                 }).toPromise().catch(
                 function (err) {
                     console.log("Error finding clan id");
-                    console.dir(err);
+                    self.handleError(err);
                     return null;
                 });
         });
@@ -311,6 +311,7 @@ export class BungieService implements OnDestroy {
             new ActivityMode(38, "Countdown", "Countdown"),
             new ActivityMode(38, "Trials", "Trials"),
             new ActivityMode(40, "Social", "Social"),
+            new ActivityMode(44, "Iron Banner", "Iron Banner"),
         ];
     }
 

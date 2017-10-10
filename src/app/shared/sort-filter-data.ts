@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { DataSource } from '@angular/cdk/collections';
-import { MdPaginator, MdSort} from '@angular/material';
+import { MatPaginator, MatSort} from '@angular/material';
 import { Observable } from 'rxjs/Observable';
 
 export class SortFilterDatabase {
@@ -24,7 +24,7 @@ export class SortFilterDatabase {
 export class SortFilterDataSource extends DataSource<any> {
   _filterChange = new BehaviorSubject('');
 
-  constructor(private _exampleDatabase: SortFilterDatabase, private _paginator: MdPaginator, private _sort: MdSort) {
+  constructor(private _exampleDatabase: SortFilterDatabase, private _paginator: MatPaginator, private _sort: MatSort) {
     super();
   }
 
@@ -43,7 +43,7 @@ export class SortFilterDataSource extends DataSource<any> {
       this._exampleDatabase.dataChange,
       this._paginator.page,
       this._filterChange,
-      this._sort.mdSortChange
+      this._sort.sortChange
     ];
 
     return Observable.merge(...displayDataChanges).map(() => {

@@ -1,49 +1,55 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br/>
         <div class="centerMe">
-          <md-select style="min-width: 235px" class="searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
-            <md-option *ngFor="let p of platforms" [value]="p">
-              {{ p.name }}
-            </md-option>
-          </md-select>
-          &emsp;
-          <md-form-field class="searchField" class="gt">
-            <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
-          </md-form-field>
-          &emsp;
-          <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
+          <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+              <mat-option *ngFor="let p of platforms" [value]="p">
+                {{ p.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="searchField searchGt" class="gt">
+            <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
+          </mat-form-field>
+          <button mat-mini-fab color="primary searchField" (click)="routeSearch()" color="primary">
+            <mat-icon>search</mat-icon>
+          </button>
         </div>
 
         <div class="info">
 
-          <md-card *ngIf="nightfall!=null">
-            <md-card-header>
-              <div md-card-avatar class="nf-card-avatar" [style.background-image]="'url(//www.bungie.net' + nightfall.image + ')'"></div>
-              <md-card-title><h2>{{nightfall.name}}</h2></md-card-title>
-              <md-card-subtitle class="hidden-sm-down">{{nightfall.desc}}</md-card-subtitle>
-            </md-card-header>
-            <md-card-content>
+          <mat-card *ngIf="nightfall!=null">
+            <mat-card-header>
+              <div mat-card-avatar class="nf-card-avatar" [style.background-image]="'url(//www.bungie.net' + nightfall.image + ')'"></div>
+              <mat-card-title>
+                <h2>{{nightfall.name}}</h2>
+              </mat-card-title>
+              <mat-card-subtitle class="hidden-sm-down">{{nightfall.desc}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
               <h4>Modifiers</h4>
 
               <ul>
-                <li *ngFor="let m of nightfall.modifiers"><b>{{m.name}}</b>&emsp;{{m.desc}}</li>
+                <li *ngFor="let m of nightfall.modifiers">
+                  <b>{{m.name}}</b>&emsp;{{m.desc}}</li>
               </ul>
               <h4>Challenges</h4>
               <ul>
-                <li *ngFor="let m of nightfall.challenges"><b>{{m.name}}</b>&emsp;{{m.desc}}</li>
+                <li *ngFor="let m of nightfall.challenges">
+                  <b>{{m.name}}</b>&emsp;{{m.desc}}</li>
               </ul>
-            </md-card-content>
-          </md-card>
+            </mat-card-content>
+          </mat-card>
 
-          <!-- <md-card>
-            <md-card-header>
-              <md-card-title><h2>Site news</h2></md-card-title>
-            </md-card-header>
-            <md-card-content>
+          <!-- <mat-card>
+            <mat-card-header>
+              <mat-card-title><h2>Site news</h2></mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
               <h4>New features</h4>
               <ul>
                 <li>Clan leaderboards</li>
@@ -56,8 +62,8 @@
                 <li>View your clan's progress and info. Sign in and click "My Clan". <a href="https://www.d2checklist.com/clan/1985678">Here's my clan, for example.</a></li>
                 <li>View currencies for current on account, including legendary shards. Sign in and view menu on top right.</li>
               </ul>
-            </md-card-content>
-          </md-card> -->
+            </mat-card-content>
+          </mat-card> -->
 
         </div>
       </div>

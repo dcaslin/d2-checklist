@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StorageService } from '../../service/storage.service';
 import { Subject } from 'rxjs/Subject';
 import { ChildComponent } from '../../shared/child.component';
+import {MatSelectModule} from '@angular/material';
 
 @Component({
   selector: 'anms-settings',

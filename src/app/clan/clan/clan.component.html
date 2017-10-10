@@ -1,7 +1,7 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body">
 
         <ng-container *ngIf="info==null">
@@ -12,86 +12,104 @@
           <h1>{{info.name}}</h1>
           <div class="button-row">
 
-            <button md-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
-            <button md-raised-button>Aggregate Stats (soon)</button>
+            <button mat-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
+            <button mat-raised-button>Aggregate Stats (soon)</button>
           </div>
 
-          <md-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
+          <mat-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
             <h2 class="hidden-sm-down">Weekly Clan Bounties</h2>
 
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true"> 
-                                          Nightfall <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                      </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true">
+              Nightfall
+              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+            </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==false">
-                                          Nightfall <i class="fa fa-square-o"></i>
-                                      </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==true"> 
-                                          Raid <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                      </span>
+              Nightfall
+              <i class="fa fa-square-o"></i>
+            </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==true">
+              Raid
+              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+            </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==false">
-                                          Raid <i class="fa fa-square-o"></i>
-                                      </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==true"> 
-                                          Crucible <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                      </span>
+              Raid
+              <i class="fa fa-square-o"></i>
+            </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==true">
+              Crucible
+              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+            </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==false">
-                                          Crucible <i class="fa fa-square-o"></i>
-                                      </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==true"> 
-                                          Trials <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                      </span>
+              Crucible
+              <i class="fa fa-square-o"></i>
+            </span>
+            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==true">
+              Trials
+              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+            </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==false">
-                                          Trials <i class="fa fa-square-o"></i>
-                                      </span>
-          </md-card>
+              Trials
+              <i class="fa fa-square-o"></i>
+            </span>
+          </mat-card>
 
           <ng-container *ngIf="info.progressions!=null">
-            <md-expansion-panel>
-              <md-expansion-panel-header>
-                <md-panel-title>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
                   Clan Progress
-                </md-panel-title>
-                <md-panel-description class="hidden-sm-down">
+                </mat-panel-title>
+                <mat-panel-description class="hidden-sm-down">
                   Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
-                </md-panel-description>
-              </md-expansion-panel-header>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
               <br>
-              <md-card class="clan-card" *ngFor="let faction of info.progressions">
+              <mat-card class="clan-card" *ngFor="let faction of info.progressions">
 
-                <md-card-header>
+                <mat-card-header>
 
-                  <md-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent}} to level {{faction.level+1}}
-                    &emsp; Remaining XP to get this week: <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b></md-card-title>
-                  <md-card-subtitle>{{faction.desc}}
-                  </md-card-subtitle>
-                </md-card-header>
-
+                  <mat-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+                    &emsp; Remaining XP to get this week:
+                    <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b>
+                  </mat-card-title>
+                  <mat-card-subtitle>{{faction.desc}}
+                  </mat-card-subtitle>
+                </mat-card-header>
                 <div>
-                  <md-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
-                  </md-progress-bar>
+                  <mat-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
+                  </mat-progress-bar>
                 </div>
-              </md-card>
-
-            </md-expansion-panel>
+              </mat-card>
+            </mat-expansion-panel>
           </ng-container>
 
           <br>
 
           <div class="filter-row">
-            <md-select *ngIf="modelPlayer!=null" [(ngModel)]="filterMode" (change)="filterPlayers()" placeholder="Filter players by activity">
-              <md-option value="none">Show All Players</md-option>
-              <md-option value="zero">Show only zero completions</md-option>
-              <md-option value="all">Show completely done</md-option>
-            </md-select>
-            <md-select *ngIf="modelPlayer!=null && filterMode!='none'" [(ngModel)]="filterActivity" (change)="filterPlayers()" placeholder="Activity">
-              <md-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{ mileStoneName.name }}</md-option>
-            </md-select>
+            <mat-form-field *ngIf="modelPlayer!=null">
+              <mat-select [(ngModel)]="filterMode" (change)="filterPlayers()" placeholder="Filter players by activity">
+                <mat-option value="none">Show All Players</mat-option>
+                <mat-option value="zero">Show only zero completions</mat-option>
+                <mat-option value="all">Show completely done</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="modelPlayer!=null && filterMode!='none'">
+              <mat-select [(ngModel)]="filterActivity" (change)="filterPlayers()" placeholder="Activity">
+                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{ mileStoneName.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
           </div>
 
           <div class="mobile-button-row">
-            <button md-raised-button (click)="toggleMemberSort()">Sort Name <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></button>
-            <button md-raised-button (click)="toggleDateSort()">Sort Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></button>
+            <button mat-raised-button (click)="toggleMemberSort()">Sort Name
+              <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
+              <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
+            </button>
+            <button mat-raised-button (click)="toggleDateSort()">Sort Last Played
+              <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
+              <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
+            </button>
           </div>
 
 
@@ -99,13 +117,19 @@
             <thead>
               <tr>
                 <th>
-                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i></a>
+                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
+                    <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
+                    <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
+                  </a>
                 </th>
                 <th>
-                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i> <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i></a>
+                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
+                    <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
+                    <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
+                  </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
-                  <th [mdTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
+                  <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
 
                   </th>
                 </ng-container>
@@ -115,9 +139,11 @@
               <tr *ngFor="let member of sortedMembers">
                 <td class="lead">
                   <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName])">
-                  {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                </a>
-                  <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)"><i class="fa fa-refresh"></i></a>
+                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                  </a>
+                  <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
+                    <i class="fa fa-refresh"></i>
+                  </a>
                 </td>
                 <td *ngIf="member.player==null">N/A</td>
                 <ng-container *ngIf="member.player!=null">
@@ -139,7 +165,7 @@
                             <i class="fa fa-square-o"></i>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
                           </ng-container>
                         </ng-container>
                       </ng-container>

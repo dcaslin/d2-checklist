@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MdTabChangeEvent, MdTabGroup } from '@angular/material';
+import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
@@ -19,7 +19,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
 
-  @ViewChild('maintabs') tabs: MdTabGroup;
+  @ViewChild('maintabs') tabs: MatTabGroup;
 
   platforms: Platform[];
   selectedPlatform: Platform;
@@ -85,7 +85,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
 
-  public changeTab(event: MdTabChangeEvent) {
+  public changeTab(event: MatTabChangeEvent) {
     const tabName: string = event.tab.textLabel.toLowerCase();
     this.selectedTab = tabName;
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
@@ -96,8 +96,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.tabs==null) return;
     const tab: string = this.selectedTab;
     if (tab!=null){
-      if (tab == "chars"){
+      if (tab == "gear"){
         this.tabs.selectedIndex = 3;
+      }
+      else if (tab == "chars"){
+        this.tabs.selectedIndex = 2;
       }
       else if (tab == "checklist"){
         this.tabs.selectedIndex = 0;
@@ -118,7 +121,15 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag)
       .then((p: SearchResult) => {
         if (p != null) {
-          this.bungieService.getChars(p.membershipType, p.membershipId, ['Profiles','Characters','CharacterProgressions','CharacterActivities']).then((x: Player) => {
+          
+          
+          this.bungieService.getChars(p.membershipType, p.membershipId, 
+            ['Profiles','Characters','CharacterProgressions','CharacterActivities',
+            'CharacterEquipment','ProfileInventories','CharacterInventories',
+            'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates'
+            //'ItemTalentGrids','ItemCommonData','ItemPlugStates','ItemObjectives'
+          ])
+            .then((x: Player) => {
             
             this.player = x;
             this.setTab();
@@ -196,14 +207,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   }
 
-
   onPlatformChange() {
     this.storageService.setItem("defaultplatform", this.selectedPlatform.type);
   }
-
   onGtChange() {
     this.storageService.setItem("defaultgt", this.gamerTag);
   }
-
-
 }

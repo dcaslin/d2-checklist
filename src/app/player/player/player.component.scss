@@ -83,8 +83,24 @@ a.underline:link {
   background-size: cover;
 }
 
+.searchRow{
+  display: inline-block;
+  margin-left: 20px;
+  text-align: left;
+}
+
 .searchField{
   margin-bottom: 10px;
+}
+
+.searchPlatform{
+  width: 150px;
+  margin-right: 10px;
+}
+
+.searchGt{
+  width: 150px;
+  margin-right: 10px;
 }
 
 
@@ -110,3 +126,4 @@ a.underline:link {
   text-align: left; 
   max-width: 500px;
 }
+

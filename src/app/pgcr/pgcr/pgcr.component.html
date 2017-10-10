@@ -1,7 +1,7 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div [ngClass]="animateOnRouteEnter" style="text-align:left">
 
         <ng-container *ngIf="data!=null">
@@ -14,35 +14,35 @@
           </h2>
           <p>
             Start: {{data.period|date:'short'}} &emsp; Finish: {{data.finish|date:'short'}} &emsp; Duration: {{ data.activityDurationSeconds | amDuration:'seconds' }}</p>
-          <md-card class="card" *ngIf="data.teams!=null && data.teams.length>0">
-            <md-card-content>
+          <mat-card class="card" *ngIf="data.teams!=null && data.teams.length>0">
+            <mat-card-content>
               <p>
                 <span *ngFor="let t of data.teams">
                 <b>{{t.name}} {{t.standing}} {{t.score}}</b>&emsp;
               </span>
               </p>
-            </md-card-content>
-          </md-card>
+            </mat-card-content>
+          </mat-card>
 
-          <md-card class="card" *ngFor="let entry of data.entries">
+          <mat-card class="card" *ngFor="let entry of data.entries">
 
-            <md-card-header>
-              <div *ngIf="entry.user.icon!=null" class="icon" md-card-avatar [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
-              <md-card-title>
+            <mat-card-header>
+              <div *ngIf="entry.user.icon!=null" class="icon" mat-card-avatar [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
+              <mat-card-title>
 
                 <b><a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" color="accent">{{entry.user.displayName}} </a></b>                {{entry.characterClass}} {{entry.lightLevel}} <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD<br></span>                {{entry.team}}
                 <div><span class="warn-text" *ngIf="entry.team!=null">Team {{entry.team}}</span><span *ngIf="entry.team==null">&nbsp;</span>                  <span class="fireteamsize">Fireteam Size: {{entry.fireteamSize}}</span></div>
                 <p>x {{entry.completionReason}}</p>
-              </md-card-title>
-              <md-card-subtitle>
+              </mat-card-title>
+              <mat-card-subtitle>
                 <span class="mat-chip stat-val" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
                 <span class="mat-chip stat-val" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
                 <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
                 <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
                 <span class="mat-chip stat-val" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
-              </md-card-subtitle>
-            </md-card-header>
-            <md-card-content>
+              </mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
               <table>
                 <thead>
                   <tr>
@@ -57,13 +57,13 @@
                     <td>{{w.name}}</td>
                     <td>{{w.type}}</td>
                     <td>{{w.kills}}</td>
-                    <td>{{w.precPct|percent}}</td>
+                    <td>{{w.precPct|percent:'1.0-0'}}</td>
                   </tr>
 
                 </tbody>
               </table>
-            </md-card-content>
-          </md-card>
+            </mat-card-content>
+          </mat-card>
 
 
 

@@ -1,7 +1,7 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
 
 
       <div class="body">
@@ -11,19 +11,21 @@
 
         <ng-container *ngIf="info!=null">
           <h1>{{info.name}} Leaderboard </h1>
-          <md-select class="searchField" [(ngModel)]="selectedMode" (change)="load()" placeholder="Mode">
-            <md-option *ngFor="let p of activityModes" [value]="p">
-              {{ p.name }}
-            </md-option>
-          </md-select>
-
-          <ng-container *ngIf="list.length>0">
-            <md-select class="searchField board" [(ngModel)]="selectedLeaderList" placeholder="Board">
-              <md-option *ngFor="let l of list" [value]="l">
-                {{ l.name }}
-              </md-option>
-            </md-select>
-
+          <mat-form-field class="searchField">
+            <mat-select [(ngModel)]="selectedMode" (change)="load()" placeholder="Mode">
+              <mat-option *ngFor="let p of activityModes" [value]="p">
+                {{ p.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <ng-container *ngIf="list!=null && list.length>0">
+            <mat-form-field class="searchField board">
+              <mat-select [(ngModel)]="selectedLeaderList" placeholder="Board">
+                <mat-option *ngFor="let l of list" [value]="l">
+                  {{ l.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
             <ng-container *ngIf="selectedLeaderList!=null">
 
               <table class="tidy-table">
@@ -38,7 +40,9 @@
                   <tr *ngFor="let entry of selectedLeaderList.entries">
                     <td>{{entry.rank}}</td>
                     <td>{{entry.value}}</td>
-                    <td><a href="javascript:void(0)" (click)="loadPlayer(entry)">{{entry.destinyUserInfo.displayName}} - {{entry.characterClass}}</a></td>
+                    <td>
+                      <a href="javascript:void(0)" (click)="loadPlayer(entry)">{{entry.destinyUserInfo.displayName}} - {{entry.characterClass}}</a>
+                    </td>
                   </tr>
                 </tbody>
               </table>

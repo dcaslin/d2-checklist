@@ -1,31 +1,33 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <md-spinner class="loading" class="center-spinner" *ngIf="loading===true"></md-spinner>
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br/>
-        <div class="centerMe">
-          <md-select style="min-width: 235px" class="searchField" [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
-            <md-option *ngFor="let p of platforms" [value]="p">
-              {{ p.name }}
-            </md-option>
-          </md-select>
-          &emsp;
-          <md-form-field class="searchField" class="gt">
-            <input mdInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
-          </md-form-field>
-          &emsp;
-          <button md-mini-fab color="primary searchField" (click)="routeSearch()" color="primary"><md-icon>search</md-icon></button>
-        </div>
+        <div class="searchRow">
+          <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+              <mat-option *ngFor="let p of platforms" [value]="p">
+                {{ p.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
 
+          <mat-form-field class="searchField searchGt">
+            <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
+          </mat-form-field>
+          <button mat-mini-fab color="primary searchField" (click)="routeSearch()" color="primary">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
 
         <ng-container *ngIf="player==null && !loading">
           <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
           <div class="button-row">
             <ng-container *ngFor="let plat of platforms">
-              <button *ngIf="plat.type!=selectedPlatform.type" md-raised-button color="accent" (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
+              <button *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent" (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
             </ng-container>
-            <button md-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie Names</button>
+            <button mat-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie Names</button>
           </div>
           <br>
           <br>
@@ -35,28 +37,31 @@
         <ng-container *ngIf="player!=null">
           <h4>{{player.profile.userInfo.displayName}} -
             <span *ngIf="player.currentActivity==null">
-              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago     
+              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
             </span>
             <span *ngIf="player.currentActivity!=null">
-                <mark>Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | 
-                Started {{today| amDifference:player.currentActivity.dateActivityStarted| amDuration:'ms'}} ago</mark>
+              <mark>Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today| amDifference:player.currentActivity.dateActivityStarted|
+                amDuration:'ms'}} ago</mark>
             </span>
           </h4>
           <div class="button-row">
-            <a md-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
-                <md-icon>message</md-icon><span class="hidden-sm-down">Message on XBL</span>
-              </a>
-            <a md-button (click)="historyPlayer(player)">
-                <md-icon>history</md-icon><span class="hidden-sm-down">Activity History</span>
+            <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
+              <mat-icon>message</mat-icon>
+              <span class="hidden-sm-down">Message on XBL</span>
             </a>
-            <a md-button [href]="getTrialsLink(player)" rel="noopener" target="_blank">
-              <md-icon>remove_red_eye</md-icon><span class="hidden-sm-down">Trials.Report</span>
-              </a>
+            <a mat-button (click)="historyPlayer(player)">
+              <mat-icon>history</mat-icon>
+              <span class="hidden-sm-down">Activity History</span>
+            </a>
+            <a mat-button [href]="getTrialsLink(player)" rel="noopener" target="_blank">
+              <mat-icon>remove_red_eye</mat-icon>
+              <span class="hidden-sm-down">Trials.Report</span>
+            </a>
           </div>
         </ng-container>
 
-        <md-tab-group #maintabs (selectChange)='changeTab($event)'>
-          <md-tab label="Checklist">
+        <mat-tab-group #maintabs (selectChange)='changeTab($event)'>
+          <mat-tab label="Checklist">
             <ng-container *ngIf="player!=null">
 
               <div *ngIf="player.milestoneList.length==0">
@@ -76,7 +81,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [mdTooltip]="mileStoneName.desc">
+                    <td class="lead" [matTooltip]="mileStoneName.desc">
                       {{mileStoneName.name}}
                       <span class="caption">{{mileStoneName.type}}</span>
                     </td>
@@ -87,15 +92,15 @@
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
                             <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
 
-                            <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent}}</div>
+                            <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0':'1.0-0'}}</div>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
                             <i class="fa fa-square-o"></i>
-                            <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent}}</div>
+                            <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [mdTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
-                            <div class="percent">{{char.milestones[mileStoneName.key].pct|percent}}</div>
+                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                            <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
                           </ng-container>
                           <div class="lifetime" *ngIf="mileStoneName.name=='Leviathan Raid'">
                             {{char.lifetimeRaid}} lifetime
@@ -108,34 +113,42 @@
                     </td>
                   </tr>
                   <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null">
-                    <td class="lead" mdTooltip="Shared clan rewards, one per account">Clan Milestones</td>
+                    <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones</td>
                     <td [attr.colspan]="player.characters.length">
 
                       <div class="clanMsRow">
 
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true"> 
-                            Nightfall <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true">
+                          Nightfall
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </span>
                         <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==false">
-                            Nightfall <i class="fa fa-square-o"></i>
+                          Nightfall
+                          <i class="fa fa-square-o"></i>
                         </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true"> 
-                            Raid <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true">
+                          Raid
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </span>
                         <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==false">
-                            Raid <i class="fa fa-square-o"></i>
+                          Raid
+                          <i class="fa fa-square-o"></i>
                         </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true"> 
-                            Crucible <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true">
+                          Crucible
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </span>
                         <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==false">
-                            Crucible <i class="fa fa-square-o"></i>
+                          Crucible
+                          <i class="fa fa-square-o"></i>
                         </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true"> 
-                            Trials <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true">
+                          Trials
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </span>
                         <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==false">
-                            Trials <i class="fa fa-square-o"></i>
+                          Trials
+                          <i class="fa fa-square-o"></i>
                         </span>
                       </div>
                     </td>
@@ -145,15 +158,15 @@
               </table>
             </ng-container>
 
-          </md-tab>
-          <md-tab label="Progress">
+          </mat-tab>
+          <mat-tab label="Progress">
             <ng-container *ngIf="player!=null">
 
-              <md-tab-group>
-                <md-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+              <mat-tab-group>
+                <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
 
                   <div *ngIf="char.factions==null || char.factions.length==0">
-                    <br>                    
+                    <br>
                     <h1>Privacy</h1>
                     <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                   </div>
@@ -167,15 +180,18 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let faction of char.factions">
-                        <td class="lead" [mdTooltip]="faction.desc" data-label="">
-                          {{faction.name}} <span class="light">Level {{faction.level}} </span>
+                        <td class="lead" [matTooltip]="faction.desc" data-label="">
+                          {{faction.hash}} {{faction.name}}
+                          <span class="light">Level {{faction.level}} </span>
                           <span class="caption">{{faction.info}}</span>
+
                         </td>
                         <td data-label="">
-                          {{faction.percentToNextLevel|percent}} to level {{faction.level+1}}
+                          Tokens Needed TNL {{faction.tokensNeeded}}
+                          <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                           <div>
-                            <md-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
-                            </md-progress-bar>
+                            <mat-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
+                            </mat-progress-bar>
                           </div>
                         </td>
                       </tr>
@@ -185,67 +201,70 @@
                   <br>
 
 
-                </md-tab>
-              </md-tab-group>
+                </mat-tab>
+              </mat-tab-group>
 
             </ng-container>
 
-          </md-tab>
-          <md-tab label="Chars">
+          </mat-tab>
+          <mat-tab label="Chars">
 
             <ng-container *ngIf="player!=null">
 
-              <md-card class="char-card" *ngFor="let char of player.characters">
-                <md-card-header>
-                  <div md-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
-                  <md-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
+              <mat-card class="char-card" *ngFor="let char of player.characters">
+                <mat-card-header>
+                  <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+                  <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
                     <span style="white-space:nowrap;">Light {{char.light}}</span>
-                  </md-card-title>
-                  <md-card-subtitle>
-                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins<br>                    Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}}
+                  </mat-card-title>
+                  <mat-card-subtitle>
+                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
+                    <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} ({{char.minutesPlayedTotal}}
                     mins)
                     <br>
-                  </md-card-subtitle>
-                </md-card-header>
-                <md-card-content>
+                  </mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
 
-                  <div *ngIf="char.baseCharacterLevel<20">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent}} to next level
-                    <md-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
-                    </md-progress-bar>
+                  <div *ngIf="char.baseCharacterLevel<20">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
+                    <mat-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
+                    </mat-progress-bar>
                   </div>
-                  <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=20"><b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp;  {{char.legendProgression.percentToNextLevel|percent}} to level {{char.legendProgression.level+1}}
-                      <md-progress-bar color="accent" mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
-                      </md-progress-bar>
-                    </div>
+                  
+                  <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=20">
+                    <b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
+                    to level {{char.legendProgression.level+1}}
+                    <mat-progress-bar color="accent" mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
+                    </mat-progress-bar>
+                  </div>
                   <br>
 
                   <div class="stat-chip-list">
                     <ng-container *ngFor="let stat of char.stats; let i=index">
-                      <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [mdTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
+                      <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
                     </ng-container>
                   </div>
 
-                </md-card-content>
-                <md-card-actions>
-                  <a md-button (click)="history(char)">
-                    <md-icon>history</md-icon> Activity History</a>
-                </md-card-actions>
+                </mat-card-content>
+                <mat-card-actions>
+                  <a mat-button (click)="history(char)">
+                    <mat-icon>history</mat-icon> Activity History</a>
+                </mat-card-actions>
 
-              </md-card>
+              </mat-card>
             </ng-container>
 
-          </md-tab>
-        </md-tab-group>
+          </mat-tab>
 
+          <!-- <mat-tab label="Gear">
+
+            <ng-container *ngIf="player!=null">
+              <anms-gear [gear]="player.gear"></anms-gear>
+            </ng-container>
+
+          </mat-tab> -->
+        </mat-tab-group>
       </div>
-
-
-
-
-
-
-
-
     </div>
     <div *ngIf="disableads===false" class="adRight">
       <small class="adText">Advertisement</small>

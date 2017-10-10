@@ -1,11 +1,11 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { OverlayContainer } from '@angular/material';
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
@@ -52,11 +52,12 @@ export class AppComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private bungieService: BungieService,
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
-    private router: Router, public snackBar: MdSnackBar) {
+    private router: Router, public snackBar: MatSnackBar) {
 
 
     this.componentCssClass = 'default-theme';
-    this.overlayContainer.themeClass = 'default-theme';
+    this.overlayContainer.getContainerElement().classList.add('default-theme');
+    //this.overlayContainer.themeClass = 'default-theme';
 
 
 
@@ -73,7 +74,9 @@ export class AppComponent implements OnInit, OnDestroy {
       x => {
         if (x.theme != null) {
           this.componentCssClass = x.theme;
-          this.overlayContainer.themeClass = x.theme;
+          this.overlayContainer.getContainerElement().classList.add(x.theme);
+          
+          //this.overlayContainer.themeClass = x.theme;
         }
         if (x.disableads != null) {
           this.disableads = x.disableads;
