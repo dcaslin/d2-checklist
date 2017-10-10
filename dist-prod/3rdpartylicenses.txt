@@ -20,7 +20,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-webpack@3.5.5
+webpack@3.6.0
 MIT
 Copyright JS Foundation and other contributors
 
@@ -43,7 +43,7 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-zone.js@0.8.12
+zone.js@0.8.18
 MIT
 The MIT License
 
@@ -92,11 +92,11 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
-@angular/forms@5.0.0-beta.6
+@angular/core@4.4.4
 MIT
 MIT
 
-@angular/cdk@2.0.0-beta.10
+@angular/material@2.0.0-beta.12
 MIT
 The MIT License
 
@@ -144,31 +144,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-@angular/http@5.0.0-beta.6
-MIT
-MIT
-
-@angular/core@5.0.0-beta.6
-MIT
-MIT
-
-@angular/router@5.0.0-beta.6
-MIT
-MIT
-
-@angular/common@5.0.0-beta.6
-MIT
-MIT
-
-@angular/animations@5.0.0-beta.6
-MIT
-MIT
-
-@angular/platform-browser@5.0.0-beta.6
-MIT
-MIT
-
-@angular/material@2.0.0-beta.10
+@angular/cdk@2.0.0-beta.12
 MIT
 The MIT License
 
@@ -192,6 +168,30 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+@angular/router@4.4.4
+MIT
+MIT
+
+@angular/http@4.4.4
+MIT
+MIT
+
+@angular/animations@4.4.4
+MIT
+MIT
+
 ng2-adsense@4.0.12
+MIT
+MIT
+
+@angular/forms@4.4.4
+MIT
+MIT
+
+@angular/platform-browser@4.4.4
+MIT
+MIT
+
+@angular/common@4.4.4
 MIT
 MIT

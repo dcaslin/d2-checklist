@@ -90,15 +90,17 @@ export class Player {
     characters: Character[];
     milestoneList: MileStoneName[];
     currencies: Currency[];
-    gear: any[];
+    gear: InventoryItem[];
+    rankups: string[];
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: any[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: string[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
         this.milestoneList = milestoneList;
         this.currencies = currencies;
         this.gear = gear;
+        this.rankups = rankups;
     }
 }
 
@@ -433,10 +435,8 @@ export class Progression {
     currentProgress: number;
 
     percentToNextLevel: number;
-
-
+    tokensHeld?: number;
 }
-
 
 export class Const {
 

@@ -91,6 +91,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
   }
 
+  public progress(){
+    console.log("Hi");
+    this.router.navigate([this.selectedPlatform.type, this.gamerTag, "progress"]);
+    this.setTab();
+  }
 
   private setTab(): void {
     if (this.tabs==null) return;

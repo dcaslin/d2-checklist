@@ -50,6 +50,12 @@
     background-color: mat-color($accent, lighter);
   }
 
+
+  .accent-bg-text{
+    color: mat-color($accent, default-contrast);
+    background-color: mat-color($accent);
+  }
+
   .accent-text{
     color: mat-color($accent, 700);
   }

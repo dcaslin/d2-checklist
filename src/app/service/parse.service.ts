@@ -156,6 +156,9 @@ export class ParseService {
         //ikora
         if (progressionHash == 3231773039){
             return Math.ceil(progNeeded/1000);
+        }
+        if (progressionHash == 1021210278){
+            return Math.ceil(progNeeded/75);
         }   
         return Math.ceil(progNeeded/100);
     }
@@ -479,8 +482,13 @@ export class ParseService {
             return new NameDesc("Timewarp - Zero Hour", "The mission timer CANNOT be extended. Choose your battle carefully");
         }
         if (hash == "2777023090") {
-            return new NameDesc("Timewarp - Anomalies", " Small vex cubes scatter among the strike, shooting one gains 30 seconds.");
+            return new NameDesc("Timewarp - Anomalies", "Small vex cubes scatter among the strike, shooting one gains 30 seconds.");
         }
+
+        if (hash == "1183352841"){
+            return new NameDesc("Timewarp - Killing Time", "Defeat enemies to gain time");            
+        }
+
         return new NameDesc("Classified", "Keep it secret, keep it safe");
     }
 
@@ -595,6 +603,7 @@ export class ParseService {
         vault.className = "Vault";
         let shared: Character = new Character();
         shared.className = "Shared";
+        let rankups: string[] = [];
 
         if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
             Object.keys(resp.characterEquipment.data).forEach((key) => {
@@ -630,10 +639,86 @@ export class ParseService {
                     gear.push(parsed);
                 }
             });
+
+
+            //post process faction tokens
+            if (chars!=null){
+                chars.forEach(c=>{
+                    if (c.factions==null) return;
+                    c.factions.forEach(f=>{
+                        const held = ParseService.getTokensHeld(f, gear);
+                        f.tokensHeld = held;
+
+                        if (f.tokensHeld>f.tokensNeeded){
+                            if (rankups.indexOf(f.name)<0)
+                                rankups.push(f.name);
+                        }
+
+                    });
+
+                });
+            }
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups);
     }
 
+    private static getTokensHeld(f:Progression, gear:InventoryItem[]): number{
+        let invKey: string;
+
+        // 1660497607 Failsafe  Nessus 3201839676
+        if (f.hash==1660497607) invKey = "3201839676";
+        // 3487922223 Microphasic Datalattice
+        // 2949414982 Quantized Datalattice
+
+        // 828982195 Asher IO 3825769808
+        if (f.hash==828982195) invKey = "3825769808";
+        // 1305274547 Phaseglass Needle
+        // 3756389242 Phaseglass Spire
+
+        // 4235119312 Devrim EDZ 2640973641
+        if (f.hash==4235119312) invKey = "2640973641";
+        // 900431481 Dusklight Shard
+        // 478751073 Dusklight Crystal
+
+        // 4196149087 Sloane Titan 494493680
+        if (f.hash==4196149087) invKey = "494493680";
+        // 461171930 alkane spores, rare
+        // 2014411539 alkane dust
+
+        // 1021210278 Gunsmith Banshee ?  685157383 ?   (30 )  (gunsmith materials)
+        if (f.hash==1021210278) invKey = "685157383";
+        // 685157381  weapon telemetry
+
+        // 697030790 Crucible Shaxx 183980811
+        if (f.hash==697030790) invKey = "183980811";
+        // 611314723 Zavala Strikes 3899548068
+        if (f.hash==611314723) invKey = "3899548068";
+        // 3231773039 Ikora Research 3957264072(1000)
+        if (f.hash==3231773039) invKey = "3957264072";
+
+        // 2105209711 New Monarchy 2270228604
+        if (f.hash==2105209711) invKey = "2270228604";
+        // 1714509342 Future War Cult 1270564331
+        if (f.hash==1714509342) invKey = "1270564331";
+        // 3398051042 Dead Orbit Level 2959556799	
+        if (f.hash==3398051042) invKey = "2959556799";
+
+        // 1482334108 Leviathan 1505278293
+        if (f.hash==1482334108) invKey = "1505278293";
+        // 3468066401 The Nine 885593286
+        if (f.hash==3468066401) invKey = "885593286";
+
+        if (invKey==null) return null;
+
+        for (let cntr=0; cntr<gear.length; cntr++){
+            const i = gear[cntr];
+            if (i.hash==invKey){
+                return i.quantity;
+            }
+        }
+        return 0;
+
+    }
 
     private parseInvItem(itm: _InventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any) {
         //vault bucket
