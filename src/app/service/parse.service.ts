@@ -708,6 +708,9 @@ export class ParseService {
         // 3468066401 The Nine 885593286
         if (f.hash==3468066401) invKey = "885593286";
 
+        // 1761642340 Iron Banner 1873857625
+        if (f.hash==1761642340) invKey = "1873857625";
+
         if (invKey==null) return null;
 
         for (let cntr=0; cntr<gear.length; cntr++){
