@@ -311,7 +311,7 @@ export class BungieService implements OnDestroy {
             new ActivityMode(38, "Countdown", "Countdown"),
             new ActivityMode(38, "Trials", "Trials"),
             new ActivityMode(40, "Social", "Social"),
-            new ActivityMode(44, "Iron Banner", "Iron Banner"),
+            new ActivityMode(43, "Iron Banner", "Iron Banner"),
         ];
     }
 
