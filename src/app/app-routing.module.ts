@@ -11,7 +11,7 @@ import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
 import { ClanLeaderboardComponent } from './clanleaderboard';
-import { LeaderboardComponent } from './leaderboard';
+import { LeviathanComponent, LeviathanPrestigeComponent } from './leaderboard';
 
 const routes: Routes = [
   {
@@ -52,15 +52,23 @@ const routes: Routes = [
   },
   {
     path: 'leaderboard/leviathan',
-    component: LeaderboardComponent
+    component: LeviathanComponent
   },
   {
     path: 'leaderboard/leviathan/:name',
-    component: LeaderboardComponent
+    component: LeviathanComponent
+  },
+  {
+    path: 'leaderboard/leviathan-prestige',
+    component: LeviathanPrestigeComponent
+  },
+  {
+    path: 'leaderboard/leviathan-prestige/:name',
+    component: LeviathanPrestigeComponent
   },
   {
     path: 'leaderboard',
-    redirectTo: 'leaderboard/leviathan'
+    redirectTo: 'leaderboard/leviathan-prestige'
   },
   {
     path: 'pgcr/:instanceId',

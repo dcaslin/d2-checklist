@@ -34,6 +34,14 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
 
   }
 
+  getName(): string{
+    return "";
+  }
+  
+  getAssetPath(): string{
+    return "";
+  }
+
   pgcr(instanceId: string) {
     this.router.navigate(['/pgcr', instanceId]);
   }
@@ -44,7 +52,7 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
   }
 
   getData() {
-    return this.http.get("/assets/leviathan.json").map((res: Response) => {
+    return this.http.get(this.getAssetPath()).map((res: Response) => {
       this.database.setData(res.json());
     }).toPromise().catch(
       function (err) {
