@@ -1,2 +1,3 @@
 export * from './leaderboard.module';
-export * from './leaderboard/leaderboard.component';
+export * from './leaderboard/leviathan.component';
+export * from './leaderboard/leviathan-prestige.component';

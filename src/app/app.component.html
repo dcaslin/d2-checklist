@@ -36,10 +36,11 @@
           <img [src]="logo" /> D2 Checklist</span>
 
         <span class="hidden-sm-down">
-
-          <button mat-button class="nav-button" *ngFor="let item of navigation" [routerLink]="[item.link]" routerLinkActive="active">
-            {{item.label}}
-          </button>
+            <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">Home</button>
+            <button mat-button class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">Leviathan<span class="hidden-lg-down"> Leaderboard</span><span class="hidden-xl-up"> LB</span></button>
+            <button mat-button class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">Prestige<span class="hidden-lg-down"> Leaderboard</span><span class="hidden-xl-up"> LB</span></button>
+            <button mat-button class="nav-button" routerLink="search" routerLinkActive="active"><mat-icon>search</mat-icon><span class="hidden-lg-down"> Search Users</span></button>
+            <button mat-button class="nav-button" routerLink="about" routerLinkActive="active"><mat-icon>info</mat-icon><span class="hidden-lg-down"> About</span></button>
         </span>
 
         <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" 
