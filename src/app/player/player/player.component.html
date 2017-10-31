@@ -45,16 +45,29 @@
             </span>
           </h4>
 
-          <div class="rankupRow" *ngIf="player!=null && player.rankups!=null && player.rankups.length>0" >
-           Enough tokens to rank up with: 
+          <div class="rankupRow" *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
+            Enough tokens to rank up with:
+
+            <ng-container *ngFor="let ru of player.rankups">
+              <span class="rankup warn-bg-text">`
+                <i class="fa fa-diamond"></i>
+                {{ru.name}}
+                <i class="fa fa-diamond"></i>
+              </span>
 
 
-           <span class="rankup warn-bg-text" *ngFor="let ru of player.rankups">
+            </ng-container>
 
-           <ng-container *ngIf="ru.xyz300"><i class="fa fa-diamond"></i></ng-container>
-             {{ru.name}}
-            <ng-container *ngIf="ru.xyz300"><i class="fa fa-diamond"></i></ng-container>
-           </span>
+            <span class="rankup warn-bg-text">
+
+              <ng-container *ngIf="ru.xyz300">
+                <i class="fa fa-diamond"></i>
+              </ng-container>
+              {{ru.name}}
+              <ng-container *ngIf="ru.xyz300">
+                <i class="fa fa-diamond"></i>
+              </ng-container>
+            </span>
           </div>
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
@@ -239,7 +252,8 @@
                   </mat-card-title>
                   <mat-card-subtitle>
                     Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
-                    <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60| number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
+                    <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60|
+                    number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
                     <br>
                   </mat-card-subtitle>
                 </mat-card-header>
