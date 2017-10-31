@@ -56,6 +56,11 @@
     background-color: mat-color($accent);
   }
 
+  .warn-bg-text{
+    color: mat-color($warn, default-contrast);
+    background-color: mat-color($warn);
+  }
+
   .accent-text{
     color: mat-color($accent, 700);
   }

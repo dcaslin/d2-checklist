@@ -46,7 +46,15 @@
           </h4>
 
           <div class="rankupRow" *ngIf="player!=null && player.rankups!=null && player.rankups.length>0" >
-           Enough tokens to rank up with: <span class="rankup accent-bg-text" *ngFor="let ru of player.rankups">{{ru}}</span>
+           Enough tokens to rank up with: 
+
+
+           <span class="rankup warn-bg-text" *ngFor="let ru of player.rankups">
+
+           <ng-container *ngIf="ru.xyz300"><i class="fa fa-diamond"></i></ng-container>
+             {{ru.name}}
+            <ng-container *ngIf="ru.xyz300"><i class="fa fa-diamond"></i></ng-container>
+           </span>
           </div>
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
@@ -187,6 +195,8 @@
                         <td class="lead" [matTooltip]="faction.desc" data-label="">
 
                           {{faction.name}}
+                          <span *ngIf="faction.xyz300">300!</span>
+
                           <span class="light">Level {{faction.level}} </span>
                           <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
 

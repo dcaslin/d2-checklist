@@ -7,7 +7,7 @@ import {
     Const, BungieMembership, BungieMember, BungieMemberPlatform,
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
-    InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket
+    InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup
 } from './model';
 @Injectable()
 export class ParseService {
@@ -118,7 +118,7 @@ export class ParseService {
             else if (name == "Fragmented Researcher") { name = "Asher"; info = "IO"; }
             else if (name == "Field Commander") { name = "Sloane"; info = "Titan"; }
             else if (name == "The Crucible") { name = "Crucible"; info = "Shaxx"; }
-            else if (name == "Gunsmith") { name = "Gunsmith"; info = "Banshee / Crucible"; }
+            else if (name == "Gunsmith") { name = "Gunsmith"; info = "Banshee"; }
             else if (name == "Classified") { return null; }
 
             //fix names on clan progressions
@@ -603,7 +603,8 @@ export class ParseService {
         vault.className = "Vault";
         let shared: Character = new Character();
         shared.className = "Shared";
-        let rankups: string[] = [];
+        let hashRankups: number[] = [];
+        let rankups: Rankup[] = [];
 
         if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
             Object.keys(resp.characterEquipment.data).forEach((key) => {
@@ -648,10 +649,13 @@ export class ParseService {
                     c.factions.forEach(f=>{
                         const held = ParseService.getTokensHeld(f, gear);
                         f.tokensHeld = held;
+                        
 
                         if (f.tokensHeld>f.tokensNeeded){
-                            if (rankups.indexOf(f.name)<0)
-                                rankups.push(f.name);
+                            if (hashRankups.indexOf(f.hash)<0){
+                                hashRankups.push(f.hash);
+                                rankups.push(new Rankup(f.hash, f.name));
+                            }
                         }
 
                     });
