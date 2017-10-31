@@ -12,6 +12,7 @@ export const environment = {
     clientId: "21055",
     clientSecret: "niRAEaUutpPWxkBOoFhAbf2XRAY587B7sC.N7rat3yI"
   },
+  xyzApiKey: "2a35cd994912b3b167741c621f381234",
   production: false,
   versions: {
     app: packageJson.version,

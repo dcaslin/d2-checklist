@@ -5,6 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
+import { XyzService } from "../../service/xyz.service";
 import { Player, Character, SearchResult, Platform, Const } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
@@ -35,7 +36,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     { link: 'progress', label: 'Progress' }
   ];
 
-  constructor(private bungieService: BungieService, storageService: StorageService,
+  constructor(private bungieService: BungieService, 
+    private xyzService: XyzService,
+    storageService: StorageService,
     private notificationService: NotificationService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
@@ -144,11 +147,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             if (x.characters!=null){
               this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
                 //nothing needed
-
+              });
+              this.xyzService.getDrops(x).then(x=>{
+                console.log("Drops");
               });
             }
-
-
           })
         }
         else {

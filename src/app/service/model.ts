@@ -83,6 +83,16 @@ export interface Profile {
     characterIds: string[];
 }
 
+export class Rankup{
+    hash: number;
+    name: string;
+    xyz300: boolean;
+
+    constructor(hash: number, name: string){
+        this.hash = hash;
+        this.name = name;
+    }
+}
 
 export class Player {
     profile: Profile;
@@ -91,9 +101,9 @@ export class Player {
     milestoneList: MileStoneName[];
     currencies: Currency[];
     gear: InventoryItem[];
-    rankups: string[];
+    rankups: Rankup[];
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: string[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -415,6 +425,7 @@ export class ClanInfo {
     progressions: Progression[];
 }
 
+
 export class Progression {
     icon: string;
     name: string;
@@ -436,6 +447,8 @@ export class Progression {
 
     percentToNextLevel: number;
     tokensHeld?: number;
+
+    xyz300: boolean;
 }
 
 export class Const {
