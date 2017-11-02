@@ -104,6 +104,36 @@ export class BungieService implements OnDestroy {
         });
     }
 
+
+    public getAggHistory(char: Character): Promise<void> {
+        const self: BungieService = this;
+        return this.buildReqOptions().then(opt => {
+            return this.http.get(API_ROOT + 'Destiny2/' + char.membershipType + "/Account/" + char.membershipId + "/Character/" + char.characterId + "/Stats/AggregateActivityStats/", opt)
+                .map(
+                function (res) {
+                    const j: any = res.json();
+                    const resp = BungieService.parseBungieResponse(j);
+                    char.aggHistory = self.parseService.parseAggHistory(resp);
+                    return;
+                }).toPromise().catch(
+                function (err) {
+                    console.log('Error gett aggregate history for char');
+                    self.handleError(err);
+                    return;
+                });
+        });
+    }
+
+    public updateAggHistory(chars: Character[]): Promise<void[]> {
+        let promises: Promise<void>[] = [];
+
+        chars.forEach(c => {
+            let p = this.getAggHistory(c);
+            promises.push(p);
+        });
+        return Promise.all(promises);
+    }
+
     public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
 
         let promises: Promise<void>[] = [];
@@ -117,12 +147,27 @@ export class BungieService implements OnDestroy {
         if (raidMilestoneName == null) return Promise.resolve(void []);
 
         chars.forEach(c => {
-            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 99).then((hist: Activity[]) => {
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 300).then((hist: Activity[]) => {
                 //TODO what is weekly reset
                 var totalRaid: number = 0;
+                var totalNormal: number = 0;
+                var totalPrestige: number = 0;
                 hist.forEach(a => {
                     //ignore not completed
                     if (!a.completed) return;
+
+                    // 2693136601 normal
+                    // 1685065161 hard
+                    if (a.activityLevel == 27) {
+                        totalNormal++;
+
+                    }
+                    else if (a.activityLevel == 30) {
+                        totalPrestige++;
+                    }
+                    else {
+                        console.log("Unexpected ref id: " + a.referenceId);
+                    }
                     totalRaid++;
                     let startDate: Date = new Date(a.period);
                     if (startDate > c.startWeek) {
@@ -131,6 +176,8 @@ export class BungieService implements OnDestroy {
 
                 });
                 c.lifetimeRaid = totalRaid;
+                c.lifetimeRaidNormal = totalNormal;
+                c.lifetimeRaidPrestige = totalPrestige;
 
             });
             promises.push(p);

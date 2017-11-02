@@ -48,26 +48,16 @@
           <div class="rankupRow" *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
             Enough tokens to rank up with:
 
-            <ng-container *ngFor="let ru of player.rankups">
-              <span class="rankup warn-bg-text">`
-                <i class="fa fa-diamond"></i>
+            
+            <span class="rankupContainer" *ngFor="let ru of player.rankups">
+              <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!">                
+                {{ru.name}}*
+              </a>
+              <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
                 {{ru.name}}
-                <i class="fa fa-diamond"></i>
               </span>
-
-
-            </ng-container>
-
-            <span class="rankup warn-bg-text">
-
-              <ng-container *ngIf="ru.xyz300">
-                <i class="fa fa-diamond"></i>
-              </ng-container>
-              {{ru.name}}
-              <ng-container *ngIf="ru.xyz300">
-                <i class="fa fa-diamond"></i>
-              </ng-container>
             </span>
+
           </div>
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
@@ -114,21 +104,29 @@
                       <span class="check">
                         <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
 
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          <div>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
 
-                            <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0':'1.0-0'}}</div>
-                          </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                            <i class="fa fa-square-o"></i>
-                            <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                          </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
-                            <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                          </ng-container>
-                          <div class="lifetime" *ngIf="mileStoneName.name=='Leviathan Raid'">
-                            {{char.lifetimeRaid}} lifetime
+                              <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0':'1.0-0'}}</div>
+                            </ng-container>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                              <i class="fa fa-square-o"></i>
+                              <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                            </ng-container>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                              <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                              <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                            </ng-container>
+                          </div>
+                          <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
+                            <div><b>{{char.aggHistory.nf}} lifetime</b><ng-container *ngIf="char.aggHistory.nfFastestMs!=null"> | {{char.aggHistory.nfFastestMs| amDuration:'ms'}}</ng-container></div>
+                            <div><b>{{char.aggHistory.hmNf}} lifetime</b><ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null"> | {{char.aggHistory.hmNfFastestMs| amDuration:'ms'}}</ng-container> <span class="trophy"><i class="trophy fa fa-trophy" aria-hidden="true"></i></span></div>
+                          </div>
+
+                          <div class="lifetime" *ngIf="mileStoneName.key==3660836525 && char.aggHistory!=null">
+                              <div><b>{{char.aggHistory.raid}} lifetime</b></div>
+                              <div><b>{{char.aggHistory.hmRaid}} lifetime</b><span class="trophy"><i class="trophy fa fa-trophy" aria-hidden="true"></i></span></div>
                           </div>
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
@@ -205,13 +203,16 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let faction of char.factions">
-                        <td class="lead" [matTooltip]="faction.desc" data-label="">
+                        <td class="lead"  data-label="">
 
-                          {{faction.name}}
-                          <span *ngIf="faction.xyz300">300!</span>
+                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!" *ngIf="faction.xyz300"><i class="warn-text fa fa-diamond fa-2x"></i></a>
+                          <span [matTooltip]="faction.desc">{{faction.name}}</span>
+                          
 
                           <span class="light">Level {{faction.level}} </span>
-                          <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
+                          <span matTooltip="You have enough tokens to rank up with this vendor and get an engram">
+                            <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
+                          </span>
 
                           <span class="caption">{{faction.info}}</span>
 
@@ -236,7 +237,7 @@
 
                 </mat-tab>
               </mat-tab-group>
-
+              
             </ng-container>
 
           </mat-tab>
@@ -297,6 +298,7 @@
 
           </mat-tab> -->
         </mat-tab-group>
+        * 300LL vendor info provided by <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">

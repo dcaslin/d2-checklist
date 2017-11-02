@@ -219,6 +219,9 @@ export class Character {
     startWeek: Date;
     endWeek: Date;
     lifetimeRaid: number = 0;
+    lifetimeRaidNormal: number = 0;
+    lifetimeRaidPrestige: number = 0;
+    aggHistory: AggHistory;
 
 }
 
@@ -229,6 +232,20 @@ export class Nightfall {
     modifiers: NameDesc[];
     challenges: NameDesc[];
     image: string;
+}
+
+export class AggHistory{
+    nf: number=0;
+    nfFastestMs: number;
+    
+    hmNf: number=0;
+    hmNfFastestMs: number;
+
+    raid: number=0;
+    raidFastestMs: number;
+    
+    hmRaid: number=0;
+    hmRaidFastestMs: number;
 }
 
 
