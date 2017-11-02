@@ -189,9 +189,13 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       this.slowlyLoadRest();
     }).catch(err => {
       console.dir(err);
-      console.log("Skipping error on " + this.members[this.playerCntr].destinyUserInfo.displayName + " and continuing");
-      this.playerCntr++;
-      this.slowlyLoadRest();
+      //reloading mid load can break this
+      if (this.members[this.playerCntr]!=null){
+        console.log("Skipping error on " + this.members[this.playerCntr].destinyUserInfo.displayName + " and continuing");
+        
+        this.playerCntr++;
+        this.slowlyLoadRest();
+      }
     });
 
   }

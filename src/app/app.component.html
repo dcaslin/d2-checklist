@@ -10,9 +10,14 @@
         <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.selectedUser!=null">
           {{this.signedOnUser.selectedUser.displayName}} - {{this.signedOnUser.selectedUser.platformName}}
         </a>
-        <a mat-list-item (click)="sidenav.close();myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+        <a mat-list-item (click)="sidenav.close();loadClan(this.signedOnUser.membership.clans[0])" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length==1">
           My Clan
         </a>
+        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length>1">
+          <a *ngFor="let clan of this.signedOnUser.membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
+            {{clan.name}}
+          </a>
+        </ng-container>
         <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
           My Info
         </a>
@@ -36,15 +41,26 @@
           <img [src]="logo" /> D2 Checklist</span>
 
         <span class="hidden-sm-down">
-            <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">Home</button>
-            <button mat-button class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">Leviathan<span class="hidden-lg-down"> Leaderboard</span><span class="hidden-xl-up"> LB</span></button>
-            <button mat-button class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">Prestige<span class="hidden-lg-down"> Leaderboard</span><span class="hidden-xl-up"> LB</span></button>
-            <button mat-button class="nav-button" routerLink="search" routerLinkActive="active"><mat-icon>search</mat-icon><span class="hidden-lg-down"> Search Users</span></button>
-            <button mat-button class="nav-button" routerLink="about" routerLinkActive="active"><mat-icon>info</mat-icon><span class="hidden-lg-down"> About</span></button>
+          <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">Home</button>
+          <button mat-button class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">Leviathan
+            <span class="hidden-lg-down"> Leaderboard</span>
+            <span class="hidden-xl-up"> LB</span>
+          </button>
+          <button mat-button class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">Prestige
+            <span class="hidden-lg-down"> Leaderboard</span>
+            <span class="hidden-xl-up"> LB</span>
+          </button>
+          <button mat-button class="nav-button" routerLink="search" routerLinkActive="active">
+            <mat-icon>search</mat-icon>
+            <span class="hidden-lg-down"> Search Users</span>
+          </button>
+          <button mat-button class="nav-button" routerLink="about" routerLinkActive="active">
+            <mat-icon>info</mat-icon>
+            <span class="hidden-lg-down"> About</span>
+          </button>
         </span>
 
-        <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" 
-          matTooltip="Grants access to private endpoints and some bugged public data too"
+        <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" matTooltip="Grants access to private endpoints and some bugged public data too"
           matTooltipPosition="before" (click)="onLoginClick()">
           Sign in
         </button>
@@ -91,10 +107,21 @@
 
           </ng-container>
 
-
-          <button mat-button class="hidden-sm-down nav-button" (click)="myClan()" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clanId!=null">
+          <button mat-button class="hidden-sm-down nav-button" (click)="loadClan(this.signedOnUser.membership.clans[0])" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length==1">
             <mat-icon>flag</mat-icon> My Clan
           </button>
+          <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length>1">
+            <button mat-button [matMenuTriggerFor]="toolbarClanMenu">
+                <mat-icon>flag</mat-icon> My Clans
+            </button>
+            <mat-menu #toolbarClanMenu="matMenu">
+              <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of this.signedOnUser.membership.clans" >
+                <span>{{clan.name}}</span>
+              </button>
+            </mat-menu>
+            
+          </ng-container>
+
           <button mat-button class="hidden-sm-down nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
             <mat-icon>favorite</mat-icon> My Info
           </button>

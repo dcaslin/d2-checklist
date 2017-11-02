@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -67,7 +67,7 @@ export class BungieService implements OnDestroy {
                     this.emitUsers();
 
                     //after the fact search for clan
-                    this.setClanId(membership);
+                    this.setClans(membership);
                     //after the fact currency check
                     if (this.selectedUser.selectedUser != null)
                         this.setCurrencies();
@@ -283,7 +283,8 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public getClanId(bungieId: string): Promise<string> {
+
+    public getClans(bungieId: string): Promise<ClanRow[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
             return this.http.get(API_ROOT + 'GroupV2/User/254/' + bungieId + "/0/1/",
@@ -291,18 +292,18 @@ export class BungieService implements OnDestroy {
                 function (res) {
                     const j: any = res.json();
                     const resp = BungieService.parseBungieResponse(j);
-                    let clanId = null;
+                    let returnMe: ClanRow[] = [];
                     resp.results.forEach(r => {
-                        if (r.group != null && r.group.groupType == 1) {
-                            clanId = r.group.groupId;
+                        if (r.group != null && r.group.groupType == 1) {                            
+                            returnMe.push(new ClanRow(r.group.name, r.group.groupId));
                         }
                     });
-                    return clanId;
+                    return returnMe;
                 }).toPromise().catch(
                 function (err) {
                     console.log("Error finding clan id");
                     self.handleError(err);
-                    return null;
+                    return [];
                 });
         });
     }
@@ -318,11 +319,11 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    private setClanId(membership: BungieMembership) {
+    private setClans(membership: BungieMembership) {
         const self: BungieService = this;
-        this.getClanId(membership.bungieId).then(c => {
+        this.getClans(membership.bungieId).then(c => {
             if (c != null) {
-                membership.clanId = c;
+                membership.clans = c;
                 self.emitUsers();
             }
 

@@ -26,7 +26,7 @@ export class SelectedUser {
 
 export class BungieMembership {
     bungieId: string;
-    clanId: string;
+    clans: ClanRow[];
     destinyMemberships: UserInfo[];
 }
 
@@ -402,11 +402,20 @@ export class Platform {
     }
 }
 
+export class ClanRow{
+    name: string;
+    id: string;
+    constructor(name: string, id: string) {
+        this.id = id;
+        this.name = name;
+    }
+}
 
 export class BungieMember {
     name: string;
     id: string;
     noClan: boolean = false;
+    clans: ClanRow[] = null;
     xbl: BungieMemberPlatform;
     psn: BungieMemberPlatform;
     bnet: BungieMemberPlatform;

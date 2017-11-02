@@ -4,7 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player } from "../../service/model";
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, ClanRow } from "../../service/model";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
@@ -47,14 +47,15 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
 
   private loadClan(member: BungieMember){
     
-    this.bungieService.getClanId(member.id).then((x: string)=>{
-      if (x==null){
+    this.bungieService.getClans(member.id).then((x: ClanRow[])=>{
+      if (x.length==0){
         member.noClan = true;
       }
       else{
-        this.router.navigate(["clan", x]);
+        member.clans = x;
+        if (x.length==1)
+          this.router.navigate(["clan", x[0].id]);
       }
-
     });
   }
 
