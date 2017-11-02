@@ -50,7 +50,7 @@ export class XyzService implements OnDestroy {
         else if (v.vendor==17) drops["1761642340"] = v.type;
     }
 
-    public getDrops(player: Player): Promise<any> {
+    public updateDrops(player: Player): Promise<any> {
         const self: XyzService = this;
         return this.http.get(XYZ_ROOT + environment.xyzApiKey).map(
             function (res) {

@@ -15,10 +15,14 @@
   margin-left: 10px;
 }
 
+.rankupContainer{
+  display: inline-block;
+}
+
 .rankupRow{
   display: inline-block;
   margin-bottom: 15px;
-  line-height: 2.0;
+  line-height: 2.5;
 }
 
 .rankup{
@@ -47,7 +51,14 @@ a.underline:link {
 }
 
 .lifetime{
-  font-size: smaller;
+  font-size: small;
+  font-weight: lighter;
+  text-align: left;
+  display: inline-block;
+}
+
+.trophy{
+  opacity: 0.7;
 }
 
 .percent{

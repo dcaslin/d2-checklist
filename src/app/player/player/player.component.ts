@@ -145,11 +145,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
             //hack for raid
             if (x.characters!=null){
-              this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
+              this.bungieService.updateAggHistory(x.characters).then(x=>{
                 //nothing needed
               });
-              this.xyzService.getDrops(x).then(x=>{
-                console.log("Drops");
+              // this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
+              //   //nothing needed
+              // });
+              this.xyzService.updateDrops(x).then(x=>{
               });
             }
           })
