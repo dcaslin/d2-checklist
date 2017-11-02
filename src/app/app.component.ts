@@ -11,7 +11,7 @@ import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
 import { BungieService } from './service/bungie.service';
-import { SelectedUser } from './service/model';
+import { SelectedUser, ClanRow } from './service/model';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { ChildComponent } from './shared/child.component';
@@ -111,9 +111,9 @@ export class AppComponent implements OnInit, OnDestroy {
       });
   }
 
-  myClan() {
+  loadClan(clanRow: ClanRow) {
     if (this.signedOnUser != null) {
-      this.router.navigate(["clan", this.signedOnUser.membership.clanId]);
+      this.router.navigate(["clan", clanRow.id]);
     }
   }
 
