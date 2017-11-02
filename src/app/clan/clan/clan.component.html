@@ -9,11 +9,11 @@
         </ng-container>
 
         <ng-container *ngIf="info!=null">
-          <h1>{{info.name}}</h1>
+          <h1>{{info.name}} </h1>
           <div class="button-row">
-
-            <button mat-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
-            <button mat-raised-button>Aggregate Stats (soon)</button>
+           
+            <!--<button mat-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
+            <button mat-raised-button>Aggregate Stats (soon)</button>-->
           </div>
 
           <mat-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
@@ -99,17 +99,23 @@
               </mat-select>
             </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
+            <button class="hidden-sm-down" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()"> 
+                <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
+                <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
           <div class="mobile-button-row">
-            <button mat-raised-button (click)="toggleMemberSort()">Sort Name
+            <button mat-button (click)="toggleMemberSort()">Sort Name
               <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
               <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
             </button>
-            <button mat-raised-button (click)="toggleDateSort()">Sort Last Played
+            <button mat-button (click)="toggleDateSort()">Sort Last Played
               <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
               <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
             </button>
+            <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()"> 
+                <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
+                <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
 
@@ -154,7 +160,7 @@
                     [attr.colspan]="modelPlayer.milestoneList.length">
                     Blocked by privacy settings
                   </td>
-                  <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null">
+                  <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
                     <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
                       <ng-container *ngFor="let char of member.player.characters">
                         <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">

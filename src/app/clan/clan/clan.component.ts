@@ -8,6 +8,7 @@ import { BungieService } from "../../service/bungie.service";
 import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo, MileStoneName } from "../../service/model";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'clan-history',
@@ -24,6 +25,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   modelPlayer: Player;
   sort: string = "memberAsc";
   playerCntr: 0;
+  allLoaded: boolean;
 
   filterMode: string = "none";
   filterActivity: MileStoneName = null;
@@ -121,9 +123,60 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     });
   }
 
+  private downloadCsvReport(){
+    let sDate = new Date().toISOString().slice(0,10);
+    let sCsv = "member,platform,lastPlayed days ago,";
+    this.modelPlayer.milestoneList.forEach(m=>{
+      sCsv+=m.name+",";
+    });
+    sCsv+="\n";
+
+    this.members.forEach(member=>{
+      if (member.destinyUserInfo==null) return;
+      if (member.player==null) return;
+
+      sCsv+=member.destinyUserInfo.displayName+",";
+      sCsv+=member.destinyUserInfo.platformName+",";
+      let today = moment();
+      let lastPlayed = moment(member.player.profile.dateLastPlayed);
+      let diff = today.diff(lastPlayed, "days");
+      sCsv+=diff+",";
+
+      if (member.player.characters!=null){
+        this.modelPlayer.milestoneList.forEach(mileStoneName=>{
+          let total = 0;
+          member.player.characters.forEach(char=>{
+            if (char.milestones[mileStoneName.key]!=null && char.milestones[mileStoneName.key].complete==true){
+              total++;
+            }
+          });
+          sCsv+=total+",";
+        });
+      }
+
+      sCsv+="\n";
+
+    });
+
+    this.downloadCsv("clan-progress-"+sDate+".csv", sCsv);
+  }
+
+
+  private downloadCsv(filename: string, csv: string){
+    filename = filename+".csv";
+    let anch: HTMLAnchorElement = document.createElement('a');
+    anch.setAttribute("href", 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+    anch.setAttribute("download", filename);
+    anch.click();
+  }
+
+
   private slowlyLoadRest() {
 
-    if (this.playerCntr >= this.members.length) return;
+    if (this.playerCntr >= this.members.length){
+      this.allLoaded = true;
+      return;
+    }
 
 
     this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType, this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
@@ -148,6 +201,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.members = [];
     this.modelPlayer = null;
     this.playerCntr = 0;
+    this.allLoaded = false;
 
     this.bungieService.getClanInfo(this.id).then(i => {
       this.info = i;
