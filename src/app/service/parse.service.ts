@@ -606,6 +606,8 @@ export class ParseService {
         if (resp.profile != null)
             profile = resp.profile.data;
 
+        let superprivate = false;
+
         let charsDict: { [key: string]: Character } = {};
         let milestoneList: MileStoneName[] = [];
         let currentActivity: CurrentActivity = null;
@@ -616,29 +618,42 @@ export class ParseService {
                 charsDict[key] = this.parseCharacter(oChars[key]);
             });
             let mileStoneDefs: any = {};
-
-            if (resp.characterProgressions && resp.characterProgressions.data) {
-                const oProgs: any = resp.characterProgressions.data;
-                Object.keys(oProgs).forEach((key) => {
-                    let curChar: Character = charsDict[key];
-                    this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
-                });
+            if (resp.characterProgressions){
+                if (resp.characterProgressions.data) {
+                    const oProgs: any = resp.characterProgressions.data;
+                    Object.keys(oProgs).forEach((key) => {
+                        let curChar: Character = charsDict[key];
+                        this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
+                    });
+                }
+                else{
+                    superprivate = true;
+                }
             }
+            
             //convert dictionary to array for UI
             Object.keys(mileStoneDefs).forEach(key => {
                 milestoneList.push(mileStoneDefs[key]);
             });
 
-            if (resp.characterActivities && resp.characterActivities.data) {
-                const oActs: any = resp.characterActivities.data;
-                Object.keys(oActs).forEach((key) => {
-                    let curChar: Character = charsDict[key];
-                    this.populateActivities(curChar, oActs[key]);
-                    if (curChar.currentActivity != null) {
-                        currentActivity = curChar.currentActivity;
-                    }
-                });
+            if (resp.characterActivities){
+                //turned on activity privacy
+                if (resp.characterActivities.data == null){
+                    superprivate = true;
+                }
+                else if (resp.characterActivities.data) {
+                    const oActs: any = resp.characterActivities.data;
+                    Object.keys(oActs).forEach((key) => {
+                        let curChar: Character = charsDict[key];
+                        this.populateActivities(curChar, oActs[key]);
+                        if (curChar.currentActivity != null) {
+                            currentActivity = curChar.currentActivity;
+                        }
+                    });
+                }
             }
+
+            
             Object.keys(charsDict).forEach((key) => {
                 chars.push(charsDict[key]);
             });
@@ -728,7 +743,7 @@ export class ParseService {
                 });
             }
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate);
     }
 
     private static getTokensHeld(f: Progression, gear: InventoryItem[]): number {
