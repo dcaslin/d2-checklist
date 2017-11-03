@@ -154,7 +154,10 @@
                 <td *ngIf="member.player==null">N/A</td>
                 <ng-container *ngIf="member.player!=null">
                   <td>
-                    {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                    <ng-container *ngIf="!member.player.superprivate">
+                      {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                      {{member.player.superprivate}}
+                    </ng-container>
                   </td>
                   <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
                     [attr.colspan]="modelPlayer.milestoneList.length">

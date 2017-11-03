@@ -36,7 +36,8 @@
 
         <ng-container *ngIf="player!=null">
           <h4>{{player.profile.userInfo.displayName}} -
-            <span *ngIf="player.currentActivity==null">
+            <span *ngIf="player.superprivate">[hidden by privacy settings]</span>
+            <span *ngIf="player.currentActivity==null && !player.superprivate">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
             </span>
             <span *ngIf="player.currentActivity!=null">
@@ -251,7 +252,7 @@
                   <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
                     <span style="white-space:nowrap;">Light {{char.light}}</span>
                   </mat-card-title>
-                  <mat-card-subtitle>
+                  <mat-card-subtitle *ngIf="!player.superprivate">
                     Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
                     <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60|
                     number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
