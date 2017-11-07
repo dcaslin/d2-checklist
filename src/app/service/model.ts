@@ -97,6 +97,7 @@ export class Rankup{
 export class Player {
     profile: Profile;
     superprivate: boolean;
+    hasWellRested: boolean;
     currentActivity: CurrentActivity;
     characters: Character[];
     milestoneList: MileStoneName[];
@@ -104,7 +105,7 @@ export class Player {
     gear: InventoryItem[];
     rankups: Rankup[];
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[], superprivate: boolean) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -113,6 +114,7 @@ export class Player {
         this.gear = gear;
         this.rankups = rankups;
         this.superprivate = superprivate;
+        this.hasWellRested = hasWellRested;
     }
 }
 
@@ -212,6 +214,7 @@ export class Character {
     className: string;
     levelProgression: LevelProgression;
     legendProgression: Progression;
+    wellRested: boolean = false;
     currentActivity: CurrentActivity;
     milestones: { [key: string]: MilestoneStatus };
     clanMilestones: ClanMilestoneResults;

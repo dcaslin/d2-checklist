@@ -20,9 +20,13 @@
 }
 
 .rankupRow{
-  display: inline-block;
+  display: block;
   margin-bottom: 15px;
   line-height: 2.5;
+}
+
+.mobile-header{
+  opacity: .8;
 }
 
 .rankup{
@@ -124,12 +128,12 @@ a.underline:link {
 }
 
 .searchPlatform{
-  width: 150px;
+  width: 75px;
   margin-right: 10px;
 }
 
 .searchGt{
-  width: 150px;
+  width: 125px;
   margin-right: 10px;
 }
 

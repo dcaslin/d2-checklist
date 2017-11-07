@@ -46,20 +46,35 @@
             </span>
           </h4>
 
-          <div class="rankupRow" *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
-            Enough tokens to rank up with:
+          <ng-container *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
 
-            
-            <span class="rankupContainer" *ngFor="let ru of player.rankups">
-              <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!">                
-                {{ru.name}}*
-              </a>
-              <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
-                {{ru.name}}
+            <div class="mobile-header hidden-md-up">Tokens to rank up with:</div>
+            <div class="rankupRow">
+              <span class="rankupContainer" *ngFor="let ru of player.rankups">
+                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!">
+                  {{ru.name}}*
+                </a>
+                <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
+                  {{ru.name}}
+                </span>
               </span>
-            </span>
+            </div>
+          </ng-container>
 
-          </div>
+          <ng-container *ngIf="player!=null && player.hasWellRested && player.characters!=null && player.characters.length>0">
+
+            <div class="mobile-header hidden-md-up">Well-Rested (3x Bright Engrams)</div>
+            <div class="rankupRow hidden-md-up">
+
+              <span class="hidden-sm-down">Well-Rested (accelerated XP towards bright engrams):</span>
+
+              <span class="rankupContainer" *ngFor="let char of player.characters">
+                <span *ngIf="char.wellRested" class="rankup primary-bg-text">
+                  {{char.className}} - {{char.light}}
+                </span>
+              </span>
+            </div>
+          </ng-container>
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
               <mat-icon>message</mat-icon>
@@ -91,7 +106,7 @@
                   <tr>
                     <th scope="col">Actvity</th>
                     <th scope="col" *ngFor="let char of player.characters">
-                      {{char.className}} - {{char.light}}
+                      {{char.className}} - {{char.light}} <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams" ><i class="warn-text fa fa-2x fa fa-bed"></i></span>
                     </th>
                   </tr>
                 </thead>
@@ -121,13 +136,31 @@
                             </ng-container>
                           </div>
                           <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
-                            <div><b>{{char.aggHistory.nf}} lifetime</b><ng-container *ngIf="char.aggHistory.nfFastestMs!=null"> | {{char.aggHistory.nfFastestMs| amDuration:'ms'}}</ng-container></div>
-                            <div><b>{{char.aggHistory.hmNf}} lifetime</b><ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null"> | {{char.aggHistory.hmNfFastestMs| amDuration:'ms'}}</ng-container> <span class="trophy"><i class="trophy fa fa-trophy" aria-hidden="true"></i></span></div>
+                            <div>
+                              <b>{{char.aggHistory.nf}} lifetime</b>
+                              <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
+                              | {{char.aggHistory.nfFastestMs| amDuration:'ms'}}</ng-container>
+                            </div>
+                            <div>
+                              <b>{{char.aggHistory.hmNf}} lifetime</b>
+                              <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
+                              | {{char.aggHistory.hmNfFastestMs| amDuration:'ms'}}</ng-container>
+                              <span class="trophy">
+                                <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                              </span>
+                            </div>
                           </div>
 
                           <div class="lifetime" *ngIf="mileStoneName.key==3660836525 && char.aggHistory!=null">
-                              <div><b>{{char.aggHistory.raid}} lifetime</b></div>
-                              <div><b>{{char.aggHistory.hmRaid}} lifetime</b><span class="trophy"><i class="trophy fa fa-trophy" aria-hidden="true"></i></span></div>
+                            <div>
+                              <b>{{char.aggHistory.raid}} lifetime</b>
+                            </div>
+                            <div>
+                              <b>{{char.aggHistory.hmRaid}} lifetime</b>
+                              <span class="trophy">
+                                <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                              </span>
+                            </div>
                           </div>
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
@@ -204,11 +237,14 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let faction of char.factions">
-                        <td class="lead"  data-label="">
+                        <td class="lead" data-label="">
 
-                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!" *ngIf="faction.xyz300"><i class="warn-text fa fa-diamond fa-2x"></i></a>
+                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!"
+                            *ngIf="faction.xyz300">
+                            <i class="warn-text fa fa-diamond fa-2x"></i>
+                          </a>
                           <span [matTooltip]="faction.desc">{{faction.name}}</span>
-                          
+
 
                           <span class="light">Level {{faction.level}} </span>
                           <span matTooltip="You have enough tokens to rank up with this vendor and get an engram">
@@ -238,7 +274,7 @@
 
                 </mat-tab>
               </mat-tab-group>
-              
+
             </ng-container>
 
           </mat-tab>
@@ -251,6 +287,7 @@
                   <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
                   <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
                     <span style="white-space:nowrap;">Light {{char.light}}</span>
+                    <ng-container *ngIf="char.wellRested">WELL RESTED!</ng-container>
                   </mat-card-title>
                   <mat-card-subtitle *ngIf="!player.superprivate">
                     Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
@@ -299,7 +336,8 @@
 
           </mat-tab> -->
         </mat-tab-group>
-        * 300LL vendor info provided by <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
+        * 300LL vendor info provided by
+        <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">
