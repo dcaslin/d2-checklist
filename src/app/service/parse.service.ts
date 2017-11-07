@@ -348,6 +348,7 @@ export class ParseService {
                     let p: _Progression = _prog.progressions[key];
                     let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     c.legendProgression = prog;
+                    c.wellRested = prog.nextLevelAt*3 > prog.weeklyProgress;
                 }
             });
         }
@@ -612,6 +613,7 @@ export class ParseService {
         let milestoneList: MileStoneName[] = [];
         let currentActivity: CurrentActivity = null;
         let chars: Character[] = [];
+        let hasWellRested = false;
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
             Object.keys(oChars).forEach((key) => {
@@ -624,6 +626,7 @@ export class ParseService {
                     Object.keys(oProgs).forEach((key) => {
                         let curChar: Character = charsDict[key];
                         this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
+                        hasWellRested= curChar.wellRested || hasWellRested;
                     });
                 }
                 else{
@@ -743,7 +746,7 @@ export class ParseService {
                 });
             }
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate, hasWellRested);
     }
 
     private static getTokensHeld(f: Progression, gear: InventoryItem[]): number {
