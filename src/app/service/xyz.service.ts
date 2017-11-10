@@ -81,8 +81,10 @@ export class XyzService implements OnDestroy {
                 return j;
             }).toPromise().catch(
             function (err) {
-                console.log('Error Searching for player');
-                self.handleError(err);
+
+                //ignore
+                //console.log('Error Searching for player');
+                //self.handleError(err);
                 return null;
             });
     }

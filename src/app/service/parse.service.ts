@@ -554,7 +554,6 @@ export class ParseService {
                 }
             });
         }
-        console.dir(returnMe);
         return returnMe;
     }
 
