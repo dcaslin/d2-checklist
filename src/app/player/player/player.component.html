@@ -139,12 +139,12 @@
                             <div>
                               <b>{{char.aggHistory.nf}} lifetime</b>
                               <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
-                              | {{char.aggHistory.nfFastestMs| amDuration:'ms'}}</ng-container>
+                              | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
                             </div>
                             <div>
                               <b>{{char.aggHistory.hmNf}} lifetime</b>
                               <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
-                              | {{char.aggHistory.hmNfFastestMs| amDuration:'ms'}}</ng-container>
+                              | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
                               <span class="trophy">
                                 <i class="trophy fa fa-trophy" aria-hidden="true"></i>
                               </span>
