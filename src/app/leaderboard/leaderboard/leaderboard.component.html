@@ -46,7 +46,7 @@
           <ng-container cdkColumnDef="durationMs">
             <mat-header-cell *cdkHeaderCellDef class="hidden-md-down" mat-sort-header>Duration</mat-header-cell>
             <mat-cell *cdkCellDef="let row" class="hidden-md-down">
-              {{ row.durationMs | amDuration:'milliseconds' }}
+              {{ row.durationMs | amnsTiming:'milliseconds' }}
             </mat-cell>
           </ng-container>
           <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>

@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule} from '@angular/forms';
+
+import { PipeModule} from './pipe';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
   MatToolbarModule,
@@ -36,6 +38,7 @@ import {
 
 @NgModule({
   imports: [
+    PipeModule,
     CommonModule,
     FormsModule,
 
@@ -70,6 +73,8 @@ import {
   declarations: [
   ],
   exports: [
+    PipeModule,
+    
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

@@ -13,7 +13,7 @@
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </h2>
           <p>
-            Start: {{data.period|date:'short'}} &emsp; Finish: {{data.finish|date:'short'}} &emsp; Duration: {{ data.activityDurationSeconds | amDuration:'seconds' }}</p>
+            Start: {{data.period|date:'short'}} &emsp; Finish: {{data.finish|date:'short'}} &emsp; Duration: {{ data.activityDurationSeconds | amnsTiming:'seconds' }}</p>
           <mat-card class="card" *ngIf="data.teams!=null && data.teams.length>0">
             <mat-card-content>
               <p>
