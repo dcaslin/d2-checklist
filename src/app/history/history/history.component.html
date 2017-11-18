@@ -59,6 +59,12 @@
                 <i class="fa fa-check" *ngIf="row.success"></i>
               </mat-cell>
             </ng-container>
+            <ng-container cdkColumnDef="kd">
+              <mat-header-cell *cdkHeaderCellDef mat-sort-header>KD</mat-header-cell>
+              <mat-cell *cdkCellDef="let row">
+                {{ row.kd | number:'1.2-2'}}
+              </mat-cell>
+            </ng-container>
             <ng-container cdkColumnDef="timePlayedSeconds">
               <mat-header-cell *cdkHeaderCellDef mat-sort-header>Duration</mat-header-cell>
               <mat-cell *cdkCellDef="let row">

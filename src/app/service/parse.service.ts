@@ -416,6 +416,7 @@ export class ParseService {
             act.deaths = ParseService.getBasicValue(a.values.deaths);
             act.assists = ParseService.getBasicValue(a.values.assists);
             act.score = ParseService.getBasicValue(a.values.score);
+            act.kd = ParseService.getBasicValue(a.values.killsDeathsRatio);
             act.completionReason = ParseService.getBasicValue(a.values.completionReason);
             if (desc.isPvP) {
                 act.success = act.standing == 0;
