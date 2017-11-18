@@ -34,7 +34,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  displayedColumns = ['period', 'mode', 'name', 'timePlayedSeconds'];
+  displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
   constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
     super(storageService);

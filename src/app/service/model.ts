@@ -344,6 +344,7 @@ export class Activity {
     standing: number;
     kills: number;
     deaths: number;
+    kd: number;
     assists: number;
     score: number;
     completionReason: number;
