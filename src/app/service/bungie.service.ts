@@ -117,8 +117,8 @@ export class BungieService implements OnDestroy {
                     return;
                 }).toPromise().catch(
                 function (err) {
-                    console.log('Error gett aggregate history for char');
-                    self.handleError(err);
+                    console.log('Error getting aggregate history for char');
+                    //self.handleError(err);
                     return;
                 });
         });
