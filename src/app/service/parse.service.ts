@@ -895,11 +895,13 @@ export class ParseService {
                         let plugDesc = this.destinyCacheService.cache.InventoryItem[_socket.plugHash];
                         if (plugDesc == null) return;
                         let bonusLight = 0;
-                        plugDesc.investmentStats.forEach(s => {
-                            if (s.statTypeHash == 1935470627) {
-                                bonusLight = s.value;
-                            }
-                        });
+                        if (plugDesc.investmentStats!=null){
+                            plugDesc.investmentStats.forEach(s => {
+                                if (s.statTypeHash == 1935470627) {
+                                    bonusLight = s.value;
+                                }
+                            });
+                        }
                         let plug: InventoryPlug = new InventoryPlug(_socket.plugHash + "",
                             plugDesc.displayProperties.name, plugDesc.displayProperties.description, true);
                         plugs.push(plug);
