@@ -323,6 +323,14 @@ export class ParseService {
                     mileStoneDefs[key].hasPartial = true;
                 }
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
+                if (key==="3405519164" && ms.availableQuests.length===1){
+                    const aq = ms.availableQuests[0];
+                    // this is complete via hack while the api is bugged
+                    if (aq.status.stepObjectives!=null && aq.status.stepObjectives.length==0){
+                        m.complete = true;
+                        m.pct = 1;
+                    }
+                }
                 c.milestones[key] = m;
 
             });
