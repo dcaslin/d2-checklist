@@ -222,15 +222,12 @@ export class ParseService {
                 }
                 //add meta
                 if (mileStoneDefs[key] == null) {
-                    //skip one off faction stuff and CallToAction
-                    if (key == "364880304" || key == "1718587363" || key == "4109359897")
+                    //skip one off faction stuff x2 and CallToAction, meditations, daily free roam
+                    if (key == "364880304" || key == "1718587363" || key == "4109359897" || key == "3245985898" || key == "383198939")
                         return;
 
                     let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
-
                     if (desc != null) {
-
-
                         let type: string = ParseService.parseMilestoneType(desc.milestoneType);
                         //null is tutorial or one-time, skip
                         if (type == null) return;
@@ -324,11 +321,17 @@ export class ParseService {
                 }
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
                 if (key==="3405519164" && ms.availableQuests.length===1){
+
+
                     const aq = ms.availableQuests[0];
                     // this is complete via hack while the api is bugged
                     if (aq.status.stepObjectives!=null && aq.status.stepObjectives.length==0){
-                        m.complete = true;
-                        m.pct = 1;
+                        const ms2: _Milestone = _prog.milestones["1142551194"];
+                        if (ms2!=null && ms2.availableQuests!=null && ms2.availableQuests.length==1 
+                            && ms2.availableQuests[0].status!=null && ms2.availableQuests[0].status.completed==true){
+                            m.complete = true;
+                            m.pct = 1;
+                        }
                     }
                 }
                 c.milestones[key] = m;
