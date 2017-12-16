@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus } from './model';
 
 import { environment } from '../../environments/environment';
 
@@ -152,20 +152,27 @@ export class BungieService implements OnDestroy {
                 var totalRaid: number = 0;
                 var totalNormal: number = 0;
                 var totalPrestige: number = 0;
+                var totalEater: number = 0;
                 hist.forEach(a => {
                     //ignore not completed
                     if (!a.completed) return;
 
                     // 2693136601 normal
                     // 1685065161 hard
-                    if (a.activityLevel == 27) {
+                    // 3089205900 eater of worlds lair
+                    if (a.referenceId === 3089205900) {
+                        totalEater++;
+                        const d = new Date(a.period);
+                        // if after reset?
+                        if (d.getTime() > c.startWeek.getTime()) {
+                            c.hasEater = true;
+                        }
+                    } else if (a.activityLevel === 27) {
                         totalNormal++;
 
-                    }
-                    else if (a.activityLevel == 30) {
+                    } else if (a.activityLevel === 30) {
                         totalPrestige++;
-                    }
-                    else {
+                    } else {
                         console.log("Unexpected ref id: " + a.referenceId);
                     }
                     totalRaid++;
@@ -178,6 +185,30 @@ export class BungieService implements OnDestroy {
                 c.lifetimeRaid = totalRaid;
                 c.lifetimeRaidNormal = totalNormal;
                 c.lifetimeRaidPrestige = totalPrestige;
+                c.lifetimeEater = totalEater;
+
+
+                const EATER_KEY = "1234";
+                //add psuedo milestone for eater
+                let found = false;
+                for (const msName of msNames){
+                    if (msName.key===EATER_KEY){
+                        found = true;
+                    }
+                }
+                if (!found){
+                    msNames.push({
+                        key: EATER_KEY,
+                        type: "Weekly",
+                        name: "Leviathan, Eater of Worlds",
+                        desc: "Complete the Leviathan Raid Lair from CoO",
+                        hasPartial: false
+                    });
+                }
+                const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
+                c.milestones[EATER_KEY] = eaterPsuedoMs;
+
+
 
             });
             promises.push(p);
@@ -294,7 +325,7 @@ export class BungieService implements OnDestroy {
                     const resp = BungieService.parseBungieResponse(j);
                     let returnMe: ClanRow[] = [];
                     resp.results.forEach(r => {
-                        if (r.group != null && r.group.groupType == 1) {                            
+                        if (r.group != null && r.group.groupType == 1) {
                             returnMe.push(new ClanRow(r.group.name, r.group.groupId));
                         }
                     });
@@ -559,7 +590,7 @@ export class BungieService implements OnDestroy {
                         return null;
                     }
                     if (resp.length > 1) {
-                        return resp[resp.length-1];
+                        return resp[resp.length - 1];
                         //self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
                     }
                     return resp[0];

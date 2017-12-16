@@ -148,9 +148,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
               this.bungieService.updateAggHistory(x.characters).then(x=>{
                 //nothing needed
               });
-              // this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
-              //   //nothing needed
-              // });
+              this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
+                //nothing needed
+              });
               this.xyzService.updateDrops(x).then(x=>{
               });
             }

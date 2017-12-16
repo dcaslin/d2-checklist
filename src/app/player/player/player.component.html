@@ -51,7 +51,7 @@
             <div class="mobile-header hidden-md-up">Tokens to rank up with:</div>
             <div class="rankupRow">
               <span class="rankupContainer" *ngFor="let ru of player.rankups">
-                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!">
+                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has 330LL engrams. See vendorengrams.xyz for more info!">
                   {{ru.name}}*
                 </a>
                 <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
@@ -162,6 +162,11 @@
                               </span>
                             </div>
                           </div>
+                          <div class="lifetime" *ngIf="mileStoneName.key==1234">
+                            <div>
+                              <b>{{char.lifetimeEater}} lifetime</b>
+                            </div>
+                          </div>
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
                           N/A
@@ -239,7 +244,7 @@
                       <tr *ngFor="let faction of char.factions">
                         <td class="lead" data-label="">
 
-                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has 300LL engrams. See vendorengrams.xyz for more info!"
+                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has 330LL engrams. See vendorengrams.xyz for more info!"
                             *ngIf="faction.xyz300">
                             <i class="warn-text fa fa-diamond fa-2x"></i>
                           </a>
@@ -336,7 +341,7 @@
 
           </mat-tab> -->
         </mat-tab-group>
-        * 300LL vendor info provided by
+        * 330LL vendor info provided by
         <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
       </div>
     </div>

@@ -226,6 +226,8 @@ export class Character {
     lifetimeRaid: number = 0;
     lifetimeRaidNormal: number = 0;
     lifetimeRaidPrestige: number = 0;
+    lifetimeEater: number = 0;
+    hasEater: boolean = false;
     aggHistory: AggHistory;
 
 }
