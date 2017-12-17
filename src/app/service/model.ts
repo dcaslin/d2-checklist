@@ -244,6 +244,9 @@ export class Nightfall {
 export class AggHistory{
     nf: number=0;
     nfFastestMs: number;
+
+    eater: number=0;
+    eaterFastestMs: number;
     
     hmNf: number=0;
     hmNfFastestMs: number;

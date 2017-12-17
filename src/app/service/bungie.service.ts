@@ -147,8 +147,7 @@ export class BungieService implements OnDestroy {
         if (raidMilestoneName == null) return Promise.resolve(void []);
 
         chars.forEach(c => {
-            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 300).then((hist: Activity[]) => {
-                //TODO what is weekly reset
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 600).then((hist: Activity[]) => {
                 var totalRaid: number = 0;
                 var totalNormal: number = 0;
                 var totalPrestige: number = 0;
@@ -156,6 +155,7 @@ export class BungieService implements OnDestroy {
                 hist.forEach(a => {
                     //ignore not completed
                     if (!a.completed) return;
+
 
                     // 2693136601 normal
                     // 1685065161 hard
@@ -167,13 +167,12 @@ export class BungieService implements OnDestroy {
                         if (d.getTime() > c.startWeek.getTime()) {
                             c.hasEater = true;
                         }
-                    } else if (a.activityLevel === 27) {
+                    } 
+                    //NM
+                    else if (a.referenceId>=2693136600 && a.referenceId <=2693136606){
                         totalNormal++;
-
-                    } else if (a.activityLevel === 30) {
+                    } else{
                         totalPrestige++;
-                    } else {
-                        console.log("Unexpected ref id: " + a.referenceId);
                     }
                     totalRaid++;
                     let startDate: Date = new Date(a.period);

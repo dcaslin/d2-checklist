@@ -5,8 +5,8 @@
 
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
-        <h2 class="centerMe">Activity History
-          <ng-container *ngIf="player!=null"> - {{player.profile.userInfo.displayName}}</ng-container>
+        <h2 class="centerMe">Activity History - 
+          <a href="javascript:void(0)" (click)="profile()" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <button mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'" (click)="selectChar(c)">{{c.className}} - {{c.light}}</button>

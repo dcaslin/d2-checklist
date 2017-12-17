@@ -106,7 +106,10 @@
                   <tr>
                     <th scope="col">Actvity</th>
                     <th scope="col" *ngFor="let char of player.characters">
-                      {{char.className}} - {{char.light}} <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams" ><i class="warn-text fa fa-2x fa fa-bed"></i></span>
+                      {{char.className}} - {{char.light}}
+                      <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams">
+                        <i class="warn-text fa fa-2x fa fa-bed"></i>
+                      </span>
                     </th>
                   </tr>
                 </thead>
@@ -139,12 +142,12 @@
                             <div>
                               <b>{{char.aggHistory.nf}} lifetime</b>
                               <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
-                              | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
+                                | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
                             </div>
                             <div>
                               <b>{{char.aggHistory.hmNf}} lifetime</b>
                               <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
-                              | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
+                                | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
                               <span class="trophy">
                                 <i class="trophy fa fa-trophy" aria-hidden="true"></i>
                               </span>
@@ -154,17 +157,26 @@
                           <div class="lifetime" *ngIf="mileStoneName.key==3660836525 && char.aggHistory!=null">
                             <div>
                               <b>{{char.aggHistory.raid}} lifetime</b>
+                              <ng-container *ngIf="char.aggHistory.raidFastestMs!=null">
+                                | {{char.aggHistory.raidFastestMs| amnsTiming:'ms'}}
+                              </ng-container>
                             </div>
                             <div>
                               <b>{{char.aggHistory.hmRaid}} lifetime</b>
+                              <ng-container *ngIf="char.aggHistory.hmRaidFastestMs!=null">
+                                | {{char.aggHistory.hmRaidFastestMs| amnsTiming:'ms'}}
+                              </ng-container>
                               <span class="trophy">
                                 <i class="trophy fa fa-trophy" aria-hidden="true"></i>
                               </span>
                             </div>
                           </div>
-                          <div class="lifetime" *ngIf="mileStoneName.key==1234">
+                          <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
                             <div>
-                              <b>{{char.lifetimeEater}} lifetime</b>
+                              <b>{{char.aggHistory.eater}} lifetime</b>
+                              <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
+                                  | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
+                                </ng-container>
                             </div>
                           </div>
                         </ng-container>
