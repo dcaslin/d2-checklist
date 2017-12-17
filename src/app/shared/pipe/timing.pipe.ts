@@ -17,8 +17,5 @@ export class TimingPipe implements PipeTransform {
     }
     let m = moment.duration(value, args[0] as moment.unitOfTime.DurationConstructor);
     return TimingPipe.pad(m.hours(), 2)+":"+TimingPipe.pad(m.minutes(), 2)+":"+TimingPipe.pad(m.seconds(), 2);
-
-
-    //return "xxx"+moment.duration(value, args[0] as moment.unitOfTime.DurationConstructor).humanize();
   }
 }

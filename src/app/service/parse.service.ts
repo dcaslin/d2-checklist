@@ -406,15 +406,6 @@ export class ParseService {
                     act.type = typeDesc.displayProperties.name;
                 }
             }
-            //activityModeHash let modeDesc: any = this.destinyCacheService.cache.ActivityMode[desc.activityModeHash];
-            if (a.activityDetails.activityTypeHashOverride) {
-                console.log("Override: " + a.activityDetails.activityTypeHashOverride);
-                // let typeDesc: any = this.destinyCacheService.cache.ActivityType[a.activityDetails.activityTypeHashOverride];
-                // if (typeDesc != null) {
-                //     console.log("Override: " + typeDesc.displayProperties.name);
-                //     act.type = typeDesc.displayProperties.name;
-                // }
-            }
             act.activityLevel = desc.activityLevel;
             act.activityLightLevel = desc.activityLightLevel;
         }
@@ -517,13 +508,38 @@ export class ParseService {
                 let vDesc: any = this.destinyCacheService.cache.Activity[act.activityHash];
                 if (vDesc == null) return;
                 let tDesc: any = this.destinyCacheService.cache.ActivityType[vDesc.activityTypeHash];
-                //console.log(act.activityHash + " " + vDesc.activityTypeHash + " " + tDesc.displayProperties.name + " lvl " + vDesc.activityLevel);
-
                 //raid
                 if (vDesc.activityTypeHash == 2043403989) {
+                    // Prestige (4)
+
+                    // 2449714930 1
+                    // 417231112 2
+                    // 3879860661 1
+
+
+                    // NM (36)
+                    // 2693136600 6
+                    // 2693136601 9
+                    // 2693136602 10
+                    // 2693136603 7
+                    // 2693136604 4
+                    // 05 06?
+
+
+                    // Eater (8)
+                    // 3089205900 7
 
                     //normal
-                    if (vDesc.activityLevel == 27) {
+                    //if (vDesc.activityLevel == 27) {
+                    //eater
+                    if (act.activityHash==3089205900){
+                        let c = ParseService.getBasicValue(act.values.activityCompletions);
+                        returnMe.eater+=c;
+                        let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                        if ((f>0) && (returnMe.hmRaidFastestMs==null || returnMe.hmRaidFastestMs>f)){
+                            returnMe.eaterFastestMs = f;
+                        }                    }
+                    else if (vDesc.challenges.length==6){
                          let c = ParseService.getBasicValue(act.values.activityCompletions);
                          returnMe.raid+=c;
                          let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
@@ -533,6 +549,7 @@ export class ParseService {
                     }
                     //hard = 30
                     else {
+
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.hmRaid+=c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
@@ -543,9 +560,8 @@ export class ParseService {
 
                 }
                 else if (vDesc.activityTypeHash == 575572995) {
-
-                    //normal
-                    if (vDesc.activityLevel == 24) {
+                    //normal 24  or 27
+                    if (vDesc.activityLevel == 24 || vDesc.activityLevel==27) {
 
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.nf+=c;
@@ -554,7 +570,7 @@ export class ParseService {
                             returnMe.nfFastestMs = f;
                         }
                     }
-                    //hard = 30
+                    //hard = 30 or 30+
                     else {
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.hmNf+=c;

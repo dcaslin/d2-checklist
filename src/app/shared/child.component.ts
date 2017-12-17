@@ -42,22 +42,6 @@ export class ChildComponent implements OnDestroy {
         }
     }
 
-    // public static isOldSafari(): boolean{
-    //     try{
-    //         let type:any = ChildComponent.getBrowserAndVersion();
-    //         if (type.type=="safari"&& type.version<11){
-    //             return true;
-    //         }
-    //     }
-    //     catch (err){
-    //         console.log("Error checking browser version!");
-    //         return false;
-    //     }
-    //     return false;
-    // }
-
-
-
     constructor(storageService: StorageService) {
 
         this.storageService = storageService;
