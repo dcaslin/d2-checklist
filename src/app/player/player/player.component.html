@@ -153,6 +153,9 @@
                               </span>
                             </div>
                           </div>
+                          <div class="lifetime" *ngIf="char.milestones[mileStoneName.key].suppInfo!=null">
+                            {{char.milestones[mileStoneName.key].suppInfo}}
+                          </div>
 
                           <div class="lifetime" *ngIf="mileStoneName.key==3660836525 && char.aggHistory!=null">
                             <div>

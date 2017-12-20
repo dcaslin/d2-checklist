@@ -290,12 +290,26 @@ export class ParseService {
                 let total = 0;
                 let complete = 0;
                 let info: string = null;
+                let suppInfo: string = null;
                 let oPct = 0;
                 if (ms.availableQuests != null) {
 
                     ms.availableQuests.forEach((q: _AvailableQuest) => {
                         total++;
+
+                        if (key=="466653501"){
+                            if (q.status.stepHash!=null && q.status.stepHash>0){
+                                
+                                const sDesc = this.destinyCacheService.cache.InventoryItem[q.status.stepHash];
+                                if (sDesc!=null){
+                                    suppInfo = sDesc.displayProperties.description;
+                                }
+                            }
+                        }
+
+
                         if (q.status.completed) complete++;
+                        
                         if (q.status.completed == false && q.status.started == true) {
                             let oCntr = 0;
                             if (q.status.stepObjectives != null) {
@@ -319,7 +333,7 @@ export class ParseService {
                     info = Math.floor(100 * pct) + "% complete";
                     mileStoneDefs[key].hasPartial = true;
                 }
-                let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info);
+                let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info, suppInfo);
                 if (key==="3405519164" && ms.availableQuests.length===1){
 
 
