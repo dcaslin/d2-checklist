@@ -180,12 +180,14 @@ export class MilestoneStatus {
     complete: boolean;
     pct: number;
     info: string;
+    suppInfo: string;
 
-    constructor(hash, complete, pct, info) {
+    constructor(hash, complete, pct, info, suppInfo?) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
         this.info = info;
+        this.suppInfo = suppInfo;
     }
 }
 
