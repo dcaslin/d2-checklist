@@ -60,8 +60,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     else if (p.profile.userInfo.membershipType==2){
       platformstr = "ps";
     }
-    else if (p.profile.userInfo.membershipType==2){
-      platformstr = "bnet";
+    else if (p.profile.userInfo.membershipType==4){
+      platformstr = "pc";
     }
     return "https://trials.report/report/"+platformstr+"/"+encodeURI(p.profile.userInfo.displayName);
   }
