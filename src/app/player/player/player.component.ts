@@ -46,10 +46,28 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.selectedPlatform = this.platforms[0];
   }
 
-  
+
   public historyPlayer(p: Player) {
     let c: Character = p.characters[0];
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
+  }
+
+  public getRaidLink(p: Player) {
+    let platformstr: string;
+    let memberid: string;
+    if (p.profile.userInfo.membershipType==1){
+      platformstr = "xb";
+      memberid = p.profile.userInfo.displayName;
+    }
+    else if (p.profile.userInfo.membershipType==2){
+      platformstr = "ps";
+      memberid = p.profile.userInfo.displayName;
+    }
+    else if (p.profile.userInfo.membershipType==4){
+      platformstr = "pc"
+      memberid = p.profile.userInfo.membershipId;
+    }
+    return "http://raid.report/"+platformstr+"/"+memberid;
   }
 
   public getTrialsLink(p: Player){
