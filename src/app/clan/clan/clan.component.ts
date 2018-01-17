@@ -146,6 +146,10 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.modelPlayer.milestoneList.forEach(mileStoneName=>{
           let total = 0;
           member.player.characters.forEach(char=>{
+            // handle privacy settings
+            if (char.milestones == null){
+              return;
+            }
             if (char.milestones[mileStoneName.key]!=null && char.milestones[mileStoneName.key].complete==true){
               total++;
             }
