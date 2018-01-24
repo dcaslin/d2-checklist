@@ -120,14 +120,24 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   public loadSpecificPlayer(target: BungieGroupMember) {
     this.bungieService.getChars(target.destinyUserInfo.membershipType, target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions']).then(x => {
       target.player = x;
+      //hack for raid
+      if (x!=null && x.characters!=null){
+        //also update raid history
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
+          //nothing needed
+        });
+      }
     });
   }
 
   private downloadCsvReport(){
     let sDate = new Date().toISOString().slice(0,10);
-    let sCsv = "member,platform,lastPlayed days ago,";
+    let sCsv = "member,platform,chars,lastPlayed days ago,";
     this.modelPlayer.milestoneList.forEach(m=>{
-      sCsv+=m.name+",";
+      let tempName = m.name;
+      tempName = m.name.replace(",","_");
+      sCsv+=tempName+",";
+      sCsv+=tempName+"%,";
     });
     sCsv+="\n";
 
@@ -137,6 +147,13 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
       sCsv+=member.destinyUserInfo.displayName+",";
       sCsv+=member.destinyUserInfo.platformName+",";
+      if (member.player.characters!=null){
+        sCsv+=member.player.characters.length+",";
+      }
+      else{
+        sCsv+="0,";
+      }
+      
       let today = moment();
       let lastPlayed = moment(member.player.profile.dateLastPlayed);
       let diff = today.diff(lastPlayed, "days");
@@ -145,16 +162,26 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       if (member.player.characters!=null){
         this.modelPlayer.milestoneList.forEach(mileStoneName=>{
           let total = 0;
+          let pctTotal = 0;
+          let possible = 0;
           member.player.characters.forEach(char=>{
             // handle privacy settings
             if (char.milestones == null){
               return;
             }
-            if (char.milestones[mileStoneName.key]!=null && char.milestones[mileStoneName.key].complete==true){
-              total++;
+            if (char.milestones[mileStoneName.key]!=null){
+              if (char.milestones[mileStoneName.key].pct!=null){
+                pctTotal+=char.milestones[mileStoneName.key].pct;
+                possible++;
+              }
+              if (char.milestones[mileStoneName.key].complete==true){
+                total++;
+              }
             }
           });
           sCsv+=total+",";
+          if (possible==0) possible = 1;
+          sCsv+=pctTotal/possible+",";
         });
       }
 
@@ -184,8 +211,14 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
 
     this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType, this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
-      if (this.modelPlayer == null) {
+      if (this.modelPlayer == null && x!=null && x.characters!=null) {
         this.modelPlayer = x;
+      }
+      if (x!=null && x.characters!=null){
+        //also update raid history
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
+          //nothing needed
+        });
       }
       this.members[this.playerCntr].player = x;
       this.playerCntr++;
