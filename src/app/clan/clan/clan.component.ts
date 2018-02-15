@@ -211,7 +211,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
 
     this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType, this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
-      if (this.modelPlayer == null && x!=null && x.characters!=null) {
+      if (this.modelPlayer == null && x!=null && x.characters!=null && x.characters[0].clanMilestones!=null) {
         this.modelPlayer = x;
       }
       if (x!=null && x.characters!=null){
