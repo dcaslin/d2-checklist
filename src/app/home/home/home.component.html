@@ -31,17 +31,21 @@
               <mat-card-subtitle class="hidden-sm-down">{{nightfall.desc}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
-              <h4>Modifiers</h4>
+              <ng-container *ngIf="nightfall.modifiers.length>0">
+                <h4>Modifiers</h4>
+                <ul>
+                  <li *ngFor="let m of nightfall.modifiers">
+                    <b>{{m.name}}</b>&emsp;{{m.desc}}</li>
+                </ul>
+              </ng-container>
 
-              <ul>
-                <li *ngFor="let m of nightfall.modifiers">
-                  <b>{{m.name}}</b>&emsp;{{m.desc}}</li>
-              </ul>
-              <h4>Challenges</h4>
-              <ul>
-                <li *ngFor="let m of nightfall.challenges">
-                  <b>{{m.name}}</b>&emsp;{{m.desc}}</li>
-              </ul>
+              <ng-container *ngIf="nightfall.challenges.length>0">
+                <h4>Challenges</h4>
+                <ul>
+                  <li *ngFor="let m of nightfall.challenges">
+                    <b>{{m.name}}</b>&emsp;{{m.desc}}</li>
+                </ul>
+              </ng-container>
             </mat-card-content>
           </mat-card>
 
