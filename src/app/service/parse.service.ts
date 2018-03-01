@@ -615,22 +615,31 @@ export class ParseService {
         nf.image = aDesc.pgcrImage;
         nf.tiers = [];
         let firstTier: number;
-        q.activity.variants.forEach(v => {
-            let vDesc: any = this.destinyCacheService.cache.Activity[v.activityHash];
-            if (firstTier == null) firstTier = v.activityHash;
-            nf.tiers.push(vDesc.activityLightLevel);
-        });
+        if (q.activity.variants!=null){
+            q.activity.variants.forEach(v => {
+                let vDesc: any = this.destinyCacheService.cache.Activity[v.activityHash];
+                if (firstTier == null) firstTier = v.activityHash;
+                nf.tiers.push(vDesc.activityLightLevel);
+            });
+        }
+       
         nf.modifiers = [];
-        q.activity.modifierHashes.forEach(mh => {
-            nf.modifiers.push(this.parseModifier(mh));
-        });
+        if (q.activity.modifierHashes!=null){
+            q.activity.modifierHashes.forEach(mh => {
+                nf.modifiers.push(this.parseModifier(mh));
+            });
+        }
+        
         nf.challenges = [];
-        q.challenges.forEach(c => {
-            if (c.activityHash == firstTier) {
-                let oDesc: any = this.destinyCacheService.cache.Objective[c.objectiveHash];
-                nf.challenges.push(new NameDesc(oDesc.displayProperties.name, oDesc.displayProperties.description));
-            }
-        });
+        if (q.challenges!=null){
+            q.challenges.forEach(c => {
+                if (c.activityHash == firstTier) {
+                    let oDesc: any = this.destinyCacheService.cache.Objective[c.objectiveHash];
+                    nf.challenges.push(new NameDesc(oDesc.displayProperties.name, oDesc.displayProperties.description));
+                }
+            });
+        }
+        
         return nf;
     }
 
