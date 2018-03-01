@@ -140,7 +140,7 @@ export class BungieService implements OnDestroy {
 
         let raidMilestoneName: MileStoneName = null;
         msNames.forEach(m => {
-            if (m.name == 'Leviathan Raid') {
+            if (m.key == "3660836525") {
                 raidMilestoneName = m;
             }
         });
@@ -160,9 +160,10 @@ export class BungieService implements OnDestroy {
                     // 2693136601 normal
                     // 1685065161 hard
                     // 3089205900 eater of worlds lair
+
+                    let d: Date = new Date(a.period);
                     if (a.referenceId === 3089205900) {
                         totalEater++;
-                        const d = new Date(a.period);
                         // if after reset?
                         if (d.getTime() > c.startWeek.getTime()) {
                             c.hasEater = true;
@@ -171,14 +172,23 @@ export class BungieService implements OnDestroy {
                     //NM
                     else if (a.referenceId>=2693136600 && a.referenceId <=2693136606){
                         totalNormal++;
+                        // if after reset?
+                        if (d.getTime() > c.startWeek.getTime()) {
+                            c.hasLevNm = true;
+                        }
                     } else{
                         totalPrestige++;
+                        // if after reset?
+                        if (d.getTime() > c.startWeek.getTime()) {
+                            c.hasLevHm = true;
+                        }
                     }
+
                     totalRaid++;
-                    let startDate: Date = new Date(a.period);
-                    if (startDate > c.startWeek) {
-                        c.milestones[raidMilestoneName.key].complete = true;
-                    }
+
+                    // if (d > c.startWeek) {
+                    //     c.milestones[raidMilestoneName.key].complete = true;
+                    // }
 
                 });
                 c.lifetimeRaid = totalRaid;
@@ -188,14 +198,24 @@ export class BungieService implements OnDestroy {
 
 
                 const EATER_KEY = "1234";
+                const LEV_NM_KEY = "1235";
+                const LEV_HM_KEY = "1236";
                 //add psuedo milestone for eater
-                let found = false;
+                let foundEater = false;
+                let foundNm = false;
+                let foundHm = false;
                 for (const msName of msNames){
                     if (msName.key===EATER_KEY){
-                        found = true;
+                        foundEater = true;
+                    } 
+                    else if (msName.key===LEV_NM_KEY){
+                        foundNm = true;
+                    }
+                    else if (msName.key===LEV_HM_KEY){
+                        foundHm = true;
                     }
                 }
-                if (!found){
+                if (!foundEater){
                     msNames.push({
                         key: EATER_KEY,
                         type: "Weekly",
@@ -204,8 +224,30 @@ export class BungieService implements OnDestroy {
                         hasPartial: false
                     });
                 }
+                if (!foundNm){
+                    msNames.push({
+                        key: LEV_NM_KEY,
+                        type: "Weekly",
+                        name: "Leviathan, Raid",
+                        desc: "Normal mode raid",
+                        hasPartial: false
+                    });
+                }
+                if (!foundHm){
+                    msNames.push({
+                        key: LEV_HM_KEY,
+                        type: "Weekly",
+                        name: "Leviathan, Prestige",
+                        desc: "Prestige mode raid",
+                        hasPartial: false
+                    });
+                }
                 const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
                 c.milestones[EATER_KEY] = eaterPsuedoMs;
+                const levNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_NM_KEY, c.hasLevNm, c.hasLevNm ? 1 : 0, null);
+                c.milestones[LEV_NM_KEY] = levNmPsuedoMs;
+                const levHmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_HM_KEY, c.hasLevHm, c.hasLevHm ? 1 : 0, null);
+                c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
 
 
 

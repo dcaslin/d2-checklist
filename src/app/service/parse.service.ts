@@ -258,6 +258,10 @@ export class ParseService {
                         if (name == null || name.trim().length == 0) {
                             name = desc.friendlyName;
                         }
+                        
+                        if (key == "3660836525") {
+                            name += " Milestone";
+                        }
                         if (key == "463010297" && (description == null || description == "")) {
                             description = "Complete public events at the designated location";
                         }
@@ -334,20 +338,21 @@ export class ParseService {
                     mileStoneDefs[key].hasPartial = true;
                 }
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info, suppInfo);
-                if (key==="3405519164" && ms.availableQuests.length===1){
 
-
-                    const aq = ms.availableQuests[0];
-                    // this is complete via hack while the api is bugged
-                    if (aq.status.stepObjectives!=null && aq.status.stepObjectives.length==0){
-                        const ms2: _Milestone = _prog.milestones["1142551194"];
-                        if (ms2!=null && ms2.availableQuests!=null && ms2.availableQuests.length==1 
-                            && ms2.availableQuests[0].status!=null && ms2.availableQuests[0].status.completed==true){
-                            m.complete = true;
-                            m.pct = 1;
-                        }
-                    }
-                }
+                // THIS WAS A HACK FOR MISREPORTED HEROIC STRIKES BUT THE HACK FALSELY SHOWS COMPLETIONS FOR SOME CHARS THAT HAVEN'T UNLOCKED HEROIC STRIKES YET
+                // REMOVING FOR NOW
+                // if (key==="3405519164" && ms.availableQuests.length===1){
+                //     const aq = ms.availableQuests[0];
+                //     // this is complete via hack while the api is bugged
+                //     if (aq.status.stepObjectives!=null && aq.status.stepObjectives.length==0){
+                //         const ms2: _Milestone = _prog.milestones["1142551194"];
+                //         if (ms2!=null && ms2.availableQuests!=null && ms2.availableQuests.length==1 
+                //             && ms2.availableQuests[0].status!=null && ms2.availableQuests[0].status.completed==true){
+                //             m.complete = true;
+                //             m.pct = 1;
+                //         }
+                //     }
+                // }
                 c.milestones[key] = m;
 
             });
@@ -518,7 +523,7 @@ export class ParseService {
             //575572995 nightfall
             resp.activities.forEach((act: any) => {
                 if (!act.activityHash) return;
-
+ 
                 let vDesc: any = this.destinyCacheService.cache.Activity[act.activityHash];
                 if (vDesc == null) return;
                 let tDesc: any = this.destinyCacheService.cache.ActivityType[vDesc.activityTypeHash];
@@ -574,23 +579,22 @@ export class ParseService {
 
                 }
                 else if (vDesc.activityTypeHash == 575572995) {
-                    //normal 24  or 27
-                    if (vDesc.activityLevel == 24 || vDesc.activityLevel==27) {
-
-                        let c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.nf+=c;
-                        let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f>0) && (returnMe.nfFastestMs==null || returnMe.nfFastestMs>f)){
-                            returnMe.nfFastestMs = f;
-                        }
-                    }
-                    //hard = 30 or 30+
-                    else {
+                    //heroic nightfall
+                    if (vDesc.directActivityModeHash ==  1350109474){
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.hmNf+=c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
                         if ((f>0) && (returnMe.hmNfFastestMs==null || returnMe.hmNfFastestMs>f)){
                             returnMe.hmNfFastestMs = f;
+                        }
+                    }
+                    //anything else that's a nightfall
+                    else{
+                        let c = ParseService.getBasicValue(act.values.activityCompletions);
+                        returnMe.nf+=c;
+                        let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                        if ((f>0) && (returnMe.nfFastestMs==null || returnMe.nfFastestMs>f)){
+                            returnMe.nfFastestMs = f;
                         }
                     }
                 }
@@ -1133,6 +1137,7 @@ export class ParseService {
         if (desc) {
             r.name = desc.displayProperties.name;
             r.level = desc.activityLevel;
+            r.ll = desc.activityLightLevel+1;
         }
         else {
             r.name = "redacted";

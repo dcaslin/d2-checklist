@@ -230,6 +230,8 @@ export class Character {
     lifetimeRaidPrestige: number = 0;
     lifetimeEater: number = 0;
     hasEater: boolean = false;
+    hasLevNm: boolean = false;
+    hasLevHm: boolean = false;
     aggHistory: AggHistory;
 
 }
@@ -320,6 +322,7 @@ export class PGCR {
     teams: PGCRTeam[];
     pveSuccess?: boolean;
     pve: boolean;
+    ll: number;
 
 }
 

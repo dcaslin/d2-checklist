@@ -162,7 +162,17 @@
                             {{char.milestones[mileStoneName.key].suppInfo}}
                           </div>
 
-                          <div class="lifetime" *ngIf="mileStoneName.key==3660836525 && char.aggHistory!=null">
+                          <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
+                            <div>Lifetime</div>
+                            <div>
+                              <b>{{char.aggHistory.eater|number : '2.0-0'}}</b>
+                              <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
+                                | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
+                              </ng-container>
+                            </div>
+                          </div>
+
+                          <div class="lifetime" *ngIf="mileStoneName.key==1235 && char.aggHistory!=null">
                             <div>Lifetime</div>
                             <div>
                               <b>{{char.aggHistory.raid|number : '2.0-0'}}</b>
@@ -170,6 +180,9 @@
                                 | {{char.aggHistory.raidFastestMs| amnsTiming:'ms'}}
                               </ng-container>
                             </div>
+                          </div>
+                          <div class="lifetime" *ngIf="mileStoneName.key==1236 && char.aggHistory!=null">
+                            <div>Lifetime</div>
                             <div>
                               <b>{{char.aggHistory.hmRaid|number : '2.0-0'}}</b>
                               <ng-container *ngIf="char.aggHistory.hmRaidFastestMs!=null">
@@ -180,15 +193,8 @@
                               </span>
                             </div>
                           </div>
-                          <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
-                            <div>Lifetime</div>
-                            <div>
-                              <b>{{char.aggHistory.eater|number : '2.0-0'}}</b>
-                              <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
-                                | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
-                              </ng-container>
-                            </div>
-                          </div>
+
+
                         </ng-container>
                         <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
                           N/A
