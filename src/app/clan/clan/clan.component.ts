@@ -122,10 +122,16 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       target.player = x;
       //hack for raid
       if (x!=null && x.characters!=null){
+        //in case this is a retry 
+        this.members[this.playerCntr].errorMsg = null;
+
         //also update raid history
         this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
           //nothing needed
         });
+      }
+      else{
+        this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged in since DLC?";
       }
     });
   }
@@ -215,10 +221,15 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.modelPlayer = x;
       }
       if (x!=null && x.characters!=null){
+        //in case this is a retry 
+        this.members[this.playerCntr].errorMsg = null;
         //also update raid history
         this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
           //nothing needed
         });
+      }
+      else{
+        this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged on since DLC?";
       }
       this.members[this.playerCntr].player = x;
       this.playerCntr++;

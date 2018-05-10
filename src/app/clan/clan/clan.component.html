@@ -152,6 +152,7 @@
                   </a>
                 </td>
                 <td *ngIf="member.player==null">N/A</td>
+                
                 <ng-container *ngIf="member.player!=null">
                   <td>
                     <ng-container *ngIf="!member.player.superprivate">
@@ -180,10 +181,14 @@
                     </td>
                   </ng-container>
                 </ng-container>
-                <ng-container *ngIf="member.player==null && modelPlayer!=null">
+                <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
                   <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
                 </ng-container>
-
+                <ng-container *ngIf="member.errorMsg!=null && modelPlayer!=null">
+                  <td [attr.colspan]="modelPlayer.milestoneList.length">
+                    {{member.errorMsg}}
+                  </td>
+                </ng-container>
               </tr>
             </tbody>
           </table>

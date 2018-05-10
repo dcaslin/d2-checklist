@@ -38,6 +38,7 @@ export class BungieGroupMember {
     bungieNetUserInfo: BungieNetUserInfo;
     joinDate: string;
     player: Player;
+    errorMsg: string;
 }
 
 export interface BungieNetUserInfo {
