@@ -331,13 +331,13 @@
                 </mat-card-header>
                 <mat-card-content>
 
-                  <div *ngIf="char.baseCharacterLevel<20">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
+                  <div *ngIf="char.baseCharacterLevel<30">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
                     <mat-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
                     </mat-progress-bar>
                   </div>
 
-                  <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=20">
-                    <b>Level 20</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
+                  <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=30">
+                    <b>Level 30</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
                     to level {{char.legendProgression.level+1}}
                     <mat-progress-bar color="accent" mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
                     </mat-progress-bar>
