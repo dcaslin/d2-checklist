@@ -211,6 +211,7 @@ export class Character {
     emblemBackgroundPath: string;
     emblemPath: string;
     baseCharacterLevel: number;
+    maxLevel: number;
     percentToNextLevel: number;
     race: string;
     gender: string;
