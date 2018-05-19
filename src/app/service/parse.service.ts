@@ -13,6 +13,7 @@ import {
 export class ParseService {
 
     constructor(private destinyCacheService: DestinyCacheService) { }
+    MAX_LEVEL: number = 30;
 
     private parseCharacter(c: _Character): Character {
         let char: Character = new Character();
@@ -369,12 +370,12 @@ export class ParseService {
 
             });
         }
+        c.maxLevel = this.MAX_LEVEL;
 
         //only progression we care about right now is Legend
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
                 if (key == "2030054750") {
-
                     let p: _Progression = _prog.progressions[key];
                     let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     c.legendProgression = prog;
