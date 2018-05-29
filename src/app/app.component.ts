@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
-    private bungieService: BungieService,
+    public bungieService: BungieService,
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MatSnackBar) {
 
