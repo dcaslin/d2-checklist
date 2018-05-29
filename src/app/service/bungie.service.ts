@@ -24,6 +24,7 @@ export class BungieService implements OnDestroy {
     authInfo: AuthInfo;
 
     selectedUser: SelectedUser;
+    apiDown = false;
 
     constructor(private http: Http,
         private notificationService: NotificationService,
@@ -93,7 +94,7 @@ export class BungieService implements OnDestroy {
                 .map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parseBungieMembers(resp);
                 }).toPromise().catch(
                 function (err) {
@@ -112,7 +113,7 @@ export class BungieService implements OnDestroy {
                 .map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     char.aggHistory = self.parseService.parseAggHistory(resp);
                     return;
                 }).toPromise().catch(
@@ -169,7 +170,7 @@ export class BungieService implements OnDestroy {
                 opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     //array of 
                     // {
                     //     "mode": 7,
@@ -204,7 +205,7 @@ export class BungieService implements OnDestroy {
                 opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parseLeaderBoard(resp);
                 }).toPromise().catch(
                 function (err) {
@@ -223,7 +224,7 @@ export class BungieService implements OnDestroy {
                 opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parseClanInfo(resp.detail);
                 }).toPromise().catch(
                 function (err) {
@@ -242,7 +243,7 @@ export class BungieService implements OnDestroy {
                 opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parseClanMembers(resp.results);
                 }).toPromise().catch(
                 function (err) {
@@ -261,7 +262,7 @@ export class BungieService implements OnDestroy {
                 opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     let returnMe: ClanRow[] = [];
                     resp.results.forEach(r => {
                         if (r.group != null && r.group.groupType == 1) {
@@ -385,13 +386,17 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private static parseBungieResponse(j: any): any {
+    private parseBungieResponse(j: any): any {
         if (j.ErrorCode && j.ErrorCode != 1) {
+            if (j.ErrorCode===5){
+                this.apiDown = true;
+            }
             throw new Error(j.Message);
         }
         if (!j.ErrorCode) {
             throw new Error("Unexpected response from Bungie");
         }
+        this.apiDown = false;
         return j.Response;
     }
 
@@ -403,7 +408,7 @@ export class BungieService implements OnDestroy {
             return this.http.get(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parsePGCR(resp);
                 }).toPromise().catch(
                 function (err) {
@@ -420,7 +425,7 @@ export class BungieService implements OnDestroy {
             return this.http.get(API_ROOT + 'Destiny2/Milestones/', opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parseNightfall(resp);
                 }).toPromise().catch(
                 function (err) {
@@ -440,7 +445,7 @@ export class BungieService implements OnDestroy {
                 opt).map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     if (resp.activities) {
                         return self.parseService.parseActivities(resp.activities);
                     }
@@ -500,7 +505,7 @@ export class BungieService implements OnDestroy {
                 .map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     return self.parseService.parsePlayer(resp);
                 }).toPromise().catch(
                 function (err) {
@@ -522,7 +527,7 @@ export class BungieService implements OnDestroy {
                 .map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
                     //self.notificationService.success("Found " + resp.length + " players");
                     if (resp.length == 0) {
                         //self.notificationService.fail("No player found for " + gt + ". Typo? Try another platform?");
@@ -552,7 +557,7 @@ export class BungieService implements OnDestroy {
                 .map(
                 function (res) {
                     const j: any = res.json();
-                    const resp = BungieService.parseBungieResponse(j);
+                    const resp = self.parseBungieResponse(j);
 
                     return self.parseService.parseBungieMembership(resp);
                 }).toPromise().catch(

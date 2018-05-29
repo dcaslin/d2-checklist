@@ -129,6 +129,11 @@
 
         </mat-toolbar-row>
       </mat-toolbar>
+      <mat-card class='apiAlert' *ngIf="bungieService.apiDown===true">
+          <mat-card-content>
+            <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new releases and lasts a few hours past when the game is back online. <a href="https://twitter.com/DestinyChecklst">Msg me on Twitter</a> if you have any problems or questions.</div>
+          </mat-card-content>
+        </mat-card>
 
       <router-outlet #o="outlet"></router-outlet>
       <div class="push"></div>
