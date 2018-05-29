@@ -231,7 +231,9 @@ export class Character {
     lifetimeRaidNormal: number = 0;
     lifetimeRaidPrestige: number = 0;
     lifetimeEater: number = 0;
+    lifetimeSpire: number = 0;
     hasEater: boolean = false;
+    hasSpire: boolean = false;
     hasLevNm: boolean = false;
     hasLevHm: boolean = false;
     aggHistory: AggHistory;
@@ -253,6 +255,9 @@ export class AggHistory{
 
     eater: number=0;
     eaterFastestMs: number;
+    
+    spire: number=0;
+    spireFastestMs: number;
     
     hmNf: number=0;
     hmNfFastestMs: number;

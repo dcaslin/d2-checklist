@@ -24,6 +24,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   platforms: Platform[];
   selectedPlatform: Platform;
+  hiddenMilestones: string[];
   msg: string;
   selectedTab: string;
   gamerTag: string;
@@ -44,6 +45,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
+    this.hiddenMilestones = this.loadHiddenMilestones();
   }
 
 
@@ -134,6 +136,34 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         this.tabs.selectedIndex = 1;
       }
     }
+  }
+
+  private loadHiddenMilestones(): string[] {
+    try{
+      let sMs: string = localStorage.getItem("hiddenMilestones");
+      let ms:string[] = JSON.parse(sMs);
+      if (ms!=null) return ms;
+    }
+    catch (e){
+      localStorage.removeItem("hiddenMilestones");
+      return [];
+    }
+    return [];
+  }
+
+  private saveHiddenMilestones(): void{
+    let sMs = JSON.stringify(this.hiddenMilestones);
+    localStorage.setItem("hiddenMilestones", sMs);
+  }
+
+  public hideMilestone(ms: string): void {
+    this.hiddenMilestones.push(ms);
+    this.saveHiddenMilestones();
+  }
+
+  public showAllMilestones(): void {
+    this.hiddenMilestones = [];
+    this.saveHiddenMilestones();
   }
 
   public performSearch(): void {
