@@ -136,6 +136,7 @@ export class BungieService implements OnDestroy {
 
     public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
 
+        const self: BungieService = this;
         let promises: Promise<void>[] = [];
 
         let raidMilestoneName: MileStoneName = null;
@@ -148,112 +149,9 @@ export class BungieService implements OnDestroy {
 
         chars.forEach(c => {
             let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 600).then((hist: Activity[]) => {
-                var totalRaid: number = 0;
-                var totalNormal: number = 0;
-                var totalPrestige: number = 0;
-                var totalEater: number = 0;
-                hist.forEach(a => {
-                    //ignore not completed
-                    if (!a.completed) return;
-
-
-                    // 2693136601 normal
-                    // 1685065161 hard
-                    // 3089205900 eater of worlds lair
-
-                    let d: Date = new Date(a.period);
-                    if (a.referenceId === 3089205900) {
-                        totalEater++;
-                        // if after reset?
-                        if (d.getTime() > c.startWeek.getTime()) {
-                            c.hasEater = true;
-                        }
-                    } 
-                    //NM
-                    else if (a.referenceId>=2693136600 && a.referenceId <=2693136606){
-                        totalNormal++;
-                        // if after reset?
-                        if (d.getTime() > c.startWeek.getTime()) {
-                            c.hasLevNm = true;
-                        }
-                    } else{
-                        totalPrestige++;
-                        // if after reset?
-                        if (d.getTime() > c.startWeek.getTime()) {
-                            c.hasLevHm = true;
-                        }
-                    }
-
-                    totalRaid++;
-
-                    // if (d > c.startWeek) {
-                    //     c.milestones[raidMilestoneName.key].complete = true;
-                    // }
-
-                });
-                c.lifetimeRaid = totalRaid;
-                c.lifetimeRaidNormal = totalNormal;
-                c.lifetimeRaidPrestige = totalPrestige;
-                c.lifetimeEater = totalEater;
-
-
-                const EATER_KEY = "1234";
-                const LEV_NM_KEY = "1235";
-                const LEV_HM_KEY = "1236";
-                //add psuedo milestone for eater
-                let foundEater = false;
-                let foundNm = false;
-                let foundHm = false;
-                for (const msName of msNames){
-                    if (msName.key===EATER_KEY){
-                        foundEater = true;
-                    } 
-                    else if (msName.key===LEV_NM_KEY){
-                        foundNm = true;
-                    }
-                    else if (msName.key===LEV_HM_KEY){
-                        foundHm = true;
-                    }
-                }
-                if (!foundEater){
-                    msNames.push({
-                        key: EATER_KEY,
-                        type: "Weekly",
-                        name: "Leviathan, Eater of Worlds",
-                        desc: "Complete the Leviathan Raid Lair from CoO",
-                        hasPartial: false
-                    });
-                }
-                if (!foundNm){
-                    msNames.push({
-                        key: LEV_NM_KEY,
-                        type: "Weekly",
-                        name: "Leviathan, Raid",
-                        desc: "Normal mode raid",
-                        hasPartial: false
-                    });
-                }
-                if (!foundHm){
-                    msNames.push({
-                        key: LEV_HM_KEY,
-                        type: "Weekly",
-                        name: "Leviathan, Prestige",
-                        desc: "Prestige mode raid",
-                        hasPartial: false
-                    });
-                }
-                const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
-                c.milestones[EATER_KEY] = eaterPsuedoMs;
-                const levNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_NM_KEY, c.hasLevNm, c.hasLevNm ? 1 : 0, null);
-                c.milestones[LEV_NM_KEY] = levNmPsuedoMs;
-                const levHmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_HM_KEY, c.hasLevHm, c.hasLevHm ? 1 : 0, null);
-                c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
-
-
-
+                self.parseService.parseRaidHistory(msNames, c, hist);
             });
             promises.push(p);
-
         });
 
         return Promise.all(promises);

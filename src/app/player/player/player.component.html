@@ -51,7 +51,7 @@
             <div class="mobile-header hidden-md-up">Tokens to rank up with:</div>
             <div class="rankupRow">
               <span class="rankupContainer" *ngFor="let ru of player.rankups">
-                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has 330LL engrams. See vendorengrams.xyz for more info!">
+                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!">
                   {{ru.name}}*
                 </a>
                 <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
@@ -105,10 +105,16 @@
                 <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
               </div>
 
+              <div *ngIf="hiddenMilestones.length>0" class="mobile-button-row" style="margin-top: 5px">
+                <button mat-button (click)="showAllMilestones()">Show hidden milestones</button>
+              </div>
+
               <table class="responsive-table" *ngIf="player.milestoneList.length>0">
                 <thead>
                   <tr>
-                    <th scope="col">Actvity</th>
+                    <th scope="col">Activity 
+                      <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show all</a>
+                    </th>
                     <th scope="col" *ngFor="let char of player.characters">
                       {{char.className}} - {{char.light}}
                       <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams">
@@ -118,92 +124,106 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let mileStoneName of player.milestoneList">
-                    <td class="lead" [matTooltip]="mileStoneName.desc">
-                      {{mileStoneName.name}}
-                      <span class="caption">{{mileStoneName.type}}</span>
+                  <ng-container *ngFor="let mileStoneName of player.milestoneList">
+                    <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
+                      <td class="lead" >
+                        <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}}</span>
+                        <span class="caption">{{mileStoneName.type}}</span>
+                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">hide</a>
+                      </td>
+                      <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                        <span class="check">
+                          <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+
+                            <div>
+                              <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                                <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+
+                                <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0':'1.0-0'}}</div>
+                              </ng-container>
+                              <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                                <i class="fa fa-square-o"></i>
+                                <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                              </ng-container>
+                              <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                                <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                                <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                              </ng-container>
+                            </div>
+                            <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
+                              <div>Lifetime</div>
+                              <div>
+                                <b>{{char.aggHistory.nf|number : '2.0-0'}}</b>
+                                <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
+                                  | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
+                              </div>
+                              <div>
+                                <b>{{char.aggHistory.hmNf|number : '2.0-0'}}</b>
+                                <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
+                                  | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
+                                <span class="trophy">
+                                  <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                                </span>
+                              </div>
+                            </div>
+                            <div class="lifetime" *ngIf="char.milestones[mileStoneName.key].suppInfo!=null">
+                              {{char.milestones[mileStoneName.key].suppInfo}}
+                            </div>
+
+                            <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
+                              <div>Lifetime</div>
+                              <div>
+                                <b>{{char.aggHistory.eater|number : '2.0-0'}}</b>
+                                <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
+                                  | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
+                                </ng-container>
+                              </div>
+                            </div>
+
+                            <div class="lifetime" *ngIf="mileStoneName.key==1235 && char.aggHistory!=null">
+                              <div>Lifetime</div>
+                              <div>
+                                <b>{{char.aggHistory.raid|number : '2.0-0'}}</b>
+                                <ng-container *ngIf="char.aggHistory.raidFastestMs!=null">
+                                  | {{char.aggHistory.raidFastestMs| amnsTiming:'ms'}}
+                                </ng-container>
+                              </div>
+                            </div>
+                            <div class="lifetime" *ngIf="mileStoneName.key==2345 && char.aggHistory!=null">
+                              <div>Lifetime</div>
+                              <div>
+                                <b>{{char.aggHistory.spire|number : '2.0-0'}}</b>
+                                <ng-container *ngIf="char.aggHistory.spireFastestMs!=null">
+                                  | {{char.aggHistory.spireFastestMs| amnsTiming:'ms'}}
+                                </ng-container>
+                              </div>
+                            </div>
+                            <div class="lifetime" *ngIf="mileStoneName.key==1236 && char.aggHistory!=null">
+                              <div>Lifetime</div>
+                              <div>
+                                <b>{{char.aggHistory.hmRaid|number : '2.0-0'}}</b>
+                                <ng-container *ngIf="char.aggHistory.hmRaidFastestMs!=null">
+                                  | {{char.aggHistory.hmRaidFastestMs| amnsTiming:'ms'}}
+                                </ng-container>
+                                <span class="trophy">
+                                  <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                                </span>
+                              </div>
+                            </div>
+
+
+                          </ng-container>
+                          <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                            N/A
+                          </ng-container>
+                        </span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                  <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
+                    <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
+                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
                     </td>
-                    <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
-                      <span class="check">
-                        <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
-
-                          <div>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-
-                              <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0':'1.0-0'}}</div>
-                            </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                              <i class="fa fa-square-o"></i>
-                              <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                            </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                              <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
-                              <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                            </ng-container>
-                          </div>
-                          <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
-                            <div>Lifetime</div>
-                            <div>
-                              <b>{{char.aggHistory.nf|number : '2.0-0'}}</b>
-                              <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
-                                | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
-                            </div>
-                            <div>
-                              <b>{{char.aggHistory.hmNf|number : '2.0-0'}}</b>
-                              <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
-                                | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
-                              <span class="trophy">
-                                <i class="trophy fa fa-trophy" aria-hidden="true"></i>
-                              </span>
-                            </div>
-                          </div>
-                          <div class="lifetime" *ngIf="char.milestones[mileStoneName.key].suppInfo!=null">
-                            {{char.milestones[mileStoneName.key].suppInfo}}
-                          </div>
-
-                          <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
-                            <div>Lifetime</div>
-                            <div>
-                              <b>{{char.aggHistory.eater|number : '2.0-0'}}</b>
-                              <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
-                                | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
-                              </ng-container>
-                            </div>
-                          </div>
-
-                          <div class="lifetime" *ngIf="mileStoneName.key==1235 && char.aggHistory!=null">
-                            <div>Lifetime</div>
-                            <div>
-                              <b>{{char.aggHistory.raid|number : '2.0-0'}}</b>
-                              <ng-container *ngIf="char.aggHistory.raidFastestMs!=null">
-                                | {{char.aggHistory.raidFastestMs| amnsTiming:'ms'}}
-                              </ng-container>
-                            </div>
-                          </div>
-                          <div class="lifetime" *ngIf="mileStoneName.key==1236 && char.aggHistory!=null">
-                            <div>Lifetime</div>
-                            <div>
-                              <b>{{char.aggHistory.hmRaid|number : '2.0-0'}}</b>
-                              <ng-container *ngIf="char.aggHistory.hmRaidFastestMs!=null">
-                                | {{char.aggHistory.hmRaidFastestMs| amnsTiming:'ms'}}
-                              </ng-container>
-                              <span class="trophy">
-                                <i class="trophy fa fa-trophy" aria-hidden="true"></i>
-                              </span>
-                            </div>
-                          </div>
-
-
-                        </ng-container>
-                        <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
-                          N/A
-                        </ng-container>
-                      </span>
-                    </td>
-                  </tr>
-                  <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null">
-                    <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones</td>
                     <td [attr.colspan]="player.characters.length">
 
                       <div class="clanMsRow">
@@ -272,7 +292,7 @@
                       <tr *ngFor="let faction of char.factions">
                         <td class="lead" data-label="">
 
-                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has 330LL engrams. See vendorengrams.xyz for more info!"
+                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!"
                             *ngIf="faction.xyz300">
                             <i class="warn-text fa fa-diamond fa-2x"></i>
                           </a>
@@ -369,7 +389,7 @@
 
           </mat-tab> -->
         </mat-tab-group>
-        * 330LL vendor info provided by
+        * Max LL vendor info provided by
         <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
         <br> * lt = lifetime
       </div>

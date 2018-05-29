@@ -223,10 +223,9 @@ export class ParseService {
                 }
                 //add meta
                 if (mileStoneDefs[key] == null) {
-                    //skip one off faction stuff x2 and CallToAction, meditations, daily free roam
-                    if (key == "364880304" || key == "1718587363" || key == "4109359897" || key == "3245985898" || key == "383198939")
+                    //skip one off faction stuff x2 and CallToAction, meditations, daily free roam, both broken heroic strikes, IB season 3
+                    if (key == "364880304" || key == "1718587363" || key == "4109359897" || key == "3245985898" || key == "383198939" || key =="3109354204" || key=="3109354207" || key=="4248276869")
                         return;
-
                     let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
                     if (desc != null) {
                         let type: string = ParseService.parseMilestoneType(desc.milestoneType);
@@ -530,52 +529,52 @@ export class ParseService {
                 let tDesc: any = this.destinyCacheService.cache.ActivityType[vDesc.activityTypeHash];
                 //raid
                 if (vDesc.activityTypeHash == 2043403989) {
-                    // Prestige (4)
+                    let desc: any = this.destinyCacheService.cache.Activity[act.activityHash];
+                    let name: string = null;
+                    let tier: number = null;
+                    if (desc) {
+                        name = desc.displayProperties.name;
+                        tier = desc.tier;
+                    }
+                    else{
+                        console.log("No entry found for activity hash: "+act.activityhash);
+                    }
+                    if (name==="Leviathan"){
+                        //nm
+                        if (tier<2){
+                            let c = ParseService.getBasicValue(act.values.activityCompletions);
+                            returnMe.raid+=c;
+                            let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                            if ((f>0) && (returnMe.raidFastestMs==null || returnMe.raidFastestMs>f)){
+                                returnMe.raidFastestMs = f;
+                            }
+                        }
+                        //hm
+                        else{
+                            let c = ParseService.getBasicValue(act.values.activityCompletions);
+                            returnMe.hmRaid+=c;
+                            let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                            if ((f>0) && (returnMe.hmRaidFastestMs==null || returnMe.hmRaidFastestMs>f)){
+                                returnMe.hmRaidFastestMs = f;
+                            }
+                        }
 
-                    // 2449714930 1
-                    // 417231112 2
-                    // 3879860661 1
-
-
-                    // NM (36)
-                    // 2693136600 6
-                    // 2693136601 9
-                    // 2693136602 10
-                    // 2693136603 7
-                    // 2693136604 4
-                    // 05 06?
-
-
-                    // Eater (8)
-                    // 3089205900 7
-
-                    //normal
-                    //if (vDesc.activityLevel == 27) {
-                    //eater
-                    if (act.activityHash==3089205900){
+                    }
+                    else if (name==="Leviathan, Eater of Worlds"){
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.eater+=c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f>0) && (returnMe.hmRaidFastestMs==null || returnMe.hmRaidFastestMs>f)){
+                        if ((f>0) && (returnMe.eaterFastestMs==null || returnMe.eaterFastestMs>f)){
                             returnMe.eaterFastestMs = f;
-                        }                    }
-                    else if (vDesc.challenges.length==6){
-                         let c = ParseService.getBasicValue(act.values.activityCompletions);
-                         returnMe.raid+=c;
-                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                         if ((f>0) && (returnMe.raidFastestMs==null || returnMe.raidFastestMs>f)){
-                             returnMe.raidFastestMs = f;
-                         }
+                        }              
                     }
-                    //hard = 30
-                    else {
-
+                    else if (name==="Leviathan, Spire of Stars"){
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.hmRaid+=c;
+                        returnMe.spire+=c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f>0) && (returnMe.hmRaidFastestMs==null || returnMe.hmRaidFastestMs>f)){
-                            returnMe.hmRaidFastestMs = f;
-                        }
+                        if ((f>0) && (returnMe.spireFastestMs==null || returnMe.spireFastestMs>f)){
+                            returnMe.spireFastestMs = f;
+                        }      
                     }
 
                 }
@@ -1311,6 +1310,138 @@ export class ParseService {
 
         });
         return returnMe;
+    }
+
+    public parseRaidHistory(msNames: MileStoneName[], c: Character, hist: Activity[]){
+        var totalRaid: number = 0;
+        var totalNormal: number = 0;
+        var totalPrestige: number = 0;
+        var totalEater: number = 0;
+        var totalSpire: number = 0;
+        hist.forEach(a => {
+            //ignore not completed
+            if (!a.completed) return;
+
+            let desc: any = this.destinyCacheService.cache.Activity[a.referenceId];
+            let name: string = null;
+            let tier: number = null;
+            if (desc) {
+                name = desc.displayProperties.name;
+                tier = desc.tier;
+            }
+            else{
+                console.log("No entry found for activity hash: "+a.referenceId);
+            }
+
+            
+            let d: Date = new Date(a.period);
+
+            if (name==="Leviathan"){
+                if (tier<2){
+                    totalNormal++;
+                    // if after reset?
+                    if (d.getTime() > c.startWeek.getTime()) {
+                        c.hasLevNm = true;
+                    }
+                }
+                else{
+                    totalPrestige++;
+                    // if after reset?
+                    if (d.getTime() > c.startWeek.getTime()) {
+                        c.hasLevHm = true;
+                    }
+                }
+            }
+            else if (name==="Leviathan, Eater of Worlds"){
+                totalEater++;
+                // if after reset?
+                if (d.getTime() > c.startWeek.getTime()) {
+                    c.hasEater = true;
+                }
+            }
+            else if (name==="Leviathan, Spire of Stars"){
+                totalSpire++;
+                // if after reset?
+                if (d.getTime() > c.startWeek.getTime()) {
+                    c.hasSpire = true;
+                }
+            }
+            totalRaid++;
+        });
+        c.lifetimeRaid = totalRaid;
+        c.lifetimeRaidNormal = totalNormal;
+        c.lifetimeRaidPrestige = totalPrestige;
+        c.lifetimeEater = totalEater;
+        c.lifetimeSpire = totalSpire;
+
+
+        const EATER_KEY = "1234";
+        const SPIRE_KEY = "2345";
+        const LEV_NM_KEY = "1235";
+        const LEV_HM_KEY = "1236";
+        //add psuedo milestone for eater
+        let foundEater = false;
+        let foundSpire = false;
+        let foundNm = false;
+        let foundHm = false;
+        for (const msName of msNames){
+            if (msName.key===EATER_KEY){
+                foundEater = true;
+            } 
+            else if (msName.key===SPIRE_KEY){
+                foundSpire = true;
+            } 
+            else if (msName.key===LEV_NM_KEY){
+                foundNm = true;
+            }
+            else if (msName.key===LEV_HM_KEY){
+                foundHm = true;
+            }
+        }
+        if (!foundEater){
+            msNames.push({
+                key: EATER_KEY,
+                type: "Weekly",
+                name: "Leviathan, Eater of Worlds",
+                desc: "Complete the Leviathan Raid Lair from CoO",
+                hasPartial: false
+            });
+        }
+        if (!foundSpire){
+            msNames.push({
+                key: SPIRE_KEY,
+                type: "Weekly",
+                name: "Leviathan, Spire of Stars",
+                desc: "Complete the Leviathan Raid Lair from Warmind",
+                hasPartial: false
+            });
+        }
+        if (!foundNm){
+            msNames.push({
+                key: LEV_NM_KEY,
+                type: "Weekly",
+                name: "Leviathan, Raid",
+                desc: "Normal mode raid",
+                hasPartial: false
+            });
+        }
+        if (!foundHm){
+            msNames.push({
+                key: LEV_HM_KEY,
+                type: "Weekly",
+                name: "Leviathan, Prestige",
+                desc: "Prestige mode raid",
+                hasPartial: false
+            });
+        }
+        const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
+        c.milestones[EATER_KEY] = eaterPsuedoMs;
+        const spirePsuedoMs: MilestoneStatus = new MilestoneStatus(SPIRE_KEY, c.hasSpire, c.hasSpire ? 1 : 0, null);
+        c.milestones[SPIRE_KEY] = spirePsuedoMs;
+        const levNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_NM_KEY, c.hasLevNm, c.hasLevNm ? 1 : 0, null);
+        c.milestones[LEV_NM_KEY] = levNmPsuedoMs;
+        const levHmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_HM_KEY, c.hasLevHm, c.hasLevHm ? 1 : 0, null);
+        c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
     }
 }
 
