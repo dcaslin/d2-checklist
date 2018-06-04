@@ -313,24 +313,43 @@ export class BungieService implements OnDestroy {
     public getActivityModes(): ActivityMode[] {
         return [
             new ActivityMode(0, "All", "All"), //None
-            new ActivityMode(2, "Story", "Story"),
-            new ActivityMode(3, "Strike", "Strike"),
             new ActivityMode(4, "Raid", "Raid"),
-            new ActivityMode(5, "AllPvP", "All PvP"),
-            new ActivityMode(6, "Patrol", "Patrol"),
-            new ActivityMode(7, "AllPvE", "All PvE"),
-            new ActivityMode(10, "Control", "Control"),
-            new ActivityMode(12, "Clash", "Clash"),
-            new ActivityMode(16, "Nightfall", "Nightfall"),
-            new ActivityMode(17, "Heroic Nightfall", "Heroic Nightfall"),
             new ActivityMode(18, "All Strikes", "All Strikes"),
+            
+            new ActivityMode(46, "Scored Nightfall", "Scored Nightfall"),
+            new ActivityMode(47, "Scored Heroic Nightfall", "Scored Heroic Nightfall"),
+
+            new ActivityMode(5, "AllPvP", "All PvP"),
+            new ActivityMode(7, "AllPvE", "All PvE"),
+
+            new ActivityMode(32, "Private Matches", "Private Matches"),
+
+            
             new ActivityMode(19, "Iron Banner", "Iron Banner"),
+            new ActivityMode(39, "Trials", "Trials"),
+            new ActivityMode(15, "Crimson Doubles", "Crimson Doubles"),
+
+            new ActivityMode(10, "Control", "Control"),
+            new ActivityMode(43, "Iron Banner Control", "Iron Banner Control"),
+            new ActivityMode(12, "Clash", "Clash"),
+            new ActivityMode(44, "Iron Banner Clash", "Iron Banner Clash"),
             new ActivityMode(31, "Supremacy", "Supremacy"),
+            new ActivityMode(45, "Iron Banner Supremacy", "Iron Banner Supremacy"),
+            new ActivityMode(25, "All Mayhem", "All Mayhem"),
+
+            new ActivityMode(6, "Patrol", "Patrol"),
+            new ActivityMode(2, "Story", "Story"),
+            
+            new ActivityMode(16, "Nightfall (old)", "Nightfall (old)"),
+            new ActivityMode(17, "Heroic Nightfall (old)", "Heroic Nightfall (old)"),
+            new ActivityMode(3, "Strike", "Strike"),
+
             new ActivityMode(37, "Survival", "Survival"),
             new ActivityMode(38, "Countdown", "Countdown"),
-            new ActivityMode(38, "Trials", "Trials"),
             new ActivityMode(40, "Social", "Social"),
-            new ActivityMode(43, "Iron Banner", "Iron Banner"),
+            new ActivityMode(48, "Rumble", "Rumble"),
+            new ActivityMode(49, "All Doubles", "All Doubles"),
+            new ActivityMode(50, "Doubles", "Doubles")
         ];
     }
 
