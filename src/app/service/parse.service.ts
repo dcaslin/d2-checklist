@@ -1247,7 +1247,7 @@ export class ParseService {
         if (mode == 11) return "Reserved11";
         if (mode == 12) return "Clash";
         if (mode == 13) return "Reserved13";
-        if (mode == 15) return "Reserved15";
+        if (mode == 15) return "Crimson Doubles";
         if (mode == 16) return "Nightfall";
         if (mode == 17) return "Heroic Nightfall";
         if (mode == 18) return "All Strikes";
@@ -1256,19 +1256,35 @@ export class ParseService {
         if (mode == 21) return "Reserved21";
         if (mode == 22) return "Reserved22";
         if (mode == 24) return "Reserved24";
-        if (mode == 25) return "Reserved25";
+        if (mode == 25) return "All Mayhem";
         if (mode == 26) return "Reserved26";
         if (mode == 27) return "Reserved27";
         if (mode == 28) return "Reserved28";
         if (mode == 29) return "Reserved29";
         if (mode == 30) return "Reserved30";
         if (mode == 31) return "Supremacy";
-        if (mode == 32) return "Reserved32";
+        if (mode == 32) return "Private Matches All";
         if (mode == 37) return "Survival";
         if (mode == 38) return "Countdown";
         if (mode == 39) return "Trials";
         if (mode == 40) return "Social";
-        if (mode == 43) return "Iron Banner";
+        if (mode == 43) return "Iron Banner Control";
+        if (mode == 44) return "Iron Banner Clash";
+        if (mode == 45) return "Iron Banner Supremacy";
+        if (mode == 46) return "Nightfall (Scored)";
+        if (mode == 47) return "Heroic NightFall (Scored)";
+        if (mode == 48) return "Rumble";
+        if (mode == 49) return "All Doubles";
+        if (mode == 50) return "Doubles";
+        if (mode == 51) return "Clash (Private)";
+        if (mode == 52) return "Control (Private)";
+        if (mode == 53) return "Supremacy (Private)";
+        if (mode == 54) return "Countdown (Private)";
+        if (mode == 55) return "Survival (Private)";
+        if (mode == 56) return "Mayhem (Private)";
+        if (mode == 57) return "Rumble (Private)";
+        if (mode == 58) return "Heroic Adventure";
+        if (mode == 59) return "Showdown";
         return "Unknown" + mode;
     }
 
