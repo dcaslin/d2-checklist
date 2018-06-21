@@ -191,6 +191,27 @@
                 </ng-container>
               </tr>
             </tbody>
+            <tfoot>
+              <tr>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
+                    <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
+                    <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
+                    <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
+                    <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
+                  </a>
+                </th>
+                <ng-container *ngIf="modelPlayer!=null">
+                  <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
+
+                  </th>
+                </ng-container>
+              </tr>
+            </tfoot>
           </table>
           <p>Note: The Bungie API will sometimes incorrectly report milestones as complete (or partially complete). If you're a clan leader trying to see when someone last played, trust the "Last Played" column even if some weekly milestones appear to be completed.</p>
         </ng-container>
