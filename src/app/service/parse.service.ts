@@ -576,11 +576,10 @@ export class ParseService {
                             returnMe.spireFastestMs = f;
                         }      
                     }
-
                 }
                 else if (vDesc.activityTypeHash == 575572995) {
-                    //heroic nightfall
-                    if (vDesc.directActivityModeHash ==  1350109474){
+                    //heroic nightfall - scored
+                    if (vDesc.directActivityModeHash ==  532484583){
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.hmNf+=c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
@@ -588,8 +587,8 @@ export class ParseService {
                             returnMe.hmNfFastestMs = f;
                         }
                     }
-                    //anything else that's a nightfall
-                    else{
+                    //anything else that's a scored nightfall
+                    else if (vDesc.directActivityModeHash ==  547513715){
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.nf+=c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
@@ -1459,7 +1458,55 @@ export class ParseService {
         const levHmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_HM_KEY, c.hasLevHm, c.hasLevHm ? 1 : 0, null);
         c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
     }
+
+    public parsePrestigeNfHistory(msNames: MileStoneName[], c: Character, hist: Activity[]){
+        
+        hist.forEach(a => {
+            //ignore not completed
+            if (!a.completed) return;
+
+            let desc: any = this.destinyCacheService.cache.Activity[a.referenceId];
+            let name: string = null;
+            let tier: number = null;
+            if (desc) {
+                name = desc.displayProperties.name;
+                tier = desc.tier;
+            }
+            else{
+                console.log("No entry found for activity hash: "+a.referenceId);
+            }            
+            let d: Date = new Date(a.period);
+            if (d.getTime() > c.startWeek.getTime()) {
+                c.hasPrestigeNf = true;
+            }
+        });
+        const NF_HM_KEY = "1237";
+        //add psuedo milestone for eater
+        let foundNfHmKey = false;
+       
+        for (const msName of msNames){
+            if (msName.key===NF_HM_KEY){
+                foundNfHmKey = true;
+            } 
+        }
+        if (!foundNfHmKey){
+            msNames.unshift({
+                key: NF_HM_KEY,
+                type: "Weekly",
+                name: "Prestige Nightfall",
+                desc: "Complete the Prestige Nightfall",
+                hasPartial: false
+            });
+        }
+        
+        const prestigeNfPsuedoMs: MilestoneStatus = new MilestoneStatus(NF_HM_KEY, c.hasPrestigeNf, c.hasPrestigeNf ? 1 : 0, null);
+        c.milestones[NF_HM_KEY] = prestigeNfPsuedoMs;
+
+    }
 }
+
+
+
 
 interface _Character {
     membershipId: string;
