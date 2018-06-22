@@ -236,6 +236,7 @@ export class Character {
     hasSpire: boolean = false;
     hasLevNm: boolean = false;
     hasLevHm: boolean = false;
+    hasPrestigeNf: boolean = false;
     aggHistory: AggHistory;
 
 }
@@ -253,14 +254,15 @@ export class AggHistory{
     nf: number=0;
     nfFastestMs: number;
 
+    hmNf: number=0;
+    hmNfFastestMs: number;
+
     eater: number=0;
     eaterFastestMs: number;
     
     spire: number=0;
     spireFastestMs: number;
     
-    hmNf: number=0;
-    hmNfFastestMs: number;
 
     raid: number=0;
     raidFastestMs: number;

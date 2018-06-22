@@ -159,6 +159,18 @@ export class BungieService implements OnDestroy {
 
     }
 
+    public updateNfHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
+        const self: BungieService = this;
+        let promises: Promise<void>[] = [];
+        chars.forEach(c => {
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 47, 99).then((hist: Activity[]) => {
+                self.parseService.parsePrestigeNfHistory(msNames, c, hist);
+            });
+            promises.push(p);
+        });
+        return Promise.all(promises);
+    }
+
 
     // Aggregate clan info: 
     // https://www.bungie.net/Platform//Destiny2/Stats/AggregateClanStats/1985678
