@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
   signedOnUser: SelectedUser = null;
 
   constructor(
-    private authGuard: AuthGuard,
+    public authGuard: AuthGuard,
     private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
     public bungieService: BungieService,
