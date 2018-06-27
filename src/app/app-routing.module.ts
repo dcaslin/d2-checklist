@@ -19,7 +19,7 @@ import { Subject } from 'rxjs';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private loader$ = new Subject<boolean>();
+  public loader$ = new Subject<boolean>();
 
   constructor(private destinyCacheService: DestinyCacheService) {
   }
