@@ -136,6 +136,11 @@
         </mat-card>
 
       <router-outlet #o="outlet"></router-outlet>
+      <div *ngIf="(authGuard.loader$ | async)">
+        <br>
+        <mat-spinner  class="loading" class="center-spinner"></mat-spinner>
+      </div>
+      
       <div class="push"></div>
 
 
@@ -144,15 +149,15 @@
     <div class="footer">
       <div class="row">
         <div class="col-sm-12 links">
-          <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank">
+          <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">
             <i class="fa fa-reddit fa-2x" aria-hidden="true"></i>
             <span>Reddit</span>
           </a>
-          <a href="https://bitbucket.org/dcaslin/d2-checklist/" target="_blank">
+          <a href="https://bitbucket.org/dcaslin/d2-checklist/" target="_blank" rel="noopener">
             <i class="fa fa-bitbucket fa-2x" aria-hidden="true"></i>
             <span>Source</span>
           </a>
-          <a href="https://twitter.com/DestinyChecklst" target="_blank">
+          <a href="https://twitter.com/DestinyChecklst" target="_blank" rel="noopener">
             <i class="fa fa-twitter fa-2x" aria-hidden="true"></i>
             <span>Twitter</span>
           </a>
@@ -161,7 +166,7 @@
             <i class="fa fa-envelope fa-2x" aria-hidden="true"></i>
             <span>Email</span>
           </a>
-          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank">
+          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank" rel="noopener">
             <i class="fa fa-paypal fa-2x" aria-hidden="true"></i>
             <span>Donate</span>
           </a>

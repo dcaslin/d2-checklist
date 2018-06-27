@@ -59,10 +59,6 @@ export class ClanLeaderboardComponent extends ChildComponent implements OnInit, 
     });
   }
 
-  public loadPlayer(entry: LeaderboardEntry){
-    this.router.navigate([entry.destinyUserInfo.membershipType, entry.destinyUserInfo.displayName]);
-  }
-
   private sub: any;
   ngOnInit() {
     this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {

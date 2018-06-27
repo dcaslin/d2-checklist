@@ -22,13 +22,7 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
   }
-
-  private loadPlayer(platform, gt){
-
-    this.router.navigate([platform, gt]);
-    //this.router.navigate
-  }
-
+  
   private load() {
     this.loading = true;
     this.bungieService.getPGCR(this.instanceId).then((res) => {

@@ -46,11 +46,6 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
     this.router.navigate(['/pgcr', instanceId]);
   }
 
-
-  private loadPlayer(platform, gt) {
-    this.router.navigate([platform, gt]);
-  }
-
   getData() {
     return this.http.get(this.getAssetPath()).map((res: Response) => {
       this.database.setData(res.json());

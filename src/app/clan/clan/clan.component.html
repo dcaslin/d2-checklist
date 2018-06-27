@@ -144,7 +144,7 @@
             <tbody>
               <tr *ngFor="let member of sortedMembers">
                 <td class="lead">
-                  <a href="javascript:void(0)" (click)="router.navigate([member.destinyUserInfo.membershipType, member.player.profile.userInfo.displayName])">
+                  <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.player!=null?member.player.profile.userInfo.displayName:'']">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">

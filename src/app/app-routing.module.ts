@@ -12,88 +12,117 @@ import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
 import { ClanLeaderboardComponent } from './clanleaderboard';
 import { LeviathanComponent, LeviathanPrestigeComponent } from './leaderboard';
+import { Injectable } from '@angular/core';
+import { CanActivate } from '@angular/router';
+import { DestinyCacheService} from './service/destiny-cache.service';
+import { Subject } from 'rxjs';
 
-const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
-  }
-  , {
-    path: 'home',
-    component: HomeComponent
-  },
-  {
-    path: 'auth',
-    component: AuthComponent
-  },
+@Injectable()
+export class AuthGuard implements CanActivate {
+  private loader$ = new Subject<boolean>();
 
-  {
-    path: 'settings',
-    component: SettingsComponent
-  }, {
-    path: 'about',
-    component: AboutComponent
-  }, {
-    path: 'search',
-    component: BungieSearchComponent
+  constructor(private destinyCacheService: DestinyCacheService) {
   }
-  , {
-    path: 'search/:name',
-    component: BungieSearchComponent
+
+  canActivate(): Promise<boolean> {
+    this.loader$.next(true);
+    // return Promise.resolve(false);
+    return this.destinyCacheService.init().then(val => {
+      this.loader$.next(false);
+      return val;
+    });
   }
-  , {
-    path: 'clan/:id',
-    component: ClanComponent
-  },
-  {
-    path: 'clan/:id/leaderboard',
-    component: ClanLeaderboardComponent
-  },
-  {
-    path: 'leaderboard/leviathan',
-    component: LeviathanComponent
-  },
-  {
-    path: 'leaderboard/leviathan/:name',
-    component: LeviathanComponent
-  },
-  {
-    path: 'leaderboard/leviathan-prestige',
-    component: LeviathanPrestigeComponent
-  },
-  {
-    path: 'leaderboard/leviathan-prestige/:name',
-    component: LeviathanPrestigeComponent
-  },
-  {
-    path: 'leaderboard',
-    redirectTo: 'leaderboard/leviathan-prestige'
-  },
-  {
-    path: 'pgcr/:instanceId',
-    component: PGCRComponent
-  },
-  {
-    path: ':platform/:gt',
-    redirectTo: ':platform/:gt/checklist'
-  },
-  {
-    path: ':platform/:gt/:tab',
-    component: PlayerComponent
-  },
-  {
-    path: 'history/:platform/:memberId/:characterId',
-    component: HistoryComponent
-  }
-  , {
-    path: '**',
-    redirectTo: 'home'
-  }
-];
+}
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(
+    [{
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full'
+      }
+      , {
+        path: 'home',
+        canActivate: [AuthGuard],
+        component: HomeComponent
+      },
+      {
+        path: 'auth',
+        component: AuthComponent
+      },
+
+      {
+        path: 'settings',
+        component: SettingsComponent
+      }, {
+        path: 'about',
+        component: AboutComponent
+      }, {
+        path: 'search',
+        canActivate: [AuthGuard],
+        component: BungieSearchComponent
+      }
+      , {
+        path: 'search/:name',
+        canActivate: [AuthGuard],
+        component: BungieSearchComponent
+      }
+      , {
+        path: 'clan/:id',
+        canActivate: [AuthGuard],
+        component: ClanComponent
+      },
+      {
+        path: 'clan/:id/leaderboard',
+        canActivate: [AuthGuard],
+        component: ClanLeaderboardComponent
+      },
+      {
+        path: 'leaderboard/leviathan',
+        component: LeviathanComponent
+      },
+      {
+        path: 'leaderboard/leviathan/:name',
+        component: LeviathanComponent
+      },
+      {
+        path: 'leaderboard/leviathan-prestige',
+        component: LeviathanPrestigeComponent
+      },
+      {
+        path: 'leaderboard/leviathan-prestige/:name',
+        component: LeviathanPrestigeComponent
+      },
+      {
+        path: 'leaderboard',
+        redirectTo: 'leaderboard/leviathan-prestige'
+      },
+      {
+        path: 'pgcr/:instanceId',
+        canActivate: [AuthGuard],
+        component: PGCRComponent
+      },
+      {
+        path: ':platform/:gt',
+        canActivate: [AuthGuard],
+        redirectTo: ':platform/:gt/checklist'
+      },
+      {
+        path: ':platform/:gt/:tab',
+        canActivate: [AuthGuard],
+        component: PlayerComponent
+      },
+      {
+        path: 'history/:platform/:memberId/:characterId',
+        canActivate: [AuthGuard],
+        component: HistoryComponent
+      }
+      , {
+        path: '**',
+        redirectTo: 'home'
+      }
+    ], { useHash: false })],
+  exports: [RouterModule],
+  providers: [AuthGuard]
 })
 export class AppRoutingModule { }

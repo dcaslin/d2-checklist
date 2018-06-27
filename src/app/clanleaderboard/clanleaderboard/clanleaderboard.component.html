@@ -41,7 +41,7 @@
                     <td>{{entry.rank}}</td>
                     <td>{{entry.value}}</td>
                     <td>
-                      <a href="javascript:void(0)" (click)="loadPlayer(entry)">{{entry.destinyUserInfo.displayName}} - {{entry.characterClass}}</a>
+                      <a [routerLink]="['/'+entry.destinyUserInfo.membershipType, entry.destinyUserInfo.displayName]">{{entry.destinyUserInfo.displayName}} - {{entry.characterClass}}</a>
                     </td>
                   </tr>
                 </tbody>

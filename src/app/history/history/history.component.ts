@@ -60,15 +60,6 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
     this.router.navigate(['/pgcr', instanceId]);
   }
 
-  selectChar(c: Character){
-    this.router.navigate(['history',this.membershipType, this.membershipId, c.characterId]);
-  }
-
-  profile() {
-    this.router.navigate([this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]);
-  }
-
-
   private sub: any;
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);

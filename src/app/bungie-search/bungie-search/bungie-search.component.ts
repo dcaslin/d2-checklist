@@ -53,8 +53,8 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
       }
       else{
         member.clans = x;
-        if (x.length==1)
-          this.router.navigate(["clan", x[0].id]);
+        // if (x.length==1)
+        //   this.router.navigate(["clan", x[0].id]);
       }
     });
   }

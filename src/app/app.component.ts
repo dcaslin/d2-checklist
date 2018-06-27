@@ -15,6 +15,7 @@ import { SelectedUser, ClanRow } from './service/model';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { ChildComponent } from './shared/child.component';
+import { AuthGuard } from '@app/app-routing.module';
 
 @Component({
   selector: 'anms-root',
@@ -49,7 +50,9 @@ export class AppComponent implements OnInit, OnDestroy {
   loggingOn = true;
   signedOnUser: SelectedUser = null;
 
-  constructor(private notificationService: NotificationService, private storageService: StorageService,
+  constructor(
+    private authGuard: AuthGuard,
+    private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
     public bungieService: BungieService,
     private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
@@ -144,13 +147,13 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       );
-    this.destinyCacheService.init().then(() => {
-      //this.notificationService.info("Cache loaded");
-    })
-      .catch((err) => {
-        console.dir(err);
-        this.notificationService.fail("Failed to load destiny manifest.");
-      });
+    // this.destinyCacheService.init().then(() => {
+    //   this.notificationService.info("Cache loaded");
+    // })
+      // .catch((err) => {
+      //   console.dir(err);
+      //   this.notificationService.fail("Failed to load destiny manifest.");
+      // });
   }
 
   ngOnDestroy(): void {
