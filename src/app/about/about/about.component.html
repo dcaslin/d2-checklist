@@ -4,32 +4,37 @@
 
       <h1>Destiny 2 Checklist</h1>
       <div class="actions">
-        <a mat-raised-button color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
+        <a mat-raised-button color="accent" [ngClass]="animateOnRouteEnter" rel="noopener" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
           <i class="fa fa-paypal"></i> Donate
         </a>
-        <a mat-raised-button [ngClass]="animateOnRouteEnter" href="https://www.reddit.com/r/destinychecklistnet">
+        <a mat-raised-button [ngClass]="animateOnRouteEnter" rel="noopener" href="https://www.reddit.com/r/destinychecklistnet">
           <i class="fa fa-reddit"></i> /r/destinychecklistnet
         </a>
-        <a mat-raised-button [ngClass]="animateOnRouteEnter" target="_blank" href="https://bitbucket.org/dcaslin/d2-checklist/">
+        <a mat-raised-button [ngClass]="animateOnRouteEnter" target="_blank" rel="noopener" href="https://bitbucket.org/dcaslin/d2-checklist/">
           <i class="fa fa-bitbucket"></i> Source Code
         </a>
       </div>
       <div class="get-started" [ngClass]="animateOnRouteEnter">
 
         <section class="mat-body-2">
-          Hello! I'll add functionality out to this as I can in the coming days weeks. I aim to serve the same needs that helped folks
-          with Destiny 1 at <a href="https://www.destinychecklist.net">DestinyChecklist.net</a>. Main goals to
-          start will be:
-          <br><br>
+          I aim to serve the same needs that helped folks
+          with Destiny 1 at <a href="https://www.destinychecklist.net">DestinyChecklist.net</a>. Main goals are:
           <ul>
-            <li>Checking on your and your friend's progress, rewards and completions</li>
+            <li>Checking on you and your friend's progress, rewards and completions</li>
             <li>Supporting clan tracking and rewards</li>
             <li>Helping you progress in PvE </li>
           </ul>
         </section>
         <section class="mat-body-2">
-          <p>Still getting stuff put together around here. You can see my <a href="https://www.destinychecklist.net/about" target="_blank">about page on DestinyChecklist.net</a>            (my D1 hobby site) for most of the important info.</p>
-          <!--<p>The main way I pay server bills for this site is with ads. But... I've added a feature to let you disable ads from the settings page on the site, so feel free to do so!</p>-->
+          <p>I've been lazy putting this page together, if you want more info you can also
+             see my <a href="https://www.destinychecklist.net/about" target="_blank">about page on DestinyChecklist.net</a> (my D1 hobby site) for most of the important info. 
+            This site is <a href="https://bitbucket.org/dcaslin/d2-checklist/" target="_blank">open sourced on Bitbucket</a>, 
+            and actively supported via 
+            <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">Reddit</a> and 
+            <a href="https://twitter.com/DestinyChecklst" target="_blank" rel="noopener">Twitter</a>.
+          </p>
+          <p>
+            PS: If you don't like ads (or want a dark theme) just pop over to the <a routerLink="/settings">settings page</a> and disable them. The site will remember your settings in the future.          </p>
         </section>
 
       </div>

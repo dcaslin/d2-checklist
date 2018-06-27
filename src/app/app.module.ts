@@ -30,7 +30,7 @@ import { PGCRModule } from './pgcr';
 import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, AuthGuard } from './app-routing.module';
 import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent } from './app.component';
 
 @NgModule({

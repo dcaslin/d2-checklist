@@ -34,6 +34,7 @@ import { MomentModule } from 'angular2-moment';
 import {
   CdkTableModule
 } from '@angular/cdk/table/';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
@@ -73,6 +74,7 @@ import {
   declarations: [
   ],
   exports: [
+    RouterModule,
     PipeModule,
     
     CommonModule,

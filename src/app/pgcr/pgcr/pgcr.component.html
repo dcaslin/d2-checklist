@@ -32,8 +32,7 @@
               <mat-card-title>
 
                 <b>
-                  <a href="javascript:void(0)" (click)="loadPlayer(entry.user.membershipType, entry.user.displayName)" 
-                    color="accent">{{entry.user.displayName}}
+                  <a [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]" color="accent">{{entry.user.displayName}}
                   </a>
                 </b>
                 {{entry.characterClass}} {{entry.lightLevel}}

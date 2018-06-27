@@ -6,10 +6,12 @@
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <h2 class="centerMe">Activity History - 
-          <a href="javascript:void(0)" (click)="profile()" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
+          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
-          <button mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'" (click)="selectChar(c)">{{c.className}} - {{c.light}}</button>
+          <a mat-raised-button *ngFor="let c of player.characters" 
+            [color]="c.characterId==characterId?'accent':'default'" 
+            [routerLink]="['/history',this.membershipType, this.membershipId, c.characterId]">{{c.className}} - {{c.light}}</a>
         </div>
         <br/>
         <div class="centerMe">
@@ -40,7 +42,7 @@
             <ng-container cdkColumnDef="period">
               <mat-header-cell *cdkHeaderCellDef mat-sort-header>Date</mat-header-cell>
               <mat-cell *cdkCellDef="let row">
-                <a href="javascript:void(0)" color="primary" (click)="pgcr(row.instanceId)">
+                <a color="primary" [routerLink]="['/pgcr', row.instanceId]">
                   {{row.period|date:'short'}}
                 </a>
               </mat-cell>

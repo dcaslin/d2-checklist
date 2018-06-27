@@ -11,6 +11,7 @@ import { ParseService } from './parse.service';
 import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus } from './model';
 
 import { environment } from '../../environments/environment';
+import { DestinyCacheService } from '@app/service/destiny-cache.service';
 
 const API_ROOT: string = "https://www.bungie.net/Platform/";
 
@@ -28,6 +29,7 @@ export class BungieService implements OnDestroy {
 
     constructor(private http: Http,
         private notificationService: NotificationService,
+        private destinyCacheService: DestinyCacheService,
         private authService: AuthService,
         private parseService: ParseService) {
 
@@ -70,8 +72,11 @@ export class BungieService implements OnDestroy {
                     //after the fact search for clan
                     this.setClans(membership);
                     //after the fact currency check
-                    if (this.selectedUser.selectedUser != null)
-                        this.setCurrencies();
+                    if (this.selectedUser.selectedUser != null){
+                        this.destinyCacheService.init().then(val => {
+                            this.setCurrencies();
+                        });
+                    }
                 });
             }
             else {

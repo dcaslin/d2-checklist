@@ -12,8 +12,12 @@ export class DestinyCacheService {
   constructor() {
   }
 
-  init(): Promise<any> {
+  init(): Promise<boolean> {
     let self: DestinyCacheService = this;
+    if (self.cache!=null) {
+      console.log("Cache already loaded");
+      return Promise.resolve(true);
+    }
     return new Promise(function (resolve, reject) {
       JSZipUtils.getBinaryContent("/assets/destiny2.zip?v="+env.versions.app, function (err, data) {
         if (err) {
@@ -24,7 +28,8 @@ export class DestinyCacheService {
         zip.loadAsync(data).then(function (zip) {
           zip.file("destiny2.json").async("string").then(function (data) {
               self.cache = JSON.parse(data);
-              resolve();
+              console.log("Init cache load");
+              resolve(true);
               return;
             },
             function (err) {
