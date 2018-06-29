@@ -380,6 +380,42 @@
                   </div>
 
                 </mat-expansion-panel>
+                <mat-expansion-panel *ngFor="let checklist of player.charChecklists">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{checklist.name}}
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        <span *ngFor="let t of checklist.totals">{{t.char.className}} {{t.complete}}/{{t.total}}&emsp;</span>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="checklist-body">
+                      <div class="hide-complete"> <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide All Completed</mat-checkbox> </div>
+                      <table class="checklist-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 200px">Name</th>
+                            <th style="width: 50px">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let check of checklist.entries">
+                              <tr  *ngIf="!hideCompleteChecklist || !check.allDone">
+                                  <td>{{check.name}}</td>
+                                  <td>
+                                    <ng-container *ngFor="let c of check.checked">
+                                      <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                      <i *ngIf="!c.checked" class="fa fa-square-o"></i>
+                                    </ng-container>
+                                  </td>
+                                  
+                                </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+  
+                  </mat-expansion-panel>
               </mat-accordion>
             </ng-container>
 
