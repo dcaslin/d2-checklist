@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem
 } from './model';
 @Injectable()
 export class ParseService {
@@ -654,26 +654,13 @@ export class ParseService {
         return returnMe;
     }
 
-    public parsePlayer(resp: any): Player {
-        if (resp.profile != null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
-        if (resp.characters != null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
-
-        let profile: Profile;
-        if (resp.profile != null)
-            profile = resp.profile.data;
-
-        let superprivate = false;
-
-        let charsDict: { [key: string]: Character } = {};
-        let milestoneList: MileStoneName[] = [];
-        let currentActivity: CurrentActivity = null;
-        let chars: Character[] = [];
-        let hasWellRested = false;
+    private parseProfileChecklists(resp: any): Checklist[]{
         const checklists: Checklist[] = [];
 
         if (resp.profileProgression != null && resp.profileProgression.data != null && resp.profileProgression.data.checklists != null){
             const oChecklists: any = resp.profileProgression.data.checklists;
             Object.keys(oChecklists).forEach((key) => {
+                //skip raid lair
                 if (key === "110198094") return;
                 const vals: any = oChecklists[key];
                 const desc: any = this.destinyCacheService.cache.Checklist[key];
@@ -705,8 +692,6 @@ export class ParseService {
                         name = name.substring(0,3)+" "+desc;
                         desc = null;
                     }
-                    // if (desc!=null && desc.length>100)
-                    //     desc = desc.replace(/^(.{100}[^\s]*).*/, "$1"); 
 
                     if (!hasDescs && desc!=null){
                         hasDescs = true;
@@ -732,6 +717,105 @@ export class ParseService {
                 checklists.push(checklist);
             });
         }
+        return checklists;
+    }
+
+    private parseCharChecklists(resp: any, chars: Character[]): CharChecklist[]{
+        const checklists: CharChecklist[] = [];
+        if (resp.characterProgressions && resp.characterProgressions.data ){
+
+            for (let char of chars){
+                let charProgs = resp.characterProgressions.data[char.characterId];
+                if (charProgs){
+                    const oChecklists: any = charProgs.checklists;
+                    Object.keys(oChecklists).forEach((key) => {
+                        const vals: any = oChecklists[key];
+                        const desc: any = this.destinyCacheService.cache.Checklist[key];
+
+                        let checklist: CharChecklist = null;
+                        for (let c of checklists){
+                            if (c.hash == key){
+                                checklist = c;
+                            }
+                        }
+                        if (checklist==null){
+                            checklist = {
+                                hash: key,
+                                name: desc.displayProperties.name,
+                                totals: [],
+                                entries: []
+                            }
+                            checklists.push(checklist);
+                        }
+
+                        let cntr=0, cntChecked=0;
+                        for (let entry of desc.entries){
+                            cntr++;
+                            const hash = entry.hash;
+                            
+                            let checklistItem: CharChecklistItem = null;
+                            for (let cl of checklist.entries){
+                                if (cl.hash == hash){
+                                    checklistItem = cl;
+                                }
+                            }
+                            if (checklistItem == null){
+                                let name = entry.displayProperties.name;
+                               
+                                checklistItem = {
+                                    hash: hash,
+                                    name: name,
+                                    allDone: false,
+                                    checked: []
+                                };
+                                checklist.entries.push(checklistItem);
+                            }
+
+                            const checked = vals[entry.hash];
+                            checklistItem.checked.push({
+                                char: char, 
+                                checked: checked
+                            });
+
+                            checklistItem.allDone = true;
+                            for (let c of checklistItem.checked){
+                                if (!c.checked){
+                                    checklistItem.allDone = false;
+                                }
+                            }
+                            if (checked){
+                                cntChecked++;
+                            }
+                        }
+                        
+                        const charTotal = {
+                            char: char,
+                            complete: cntChecked,
+                            total: cntr
+                        }
+                        checklist.totals.push(charTotal);            
+                    });
+                }
+            }
+        }
+        return checklists;
+    }
+
+    public parsePlayer(resp: any): Player {
+        if (resp.profile != null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
+        if (resp.characters != null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
+
+        let profile: Profile;
+        if (resp.profile != null)
+            profile = resp.profile.data;
+
+        let superprivate = false;
+
+        let charsDict: { [key: string]: Character } = {};
+        let milestoneList: MileStoneName[] = [];
+        let currentActivity: CurrentActivity = null;
+        let chars: Character[] = [];
+        let hasWellRested = false;
 
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
@@ -789,6 +873,9 @@ export class ParseService {
 
             });
         }
+
+        const checklists: Checklist[] = this.parseProfileChecklists(resp);
+        const charChecklists: CharChecklist[] = this.parseCharChecklists(resp, chars);
 
         let currencies: Currency[] = [];
         if (resp.profileCurrencies != null) {
@@ -865,7 +952,7 @@ export class ParseService {
                 });
             }
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate, hasWellRested, checklists);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate, hasWellRested, checklists, charChecklists);
     }
 
     private static getTokensHeld(f: Progression, gear: InventoryItem[]): number {

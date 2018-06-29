@@ -109,6 +109,31 @@ export interface Checklist {
     hasDescs: boolean;
 }
 
+export interface CharCheck {
+    char: Character;
+    checked: boolean;
+}
+
+export interface CharChecklistItem{
+    hash: string;
+    name: string;
+    allDone: boolean;
+    checked: CharCheck[];
+}
+
+export interface CharTotal{
+    char: Character;
+    complete: number;
+    total: number;
+}
+
+export interface CharChecklist {
+    hash: string;
+    name: string;
+    totals: CharTotal[];
+    entries: CharChecklistItem[];
+}
+
 export class Player {
     profile: Profile;
     superprivate: boolean;
@@ -119,9 +144,10 @@ export class Player {
     currencies: Currency[];
     gear: InventoryItem[];
     rankups: Rankup[];
-    checklists: any[];
+    checklists: Checklist[];
+    charChecklists: CharChecklist[];
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -132,6 +158,7 @@ export class Player {
         this.superprivate = superprivate;
         this.hasWellRested = hasWellRested;
         this.checklists = checklists;
+        this.charChecklists = charChecklists;
     }
 }
 
