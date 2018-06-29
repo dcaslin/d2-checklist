@@ -1,8 +1,5 @@
 import { Component} from '@angular/core';
 import { LeaderboardComponent } from './leaderboard.component';
-import { StorageService } from '../../service/storage.service';
-import { Http, Response } from '@angular/http';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'anms-leviathan-prestige',

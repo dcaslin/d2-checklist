@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import {RouterModule, RouteReuseStrategy} from '@angular/router';
 import {StickyReuseStrategy} from './sticky-reuse-strategy';
@@ -38,7 +38,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     // angular
     BrowserAnimationsModule,
     BrowserModule,
-    HttpModule,
+    HttpClientModule,
 
     SharedModule,
 

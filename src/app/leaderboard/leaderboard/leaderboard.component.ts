@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
@@ -29,7 +29,7 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
 
   displayedColumns = ['rank', 'fireteam', 'end', 'durationMs',];
 
-  constructor(storageService: StorageService, private http: Http, private router: Router, private route: ActivatedRoute) {
+  constructor(storageService: StorageService, private httpClient: HttpClient, private router: Router, private route: ActivatedRoute) {
     super(storageService);
 
   }
@@ -47,12 +47,14 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
   }
 
   getData() {
-    return this.http.get(this.getAssetPath()).map((res: Response) => {
-      this.database.setData(res.json());
-    }).toPromise().catch(
+
+    return this.httpClient.get<any>(this.getAssetPath())
+    .toPromise()
+    .then((data) => this.database.setData(data))
+    .catch(
       function (err) {
         console.dir(err);
-      });
+      });;
   }
 
   private sub: any;
