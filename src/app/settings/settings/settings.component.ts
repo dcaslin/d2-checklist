@@ -24,6 +24,11 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
     { value: true, label: 'Disable Ads' }
   ];
 
+  debugChoices = [
+    { value: false, label: "Normal" },
+    { value: true, label: 'Debug' }
+  ];
+
   constructor(storageService: StorageService) {
     super(storageService);
     this.theme = this.storageService.getItem("theme", "default-theme");
@@ -48,6 +53,10 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
 
   onDisableAdsSelect({ value }) {
     this.storageService.setItem("disableads", value);
+  }
+  
+  onDebugSelect({ value }) {
+    this.storageService.setItem("debugmode", value);
   }
 
 }

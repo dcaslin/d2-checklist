@@ -10,6 +10,7 @@ import { Subject } from 'rxjs/Subject';
 export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
     disableads: boolean = false;
+    debugmode: boolean = false;
     loading: boolean = false;
 
     ua = '';
@@ -46,12 +47,16 @@ export class ChildComponent implements OnDestroy {
 
         this.storageService = storageService;
         this.disableads = this.storageService.getItem("disableads", false);
+        this.debugmode = this.storageService.getItem("debugmode", false);
         this.storageService.settingFeed
             .takeUntil(this.unsubscribe$)
             .subscribe(
             x => {
                 if (x.disableads != null) {
                     this.disableads = x.disableads;
+                }
+                if (x.debugmode != null) {
+                    this.debugmode = x.debugmode;
                 }
             });
         this.storageService.refresh();
