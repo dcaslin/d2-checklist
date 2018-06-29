@@ -674,11 +674,11 @@ export class ParseService {
                     let desc = entry.displayProperties.description;
                     
                     if ("Mementos from the Wild"===name){
-                        name +=" "+cntr;
+                        name +=" "+(1+cntr);
                         if ((hash=='4195138678')||
                             (hash=='78905203')||
                             (hash=='1394016600')||
-                            (hash=='3268363773')){
+                            (hash=='1399126202')){
                                 //this is fine
                         }
                         else{
