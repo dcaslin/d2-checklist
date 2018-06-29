@@ -178,6 +178,7 @@ export class ParseService {
     }
 
     private populateProgressions(c: Character, _prog: any, mileStoneDefs: any): void {
+        //todo populate char checklists
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
@@ -699,8 +700,11 @@ export class ParseService {
                     }
                     if (desc==null || desc.length==0)
                         desc = null;
-                    else if (desc.startsWith("CB.NAV/RUN.()"))
+                    else if (desc.startsWith("CB.NAV/RUN.()")){
                         desc = desc.substring("CB.NAV/RUN.()".length);
+                        name = name.substring(0,3)+" "+desc;
+                        desc = null;
+                    }
                     // if (desc!=null && desc.length>100)
                     //     desc = desc.replace(/^(.{100}[^\s]*).*/, "$1"); 
 
