@@ -2,7 +2,7 @@
  * Created by Dave on 12/21/2016.
  */
 import { Injectable, OnDestroy } from '@angular/core';
-import { Headers, Http, RequestMethod, RequestOptions, ResponseContentType } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs/Rx';
 import 'rxjs/add/operator/toPromise';
 import { NotificationService } from './notification.service';
@@ -27,7 +27,7 @@ export class BungieService implements OnDestroy {
     selectedUser: SelectedUser;
     apiDown = false;
 
-    constructor(private http: Http,
+    constructor(private httpClient: HttpClient,
         private notificationService: NotificationService,
         private destinyCacheService: DestinyCacheService,
         private authService: AuthService,
@@ -72,7 +72,7 @@ export class BungieService implements OnDestroy {
                     //after the fact search for clan
                     this.setClans(membership);
                     //after the fact currency check
-                    if (this.selectedUser.selectedUser != null){
+                    if (this.selectedUser.selectedUser != null) {
                         this.destinyCacheService.init().then(val => {
                             this.setCurrencies();
                         });
@@ -94,19 +94,18 @@ export class BungieService implements OnDestroy {
 
     public searchBungieUsers(name: string): Promise<BungieMember[]> {
         const self: BungieService = this;
+
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
-                .map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parseBungieMembers(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error Searching for player');
-                    self.handleError(err);
-                    return [];
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error Searching for player');
+                        self.handleError(err);
+                        return [];
+                    });
         });
     }
 
@@ -114,19 +113,17 @@ export class BungieService implements OnDestroy {
     public getAggHistory(char: Character): Promise<void> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' + char.membershipType + "/Account/" + char.membershipId + "/Character/" + char.characterId + "/Stats/AggregateActivityStats/", opt)
-                .map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     char.aggHistory = self.parseService.parseAggHistory(resp);
                     return;
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error getting aggregate history for char');
-                    //self.handleError(err);
-                    return;
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error getting aggregate history for char');
+                        //self.handleError(err);
+                        return;
+                    });
         });
     }
 
@@ -183,10 +180,8 @@ export class BungieService implements OnDestroy {
     public getClanStats(clanId: string): Promise<void> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + '/Destiny2/Stats/AggregateClanStats/' + clanId + "/",
-                opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + '/Destiny2/Stats/AggregateClanStats/' + clanId + "/", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     //array of 
                     // {
@@ -200,12 +195,12 @@ export class BungieService implements OnDestroy {
                     //     }
                     // }
                     return resp;
-                }).toPromise().catch(
-                function (err) {
-                    console.log("Error finding clan members");
-                    self.handleError(err);
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log("Error finding clan members");
+                        self.handleError(err);
+                        return null;
+                    });
         });
     }
 
@@ -218,18 +213,16 @@ export class BungieService implements OnDestroy {
     public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<LeaderBoardList[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop=" + max + "&modes=" + mode,
-                opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop=" + max + "&modes=" + mode, opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parseLeaderBoard(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log("Error finding clan members");
-                    self.handleError(err);
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log("Error finding clan members");
+                        self.handleError(err);
+                        return null;
+                    });
         });
     }
 
@@ -237,18 +230,16 @@ export class BungieService implements OnDestroy {
     public getClanInfo(clanId: string): Promise<any> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'GroupV2/' + clanId + "/",
-                opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'GroupV2/' + clanId + "/", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parseClanInfo(resp.detail);
-                }).toPromise().catch(
-                function (err) {
-                    console.log("Error finding clan members");
-                    console.dir(err);
-                    return [];
-                });
+                }).catch(
+                    function (err) {
+                        console.log("Error finding clan members");
+                        console.dir(err);
+                        return [];
+                    });
         });
     }
 
@@ -256,18 +247,16 @@ export class BungieService implements OnDestroy {
     public getClanMembers(clanId: string): Promise<BungieGroupMember[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'GroupV2/' + clanId + "/Members/?currentPage=1&memberType=0",
-                opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'GroupV2/' + clanId + "/Members/?currentPage=1&memberType=0", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parseClanMembers(resp.results);
-                }).toPromise().catch(
-                function (err) {
-                    console.log("Error finding clan members");
-                    self.handleError(err);
-                    return [];
-                });
+                }).catch(
+                    function (err) {
+                        console.log("Error finding clan members");
+                        self.handleError(err);
+                        return [];
+                    });
         });
     }
 
@@ -275,10 +264,8 @@ export class BungieService implements OnDestroy {
     public getClans(bungieId: string): Promise<ClanRow[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'GroupV2/User/254/' + bungieId + "/0/1/",
-                opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'GroupV2/User/254/' + bungieId + "/0/1/", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     let returnMe: ClanRow[] = [];
                     resp.results.forEach(r => {
@@ -287,12 +274,12 @@ export class BungieService implements OnDestroy {
                         }
                     });
                     return returnMe;
-                }).toPromise().catch(
-                function (err) {
-                    console.log("Error finding clan id");
-                    self.handleError(err);
-                    return [];
-                });
+                }).catch(
+                    function (err) {
+                        console.log("Error finding clan id");
+                        self.handleError(err);
+                        return [];
+                    });
         });
     }
 
@@ -332,7 +319,7 @@ export class BungieService implements OnDestroy {
             new ActivityMode(0, "All", "All"), //None
             new ActivityMode(4, "Raid", "Raid"),
             new ActivityMode(18, "All Strikes", "All Strikes"),
-            
+
             new ActivityMode(46, "Scored Nightfall", "Scored Nightfall"),
             new ActivityMode(47, "Scored Heroic Nightfall", "Scored Heroic Nightfall"),
 
@@ -341,7 +328,7 @@ export class BungieService implements OnDestroy {
 
             new ActivityMode(32, "Private Matches", "Private Matches"),
 
-            
+
             new ActivityMode(19, "Iron Banner", "Iron Banner"),
             new ActivityMode(39, "Trials", "Trials"),
             new ActivityMode(15, "Crimson Doubles", "Crimson Doubles"),
@@ -356,7 +343,7 @@ export class BungieService implements OnDestroy {
 
             new ActivityMode(6, "Patrol", "Patrol"),
             new ActivityMode(2, "Story", "Story"),
-            
+
             new ActivityMode(16, "Nightfall (old)", "Nightfall (old)"),
             new ActivityMode(17, "Heroic Nightfall (old)", "Heroic Nightfall (old)"),
             new ActivityMode(3, "Strike", "Strike"),
@@ -370,39 +357,44 @@ export class BungieService implements OnDestroy {
         ];
     }
 
-    private buildReqOptions(): Promise<RequestOptions> {
+    private buildReqOptions(): Promise<any> {
+
+
+        let headers = new HttpHeaders();
+        headers = headers
+            .set('Content-Type', 'application/x-www-form-urlencoded')
+            .set('X-API-Key', environment.bungie.apiKey);
+        const httpOptions = {
+            headers: headers
+        };
+
+
         return this.authService.getKey().then(x => {
             if (x == null) {
-                return new RequestOptions(
-                    {
-                        method: RequestMethod.Get,
-                        responseType: ResponseContentType.Json,
-                        headers: new Headers({
-                            'X-API-Key': environment.bungie.apiKey,
-                        })
-                    });
+                let headers = new HttpHeaders();
+                headers = headers
+                    .set('X-API-Key', environment.bungie.apiKey);
+                return {
+                    headers: headers
+                };
             } else {
-                return new RequestOptions(
-                    {
-                        method: RequestMethod.Get,
-                        responseType: ResponseContentType.Json,
-                        headers: new Headers({
-                            'X-API-Key': environment.bungie.apiKey,
-                            'Authorization': "Bearer " + x
-                        })
-                    });
+
+                let headers = new HttpHeaders();
+                headers = headers
+                    .set('X-API-Key', environment.bungie.apiKey)
+                    .set('Authorization', "Bearer " + x);
+                return {
+                    headers: headers
+                };
             }
         }).catch(err => {
             console.dir(err);
-            return new RequestOptions(
-                {
-                    method: RequestMethod.Get,
-                    responseType: ResponseContentType.Json,
-                    headers: new Headers({
-                        'X-API-Key': environment.bungie.apiKey,
-                    })
-                });
-
+            let headers = new HttpHeaders();
+            headers = headers
+                .set('X-API-Key', environment.bungie.apiKey);
+            return {
+                headers: headers
+            };
         });
     }
 
@@ -424,7 +416,7 @@ export class BungieService implements OnDestroy {
 
     private parseBungieResponse(j: any): any {
         if (j.ErrorCode && j.ErrorCode != 1) {
-            if (j.ErrorCode===5){
+            if (j.ErrorCode === 5) {
                 this.apiDown = true;
             }
             throw new Error(j.Message);
@@ -441,34 +433,32 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parsePGCR(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error Searching for player');
-                    self.handleError(err);
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error Searching for player');
+                        self.handleError(err);
+                        return null;
+                    });
         });
     }
 
     public getNightfall(): Promise<Nightfall> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/Milestones/', opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/Milestones/', opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parseNightfall(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error getting nightfall');
-                    console.dir(err);
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error getting nightfall');
+                        console.dir(err);
+                        return null;
+                    });
         });
     }
 
@@ -477,22 +467,20 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' + membershipType + "/Account/" + membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" + count + "&mode=" + mode + "&page=" + page,
-                opt).map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Account/" + membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" + count + "&mode=" + mode + "&page=" + page, opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     if (resp.activities) {
                         return self.parseService.parseActivities(resp.activities);
                     }
 
                     return [];
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error Searching for player');
-                    self.handleError(err);
-                    return [];
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error Searching for player');
+                        self.handleError(err);
+                        return [];
+                    });
         });
     }
 
@@ -534,23 +522,18 @@ export class BungieService implements OnDestroy {
         //Profiles,Characters,CharacterProgressions,,CharacterActivities
         let sComp = components.join();
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" +
-                membershipId +
-
-                "/?components=" + sComp, opt)
-                .map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" + membershipId + "/?components=" + sComp, opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     return self.parseService.parsePlayer(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error Searching for player');
-                    if (!ignoreErrors) {
-                        self.handleError(err);
-                    }
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error Searching for player');
+                        if (!ignoreErrors) {
+                            self.handleError(err);
+                        }
+                        return null;
+                    });
         });
 
     }
@@ -559,10 +542,8 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/", opt)
-                .map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     //self.notificationService.success("Found " + resp.length + " players");
                     if (resp.length == 0) {
@@ -575,12 +556,12 @@ export class BungieService implements OnDestroy {
                     }
                     return resp[0];
 
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error Searching for player');
-                    self.handleError(err);
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error Searching for player');
+                        self.handleError(err);
+                        return null;
+                    });
         });
 
     }
@@ -589,19 +570,17 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
-            return this.http.get(API_ROOT + 'User/GetMembershipsById/' + bungieId + "/-1/", opt)
-                .map(
-                function (res) {
-                    const j: any = res.json();
+            return this.httpClient.get<any>(API_ROOT + 'User/GetMembershipsById/' + bungieId + "/-1/", opt)
+                .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
 
                     return self.parseService.parseBungieMembership(resp);
-                }).toPromise().catch(
-                function (err) {
-                    console.log('Error looking up memberships');
-                    self.handleError(err);
-                    return null;
-                });
+                }).catch(
+                    function (err) {
+                        console.log('Error looking up memberships');
+                        self.handleError(err);
+                        return null;
+                    });
         });
 
     }

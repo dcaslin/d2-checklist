@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, ResponseContentType, RequestMethod } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import 'rxjs/add/operator/toPromise';
 import { Observable, Subject } from 'rxjs/Rx';
 import { NotificationService } from './notification.service';
@@ -13,7 +13,7 @@ export class AuthService {
 
     token: Token;
 
-    constructor(private http: Http, private notificationService: NotificationService) {
+    constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
         this.authFeed = this.authSub.asObservable() as Observable<AuthInfo>;
     }
 
@@ -103,27 +103,25 @@ export class AuthService {
 
     private refreshToken(refreshKey: string): Promise<Token> {
         let self = this;
-        let options = new RequestOptions(
-            {
-                method: RequestMethod.Post,
-                responseType: ResponseContentType.Json,
-                headers: new Headers({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-API-Key': environment.bungie.apiKey
-                })
-            });
 
-        let params = new URLSearchParams();
-        params.append('grant_type', "refresh_token");
-        params.append('client_id', environment.bungie.clientId);
-        params.append('client_secret', environment.bungie.clientSecret);
-        params.append('refresh_token', refreshKey);
-        let body: string = params.toString();
-        return this.http.post("https://www.bungie.net/platform/app/oauth/token/", body, options).map(function (res) {
-            let j: Token = res.json();
+        let headers = new HttpHeaders();
+        headers = headers
+            .set('Content-Type', 'application/x-www-form-urlencoded')
+            .set('X-API-Key',  environment.bungie.apiKey);
+        const httpOptions = {
+            headers: headers};
+        
+        let params = new HttpParams();
+        params = params.set('grant_type', "refresh_token");
+        params = params.set('client_id', environment.bungie.clientId);
+        params = params.set('client_secret', environment.bungie.clientSecret);
+        params = params.set('refresh_token', refreshKey);
+
+        return this.httpClient.post("https://www.bungie.net/platform/app/oauth/token/", params, httpOptions)
+        .toPromise().then(j => {
             self.storeToken(j, true);
             return self.token;
-        }).toPromise().catch(
+        }).catch(
             function (err) {
                 let errMsg = AuthService.parseError(err);
                 console.log('Error refreshing Auth token: ' + errMsg);
@@ -143,28 +141,25 @@ export class AuthService {
                 throw new Error("State did not match on OAuth call. Security problem?");
             }
         }
-        let options = new RequestOptions(
-            {
-                method: RequestMethod.Post,
-                responseType: ResponseContentType.Json,
-                headers: new Headers({
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-API-Key': environment.bungie.apiKey
-                })
-            });
 
-        let params = new URLSearchParams();
-        params.append('grant_type', "authorization_code");
-        params.append('client_id', environment.bungie.clientId);
-        params.append('client_secret', environment.bungie.clientSecret);
-        params.append('code', code);
-        let body: string = params.toString();
+        let headers = new HttpHeaders();
+        headers = headers
+            .set('Content-Type', 'application/x-www-form-urlencoded')
+            .set('X-API-Key',  environment.bungie.apiKey);
+        const httpOptions = {
+            headers: headers};
 
-        return this.http.post("https://www.bungie.net/platform/app/oauth/token/", body, options).map(function (res) {
-            let j: Token = res.json();
+        let params = new HttpParams();
+        params = params.set('grant_type', "authorization_code");
+        params = params.set('client_id', environment.bungie.clientId);
+        params = params.set('client_secret', environment.bungie.clientSecret);
+        params = params.set('code', code);
+    
+        return this.httpClient.post("https://www.bungie.net/platform/app/oauth/token/", params, httpOptions)
+        .toPromise().then(j => {
             self.storeToken(j, true);
             return true;
-        }).toPromise().catch(
+        }).catch(
             function (err) {
                 let errMsg = AuthService.parseError(err);
                 self.notificationService.fail(err);
