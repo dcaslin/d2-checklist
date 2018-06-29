@@ -668,14 +668,25 @@ export class ParseService {
                 const checkListItems: ChecklistItem[] = [];
                 let hasDescs = false;
                 for (let entry of desc.entries){
-                    cntr++;
                     const hash = entry.hash;
                     let name = entry.displayProperties.name;
                     const checked = vals[entry.hash];
                     let desc = entry.displayProperties.description;
                     
-                    if ("Mementos from the Wild"===name)
+                    if ("Mementos from the Wild"===name){
                         name +=" "+cntr;
+                        if ((hash=='4195138678')||
+                            (hash=='78905203')||
+                            (hash=='1394016600')||
+                            (hash=='3268363773')){
+                                //this is fine
+                        }
+                        else{
+                            //ignore
+                            continue;
+                        }
+                    }
+                    cntr++;
                     if (entry.itemHash){
                         let iDesc: any = this.destinyCacheService.cache.InventoryItem[entry.itemHash];
                         desc = iDesc.displayProperties.description;
@@ -769,7 +780,11 @@ export class ParseService {
                             }
                             if (checklistItem == null){
                                 let name = entry.displayProperties.name;
-                               
+                                // if (entry.activityHash){
+                                    
+                                //     const aDesc: any = this.destinyCacheService.cache.Activity[entry.activityHash];
+                                //     name += " "+aDesc.displayProperties.name;
+                                // }
                                 checklistItem = {
                                     hash: hash,
                                     name: name,
