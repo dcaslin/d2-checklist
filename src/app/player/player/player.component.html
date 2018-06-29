@@ -334,7 +334,7 @@
             </ng-container>
 
           </mat-tab>
-          <mat-tab label="Nodes">
+          <mat-tab label="Nodes"  >
             <ng-container *ngIf="player!=null">
               <div *ngIf="player.checklists==null || player.checklists.length==0">
                 <br>
@@ -342,11 +342,12 @@
                 <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
               </div>
 
-              <mat-accordion *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='nodes'">
-                <mat-expansion-panel *ngFor="let checklist of player.checklists">
+              <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='nodes'">
+                <mat-expansion-panel *ngFor="let checklist of player.checklists" [expanded]="debugmode">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
-                      {{checklist.name}} <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
+                      {{checklist.name}}
+                      <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
                     </mat-panel-title>
                     <mat-panel-description>
                       {{checklist.complete}} / {{checklist.total}}
@@ -365,7 +366,17 @@
                       <tbody>
                         <ng-container *ngFor="let check of checklist.entries">
                             <tr  *ngIf="!hideCompleteChecklist || !check.checked">
-                                <td>{{check.name}}<span *ngIf="debugmode">&ensp;[{{check.hash}}]</span></td>
+                                <td>
+                                  {{check.name}}
+                                  <span *ngIf="debugmode">
+                                    &ensp;[{{check.hash}}]
+                                    &ensp;
+                                    <a href="javascript:void()" (click)="routeSearch()">
+                                      <i class="fa fa-refresh" aria-hidden="true"></i>
+                                    </a> 
+                                    <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading===true"></i>
+                                  </span>
+                                </td>
                                 <td>
                                   <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                                   <i *ngIf="!check.checked" class="fa fa-square-o"></i>
@@ -380,7 +391,7 @@
                   </div>
 
                 </mat-expansion-panel>
-                <mat-expansion-panel *ngFor="let checklist of player.charChecklists">
+                <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         {{checklist.name}} <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
@@ -401,7 +412,17 @@
                         <tbody>
                           <ng-container *ngFor="let check of checklist.entries">
                               <tr  *ngIf="!hideCompleteChecklist || !check.allDone">
-                                  <td>{{check.name}}<span *ngIf="debugmode">&ensp;[{{check.hash}}]</span></td>
+                                  <td>
+                                    {{check.name}}
+                                    <span *ngIf="debugmode">
+                                      &ensp;[{{check.hash}}]
+                                      &ensp;
+                                      <a href="javascript:void()" (click)="routeSearch()">
+                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                      </a> 
+                                      <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading===true"></i>
+                                    </span>
+                                  </td>
                                   <td>
                                     <ng-container *ngFor="let c of check.checked">
                                       <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
