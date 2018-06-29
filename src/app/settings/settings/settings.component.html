@@ -4,16 +4,23 @@
       <h1>Settings</h1>
       <br>
       <div>
-        <mat-form-field class="col-md-6">
+        <mat-form-field class="col-md-4">
           <mat-select placeholder="Select theme" name="theme" [ngModel]="theme" (change)="onThemeSelect($event)">
             <mat-option *ngFor="let t of themes" [value]="t.value">
               {{t.label}}
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field class="col-md-6">
+        <mat-form-field class="col-md-4">
           <mat-select placeholder="Ad Options" name="disableads" [ngModel]="disableads" (change)="onDisableAdsSelect($event)">
             <mat-option *ngFor="let t of adChoices" [value]="t.value">
+              {{t.label}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-md-4">
+          <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode" (change)="onDebugSelect($event)">
+            <mat-option *ngFor="let t of debugChoices" [value]="t.value">
               {{t.label}}
             </mat-option>
           </mat-select>
@@ -22,13 +29,17 @@
       <br>
 
       <p class="note" *ngIf="disableads===true">
-        You've disabled ads. If you end up finding this site or any of the other DestinyChecklist sites helpful, please consider
+        <mat-icon>block</mat-icon> You've disabled ads. If you end up finding this site or any of the other DestinyChecklist sites helpful, please consider
         making a donation with the link below:
         <br>
         <br>
         <a mat-raised-button color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
           <i class="fa fa-paypal"></i> Donate
         </a>
+      </p>
+      <p class="note" *ngIf="debugmode===true">
+        <mat-icon>bug_report</mat-icon> You've enabled debug mode. This might do nothing, or it might show extra information like hashes on certain items. 
+        It will probably make your screen more cluttered and ugly, and may screw up mobile views. <mark>If you have any problems you should turn this back off.</mark>
       </p>
     </div>
 

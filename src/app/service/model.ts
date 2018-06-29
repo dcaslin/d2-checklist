@@ -96,12 +96,14 @@ export class Rankup{
 }
 
 export interface ChecklistItem{
+    hash: string;
     name: string;
     checked: boolean;
     desc: string;
 }
 
 export interface Checklist {
+    hash: string;
     name: string;
     complete: number;
     total: number;

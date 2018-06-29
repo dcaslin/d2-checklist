@@ -698,6 +698,7 @@ export class ParseService {
                     }
 
                     const checklistItem: ChecklistItem = {
+                        hash: hash,
                         name: name,
                         checked: checked,
                         desc: desc
@@ -707,8 +708,15 @@ export class ParseService {
                         cntChecked++;
                     }
                 }
+
+                let checklistName = desc.displayProperties.name;
+                if (checklistName == "Latent Memories"){
+                    checklistName = "Memory Fragments";
+                }
+
                 const checklist: Checklist = {
-                    name: desc.displayProperties.name,
+                    hash: key,
+                    name: checklistName,
                     complete: cntChecked,
                     total: cntr,
                     entries: checkListItems,

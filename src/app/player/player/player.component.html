@@ -346,7 +346,7 @@
                 <mat-expansion-panel *ngFor="let checklist of player.checklists">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
-                      {{checklist.name}}
+                      {{checklist.name}} <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
                     </mat-panel-title>
                     <mat-panel-description>
                       {{checklist.complete}} / {{checklist.total}}
@@ -365,7 +365,7 @@
                       <tbody>
                         <ng-container *ngFor="let check of checklist.entries">
                             <tr  *ngIf="!hideCompleteChecklist || !check.checked">
-                                <td>{{check.name}}</td>
+                                <td>{{check.name}}<span *ngIf="debugmode">&ensp;[{{check.hash}}]</span></td>
                                 <td>
                                   <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                                   <i *ngIf="!check.checked" class="fa fa-square-o"></i>
@@ -383,7 +383,7 @@
                 <mat-expansion-panel *ngFor="let checklist of player.charChecklists">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
-                        {{checklist.name}}
+                        {{checklist.name}} <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
                       </mat-panel-title>
                       <mat-panel-description>
                         <span *ngFor="let t of checklist.totals">{{t.char.className}} {{t.complete}}/{{t.total}}&emsp;</span>
@@ -401,7 +401,7 @@
                         <tbody>
                           <ng-container *ngFor="let check of checklist.entries">
                               <tr  *ngIf="!hideCompleteChecklist || !check.allDone">
-                                  <td>{{check.name}}</td>
+                                  <td>{{check.name}}<span *ngIf="debugmode">&ensp;[{{check.hash}}]</span></td>
                                   <td>
                                     <ng-container *ngFor="let c of check.checked">
                                       <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
