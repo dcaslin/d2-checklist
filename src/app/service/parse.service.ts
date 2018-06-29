@@ -7,7 +7,8 @@ import {
     Const, BungieMembership, BungieMember, BungieMemberPlatform,
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
-    InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory
+    InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
+    Checklist, ChecklistItem
 } from './model';
 @Injectable()
 export class ParseService {
@@ -667,6 +668,67 @@ export class ParseService {
         let currentActivity: CurrentActivity = null;
         let chars: Character[] = [];
         let hasWellRested = false;
+        const checklists: Checklist[] = [];
+
+        if (resp.profileProgression != null && resp.profileProgression.data != null && resp.profileProgression.data.checklists != null){
+            const oChecklists: any = resp.profileProgression.data.checklists;
+            Object.keys(oChecklists).forEach((key) => {
+                if (key === "110198094") return;
+                const vals: any = oChecklists[key];
+                const desc: any = this.destinyCacheService.cache.Checklist[key];
+                let cntr=0, cntChecked=0;
+                const checkListItems: ChecklistItem[] = [];
+                let hasDescs = false;
+                for (let entry of desc.entries){
+                    cntr++;
+                    const hash = entry.hash;
+                    let name = entry.displayProperties.name;
+                    const checked = vals[entry.hash];
+                    let desc = entry.displayProperties.description;
+                    
+                    if ("Mementos from the Wild"===name)
+                        name +=" "+cntr;
+                    if (entry.itemHash){
+                        let iDesc: any = this.destinyCacheService.cache.InventoryItem[entry.itemHash];
+                        desc = iDesc.displayProperties.description;
+                    }
+                    if (entry.activityHash){
+                        this.destinyCacheService.cache.ItemType
+                        let iDesc: any = this.destinyCacheService.cache.Activity[entry.activityHash];
+                        desc = iDesc.displayProperties.description;
+                    }
+                    if (desc==null || desc.length==0)
+                        desc = null;
+                    else if (desc.startsWith("CB.NAV/RUN.()"))
+                        desc = desc.substring("CB.NAV/RUN.()".length);
+                    // if (desc!=null && desc.length>100)
+                    //     desc = desc.replace(/^(.{100}[^\s]*).*/, "$1"); 
+
+                    if (!hasDescs && desc!=null){
+                        hasDescs = true;
+                    }
+
+                    const checklistItem: ChecklistItem = {
+                        name: name,
+                        checked: checked,
+                        desc: desc
+                    };
+                    checkListItems.push(checklistItem);
+                    if (checked){
+                        cntChecked++;
+                    }
+                }
+                const checklist: Checklist = {
+                    name: desc.displayProperties.name,
+                    complete: cntChecked,
+                    total: cntr,
+                    entries: checkListItems,
+                    hasDescs: hasDescs
+                }
+                checklists.push(checklist);
+            });
+        }
+
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
             Object.keys(oChars).forEach((key) => {
@@ -799,7 +861,7 @@ export class ParseService {
                 });
             }
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate, hasWellRested);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate, hasWellRested, checklists);
     }
 
     private static getTokensHeld(f: Progression, gear: InventoryItem[]): number {

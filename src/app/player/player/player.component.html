@@ -37,12 +37,12 @@
         <ng-container *ngIf="player!=null">
           <h4>{{player.profile.userInfo.displayName}} -
             <span *ngIf="player.superprivate">[hidden by privacy settings]</span>
-            <span *ngIf="player.currentActivity==null && !player.superprivate">
+            <span *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower')) && !player.superprivate">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
             </span>
-            <span *ngIf="player.currentActivity!=null">
-              <mark>Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today| amDifference:player.currentActivity.dateActivityStarted|
-                amDuration:'ms'}} ago</mark>
+            <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
+              Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today| amDifference:player.currentActivity.dateActivityStarted|
+                amDuration:'ms'}} ago
             </span>
           </h4>
 
@@ -64,7 +64,7 @@
           <ng-container *ngIf="player!=null && player.hasWellRested && player.characters!=null && player.characters.length>0">
 
             <div class="mobile-header hidden-md-up">Well-Rested (3x Bright Engrams)</div>
-            <div class="rankupRow hidden-md-up">
+            <div class="rankupRow">
 
               <span class="hidden-sm-down">Well-Rested (accelerated XP towards bright engrams):</span>
 
@@ -112,8 +112,9 @@
               <table class="responsive-table" *ngIf="player.milestoneList.length>0">
                 <thead>
                   <tr>
-                    <th scope="col">Activity 
-                      <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show all</a>
+                    <th scope="col">Activity
+                      <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
+                        (click)="showAllMilestones()">show all</a>
                     </th>
                     <th scope="col" *ngFor="let char of player.characters">
                       {{char.className}} - {{char.light}}
@@ -126,10 +127,11 @@
                 <tbody>
                   <ng-container *ngFor="let mileStoneName of player.milestoneList">
                     <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
-                      <td class="lead" >
+                      <td class="lead">
                         <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}}</span>
                         <span class="caption">{{mileStoneName.type}}</span>
-                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">hide</a>
+                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
+                          (click)="hideMilestone(mileStoneName.key)">hide</a>
                       </td>
                       <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                         <span class="check">
@@ -222,7 +224,8 @@
                   </ng-container>
                   <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
                     <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
+                      <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
+                        (click)="hideMilestone('1')">hide</a>
                     </td>
                     <td [attr.colspan]="player.characters.length">
 
@@ -328,6 +331,56 @@
                 </mat-tab>
               </mat-tab-group>
 
+            </ng-container>
+
+          </mat-tab>
+          <mat-tab label="Nodes">
+            <ng-container *ngIf="player!=null">
+              <div *ngIf="player.checklists==null || player.checklists.length==0">
+                <br>
+                <h1>Privacy</h1>
+                <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+              </div>
+
+              <mat-accordion *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='nodes'">
+                <mat-expansion-panel *ngFor="let checklist of player.checklists">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title>
+                      {{checklist.name}}
+                    </mat-panel-title>
+                    <mat-panel-description>
+                      {{checklist.complete}} / {{checklist.total}}
+                    </mat-panel-description>
+                  </mat-expansion-panel-header>
+                  <div class="checklist-body">
+                    <div class="hide-complete"> <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide Completed</mat-checkbox> </div>
+                    <table class="checklist-table">
+                      <thead>
+                        <tr>
+                          <th style="width: 200px">Name</th>
+                          <th style="width: 50px">Status</th>
+                          <th class="hidden-sm-down" *ngIf="checklist.hasDescs">Desc</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let check of checklist.entries">
+                            <tr  *ngIf="!hideCompleteChecklist || !check.checked">
+                                <td>{{check.name}}</td>
+                                <td>
+                                  <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                  <i *ngIf="!check.checked" class="fa fa-square-o"></i>
+                                </td>
+                                <td class="hidden-sm-down" *ngIf="checklist.hasDescs">
+                                  {{check.desc}}
+                                </td>
+                              </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </mat-expansion-panel>
+              </mat-accordion>
             </ng-container>
 
           </mat-tab>

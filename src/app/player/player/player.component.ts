@@ -28,14 +28,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   msg: string;
   selectedTab: string;
   gamerTag: string;
-  // dontSearch: boolean;
-
   player: Player;
-
-  navigation = [
-    { link: 'checklist', label: 'Checklist' },
-    { link: 'progress', label: 'Progress' }
-  ];
+  hideCompleteChecklist = false;
 
   constructor(private bungieService: BungieService, 
     private xyzService: XyzService,
@@ -124,10 +118,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     const tab: string = this.selectedTab;
     if (tab!=null){
       if (tab == "gear"){
-        this.tabs.selectedIndex = 3;
+        this.tabs.selectedIndex = 4;
+      }
+      else if (tab == "nodes"){
+        this.tabs.selectedIndex = 2;
       }
       else if (tab == "chars"){
-        this.tabs.selectedIndex = 2;
+        this.tabs.selectedIndex = 3;
       }
       else if (tab == "checklist"){
         this.tabs.selectedIndex = 0;
@@ -181,7 +178,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           this.bungieService.getChars(p.membershipType, p.membershipId, 
             ['Profiles','Characters','CharacterProgressions','CharacterActivities',
             'CharacterEquipment','ProfileInventories','CharacterInventories',
-            'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates'
+            'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
+            'ProfileProgression'
             //'ItemTalentGrids','ItemCommonData','ItemPlugStates','ItemObjectives'
           ])
             .then((x: Player) => {

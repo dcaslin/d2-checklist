@@ -167,3 +167,19 @@ a.underline:link {
   max-width: 500px;
 }
 
+.checklist-body {
+  // max-width: 750px;
+  text-align: left;
+  margin: 5px;
+}
+
+.hide-complete{
+  margin: 5px;
+  font-size: smaller;
+  font-weight: lighter;
+}
+
+.mat-expansion-panel-header-title, 
+.mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
