@@ -100,6 +100,7 @@ export interface ChecklistItem{
     name: string;
     checked: boolean;
     desc: string;
+    mapUrl: string;
 }
 
 export interface Checklist {
@@ -121,6 +122,7 @@ export interface CharChecklistItem{
     name: string;
     allDone: boolean;
     checked: CharCheck[];
+    mapUrl;
 }
 
 export interface CharTotal{

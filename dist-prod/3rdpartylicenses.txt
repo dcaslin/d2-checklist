@@ -180,6 +180,10 @@ MIT
 MIT
 MIT
 
+@angular/common@4.4.4
+MIT
+MIT
+
 ng2-adsense@4.0.12
 MIT
 MIT
@@ -189,9 +193,5 @@ MIT
 MIT
 
 @angular/platform-browser@4.4.4
-MIT
-MIT
-
-@angular/common@4.4.4
 MIT
 MIT

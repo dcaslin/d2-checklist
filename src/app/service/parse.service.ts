@@ -178,7 +178,6 @@ export class ParseService {
     }
 
     private populateProgressions(c: Character, _prog: any, mileStoneDefs: any): void {
-        //todo populate char checklists
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
@@ -692,7 +691,6 @@ export class ParseService {
                         desc = iDesc.displayProperties.description;
                     }
                     if (entry.activityHash){
-                        this.destinyCacheService.cache.ItemType
                         let iDesc: any = this.destinyCacheService.cache.Activity[entry.activityHash];
                         desc = iDesc.displayProperties.description;
                     }
@@ -708,10 +706,19 @@ export class ParseService {
                         hasDescs = true;
                     }
 
+                    //https://lowlidev.com.au/destiny/maps/mars/3240044932
+                    let mapUrl = null;
+                    //sleeper nodes and memory fragments
+                    if (key=="365218222" || key=="2955980198"){
+                        mapUrl = "https://lowlidev.com.au/destiny/maps/mars/"+hash;
+                    }
+                    
+
                     const checklistItem: ChecklistItem = {
                         hash: hash,
                         name: name,
                         checked: checked,
+                        mapUrl: mapUrl,
                         desc: desc
                     };
                     checkListItems.push(checklistItem);
@@ -779,16 +786,23 @@ export class ParseService {
                                 }
                             }
                             if (checklistItem == null){
+
+                                //https://lowlidev.com.au/destiny/maps/mars/3240044932
+                                let mapUrl = null;
+                                //region chests & lost sectors
+                                if (key=="1697465175" || key=="3142056444"){
+                                    const loc = entry.destinationHash;
+                                    mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/"+hash;
+                                }
+
+
+
                                 let name = entry.displayProperties.name;
-                                // if (entry.activityHash){
-                                    
-                                //     const aDesc: any = this.destinyCacheService.cache.Activity[entry.activityHash];
-                                //     name += " "+aDesc.displayProperties.name;
-                                // }
                                 checklistItem = {
                                     hash: hash,
                                     name: name,
                                     allDone: false,
+                                    mapUrl: mapUrl,
                                     checked: []
                                 };
                                 checklist.entries.push(checklistItem);

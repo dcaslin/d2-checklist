@@ -554,6 +554,13 @@ export class BungieService implements OnDestroy {
                         return resp[resp.length - 1];
                         //self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
                     }
+                    //hack for 2/informer  broken account
+                    if (resp.length==1 && resp[0].membershipId=='4611686018465893351'){
+                        resp[0].membershipId='4611686018428560404';
+                    }
+
+
+
                     return resp[0];
 
                 }).catch(

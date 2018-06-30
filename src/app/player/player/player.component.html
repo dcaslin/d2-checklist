@@ -367,9 +367,16 @@
                         <ng-container *ngFor="let check of checklist.entries">
                             <tr  *ngIf="!hideCompleteChecklist || !check.checked">
                                 <td>
-                                  {{check.name}}
+                                  <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
+                                  <ng-container *ngIf="check.mapUrl!=null">
+                                    <a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.name}}</a>
+                                    <a [href]="check.mapUrl" target="_blank" rel="noopener" ><i class='accent-text fa fa-map-signs'></i></a>
+                                  
+                                  </ng-container>
+                                  
                                   <span *ngIf="debugmode">
                                     &ensp;[{{check.hash}}]
+                                    &ensp;<a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.mapUrl}}</a>
                                     &ensp;
                                     <a href="javascript:void()" (click)="routeSearch()">
                                       <i class="fa fa-refresh" aria-hidden="true"></i>
@@ -413,9 +420,15 @@
                           <ng-container *ngFor="let check of checklist.entries">
                               <tr  *ngIf="!hideCompleteChecklist || !check.allDone">
                                   <td>
-                                    {{check.name}}
+                                    <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
+                                    <ng-container *ngIf="check.mapUrl!=null">
+                                      <a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.name}}</a>
+                                      <a [href]="check.mapUrl" target="_blank" rel="noopener" ><i class='accent-text fa fa-map-signs'></i></a>
+                                    
+                                    </ng-container>
                                     <span *ngIf="debugmode">
                                       &ensp;[{{check.hash}}]
+                                      &ensp;<a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.mapUrl}}</a>
                                       &ensp;
                                       <a href="javascript:void()" (click)="routeSearch()">
                                         <i class="fa fa-refresh" aria-hidden="true"></i>
