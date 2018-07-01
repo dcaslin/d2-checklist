@@ -12,7 +12,7 @@
         <ng-container *ngIf="info!=null">
           <h1>{{info.name}} Leaderboard </h1>
           <mat-form-field class="searchField">
-            <mat-select [(ngModel)]="selectedMode" (change)="load()" placeholder="Mode">
+            <mat-select [(ngModel)]="selectedMode" (selectionChange)="load()" placeholder="Mode">
               <mat-option *ngFor="let p of activityModes" [value]="p">
                 {{ p.name }}
               </mat-option>

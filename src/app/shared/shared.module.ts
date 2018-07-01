@@ -29,7 +29,7 @@ import {
 
 
 import { AdsenseModule } from 'ng2-adsense';
-import { MomentModule } from 'angular2-moment';
+import { MomentModule } from 'ngx-moment';
 
 import {
   CdkTableModule

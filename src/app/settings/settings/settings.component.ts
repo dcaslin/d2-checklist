@@ -1,6 +1,8 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StorageService } from '../../service/storage.service';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { ChildComponent } from '../../shared/child.component';
 import {MatSelectModule} from '@angular/material';
 
@@ -33,8 +35,8 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
     super(storageService);
     this.theme = this.storageService.getItem("theme", "default-theme");
 
-    this.storageService.settingFeed
-      .takeUntil(this.unsubscribe$)
+    this.storageService.settingFeed.pipe(
+      takeUntil(this.unsubscribe$))
       .subscribe(
       x => {
         if (x.theme != null) {

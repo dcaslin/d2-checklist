@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import 'rxjs/add/operator/toPromise';
+
 import { environment as env } from '@env/environment';
 
 declare let JSZip: any;

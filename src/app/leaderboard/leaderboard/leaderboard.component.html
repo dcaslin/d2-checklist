@@ -27,8 +27,8 @@
             </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="end">
-            <mat-header-cell *cdkHeaderCellDef class="hidden-md-down" mat-sort-header>Complete</mat-header-cell>
-            <mat-cell *cdkCellDef="let row" class="hidden-md-down">
+            <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Complete</mat-header-cell>
+            <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
               {{row.end|date:'short'}}
             </mat-cell>
           </ng-container>
@@ -44,8 +44,8 @@
             </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="durationMs">
-            <mat-header-cell *cdkHeaderCellDef class="hidden-md-down" mat-sort-header>Duration</mat-header-cell>
-            <mat-cell *cdkCellDef="let row" class="hidden-md-down">
+            <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Duration</mat-header-cell>
+            <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
               {{ row.durationMs | amnsTiming:'milliseconds' }}
             </mat-cell>
           </ng-container>

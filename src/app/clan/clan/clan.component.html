@@ -17,7 +17,7 @@
           </div>
 
           <mat-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
-            <h2 class="hidden-sm-down">Weekly Clan Bounties</h2>
+            <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
 
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true">
               Nightfall
@@ -59,7 +59,7 @@
                 <mat-panel-title>
                   Clan Progress
                 </mat-panel-title>
-                <mat-panel-description class="hidden-sm-down">
+                <mat-panel-description class="d-none d-md-block">
                   Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
                 </mat-panel-description>
               </mat-expansion-panel-header>
@@ -87,19 +87,19 @@
 
           <div class="filter-row">
             <mat-form-field *ngIf="modelPlayer!=null">
-              <mat-select [(ngModel)]="filterMode" (change)="filterPlayers()" placeholder="Filter players by activity">
+              <mat-select [(ngModel)]="filterMode" (selectionChange)="filterPlayers()" placeholder="Filter players by activity">
                 <mat-option value="none">Show All Players</mat-option>
                 <mat-option value="zero">Show only zero completions</mat-option>
                 <mat-option value="all">Show completely done</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field *ngIf="modelPlayer!=null && filterMode!='none'">
-              <mat-select [(ngModel)]="filterActivity" (change)="filterPlayers()" placeholder="Activity">
+              <mat-select [(ngModel)]="filterActivity" (selectionChange)="filterPlayers()" placeholder="Activity">
                 <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{ mileStoneName.name }}</mat-option>
               </mat-select>
             </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
-            <button class="hidden-sm-down" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()"> 
+            <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()"> 
                 <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
                 <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
           </div>
@@ -166,7 +166,7 @@
                   <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
                     <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
                       <ng-container *ngFor="let char of member.player.characters">
-                        <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
+                        <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
                             <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                           </ng-container>
@@ -176,8 +176,8 @@
                           <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
                             <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
                           </ng-container>
-                        </ng-container>
-                      </ng-container>
+                        </span>
+                      </ng-container> 
                     </td>
                   </ng-container>
                 </ng-container>

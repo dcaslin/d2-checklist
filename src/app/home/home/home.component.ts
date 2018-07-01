@@ -1,8 +1,10 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { Const, Platform } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
@@ -39,8 +41,8 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.selectedPlatform = this.platforms[0];
 
 
-    this.storageService.settingFeed
-      .takeUntil(this.unsubscribe$)
+    this.storageService.settingFeed.pipe(
+      takeUntil(this.unsubscribe$))
       .subscribe(
       x => {
         if (x.defaultplatform != null) {

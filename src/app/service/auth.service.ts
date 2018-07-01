@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import 'rxjs/add/operator/toPromise';
-import { Observable, Subject } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs';
 import { NotificationService } from './notification.service';
 
 import { environment } from '../../environments/environment';

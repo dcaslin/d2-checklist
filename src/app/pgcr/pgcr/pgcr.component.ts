@@ -1,7 +1,9 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { ChildComponent } from '../../shared/child.component';
@@ -35,7 +37,7 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
 
   private sub: any;
   ngOnInit() {
-    this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
+    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       this.instanceId = params['instanceId'];
       this.load();
     });

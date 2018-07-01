@@ -6,7 +6,7 @@
         <br/>
         <div class="searchRow">
           <mat-form-field class="searchField searchPlatform">
-            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
               <mat-option *ngFor="let p of platforms" [value]="p">
                 {{ p.name }}
               </mat-option>
@@ -48,7 +48,7 @@
 
           <ng-container *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
 
-            <div class="mobile-header hidden-md-up">Tokens to rank up with:</div>
+            <div class="mobile-header d-md-none">Tokens to rank up with:</div>
             <div class="rankupRow">
               <span class="rankupContainer" *ngFor="let ru of player.rankups">
                 <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!">
@@ -63,10 +63,10 @@
 
           <ng-container *ngIf="player!=null && player.hasWellRested && player.characters!=null && player.characters.length>0">
 
-            <div class="mobile-header hidden-md-up">Well-Rested (3x Bright Engrams)</div>
+            <div class="mobile-header d-md-none">Well-Rested (3x Bright Engrams)</div>
             <div class="rankupRow">
 
-              <span class="hidden-sm-down">Well-Rested (accelerated XP towards bright engrams):</span>
+              <span class="d-none d-md-inline">Well-Rested (accelerated XP towards bright engrams):</span>
 
               <span class="rankupContainer" *ngFor="let char of player.characters">
                 <span *ngIf="char.wellRested" class="rankup primary-bg-text">
@@ -78,24 +78,24 @@
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
               <mat-icon>message</mat-icon>
-              <span class="hidden-sm-down">Message on XBL</span>
+              <span class="d-none d-md-inline">Message on XBL</span>
             </a>
             <a mat-button (click)="historyPlayer(player)">
               <mat-icon>history</mat-icon>
-              <span class="hidden-sm-down">Activity History</span>
+              <span class="d-none d-md-inline">Activity History</span>
             </a>
             <a mat-button [href]="getRaidLink(player)" rel="noopener" target="_blank" rel="noopener">
               <mat-icon>flag</mat-icon>
-              <span class="hidden-sm-down">Raid.Report</span>
+              <span class="d-none d-md-inline">Raid.Report</span>
             </a>
             <a mat-button [href]="getTrialsLink(player)" rel="noopener" target="_blank" rel="noopener">
               <mat-icon>remove_red_eye</mat-icon>
-              <span class="hidden-sm-down">Trials.Report</span>
+              <span class="d-none d-md-inline">Trials.Report</span>
             </a>
           </div>
         </ng-container>
 
-        <mat-tab-group #maintabs (selectChange)='changeTab($event)'>
+        <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
           <mat-tab label="Checklist">
             <ng-container *ngIf="player!=null">
 
@@ -128,10 +128,11 @@
                   <ng-container *ngFor="let mileStoneName of player.milestoneList">
                     <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
                       <td class="lead">
-                        <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}}</span>
-                        <span class="caption">{{mileStoneName.type}}</span>
+                        <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
                         <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
                           (click)="hideMilestone(mileStoneName.key)">hide</a>
+                          <span class="caption">{{mileStoneName.type}}</span>
+                        
                       </td>
                       <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
                         <span class="check">
@@ -360,7 +361,7 @@
                         <tr>
                           <th style="width: 200px">Name</th>
                           <th style="width: 50px">Status</th>
-                          <th class="hidden-sm-down" *ngIf="checklist.hasDescs">Desc</th>
+                          <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -385,10 +386,12 @@
                                   </span>
                                 </td>
                                 <td>
-                                  <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                  <i *ngIf="!check.checked" class="fa fa-square-o"></i>
+                                  <span class="node-check">
+                                    <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                    <i *ngIf="!check.checked" class="fa fa-square-o"></i>
+                                  </span>
                                 </td>
-                                <td class="hidden-sm-down" *ngIf="checklist.hasDescs">
+                                <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
                                   {{check.desc}}
                                 </td>
                               </tr>
@@ -437,10 +440,10 @@
                                     </span>
                                   </td>
                                   <td>
-                                    <ng-container *ngFor="let c of check.checked">
+                                    <span class="node-check" *ngFor="let c of check.checked">
                                       <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                                       <i *ngIf="!c.checked" class="fa fa-square-o"></i>
-                                    </ng-container>
+                                    </span>
                                   </td>
                                   
                                 </tr>

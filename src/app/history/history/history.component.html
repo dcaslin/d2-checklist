@@ -16,7 +16,7 @@
         <br/>
         <div class="centerMe">
           <mat-form-field class="searchField">
-            <mat-select  [(ngModel)]="selectedMode" (change)="history()" placeholder="Mode">
+            <mat-select  [(ngModel)]="selectedMode" (selectionChange)="history()" placeholder="Mode">
               <mat-option *ngFor="let p of activityModes" [value]="p">
                 {{ p.name }}
               </mat-option>
@@ -24,7 +24,7 @@
           </mat-form-field>
 
           <mat-form-field class="searchField">
-            <mat-select  [(ngModel)]="selectedMaxResults" (change)="history()" placeholder="Max Results">
+            <mat-select  [(ngModel)]="selectedMaxResults" (selectionChange)="history()" placeholder="Max Results">
               <mat-option *ngFor="let p of maxResults" [value]="p">
                 {{ p }}
               </mat-option>
