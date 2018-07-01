@@ -4,6 +4,7 @@
 /dist
 /tmp
 /out-tsc
+/angular_material_schematics*
 
 # dependencies
 /node_modules

@@ -1,10 +1,12 @@
+
+import {filter, takeUntil} from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/filter';
+import { Subject } from 'rxjs';
+
+
+
 import { MatSnackBar } from '@angular/material';
 import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
@@ -65,15 +67,15 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
 
-    this.bungieService.selectedUserFeed.takeUntil(this.unsubscribe$).subscribe((selectedUser: SelectedUser) => {
+    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser = selectedUser;
       this.loggingOn = false;
     });
 
     this.logon(false);
 
-    this.storageService.settingFeed
-      .takeUntil(this.unsubscribe$)
+    this.storageService.settingFeed.pipe(
+      takeUntil(this.unsubscribe$))
       .subscribe(
       x => {
         if (x.theme != null) {
@@ -89,8 +91,8 @@ export class AppComponent implements OnInit, OnDestroy {
     //emit current settings
     this.storageService.refresh();
 
-    this.notificationService.notifyFeed
-      .takeUntil(this.unsubscribe$)
+    this.notificationService.notifyFeed.pipe(
+      takeUntil(this.unsubscribe$))
       .subscribe(
       x => {
         if (x.mode === "success") {
@@ -134,9 +136,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     
-    this.router.events
-      .filter(event => event instanceof NavigationEnd)
-      .takeUntil(this.unsubscribe$)
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntil(this.unsubscribe$),)
       .subscribe(
       (navEnd: NavigationEnd) => {
         try {

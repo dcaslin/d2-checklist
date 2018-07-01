@@ -6,7 +6,7 @@
         <br/>
         <div class="centerMe">
           <mat-form-field class="searchField searchPlatform">
-            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (change)="onPlatformChange()">
+            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
               <mat-option *ngFor="let p of platforms" [value]="p">
                 {{ p.name }}
               </mat-option>
@@ -28,7 +28,7 @@
               <mat-card-title>
                 <h2>{{nightfall.name}}</h2>
               </mat-card-title>
-              <mat-card-subtitle class="hidden-sm-down">{{nightfall.desc}}</mat-card-subtitle>
+              <mat-card-subtitle class="d-none d-md-block">{{nightfall.desc}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
               <ng-container *ngIf="nightfall.modifiers.length>0">

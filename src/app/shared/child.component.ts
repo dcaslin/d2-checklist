@@ -1,6 +1,8 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, OnDestroy } from '@angular/core';
 import { StorageService } from '../service/storage.service';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 
 @Component({
@@ -48,8 +50,8 @@ export class ChildComponent implements OnDestroy {
         this.storageService = storageService;
         this.disableads = this.storageService.getItem("disableads", false);
         this.debugmode = this.storageService.getItem("debugmode", false);
-        this.storageService.settingFeed
-            .takeUntil(this.unsubscribe$)
+        this.storageService.settingFeed.pipe(
+            takeUntil(this.unsubscribe$))
             .subscribe(
             x => {
                 if (x.disableads != null) {

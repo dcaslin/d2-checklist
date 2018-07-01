@@ -1,7 +1,9 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService} from "../../service/bungie.service";
 import { StorageService } from '../../service/storage.service';
@@ -26,7 +28,7 @@ export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy 
   msg: string;
 
   ngOnInit() {
-    this.sub = this.route.queryParams.takeUntil(this.unsubscribe$).subscribe(queryParams => {
+    this.sub = this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(queryParams => {
       const code: string = queryParams['code'];
       const state: string = queryParams['state'];
 

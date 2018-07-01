@@ -3,8 +3,8 @@
  */
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject } from 'rxjs/Rx';
-import 'rxjs/add/operator/toPromise';
+import { Subject } from 'rxjs';
+
 import { NotificationService } from './notification.service';
 import { environment } from '../../environments/environment';
 const XYZ_ROOT: string = "https://www.destinychecklist.net/api/xyz/";

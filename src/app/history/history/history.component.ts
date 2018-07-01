@@ -1,13 +1,15 @@
+
+import {takeUntil} from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
+
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { Player, Character, Platform, ActivityMode, Const } from "../../service/model";
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MatPaginator, MatSort } from '@angular/material';
-import { DurationPipe } from 'angular2-moment';
+import { DurationPipe } from 'ngx-moment';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
@@ -64,7 +66,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
 
-    this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
+    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const platform: string = params['platform'];
 
       this.database.setData([]);

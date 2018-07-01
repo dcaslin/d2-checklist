@@ -1,10 +1,12 @@
+
+import {takeUntil} from 'rxjs/operators';
 /**
  * Created by Dave on 12/21/2016.
  */
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs/Rx';
-import 'rxjs/add/operator/toPromise';
+import { Observable, Subject } from 'rxjs';
+
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
@@ -35,7 +37,7 @@ export class BungieService implements OnDestroy {
 
         this.selectedUserFeed = this.selectedUserSub.asObservable() as Observable<SelectedUser>;
 
-        this.authService.authFeed.takeUntil(this.unsubscribe$).subscribe((ai: AuthInfo) => {
+        this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
             this.authInfo = ai;
             if (ai != null) {
                 this.getBungieMembershipsById(ai.memberId).then((membership: BungieMembership) => {

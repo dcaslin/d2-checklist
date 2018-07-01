@@ -1,8 +1,5 @@
-
 import { Injectable } from '@angular/core';
-
-import { Observable, Subject } from 'rxjs/Rx';
-import 'rxjs/add/operator/toPromise';
+import { Observable, Subject } from 'rxjs';
 
 type Options = "success" | "error" | "info";
 

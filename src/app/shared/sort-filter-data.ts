@@ -1,7 +1,9 @@
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+import {merge as observableMerge,  BehaviorSubject ,  Observable } from 'rxjs';
+
+import {map} from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort} from '@angular/material';
-import { Observable } from 'rxjs/Observable';
 
 export class SortFilterDatabase {
   /** Stream that emits whenever the data has been modified. */
@@ -46,7 +48,7 @@ export class SortFilterDataSource extends DataSource<any> {
       this._sort.sortChange
     ];
 
-    return Observable.merge(...displayDataChanges).map(() => {
+    return observableMerge(...displayDataChanges).pipe(map(() => {
       let data = this._exampleDatabase.data.slice();
 
       // filter if needed
@@ -78,7 +80,7 @@ export class SortFilterDataSource extends DataSource<any> {
       // Grab the page's slice of data.
       const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
       return data.splice(startIndex, this._paginator.pageSize);
-    });
+    }));
   }
 
   disconnect() {

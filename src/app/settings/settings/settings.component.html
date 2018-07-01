@@ -5,21 +5,21 @@
       <br>
       <div>
         <mat-form-field class="col-md-4">
-          <mat-select placeholder="Select theme" name="theme" [ngModel]="theme" (change)="onThemeSelect($event)">
+          <mat-select placeholder="Select theme" name="theme" [ngModel]="theme" (selectionChange)="onThemeSelect($event)">
             <mat-option *ngFor="let t of themes" [value]="t.value">
               {{t.label}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-md-4">
-          <mat-select placeholder="Ad Options" name="disableads" [ngModel]="disableads" (change)="onDisableAdsSelect($event)">
+          <mat-select placeholder="Ad Options" name="disableads" [ngModel]="disableads" (selectionChange)="onDisableAdsSelect($event)">
             <mat-option *ngFor="let t of adChoices" [value]="t.value">
               {{t.label}}
             </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-md-4">
-          <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode" (change)="onDebugSelect($event)">
+          <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode" (selectionChange)="onDebugSelect($event)">
             <mat-option *ngFor="let t of debugChoices" [value]="t.value">
               {{t.label}}
             </mat-option>

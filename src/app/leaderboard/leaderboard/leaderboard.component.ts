@@ -1,15 +1,17 @@
+
+import {fromEvent as observableFromEvent,  Subject ,  Observable } from 'rxjs';
+
+import {debounceTime, takeUntil, distinctUntilChanged} from 'rxjs/operators';
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MatPaginator, MatSort } from '@angular/material';
-import { DurationPipe } from 'angular2-moment';
+import { DurationPipe } from 'ngx-moment';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'anms-leaderboard',
@@ -62,15 +64,15 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
     this.database.setData([]);
     this.getData();
-    Observable.fromEvent(this.filter.nativeElement, 'keyup')
-      .debounceTime(150)
-      .distinctUntilChanged()
+    observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
+      debounceTime(150),
+      distinctUntilChanged(),)
       .subscribe(() => {
         if (!this.dataSource) { return; }
         this.dataSource.filter = this.filter.nativeElement.value;
       });
 
-    this.sub = this.route.params.takeUntil(this.unsubscribe$).subscribe(params => {
+    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       let s = params['name'];
       if (s != null) {
         this.filter.nativeElement.value = s;
