@@ -115,7 +115,7 @@ export class BungieService implements OnDestroy {
     public getAggHistory(char: Character): Promise<void> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
+            return this.httpClient.get<any>(API_ROOT + 'Destiny2/' + char.membershipType + "/Account/" + char.membershipId + "/Character/" + char.characterId + "/Stats/AggregateActivityStats/", opt)
                 .toPromise().then(j => {
                     const resp = self.parseBungieResponse(j);
                     char.aggHistory = self.parseService.parseAggHistory(resp);
