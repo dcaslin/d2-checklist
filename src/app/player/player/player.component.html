@@ -142,7 +142,7 @@
                               <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
                                 <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
 
-                                <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0':'1.0-0'}}</div>
+                                <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
                               </ng-container>
                               <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
                                 <i class="fa fa-square-o"></i>
