@@ -712,6 +712,23 @@ export class ParseService {
                     if (key=="365218222" || key=="2955980198"){
                         mapUrl = "https://lowlidev.com.au/destiny/maps/mars/"+hash;
                     }
+                    //ghost lore
+                    else if (key=="2360931290"){
+                        const loc = entry.destinationHash;
+                        
+                        mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/"+hash;
+                        // // 130
+                        // if (hash=="2117645021"){
+                        //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/ghost-scan/21";
+                        // }
+                        // // 131 
+                        // else if (hash=="3070955226"){
+                        //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/ghost-scan/22";
+                        // }
+                        // else {
+                        //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/"+hash;
+                        // }
+                    }
                     
 
                     const checklistItem: ChecklistItem = {
