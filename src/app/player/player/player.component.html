@@ -376,17 +376,15 @@
                                   </ng-container>
                                   
                                   <span *ngIf="debugmode">
-                                    &ensp;[{{check.hash}}]
-                                    &ensp;<a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.mapUrl}}</a>
+                                    &ensp;[{{check.hash}}]                                    
                                     &ensp;
-                                    <a href="javascript:void()" (click)="routeSearch()">
-                                      <i class="fa fa-refresh" aria-hidden="true"></i>
-                                    </a> 
-                                    <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading===true"></i>
+                                    <a href="javascript:void(0)" (click)="routeSearch()">
+                                      <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
+                                    </a>                                     
                                   </span>
                                 </td>
                                 <td>
-                                  <span class="node-check">
+                                  <span>
                                     <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                                     <i *ngIf="!check.checked" class="fa fa-square-o"></i>
                                   </span>
@@ -431,16 +429,14 @@
                                     </ng-container>
                                     <span *ngIf="debugmode">
                                       &ensp;[{{check.hash}}]
-                                      &ensp;<a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.mapUrl}}</a>
                                       &ensp;
-                                      <a href="javascript:void()" (click)="routeSearch()">
-                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                      <a href="javascript:void(0)" (click)="routeSearch()">
+                                        <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
                                       </a> 
-                                      <i class="fa fa-spinner fa-spin fa-fw" *ngIf="loading===true"></i>
                                     </span>
                                   </td>
                                   <td>
-                                    <span class="node-check" *ngFor="let c of check.checked">
+                                    <span class="space-right" *ngFor="let c of check.checked">
                                       <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                                       <i *ngIf="!c.checked" class="fa fa-square-o"></i>
                                     </span>
