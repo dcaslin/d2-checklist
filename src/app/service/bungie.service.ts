@@ -49,11 +49,11 @@ export class BungieService implements OnDestroy {
                     let selectedUser: SelectedUser = new SelectedUser();
                     selectedUser.membership = membership;
 
-                    //For testing
-                    // let fake: UserInfo = JSON.parse(JSON.stringify(memberships[0]));
+                    //For testing, add a fake PSN account
+                    // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
                     // fake.membershipType = 2;
                     // fake.platformName = "PSN";
-                    // memberships.push(fake);
+                    // membership.destinyMemberships.push(fake);
 
                     let platform: number = 2;
                     let sPlatform: string = localStorage.getItem("preferredPlatform");
@@ -291,7 +291,12 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
-            this.selectedUser.selectedUserCurrencies = x.currencies;
+            if (x!=null){
+                this.selectedUser.selectedUserCurrencies = x.currencies;
+                
+            } else {
+                this.selectedUser.selectedUserCurrencies = null;
+            }
             self.emitUsers();
         });
     }
@@ -309,6 +314,8 @@ export class BungieService implements OnDestroy {
 
     public selectUser(u: UserInfo) {
         this.selectedUser.selectedUser = u;
+        localStorage.setItem("preferredPlatform", "" + u.membershipType);
+        this.refreshCurrency();
         this.emitUsers();
     }
 
