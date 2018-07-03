@@ -820,6 +820,7 @@ export class ParseService {
                                 // these can no longer be completed, throw folks a bone
                                 if (hash == "844419501" || hash == "1942564430") {
                                     allDone = true;
+                                    cntr--;
                                 }
 
                                 checklistItem = {
