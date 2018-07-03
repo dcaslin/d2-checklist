@@ -406,7 +406,8 @@
                 <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
-                        {{checklist.name}} <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
+                        {{checklist.name}}
+                        <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
                       </mat-panel-title>
                       <mat-panel-description>
                         <span *ngFor="let t of checklist.totals">{{t.char.className}} {{t.complete}}/{{t.total}}&emsp;</span>
@@ -428,8 +429,8 @@
                                     <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
                                     <ng-container *ngIf="check.mapUrl!=null">
                                       <a [href]="check.mapUrl" target="_blank" rel="noopener" >{{check.name}} <i class='accent-text fa fa-map-marker'></i></a>
-                                    
                                     </ng-container>
+                                    <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                                     <span *ngIf="debugmode">
                                       &ensp;[{{check.hash}}]
                                       &ensp;
@@ -441,7 +442,8 @@
                                   <td>
                                     <span class="space-right" *ngFor="let c of check.checked">
                                       <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                      <i *ngIf="!c.checked" class="fa fa-square-o"></i>
+                                      <i *ngIf="!c.checked && !check.oncePerAccount" class="fa fa-square-o"></i>
+                                      <i *ngIf="!c.checked && check.oncePerAccount" class="fa fa-minus-square-o"></i>
                                     </span>
                                   </td>
                                   
@@ -456,7 +458,7 @@
             </ng-container>
             <div class="bottom-note">
               <br> * Only 4 of Cayde's Journals are completable  in game, thus the other 16 are pre-filtered.
-              <br> * 2 Adventures are no longer completable, they are hidden on filtering complete and the max possible is 37/35
+              <br> * 2 Adventures are account only
             </div>
             
 

@@ -121,6 +121,7 @@ export interface CharChecklistItem{
     hash: string;
     name: string;
     allDone: boolean;
+    oncePerAccount: boolean;
     checked: CharCheck[];
     mapUrl;
 }
