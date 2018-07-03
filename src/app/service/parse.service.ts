@@ -766,7 +766,6 @@ export class ParseService {
     private parseCharChecklists(resp: any, chars: Character[]): CharChecklist[]{
         const checklists: CharChecklist[] = [];
         if (resp.characterProgressions && resp.characterProgressions.data ){
-
             for (let char of chars){
                 let charProgs = resp.characterProgressions.data[char.characterId];
                 if (charProgs){
@@ -811,22 +810,14 @@ export class ParseService {
                                     const loc = entry.destinationHash;
                                     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/"+hash;
                                 }
-
-
-
                                 let name = entry.displayProperties.name;
-
-                                let allDone = false;
-                                // these can no longer be completed, throw folks a bone
-                                if (hash == "844419501" || hash == "1942564430") {
-                                    allDone = true;
-                                    cntr--;
-                                }
 
                                 checklistItem = {
                                     hash: hash,
                                     name: name,
-                                    allDone: allDone,
+                                    allDone: false,
+                                    // weird adventures that are only once per account
+                                    oncePerAccount: (hash == "844419501" || hash == "1942564430")? true: false,
                                     mapUrl: mapUrl,
                                     checked: []
                                 };
@@ -839,10 +830,30 @@ export class ParseService {
                                 checked: checked
                             });
 
+                            //if this is once per account, mark everything true
+                            // if (checklistItem.oncePerAccount){
+                            //     let anyChecked = false;
+                            //     for (let c of checklistItem.checked){
+                            //         anyChecked = anyChecked || c.checked;
+                            //     }
+                            //     if (anyChecked){
+                            //         for (let c of checklistItem.checked){
+                            //             c.checked = true;
+                            //         }   
+                            //     }
+                            // }
+
+                            checklistItem.allDone = !checklistItem.oncePerAccount;
                             for (let c of checklistItem.checked){
-                                checklistItem.allDone = c.checked || checklistItem.allDone;
+                                if (checklistItem.oncePerAccount){
+                                    checklistItem.allDone = c.checked || checklistItem.allDone;
+                                }
+                                else{
+                                    checklistItem.allDone = c.checked && checklistItem.allDone;
+                                }
+                                
                             }
-                            if (checked){
+                            if (!checklistItem.oncePerAccount && checked){
                                 cntChecked++;
                             }
                         }
@@ -854,6 +865,18 @@ export class ParseService {
                         }
                         checklist.totals.push(charTotal);            
                     });
+                }
+            }
+        }
+        // post-process once per account to get proper totals
+        for (let checklist of checklists){
+            for (let entry of checklist.entries){
+                if (entry.oncePerAccount){
+                    if (entry.allDone){
+                        for (let total of checklist.totals){
+                            total.complete++;
+                        }
+                    }
                 }
             }
         }
