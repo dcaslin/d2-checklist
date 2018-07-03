@@ -25,7 +25,7 @@
           <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
           <div class="button-row">
             <ng-container *ngFor="let plat of platforms">
-              <button *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent" (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
+              <button class="space-right" *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent" (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
             </ng-container>
             <button mat-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie Names</button>
           </div>
@@ -96,7 +96,7 @@
         </ng-container>
 
         <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
-          <mat-tab label="Checklist">
+          <mat-tab label="Milestones">
             <ng-container *ngIf="player!=null">
 
               <div *ngIf="player.milestoneList.length==0">
@@ -335,7 +335,7 @@
             </ng-container>
 
           </mat-tab>
-          <mat-tab label="Nodes"  >
+          <mat-tab label="Checklist"  >
             <ng-container *ngIf="player!=null">
               <div *ngIf="player.checklists==null || player.checklists.length==0">
                 <br>
@@ -343,7 +343,7 @@
                 <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
               </div>
 
-              <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='nodes'">
+              <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
                 <mat-expansion-panel *ngFor="let checklist of player.checklists" [expanded]="debugmode">
                   <mat-expansion-panel-header>
                     <mat-panel-title>
@@ -430,7 +430,7 @@
                                       &ensp;
                                       <a href="javascript:void(0)" (click)="routeSearch()">
                                         <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
-                                      </a> 
+                                      </a>
                                     </span>
                                   </td>
                                   <td>

@@ -105,7 +105,7 @@ export class AuthGuard implements CanActivate {
       {
         path: ':platform/:gt',
         canActivate: [AuthGuard],
-        redirectTo: ':platform/:gt/checklist'
+        redirectTo: ':platform/:gt/milestones'
       },
       {
         path: ':platform/:gt/:tab',
