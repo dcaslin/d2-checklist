@@ -815,10 +815,17 @@ export class ParseService {
 
 
                                 let name = entry.displayProperties.name;
+
+                                let allDone = false;
+                                // these can no longer be completed, throw folks a bone
+                                if (hash == "844419501" || hash == "1942564430") {
+                                    allDone = true;
+                                }
+
                                 checklistItem = {
                                     hash: hash,
                                     name: name,
-                                    allDone: false,
+                                    allDone: allDone,
                                     mapUrl: mapUrl,
                                     checked: []
                                 };
@@ -831,11 +838,8 @@ export class ParseService {
                                 checked: checked
                             });
 
-                            checklistItem.allDone = true;
                             for (let c of checklistItem.checked){
-                                if (!c.checked){
-                                    checklistItem.allDone = false;
-                                }
+                                checklistItem.allDone = c.checked || checklistItem.allDone;
                             }
                             if (checked){
                                 cntChecked++;

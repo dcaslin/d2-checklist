@@ -106,6 +106,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   public changeTab(event: MatTabChangeEvent) {
     const tabName: string = event.tab.textLabel.toLowerCase();
+    if (this.debugmode){
+      console.log("Change tab: "+tabName);
+    }
     this.selectedTab = tabName;
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
   }
@@ -122,13 +125,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (tab == "gear"){
         this.tabs.selectedIndex = 4;
       }
-      else if (tab == "nodes"){
+      else if (tab == "nodes" || tab == "checklist"){
         this.tabs.selectedIndex = 2;
       }
       else if (tab == "chars"){
         this.tabs.selectedIndex = 3;
       }
-      else if (tab == "checklist"){
+      else if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
       }
       else if (tab == "progress"){
