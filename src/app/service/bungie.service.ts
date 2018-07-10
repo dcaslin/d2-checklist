@@ -1,5 +1,5 @@
 
-import {takeUntil} from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 /**
  * Created by Dave on 12/21/2016.
  */
@@ -10,7 +10,7 @@ import { Observable, Subject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -87,6 +87,23 @@ export class BungieService implements OnDestroy {
             }
         });
     }
+
+
+    public async getMots(platform: number, memberId: string): Promise<MotResponse> {
+        try{
+            let opt = await this.buildReqOptions();
+            let hResp = await this.httpClient.get<any>(API_ROOT + "Destiny2/" + platform + "/Triumphs/" + memberId+"/", opt).toPromise();
+            const resp = this.parseBungieResponse(hResp);
+            return resp;
+        }
+        catch (err){
+            console.log('Error grabbing Mots for player');
+            this.handleError(err);
+            return null;
+        }
+    }
+
+
 
     public refreshCurrency() {
         if (this.selectedUser != null) {
@@ -291,9 +308,9 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
 
         this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
-            if (x!=null){
+            if (x != null) {
                 this.selectedUser.selectedUserCurrencies = x.currencies;
-                
+
             } else {
                 this.selectedUser.selectedUserCurrencies = null;
             }
@@ -564,8 +581,8 @@ export class BungieService implements OnDestroy {
                         //self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
                     }
                     //hack for 2/informer  broken account
-                    if (resp.length==1 && resp[0].membershipId=='4611686018465893351'){
-                        resp[0].membershipId='4611686018428560404';
+                    if (resp.length == 1 && resp[0].membershipId == '4611686018465893351') {
+                        resp[0].membershipId = '4611686018428560404';
                     }
 
 
@@ -598,9 +615,7 @@ export class BungieService implements OnDestroy {
                         return null;
                     });
         });
-
     }
-
 
     ngOnDestroy(): void {
         this.unsubscribe$.next();

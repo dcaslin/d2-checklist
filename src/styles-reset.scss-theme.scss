@@ -125,6 +125,20 @@
     }
   }
   
+
+
+  @media screen and (max-width: 800px) {
+    .mat-tab-label{
+        min-width:100px
+    }
+  }
+  
+  @media screen and (max-width: 650px) {
+    .mat-tab-label{
+        min-width:60px
+    }
+  }
+  
   @media screen and (max-width: 600px) {
     table.responsive-table {
       border: 0;
