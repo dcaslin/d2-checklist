@@ -68,6 +68,16 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     return "http://raid.report/"+platformstr+"/"+memberid;
   }
 
+  public getCharacterById(p:Player, id: string){
+    if (p.characters==null) return null;
+    for (let c of p.characters){
+      if (c.characterId === id){
+        return c;
+      }
+    }
+    return null;
+  }
+
   public getTrialsLink(p: Player){
     let platformstr: string;
     if (p.profile.userInfo.membershipType==1){
@@ -79,7 +89,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     else if (p.profile.userInfo.membershipType==4){
       platformstr = "pc";
     }
-    return "https://trials.report/report/"+platformstr+"/"+encodeURI(p.profile.userInfo.displayName);
+    return "https://trials.report/report/"+platformstr+"/"+encodeURI(this.gamerTag);
   }
 
 
@@ -105,7 +115,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
 
   public changeTab(event: MatTabChangeEvent) {
-    const tabName: string = event.tab.textLabel.toLowerCase();
+    const tabName: string = this.getTabLabel(event.index);
+
     if (this.debugmode){
       console.log("Change tab: "+tabName);
     }
@@ -118,18 +129,42 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.setTab();
   }
 
+  private getTabLabel(index: number): string {
+    if (index === 0){ 
+      return "milestones";
+    }
+    else if (index === 1){ 
+      return "progress";
+    }
+    else if (index === 2){ 
+      return "checklist";
+    }
+    else if (index === 3){ 
+      return "triumphs";
+    }
+    else if (index === 4){ 
+      return "chars";
+    }
+    else if (index === 5){ 
+      return "gear";
+    }
+  }
+
   private setTab(): void {
     if (this.tabs==null) return;
     const tab: string = this.selectedTab;
     if (tab!=null){
       if (tab == "gear"){
-        this.tabs.selectedIndex = 4;
+        this.tabs.selectedIndex = 5;
       }
       else if (tab == "nodes" || tab == "checklist"){
         this.tabs.selectedIndex = 2;
       }
-      else if (tab == "chars"){
+      else if (tab == "triumphs"){
         this.tabs.selectedIndex = 3;
+      }
+      else if (tab == "chars"){
+        this.tabs.selectedIndex = 4;
       }
       else if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
@@ -168,55 +203,44 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.saveHiddenMilestones();
   }
 
-  public performSearch(): void {
+  public async performSearch(): Promise<void> {
     if (this.gamerTag == null || this.gamerTag.trim().length == 0) {
       return;
     }
-
     //this.player = null;
     this.loading = true;
-    this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag)
-      .then((p: SearchResult) => {
-        if (p != null) {
-          
-          
-          this.bungieService.getChars(p.membershipType, p.membershipId, 
-            ['Profiles','Characters','CharacterProgressions','CharacterActivities',
-            'CharacterEquipment','ProfileInventories','CharacterInventories',
-            'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
-            'ProfileProgression'
-            //'ItemTalentGrids','ItemCommonData','ItemPlugStates','ItemObjectives'
-          ])
-            .then((x: Player) => {
-            
-            this.player = x;
-            this.setTab();
-            this.loading = false;
-
-            //hack for raid
-            if (x.characters!=null){
-              this.bungieService.updateAggHistory(x.characters).then(x=>{
-                //nothing needed
-              });
-              this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x=>{
-                //nothing needed
-              });
-              this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x=>{
-                //nothing needed
-              });
-              this.xyzService.updateDrops(x).then(x=>{
-              });
-            }
-          })
-        }
-        else {
-          this.loading = false;
-          this.player = null;
-        }
-      })
-      .catch((x) => {
+    const p = await this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag);
+    
+    try{ 
+      if (p != null) {
+        const x = await this.bungieService.getChars(p.membershipType, p.membershipId, 
+          ['Profiles','Characters','CharacterProgressions','CharacterActivities',
+          'CharacterEquipment','ProfileInventories','CharacterInventories',
+          'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
+          'ProfileProgression'
+          //'ItemTalentGrids','ItemCommonData','ItemPlugStates','ItemObjectives'
+        ]);
+        this.player = x;
+        this.setTab();
         this.loading = false;
-      });
+
+        if (x.characters!=null){
+          await this.bungieService.updateAggHistory(x.characters);
+          await this.bungieService.updateRaidHistory(x.milestoneList, x.characters);
+          this.player.mots = await this.bungieService.getMots(p.membershipType, p.membershipId);
+          await this.bungieService.updateNfHistory(x.milestoneList, x.characters);
+          await this.xyzService.updateDrops(x);
+        }
+      }
+      else {
+        this.loading = false;
+        this.player = null;
+      }
+    }
+    catch (x){
+      this.loading = false;
+
+    }
   }
 
   currentGt: string;

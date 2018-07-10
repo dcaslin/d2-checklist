@@ -1,4 +1,57 @@
 
+export interface MotResponse{
+    displayProperties: MotDisplayProps;
+    rewards: MotReward[];
+    categories: MotCategory[];
+
+    startDate: string;
+    endDate: string;
+
+    faqLink: string;
+    helpLink: string;
+    
+    backgroundImage: string;
+    discountCodeExpiresDate: string;
+    generateCodeEndDate: string;
+    eventStartDate: string;
+    eventEndDate: string;
+    currentPoints: number;
+    unclaimedPoints: number;
+    maximumPoints: number;
+    faqContentId: string;
+    helpContentId: string;
+    nameplateImage: string;
+    upgradedNameplateImage: string;
+
+}
+
+export interface MotCategory{
+    displayProperties: MotDisplayProps;
+    records: MotRecord[];
+}
+
+export interface MotDisplayProps {
+    description: string;
+    name: string;
+    icon: string;
+    hasIcon: boolean;
+  }
+
+export interface MotRecord {
+    progressCaption: string;
+    difficulty: number;
+    pointValue: number;
+    state: number;
+    hasProgressBar: boolean;
+    completedAtProgress: number;
+  }
+
+export interface MotReward {
+    displayProperties: MotDisplayProps;
+    pointValueThreshold: number;
+    earned: boolean;
+  }
+
 export class ActivityMode {
     name: string;
     type: number;
@@ -151,6 +204,7 @@ export class Player {
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
+    public mots: MotResponse;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[]) {
         this.profile = profile;
