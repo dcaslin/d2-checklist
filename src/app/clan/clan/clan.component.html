@@ -138,6 +138,12 @@
                   <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
 
                   </th>
+                  <th matTooltip="Moment of Triumph Pts">
+                      <a href="javascript:void(0)" (click)="togglePtSort()">Pts
+                          <i *ngIf="sort=='ptDesc'" class="fa fa-sort-desc"></i>
+                          <i *ngIf="sort=='ptAsc'" class="fa fa-sort-asc"></i>
+                        </a>
+                  </th>
                 </ng-container>
               </tr>
             </thead>
@@ -179,13 +185,17 @@
                         </span>
                       </ng-container> 
                     </td>
+                    <td>
+                      <ng-container *ngIf="member.player.mots!=null">{{member.player.mots.unclaimedPoints+member.player.mots.currentPoints}}</ng-container>
+                    </td>
                   </ng-container>
                 </ng-container>
                 <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
                   <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
+                  <td>...</td>
                 </ng-container>
                 <ng-container *ngIf="member.errorMsg!=null && modelPlayer!=null">
-                  <td [attr.colspan]="modelPlayer.milestoneList.length">
+                  <td [attr.colspan]="modelPlayer.milestoneList.length+1">
                     {{member.errorMsg}}
                   </td>
                 </ng-container>
@@ -208,6 +218,12 @@
                 <ng-container *ngIf="modelPlayer!=null">
                   <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
 
+                  </th>
+                  <th matTooltip="Moment of Triumph Pts">
+                      <a href="javascript:void(0)" (click)="togglePtSort()">Pts
+                          <i *ngIf="sort=='ptDesc'" class="fa fa-sort-desc"></i>
+                          <i *ngIf="sort=='ptAsc'" class="fa fa-sort-asc"></i>
+                        </a>
                   </th>
                 </ng-container>
               </tr>
