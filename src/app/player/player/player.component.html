@@ -331,7 +331,7 @@
 
                           <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                           <div>
-                            <mat-progress-bar color="accent" mode="determinate" [value]="faction.percentToNextLevel*100">
+                            <mat-progress-bar  mode="determinate" [value]="faction.percentToNextLevel*100">
                             </mat-progress-bar>
                           </div>
                         </td>
@@ -553,7 +553,7 @@
 
                             <ng-container *ngIf="r.currentProgress!=null">
                               {{r.currentProgress}}/{{r.completedAtProgress}}
-                              <mat-progress-bar color="primary" mode="determinate" [value]="100* (r.currentProgress/r.completedAtProgress)">
+                              <mat-progress-bar mode="determinate" [value]="100* (r.currentProgress/r.completedAtProgress)">
                               </mat-progress-bar>
                             </ng-container>
 
@@ -639,14 +639,14 @@
                 <mat-card-content>
 
                   <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
-                    <mat-progress-bar color="accent" mode="determinate" [value]="char.percentToNextLevel*100">
+                    <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
                     </mat-progress-bar>
                   </div>
 
                   <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=char.maxLevel">
                     <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
                     to level {{char.legendProgression.level+1}}
-                    <mat-progress-bar color="accent" mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
+                    <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
                     </mat-progress-bar>
                   </div>
                   <br>
