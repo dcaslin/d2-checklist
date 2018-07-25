@@ -577,6 +577,11 @@ export class BungieService implements OnDestroy {
                         return null;
                     }
                     if (resp.length > 1) {
+                        for (let item of resp){
+                            if (item.displayName == gt){
+                                return item;
+                            }
+                        }
                         return resp[0];
                         // return resp[resp.length - 1];
                         //self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
