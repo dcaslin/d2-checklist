@@ -325,9 +325,13 @@
 
                         </td>
                         <td data-label="">
-
-                          <ng-container *ngIf="faction.tokensHeld!=null">{{faction.tokensHeld}} / {{faction.tokensNeeded}} tokens needed TNL</ng-container>
-                          <ng-container *ngIf="faction.tokensHeld==null">Tokens Needed TNL {{faction.tokensNeeded}} </ng-container>
+                          <ng-container *ngIf="!faction.hideTokens">
+                            <ng-container *ngIf="faction.tokensHeld!=null">{{faction.tokensHeld}} / {{faction.tokensNeeded}} tokens needed TNL</ng-container>
+                            <ng-container *ngIf="faction.tokensHeld==null">Tokens Needed TNL {{faction.tokensNeeded}} </ng-container>
+                          </ng-container>
+                          <ng-container *ngIf="faction.hideTokens">
+                            {{faction.currentProgress}} points
+                          </ng-container>
 
                           <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                           <div>

@@ -602,6 +602,7 @@ export class Progression {
     tokensHeld?: number;
 
     xyz300: boolean;
+    hideTokens: boolean;
 }
 
 export class Const {
