@@ -381,6 +381,25 @@ export class ParseService {
                     c.legendProgression = prog;
                     c.wellRested = prog.nextLevelAt*3 > prog.weeklyProgress;
                 }
+                // valor
+                else if (key == "3882308435"){
+                    let p: _Progression = _prog.progressions[key];
+                    let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
+                    if (prog != null) {
+                        prog.hideTokens = true;
+                        factions.push(prog);
+                    }
+                }
+                // glory
+                else if (key=="2679551909") {
+                    let p: _Progression = _prog.progressions[key];
+                    let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
+                    if (prog != null) {
+                        prog.hideTokens = true;
+                        factions.push(prog);
+                    }
+                }
+                
             });
         }
 
@@ -1018,6 +1037,7 @@ export class ParseService {
                 chars.forEach(c => {
                     if (c.factions == null) return;
                     c.factions.forEach(f => {
+                        if (f.hideTokens==true) return;
                         const held = ParseService.getTokensHeld(f, gear);
                         f.tokensHeld = held;
 
