@@ -767,6 +767,12 @@ export class ParseService {
                 if (checklistName == "Latent Memories"){
                     checklistName = "Memory Fragments";
                 }
+                if (checklistName == "The Journals of Cayde-6"){
+                    checklistName = "Cayde Journals";
+                }
+                if (checklistName == "Forsaken Item Collection - Preview, Profile-wide Items"){
+                    checklistName = "Forsaken - Profile";
+                }
 
                 const checklist: Checklist = {
                     hash: key,
@@ -800,9 +806,15 @@ export class ParseService {
                             }
                         }
                         if (checklist==null){
+                            let checklistName = desc.displayProperties.name;
+
+                            if (checklistName == "Forsaken Item Collection - Preview, Character Specific Items"){
+                                checklistName = "Forsaken Char";
+                            }
+
                             checklist = {
                                 hash: key,
-                                name: desc.displayProperties.name,
+                                name: checklistName,
                                 totals: [],
                                 entries: []
                             }
