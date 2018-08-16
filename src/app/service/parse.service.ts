@@ -809,7 +809,7 @@ export class ParseService {
                             let checklistName = desc.displayProperties.name;
 
                             if (checklistName == "Forsaken Item Collection - Preview, Character Specific Items"){
-                                checklistName = "Forsaken Char";
+                                checklistName = "Forsaken - Char";
                             }
 
                             checklist = {
