@@ -81,6 +81,14 @@
     color: mat-color($foreground, secondary-text);
   }
 
+  .simple-caption{
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
+    font-size: smaller;
+    font-weight: light;
+    color: mat-color($foreground, secondary-text);
+  }
+
   table.responsive-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;
@@ -135,7 +143,7 @@
   
   @media screen and (max-width: 650px) {
     .mat-tab-label{
-        min-width:60px
+        min-width:50px
     }
   }
   

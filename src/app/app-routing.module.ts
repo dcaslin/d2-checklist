@@ -16,18 +16,25 @@ import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { DestinyCacheService} from './service/destiny-cache.service';
 import { Subject } from 'rxjs';
+import { BungieService } from '@app/service/bungie.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   public loader$ = new Subject<boolean>();
 
-  constructor(private destinyCacheService: DestinyCacheService) {
+  constructor(private destinyCacheService: DestinyCacheService, private bungieService: BungieService) {
   }
 
   canActivate(): Promise<boolean> {
     this.loader$.next(true);
     // return Promise.resolve(false);
     return this.destinyCacheService.init().then(val => {
+      try{
+        this.bungieService.refreshCurrency();
+      }
+      catch (e){
+        console.dir(e);
+      }
       this.loader$.next(false);
       return val;
     });

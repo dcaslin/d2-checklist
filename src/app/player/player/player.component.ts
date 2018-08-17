@@ -137,15 +137,18 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       return "progress";
     }
     else if (index === 2){ 
-      return "checklist";
+      return "soh";
     }
     else if (index === 3){ 
-      return "triumphs";
+      return "checklist";
     }
     else if (index === 4){ 
-      return "chars";
+      return "triumphs";
     }
     else if (index === 5){ 
+      return "chars";
+    }
+    else if (index === 6){ 
       return "gear";
     }
   }
@@ -155,22 +158,25 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     const tab: string = this.selectedTab;
     if (tab!=null){
       if (tab == "gear"){
-        this.tabs.selectedIndex = 5;
+        this.tabs.selectedIndex = 6;
       }
       else if (tab == "nodes" || tab == "checklist"){
-        this.tabs.selectedIndex = 2;
-      }
-      else if (tab == "triumphs"){
         this.tabs.selectedIndex = 3;
       }
-      else if (tab == "chars"){
+      else if (tab == "triumphs"){
         this.tabs.selectedIndex = 4;
+      }
+      else if (tab == "chars"){
+        this.tabs.selectedIndex = 5;
       }
       else if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
       }
       else if (tab == "progress"){
         this.tabs.selectedIndex = 1;
+      }
+      else if (tab == "soh"){
+        this.tabs.selectedIndex = 2;
       }
     }
   }
@@ -215,10 +221,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (p != null) {
         const x = await this.bungieService.getChars(p.membershipType, p.membershipId, 
           ['Profiles','Characters','CharacterProgressions','CharacterActivities',
-          'CharacterEquipment','ProfileInventories','CharacterInventories',
-          'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
-          'ProfileProgression'
-          //'ItemTalentGrids','ItemCommonData','ItemPlugStates','ItemObjectives'
+          'CharacterEquipment','ProfileInventories','CharacterInventories',          
+          'ProfileProgression','ItemObjectives'
+          //'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
+          //'ItemTalentGrids','ItemCommonData'
         ]);
         this.player = x;
         this.setTab();

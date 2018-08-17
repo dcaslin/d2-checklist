@@ -192,14 +192,17 @@ a.underline:link {
   opacity: 0.5;
 }
 
+.obj-desc{
+  text-align: left;
+}
+
 .item-icon{
-  //  width: 19px;
-  //  height: 19px;
+  float: left;
   width: 64px;
   height: 64px;
-
+  margin-right: 5px;
   background-size: cover;
-  display: inline-block;
+  //display: inline-block;
 }
 
 

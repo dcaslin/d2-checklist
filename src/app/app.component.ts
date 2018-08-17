@@ -149,13 +149,6 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
       );
-    // this.destinyCacheService.init().then(() => {
-    //   this.notificationService.info("Cache loaded");
-    // })
-      // .catch((err) => {
-      //   console.dir(err);
-      //   this.notificationService.fail("Failed to load destiny manifest.");
-      // });
   }
 
   ngOnDestroy(): void {
