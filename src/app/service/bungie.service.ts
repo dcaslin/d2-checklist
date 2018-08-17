@@ -1,5 +1,5 @@
 
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, first } from 'rxjs/operators';
 /**
  * Created by Dave on 12/21/2016.
  */
@@ -73,12 +73,13 @@ export class BungieService implements OnDestroy {
 
                     //after the fact search for clan
                     this.setClans(membership);
-                    //after the fact currency check
-                    if (this.selectedUser.selectedUser != null) {
-                        this.destinyCacheService.init().then(val => {
-                            this.setCurrencies();
-                        });
-                    }
+                    //let the routing module do this, so we don't double init
+                    // //after the fact currency check
+                    // if (this.selectedUser.selectedUser != null) {
+                    //     if (this.destinyCacheService.cache!=null){
+                    //         this.setCurrencies();
+                    //     }
+                    // }
                 });
             }
             else {
@@ -108,6 +109,15 @@ export class BungieService implements OnDestroy {
     public refreshCurrency() {
         if (this.selectedUser != null) {
             this.setCurrencies();
+        }
+        else{ 
+            console.log("Selected currency but no user");           
+            this.selectedUserFeed.pipe(first()).subscribe((selectedUser: SelectedUser) => {
+                if (this.selectedUser != null) {
+                    this.setCurrencies();
+                    console.log("There we");  
+                }
+            });
         }
     }
 

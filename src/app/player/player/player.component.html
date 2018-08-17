@@ -46,35 +46,6 @@
             </span>
           </h4>
 
-          <ng-container *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
-
-            <div class="mobile-header d-md-none">Tokens to rank up with:</div>
-            <div class="rankupRow">
-              <span class="rankupContainer" *ngFor="let ru of player.rankups">
-                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!">
-                  {{ru.name}}*
-                </a>
-                <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
-                  {{ru.name}}
-                </span>
-              </span>
-            </div>
-          </ng-container>
-
-          <ng-container *ngIf="player!=null && player.hasWellRested && player.characters!=null && player.characters.length>0">
-
-            <div class="mobile-header d-md-none">Well-Rested (3x Bright Engrams)</div>
-            <div class="rankupRow">
-
-              <span class="d-none d-md-inline">Well-Rested (accelerated XP towards bright engrams):</span>
-
-              <span class="rankupContainer" *ngFor="let char of player.characters">
-                <span *ngIf="char.wellRested" class="rankup primary-bg-text">
-                  {{char.className}} - {{char.light}}
-                </span>
-              </span>
-            </div>
-          </ng-container>
           <div class="button-row">
             <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
               <mat-icon>message</mat-icon>
@@ -351,6 +322,52 @@
 
             </ng-container>
 
+          </mat-tab>
+          
+          <mat-tab>
+              <ng-template mat-tab-label>
+                  <i class="fa fa-fire"></i>
+                  <span class="d-none d-md-inline">&ensp;SoH</span>
+                </ng-template>
+                <ng-container *ngIf="player!=null">
+                    <mat-tab-group>
+                        <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+        
+                          <div *ngIf="player.sohGear==null">
+                            <br>
+                            <h1>Privacy</h1>
+                            <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+                          </div>
+                          <div *ngIf="player.sohGear.length==0">
+                              <br>
+                              This player has no visible Solstice of Heroes Gear. They may still being doing SoH but just may have the gear unequipped right now.
+                            </div>
+                          <table class="responsive-table" *ngIf="player.sohGear!=null && player.sohGear.length>0">
+                            <tbody>
+                              <ng-container *ngFor="let g of player.sohGear">
+                                <tr *ngIf="g.soh && g.classAvail && g.classAvail[char.classType]==true">
+                                  <td class="lead" data-label="">
+                                      <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                                      {{g.name}}    {{g.owner.className}}  {{g.bucketOrder}}                           
+                                      <div class="simple-caption">{{g.desc}}</div>
+                                  </td>
+                                  <td data-label="">
+                                    <div class="obj-desc" *ngFor="let obj of g.objectives">
+                                      <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                      <i *ngIf="!obj.complete" class="fa fa-square-o"></i>
+                                      {{obj.progressDescription}}
+                                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </ng-container>                              
+                            </tbody>
+                          </table>
+                          <br>
+                        </mat-tab>
+                      </mat-tab-group>
+                </ng-container>
+          
           </mat-tab>
           <mat-tab>
             <ng-template mat-tab-label>
@@ -680,6 +697,36 @@
 
           </mat-tab> -->
         </mat-tab-group>
+        
+        <!-- <ng-container *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
+
+            <div class="mobile-header d-md-none">Tokens to rank up with:</div>
+            <div class="rankupRow">
+              <span class="rankupContainer" *ngFor="let ru of player.rankups">
+                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!">
+                  {{ru.name}}*
+                </a>
+                <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
+                  {{ru.name}}
+                </span>
+              </span>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="player!=null && player.hasWellRested && player.characters!=null && player.characters.length>0">
+
+            <div class="mobile-header d-md-none">Well-Rested (3x Bright Engrams)</div>
+            <div class="rankupRow">
+
+              <span class="d-none d-md-inline">Well-Rested (accelerated XP towards bright engrams):</span>
+
+              <span class="rankupContainer" *ngFor="let char of player.characters">
+                <span *ngIf="char.wellRested" class="rankup primary-bg-text">
+                  {{char.className}} - {{char.light}}
+                </span>
+              </span>
+            </div>
+          </ng-container> -->
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">

@@ -1,3 +1,9 @@
+export interface ItemObjective{
+    completionValue: number;
+    progressDescription: string;
+    progress: number;
+    complete: boolean;
+}
 
 export interface MotResponse{
     displayProperties: MotDisplayProps;
@@ -200,19 +206,19 @@ export class Player {
     characters: Character[];
     milestoneList: MileStoneName[];
     currencies: Currency[];
-    gear: InventoryItem[];
+    sohGear: InventoryItem[];
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
     public mots: MotResponse;
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], gear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], sohGear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
         this.milestoneList = milestoneList;
         this.currencies = currencies;
-        this.gear = gear;
+        this.sohGear = sohGear;
         this.rankups = rankups;
         this.superprivate = superprivate;
         this.hasWellRested = hasWellRested;
@@ -235,7 +241,11 @@ export class InventoryItem {
     readonly perks: Perk[];
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
-
+    readonly objectives: ItemObjective[];
+    readonly soh: boolean;
+    readonly desc: string;
+    readonly classAvail: any;
+    readonly bucketOrder: number;
     //more to come, locked other stuff
 
     damageTypeString(): string{
@@ -248,7 +258,7 @@ export class InventoryItem {
 
     constructor(hash: string, name: string, equipped: boolean, owner: Character, 
         icon: string, type: ItemType, typeName: string, quantity: number,
-        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[]
+        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[], objectives: ItemObjective[], soh: boolean, desc: string, classAvail: any, bucketOrder: number
     ) {
         this.hash = hash;
         this.name = name;
@@ -263,6 +273,11 @@ export class InventoryItem {
         this.perks = perks;
         this.stats = stats;
         this.sockets = sockets;
+        this.objectives = objectives;
+        this.soh = soh;
+        this.desc = desc;
+        this.classAvail = classAvail;
+        this.bucketOrder = bucketOrder;
     }
 }
 
@@ -318,6 +333,7 @@ export class Character {
     race: string;
     gender: string;
     className: string;
+    classType: number;
     levelProgression: LevelProgression;
     legendProgression: Progression;
     wellRested: boolean = false;

@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective
 } from './model';
 @Injectable()
 export class ParseService {
@@ -36,6 +36,7 @@ export class ParseService {
         char.gender = this.destinyCacheService.cache.Gender[c.genderHash].displayProperties.name;
         char.race = this.destinyCacheService.cache.Race[c.raceHash].displayProperties.name;
         char.className = this.destinyCacheService.cache.Class[c.classHash].displayProperties.name;
+        char.classType = c.classType;
         char.stats = [];
         Object.keys(c.stats).forEach(key => {
             let val: number = c.stats[key];
@@ -1040,9 +1041,9 @@ export class ParseService {
                 let parsed: InventoryItem = this.parseInvItem(itm, false, shared, vault, resp.itemComponents);
                 if (parsed != null) {
                     gear.push(parsed);
+                   
                 }
             });
-
 
             //post process faction tokens
             if (chars != null) {
@@ -1065,8 +1066,24 @@ export class ParseService {
 
                 });
             }
+            
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, gear, rankups, superprivate, hasWellRested, checklists, charChecklists);
+
+        let sohSet: any = {};
+        for (let parsed of gear){
+            if (parsed.soh == true){
+                sohSet[parsed.hash] = parsed;
+            }
+        }
+        let sohList:InventoryItem[] = [];
+        for (let key in sohSet){
+            sohList.push(sohSet[key]);
+        }
+        sohList.sort((a,b)=>{
+            return a.bucketOrder - b.bucketOrder;
+        });
+
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, sohList, rankups, superprivate, hasWellRested, checklists, charChecklists);
     }
 
     private static getTokensHeld(f: Progression, gear: InventoryItem[]): number {
@@ -1153,6 +1170,52 @@ export class ParseService {
         if (desc.inventory.bucketTypeHash == 1469714392) {
             type = ItemType.Consumable;
         }
+        let rank: number = null;
+        const objectives: ItemObjective[] = [];
+        let soh: boolean = false;
+        if (desc.displayProperties.name.indexOf("(Scorched)")>0) rank = 1;
+        if (desc.displayProperties.name.indexOf("(Rekindled)")>0) rank = 2;
+        if (desc.displayProperties.name.indexOf("(Resplendent)")>0) rank = 3;
+        if (rank!=null){
+            if (itemComp != null) {                    
+                if (itemComp.objectives != null && itemComp.objectives.data != null) {
+                    soh = true;
+                    let objs: any = itemComp.objectives.data[itm.itemInstanceId];
+                    for (let o of objs.objectives){
+                        let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                        const iObj: ItemObjective = {
+                            completionValue: oDesc.completionValue,
+                            progressDescription: oDesc.progressDescription,
+                            progress: o.progress,
+                            complete: o.complete
+                        }
+                        objectives.push(iObj);
+
+                    }
+                }
+            }
+        }
+
+        const classAvail: any = {};
+        if (desc.itemCategoryHashes!=null){
+            for (let hash of desc.itemCategoryHashes){
+                if (hash==21){
+                    classAvail["2"] = true;
+                    //warlock 2
+                }
+                else if (hash==22){
+                    classAvail["0"] = true;
+                    //titan 0
+                }
+                else if (hash==23){
+                    classAvail["1"] = true;
+                    //hunter 1
+                }
+            }
+
+        }
+        
+
 
         //TODO parse perks
 
@@ -1162,107 +1225,114 @@ export class ParseService {
         let stats: InventoryStat[] = [];
         let sockets: InventorySocket[] = [];
 
-        if (itemComp != null) {
-            if (itemComp.instances != null && itemComp.instances.data != null) {
-                let inst: _InventoryInstanceData = itemComp.instances.data[itm.itemInstanceId];
-                if (inst != null) {
-                    if (inst.primaryStat != null)
-                        power = inst.primaryStat.value;
-                    equipped = inst.isEquipped;
-                    damageType = inst.damageType;
-                }
+        //if (itemComp != null) {
+            // if (itemComp.instances != null && itemComp.instances.data != null) {
+            //     let inst: _InventoryInstanceData = itemComp.instances.data[itm.itemInstanceId];
+            //     if (inst != null) {
+            //         if (inst.primaryStat != null)
+            //             power = inst.primaryStat.value;
+            //         equipped = inst.isEquipped;
+            //         damageType = inst.damageType;
+            //     }
 
-            }
+            // }
 
-            if (itemComp.perks != null && itemComp.perks.data != null) {
-                let _i = itemComp.perks.data[itm.itemInstanceId];
-                if (_i != null) {
-                    let _perks: _InventoryPerk[] = itemComp.perks.data[itm.itemInstanceId].perks;
-                    _perks.forEach(_perk => {
-                        let pDesc = this.destinyCacheService.cache.Perk[_perk.perkHash];
-                        if (pDesc != null) {
-                            let perk = new Perk("" + _perk.perkHash, pDesc.displayProperties.name, pDesc.displayProperties.description, _perk.iconPath, _perk.isActive, _perk.visible);
-                            perks.push(perk);
-                        }
-                    });
-                }
-            }
-            if (itemComp.stats != null && itemComp.stats.data != null) {
+            // if (itemComp.perks != null && itemComp.perks.data != null) {
+            //     let _i = itemComp.perks.data[itm.itemInstanceId];
+            //     if (_i != null) {
+            //         let _perks: _InventoryPerk[] = itemComp.perks.data[itm.itemInstanceId].perks;
+            //         _perks.forEach(_perk => {
+            //             let pDesc = this.destinyCacheService.cache.Perk[_perk.perkHash];
+            //             if (pDesc != null) {
+            //                 let perk = new Perk("" + _perk.perkHash, pDesc.displayProperties.name, pDesc.displayProperties.description, _perk.iconPath, _perk.isActive, _perk.visible);
+            //                 perks.push(perk);
+            //             }
+            //         });
+            //     }
+            // }
+            // if (itemComp.stats != null && itemComp.stats.data != null) {
 
-                let _i = itemComp.stats.data[itm.itemInstanceId];
-                if (_i != null) {
-                    let _stats: { [statHash: string]: _InventoryStat } = _i.stats;
-                    Object.keys(_stats).forEach((key) => {
-                        let _stat: _InventoryStat = _stats[key];
-                        let statDesc = this.destinyCacheService.cache.Stat[_stat.statHash];
-                        if (statDesc != null) {
-                            let stat = new InventoryStat(statDesc.displayProperties.name,
-                                statDesc.displayProperties.description, _stat.value);
-                            stats.push(stat);
-                        }
-                    });
-                }
-            }
+            //     let _i = itemComp.stats.data[itm.itemInstanceId];
+            //     if (_i != null) {
+            //         let _stats: { [statHash: string]: _InventoryStat } = _i.stats;
+            //         Object.keys(_stats).forEach((key) => {
+            //             let _stat: _InventoryStat = _stats[key];
+            //             let statDesc = this.destinyCacheService.cache.Stat[_stat.statHash];
+            //             if (statDesc != null) {
+            //                 let stat = new InventoryStat(statDesc.displayProperties.name,
+            //                     statDesc.displayProperties.description, _stat.value);
+            //                 stats.push(stat);
+            //             }
+            //         });
+            //     }
+            // }
 
-            if (itemComp.sockets != null && itemComp.sockets.data != null) {
-                let _i = itemComp.sockets.data[itm.itemInstanceId];
-                if (_i != null) {
-                    let _sockets: { [statHash: string]: _InventorySocket } = _i.sockets;
-                    Object.keys(_sockets).forEach((key) => {
-                        let plugs: InventoryPlug[] = [];
-                        let _socket: _InventorySocket = _sockets[key];
-                        //if (!_socket.isEnabled) return;
-                        let plugDesc = this.destinyCacheService.cache.InventoryItem[_socket.plugHash];
-                        if (plugDesc == null) return;
-                        let bonusLight = 0;
-                        if (plugDesc.investmentStats!=null){
-                            plugDesc.investmentStats.forEach(s => {
-                                if (s.statTypeHash == 1935470627) {
-                                    bonusLight = s.value;
-                                }
-                            });
-                        }
-                        let plug: InventoryPlug = new InventoryPlug(_socket.plugHash + "",
-                            plugDesc.displayProperties.name, plugDesc.displayProperties.description, true);
-                        plugs.push(plug);
-                        if (_socket.reusablePlugHashes != null) {
-                            _socket.reusablePlugHashes.forEach(h => {
-                                //this one was selected and we're done
-                                if (h + "" == plug.hash) return;
-                                let plugDesc = this.destinyCacheService.cache.InventoryItem[h];
-                                if (plugDesc != null) {
-                                    let rPlug = new InventoryPlug(h + "", plugDesc.displayProperties.name,
-                                        plugDesc.displayProperties.description, false);
-                                    plugs.push(rPlug);
-                                }
+            // if (itemComp.sockets != null && itemComp.sockets.data != null) {
+            //     let _i = itemComp.sockets.data[itm.itemInstanceId];
+            //     if (_i != null) {
+            //         let _sockets: { [statHash: string]: _InventorySocket } = _i.sockets;
+            //         Object.keys(_sockets).forEach((key) => {
+            //             let plugs: InventoryPlug[] = [];
+            //             let _socket: _InventorySocket = _sockets[key];
+            //             //if (!_socket.isEnabled) return;
+            //             let plugDesc = this.destinyCacheService.cache.InventoryItem[_socket.plugHash];
+            //             if (plugDesc == null) return;
+            //             let bonusLight = 0;
+            //             if (plugDesc.investmentStats!=null){
+            //                 plugDesc.investmentStats.forEach(s => {
+            //                     if (s.statTypeHash == 1935470627) {
+            //                         bonusLight = s.value;
+            //                     }
+            //                 });
+            //             }
+            //             let plug: InventoryPlug = new InventoryPlug(_socket.plugHash + "",
+            //                 plugDesc.displayProperties.name, plugDesc.displayProperties.description, true);
+            //             plugs.push(plug);
+            //             if (_socket.reusablePlugHashes != null) {
+            //                 _socket.reusablePlugHashes.forEach(h => {
+            //                     //this one was selected and we're done
+            //                     if (h + "" == plug.hash) return;
+            //                     let plugDesc = this.destinyCacheService.cache.InventoryItem[h];
+            //                     if (plugDesc != null) {
+            //                         let rPlug = new InventoryPlug(h + "", plugDesc.displayProperties.name,
+            //                             plugDesc.displayProperties.description, false);
+            //                         plugs.push(rPlug);
+            //                     }
 
-                            });
-                        }
-                        sockets.push(new InventorySocket(plugs, bonusLight));
-                    });
-                }
-            }
+            //                 });
+            //             }
+            //             sockets.push(new InventorySocket(plugs, bonusLight));
+            //         });
+            //     }
+            // }
             // objectives /data/itemInstanceId/stuff?
             // talentGrids
             // plugStates?
+        //}
+
+        // if (perks.length == 0 && desc.perks != null && desc.perks.length > 0) {
+        //     desc.perks.forEach(_perk => {
+        //         let pHash: string = _perk.perkHash;
+        //         let pDesc = this.destinyCacheService.cache.Perk[_perk.perkHash];
+        //         let perk = new Perk("" + _perk.perkHash, pDesc.displayProperties.name,
+        //             pDesc.displayProperties.description, pDesc.displayProperties.icon, true, pDesc.isDisplayable);
+        //         perks.push(perk);
+
+
+        //     });
+        // }
+        
+
+        //InventoryBucket
+        let bucketOrder = null;
+        if (desc.inventory.bucketTypeHash){
+            const bucketDesc = this.destinyCacheService.cache.InventoryBucket[desc.inventory.bucketTypeHash];
+            bucketOrder = bucketDesc.bucketOrder;
         }
-
-        if (perks.length == 0 && desc.perks != null && desc.perks.length > 0) {
-            desc.perks.forEach(_perk => {
-                let pHash: string = _perk.perkHash;
-                let pDesc = this.destinyCacheService.cache.Perk[_perk.perkHash];
-                let perk = new Perk("" + _perk.perkHash, pDesc.displayProperties.name,
-                    pDesc.displayProperties.description, pDesc.displayProperties.icon, true, pDesc.isDisplayable);
-                perks.push(perk);
-
-
-            });
-        }
-
 
         return new InventoryItem("" + itm.itemHash, desc.displayProperties.name,
             equipped, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName, itm.quantity,
-            power, damageType, perks, stats, sockets
+            power, damageType, perks, stats, sockets, objectives, soh, desc.displayProperties.description, classAvail, bucketOrder
         );
     }
 
