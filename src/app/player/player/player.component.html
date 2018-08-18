@@ -356,7 +356,7 @@
                                       <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                                       <i *ngIf="!obj.complete" class="fa fa-square-o"></i>
                                       {{obj.progressDescription}}
-                                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                                      <span *ngIf="obj.completionValue!=null">{{obj.progress}}/{{obj.completionValue}}</span>
                                     </div>
                                   </td>
                                 </tr>

@@ -1186,7 +1186,7 @@ export class ParseService {
                         const iObj: ItemObjective = {
                             completionValue: oDesc.completionValue,
                             progressDescription: oDesc.progressDescription,
-                            progress: o.progress,
+                            progress: o.progress==null?0:o.progress,
                             complete: o.complete
                         }
                         objectives.push(iObj);
