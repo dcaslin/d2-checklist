@@ -1327,7 +1327,7 @@ export class ParseService {
         let bucketOrder = null;
         if (desc.inventory.bucketTypeHash){
             const bucketDesc = this.destinyCacheService.cache.InventoryBucket[desc.inventory.bucketTypeHash];
-            bucketOrder = bucketDesc.bucketOrder;
+            bucketOrder = 3 * (bucketDesc.bucketOrder/rank);
         }
 
         return new InventoryItem("" + itm.itemHash, desc.displayProperties.name,
