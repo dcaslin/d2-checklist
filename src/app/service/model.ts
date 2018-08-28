@@ -146,7 +146,7 @@ export interface Profile {
 export class Rankup{
     hash: number;
     name: string;
-    xyz300: boolean;
+    // xyz300: boolean;
 
     constructor(hash: number, name: string){
         this.hash = hash;
@@ -617,7 +617,7 @@ export class Progression {
     percentToNextLevel: number;
     tokensHeld?: number;
 
-    xyz300: boolean;
+    // xyz300: boolean;
     hideTokens: boolean;
 }
 
