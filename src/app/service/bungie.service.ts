@@ -115,7 +115,6 @@ export class BungieService implements OnDestroy {
             this.selectedUserFeed.pipe(first()).subscribe((selectedUser: SelectedUser) => {
                 if (this.selectedUser != null) {
                     this.setCurrencies();
-                    console.log("There we");  
                 }
             });
         }

@@ -82,9 +82,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.bungieService.getNightfall().then(nf => {
-      this.nightfall = nf;
-    })
+    // this.bungieService.getNightfall().then(nf => {
+    //   this.nightfall = nf;
+    // })
 
 
   }
