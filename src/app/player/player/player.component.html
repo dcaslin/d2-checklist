@@ -64,267 +64,270 @@
               <span class="d-none d-md-inline">Trials.Report</span>
             </a>
           </div>
-        </ng-container>
 
-        <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fa fa-flag-o"></i>
-              <span class="d-none d-md-inline">&ensp;Milestones</span>
-            </ng-template>
-            <ng-container *ngIf="player!=null">
+          <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-flag-o"></i>
+                <span class="d-none d-md-inline">&ensp;Milestones</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null">
 
-              <div *ngIf="player.milestoneList.length==0">
-                <br>
-                <h1>Privacy</h1>
-                <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
-              </div>
+                <div *ngIf="player.milestoneList.length==0">
+                  <br>
+                  <h1>Privacy</h1>
+                  <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+                </div>
 
-              <div *ngIf="hiddenMilestones.length>0" class="mobile-button-row" style="margin-top: 5px">
-                <button mat-button (click)="showAllMilestones()">Show hidden milestones</button>
-              </div>
+                <div *ngIf="hiddenMilestones.length>0" class="mobile-button-row" style="margin-top: 5px">
+                  <button mat-button (click)="showAllMilestones()">Show hidden milestones</button>
+                </div>
 
-              <table class="responsive-table" *ngIf="player.milestoneList.length>0">
-                <thead>
-                  <tr>
-                    <th scope="col">Activity
-                      <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
-                        (click)="showAllMilestones()">show all</a>
-                    </th>
-                    <th scope="col" *ngFor="let char of player.characters">
-                      {{char.className}} - {{char.light}}
-                      <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams">
-                        <i class="warn-text fa fa-2x fa fa-bed"></i>
-                      </span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ng-container *ngFor="let mileStoneName of player.milestoneList">
-                    <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
-                      <td class="lead">
-                        <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
-                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
-                          (click)="hideMilestone(mileStoneName.key)">hide</a>
-                        <span class="caption">{{mileStoneName.type}}</span>
-
-                      </td>
-                      <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
-                        <span class="check">
-                          <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
-
-                            <div>
-                              <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                                <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-
-                                <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                              </ng-container>
-                              <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                                <i class="fa fa-square-o"></i>
-                                <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                              </ng-container>
-                              <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                                <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
-                                <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                              </ng-container>
-                            </div>
-                            <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
-                              <div>Lifetime</div>
-                              <div>
-                                <b>{{char.aggHistory.nf|number : '2.0-0'}}</b>
-                                <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
-                                  | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
-                              </div>
-                              <div>
-                                <b>{{char.aggHistory.hmNf|number : '2.0-0'}}</b>
-                                <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
-                                  | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
-                                <span class="trophy">
-                                  <i class="trophy fa fa-trophy" aria-hidden="true"></i>
-                                </span>
-                              </div>
-                            </div>
-                            <div class="lifetime" *ngIf="char.milestones[mileStoneName.key].suppInfo!=null">
-                              {{char.milestones[mileStoneName.key].suppInfo}}
-                            </div>
-
-                            <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
-                              <div>Lifetime</div>
-                              <div>
-                                <b>{{char.aggHistory.eater|number : '2.0-0'}}</b>
-                                <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
-                                  | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
-                                </ng-container>
-                              </div>
-                            </div>
-
-                            <div class="lifetime" *ngIf="mileStoneName.key==1235 && char.aggHistory!=null">
-                              <div>Lifetime</div>
-                              <div>
-                                <b>{{char.aggHistory.raid|number : '2.0-0'}}</b>
-                                <ng-container *ngIf="char.aggHistory.raidFastestMs!=null">
-                                  | {{char.aggHistory.raidFastestMs| amnsTiming:'ms'}}
-                                </ng-container>
-                              </div>
-                            </div>
-                            <div class="lifetime" *ngIf="mileStoneName.key==2345 && char.aggHistory!=null">
-                              <div>Lifetime</div>
-                              <div>
-                                <b>{{char.aggHistory.spire|number : '2.0-0'}}</b>
-                                <ng-container *ngIf="char.aggHistory.spireFastestMs!=null">
-                                  | {{char.aggHistory.spireFastestMs| amnsTiming:'ms'}}
-                                </ng-container>
-                              </div>
-                            </div>
-                            <div class="lifetime" *ngIf="mileStoneName.key==1236 && char.aggHistory!=null">
-                              <div>Lifetime</div>
-                              <div>
-                                <b>{{char.aggHistory.hmRaid|number : '2.0-0'}}</b>
-                                <ng-container *ngIf="char.aggHistory.hmRaidFastestMs!=null">
-                                  | {{char.aggHistory.hmRaidFastestMs| amnsTiming:'ms'}}
-                                </ng-container>
-                                <span class="trophy">
-                                  <i class="trophy fa fa-trophy" aria-hidden="true"></i>
-                                </span>
-                              </div>
-                            </div>
-
-
-                          </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
-                            N/A
-                          </ng-container>
+                <table class="responsive-table" *ngIf="player.milestoneList.length>0">
+                  <thead>
+                    <tr>
+                      <th scope="col">Activity
+                        <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
+                          (click)="showAllMilestones()">show all</a>
+                      </th>
+                      <th scope="col" *ngFor="let char of player.characters">
+                        {{char.className}} - {{char.light}}
+                        <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams">
+                          <i class="warn-text fa fa-2x fa fa-bed"></i>
                         </span>
-                      </td>
+                      </th>
                     </tr>
-                  </ng-container>
-                  <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
-                    <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-                      <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
-                        (click)="hideMilestone('1')">hide</a>
-                    </td>
-                    <td [attr.colspan]="player.characters.length">
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let mileStoneName of player.milestoneList">
+                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
+                        <td class="lead">
+                          <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
+                          <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
+                            (click)="hideMilestone(mileStoneName.key)">hide</a>
+                          <span class="caption">{{mileStoneName.type}}</span>
 
-                      <div class="clanMsRow">
+                        </td>
+                        <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                          <span class="check">
+                            <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
 
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true">
-                          Nightfall
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==false">
-                          Nightfall
-                          <i class="fa fa-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true">
-                          Raid
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==false">
-                          Raid
-                          <i class="fa fa-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true">
-                          Crucible
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==false">
-                          Crucible
-                          <i class="fa fa-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true">
-                          Trials
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                        </span>
-                        <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==false">
-                          Trials
-                          <i class="fa fa-square-o"></i>
-                        </span>
-                      </div>
-                    </td>
+                              <div>
+                                <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                                  <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
 
-                  </tr>
-                </tbody>
-              </table>
-            </ng-container>
-            <div class="bottom-note">
-              * Max LL vendor info provided by
-              <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
-              <br> * lt = lifetime
-            </div>
+                                  <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                                </ng-container>
+                                <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                                  <i class="fa fa-square-o"></i>
+                                  <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                                </ng-container>
+                                <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                                  <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                                  <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                                </ng-container>
+                              </div>
+                              <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
+                                <div>Lifetime</div>
+                                <div>
+                                  <b>{{char.aggHistory.nf|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.nfFastestMs!=null">
+                                    | {{char.aggHistory.nfFastestMs| amnsTiming:'ms'}}</ng-container>
+                                </div>
+                                <div>
+                                  <b>{{char.aggHistory.hmNf|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
+                                    | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
+                                  <span class="trophy">
+                                    <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                                  </span>
+                                </div>
+                              </div>
+                              <div class="lifetime" *ngIf="char.milestones[mileStoneName.key].suppInfo!=null">
+                                {{char.milestones[mileStoneName.key].suppInfo}}
+                              </div>
 
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fa fa-line-chart"></i>
-              <span class="d-none d-md-inline">&ensp;Progress</span>
-            </ng-template>
-            <ng-container *ngIf="player!=null">
+                              <div class="lifetime" *ngIf="mileStoneName.key==1234 && char.aggHistory!=null">
+                                <div>Lifetime</div>
+                                <div>
+                                  <b>{{char.aggHistory.eater|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.eaterFastestMs!=null">
+                                    | {{char.aggHistory.eaterFastestMs| amnsTiming:'ms'}}
+                                  </ng-container>
+                                </div>
+                              </div>
 
-              <mat-tab-group>
-                <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                              <div class="lifetime" *ngIf="mileStoneName.key==1235 && char.aggHistory!=null">
+                                <div>Lifetime</div>
+                                <div>
+                                  <b>{{char.aggHistory.raid|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.raidFastestMs!=null">
+                                    | {{char.aggHistory.raidFastestMs| amnsTiming:'ms'}}
+                                  </ng-container>
+                                </div>
+                              </div>
+                              <div class="lifetime" *ngIf="mileStoneName.key==2345 && char.aggHistory!=null">
+                                <div>Lifetime</div>
+                                <div>
+                                  <b>{{char.aggHistory.spire|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.spireFastestMs!=null">
+                                    | {{char.aggHistory.spireFastestMs| amnsTiming:'ms'}}
+                                  </ng-container>
+                                </div>
+                              </div>
+                              <div class="lifetime" *ngIf="mileStoneName.key==1236 && char.aggHistory!=null">
+                                <div>Lifetime</div>
+                                <div>
+                                  <b>{{char.aggHistory.hmRaid|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.hmRaidFastestMs!=null">
+                                    | {{char.aggHistory.hmRaidFastestMs| amnsTiming:'ms'}}
+                                  </ng-container>
+                                  <span class="trophy">
+                                    <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                                  </span>
+                                </div>
+                              </div>
 
-                  <div *ngIf="char.factions==null || char.factions.length==0">
-                    <br>
-                    <h1>Privacy</h1>
-                    <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
-                  </div>
 
-                  <table class="responsive-table" *ngIf="char.factions!=null && char.factions.length>0">
-                    <thead>
-                      <tr>
-                        <th scope="col">Faction</th>
-                        <th scope="col">Progress</th>
+                            </ng-container>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                              <!-- hack for missing completed milestones-->
+                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>*
+                            </ng-container>
+                          </span>
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let faction of char.factions">
-                        <td class="lead" data-label="">
+                    </ng-container>
+                    <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
+                      <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
+                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
+                          (click)="hideMilestone('1')">hide</a>
+                      </td>
+                      <td [attr.colspan]="player.characters.length">
 
-                          <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!"
+                        <div class="clanMsRow">
+
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true">
+                            Nightfall
+                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==false">
+                            Nightfall
+                            <i class="fa fa-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true">
+                            Raid
+                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==false">
+                            Raid
+                            <i class="fa fa-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true">
+                            Crucible
+                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==false">
+                            Crucible
+                            <i class="fa fa-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true">
+                            Trials
+                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          </span>
+                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==false">
+                            Trials
+                            <i class="fa fa-square-o"></i>
+                          </span>
+                        </div>
+                      </td>
+
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-container>
+              <div class="bottom-note">
+                <!-- * Max LL vendor info provided by
+              <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
+              <br>  -->
+                * Milestones are wonky post patch, more to come soon. In the meantime "<i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>*" means something is probably complete?
+                <br>
+                * lt = lifetime
+              </div>
+
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-line-chart"></i>
+                <span class="d-none d-md-inline">&ensp;Progress</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null">
+
+                <mat-tab-group>
+                  <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+
+                    <div *ngIf="char.factions==null || char.factions.length==0">
+                      <br>
+                      <h1>Privacy</h1>
+                      <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+                    </div>
+
+                    <table class="responsive-table" *ngIf="char.factions!=null && char.factions.length>0">
+                      <thead>
+                        <tr>
+                          <th scope="col">Faction</th>
+                          <th scope="col">Progress</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let faction of char.factions">
+                          <td class="lead" data-label="">
+
+                            <!-- <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!"
                             *ngIf="faction.xyz300">
                             <i class="warn-text fa fa-diamond fa-2x"></i>
-                          </a>
-                          <span [matTooltip]="faction.desc">{{faction.name}}</span>
+                          </a> -->
+                            <span [matTooltip]="faction.desc">{{faction.name}}</span>
 
 
-                          <span class="light">Level {{faction.level}} </span>
-                          <span matTooltip="You have enough tokens to rank up with this vendor and get an engram">
-                            <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
-                          </span>
+                            <span class="light">Level {{faction.level}} </span>
+                            <span matTooltip="You have enough tokens to rank up with this vendor and get an engram">
+                              <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
+                            </span>
 
-                          <span class="caption">{{faction.info}}</span>
+                            <span class="caption">{{faction.info}}</span>
 
-                        </td>
-                        <td data-label="">
-                          <ng-container *ngIf="!faction.hideTokens">
-                            <ng-container *ngIf="faction.tokensHeld!=null">{{faction.tokensHeld}} / {{faction.tokensNeeded}} tokens needed TNL</ng-container>
-                            <ng-container *ngIf="faction.tokensHeld==null">Tokens Needed TNL {{faction.tokensNeeded}} </ng-container>
-                          </ng-container>
-                          <ng-container *ngIf="faction.hideTokens">
-                            {{faction.currentProgress}} points
-                          </ng-container>
+                          </td>
+                          <td data-label="">
+                            <ng-container *ngIf="!faction.hideTokens">
+                              <ng-container *ngIf="faction.tokensHeld!=null">{{faction.tokensHeld}} / {{faction.tokensNeeded}} tokens needed TNL</ng-container>
+                              <ng-container *ngIf="faction.tokensHeld==null">Tokens Needed TNL {{faction.tokensNeeded}} </ng-container>
+                            </ng-container>
+                            <ng-container *ngIf="faction.hideTokens">
+                              {{faction.currentProgress}} points
+                            </ng-container>
 
-                          <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
-                          <div>
-                            <mat-progress-bar  mode="determinate" [value]="faction.percentToNextLevel*100">
-                            </mat-progress-bar>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                            <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+                            <div>
+                              <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
+                              </mat-progress-bar>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-                  <br>
+                    <br>
 
 
-                </mat-tab>
-              </mat-tab-group>
+                  </mat-tab>
+                </mat-tab-group>
 
-            </ng-container>
+              </ng-container>
 
-          </mat-tab>
-          
-          <mat-tab>
+            </mat-tab>
+
+            <!-- <mat-tab>
               <ng-template mat-tab-label>
                   <i class="fa fa-fire"></i>
                   <span class="d-none d-md-inline">&ensp;SoH</span>
@@ -368,336 +371,342 @@
                       </mat-tab-group>
                 </ng-container>
           
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fa fa-check-square-o"></i>
-              <span class="d-none d-md-inline">&ensp;Checklist</span>
-            </ng-template>
-            <ng-container *ngIf="player!=null">
-              <div *ngIf="player.checklists==null || player.checklists.length==0">
+          </mat-tab> -->
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-check-square-o"></i>
+                <span class="d-none d-md-inline">&ensp;Checklist</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null">
+                <div *ngIf="player.checklists==null || player.checklists.length==0">
+                  <br>
+                  <h1>Privacy</h1>
+                  <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+                </div>
+
+                <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
+                  <mat-expansion-panel *ngFor="let checklist of player.checklists" [expanded]="debugmode">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{checklist.name}}
+                        <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        {{checklist.complete}} / {{checklist.total}}
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="checklist-body">
+                      <div class="hide-complete">
+                        <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide Completed</mat-checkbox>
+                      </div>
+                      <table class="checklist-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 200px">Name</th>
+                            <th style="width: 50px">Status</th>
+                            <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let check of checklist.entries">
+                            <tr *ngIf="!hideCompleteChecklist || !check.checked">
+                              <td>
+                                <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
+                                <ng-container *ngIf="check.mapUrl!=null">
+                                  <a [href]="check.mapUrl" target="_blank" rel="noopener">{{check.name}}
+                                    <i class='accent-text fa fa-map-marker'></i>
+                                  </a>
+
+                                </ng-container>
+
+                                <span *ngIf="debugmode">
+                                  &ensp;[{{check.hash}}] &ensp;
+                                  <a href="javascript:void(0)" (click)="routeSearch()">
+                                    <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
+                                  </a>
+                                </span>
+                              </td>
+                              <td>
+                                <span>
+                                  <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                  <i *ngIf="!check.checked" class="fa fa-square-o"></i>
+                                </span>
+                              </td>
+                              <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
+                                {{check.desc}}
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </mat-expansion-panel>
+                  <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode">
+                    <mat-expansion-panel-header>
+                      <mat-panel-title>
+                        {{checklist.name}}
+                        <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
+                      </mat-panel-title>
+                      <mat-panel-description>
+                        <span *ngFor="let t of checklist.totals">{{t.char.className}} {{t.complete}}/{{t.total}}&emsp;</span>
+                      </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="checklist-body">
+                      <div class="hide-complete">
+                        <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide All Completed</mat-checkbox>
+                      </div>
+                      <table class="checklist-table">
+                        <thead>
+                          <tr>
+                            <th style="width: 200px">Name</th>
+                            <th style="width: 50px">Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let check of checklist.entries">
+                            <tr *ngIf="!hideCompleteChecklist || !check.allDone">
+                              <td>
+                                <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
+                                <ng-container *ngIf="check.mapUrl!=null">
+                                  <a [href]="check.mapUrl" target="_blank" rel="noopener">{{check.name}}
+                                    <i class='accent-text fa fa-map-marker'></i>
+                                  </a>
+                                </ng-container>
+                                <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
+                                <span *ngIf="debugmode">
+                                  &ensp;[{{check.hash}}] &ensp;
+                                  <a href="javascript:void(0)" (click)="routeSearch()">
+                                    <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
+                                  </a>
+                                </span>
+                              </td>
+                              <td>
+                                <span class="space-right" *ngFor="let c of check.checked">
+                                  <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                  <i *ngIf="!c.checked && !check.oncePerAccount" class="fa fa-square-o"></i>
+                                  <i *ngIf="!c.checked && check.oncePerAccount" class="fa fa-minus-square-o"></i>
+                                </span>
+                              </td>
+
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+
+                  </mat-expansion-panel>
+                </mat-accordion>
+              </ng-container>
+              <div class="bottom-note">
                 <br>
-                <h1>Privacy</h1>
-                <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+                <ul>
+                  <li>Looking for all the Catalysts?
+                    <a href="https://twitter.com/Aussie_Halo" target="_blank" rel="noopener">@Aussie_Halo</a> has them all in a nice
+                    <a class="accent-text" href="https://docs.google.com/spreadsheets/d/1hPI1oO5izJaDASpPWdTb4sB_eAzxTI1eFMh6ixeVpMM/edit#gid=0"
+                      target="_blank" rel="noopener">Google spreadsheet</a>
+                  </li>
+                  <li>Only 4 of Cayde's Journals are completable in game, thus the other 16 are pre-filtered.</li>
+                  <li>2 Adventures are account only</li>
+                </ul>
               </div>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-trophy"></i>
+                <span class="d-none d-md-inline">&ensp;Triumphs</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null && player.mots!=null">
+                <mat-tab-group>
+                  <mat-tab *ngIf="player.mots.rewards" label="Rewards">
+                    <ng-template mat-tab-label>
+                      <i class="fa fa-info-circle"></i>
+                      <span class="d-none d-md-inline">&ensp;Info</span>
+                    </ng-template>
+                    <table class="checklist-table mots-table">
+                      <tbody>
+                        <tr>
+                          <td>Start Date</td>
+                          <td>{{player.mots.eventStartDate|date:'short'}}</td>
+                        </tr>
+                        <tr>
+                          <td>End Date</td>
+                          <td>{{player.mots.eventEndDate|date:'short'}}</td>
+                        </tr>
+                        <tr>
+                          <td>Unclaimed Points</td>
+                          <td>{{player.mots.unclaimedPoints}}</td>
+                        </tr>
+                        <tr>
+                          <td>Claimed Points</td>
+                          <td>{{player.mots.currentPoints}}</td>
+                        </tr>
+                        <tr>
+                          <td>Max Points</td>
+                          <td>{{player.mots.maximumPoints}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-              <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
-                <mat-expansion-panel *ngFor="let checklist of player.checklists" [expanded]="debugmode">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      {{checklist.name}}
-                      <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      {{checklist.complete}} / {{checklist.total}}
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="checklist-body">
-                    <div class="hide-complete">
-                      <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide Completed</mat-checkbox>
-                    </div>
-                    <table class="checklist-table">
+                  </mat-tab>
+                  <mat-tab *ngFor="let cat of player.mots.categories" [label]="cat.displayProperties.name">
+                    <table class="checklist-table  mots-table">
                       <thead>
                         <tr>
-                          <th style="width: 200px">Name</th>
-                          <th style="width: 50px">Status</th>
-                          <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
+                          <th style="width:70px">&ensp;</th>
+                          <th>Name</th>
+                          <th>Progress</th>
+                          <th>&ensp;</th>
+                          <th class="d-none d-md-table-cell">Details</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <ng-container *ngFor="let check of checklist.entries">
-                          <tr *ngIf="!hideCompleteChecklist || !check.checked">
+                        <ng-container *ngFor="let r of cat.records">
+                          <tr>
                             <td>
-                              <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
-                              <ng-container *ngIf="check.mapUrl!=null">
-                                <a [href]="check.mapUrl" target="_blank" rel="noopener">{{check.name}}
-                                  <i class='accent-text fa fa-map-marker'></i>
-                                </a>
-
-                              </ng-container>
-
-                              <span *ngIf="debugmode">
-                                &ensp;[{{check.hash}}] &ensp;
-                                <a href="javascript:void(0)" (click)="routeSearch()">
-                                  <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
-                                </a>
-                              </span>
+                              <span *ngIf="r.displayProperties.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + r.displayProperties.icon + ')'"></span>
                             </td>
                             <td>
-                              <span>
-                                <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                <i *ngIf="!check.checked" class="fa fa-square-o"></i>
-                              </span>
-                            </td>
-                            <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
-                              {{check.desc}}
-                            </td>
-                          </tr>
-                        </ng-container>
-                      </tbody>
-                    </table>
-                  </div>
-
-                </mat-expansion-panel>
-                <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode">
-                  <mat-expansion-panel-header>
-                    <mat-panel-title>
-                      {{checklist.name}}
-                      <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
-                    </mat-panel-title>
-                    <mat-panel-description>
-                      <span *ngFor="let t of checklist.totals">{{t.char.className}} {{t.complete}}/{{t.total}}&emsp;</span>
-                    </mat-panel-description>
-                  </mat-expansion-panel-header>
-                  <div class="checklist-body">
-                    <div class="hide-complete">
-                      <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide All Completed</mat-checkbox>
-                    </div>
-                    <table class="checklist-table">
-                      <thead>
-                        <tr>
-                          <th style="width: 200px">Name</th>
-                          <th style="width: 50px">Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <ng-container *ngFor="let check of checklist.entries">
-                          <tr *ngIf="!hideCompleteChecklist || !check.allDone">
-                            <td>
-                              <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
-                              <ng-container *ngIf="check.mapUrl!=null">
-                                <a [href]="check.mapUrl" target="_blank" rel="noopener">{{check.name}}
-                                  <i class='accent-text fa fa-map-marker'></i>
-                                </a>
-                              </ng-container>
-                              <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
-                              <span *ngIf="debugmode">
-                                &ensp;[{{check.hash}}] &ensp;
-                                <a href="javascript:void(0)" (click)="routeSearch()">
-                                  <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
-                                </a>
-                              </span>
-                            </td>
-                            <td>
-                              <span class="space-right" *ngFor="let c of check.checked">
-                                <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                <i *ngIf="!c.checked && !check.oncePerAccount" class="fa fa-square-o"></i>
-                                <i *ngIf="!c.checked && check.oncePerAccount" class="fa fa-minus-square-o"></i>
-                              </span>
-                            </td>
-
-                          </tr>
-                        </ng-container>
-                      </tbody>
-                    </table>
-                  </div>
-
-                </mat-expansion-panel>
-              </mat-accordion>
-            </ng-container>
-            <div class="bottom-note">
-              <br>
-              <ul>
-                <li>Looking for all the Catalysts? <a href="https://twitter.com/Aussie_Halo" target="_blank" rel="noopener">@Aussie_Halo</a> has them all in a nice <a class="accent-text" href="https://docs.google.com/spreadsheets/d/1hPI1oO5izJaDASpPWdTb4sB_eAzxTI1eFMh6ixeVpMM/edit#gid=0" target="_blank" rel="noopener">Google spreadsheet</a></li>
-                <li>Only 4 of Cayde's Journals are completable in game, thus the other 16 are pre-filtered.</li>
-                <li>2 Adventures are account only</li>
-              </ul>
-            </div>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fa fa-trophy"></i>
-              <span class="d-none d-md-inline">&ensp;Triumphs</span>
-            </ng-template>
-            <ng-container *ngIf="player!=null && player.mots!=null">
-              <mat-tab-group>
-                <mat-tab *ngIf="player.mots.rewards" label="Rewards">
-                  <ng-template mat-tab-label>
-                    <i class="fa fa-info-circle"></i>
-                    <span class="d-none d-md-inline">&ensp;Info</span>
-                  </ng-template>
-                  <table class="checklist-table mots-table">
-                    <tbody>
-                      <tr>
-                        <td>Start Date</td>
-                        <td>{{player.mots.eventStartDate|date:'short'}}</td>
-                      </tr>
-                      <tr>
-                        <td>End Date</td>
-                        <td>{{player.mots.eventEndDate|date:'short'}}</td>
-                      </tr>
-                      <tr>
-                        <td>Unclaimed Points</td>
-                        <td>{{player.mots.unclaimedPoints}}</td>
-                      </tr>
-                      <tr>
-                        <td>Claimed Points</td>
-                        <td>{{player.mots.currentPoints}}</td>
-                      </tr>
-                      <tr>
-                        <td>Max Points</td>
-                        <td>{{player.mots.maximumPoints}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-
-                </mat-tab>
-                <mat-tab *ngFor="let cat of player.mots.categories" [label]="cat.displayProperties.name">
-                  <table class="checklist-table  mots-table">
-                    <thead>
-                      <tr>
-                        <th style="width:70px">&ensp;</th>
-                        <th>Name</th>
-                        <th>Progress</th>
-                        <th>&ensp;</th>
-                        <th class="d-none d-md-table-cell">Details</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <ng-container *ngFor="let r of cat.records">
-                        <tr>
-                          <td>
-                            <span *ngIf="r.displayProperties.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + r.displayProperties.icon + ')'"></span>
-                          </td>
-                          <td>
-                            {{r.displayProperties.name}}
-                            <br>
-                            <small>{{r.displayProperties.description}}</small>
-                          </td>
-                          <td>
-
-                            <div *ngIf="r.state>0 && getCharacterById(player, r.furthestProgressCharacterId) as char" matTooltip="Furthest progress">
-                              <span *ngIf="char.emblemPath!=null" class="char-icon" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></span>
-                              {{char.className}}
+                              {{r.displayProperties.name}}
                               <br>
-                            </div>
+                              <small>{{r.displayProperties.description}}</small>
+                            </td>
+                            <td>
 
-                            <ng-container *ngIf="r.currentProgress!=null">
-                              {{r.currentProgress}}/{{r.completedAtProgress}}
-                              <mat-progress-bar mode="determinate" [value]="100* (r.currentProgress/r.completedAtProgress)">
-                              </mat-progress-bar>
-                            </ng-container>
+                              <div *ngIf="r.state>0 && getCharacterById(player, r.furthestProgressCharacterId) as char" matTooltip="Furthest progress">
+                                <span *ngIf="char.emblemPath!=null" class="char-icon" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></span>
+                                {{char.className}}
+                                <br>
+                              </div>
 
-                            <div class="d-block d-md-none">
+                              <ng-container *ngIf="r.currentProgress!=null">
+                                {{r.currentProgress}}/{{r.completedAtProgress}}
+                                <mat-progress-bar mode="determinate" [value]="100* (r.currentProgress/r.completedAtProgress)">
+                                </mat-progress-bar>
+                              </ng-container>
+
+                              <div class="d-block d-md-none">
+                                Difficulty: {{r.difficulty}}
+                                <br> Points: {{r.pointValue}}
+                                <br>
+                              </div>
+                            </td>
+                            <td>
+                              <i *ngIf="r.state==2" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                              <i *ngIf="r.state==1" class="fa fa-minus-square-o"></i>
+                              <i *ngIf="r.state==0" class="fa fa-square-o"></i>
+                            </td>
+                            <td class="d-none d-md-table-cell">
                               Difficulty: {{r.difficulty}}
                               <br> Points: {{r.pointValue}}
                               <br>
-                            </div>
-                          </td>
-                          <td>
-                            <i *ngIf="r.state==2" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                            <i *ngIf="r.state==1" class="fa fa-minus-square-o"></i>
-                            <i *ngIf="r.state==0" class="fa fa-square-o"></i>
-                          </td>
-                          <td class="d-none d-md-table-cell">
-                            Difficulty: {{r.difficulty}}
-                            <br> Points: {{r.pointValue}}
-                            <br>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </tbody>
-                  </table>
-                </mat-tab>
-                <mat-tab *ngIf="player.mots.rewards" label="Rewards">
-                  <ng-template mat-tab-label>
-                    <i class="fa fa-certificate"></i>
-                    <span class="d-none d-md-inline">&ensp;Rewards</span>
-                  </ng-template>
-                  <table class="checklist-table mots-table">
-                    <tbody>
-                      <ng-container *ngFor="let r of player.mots.rewards">
-                        <tr>
-                          <td style="width: 70px">
-                            <span *ngIf="r.displayProperties.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + r.displayProperties.icon + ')'"></span>
-                          </td>
-                          <td style="width: 200px">
-                            {{r.displayProperties.name}}
-                            <br> {{r.pointValueThreshold}} pts
-                            <br>
-                            <small>{{r.displayProperties.description}}</small>
-                          </td>
-                          <td style="width: 50px">
-                            <i *ngIf="r.earned" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                            <i *ngIf="!r.earned" class="fa fa-square-o"></i>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </tbody>
-                  </table>
-                </mat-tab>
-              </mat-tab-group>
-              <div class="help-button-row">
-                <a mat-stroked-button [href]="'https://www.bungie.net'+player.mots.faqLink" target="_blank" rel="noopener">Bungie FAQ</a>
-                <a mat-stroked-button [href]="'https://www.bungie.net'+player.mots.helpLink" target="_blank" rel="noopener">Bungie Help</a>
-              </div>
-            </ng-container>
-            <ng-container *ngIf="player==null || player.mots==null">
-              <mat-spinner class="loading" *ngIf="loading===true"></mat-spinner>
-            </ng-container>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fa fa-users"></i>
-              <span class="d-none d-md-inline">&ensp;Chars</span>
-            </ng-template>
-            <ng-container *ngIf="player!=null">
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </mat-tab>
+                  <mat-tab *ngIf="player.mots.rewards" label="Rewards">
+                    <ng-template mat-tab-label>
+                      <i class="fa fa-certificate"></i>
+                      <span class="d-none d-md-inline">&ensp;Rewards</span>
+                    </ng-template>
+                    <table class="checklist-table mots-table">
+                      <tbody>
+                        <ng-container *ngFor="let r of player.mots.rewards">
+                          <tr>
+                            <td style="width: 70px">
+                              <span *ngIf="r.displayProperties.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + r.displayProperties.icon + ')'"></span>
+                            </td>
+                            <td style="width: 200px">
+                              {{r.displayProperties.name}}
+                              <br> {{r.pointValueThreshold}} pts
+                              <br>
+                              <small>{{r.displayProperties.description}}</small>
+                            </td>
+                            <td style="width: 50px">
+                              <i *ngIf="r.earned" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                              <i *ngIf="!r.earned" class="fa fa-square-o"></i>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </mat-tab>
+                </mat-tab-group>
+                <div class="help-button-row">
+                  <a mat-stroked-button [href]="'https://www.bungie.net'+player.mots.faqLink" target="_blank" rel="noopener">Bungie FAQ</a>
+                  <a mat-stroked-button [href]="'https://www.bungie.net'+player.mots.helpLink" target="_blank" rel="noopener">Bungie Help</a>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="player==null || player.mots==null">
+                <mat-spinner class="loading" *ngIf="loading===true"></mat-spinner>
+              </ng-container>
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-users"></i>
+                <span class="d-none d-md-inline">&ensp;Chars</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null">
 
-              <mat-card class="char-card" *ngFor="let char of player.characters">
-                <mat-card-header>
-                  <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
-                  <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
-                    <span style="white-space:nowrap;">Light {{char.light}}</span>
-                    <ng-container *ngIf="char.wellRested">&ensp;WELL RESTED!</ng-container>
-                  </mat-card-title>
-                  <mat-card-subtitle *ngIf="!player.superprivate">
-                    Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
-                    <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60|
-                    number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
+                <mat-card class="char-card" *ngFor="let char of player.characters">
+                  <mat-card-header>
+                    <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+                    <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
+                      <span style="white-space:nowrap;">Light {{char.light}}</span>
+                      <ng-container *ngIf="char.wellRested">&ensp;WELL RESTED!</ng-container>
+                    </mat-card-title>
+                    <mat-card-subtitle *ngIf="!player.superprivate">
+                      Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
+                      <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60|
+                      number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
+                      <br>
+                    </mat-card-subtitle>
+                  </mat-card-header>
+                  <mat-card-content>
+
+                    <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
+                      <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
+                      </mat-progress-bar>
+                    </div>
+
+                    <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=char.maxLevel">
+                      <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
+                      to level {{char.legendProgression.level+1}}
+                      <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
+                      </mat-progress-bar>
+                    </div>
                     <br>
-                  </mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
 
-                  <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
-                    <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
-                    </mat-progress-bar>
-                  </div>
+                    <div class="stat-chip-list">
+                      <ng-container *ngFor="let stat of char.stats; let i=index">
+                        <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
+                      </ng-container>
+                    </div>
 
-                  <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=char.maxLevel">
-                    <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
-                    to level {{char.legendProgression.level+1}}
-                    <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
-                    </mat-progress-bar>
-                  </div>
-                  <br>
+                  </mat-card-content>
+                  <mat-card-actions>
+                    <a mat-button (click)="history(char)">
+                      <mat-icon>history</mat-icon> Activity History</a>
+                  </mat-card-actions>
 
-                  <div class="stat-chip-list">
-                    <ng-container *ngFor="let stat of char.stats; let i=index">
-                      <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
-                    </ng-container>
-                  </div>
+                </mat-card>
+              </ng-container>
 
-                </mat-card-content>
-                <mat-card-actions>
-                  <a mat-button (click)="history(char)">
-                    <mat-icon>history</mat-icon> Activity History</a>
-                </mat-card-actions>
+            </mat-tab>
 
-              </mat-card>
-            </ng-container>
-
-          </mat-tab>
-
-          <!-- <mat-tab label="Gear">
+            <!-- <mat-tab label="Gear">
 
             <ng-container *ngIf="player!=null">
               <anms-gear [gear]="player.gear"></anms-gear>
             </ng-container>
 
           </mat-tab> -->
-        </mat-tab-group>
-        
+          </mat-tab-group>
+
+        </ng-container>
+
         <!-- <ng-container *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
 
             <div class="mobile-header d-md-none">Tokens to rank up with:</div>

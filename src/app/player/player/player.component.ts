@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { XyzService } from "../../service/xyz.service";
+// import { XyzService } from "../../service/xyz.service";
 import { Player, Character, SearchResult, Platform, Const } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
@@ -34,7 +34,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideCompleteChecklist = false;
 
   constructor(private bungieService: BungieService, 
-    private xyzService: XyzService,
+    // private xyzService: XyzService,
     storageService: StorageService,
     private notificationService: NotificationService,
     private route: ActivatedRoute, private router: Router) {
@@ -136,19 +136,19 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     else if (index === 1){ 
       return "progress";
     }
+    // else if (index === 2){ 
+    //   return "soh";
+    // }
     else if (index === 2){ 
-      return "soh";
-    }
-    else if (index === 3){ 
       return "checklist";
     }
-    else if (index === 4){ 
+    else if (index === 3){ 
       return "triumphs";
     }
-    else if (index === 5){ 
+    else if (index === 4){ 
       return "chars";
     }
-    else if (index === 6){ 
+    else if (index === 5){ 
       return "gear";
     }
   }
@@ -158,16 +158,16 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     const tab: string = this.selectedTab;
     if (tab!=null){
       if (tab == "gear"){
-        this.tabs.selectedIndex = 6;
+        this.tabs.selectedIndex = 5;
       }
       else if (tab == "nodes" || tab == "checklist"){
-        this.tabs.selectedIndex = 3;
+        this.tabs.selectedIndex = 2;
       }
       else if (tab == "triumphs"){
-        this.tabs.selectedIndex = 4;
+        this.tabs.selectedIndex = 3;
       }
       else if (tab == "chars"){
-        this.tabs.selectedIndex = 5;
+        this.tabs.selectedIndex = 4;
       }
       else if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
@@ -175,9 +175,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       else if (tab == "progress"){
         this.tabs.selectedIndex = 1;
       }
-      else if (tab == "soh"){
-        this.tabs.selectedIndex = 2;
-      }
+      // else if (tab == "soh"){
+      //   this.tabs.selectedIndex = 2;
+      // }
     }
   }
 
@@ -235,7 +235,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           await this.bungieService.updateRaidHistory(x.milestoneList, x.characters);
           this.player.mots = await this.bungieService.getMots(p.membershipType, p.membershipId);
           await this.bungieService.updateNfHistory(x.milestoneList, x.characters);
-          await this.xyzService.updateDrops(x);
+          // await this.xyzService.updateDrops(x);
         }
       }
       else {
