@@ -1,11 +1,81 @@
-export interface ItemObjective{
+
+export interface PublicMilestone {
+    name: string;
+    desc: string;
+    start: string;
+    end: string;
+    order: number;
+    icon: string;
+    activities: MilestoneActivity[];
+    aggActivities: AggMilestoneActivity[]; 
+    summary: string;
+}
+
+export interface AggMilestoneActivity{
+    lls: number[],
+    activity: MilestoneActivity
+}
+
+export interface MilestoneActivity{
+    name: string;
+    desc: string;
+    ll: number;
+    tier: number;
+    icon: string;
+    challenges: MilestoneChallenge[];
+    modifiers: NameDesc[];
+    loadoutReqs: LoadoutRequirement[];
+}
+
+
+export interface LoadoutRequirement {
+    equipmentSlot: string;
+    allowedEquippedItems: string[];
+    allowedWeaponSubTypes: string[];
+}
+
+export interface MilestoneChallenge{
+    
+    name: string;
+    desc: string;
+    completionValue: number;
+    progressDescription: number;
+}
+
+export interface _PublicMilestone {
+    milestoneHash: number;
+    activities: _MilestoneActivity[];
+    availableQuests: _AvailableQuest[];
+    startDate: string;
+    endDate: string;
+    order: number;
+}
+
+interface _AvailableQuest {
+    questItemHash: number;
+}
+
+export interface _LoadoutRequirement {
+    equipmentSlotHash: number;
+    allowedEquippedItemHashes: any[];
+    allowedWeaponSubTypes: number[];
+}
+
+export interface _MilestoneActivity {
+    activityHash: string;
+    challengeObjectiveHashes: any[];
+    modifierHashes: string[];
+    loadoutRequirementIndex: number;
+}
+
+export interface ItemObjective {
     completionValue: number;
     progressDescription: string;
     progress: number;
     complete: boolean;
 }
 
-export interface MotResponse{
+export interface MotResponse {
     displayProperties: MotDisplayProps;
     rewards: MotReward[];
     categories: MotCategory[];
@@ -15,7 +85,7 @@ export interface MotResponse{
 
     faqLink: string;
     helpLink: string;
-    
+
     backgroundImage: string;
     discountCodeExpiresDate: string;
     generateCodeEndDate: string;
@@ -31,7 +101,7 @@ export interface MotResponse{
 
 }
 
-export interface MotCategory{
+export interface MotCategory {
     displayProperties: MotDisplayProps;
     records: MotRecord[];
 }
@@ -41,7 +111,7 @@ export interface MotDisplayProps {
     name: string;
     icon: string;
     hasIcon: boolean;
-  }
+}
 
 export interface MotRecord {
     progressCaption: string;
@@ -50,13 +120,13 @@ export interface MotRecord {
     state: number;
     hasProgressBar: boolean;
     completedAtProgress: number;
-  }
+}
 
 export interface MotReward {
     displayProperties: MotDisplayProps;
     pointValueThreshold: number;
     earned: boolean;
-  }
+}
 
 export class ActivityMode {
     name: string;
@@ -143,18 +213,18 @@ export interface Profile {
     characterIds: string[];
 }
 
-export class Rankup{
+export class Rankup {
     hash: number;
     name: string;
     // xyz300: boolean;
 
-    constructor(hash: number, name: string){
+    constructor(hash: number, name: string) {
         this.hash = hash;
         this.name = name;
     }
 }
 
-export interface ChecklistItem{
+export interface ChecklistItem {
     hash: string;
     name: string;
     checked: boolean;
@@ -176,7 +246,7 @@ export interface CharCheck {
     checked: boolean;
 }
 
-export interface CharChecklistItem{
+export interface CharChecklistItem {
     hash: string;
     name: string;
     allDone: boolean;
@@ -185,7 +255,7 @@ export interface CharChecklistItem{
     mapUrl;
 }
 
-export interface CharTotal{
+export interface CharTotal {
     char: Character;
     complete: number;
     total: number;
@@ -248,15 +318,15 @@ export class InventoryItem {
     readonly bucketOrder: number;
     //more to come, locked other stuff
 
-    damageTypeString(): string{
+    damageTypeString(): string {
         return DamageType[this.damageType];
     }
 
-    typeString(): string{
+    typeString(): string {
         return ItemType[this.type];
     }
 
-    constructor(hash: string, name: string, equipped: boolean, owner: Character, 
+    constructor(hash: string, name: string, equipped: boolean, owner: Character,
         icon: string, type: ItemType, typeName: string, quantity: number,
         power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[], objectives: ItemObjective[], soh: boolean, desc: string, classAvail: any, bucketOrder: number
     ) {
@@ -368,24 +438,24 @@ export class Nightfall {
     image: string;
 }
 
-export class AggHistory{
-    nf: number=0;
+export class AggHistory {
+    nf: number = 0;
     nfFastestMs: number;
 
-    hmNf: number=0;
+    hmNf: number = 0;
     hmNfFastestMs: number;
 
-    eater: number=0;
+    eater: number = 0;
     eaterFastestMs: number;
-    
-    spire: number=0;
-    spireFastestMs: number;
-    
 
-    raid: number=0;
+    spire: number = 0;
+    spireFastestMs: number;
+
+
+    raid: number = 0;
     raidFastestMs: number;
-    
-    hmRaid: number=0;
+
+    hmRaid: number = 0;
     hmRaidFastestMs: number;
 }
 
@@ -545,7 +615,7 @@ export class Platform {
     }
 }
 
-export class ClanRow{
+export class ClanRow {
     name: string;
     id: string;
     constructor(name: string, id: string) {
@@ -650,11 +720,11 @@ export class InventoryStat {
     }
 }
 
-export class InventorySocket{
+export class InventorySocket {
     readonly plugs: InventoryPlug[];
     readonly bonusLight: number;
 
-    constructor(plugs:InventoryPlug[], bonusLight: number){
+    constructor(plugs: InventoryPlug[], bonusLight: number) {
         this.plugs = plugs;
         this.bonusLight = bonusLight;
 
@@ -662,13 +732,13 @@ export class InventorySocket{
 
 }
 
-export class InventoryPlug{
+export class InventoryPlug {
     readonly hash: string;
     readonly name: string;
     readonly desc: string;
     readonly active: boolean;
 
-    constructor(hash: string, name: string, desc: string, active: boolean){
+    constructor(hash: string, name: string, desc: string, active: boolean) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
@@ -676,7 +746,7 @@ export class InventoryPlug{
     }
 }
 
-export class Perk{
+export class Perk {
 
     readonly hash: string;
     readonly name: string;
@@ -685,7 +755,7 @@ export class Perk{
     readonly active: boolean;
     readonly visible: boolean;
 
-    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, visible:boolean){
+    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, visible: boolean) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
@@ -693,7 +763,7 @@ export class Perk{
         this.active = active;
         this.visible = visible;
     }
-    
+
 }
 
 export enum ItemType {
@@ -716,15 +786,15 @@ export enum ItemType {
     Mod = 19
 }
 
-export enum DamageType{
-    None= 0,
-    Kinetic= 1,
-    Arc= 2,
-    Thermal= 3,
-    Void= 4,
-    Raid= 5
+export enum DamageType {
+    None = 0,
+    Kinetic = 1,
+    Arc = 2,
+    Thermal = 3,
+    Void = 4,
+    Raid = 5
 }
 
-export class Socket{
+export class Socket {
 
 }

@@ -45,6 +45,13 @@
     }
   }
 
+  .divider {
+    border-color: mat-color($foreground, divider);
+    border-top-style: solid;
+    border-bottom-style: none;
+
+  }
+
   code {
     color: mat-color($accent, lighter-contrast);
     background-color: mat-color($accent, lighter);
@@ -54,6 +61,17 @@
     color: mat-color($primary, default-contrast);
     background-color: mat-color($primary);
   }
+
+  
+  .transparent-icon {
+    
+    // filter: invert(100%);
+    background-size: cover;
+    background-color: mat-color($primary);
+    opacity: 0.90;
+    // background-blend-mode: color-burn;
+  }
+
 
   .accent-bg-text{
     color: mat-color($accent, default-contrast);
