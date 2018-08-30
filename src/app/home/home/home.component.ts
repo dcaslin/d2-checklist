@@ -6,7 +6,7 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { Const, Platform } from "../../service/model";
+import { Const, Platform, PublicMilestone } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { BungieService } from "../../service/bungie.service";
 import { Nightfall } from "../../service/model";
@@ -28,7 +28,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   selectedTab: string;
   gamerTag: string;
   dontSearch: boolean;
-  nightfall: Nightfall;
+  publicMilestones: PublicMilestone[];
 
   navigation = [
     { link: 'checklist', label: 'Checklist' },
@@ -82,9 +82,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.bungieService.getNightfall().then(nf => {
-    //   this.nightfall = nf;
-    // })
+    this.bungieService.getPublicMilestones().then(ms => {
+      this.publicMilestones = ms;
+    });
 
 
   }

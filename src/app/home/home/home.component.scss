@@ -12,6 +12,16 @@
    float: right;
  }
 
+ .lighter{
+   opacity: .6;
+ }
+ 
+.modifier-chip{
+  padding: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
+
 .info{
   text-align: left; 
   max-width: 700px;
@@ -24,6 +34,8 @@
   max-width: 700px;
   margin-right: 10px;
   margin-left: 10px;
+  margin-bottom: 25px;
+  margin-top: 15px;
 }
 
 .mat-card{
@@ -36,6 +48,14 @@
   flex-shrink: 0;
   background-size: cover;
   border-radius: 0%;
+}
+
+.activity-icon{
+  height: 32px;
+  width: 32px;
+  border-radius: 25%;
+  background-size: cover;
+  display: inline-block;
 }
 
 dl{

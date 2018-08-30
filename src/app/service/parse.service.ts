@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement
 } from './model';
 @Injectable()
 export class ParseService {
@@ -623,45 +623,204 @@ export class ParseService {
         return returnMe;
     }
 
-    public parseNightfall(resp: any): Nightfall {
-
-        let q: any = resp["2171429505"].availableQuests[0];
-        let aHash = q.activity.activityHash;
-        let aDesc = this.destinyCacheService.cache.Activity[aHash];
-
-        let nf: Nightfall = new Nightfall();
-        nf.name = aDesc.displayProperties.name;
-        nf.desc = aDesc.displayProperties.description;
-        nf.image = aDesc.pgcrImage;
-        nf.tiers = [];
-        let firstTier: number;
-        if (q.activity.variants != null) {
-            q.activity.variants.forEach(v => {
-                let vDesc: any = this.destinyCacheService.cache.Activity[v.activityHash];
-                if (firstTier == null) firstTier = v.activityHash;
-                nf.tiers.push(vDesc.activityLightLevel);
-            });
-        }
-
-        nf.modifiers = [];
-        if (q.activity.modifierHashes != null) {
-            q.activity.modifierHashes.forEach(mh => {
-                nf.modifiers.push(this.parseModifier(mh));
-            });
-        }
-
-        nf.challenges = [];
-        if (q.challenges != null) {
-            q.challenges.forEach(c => {
-                if (c.activityHash == firstTier) {
-                    let oDesc: any = this.destinyCacheService.cache.Objective[c.objectiveHash];
-                    nf.challenges.push(new NameDesc(oDesc.displayProperties.name, oDesc.displayProperties.description));
-                }
-            });
-        }
-
-        return nf;
+    private dedupeArray(arr: number[]): number[]{
+        let unique_array = Array.from(new Set(arr))
+        return unique_array;
     }
+
+    public parsePublicMilestones(resp: any): PublicMilestone[] {
+        const msMilestones: _PublicMilestone[] = [];
+        const returnMe: PublicMilestone[] = [];
+
+        Object.keys(resp).forEach(key => {
+            const ms: any = resp[key];
+            msMilestones.push(ms);
+        });
+
+        for (let ms of msMilestones) {
+            let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
+            const activities:MilestoneActivity[] = [];
+            if (ms.activities!=null){
+                for (let act of ms.activities) {
+                    const challenges: MilestoneChallenge[] = [];
+                    let aDesc = this.destinyCacheService.cache.Activity[act.activityHash];
+                    if (act.challengeObjectiveHashes != null && act.challengeObjectiveHashes.length>0) {
+                        for (let c of act.challengeObjectiveHashes) {
+                            let oDesc: any = this.destinyCacheService.cache.Objective[c];
+                            challenges.push({
+                                name: oDesc.displayProperties.name,
+                                desc: oDesc.displayProperties.description,
+                                completionValue: oDesc.completionValue,
+                                progressDescription: oDesc.progressDescription
+                            });
+                        }
+                    }
+                    const modifiers: NameDesc[] = [];
+                    if (act.modifierHashes != null && act.modifierHashes.length>0) {                        
+                        for (let n of act.modifierHashes) {
+                            const mod: NameDesc = this.parseModifier(n);
+                            modifiers.push(mod);
+                        }
+                    }
+                    let loadoutReqs: LoadoutRequirement[] = [];
+                    if (act.loadoutRequirementIndex != null) {
+                        if (aDesc != null) {
+                            if (aDesc.loadouts != null && aDesc.loadouts.length > act.loadoutRequirementIndex) {
+                                let pReq =  aDesc.loadouts[act.loadoutRequirementIndex];
+                                if (pReq!=null && pReq.requirements!=null){
+                                    let lReqs: _LoadoutRequirement[] = aDesc.loadouts[act.loadoutRequirementIndex].requirements;
+                                    for (let lReq of lReqs) {
+                                        let slotDesc = this.destinyCacheService.cache.EquipmentSlot[lReq.equipmentSlotHash];
+                                        const items = [];
+                                        const subtypes = [];
+                                        if (lReq.allowedEquippedItemHashes != null) {
+                                            for (let lReqItem of lReq.allowedEquippedItemHashes) {
+                                                let iDesc: any = this.destinyCacheService.cache.InventoryItem[lReqItem];
+                                                if (iDesc != null) {
+                                                    if (iDesc.displayProperties != null) {
+                                                        items.push(iDesc.displayProperties.name);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (lReq.allowedWeaponSubTypes != null) {
+                                            for (let lSubType of lReq.allowedWeaponSubTypes) {
+                                                const s = this.parseWeaponSubtype(lSubType);
+                                                subtypes.push(s);
+                                            }
+                                        }
+                                        loadoutReqs.push({
+                                            equipmentSlot: slotDesc.displayProperties.name,
+                                            allowedEquippedItems: items,
+                                            allowedWeaponSubTypes: subtypes
+                                        });
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+                    activities.push({
+                        name: aDesc.displayProperties.name,
+                        desc: aDesc.displayProperties.description,
+                        ll: aDesc.activityLightLevel,
+                        tier: aDesc.tier,
+                        icon: aDesc.displayProperties.icon,
+                        challenges: challenges,
+                        modifiers: modifiers,
+                        loadoutReqs: loadoutReqs
+                    });
+                }
+            }
+            else if (ms.availableQuests){
+                for (let q of ms.availableQuests) {
+                    let iDesc: any = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
+                    if (iDesc!=null){                        
+                        activities.push({
+                            name: iDesc.displayProperties.name,
+                            desc: iDesc.displayProperties.description,
+                            ll: null,
+                            tier: null, 
+                            icon: iDesc.displayProperties.icon,
+                            challenges: [],
+                            modifiers: [],
+                            loadoutReqs: []
+                        });
+                    }
+                }
+            }
+            else{
+                console.log("    Empty activities on milestone: "+desc.displayProperties.name+", hash: "+ms.milestoneHash);
+            }
+
+            const dAct = {};
+            
+            for (let a of activities){
+                const key = a.name+" "+a.challenges.length+" "+a.modifiers.length+" "+a.loadoutReqs.length
+                if (dAct[key]==null){
+                    
+                    dAct[key] = {
+                        activity: a,
+                        lls: []
+                    };
+                }
+                if (a.ll>100){
+                    dAct[key].lls.push(a.ll);
+                }
+            }
+
+            const aggActivities = [];
+            let nothingInteresting = true;
+            for (let key in dAct){
+                const aggAct = dAct[key];
+                aggAct.lls = this.dedupeArray(aggAct.lls);
+                if (aggAct.activity.challenges.length>0 || aggAct.activity.modifiers.length>0 || aggAct.activity.loadoutReqs.length>0){
+                    nothingInteresting = false;
+                }
+                aggActivities.push(aggAct);
+            }
+            let summary = null;
+            if (nothingInteresting && aggActivities.length>0){
+                summary = "";
+                for (let a of aggActivities){
+                    summary += a.activity.name+" ";
+                    if (a.lls.length>0){
+                        for (let ll of a.lls){
+                            summary+= ll+" ";
+                        }
+                    }
+                }
+
+            }
+
+            returnMe.push({
+                name: desc.displayProperties.name,
+                desc: desc.displayProperties.description,
+                start: ms.startDate,
+                end: ms.endDate,
+                order: ms.order,
+                icon: desc.displayProperties.icon,
+                activities: activities,
+                aggActivities: aggActivities, 
+                summary: summary
+            });
+            
+        }
+        returnMe.sort((a, b) => {
+            return a.order - b.order;
+        });
+        return returnMe;
+    }
+
+    private parseWeaponSubtype(n: number): String {
+        if (n == 0) { return "None"; }
+        if (n == 6) { return "Auto Rifle"; }
+        if (n == 7) { return "Shotgun"; }
+        if (n == 8) { return "Machine Gun"; }
+        if (n == 9) { return "Hand Cannon"; }
+        if (n == 10) { return "Rocket Launcher"; }
+        if (n == 11) { return "Fusion Rifle"; }
+        if (n == 12) { return "Sniper Rifle"; }
+        if (n == 13) { return "Pulse Rifle"; }
+        if (n == 14) { return "Scout Rifle"; }
+        if (n == 17) { return "Sidearm"; }
+        if (n == 8) { return "Sword"; }
+        if (n == 9) { return "Mask"; }
+        if (n == 20) { return "Shader"; }
+        if (n == 21) { return "Ornament"; }
+        if (n == 22) { return "Linear Fusion Rifle"; }
+        if (n == 23) { return "Grenade Launcher"; }
+        if (n == 24) { return "Submachine Gun"; }
+        if (n == 25) { return "Trace Rifle"; }
+        if (n == 26) { return "Helmet"; }
+        if (n == 27) { return "Gauntlets"; }
+        if (n == 28) { return "Chest"; }
+        if (n == 29) { return "Leg"; }
+        if (n == 30) { return "Class"; }
+        if (n == 31) { return "Bow"; }
+        return "";
+    }
+
 
     public parseActivities(a: any[]): Activity[] {
         let returnMe: any[] = [];

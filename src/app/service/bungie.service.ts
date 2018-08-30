@@ -481,22 +481,20 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public getNightfall(): Promise<Nightfall> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/Milestones/', opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parseNightfall(resp);
-                }).catch(
-                    function (err) {
-                        console.log('Error getting nightfall');
-                        console.dir(err);
-                        return null;
-                    });
-        });
+    public async getPublicMilestones(): Promise<any>{
+        try{
+            let opt = await this.buildReqOptions();
+            let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/Milestones/', opt).toPromise();
+            const resp = this.parseBungieResponse(hResp);
+            const reply = this.parseService.parsePublicMilestones(resp);
+            return reply;
+        }
+        catch (err){
+            console.log('Error getting public milestones');
+            console.dir(err);
+            return null;
+        }
     }
-
 
     public getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<Activity[]> {
         const self: BungieService = this;
