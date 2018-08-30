@@ -28,13 +28,13 @@
         </div>
 
         <div class="info">
-          <p class="warn-text">Pardon the dust as we adapt to the new milestone challenges in Forsaken. We're working furiously on player and clan milestone reports, updates coming soon. Below are the active general milestones as reported by the API</p>
+          <p class="warn-text">Pardon the dust as we adapt to the new milestone challenges in Forsaken. Limited milestones have been hacked together for clans and players! Expect them to improve and expand in the coming weeks. Below are the active general milestones as reported by the API</p>
 
           <mat-card *ngFor="let ms of publicMilestones">
             <mat-card-header>
 
               <div mat-card-avatar class="transparent-icon" [style.background-image]="'url(//www.bungie.net' +  ms.icon  + ')'"></div>
-              <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container></mat-card-title>
+              <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span *ngIf="debugmode">{{ms.hash}}</span></mat-card-title>
               <mat-card-subtitle>
                 <span class="d-none d-md-inline">{{ms.desc}}</span> Resets {{ms.end|date:'short'}}</mat-card-subtitle>
             </mat-card-header>
@@ -43,10 +43,11 @@
 
               <ng-container *ngFor="let aggAct of ms.aggActivities; last as isLastAct">
                 <h3>
-                  {{aggAct.activity.name}}
+                  {{aggAct.activity.name}} 
                   <span *ngFor="let ll of aggAct.lls; last as isLast">{{ll}}
                     <ng-container *ngIf="!isLast"> - </ng-container>
                   </span>
+                  <span *ngIf="debugmode">{{aggAct.activity.hash}}</span>
                 </h3>
                 <p class="caption" *ngFor="let ch of aggAct.activity.challenges">
                   {{ch.name}} - {{ch.desc}} Requires: {{ch.completionValue}} {{ch.progressDescription}}

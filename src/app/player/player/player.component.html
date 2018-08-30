@@ -100,9 +100,10 @@
                   </thead>
                   <tbody>
                     <ng-container *ngFor="let mileStoneName of player.milestoneList">
-                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
+                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && mileStoneName.key!='3660836525'">
                         <td class="lead">
                           <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
+                          <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
                           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
                             (click)="hideMilestone(mileStoneName.key)">hide</a>
                           <span class="caption">{{mileStoneName.type}}</span>
@@ -190,9 +191,9 @@
 
 
                             </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.disappears==true">
                               <!-- hack for missing completed milestones-->
-                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>*
+                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                             </ng-container>
                           </span>
                         </td>

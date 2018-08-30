@@ -163,9 +163,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
           //nothing needed
         });
 
-        this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
-          //nothing needed
-        });
+        // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
+        //   //nothing needed
+        // });
         this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
           x.mots = y;
         }).catch(err => {
@@ -274,9 +274,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
           //nothing needed
         });
-        this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
-          //nothing needed
-        });
+        // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
+        //   //nothing needed
+        // });
         this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
           x.mots = y;
         });

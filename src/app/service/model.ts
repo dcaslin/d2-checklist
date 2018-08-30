@@ -1,5 +1,6 @@
 
 export interface PublicMilestone {
+    hash: string;
     name: string;
     desc: string;
     start: string;
@@ -17,6 +18,7 @@ export interface AggMilestoneActivity{
 }
 
 export interface MilestoneActivity{
+    hash: string;
     name: string;
     desc: string;
     ll: number;
@@ -385,6 +387,7 @@ export interface MileStoneName {
     name: string;
     desc: string;
     hasPartial: boolean;
+    disappears: boolean;
 }
 
 export class Character {
