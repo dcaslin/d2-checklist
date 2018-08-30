@@ -226,7 +226,10 @@ export class ParseService {
                 //add meta
                 if (mileStoneDefs[key] == null) {
                     //skip one off faction stuff x2 and CallToAction, meditations, daily free roam, both broken heroic strikes, IB season 3
-                    if (key == "364880304" || key == "1718587363" || key == "4109359897" || key == "3245985898" || key == "383198939" || key == "3109354204" || key == "3109354207" || key == "4248276869")
+                    // if (key == "364880304" || key == "1718587363" || key == "4109359897" || key == "3245985898" || key == "383198939" || key == "3109354204" || key == "3109354207" || key == "4248276869")
+                    //     return;
+                    //hide broken raid milestones
+                    if (key == "2683538554" || key == "2986584050")
                         return;
                     let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
                     if (desc != null) {
@@ -241,31 +244,29 @@ export class ParseService {
                             name = desc.displayProperties.name;
                             description = desc.displayProperties.description;
                         }
+                        //special case for flash point to grab the planet
+                        if (key=="463010297" && ms.availableQuests != null && ms.availableQuests.length == 1){
 
-                        if (ms.availableQuests != null && ms.availableQuests.length == 1 && (description == null || description.trim().length == 0)) {
                             let q = ms.availableQuests[0];
                             let qDesc = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
                             if (qDesc != null) {
-                                name = qDesc.displayProperties.name;
-                                description = qDesc.displayProperties.description;
-                                if (description == null || description.trim().length == 0) {
-                                    if (q.status.stepObjectives != null && q.status.stepObjectives.length == 1) {
-                                        let o = q.status.stepObjectives[0];
-                                        let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-                                        description = oDesc.progressDescription;
-                                    }
-                                }
+                                const questName = qDesc.displayProperties.name;
+                                const indexOfCol = questName.indexOf(":");
+                                name += questName.substr(indexOfCol);
                             }
                         }
                         if (name == null || name.trim().length == 0) {
                             name = desc.friendlyName;
                         }
 
+                        //add label for raid milestone
                         if (key == "3660836525") {
                             name += " Milestone";
                         }
-                        if (key == "463010297" && (description == null || description == "")) {
-                            description = "Complete public events at the designated location";
+                        //if (key == "463010297" && (description == null || description == "")) {
+                        if (key == "463010297") {
+                            description = "Complete various activities around the current Flashpoint, including public events, Lost Sectors, and Heroic adventures.";
+                            type = "Every 4 days";
                         }
                         //skip classified for now
                         if (name == null || name == "Classified") return;
@@ -284,7 +285,8 @@ export class ParseService {
                             type: type,
                             name: name,
                             desc: description,
-                            hasPartial: false
+                            hasPartial: false,
+                            disappears: false
                         };
                         mileStoneDefs[key] = milestoneName;
                     }
@@ -701,6 +703,7 @@ export class ParseService {
                         }
                     }
                     activities.push({
+                        hash: act.activityHash,
                         name: aDesc.displayProperties.name,
                         desc: aDesc.displayProperties.description,
                         ll: aDesc.activityLightLevel,
@@ -717,6 +720,7 @@ export class ParseService {
                     let iDesc: any = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
                     if (iDesc!=null){                        
                         activities.push({
+                            hash: "quest-"+q.questItemHash,
                             name: iDesc.displayProperties.name,
                             desc: iDesc.displayProperties.description,
                             ll: null,
@@ -774,6 +778,7 @@ export class ParseService {
             }
 
             returnMe.push({
+                hash: ms.milestoneHash+"",
                 name: desc.displayProperties.name,
                 desc: desc.displayProperties.description,
                 start: ms.startDate,
@@ -1104,6 +1109,65 @@ export class ParseService {
                         this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
                         hasWellRested = curChar.wellRested || hasWellRested;
                     });
+
+                    // HACK, add out milestones that disappear on completion
+                    // Flashpoint  asdf 
+                    if (mileStoneDefs[463010297] == null) {
+                        mileStoneDefs[463010297] = {
+                            key: 463010297,
+                            type: "Every 4 days",
+                            name: "Flashpoint",
+                            desc: "Complete various activities around the current Flashpoint, including public events, Lost Sectors, and Heroic adventures.",
+                            hasPartial: false, 
+                            disappears: true
+                        };
+                    }
+                    else{
+                        mileStoneDefs[463010297].disappears = true;
+                    }
+                    //weekly crucible
+                    if (mileStoneDefs[157823523] == null) {
+                        mileStoneDefs[157823523] = {
+                            key: 157823523,
+                            type: "Weekly",
+                            name: "Weekly Crucible Challenge",
+                            desc: "Complete Crucible matches for fun and profit.",
+                            hasPartial: false, 
+                            disappears: true
+                        };
+                    }
+                    else{                        
+                        mileStoneDefs[157823523].disappears = true;
+                    }
+                    //daily strike challenge
+                    if (mileStoneDefs[3172444947] == null) {
+                        mileStoneDefs[3172444947] = {
+                            key: 3172444947,
+                            type: "Daily",
+                            name: "Daily Strike Challenge",
+                            desc: "Complete a strike.",
+                            hasPartial: false, 
+                            disappears: true
+                        };
+                    }
+                    else{
+                        mileStoneDefs[3172444947].disappears = true;
+                    }
+                    // daily crucible
+                    if (mileStoneDefs[3312018120] == null) {
+                        mileStoneDefs[3312018120] = {
+                            key: 3312018120,
+                            type: "Daily",
+                            name: "Daily Crucible Challenge",
+                            desc: "Complete a Crucible match.",
+                            hasPartial: false, 
+                            disappears: true
+                        };
+                    }
+                    else{
+                        mileStoneDefs[3312018120].disappears = true;
+                    }
+
                 }
                 else {
                     superprivate = true;
@@ -1921,7 +1985,8 @@ export class ParseService {
                 type: "Weekly",
                 name: "Leviathan, Eater of Worlds",
                 desc: "Complete the Leviathan Raid Lair from CoO",
-                hasPartial: false
+                hasPartial: false,
+                disappears: false
             });
         }
         if (!foundSpire) {
@@ -1930,7 +1995,8 @@ export class ParseService {
                 type: "Weekly",
                 name: "Leviathan, Spire of Stars",
                 desc: "Complete the Leviathan Raid Lair from Warmind",
-                hasPartial: false
+                hasPartial: false,
+                disappears: false
             });
         }
         if (!foundNm) {
@@ -1939,7 +2005,8 @@ export class ParseService {
                 type: "Weekly",
                 name: "Leviathan, Raid",
                 desc: "Normal mode raid",
-                hasPartial: false
+                hasPartial: false,
+                disappears: false
             });
         }
         if (!foundHm) {
@@ -1948,7 +2015,8 @@ export class ParseService {
                 type: "Weekly",
                 name: "Leviathan, Prestige",
                 desc: "Prestige mode raid",
-                hasPartial: false
+                hasPartial: false,
+                disappears: false
             });
         }
         const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
@@ -1991,15 +2059,16 @@ export class ParseService {
                 foundNfHmKey = true;
             }
         }
-        if (!foundNfHmKey) {
-            msNames.unshift({
-                key: NF_HM_KEY,
-                type: "Weekly",
-                name: "Prestige Nightfall",
-                desc: "Complete the Prestige Nightfall",
-                hasPartial: false
-            });
-        }
+        // prestige nightfall is gone
+        // if (!foundNfHmKey) {
+        //     msNames.unshift({
+        //         key: NF_HM_KEY,
+        //         type: "Weekly",
+        //         name: "Prestige Nightfall",
+        //         desc: "Complete the Prestige Nightfall",
+        //         hasPartial: false
+        //     });
+        // }
 
         const prestigeNfPsuedoMs: MilestoneStatus = new MilestoneStatus(NF_HM_KEY, c.hasPrestigeNf, c.hasPrestigeNf ? 1 : 0, null);
         c.milestones[NF_HM_KEY] = prestigeNfPsuedoMs;

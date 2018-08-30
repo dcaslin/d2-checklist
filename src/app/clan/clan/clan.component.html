@@ -183,6 +183,9 @@
                             <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
                           </ng-container>
                         </span>
+                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.disappears==true">
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                        </span>
                       </ng-container> 
                     </td>
                     <td>
