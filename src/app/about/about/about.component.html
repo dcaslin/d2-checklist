@@ -7,7 +7,10 @@
         <a class="space-right" mat-raised-button color="accent" [ngClass]="animateOnRouteEnter" rel="noopener" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
           <i class="fa fa-paypal"></i> Donate
         </a>
-        <a class="space-right" mat-raised-button [ngClass]="animateOnRouteEnter" rel="noopener" href="https://www.reddit.com/r/destinychecklistnet">
+        <a class="space-right" mat-raised-button [ngClass]="animateOnRouteEnter" target="_blank" rel="noopener" href="https://twitter.com/DestinyChecklst">
+          <i class="fa fa-twitter"></i> @DestinyChecklst
+        </a>
+        <a class="space-right" mat-raised-button [ngClass]="animateOnRouteEnter" target="_blank" rel="noopener" href="https://www.reddit.com/r/destinychecklistnet">
           <i class="fa fa-reddit"></i> /r/destinychecklistnet
         </a>
         <a class="space-right" mat-raised-button [ngClass]="animateOnRouteEnter" target="_blank" rel="noopener" href="https://bitbucket.org/dcaslin/d2-checklist/">
@@ -15,28 +18,22 @@
         </a>
       </div>
       <div class="get-started" [ngClass]="animateOnRouteEnter">
-
-        <section class="mat-body-2">
-          I aim to serve the same needs that helped folks
-          with Destiny 1 at <a href="https://www.destinychecklist.net">DestinyChecklist.net</a>. Main goals are:
-          <ul>
-            <li>Checking on you and your friend's progress, rewards and completions</li>
-            <li>Supporting clan tracking and rewards</li>
-            <li>Helping you progress in PvE </li>
-          </ul>
+        <section class="body-1">
+          <p>
+            This site's goal is to help people have more fun with Destiny 2. As the game changes so will its features. Focus is generally on tracking data for yourself, your friends and your clan.
+          </p>
         </section>
-        <section class="mat-body-2">
-          <p>I've been lazy putting this page together, if you want more info you can also
-             see my <a href="https://www.destinychecklist.net/about" target="_blank">about page on DestinyChecklist.net</a> (my D1 hobby site) for most of the important info. 
-            This site is <a href="https://bitbucket.org/dcaslin/d2-checklist/" target="_blank">open sourced on Bitbucket</a>, 
+        <section class="body-2">
+          <p>This site is <a href="https://bitbucket.org/dcaslin/d2-checklist/" target="_blank">open sourced on Bitbucket</a>, 
             and actively supported via 
             <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">Reddit</a> and 
             <a href="https://twitter.com/DestinyChecklst" target="_blank" rel="noopener">Twitter</a>.
           </p>
           <p>
-            PS: If you don't like ads (or want a dark theme) just pop over to the <a routerLink="/settings">settings page</a> and disable them. The site will remember your settings in the future.          </p>
+            PS: If you don't like ads, just pop over to the <a routerLink="/settings">settings page</a> and disable them. The site will remember your settings in the future. 
+            That same settings page also has options to choose a dark (or pink) theme.
+          </p>
         </section>
-
       </div>
 
 
