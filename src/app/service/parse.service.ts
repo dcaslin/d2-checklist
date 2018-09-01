@@ -334,6 +334,26 @@ export class ParseService {
 
                     })
                 }
+                else if (ms.activities != null && ms.activities.length>0){
+                    const act = ms.activities[0];
+                    if (act.challenges!=null && act.challenges.length>0){
+                        const challenge = act.challenges[0];
+                        if (challenge.objective!=null){
+                            const obj = challenge.objective;
+                            let oDesc: any = this.destinyCacheService.cache.Objective[obj.objectiveHash];
+                            if (oDesc!=null){
+                                if (obj.complete==true){
+                                    oPct = 1;
+                                }
+                                else{
+                                    oPct = obj.progress/oDesc.completionValue;
+                                }
+                            }
+                        }
+
+                    }
+
+                }
                 if (total == 0) total++;
                 let pct: number = complete / total;
                 if (pct == 0) pct = oPct;
@@ -1111,7 +1131,7 @@ export class ParseService {
                     });
 
                     // HACK, add out milestones that disappear on completion
-                    // Flashpoint  asdf 
+                    // Flashpoint  
                     if (mileStoneDefs[463010297] == null) {
                         mileStoneDefs[463010297] = {
                             key: 463010297,
@@ -2109,7 +2129,28 @@ interface _Milestone {
     rewards: any; //special for clan
     startDate: string;
     endDate: string;
+    order: number;
+    activities: _MilestoneActivityInstance[];
 }
+
+interface _MilestoneActivityInstance {
+    activityHash: number;
+    challenges: Challenge[];
+    phases: any[];
+}
+
+
+interface Challenge {
+    objective: Objective;
+}
+  
+interface Objective {
+    objectiveHash: number;
+    activityHash: number;
+    progress: number;
+    complete: boolean;
+    visible: boolean;
+  }
 
 interface _AvailableQuest {
     questItemHash: number;
