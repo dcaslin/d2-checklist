@@ -659,7 +659,11 @@ export class ParseService {
             msMilestones.push(ms);
         });
 
+
         for (let ms of msMilestones) {
+
+            let rewards = "";
+            let rewCnt = 0;
             let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             const activities:MilestoneActivity[] = [];
             if (ms.activities!=null){
@@ -738,7 +742,20 @@ export class ParseService {
             else if (ms.availableQuests){
                 for (let q of ms.availableQuests) {
                     let iDesc: any = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
-                    if (iDesc!=null){                        
+                    if (iDesc!=null){
+                        if (iDesc.value!=null && iDesc.value.itemValue!=null){
+                            for (let v of iDesc.value.itemValue){
+                                if (v.itemHash!=null && v.itemHash>0){
+                                    let rewDesc: any = this.destinyCacheService.cache.InventoryItem[v.itemHash];
+                                    if (rewDesc!=null){
+                                        rewCnt++;
+                                        rewards += rewDesc.displayProperties.name;
+                                    }
+
+                                }
+
+                            }
+                        }                       
                         activities.push({
                             hash: "quest-"+q.questItemHash,
                             name: iDesc.displayProperties.name,
@@ -756,6 +773,35 @@ export class ParseService {
             else{
                 console.log("    Empty activities on milestone: "+desc.displayProperties.name+", hash: "+ms.milestoneHash);
             }
+
+            if (desc.rewards!=null){
+                for (let entryKey in desc.rewards){
+                    const entry = desc.rewards[entryKey];
+                    if (entry.rewardEntries!=null){
+                        for (let rewEntKey in entry.rewardEntries){
+                            const rewEnt = entry.rewardEntries[rewEntKey];
+                            if (rewEnt.items!=null){
+                                for (let reI of rewEnt.items){
+                                    
+                                    rewCnt++;
+                                    let iDesc: any = this.destinyCacheService.cache.InventoryItem[reI.itemHash];
+                                    if (iDesc!=null){
+
+                                        rewCnt++;
+                                        rewards += iDesc.displayProperties.name;
+                                        if (reI.quantity>0){
+                                            rewards += reI.quantity+" ";
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (rewCnt>4)
+                rewards = "";
 
             const dAct = {};
             
@@ -807,12 +853,18 @@ export class ParseService {
                 icon: desc.displayProperties.icon,
                 activities: activities,
                 aggActivities: aggActivities, 
+                rewards: rewards,
                 summary: summary
             });
             
         }
+        
         returnMe.sort((a, b) => {
-            return a.order - b.order;
+            if(a.rewards < b.rewards) return 1;
+            if(a.rewards > b.rewards) return -1;
+            if (a.name > b.name) return 1;
+            if (a.name > b.name) return -1;
+            return 0;
         });
         return returnMe;
     }
