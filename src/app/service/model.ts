@@ -9,7 +9,9 @@ export interface PublicMilestone {
     icon: string;
     activities: MilestoneActivity[];
     aggActivities: AggMilestoneActivity[]; 
+    rewards: string;
     summary: string;
+
 }
 
 export interface AggMilestoneActivity{
