@@ -284,7 +284,7 @@ export class Player {
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
-    public mots: MotResponse;
+    maxLL: number = 0;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], sohGear: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[]) {
         this.profile = profile;
@@ -298,6 +298,13 @@ export class Player {
         this.hasWellRested = hasWellRested;
         this.checklists = checklists;
         this.charChecklists = charChecklists;
+        if (characters!=null && characters.length>0){
+            for (let char of characters){
+                if (char.light>this.maxLL){
+                    this.maxLL = char.light;
+                }
+            }
+        }
     }
 }
 

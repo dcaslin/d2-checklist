@@ -120,7 +120,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public searchBungieUsers(name: string): Promise<BungieMember[]> {
+    public async searchBungieUsers(name: string): Promise<BungieMember[]> {
         const self: BungieService = this;
 
         return this.buildReqOptions().then(opt => {
@@ -289,7 +289,7 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public getClans(bungieId: string): Promise<ClanRow[]> {
+    public async getClans(bungieId: string): Promise<ClanRow[]> {
         const self: BungieService = this;
         return this.buildReqOptions().then(opt => {
             return this.httpClient.get<any>(API_ROOT + 'GroupV2/User/254/' + bungieId + "/0/1/", opt)
