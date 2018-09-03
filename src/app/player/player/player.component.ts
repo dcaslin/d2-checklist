@@ -1,6 +1,6 @@
 
 import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { Subject } from 'rxjs';
@@ -18,7 +18,7 @@ import { ChildComponent } from '../../shared/child.component';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
+export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy  {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
 
@@ -124,60 +124,65 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
   }
 
-  public progress(){
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag, "progress"]);
-    this.setTab();
-  }
-
   private getTabLabel(index: number): string {
     if (index === 0){ 
       return "milestones";
     }
     else if (index === 1){ 
+      return "checklist";
+    }
+    else if (index === 2){ 
       return "progress";
     }
     // else if (index === 2){ 
     //   return "soh";
     // }
-    else if (index === 2){ 
-      return "checklist";
-    }
+    
+    // else if (index === 3){ 
+    //   return "triumphs";
+    // }
     else if (index === 3){ 
-      return "triumphs";
-    }
-    else if (index === 4){ 
       return "chars";
     }
-    else if (index === 5){ 
-      return "gear";
-    }
+    // else if (index === 5){ 
+    //   return "gear";
+    // }
   }
 
   private setTab(): void {
-    if (this.tabs==null) return;
+    if (this.tabs==null){
+      console.log("--- this.tabs is null");
+       return;
+    }
     const tab: string = this.selectedTab;
     if (tab!=null){
-      if (tab == "gear"){
-        this.tabs.selectedIndex = 5;
-      }
-      else if (tab == "nodes" || tab == "checklist"){
-        this.tabs.selectedIndex = 2;
-      }
-      else if (tab == "triumphs"){
-        this.tabs.selectedIndex = 3;
-      }
-      else if (tab == "chars"){
-        this.tabs.selectedIndex = 4;
-      }
-      else if (tab == "milestones"){
+      // if (tab == "gear"){
+      //   this.tabs.selectedIndex = 5;
+      // }
+      if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
       }
-      else if (tab == "progress"){
+      else if (tab == "nodes" || tab == "checklist"){
         this.tabs.selectedIndex = 1;
       }
+      // else if (tab == "triumphs"){
+      //   this.tabs.selectedIndex = 3;
+      // }
+      else if (tab == "progress"){
+        this.tabs.selectedIndex = 2;
+        console.log("!!!set");
+      }
+      else if (tab == "chars"){
+        this.tabs.selectedIndex = 3;
+      }
+      
+      
       // else if (tab == "soh"){
       //   this.tabs.selectedIndex = 2;
       // }
+    }
+    else{
+      console.log("---tab is null!");
     }
   }
 
@@ -227,7 +232,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           //'ItemTalentGrids','ItemCommonData'
         ]);
         this.player = x;
-        this.setTab();
+
+        // need to get out of this change detection cycle to have tabs set
+        setTimeout(()=>{
+          this.setTab();
+        },0)
+        
         this.loading = false;
 
         if (x.characters!=null){
@@ -254,7 +264,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
 
   ngOnInit() {
-
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
