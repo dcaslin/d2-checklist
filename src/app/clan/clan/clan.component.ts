@@ -7,7 +7,7 @@ import { MatPaginator, MatSort } from '@angular/material';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo, MileStoneName } from "../../service/model";
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo, MileStoneName, ClanRow } from "../../service/model";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import * as moment from 'moment';
@@ -48,6 +48,24 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.sortData();
   }
 
+  public async navigateBnetMember(target: BungieGroupMember){
+    const matches: BungieMember[] = await this.bungieService.searchBungieUsers(target.bungieNetUserInfo.displayName);
+    if (matches==null) return;
+    for (let x of matches){
+      if (x.bnet == null){
+        continue;
+      }
+      const clans: ClanRow[] = await this.bungieService.getClans(x.id);
+      for (let clan of clans){
+        if (this.info.groupId == clan.id){
+          this.router.navigate(['/',x.bnet.platform.type, x.bnet.name]);
+          return;
+        }
+      }  
+    }
+
+  }
+
   public toggleDateSort() {
     if (this.sort == "dateAsc") {
       this.sort = "dateDesc";
@@ -58,12 +76,12 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.sortData();
   }
   
-  public togglePtSort() {
-    if (this.sort == "ptAsc") {
-      this.sort = "ptDesc";
+  public toggleLLSort() {
+    if (this.sort == "llAsc") {
+      this.sort = "llDesc";
     }
     else {
-      this.sort = "ptAsc";
+      this.sort = "llAsc";
     }
     this.sortData();
   }
@@ -91,21 +109,21 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
 
-  private static comparePts(a: BungieGroupMember, b: BungieGroupMember): number {
+  private static compareLLs(a: BungieGroupMember, b: BungieGroupMember): number {
     let aPts = -1;
-    if (a.player!=null && a.player.mots!=null){
-      aPts = a.player.mots.unclaimedPoints+a.player.mots.currentPoints;
+    if (a.player!=null && a.player.maxLL!=null){
+      aPts = a.player.maxLL;
     }
     let bPts = -1;
-    if (b.player!=null && b.player.mots!=null){
-      bPts = b.player.mots.unclaimedPoints+b.player.mots.currentPoints;
+    if (b.player!=null && b.player.maxLL!=null){
+      bPts = b.player.maxLL;
     }
     if (bPts < aPts) return 1;
     if (bPts > aPts) return -1;
     return 0;
   }
-  private static comparePtsReverse(a, b): number {
-    return ClanComponent.comparePts(a, b) * -1;
+  private static compareLLsReverse(a, b): number {
+    return ClanComponent.compareLLs(a, b) * -1;
   }
 
   private static compareNameReverse(a, b): number {
@@ -146,8 +164,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     if (this.sort == "memberDesc") this.sortedMembers.sort(ClanComponent.compareNameReverse);
     if (this.sort == "dateAsc") this.sortedMembers.sort(ClanComponent.compareDate);
     if (this.sort == "dateDesc") this.sortedMembers.sort(ClanComponent.compareDateReverse);
-    if (this.sort == "ptAsc") this.sortedMembers.sort(ClanComponent.comparePts);
-    if (this.sort == "ptDesc") this.sortedMembers.sort(ClanComponent.comparePtsReverse);
+    if (this.sort == "llAsc") this.sortedMembers.sort(ClanComponent.compareLLs);
+    if (this.sort == "llDesc") this.sortedMembers.sort(ClanComponent.compareLLsReverse);
   }
 
   public loadSpecificPlayer(target: BungieGroupMember) {
@@ -166,11 +184,11 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
-        this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
-          x.mots = y;
-        }).catch(err => {
-          // nothing
-        });
+        // this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
+        //   x.mots = y;
+        // }).catch(err => {
+        //   // nothing
+        // });
       }
       else {
         this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged in since DLC?";
@@ -187,7 +205,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       sCsv += tempName + ",";
       sCsv += tempName + "%,";
     });
-    sCsv += "Mots Pts"
     sCsv += "\n";
 
     this.members.forEach(member => {
@@ -233,9 +250,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
           sCsv += pctTotal / possible + ",";
         });
       }
-      if (member.player.mots != null) {
-        sCsv += (member.player.mots.unclaimedPoints + member.player.mots.currentPoints) + "";
-      }
       sCsv += "\n";
 
     });
@@ -277,9 +291,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
-        this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
-          x.mots = y;
-        });
+        // this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
+        //   x.mots = y;
+        // });
       }
       else {
         this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged on since DLC?";

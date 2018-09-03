@@ -193,7 +193,8 @@
                             </ng-container>
                             <ng-container *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.disappears==true">
                               <!-- hack for missing completed milestones-->
-                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                              <i *ngIf="char.light>=200" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                              <i *ngIf="char.light<200" class="mat-option.mat-selected fa fa-square-o"></i>
                             </ng-container>
                           </span>
                         </td>

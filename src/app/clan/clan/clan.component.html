@@ -138,10 +138,10 @@
                   <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
 
                   </th>
-                  <th matTooltip="Moment of Triumph Pts">
-                      <a href="javascript:void(0)" (click)="togglePtSort()">Pts
-                          <i *ngIf="sort=='ptDesc'" class="fa fa-sort-desc"></i>
-                          <i *ngIf="sort=='ptAsc'" class="fa fa-sort-asc"></i>
+                  <th matTooltip="Max LL of current chars (actual max could be higher)">
+                      <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                          <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
+                          <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
                         </a>
                   </th>
                 </ng-container>
@@ -150,8 +150,12 @@
             <tbody>
               <tr *ngFor="let member of sortedMembers">
                 <td class="lead">
-                  <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.player!=null?member.player.profile.userInfo.displayName:'']">
+                  <a *ngIf="member.destinyUserInfo.membershipType!=4" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                  </a>
+                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" 
+                    (click)="navigateBnetMember(member)">
+                      {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
                     <i class="fa fa-refresh"></i>
@@ -184,12 +188,13 @@
                           </ng-container>
                         </span>
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.disappears==true">
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          <i *ngIf="char.light>=200" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          <i *ngIf="char.light<200" class="mat-option.mat-selected fa fa-square-o"></i>
                         </span>
                       </ng-container> 
                     </td>
-                    <td>
-                      <ng-container *ngIf="member.player.mots!=null">{{member.player.mots.unclaimedPoints+member.player.mots.currentPoints}}</ng-container>
+                    <td data-label="Max Current Light Level">
+                      <ng-container *ngIf="member.player.maxLL">{{member.player.maxLL}}</ng-container>
                     </td>
                   </ng-container>
                 </ng-container>
@@ -222,10 +227,10 @@
                   <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
 
                   </th>
-                  <th matTooltip="Moment of Triumph Pts">
-                      <a href="javascript:void(0)" (click)="togglePtSort()">Pts
-                          <i *ngIf="sort=='ptDesc'" class="fa fa-sort-desc"></i>
-                          <i *ngIf="sort=='ptAsc'" class="fa fa-sort-asc"></i>
+                  <th matTooltip="Max LL of current chars (actual max could be higher)">
+                      <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                          <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
+                          <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
                         </a>
                   </th>
                 </ng-container>
