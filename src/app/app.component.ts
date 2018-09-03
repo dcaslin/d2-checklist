@@ -144,7 +144,16 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(
       (navEnd: NavigationEnd) => {
         try {
-          (window as any).ga('send', 'pageview', navEnd.urlAfterRedirects+"-"+(this.disableads?'disabledAds':'enabledAds'));
+          const parts =  navEnd.urlAfterRedirects.split("/");
+          let logMe = "";
+          if (parts.length==4){
+            logMe = parts[parts.length-1];
+          }
+          else if (parts.length>1){
+            logMe = parts[1];
+          }
+          logMe += "-"+(this.disableads?'disabledAds':'enabledAds');
+          (window as any).ga('send', 'pageview', logMe);
         }
         catch (err) {
           console.dir(err);
