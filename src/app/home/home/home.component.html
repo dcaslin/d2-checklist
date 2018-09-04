@@ -27,13 +27,11 @@
           </a>
         </div>
 
-        <div class="info">
-          <p class="warn-text">Pardon the dust as we adapt to the new milestone challenges in Forsaken. Limited milestones have been hacked together for clans and players! Expect them to improve and expand in the coming weeks. Below are the active general milestones as reported by the API</p>
-
+        <div class="info">          
           <mat-card *ngFor="let ms of publicMilestones">
             <mat-card-header>
 
-              <div mat-card-avatar class="transparent-icon" [style.background-image]="'url(//www.bungie.net' +  ms.icon  + ')'"></div>
+              <div *ngIf="ms.icon!=null" mat-card-avatar class="transparent-icon" [style.background-image]="'url(//www.bungie.net' +  ms.icon  + ')'"></div>
               <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode">{{ms.hash}}</span></mat-card-title>
               <mat-card-subtitle>
                 <span class="d-none d-md-inline">{{ms.desc}}</span> Resets {{ms.end|date:'short'}}</mat-card-subtitle>

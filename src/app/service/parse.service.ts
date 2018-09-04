@@ -665,6 +665,7 @@ export class ParseService {
             let rewards = "";
             let rewCnt = 0;
             let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
+            let icon = desc.displayProperties.icon;
             const activities:MilestoneActivity[] = [];
             if (ms.activities!=null){
                 for (let act of ms.activities) {
@@ -755,7 +756,10 @@ export class ParseService {
                                 }
 
                             }
-                        }                       
+                        }        
+                        if (icon==null){
+                            icon =  iDesc.displayProperties.icon;
+                        }                        
                         activities.push({
                             hash: "quest-"+q.questItemHash,
                             name: iDesc.displayProperties.name,
@@ -850,7 +854,7 @@ export class ParseService {
                 start: ms.startDate,
                 end: ms.endDate,
                 order: ms.order,
-                icon: desc.displayProperties.icon,
+                icon: icon,
                 activities: activities,
                 aggActivities: aggActivities, 
                 rewards: rewards,
