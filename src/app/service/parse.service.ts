@@ -14,7 +14,7 @@ import {
 export class ParseService {
 
     constructor(private destinyCacheService: DestinyCacheService) { }
-    MAX_LEVEL: number = 30;
+    MAX_LEVEL: number = 50;
 
     private parseCharacter(c: _Character): Character {
         let char: Character = new Character();
@@ -30,6 +30,7 @@ export class ParseService {
         char.light = c.light;
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
+        char.levelProgression = c.levelProgression;
         char.baseCharacterLevel = c.baseCharacterLevel;
         char.percentToNextLevel = c.percentToNextLevel / 100;
 
