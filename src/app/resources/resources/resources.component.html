@@ -2,9 +2,41 @@
   <div class="childVert">
     <div class="main">
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
-      <div [ngClass]="animateOnRouteEnter" style="text-align:left">
-        HI!
-    
+      <div class="body-text" [ngClass]="animateOnRouteEnter">
+        <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Resources - 
+          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
+        </h2>
+        <div *ngIf="player!=null && player.characters!=null" class="button-row">
+          <a mat-raised-button *ngFor="let c of player.characters" 
+            [color]="char!=null && c.characterId==char.characterId?'accent':'default'" 
+            (click)="setChar(c, false)"
+            >{{c.className}} - {{c.light}}</a>
+        </div>
+        <br/>
+        <ng-container *ngIf="vendorData!=null">
+          <div *ngFor="let v of vendorData">
+            {{v.name}}
+            <div *ngFor="let i of v.items" style="margin-left: 50px">
+              {{i.name}} {{i.quantity}}
+              <div *ngFor="let c of i.costs" style="margin-left: 50px">
+                  {{c.name}} {{c.quantity}}
+                </div>
+            </div>
+
+          </div>
+        </ng-container>
+        
+      
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>
+                  <h1>Coming soon!</h1>
+                </mat-card-title>
+              </mat-card-header>
+          <mat-card-content>
+            See available bounties, adventures, and material exchanges, including costs and rewards. Use it to plan out how to get the resources you need.
+          </mat-card-content>
+        </mat-card>
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">

@@ -651,6 +651,62 @@ export class ParseService {
         return unique_array;
     }
 
+    public parseVendorData(resp: any): any[]{
+        if (resp==null || resp.sales==null) return null;
+        const returnMe = [];
+        for (let key in resp.sales.data){
+            const vendor = resp.sales.data[key];
+            const oVendor = this.parseIndividualVendor(key, vendor);
+            if (oVendor!=null)
+                returnMe.push(oVendor);
+        }
+        return returnMe;
+    }
+
+    private parseIndividualVendor(key: string, v: any): any{
+        if (v.saleItems==null) return null;
+        let vDesc: any = this.destinyCacheService.cache.Vendor[key];
+        if (vDesc==null) return null;
+        const items = [];
+        for (let key in v.saleItems){
+            const i = v.saleItems[key];
+            const oItem = this.parseSaleItem(i);
+            if (oItem!=null)
+                items.push(oItem);
+        }
+        return {
+            hash: key,
+            name: vDesc.displayProperties.name,
+            items: items
+        };
+    }
+
+    private parseSaleItem(i: any): any{
+        if (i.itemHash==null && i.itemHash==0) return null;
+        let iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
+        if (iDesc==null) return null;
+        
+        const costs: any[] = [];
+        if (i.costs){
+            for (let cost of i.costs){
+                if (cost.itemHash==null || cost.itemHash==0) continue;
+                let cDesc: any = this.destinyCacheService.cache.InventoryItem[cost.itemHash];
+                if (cDesc==null) continue;
+                costs.push({
+                    name: cDesc.displayProperties.name,
+                    hash: cost.itemHash,
+                    quantity: cost.quantity
+                });
+            }
+        }
+        return {
+            hash: i.itemHash,
+            name: iDesc.displayProperties.name,
+            quantity: i.quantity,
+            costs: costs
+        }
+    }
+
     public parsePublicMilestones(resp: any): PublicMilestone[] {
         const msMilestones: _PublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
