@@ -8,7 +8,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { SelectedUser, Player, Character } from '@app/service/model';
+import { SelectedUser, Player, Character, SaleItem } from '@app/service/model';
 
 @Component({
   selector: 'anms-resources',
@@ -21,7 +21,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   selectedUser: SelectedUser = null;
   player: Player = null;
   char: Character = null;
-  vendorData: any = null;
+  vendorData: SaleItem[] = null;
 
   constructor(storageService: StorageService, private bungieService: BungieService, 
     private route: ActivatedRoute, private router: Router) {

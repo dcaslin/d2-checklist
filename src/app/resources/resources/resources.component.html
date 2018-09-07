@@ -6,28 +6,64 @@
         <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Resources - 
           <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
         </h2>
-        <div *ngIf="player!=null && player.characters!=null" class="button-row">
+
+        <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null" [value]="player.characters[0]" (change)="setChar(chargroup.value, false)">
+            <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
+                {{c.className}} - {{c.light}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+
+
+        <!-- <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <a mat-raised-button *ngFor="let c of player.characters" 
             [color]="char!=null && c.characterId==char.characterId?'accent':'default'" 
             (click)="setChar(c, false)"
             >{{c.className}} - {{c.light}}</a>
-        </div>
+        </div> -->
         <br/>
-        <ng-container *ngIf="vendorData!=null">
-          <div *ngFor="let v of vendorData">
-            {{v.name}}
-            <div *ngFor="let i of v.items" style="margin-left: 50px">
-              {{i.name}} {{i.quantity}}
-              <div *ngFor="let c of i.costs" style="margin-left: 50px">
-                  {{c.name}} {{c.quantity}}
-                </div>
-            </div>
+        <table *ngIf="vendorData!=null" class="itemTable">
+          <thead>
+            <tr>
+              <th>Vendor</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Costs</th>
+              <th>Perks</th>
+              <th>Value</th>
+              <th>Objectives</th>
+            </tr>
 
-          </div>
-        </ng-container>
+          </thead>
+          <tbody>
+            <tr *ngFor="let i of vendorData">
+              <td>{{i.vendor.name}}</td>
+              <td>{{i.name}} {{i.quantity}}</td>
+              <td>{{i.type}} {{i.itemTypeAndTierDisplayName}} {{i.itemTypeDisplayName}}</td>
+              <td>
+                  <div *ngFor="let c of i.costs">
+                      {{c.name}} {{c.quantity}}
+                    </div>
+              </td>
+              <td>
+                  <div *ngFor="let perks of i.rolledPerks">
+                      <span *ngFor="let perk of perks; last as isLast">
+                        {{perk.name}} 
+                        <ng-container *ngIf="!isLast"> | </ng-container>
+                      </span> 
+                  </div>
+              </td>
+              <td>
+                  {{i.value | json}}
+              </td>
+              <td>
+                  {{i.objectives | json}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
         
       
-        <mat-card>
+        <!-- <mat-card>
             <mat-card-header>
                 <mat-card-title>
                   <h1>Coming soon!</h1>
@@ -36,7 +72,7 @@
           <mat-card-content>
             See available bounties, adventures, and material exchanges, including costs and rewards. Use it to plan out how to get the resources you need.
           </mat-card-content>
-        </mat-card>
+        </mat-card> -->
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">

@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem
 } from './model';
 @Injectable()
 export class ParseService {
@@ -651,39 +651,42 @@ export class ParseService {
         return unique_array;
     }
 
-    public parseVendorData(resp: any): any[]{
+    public parseVendorData(resp: any): SaleItem[]{
         if (resp==null || resp.sales==null) return null;
-        const returnMe = [];
+        let returnMe = [];
         for (let key in resp.sales.data){
             const vendor = resp.sales.data[key];
-            const oVendor = this.parseIndividualVendor(key, vendor);
-            if (oVendor!=null)
-                returnMe.push(oVendor);
+            const items = this.parseIndividualVendor(resp, key, vendor);
+            returnMe = returnMe.concat(items);
+
         }
         return returnMe;
     }
 
-    private parseIndividualVendor(key: string, v: any): any{
-        if (v.saleItems==null) return null;
-        let vDesc: any = this.destinyCacheService.cache.Vendor[key];
-        if (vDesc==null) return null;
-        const items = [];
+    private parseIndividualVendor(resp: any, vendorKey: string, v: any): SaleItem[]{
+        if (v.saleItems==null) return [];
+        let vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
+        if (vDesc==null) return []];
+        const vendor: Vendor = {
+            hash: vendorKey,
+            name: vDesc.displayProperties.name,
+            displayProperties: vDesc.displayProperties,
+            nextRefreshDate: resp.vendors.data[vendorKey].nextRefreshDate
+        };
+        const items: SaleItem[] = [];
         for (let key in v.saleItems){
             const i = v.saleItems[key];
-            const oItem = this.parseSaleItem(i);
+            const oItem = this.parseSaleItem(vendor, resp, i);
             if (oItem!=null)
                 items.push(oItem);
         }
-        return {
-            hash: key,
-            name: vDesc.displayProperties.name,
-            items: items
-        };
+        return items;
     }
 
-    private parseSaleItem(i: any): any{
+    private parseSaleItem(vendor: Vendor, resp: any, i: any): SaleItem{
         if (i.itemHash==null && i.itemHash==0) return null;
-        let iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
+        const index = i.vendorItemIndex;
+        const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
         if (iDesc==null) return null;
         
         const costs: any[] = [];
@@ -699,10 +702,94 @@ export class ParseService {
                 });
             }
         }
+
+        const rolledPerks = [];
+
+        const itemSockets = resp.itemComponents[vendor.hash].sockets.data[index];
+        if (itemSockets!=null){
+            const socketArray = itemSockets.sockets;
+            for (let cntr=0; cntr< socketArray.length; cntr++){
+                const socketVal = socketArray[cntr];
+                const socketTemplate = iDesc.sockets.socketEntries[cntr];
+                
+                //2846385770
+                
+                if (socketTemplate.randomizedPlugItems!=null && socketTemplate.randomizedPlugItems.length>0){
+                    const perkSet = [];
+                    if (socketVal.reusablePlugs!=null){
+
+                        for (let perkHash of socketVal.reusablePlugHashes){
+                            const perkDesc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
+                            if (perkDesc!=null){
+                                perkSet.push({
+                                    hash: perkHash,
+                                    name: perkDesc.displayProperties.name,
+                                    desc: perkDesc.displayProperties.description,
+                                });
+    
+                            }
+                        }
+                        
+                    }
+                    else if (socketVal.reusablePlugHashes==null){
+                        const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                            if (perkDesc!=null){
+                                perkSet.push({
+                                    hash: socketVal.plugHash,
+                                    name: perkDesc.displayProperties.name,
+                                    desc: perkDesc.displayProperties.description,
+                                });
+    
+                            }
+                    }
+                    if (perkSet.length>0)
+                        rolledPerks.push(perkSet);
+                }
+            }
+        }
+        
+        const objectives = [];
+
+        if (iDesc.objectives!=null && iDesc.objectives.objectiveHashes!=null){
+            for (let oHash of iDesc.objectives.objectiveHashes){
+                let oDesc: any = this.destinyCacheService.cache.Objective[oHash];
+                if (oDesc!=null){
+                    objectives.push({
+                        total: oDesc.completionValue,
+                        units: oDesc.progressDescription
+                    })
+
+                }
+            }
+        }
+
+        const values = [];
+        if (iDesc.value!=null && iDesc.value.itemValue!=null){
+            for (let val of iDesc.value.itemValue){
+                if (val.itemHash==0) continue;
+                const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+                if (valDesc!=null){
+                    values.push({
+                        name: valDesc.displayProperties.name,
+                        quantity: val.quantity
+                    });
+            }
+
+            }
+        }
+
+        
         return {
+            vendor: vendor,
             hash: i.itemHash,
             name: iDesc.displayProperties.name,
+            type: iDesc.itemType,
+            itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
+            itemTypeDisplayName: iDesc.itemTypeDisplayName,
             quantity: i.quantity,
+            objectives: objectives,
+            rolledPerks: rolledPerks,
+            value: values,
             costs: costs
         }
     }

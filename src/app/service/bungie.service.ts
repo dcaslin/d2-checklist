@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone, SaleItem } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -474,10 +474,9 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public async loadVendors(c: Character): Promise<any[]>{
-        console.log("ASDF");
+    public async loadVendors(c: Character): Promise<SaleItem[]>{
         let opt = await this.buildReqOptions();
-        let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+c.characterId+'/Vendors/?components=Vendors,VendorSales', opt).toPromise();
+        let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+c.characterId+'/Vendors/?components=Vendors,VendorSales,ItemInstances,ItemObjectives,ItemStats,ItemSockets,ItemTalentGrids,ItemCommonData,ItemPlugStates', opt).toPromise();
         const resp = this.parseBungieResponse(hResp);
         const vendorData = this.parseService.parseVendorData(resp);
         console.dir(vendorData);

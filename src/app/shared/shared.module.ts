@@ -5,6 +5,7 @@ import { PipeModule} from './pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatButtonModule,
+  MatButtonToggleModule,
   MatToolbarModule,
   MatMenuModule,
   MatSelectModule,
@@ -50,6 +51,7 @@ import { RouterModule } from '@angular/router';
     }),
 
     MatButtonModule,
+    MatButtonModule,
     MatToolbarModule,
     MatSelectModule,
     MatTabsModule,
@@ -84,6 +86,7 @@ import { RouterModule } from '@angular/router';
     AdsenseModule,
 
     MatButtonModule,
+    MatButtonToggleModule,
     MatMenuModule,
     MatTabsModule,
     MatChipsModule,
