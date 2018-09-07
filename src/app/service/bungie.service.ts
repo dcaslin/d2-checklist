@@ -5,7 +5,7 @@ import { takeUntil, first } from 'rxjs/operators';
  */
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
@@ -20,7 +20,7 @@ const API_ROOT: string = "https://www.bungie.net/Platform/";
 
 @Injectable()
 export class BungieService implements OnDestroy {
-    private selectedUserSub = new Subject();
+    private selectedUserSub = new BehaviorSubject(null);
     public selectedUserFeed: Observable<SelectedUser>;
 
     private unsubscribe$: Subject<void> = new Subject<void>();
@@ -73,13 +73,6 @@ export class BungieService implements OnDestroy {
 
                     //after the fact search for clan
                     this.setClans(membership);
-                    //let the routing module do this, so we don't double init
-                    // //after the fact currency check
-                    // if (this.selectedUser.selectedUser != null) {
-                    //     if (this.destinyCacheService.cache!=null){
-                    //         this.setCurrencies();
-                    //     }
-                    // }
                 });
             }
             else {
@@ -323,7 +316,7 @@ export class BungieService implements OnDestroy {
             } else {
                 this.selectedUser.selectedUserCurrencies = null;
             }
-            self.emitUsers();
+            // self.emitUsers();
         });
     }
 
@@ -332,7 +325,7 @@ export class BungieService implements OnDestroy {
         this.getClans(membership.bungieId).then(c => {
             if (c != null) {
                 membership.clans = c;
-                self.emitUsers();
+                // self.emitUsers();
             }
 
         });
@@ -481,26 +474,14 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public async getVendorData(): Promise<any>{
-        if (this.selectedUser==null) return null;
-        
-        const p:Player = await this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["Profiles", "Characters"]);
-        for (let c of p.characters){
-            await this.loadVendors(c);
-
-        }
-        console.dir(p);
-        return null;
-
-    }
-
-    public async loadVendors(c: Character): Promise<void>{
+    public async loadVendors(c: Character): Promise<any[]>{
         console.log("ASDF");
         let opt = await this.buildReqOptions();
         let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+c.characterId+'/Vendors/?components=Vendors,VendorSales', opt).toPromise();
         const resp = this.parseBungieResponse(hResp);
-        console.dir(resp);
-        return null;
+        const vendorData = this.parseService.parseVendorData(resp);
+        console.dir(vendorData);
+        return vendorData;
     }
 
     public async getPublicMilestones(): Promise<PublicMilestone[]>{
