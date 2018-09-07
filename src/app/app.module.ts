@@ -27,6 +27,7 @@ import { PlayerModule } from './player';
 import { AuthModule } from './auth';
 import { HistoryModule } from './history';
 import { PGCRModule } from './pgcr';
+import { ResourcesModule } from './resources';
 import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 
@@ -52,6 +53,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     ClanLeaderboardModule,
     LeaderboardModule,
     PGCRModule,
+    ResourcesModule,
     AuthModule,
 
     // app

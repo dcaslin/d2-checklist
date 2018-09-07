@@ -1,0 +1,19 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      <div [ngClass]="animateOnRouteEnter" style="text-align:left">
+        HI!
+    
+      </div>
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  </div>
+</div>

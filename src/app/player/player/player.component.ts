@@ -46,6 +46,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
 
   public historyPlayer(p: Player) {
+    p.profile.userInfo.membershipType,p.profile.userInfo.membershipId
     let c: Character = p.characters[0];
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
   }
@@ -134,19 +135,16 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     else if (index === 2){ 
       return "progress";
     }
-    // else if (index === 2){ 
-    //   return "soh";
-    // }
-    
-    // else if (index === 3){ 
-    //   return "triumphs";
-    // }
     else if (index === 3){ 
+      return "triumphs";
+    }
+    else if (index === 4){ 
       return "chars";
     }
-    // else if (index === 5){ 
-    //   return "gear";
-    // }
+    else if (index === 5){ 
+      return "collections";
+    }
+    
   }
 
   private setTab(): void {
@@ -156,30 +154,26 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
     const tab: string = this.selectedTab;
     if (tab!=null){
-      // if (tab == "gear"){
-      //   this.tabs.selectedIndex = 5;
-      // }
       if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
       }
       else if (tab == "nodes" || tab == "checklist"){
         this.tabs.selectedIndex = 1;
       }
-      // else if (tab == "triumphs"){
-      //   this.tabs.selectedIndex = 3;
-      // }
       else if (tab == "progress"){
         this.tabs.selectedIndex = 2;
         console.log("!!!set");
+      }
+      else if (tab == "triumphs"){
+        this.tabs.selectedIndex = 3;
       }
       else if (tab == "chars"){
         this.tabs.selectedIndex = 3;
       }
       
-      
-      // else if (tab == "soh"){
-      //   this.tabs.selectedIndex = 2;
-      // }
+      else if (tab == "collections"){
+        this.tabs.selectedIndex = 3;
+      }
     }
     else{
       console.log("---tab is null!");

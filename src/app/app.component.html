@@ -39,14 +39,25 @@
             <img class="logo" [src]="logo" /> D2 Checklist</span>
           <span class="d-none d-md-inline">
             <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">Home</button>
-            <button mat-button class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">Leviathan
-              <span class="d-none d-xl-inline"> Leaderboard</span>
-              <span class="d-xl-none"> LB</span>
+            <button mat-button class="nav-button" routerLink="resources" routerLinkActive="active">
+              <mat-icon>payment</mat-icon>
+              <span class="d-none d-xl-inline"> Resources</span>
             </button>
-            <button mat-button class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">Prestige
-              <span class="d-none d-xl-inline"> Leaderboard</span>
-              <span class="d-xl-none"> LB</span>
+            <button mat-button [matMenuTriggerFor]="leaderboardMenu">
+              <mat-icon>score</mat-icon>
+              <span class="d-none d-xl-inline"> Leaderboards</span>
             </button>
+            <mat-menu #leaderboardMenu="matMenu">
+                <button  mat-menu-item class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">
+                  Leviathan Normal
+                </button>
+                <button mat-menu-item class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">
+                  Leviathan Prestige
+                </button>
+            </mat-menu>
+
+
+            
             <button mat-button class="nav-button" routerLink="search" routerLinkActive="active">
               <mat-icon>search</mat-icon>
               <span class="d-none d-xl-inline"> Search Users</span>

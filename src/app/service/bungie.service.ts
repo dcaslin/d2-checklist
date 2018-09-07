@@ -10,7 +10,7 @@ import { Observable, Subject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -481,7 +481,29 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public async getPublicMilestones(): Promise<any>{
+    public async getVendorData(): Promise<any>{
+        if (this.selectedUser==null) return null;
+        
+        const p:Player = await this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["Profiles", "Characters"]);
+        for (let c of p.characters){
+            await this.loadVendors(c);
+
+        }
+        console.dir(p);
+        return null;
+
+    }
+
+    public async loadVendors(c: Character): Promise<void>{
+        console.log("ASDF");
+        let opt = await this.buildReqOptions();
+        let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+c.characterId+'/Vendors/?components=Vendors,VendorSales', opt).toPromise();
+        const resp = this.parseBungieResponse(hResp);
+        console.dir(resp);
+        return null;
+    }
+
+    public async getPublicMilestones(): Promise<PublicMilestone[]>{
         try{
             let opt = await this.buildReqOptions();
             let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/Milestones/', opt).toPromise();
@@ -549,7 +571,7 @@ export class BungieService implements OnDestroy {
 
     }
 
-    public getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean): Promise<Player> {
+    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean): Promise<Player> {
         const self: BungieService = this;
         //CharacterEquipment
         //Profiles,Characters,CharacterProgressions,,CharacterActivities
