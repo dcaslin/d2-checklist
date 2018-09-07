@@ -6,6 +6,7 @@ import { PlayerComponent } from './player';
 import { AuthComponent } from './auth';
 import { HistoryComponent } from './history';
 import { PGCRComponent } from './pgcr';
+import { ResourcesComponent } from './resources';
 import { AboutComponent } from './about';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
@@ -60,9 +61,11 @@ export class AuthGuard implements CanActivate {
 
       {
         path: 'settings',
+        canActivate: [AuthGuard],
         component: SettingsComponent
       }, {
         path: 'about',
+        canActivate: [AuthGuard],
         component: AboutComponent
       }, {
         path: 'search',
@@ -86,18 +89,22 @@ export class AuthGuard implements CanActivate {
       },
       {
         path: 'leaderboard/leviathan',
+        canActivate: [AuthGuard],
         component: LeviathanComponent
       },
       {
         path: 'leaderboard/leviathan/:name',
+        canActivate: [AuthGuard],
         component: LeviathanComponent
       },
       {
         path: 'leaderboard/leviathan-prestige',
+        canActivate: [AuthGuard],
         component: LeviathanPrestigeComponent
       },
       {
         path: 'leaderboard/leviathan-prestige/:name',
+        canActivate: [AuthGuard],
         component: LeviathanPrestigeComponent
       },
       {
@@ -108,6 +115,11 @@ export class AuthGuard implements CanActivate {
         path: 'pgcr/:instanceId',
         canActivate: [AuthGuard],
         component: PGCRComponent
+      },
+      {
+        path: 'resources',
+        canActivate: [AuthGuard],
+        component: ResourcesComponent
       },
       {
         path: ':platform/:gt',

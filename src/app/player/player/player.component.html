@@ -46,23 +46,37 @@
             </span>
           </h4>
 
-          <div class="button-row">
-            <a mat-button *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
-              <mat-icon>message</mat-icon>
-              <span class="d-none d-md-inline">Message on XBL</span>
-            </a>
-            <a mat-button (click)="historyPlayer(player)">
+          <div class="button-row">      
+            <a mat-button routerLink="/resources">
+              <mat-icon>payment</mat-icon>
+              <span class="d-none d-md-inline">Resources</span>
+            </a>      
+            <!-- <a mat-button>
+                <i class="fa fa-trophy"></i>
+                <span class="d-none d-md-inline">Triumphs</span>
+              </a>       -->
+            <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <mat-icon>history</mat-icon>
               <span class="d-none d-md-inline">Activity History</span>
             </a>
-            <a mat-button [href]="getRaidLink(player)" class="external-link" rel="warn-text" target="_blank" rel="noopener">
-              <mat-icon>flag</mat-icon>
-              <span class="d-none d-md-inline">Raid.Report</span>
-            </a>
-            <a mat-button [href]="getTrialsLink(player)" class="external-link" rel="noopener" target="_blank" rel="noopener">
-              <mat-icon>remove_red_eye</mat-icon>
-              <span class="d-none d-md-inline">Trials.Report</span>
-            </a>
+            <button mat-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+              <span class="d-none d-md-inline">External Links</span>
+            </button>
+            <mat-menu #menu="matMenu">
+              <a mat-menu-item *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
+                <mat-icon>message</mat-icon>
+                <span>Message on XBL</span>
+              </a>              
+              <a mat-menu-item [href]="getRaidLink(player)" rel="warn-text" target="_blank" rel="noopener">
+                <mat-icon>flag</mat-icon>
+                <span>Raid.Report</span>
+              </a>
+              <a mat-menu-item [href]="getTrialsLink(player)" rel="noopener" target="_blank" rel="noopener">
+                <mat-icon>remove_red_eye</mat-icon>
+                <span>Trials.Report</span>
+              </a>
+            </mat-menu>
           </div>
 
           <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
@@ -258,52 +272,6 @@
               </div>
 
             </mat-tab>
-           
-            <!-- <mat-tab>
-              <ng-template mat-tab-label>
-                  <i class="fa fa-fire"></i>
-                  <span class="d-none d-md-inline">&ensp;SoH</span>
-                </ng-template>
-                <ng-container *ngIf="player!=null">
-                    <mat-tab-group>
-                        <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
-        
-                          <div *ngIf="player.sohGear==null">
-                            <br>
-                            <h1>Privacy</h1>
-                            <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
-                          </div>
-                          <div *ngIf="player.sohGear.length==0">
-                              <br>
-                              This player has no visible Solstice of Heroes Gear. They may still being doing SoH but just may have the gear unequipped right now.
-                            </div>
-                          <table class="responsive-table" *ngIf="player.sohGear!=null && player.sohGear.length>0">
-                            <tbody>
-                              <ng-container *ngFor="let g of player.sohGear">
-                                <tr *ngIf="g.soh && g.classAvail && g.classAvail[char.classType]==true">
-                                  <td class="lead" data-label="">
-                                      <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                      {{g.name}}
-                                      <div class="simple-caption">{{g.desc}}</div>
-                                  </td>
-                                  <td data-label="">
-                                    <div class="obj-desc" *ngFor="let obj of g.objectives">
-                                      <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                      <i *ngIf="!obj.complete" class="fa fa-square-o"></i>
-                                      {{obj.progressDescription}}
-                                      <span *ngIf="obj.completionValue!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </ng-container>                              
-                            </tbody>
-                          </table>
-                          <br>
-                        </mat-tab>
-                      </mat-tab-group>
-                </ng-container>
-          
-          </mat-tab> -->
             <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fa fa-check-square-o"></i>
