@@ -1,4 +1,31 @@
 
+export interface Vendor{
+    hash: string;
+    name: string;
+    displayProperties: any;
+    nextRefreshDate: string;
+}
+
+export interface SaleItemCost{
+    hash: string;
+    name: string;
+    quantity: number;
+}
+
+export interface SaleItem{
+    vendor: Vendor;
+    hash: string; 
+    name: string;
+    type: number;
+    itemTypeAndTierDisplayName: string;
+    itemTypeDisplayName: string;
+    quantity: number;
+    objectives: any;
+    rolledPerks: any;
+    value: any;
+    costs: SaleItemCost[];
+}
+
 export interface PublicMilestone {
     hash: string;
     name: string;

@@ -2,9 +2,8 @@
 
 .body-text {
     width: auto;
-    text-align: left;
-    // margin-left: auto; 
-    // margin-right: auto; 
+    margin-left: auto; 
+    margin-right: auto; 
   }
 
 
@@ -20,4 +19,8 @@
     margin-right: 5px;
     text-decoration: none;
   }
+}
+
+.itemTable{
+  text-align: left;
 }
