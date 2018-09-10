@@ -570,6 +570,7 @@ export class ParseService {
         const vendor: Vendor = {
             hash: vendorKey,
             name: vDesc.displayProperties.name,
+            icon: vDesc.displayProperties.icon,
             displayProperties: vDesc.displayProperties,
             nextRefreshDate: resp.vendors.data[vendorKey].nextRefreshDate
         };
@@ -623,6 +624,7 @@ export class ParseService {
                             if (perkDesc!=null){
                                 perkSet.push({
                                     hash: perkHash,
+                                    icon: perkDesc.displayProperties.icon,
                                     name: perkDesc.displayProperties.name,
                                     desc: perkDesc.displayProperties.description,
                                 });
@@ -636,6 +638,7 @@ export class ParseService {
                             if (perkDesc!=null){
                                 perkSet.push({
                                     hash: socketVal.plugHash,
+                                    icon: perkDesc.displayProperties.icon,
                                     name: perkDesc.displayProperties.name,
                                     desc: perkDesc.displayProperties.description,
                                 });
@@ -683,6 +686,7 @@ export class ParseService {
             vendor: vendor,
             hash: i.itemHash,
             name: iDesc.displayProperties.name,
+            icon: iDesc.displayProperties.icon,
             type: iDesc.itemType,
             itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
             itemTypeDisplayName: iDesc.itemTypeDisplayName,

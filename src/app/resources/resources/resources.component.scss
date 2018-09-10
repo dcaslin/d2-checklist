@@ -24,3 +24,28 @@
 .itemTable{
   text-align: left;
 }
+
+.item-icon{
+  width: 48px;
+  height: 48px;
+  border-radius: 25%;
+
+  background-size: cover;
+  display: inline-block;
+}
+
+.small-item-icon{
+  
+  border-radius: 25%;
+  width: 1em;
+  height: 1em;
+  background-size: cover;
+  display: inline-block;
+}
+
+.item-icon-cell{
+  width: 53px; 
+  padding-left: 5px; 
+  padding-right: 0em;
+}
+
