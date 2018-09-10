@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone, SaleItem, MilestoneDef } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone, SaleItem } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -172,13 +172,13 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
         let promises: Promise<void>[] = [];
 
-        let raidMilestoneName: MileStoneName = null;
-        msNames.forEach(m => {
-            if (m.key == "3660836525") {
-                raidMilestoneName = m;
-            }
-        });
-        if (raidMilestoneName == null) return Promise.resolve(void []);
+        // let raidMilestoneName: MileStoneName = null;
+        // msNames.forEach(m => {
+        //     if (m.key == "3660836525") {
+        //         raidMilestoneName = m;
+        //     }
+        // });
+        // if (raidMilestoneName == null) return Promise.resolve(void []);
 
         chars.forEach(c => {
             let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 600).then((hist: Activity[]) => {

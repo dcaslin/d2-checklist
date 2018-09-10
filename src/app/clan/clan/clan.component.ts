@@ -153,7 +153,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       let total: number = 0;
       member.player.characters.forEach(char => {
         total++;
-        if (char.milestones[this.filterActivity.key].complete) comp++;
+        const ms = char.milestones[this.filterActivity.key];
+        if (ms==null) comp++;
+        else if (ms.complete==true) comp++;
       });
       if (this.filterMode == "zero" && comp == 0) return true;
       if (this.filterMode == "all" && comp == total) return true;
@@ -177,9 +179,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.members[this.playerCntr].errorMsg = null;
 
         //also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
-          //nothing needed
-        });
+        // this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
+        //   //nothing needed
+        // });
 
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
@@ -279,34 +281,35 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
     this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType, this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
       if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
-        const list = [];
-        const removeHashes = [
-          "3603098564",
-          "536115997",
-          "4253138191",
-          "534869653"
-          // "536115997",
-          // "3660836525",
-          // "2986584050",
-          // "2683538554",
-          // "4253138191",
-          // "534869653"
-        ];
-        for (let r of x.milestoneList){
-          if (!(removeHashes.indexOf(r.key)>0)){
-            list.push(r);
-          }
-        }
-        x.milestoneList = list;;
+        // const list = [];
+        // const removeHashes = [
+        //   "3603098564",
+        //   "536115997",
+        //   "4253138191",
+        //   "534869653"
+        //   // "536115997",
+        //   // "3660836525",
+        //   // "2986584050",
+        //   // "2683538554",
+        //   // "4253138191",
+        //   // "534869653"
+        // ];
+        // for (let r of x.milestoneList){
+        //   if (!(removeHashes.indexOf(r.key)>0)){
+        //     list.push(r);
+        //   }
+        // }
+        // x.milestoneList = list;;
+        
         this.modelPlayer = x;
       }
       if (x != null && x.characters != null) {
         //in case this is a retry 
         this.members[this.playerCntr].errorMsg = null;
         //also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
-          //nothing needed
-        });
+        // this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
+        //   //nothing needed
+        // });
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });

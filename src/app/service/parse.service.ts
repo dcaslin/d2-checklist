@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem, MilestoneDef
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem
 } from './model';
 @Injectable()
 export class ParseService {
@@ -165,16 +165,13 @@ export class ParseService {
         return "Unknown: " + t;
     }
 
-    private populateProgressions(c: Character, _prog: any): void {
+    private populateProgressions(c: Character, _prog: any, milestonesByKey: any): void {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
+
                 let ms: _Milestone = _prog.milestones[key];
-                if (key == "534869653") {
-                    //ignore xur;
-                    return;
-                }
-                //clan rewards special case
+                //ignore milestones we're not reporting
                 if (key == "4253138191") {
 
                     //grab weekly reset from this
@@ -210,6 +207,13 @@ export class ParseService {
                     c.clanMilestones = clanMilestones;
                     return;
                 }
+                else if (milestonesByKey[key] == null){
+                    return;
+                }
+
+
+                //clan rewards special case
+               
                 let total = 0;
                 let complete = 0;
                 let info: string = null;
@@ -274,7 +278,7 @@ export class ParseService {
                 if (pct == 0) pct = oPct;
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + "% complete";
-                    // mileStoneDefs[key].hasPartial = true;
+                    milestonesByKey[key].hasPartial = true;
                 }
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info, suppInfo);
                 c.milestones[key] = m;
@@ -1195,6 +1199,8 @@ export class ParseService {
         return checklists;
     }
 
+
+
     public parsePlayer(resp: any, publicMilestones: PublicMilestone[]): Player {
         if (resp.profile != null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
         if (resp.characters != null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
@@ -1206,21 +1212,43 @@ export class ParseService {
         let superprivate = false;
 
         let charsDict: { [key: string]: Character } = {};
-        let milestoneList: MileStoneName[] = [];
+        const milestoneList: MileStoneName[] = [];
+        const milestonesByKey: any = {};
         let currentActivity: CurrentActivity = null;
         let chars: Character[] = [];
         let hasWellRested = false;
 
         if (publicMilestones!=null){
             for (let p of publicMilestones){
-                milestoneList.push({
+                // 2986584050  eater
+                // 2683538554  spire
+                // 3660836525 raid
+                // 534869653  xur
+                // 4253138191 weekly clan engrams
+                if (
+                    "2986584050"==p.hash||  //eater
+                    "2683538554"==p.hash||  //spire
+                    "3660836525"==p.hash||  //raid
+                    "534869653"==p.hash||   //xur
+                    "4253138191"==p.hash    //weekly clan engrams
+                )
+                {
+                    continue;
+                }
+
+                const ms: MileStoneName = {
                     key: p.hash,
-                    type: "",
+                    resets: p.end,
+                    rewards: p.rewards,
                     name: p.name,
                     desc: p.desc,
-                    hasPartial: true,
-                    disappears: true
-                });
+                    hasPartial: false
+                };
+
+
+                milestoneList.push(ms);
+
+                milestonesByKey[p.hash] = ms;
             }
         }
 
@@ -1229,13 +1257,12 @@ export class ParseService {
             Object.keys(oChars).forEach((key) => {
                 charsDict[key] = this.parseCharacter(oChars[key]);
             });
-            //let mileStoneDefs: any = {};
             if (resp.characterProgressions) {
                 if (resp.characterProgressions.data) {
                     const oProgs: any = resp.characterProgressions.data;
                     Object.keys(oProgs).forEach((key) => {
                         let curChar: Character = charsDict[key];
-                        this.populateProgressions(curChar, oProgs[key]);
+                        this.populateProgressions(curChar, oProgs[key], milestonesByKey);
                         hasWellRested = curChar.wellRested || hasWellRested;
                     });
                 }
@@ -1958,44 +1985,45 @@ export class ParseService {
                 foundHm = true;
             }
         }
+        
         if (!foundEater) {
             msNames.push({
                 key: EATER_KEY,
-                type: "Weekly",
+                resets: c.endWeek.toString(),
+                rewards: "Raid Gear",
                 name: "Leviathan, Eater of Worlds",
                 desc: "Complete the Leviathan Raid Lair from CoO",
-                hasPartial: false,
-                disappears: false
+                hasPartial: false
             });
         }
         if (!foundSpire) {
             msNames.push({
                 key: SPIRE_KEY,
-                type: "Weekly",
+                resets: c.endWeek.toString(),
+                rewards: "Raid Gear",
                 name: "Leviathan, Spire of Stars",
                 desc: "Complete the Leviathan Raid Lair from Warmind",
-                hasPartial: false,
-                disappears: false
+                hasPartial: false
             });
         }
         if (!foundNm) {
             msNames.push({
                 key: LEV_NM_KEY,
-                type: "Weekly",
+                resets: c.endWeek.toString(),
+                rewards: "Raid Gear",
                 name: "Leviathan, Raid",
                 desc: "Normal mode raid",
-                hasPartial: false,
-                disappears: false
+                hasPartial: false
             });
         }
         if (!foundHm) {
             msNames.push({
                 key: LEV_HM_KEY,
-                type: "Weekly",
+                resets: c.endWeek.toString(),
+                rewards: "Raid Gear",
                 name: "Leviathan, Prestige",
                 desc: "Prestige mode raid",
-                hasPartial: false,
-                disappears: false
+                hasPartial: false
             });
         }
         const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);

@@ -32,7 +32,7 @@
             <mat-card-header>
 
               <div *ngIf="ms.icon!=null" mat-card-avatar class="transparent-icon" [style.background-image]="'url(//www.bungie.net' +  ms.icon  + ')'"></div>
-              <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode">{{ms.hash}}</span></mat-card-title>
+              <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode"> {{ms.hash}}</span></mat-card-title>
               <mat-card-subtitle>
                 <span class="d-none d-md-inline">{{ms.desc}}</span> Resets {{ms.end|date:'short'}}</mat-card-subtitle>
             </mat-card-header>
@@ -45,7 +45,7 @@
                   <span *ngFor="let ll of aggAct.lls; last as isLast">{{ll}}
                     <ng-container *ngIf="!isLast"> - </ng-container>
                   </span>
-                  <span *ngIf="debugmode">{{aggAct.activity.hash}}</span>
+                  <span *ngIf="debugmode"> {{aggAct.activity.hash}}</span>
                 </h3>
                 <p class="caption" *ngFor="let ch of aggAct.activity.challenges">
                   {{ch.name}} - {{ch.desc}} Requires: {{ch.completionValue}} {{ch.progressDescription}}

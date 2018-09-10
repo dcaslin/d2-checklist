@@ -1,12 +1,3 @@
-
-export interface MilestoneDef {
-    key: number;
-    type: string;
-    name: string;
-    desc: string;
-    hasPartial: boolean;
-  }
-
 export interface Vendor{
     hash: string;
     name: string;
@@ -427,11 +418,11 @@ export class MilestoneStatus {
 
 export interface MileStoneName {
     key: string;
-    type: string;
+    resets: string;
+    rewards: string;
     name: string;
     desc: string;
     hasPartial: boolean;
-    disappears: boolean;
 }
 
 export class Character {

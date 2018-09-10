@@ -2,7 +2,7 @@
   <div class="childVert">
     <div class="main">
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
-      <div class="body">
+      <div class="body clan-body">
 
         <ng-container *ngIf="info==null">
           <h2>Loading clan info. This could take a while if your clan is large...</h2>
@@ -118,8 +118,7 @@
                 <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
-
-          <table class="responsive-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
+          <table class="responsive-table clan-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
             <thead>
               <tr>
                 <th>
@@ -189,9 +188,8 @@
                             <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
                           </ng-container>
                         </span>
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.disappears==true">
-                          <i *ngIf="char.light>=200" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                          <i *ngIf="char.light<200" class="mat-option.mat-selected fa fa-square-o"></i>
+                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null">
+                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                         </span>
                       </ng-container> 
                     </td>

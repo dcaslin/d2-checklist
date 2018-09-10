@@ -47,10 +47,10 @@
           </h4>
 
           <div class="button-row">      
-            <a mat-button routerLink="/resources">
+            <!-- <a mat-button routerLink="/resources">
               <mat-icon>payment</mat-icon>
               <span class="d-none d-md-inline">Resources</span>
-            </a>      
+            </a>       -->
             <!-- <a mat-button>
                 <i class="fa fa-trophy"></i>
                 <span class="d-none d-md-inline">Triumphs</span>
@@ -114,13 +114,24 @@
                   </thead>
                   <tbody>
                     <ng-container *ngFor="let mileStoneName of player.milestoneList">
-                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && mileStoneName.key!='3660836525'">
+                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
                         <td class="lead">
                           <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
                           <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
                           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
                             (click)="hideMilestone(mileStoneName.key)">hide</a>
-                          <span class="caption">{{mileStoneName.type}}</span>
+                          
+                          <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
+                            Resets in {{mileStoneName.resets| amDifference:today | amDuration:'ms'}}
+
+                            <ng-container *ngIf="debugmode">
+                                <br> {{mileStoneName.resets|date:'short'}}
+                            </ng-container>
+                          </span>
+                          <br>
+                          <span class="simple-caption">
+                            {{mileStoneName.rewards}}
+                          </span>
 
                         </td>
                         <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
@@ -205,10 +216,8 @@
 
 
                             </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.disappears==true">
-                              <!-- hack for missing completed milestones-->
-                              <i *ngIf="char.light>=200" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                              <i *ngIf="char.light<200" class="mat-option.mat-selected fa fa-square-o"></i>
+                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                             </ng-container>
                           </span>
                         </td>
@@ -302,8 +311,8 @@
                       <table class="checklist-table">
                         <thead>
                           <tr>
-                            <th style="width: 200px">Name</th>
-                            <th style="width: 50px">Status</th>
+                            <th class="check-list-name">Name</th>
+                            <th class="check-list-status">Status</th>
                             <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
                           </tr>
                         </thead>
