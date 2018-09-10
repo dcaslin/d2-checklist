@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
   
   navigation = [
     { link: 'home', label: 'Home' },
-    { link: 'resources', label: 'Resources' },
+    // { link: 'resources', label: 'Resources' },
     { link: 'leaderboard/leviathan', label: 'Raid Leaderboard' },
     { link: 'leaderboard/leviathan-prestige', label: 'Prestige Leaderboard' },
     { link: 'search', label: 'Search Users' },
