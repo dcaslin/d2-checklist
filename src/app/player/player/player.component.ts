@@ -134,15 +134,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
     else if (index === 2){ 
       return "progress";
-    }
+    }    
     else if (index === 3){ 
-      return "triumphs";
-    }
-    else if (index === 4){ 
       return "chars";
-    }
-    else if (index === 5){ 
-      return "collections";
     }
     
   }
@@ -162,16 +156,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       }
       else if (tab == "progress"){
         this.tabs.selectedIndex = 2;
-        console.log("!!!set");
-      }
-      else if (tab == "triumphs"){
-        this.tabs.selectedIndex = 3;
       }
       else if (tab == "chars"){
-        this.tabs.selectedIndex = 3;
-      }
-      
-      else if (tab == "collections"){
         this.tabs.selectedIndex = 3;
       }
     }
