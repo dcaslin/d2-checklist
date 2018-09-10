@@ -266,7 +266,7 @@
                 <!-- * Max LL vendor info provided by
               <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
               <br>  -->
-                * Milestones are wonky post patch, more to come soon. In the meantime "<i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>*" means something is probably complete?
+                * Milestones disappear on completion, so it's hard to differentiate between complete and unavailable milestones. Chars that aren't eligable for milestones may therefore show as complete.
                 <br>
                 * lt = lifetime
               </div>
@@ -446,22 +446,11 @@
 
 
                             <span class="light">Level {{faction.level}} </span>
-                            <span matTooltip="You have enough tokens to rank up with this vendor and get an engram">
-                              <i *ngIf="faction.tokensHeld!=null && faction.tokensHeld>faction.tokensNeeded" class="accent-text fa fa-thumbs-up fa-2x"></i>
-                            </span>
-
                             <span class="caption">{{faction.info}}</span>
 
                           </td>
                           <td data-label="">
-                            <ng-container *ngIf="!faction.hideTokens">
-                              <ng-container *ngIf="faction.tokensHeld!=null">{{faction.tokensHeld}} / {{faction.tokensNeeded}} tokens needed TNL</ng-container>
-                              <ng-container *ngIf="faction.tokensHeld==null">Tokens Needed TNL {{faction.tokensNeeded}} </ng-container>
-                            </ng-container>
-                            <ng-container *ngIf="faction.hideTokens">
-                              {{faction.currentProgress}} points
-                            </ng-container>
-
+                            {{faction.currentProgress}} points
                             <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                             <div>
                               <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
@@ -696,38 +685,7 @@
 
           </mat-tab> -->
           </mat-tab-group>
-
         </ng-container>
-
-        <!-- <ng-container *ngIf="player!=null && player.rankups!=null && player.rankups.length>0">
-
-            <div class="mobile-header d-md-none">Tokens to rank up with:</div>
-            <div class="rankupRow">
-              <span class="rankupContainer" *ngFor="let ru of player.rankups">
-                <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" *ngIf="ru.xyz300" class="rankup warn-bg-text" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!">
-                  {{ru.name}}*
-                </a>
-                <span *ngIf="!ru.xyz300" class="rankup accent-bg-text">
-                  {{ru.name}}
-                </span>
-              </span>
-            </div>
-          </ng-container>
-
-          <ng-container *ngIf="player!=null && player.hasWellRested && player.characters!=null && player.characters.length>0">
-
-            <div class="mobile-header d-md-none">Well-Rested (3x Bright Engrams)</div>
-            <div class="rankupRow">
-
-              <span class="d-none d-md-inline">Well-Rested (accelerated XP towards bright engrams):</span>
-
-              <span class="rankupContainer" *ngFor="let char of player.characters">
-                <span *ngIf="char.wellRested" class="rankup primary-bg-text">
-                  {{char.className}} - {{char.light}}
-                </span>
-              </span>
-            </div>
-          </ng-container> -->
       </div>
     </div>
     <div *ngIf="disableads===false" class="adRight">
