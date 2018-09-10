@@ -8,7 +8,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { SelectedUser, Player, Character, SaleItem } from '@app/service/model';
+import { SelectedUser, Player, Character, SaleItem, ItemType } from '@app/service/model';
 
 @Component({
   selector: 'anms-resources',
@@ -22,6 +22,10 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   player: Player = null;
   char: Character = null;
   vendorData: SaleItem[] = null;
+  options = ["Bounties","Gear","Exchange","Cosmetics"];
+  option = this.options[0];
+  
+  ItemType = ItemType;
 
   constructor(storageService: StorageService, private bungieService: BungieService, 
     private route: ActivatedRoute, private router: Router) {
@@ -37,7 +41,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     if (!alreadyLoading) this.loading = true;
     try{
       this.char = c;
-      this.vendorData = await this.bungieService.loadVendors(c);
+      this.vendorData = await this.bungieService.loadVendors(c);      
     }
     finally {
       if (!alreadyLoading) this.loading = false;

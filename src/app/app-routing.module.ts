@@ -117,7 +117,7 @@ export class AuthGuard implements CanActivate {
         component: PGCRComponent
       },
       {
-        path: 'resources',
+        path: 'vendors',
         canActivate: [AuthGuard],
         component: ResourcesComponent
       },

@@ -107,6 +107,12 @@
     color: mat-color($foreground, secondary-text);
   }
 
+  .type-caption{
+    font-size: smaller;
+    color: mat-color($foreground, secondary-text);
+  }
+  
+
   table.responsive-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;

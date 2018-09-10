@@ -39,10 +39,10 @@
             <img class="logo" [src]="logo" /> D2 Checklist</span>
           <span class="d-none d-md-inline">
             <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">Home</button>
-            <!-- <button mat-button class="nav-button" routerLink="resources" routerLinkActive="active">
+            <button mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
               <mat-icon>payment</mat-icon>
-              <span class="d-none d-xl-inline"> Resources</span>
-            </button> -->
+              <span class="d-none d-xl-inline"> Vendors</span>
+            </button>
             <button mat-button [matMenuTriggerFor]="leaderboardMenu">
               <mat-icon>score</mat-icon>
               <span class="d-none d-xl-inline"> Leaderboards</span>
@@ -67,7 +67,7 @@
               <span class="d-none d-xl-inline"> About</span>
             </button>
           </span>
-          <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" matTooltip="Grants access to private endpoints and some bugged public data too"
+          <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" matTooltip="Grants access to private endpoints"
             matTooltipPosition="before" (click)="onLoginClick()">
             Sign in
           </button>
