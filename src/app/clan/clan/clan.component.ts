@@ -279,6 +279,25 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
     this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType, this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
       if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
+        const list = [];
+        const removeHashes = [
+          "3603098564",
+          "536115997",
+          "4253138191",
+          "534869653"
+          // "536115997",
+          // "3660836525",
+          // "2986584050",
+          // "2683538554",
+          // "4253138191",
+          // "534869653"
+        ];
+        for (let r of x.milestoneList){
+          if (!(removeHashes.indexOf(r.key)>0)){
+            list.push(r);
+          }
+        }
+        x.milestoneList = list;;
         this.modelPlayer = x;
       }
       if (x != null && x.characters != null) {

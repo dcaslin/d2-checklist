@@ -135,7 +135,9 @@
                   </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
+                  <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    {{mileStoneName.name}}
+                    <span *ngIf="debugmode">{{mileStoneName.key}}</span>
 
                   </th>
                   <th matTooltip="Max LL of current chars (actual max could be higher)">
@@ -224,8 +226,8 @@
                   </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">{{mileStoneName.name}}
-
+                  <th [matTooltip]="mileStoneName.desc" *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    {{mileStoneName.name}}
                   </th>
                   <th matTooltip="Max LL of current chars (actual max could be higher)">
                       <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL

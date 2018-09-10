@@ -1,4 +1,12 @@
 
+export interface MilestoneDef {
+    key: number;
+    type: string;
+    name: string;
+    desc: string;
+    hasPartial: boolean;
+  }
+
 export interface Vendor{
     hash: string;
     name: string;
@@ -712,22 +720,15 @@ export class Progression {
     hash: number;
     nextLevelAt: number;
     progressToNextLevel: number;
-    tokensNeeded: number;
     progressionHash: number;
     level: number;
     levelCap: number;
-
     dailyProgress: number;
     dailyLimit: number;
     weeklyProgress: number;
     weeklyLimit: number;
     currentProgress: number;
-
     percentToNextLevel: number;
-    tokensHeld?: number;
-
-    // xyz300: boolean;
-    hideTokens: boolean;
 }
 
 export class Const {

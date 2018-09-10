@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem, MilestoneDef
 } from './model';
 @Injectable()
 export class ParseService {
@@ -146,8 +146,6 @@ export class ParseService {
             prog.progressToNextLevel = p.progressToNextLevel;
 
             let progNeeded = p.nextLevelAt - p.progressToNextLevel;
-
-            prog.tokensNeeded = ParseService.getTokensNeeded(p.progressionHash, progNeeded);
             prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
             return prog;
         }
@@ -155,18 +153,6 @@ export class ParseService {
             return null;
         }
     }
-
-    private static getTokensNeeded(progressionHash: number, progNeeded: number): number {
-        //ikora
-        if (progressionHash == 3231773039) {
-            return Math.ceil(progNeeded / 1000);
-        }
-        if (progressionHash == 1021210278) {
-            return Math.ceil(progNeeded / 75);
-        }
-        return Math.ceil(progNeeded / 100);
-    }
-
 
     private static parseMilestoneType(t: number): string {
         //?, tutorial and one-time
@@ -179,7 +165,7 @@ export class ParseService {
         return "Unknown: " + t;
     }
 
-    private populateProgressions(c: Character, _prog: any, mileStoneDefs: any): void {
+    private populateProgressions(c: Character, _prog: any): void {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
@@ -223,78 +209,6 @@ export class ParseService {
 
                     c.clanMilestones = clanMilestones;
                     return;
-                }
-                //add meta
-                if (mileStoneDefs[key] == null) {
-                    //skip one off faction stuff x2 and CallToAction, meditations, daily free roam, both broken heroic strikes, IB season 3
-                    // if (key == "364880304" || key == "1718587363" || key == "4109359897" || key == "3245985898" || key == "383198939" || key == "3109354204" || key == "3109354207" || key == "4248276869")
-                    //     return;
-                    //hide broken raid milestones
-                    if (key == "2683538554" || key == "2986584050")
-                        return;
-                    let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
-                    if (desc != null) {
-                        let type: string = ParseService.parseMilestoneType(desc.milestoneType);
-                        //null is tutorial or one-time, skip
-                        if (type == null) return;
-
-
-                        let name: string = "";
-                        let description: string = "";
-                        if (desc.displayProperties != null) {
-                            name = desc.displayProperties.name;
-                            description = desc.displayProperties.description;
-                        }
-                        //special case for flash point to grab the planet
-                        if (key=="463010297" && ms.availableQuests != null && ms.availableQuests.length == 1){
-
-                            let q = ms.availableQuests[0];
-                            let qDesc = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
-                            if (qDesc != null) {
-                                const questName = qDesc.displayProperties.name;
-                                const indexOfCol = questName.indexOf(":");
-                                name += questName.substr(indexOfCol);
-                            }
-                        }
-                        if (name == null || name.trim().length == 0) {
-                            name = desc.friendlyName;
-                        }
-
-                        //add label for raid milestone
-                        if (key == "3660836525") {
-                            name += " Milestone";
-                        }
-                        //if (key == "463010297" && (description == null || description == "")) {
-                        if (key == "463010297") {
-                            description = "Complete various activities around the current Flashpoint, including public events, Lost Sectors, and Heroic adventures.";
-                            type = "Every 4 days";
-                        }
-                        //skip classified for now
-                        if (name == null || name == "Classified") return;
-
-
-                        // //hotspot
-                        // if (ms.milestoneHash == 463010297) {
-                        //     name = this.destinyCacheService.cache.InventoryItem[ms.availableQuests[0].questItemHash].displayProperties.name;
-                        //     description = "Complete public events at the designated location";
-                        //     //this is wrong in the DB
-                        //     type = "Weekly";
-
-                        // }
-                        let milestoneName: MileStoneName = {
-                            key: key,
-                            type: type,
-                            name: name,
-                            desc: description,
-                            hasPartial: false,
-                            disappears: false
-                        };
-                        mileStoneDefs[key] = milestoneName;
-                    }
-                    else {
-                        console.log("Unknown milestone: " + key);
-                        return;
-                    }
                 }
                 let total = 0;
                 let complete = 0;
@@ -360,26 +274,10 @@ export class ParseService {
                 if (pct == 0) pct = oPct;
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + "% complete";
-                    mileStoneDefs[key].hasPartial = true;
+                    // mileStoneDefs[key].hasPartial = true;
                 }
                 let m: MilestoneStatus = new MilestoneStatus(key, complete == total, pct, info, suppInfo);
-
-                // THIS WAS A HACK FOR MISREPORTED HEROIC STRIKES BUT THE HACK FALSELY SHOWS COMPLETIONS FOR SOME CHARS THAT HAVEN'T UNLOCKED HEROIC STRIKES YET
-                // REMOVING FOR NOW
-                // if (key==="3405519164" && ms.availableQuests.length===1){
-                //     const aq = ms.availableQuests[0];
-                //     // this is complete via hack while the api is bugged
-                //     if (aq.status.stepObjectives!=null && aq.status.stepObjectives.length==0){
-                //         const ms2: _Milestone = _prog.milestones["1142551194"];
-                //         if (ms2!=null && ms2.availableQuests!=null && ms2.availableQuests.length==1 
-                //             && ms2.availableQuests[0].status!=null && ms2.availableQuests[0].status.completed==true){
-                //             m.complete = true;
-                //             m.pct = 1;
-                //         }
-                //     }
-                // }
                 c.milestones[key] = m;
-
             });
         }
 
@@ -410,7 +308,6 @@ export class ParseService {
                     let p: _Progression = _prog.progressions[key];
                     let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     if (prog != null) {
-                        prog.hideTokens = true;
                         factions.push(prog);
                     }
                 }
@@ -419,7 +316,6 @@ export class ParseService {
                     let p: _Progression = _prog.progressions[key];
                     let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     if (prog != null) {
-                        prog.hideTokens = true;
                         factions.push(prog);
                     }
                 }
@@ -666,7 +562,7 @@ export class ParseService {
     private parseIndividualVendor(resp: any, vendorKey: string, v: any): SaleItem[]{
         if (v.saleItems==null) return [];
         let vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
-        if (vDesc==null) return []];
+        if (vDesc==null) return [];
         const vendor: Vendor = {
             hash: vendorKey,
             name: vDesc.displayProperties.name,
@@ -1299,7 +1195,7 @@ export class ParseService {
         return checklists;
     }
 
-    public parsePlayer(resp: any): Player {
+    public parsePlayer(resp: any, publicMilestones: PublicMilestone[]): Player {
         if (resp.profile != null && resp.profile.privacy == 2) throw new Error("Privacy settings disable viewing this player's profile.");
         if (resp.characters != null && resp.characters.privacy == 2) throw new Error("Privacy settings disable viewing this player's characters.");
 
@@ -1315,90 +1211,38 @@ export class ParseService {
         let chars: Character[] = [];
         let hasWellRested = false;
 
+        if (publicMilestones!=null){
+            for (let p of publicMilestones){
+                milestoneList.push({
+                    key: p.hash,
+                    type: "",
+                    name: p.name,
+                    desc: p.desc,
+                    hasPartial: true,
+                    disappears: true
+                });
+            }
+        }
+
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
             Object.keys(oChars).forEach((key) => {
                 charsDict[key] = this.parseCharacter(oChars[key]);
             });
-            let mileStoneDefs: any = {};
+            //let mileStoneDefs: any = {};
             if (resp.characterProgressions) {
                 if (resp.characterProgressions.data) {
                     const oProgs: any = resp.characterProgressions.data;
                     Object.keys(oProgs).forEach((key) => {
                         let curChar: Character = charsDict[key];
-                        this.populateProgressions(curChar, oProgs[key], mileStoneDefs);
+                        this.populateProgressions(curChar, oProgs[key]);
                         hasWellRested = curChar.wellRested || hasWellRested;
                     });
-
-                    // HACK, add out milestones that disappear on completion
-                    // Flashpoint  
-                    if (mileStoneDefs[463010297] == null) {
-                        mileStoneDefs[463010297] = {
-                            key: 463010297,
-                            type: "Every 4 days",
-                            name: "Flashpoint",
-                            desc: "Complete various activities around the current Flashpoint, including public events, Lost Sectors, and Heroic adventures.",
-                            hasPartial: false, 
-                            disappears: true
-                        };
-                    }
-                    else{
-                        mileStoneDefs[463010297].disappears = true;
-                    }
-                    //weekly crucible
-                    if (mileStoneDefs[157823523] == null) {
-                        mileStoneDefs[157823523] = {
-                            key: 157823523,
-                            type: "Weekly",
-                            name: "Weekly Crucible Challenge",
-                            desc: "Complete Crucible matches for fun and profit.",
-                            hasPartial: false, 
-                            disappears: true
-                        };
-                    }
-                    else{                        
-                        mileStoneDefs[157823523].disappears = true;
-                    }
-                    //daily strike challenge
-                    if (mileStoneDefs[3172444947] == null) {
-                        mileStoneDefs[3172444947] = {
-                            key: 3172444947,
-                            type: "Daily",
-                            name: "Daily Strike Challenge",
-                            desc: "Complete a strike.",
-                            hasPartial: false, 
-                            disappears: true
-                        };
-                    }
-                    else{
-                        mileStoneDefs[3172444947].disappears = true;
-                    }
-                    // daily crucible
-                    if (mileStoneDefs[3312018120] == null) {
-                        mileStoneDefs[3312018120] = {
-                            key: 3312018120,
-                            type: "Daily",
-                            name: "Daily Crucible Challenge",
-                            desc: "Complete a Crucible match.",
-                            hasPartial: false, 
-                            disappears: true
-                        };
-                    }
-                    else{
-                        mileStoneDefs[3312018120].disappears = true;
-                    }
-
                 }
                 else {
                     superprivate = true;
                 }
             }
-
-            //convert dictionary to array for UI
-            Object.keys(mileStoneDefs).forEach(key => {
-                milestoneList.push(mileStoneDefs[key]);
-            });
-
             if (resp.characterActivities) {
                 //turned on activity privacy
                 if (resp.characterActivities.data == null) {
@@ -1487,29 +1331,6 @@ export class ParseService {
 
                 }
             });
-
-            //post process faction tokens
-            if (chars != null) {
-                chars.forEach(c => {
-                    if (c.factions == null) return;
-                    c.factions.forEach(f => {
-                        if (f.hideTokens == true) return;
-                        const held = ParseService.getTokensHeld(f, gear);
-                        f.tokensHeld = held;
-
-
-                        if (f.tokensHeld > f.tokensNeeded) {
-                            if (hashRankups.indexOf(f.hash) < 0) {
-                                hashRankups.push(f.hash);
-                                rankups.push(new Rankup(f.hash, f.name));
-                            }
-                        }
-
-                    });
-
-                });
-            }
-
         }
 
         let sohSet: any = {};
@@ -1529,67 +1350,6 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList, currencies, sohList, rankups, superprivate, hasWellRested, checklists, charChecklists);
     }
 
-    private static getTokensHeld(f: Progression, gear: InventoryItem[]): number {
-        let invKey: string;
-
-        // 1660497607 Failsafe  Nessus 3201839676
-        if (f.hash == 1660497607) invKey = "3201839676";
-        // 3487922223 Microphasic Datalattice
-        // 2949414982 Quantized Datalattice
-
-        // 828982195 Asher IO 3825769808
-        if (f.hash == 828982195) invKey = "3825769808";
-        // 1305274547 Phaseglass Needle
-        // 3756389242 Phaseglass Spire
-
-        // 4235119312 Devrim EDZ 2640973641
-        if (f.hash == 4235119312) invKey = "2640973641";
-        // 900431481 Dusklight Shard
-        // 478751073 Dusklight Crystal
-
-        // 4196149087 Sloane Titan 494493680
-        if (f.hash == 4196149087) invKey = "494493680";
-        // 461171930 alkane spores, rare
-        // 2014411539 alkane dust
-
-        // 1021210278 Gunsmith Banshee ?  685157383 ?   (30 )  (gunsmith materials)
-        if (f.hash == 1021210278) invKey = "685157383";
-        // 685157381  weapon telemetry
-
-        // 697030790 Crucible Shaxx 183980811
-        if (f.hash == 697030790) invKey = "183980811";
-        // 611314723 Zavala Strikes 3899548068
-        if (f.hash == 611314723) invKey = "3899548068";
-        // 3231773039 Ikora Research 3957264072(1000)
-        if (f.hash == 3231773039) invKey = "3957264072";
-
-        // 2105209711 New Monarchy 2270228604
-        if (f.hash == 2105209711) invKey = "2270228604";
-        // 1714509342 Future War Cult 1270564331
-        if (f.hash == 1714509342) invKey = "1270564331";
-        // 3398051042 Dead Orbit Level 2959556799	
-        if (f.hash == 3398051042) invKey = "2959556799";
-
-        // 1482334108 Leviathan 1505278293
-        if (f.hash == 1482334108) invKey = "1505278293";
-        // 3468066401 The Nine 885593286
-        if (f.hash == 3468066401) invKey = "885593286";
-
-        // 1761642340 Iron Banner 1873857625
-        if (f.hash == 1761642340) invKey = "1873857625";
-
-        if (invKey == null) return null;
-
-        for (let cntr = 0; cntr < gear.length; cntr++) {
-            const i = gear[cntr];
-            if (i.hash == invKey) {
-                return i.quantity;
-            }
-        }
-        return 0;
-
-    }
-
     private parseInvItem(itm: _InventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any) {
         try {
             //vault bucket
@@ -1606,7 +1366,6 @@ export class ParseService {
             if (desc.itemType != ItemType.Weapon
                 && desc.itemType != ItemType.Armor
                 && desc.itemType != ItemType.Mod
-                //faction tokens and such
                 && (desc.inventory.bucketTypeHash != 1469714392)) {
                 return null;
             }

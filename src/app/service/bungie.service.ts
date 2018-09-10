@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone, SaleItem } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, MotResponse, PublicMilestone, SaleItem, MilestoneDef } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -22,6 +22,8 @@ const API_ROOT: string = "https://www.bungie.net/Platform/";
 export class BungieService implements OnDestroy {
     private selectedUserSub = new BehaviorSubject(null);
     public selectedUserFeed: Observable<SelectedUser>;
+
+    private publicMilestones: PublicMilestone[] = null;
 
     private unsubscribe$: Subject<void> = new Subject<void>();
     authInfo: AuthInfo;
@@ -97,7 +99,14 @@ export class BungieService implements OnDestroy {
         }
     }
 
-
+    public checkCurrency(){
+        if (this.selectedUser!=null && this.selectedUser.selectedUserCurrencies!=null){
+            return;
+        }
+        else{
+            this.refreshCurrency();
+        }
+    }
 
     public refreshCurrency() {
         if (this.selectedUser != null) {
@@ -484,11 +493,14 @@ export class BungieService implements OnDestroy {
     }
 
     public async getPublicMilestones(): Promise<PublicMilestone[]>{
+        if (this.publicMilestones!=null)
+            return this.publicMilestones;
         try{
             let opt = await this.buildReqOptions();
             let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/Milestones/', opt).toPromise();
             const resp = this.parseBungieResponse(hResp);
             const reply = this.parseService.parsePublicMilestones(resp);
+            this.publicMilestones = reply;
             return reply;
         }
         catch (err){
@@ -555,22 +567,21 @@ export class BungieService implements OnDestroy {
         const self: BungieService = this;
         //CharacterEquipment
         //Profiles,Characters,CharacterProgressions,,CharacterActivities
-        let sComp = components.join();
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" + membershipId + "/?components=" + sComp, opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parsePlayer(resp);
-                }).catch(
-                    function (err) {
-                        console.log('Error Searching for player');
+        try{
+            let sComp = components.join();
+            let opt = await this.buildReqOptions();
+            let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" + membershipId + "/?components=" + sComp, opt).toPromise();
+            const resp = this.parseBungieResponse(hResp);
+            const ms: PublicMilestone[] = await this.getPublicMilestones();
+            return this.parseService.parsePlayer(resp, ms);
+        }
+        catch (err){
+            console.log('Error Searching for player');
                         if (!ignoreErrors) {
                             self.handleError(err);
                         }
-                        return null;
-                    });
-        });
-
+                        return null; 
+        }
     }
 
     public searchPlayer(platform: number, gt: string): Promise<SearchResult> {
