@@ -688,6 +688,7 @@ export class ParseService {
             name: iDesc.displayProperties.name,
             icon: iDesc.displayProperties.icon,
             type: iDesc.itemType,
+            status: this.parseSaleItemStatus(i.saleStatus),
             itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
             itemTypeDisplayName: iDesc.itemTypeDisplayName,
             quantity: i.quantity,
@@ -696,6 +697,24 @@ export class ParseService {
             value: values,
             costs: costs
         }
+    }
+
+    private parseSaleItemStatus(s: number): string{
+        if ((s&8) > 0){
+            return "Not unlocked";
+        }
+        else if ((s&32) > 0){
+            return "Not for sale right now";
+        }
+        else if ((s&64) > 0){
+            return "Not available";
+        }
+        else if ((s&128) > 0){
+            return "Already held";
+        }
+        return null;
+
+
     }
 
     public parsePublicMilestones(resp: any): PublicMilestone[] {

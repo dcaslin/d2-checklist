@@ -3,9 +3,9 @@
     <div class="main">
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
-        <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Resources -
+        <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Vendors -
           <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]"
-            *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
+            *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.selectedUser.platformName}}</a>
         </h2>
 
         <ng-container *ngIf="loading==false && player==null">
@@ -49,7 +49,7 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}}<br>
+                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                     </td>
 
@@ -71,6 +71,9 @@
                       <div *ngFor="let c of i.costs">
                         <small>{{c.name}} {{c.quantity}}</small>
                       </div>
+                      <div *ngIf="i.status!=null" class="warn-text">
+                          <small>{{i.status}}</small>
+                        </div>
                     </td>
                   </tr>
                 </ng-container>
@@ -95,7 +98,7 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}}<br>
+                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                       <div class="d-block d-md-none">{{i.vendor.name}}</div>
                     </td>
@@ -122,6 +125,9 @@
                       <div *ngFor="let c of i.costs">
                         <small>{{c.name}} {{c.quantity}}</small>
                       </div>
+                      <div *ngIf="i.status!=null" class="warn-text">
+                          <small>{{i.status}}</small>
+                        </div>
                     </td>
 
                   </tr>
@@ -145,7 +151,7 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}}<br>
+                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
                         {{i.itemTypeAndTierDisplayName}} 
                     </td>                    
                     <td>
@@ -154,6 +160,9 @@
                         amDuration:'ms'}}</span>
                       <div *ngFor="let c of i.costs">
                         <small>{{c.name}} {{c.quantity}}</small>
+                      </div>
+                      <div *ngIf="i.status!=null" class="warn-text">
+                        <small>{{i.status}}</small>
                       </div>
                     </td>
                   </tr>
@@ -187,6 +196,9 @@
                         <div *ngFor="let c of i.costs">
                           <small>Cost: {{c.name}} {{c.quantity}}</small>
                         </div>
+                        <div *ngIf="i.status!=null" class="warn-text">
+                            <small>{{i.status}}</small>
+                          </div>
                       </td>
                     </tr>
                   </ng-container>
