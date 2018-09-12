@@ -33,7 +33,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   player: Player;
   hideCompleteChecklist = false;
 
-  constructor(private bungieService: BungieService, 
+  constructor(public bungieService: BungieService, 
     // private xyzService: XyzService,
     storageService: StorageService,
     private notificationService: NotificationService,
@@ -130,12 +130,18 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       return "milestones";
     }
     else if (index === 1){ 
-      return "checklist";
+      return "bounties";
     }
     else if (index === 2){ 
+      return "checklist";
+    }
+    else if (index === 3){ 
+      return "triumphs";
+    }
+    else if (index === 4){ 
       return "progress";
     }    
-    else if (index === 3){ 
+    else if (index === 5){ 
       return "chars";
     }
     
@@ -151,14 +157,20 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (tab == "milestones"){
         this.tabs.selectedIndex = 0;
       }
-      else if (tab == "nodes" || tab == "checklist"){
+      else if (tab == "bounties"){
         this.tabs.selectedIndex = 1;
       }
-      else if (tab == "progress"){
+      else if (tab == "nodes" || tab == "checklist"){
         this.tabs.selectedIndex = 2;
       }
-      else if (tab == "chars"){
+      else if (tab == "triumphs"){
         this.tabs.selectedIndex = 3;
+      }
+      else if (tab == "progress"){
+        this.tabs.selectedIndex = 4;
+      }
+      else if (tab == "chars"){
+        this.tabs.selectedIndex = 5;
       }
     }
     else{

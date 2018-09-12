@@ -3,7 +3,7 @@
     <div class="main">
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
-        <br/>
+        <br />
         <div class="searchRow">
           <mat-form-field class="searchField searchPlatform">
             <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
@@ -25,9 +25,11 @@
           <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
           <div class="button-row">
             <ng-container *ngFor="let plat of platforms">
-              <button class="space-right" *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent" (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
+              <button class="space-right" *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent"
+                (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
             </ng-container>
-            <button mat-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie Names</button>
+            <button mat-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie
+              Names</button>
           </div>
           <br>
           <br>
@@ -41,16 +43,17 @@
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
             </span>
             <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
-              Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today| amDifference:player.currentActivity.dateActivityStarted|
+              Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
+              amDifference:player.currentActivity.dateActivityStarted|
               amDuration:'ms'}} ago
             </span>
           </h4>
 
-          <div class="button-row">      
+          <div class="button-row">
             <a mat-button routerLink="/vendors">
               <mat-icon>payment</mat-icon>
               <span class="d-none d-md-inline">Vendors</span>
-            </a>      
+            </a>
             <!-- <a mat-button>
                 <i class="fa fa-trophy"></i>
                 <span class="d-none d-md-inline">Triumphs</span>
@@ -67,7 +70,7 @@
               <a mat-menu-item *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
                 <mat-icon>message</mat-icon>
                 <span>Message on XBL</span>
-              </a>              
+              </a>
               <a mat-menu-item [href]="getRaidLink(player)" rel="warn-text" target="_blank" rel="noopener">
                 <mat-icon>flag</mat-icon>
                 <span>Raid.Report</span>
@@ -89,7 +92,7 @@
 
                 <div *ngIf="player.milestoneList.length==0">
                   <br>
-                  <h1>Privacy</h1>
+                  <h2>Privacy</h2>
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                 </div>
 
@@ -101,8 +104,8 @@
                   <thead>
                     <tr>
                       <th scope="col">Activity
-                        <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
-                          (click)="showAllMilestones()">show all</a>
+                        <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones"
+                          class="milestoneVisibilityButton" (click)="showAllMilestones()">show all</a>
                       </th>
                       <th scope="col" *ngFor="let char of player.characters">
                         {{char.className}} - {{char.light}}
@@ -118,14 +121,13 @@
                         <td class="lead">
                           <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
                           <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
-                          <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
-                            (click)="hideMilestone(mileStoneName.key)">hide</a>
-                          
-                          <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
-                            Resets in {{mileStoneName.resets| amDifference:today | amDuration:'ms'}}
+                          <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                            class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">hide</a>
 
+                          <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
+                            Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
                             <ng-container *ngIf="debugmode">
-                                <br> {{mileStoneName.resets|date:'short'}}
+                              <br> {{mileStoneName.resets|date:'short'}}
                             </ng-container>
                           </span>
                           <br>
@@ -225,8 +227,8 @@
                     </ng-container>
                     <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
                       <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later" class="milestoneVisibilityButton"
-                          (click)="hideMilestone('1')">hide</a>
+                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                          class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
                       </td>
                       <td [attr.colspan]="player.characters.length">
 
@@ -275,12 +277,78 @@
                 <!-- * Max LL vendor info provided by
               <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
               <br>  -->
-                * Milestones disappear on completion, so it's hard to differentiate between complete and unavailable milestones. Chars that aren't eligable for milestones may therefore show as complete.
+                * Milestones disappear on completion, so it's hard to differentiate between complete and unavailable
+                milestones. Chars that aren't eligable for milestones may therefore show as complete.
                 <br>
                 * lt = lifetime
               </div>
 
             </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-gift"></i>
+                <span class="d-none d-md-inline">&ensp;Bounties</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null">
+                <ng-container *ngIf="player.bounties==null || player.bounties.length==0">
+                  <br>
+                  <ng-container *ngIf="(bungieService.selectedUserFeed | async)==null">
+                    <h2>Sign-in Required</h2>
+                    <p>You must sign in for the site to access this info on your account. <b>Click the "Sign In" button
+                        on the upper
+                        right if you want to continue.</b></p>
+                  </ng-container>
+
+                  <ng-container *ngIf="(bungieService.selectedUserFeed | async)!=null">
+                    <h2>Privacy</h2>
+                    <p>
+                      This user hasn't enabled viewing their non-equipped inventory.<br>
+                      They'd need to <a class="underline" href="https://www.bungie.net/en/Profile/Settings?category=Privacy" target="_blank" rel="noopener">
+                        check the "Show my non-equipped Inventory" at Bungie.net.</a> 
+                      <br><br> 
+                      [Hiding non-equipped inventory is the default privacy setting]
+                    </p>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="player.bounties!=null && player.bounties.length>0">
+                  <mat-tab-group>
+                    <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                      <a [routerLink]="['/vendors']" style="margin-top: 5px; margin-bottom: 5px" mat-stroked-button>Available Bounties</a>
+                      <table class="responsive-table">
+                        <tbody>
+                          <ng-container *ngFor="let g of player.bounties">
+                            <tr *ngIf="g.owner==char">
+                              <td class="lead" data-label="">
+                                <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                                {{g.name}} {{g.owner.className}} {{g.bucketOrder}}
+                                <div class="simple-caption">{{g.desc}}</div>
+                              </td>
+                              <td data-label="">
+                                <div class="obj-desc" *ngFor="let obj of g.objectives">
+                                  <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                  <i *ngIf="!obj.complete" class="fa fa-square-o"></i>
+                                  {{obj.progressDescription}} {{obj.aggProgress}}
+                                  <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                                  <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
+                                    mode="determinate" [value]="100*obj.progress/obj.completionValue">
+                                  </mat-progress-bar>
+                                </div>
+                                <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+                                    <div *ngFor="let v of g.values">
+                                        {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                                      </div>
+                                </div>
+                              </td>                              
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </mat-tab>
+                  </mat-tab-group>
+                </ng-container>
+              </ng-container>
+            </mat-tab>
+
             <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fa fa-check-square-o"></i>
@@ -289,7 +357,7 @@
               <ng-container *ngIf="player!=null">
                 <div *ngIf="player.checklists==null || player.checklists.length==0">
                   <br>
-                  <h1>Privacy</h1>
+                  <h2>Privacy</h2>
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                 </div>
 
@@ -411,7 +479,8 @@
                 <br>
                 <ul>
                   <li>Looking for all the Catalysts?
-                    <a href="https://twitter.com/Aussie_Halo" target="_blank" rel="noopener">@Aussie_Halo</a> has them all in a nice
+                    <a href="https://twitter.com/Aussie_Halo" target="_blank" rel="noopener">@Aussie_Halo</a> has them
+                    all in a nice
                     <a class="accent-text" href="https://docs.google.com/spreadsheets/d/1hPI1oO5izJaDASpPWdTb4sB_eAzxTI1eFMh6ixeVpMM/edit#gid=0"
                       target="_blank" rel="noopener">Google spreadsheet</a>
                   </li>
@@ -432,7 +501,7 @@
 
                     <div *ngIf="char.factions==null || char.factions.length==0">
                       <br>
-                      <h1>Privacy</h1>
+                      <h2>Privacy</h2>
                       <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                     </div>
 
@@ -460,7 +529,7 @@
                           </td>
                           <td data-label="">
                             {{faction.currentProgress}} points
-                            <br/> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+                            <br /> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                             <div>
                               <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
                               </mat-progress-bar>
@@ -480,12 +549,15 @@
 
             </mat-tab>
 
-            <!-- <mat-tab>
+            <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fa fa-trophy"></i>
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
-              <ng-container *ngIf="player!=null && player.mots!=null">
+              <br>
+              <br>
+              Coming soon!
+              <!-- <ng-container *ngIf="player!=null && player.mots!=null">
                 <mat-tab-group>
                   <mat-tab *ngIf="player.mots.rewards" label="Rewards">
                     <ng-template mat-tab-label>
@@ -610,7 +682,7 @@
               </ng-container>
               <ng-container *ngIf="player==null || player.mots==null">
                 <mat-spinner class="loading" *ngIf="loading===true"></mat-spinner>
-              </ng-container>
+              </ng-container> -->
             </mat-tab> -->
             <mat-tab>
               <ng-template mat-tab-label>
@@ -621,24 +693,29 @@
 
                 <mat-card class="char-card" *ngFor="let char of player.characters">
                   <mat-card-header>
-                    <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+                    <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image"
+                      [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
                     <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
                       <span style="white-space:nowrap;">Light {{char.light}}</span>
-                      <ng-container *ngIf="char.wellRested && char.baseCharacterLevel>=char.maxLevel">&ensp;WELL RESTED!</ng-container>
+                      <ng-container *ngIf="char.wellRested && char.baseCharacterLevel>=char.maxLevel">&ensp;WELL
+                        RESTED!</ng-container>
                     </mat-card-title>
                     <mat-card-subtitle *ngIf="!player.superprivate">
-                      Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for {{char.minutesPlayedThisSession}} mins
-                      <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} | {{char.minutesPlayedTotal/60|
+                      Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for
+                      {{char.minutesPlayedThisSession}} mins
+                      <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} |
+                      {{char.minutesPlayedTotal/60|
                       number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
                       <br>
                     </mat-card-subtitle>
                   </mat-card-header>
                   <mat-card-content>
 
-                    <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp; {{char.percentToNextLevel|percent:'1.0-0'}} to next level
+                    <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp;
+                      {{char.percentToNextLevel|percent:'1.0-0'}} to next level
                       <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
                       </mat-progress-bar>
-                      
+
                       <div class="row dl-row">
                         <dl class="col-xs-6 dl-child">
                           <dt>Daily Progress</dt>
@@ -646,13 +723,15 @@
                         </dl>
                         <dl class="col-xs-6 dl-child">
                           <dt>XP needed to next level</dt>
-                          <dd>{{(char.levelProgression.nextLevelAt - char.levelProgression.progressToNextLevel)| number:0}}</dd>
+                          <dd>{{(char.levelProgression.nextLevelAt - char.levelProgression.progressToNextLevel)|
+                            number:0}}</dd>
                         </dl>
                       </div>
                     </div>
 
                     <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=char.maxLevel">
-                      <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}} &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
+                      <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}}
+                      &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
                       to level {{char.legendProgression.level+1}}
                       <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
                       </mat-progress-bar>
@@ -664,21 +743,24 @@
                         </dl>
                         <dl class="col-xs-6 dl-child">
                           <dt>XP needed to next level</dt>
-                          <dd>{{(char.legendProgression.nextLevelAt - char.legendProgression.progressToNextLevel)| number:0}}</dd>
+                          <dd>{{(char.legendProgression.nextLevelAt - char.legendProgression.progressToNextLevel)|
+                            number:0}}</dd>
                         </dl>
                       </div>
                     </div>
 
                     <div class="stat-chip-list">
                       <ng-container *ngFor="let stat of char.stats; let i=index">
-                        <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc">{{stat.name}}: {{stat.value}}</span>
+                        <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc">{{stat.name}}:
+                          {{stat.value}}</span>
                       </ng-container>
                     </div>
 
                   </mat-card-content>
                   <mat-card-actions>
                     <a mat-button (click)="history(char)">
-                      <mat-icon>history</mat-icon> Activity History</a>
+                      <mat-icon>history</mat-icon> Activity History
+                    </a>
                   </mat-card-actions>
 
                 </mat-card>

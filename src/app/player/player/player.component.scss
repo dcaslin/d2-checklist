@@ -207,10 +207,19 @@ a.underline:link {
   text-align: left;
 }
 
+
+.underline {
+  text-decoration: underline;
+}
+
+.bounty-progress{
+  max-width: 250px;
+}
+
 .item-icon{
   float: left;
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   margin-right: 5px;
   background-size: cover;
   //display: inline-block;
