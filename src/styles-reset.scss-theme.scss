@@ -157,7 +157,12 @@
     }
   }
   
-
+  
+  @media screen and (max-width: 1000px) {
+    .mat-tab-label{
+        min-width:120px
+    }
+  }
 
   @media screen and (max-width: 800px) {
     .mat-tab-label{

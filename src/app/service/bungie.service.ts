@@ -486,10 +486,11 @@ export class BungieService implements OnDestroy {
 
     public async loadVendors(c: Character): Promise<SaleItem[]>{
         let opt = await this.buildReqOptions();
-        let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+c.characterId+'/Vendors/?components=Vendors,VendorSales,ItemInstances,ItemObjectives,ItemStats,ItemSockets,ItemTalentGrids,ItemCommonData,ItemPlugStates', opt).toPromise();
+        let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+
+            c.characterId+'/Vendors/?components=Vendors,VendorSales,ItemSockets', opt).toPromise();
+        //ItemInstances,ItemCommonData,ItemPlugStates,ItemTalentGrids,ItemStats,ItemObjectives
         const resp = this.parseBungieResponse(hResp);
         const vendorData = this.parseService.parseVendorData(resp);
-        console.dir(vendorData);
         return vendorData;
     }
 
