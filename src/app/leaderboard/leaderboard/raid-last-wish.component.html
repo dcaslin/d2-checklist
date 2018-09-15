@@ -1,25 +1,70 @@
 <div class="childComponent">
-  <div class="childVert">
-    <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
-
-      <h1>The Last Wish Raid - World's First Leaderboard</h1>
-      <h2>COMING SOON!</h2>
-
-      <div class="note">Huge thanks to <a href="https://trials.report/"
-        rel="noopener" target="_blank">Destiny Trials Report</a> for the underlying data! 
-        <a href="https://www.reddit.com/r/destinychecklistnet/comments/71qq46/raid_leaderboard_guide/" rel="noopener" target="_blank">More info.</a></div>
-
-     
+    <div class="childVert">
+      <div class="main">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+  
+        <h1>The Last Wish Raid Leaderboard</h1>
+  
+        <div class="note">Huge thanks to <a href="https://trials.report/"
+          rel="noopener" target="_blank">Destiny Trials Report</a> for the underlying data! 
+          <a href="https://www.reddit.com/r/destinychecklistnet/comments/9g5r4s/d2checklist_forsaken_last_wish_leaderboard_info/" rel="noopener" target="_blank">More info.</a></div>
+  
+  
+        <div>
+          <mat-form-field class="searchField">
+            <input matInput #filter placeholder="Filter users">
+          </mat-form-field>
+        </div>
+  
+        <div class="table-container">
+          <mat-table class="centerMe" #table [dataSource]="dataSource" matSort>
+            <ng-container cdkColumnDef="rank">
+              <mat-header-cell class="rankCol" *cdkHeaderCellDef mat-sort-header>Rank</mat-header-cell>
+              <mat-cell class="rankCol" *cdkCellDef="let row">
+                <a mat-button  [routerLink]="['/pgcr',row.pgcr]">
+                        {{row.rank}} 
+                      </a>
+              </mat-cell>
+            </ng-container>
+            <ng-container cdkColumnDef="end">
+              <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Complete</mat-header-cell>
+              <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
+                {{row.end|date:'short'}}
+              </mat-cell>
+            </ng-container>
+            <ng-container cdkColumnDef="fireteam">
+              <mat-header-cell *cdkHeaderCellDef mat-sort-header>Fireteam</mat-header-cell>
+              <mat-cell *cdkCellDef="let row">
+                <span class="name" *ngFor="let p of row.fireTeam">
+                    <a [routerLink]="['/'+row.membershipType, p.displayName]">{{p.displayName}}</a>
+                    <a class="accent-text" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
+                      <i class="fa fa-twitch"></i>
+                    </a>
+                  </span>
+              </mat-cell>
+            </ng-container>
+            <ng-container cdkColumnDef="duration">
+              <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Duration</mat-header-cell>
+              <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
+                
+              {{ row.duration | amnsTiming:'seconds' }}
+              </mat-cell>
+            </ng-container>
+            <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+          <mat-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]">
+          </mat-paginator>
+        </div>
+      </div>
+      <div *ngIf="disableads===false" class="adRight">
+        <small class="adText">Advertisement</small>
+        <ng-adsense adFormat="vertical"></ng-adsense>
+      </div>
+  
     </div>
-    <div *ngIf="disableads===false" class="adRight">
+    <div *ngIf="disableads===false" class="adBottom">
       <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
+      <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
     </div>
-
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
-  </div>
-</div>

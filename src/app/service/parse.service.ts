@@ -1393,39 +1393,21 @@ export class ParseService {
         bounties.sort(function (a, b) {            
             return b.aggProgress - a.aggProgress;
         });
-        // this.parseRecords(resp.profilePresentationNodes, resp.profileRecords);
-        // for (const char of chars){
-    
-        //     const presentationNodes = resp.characterPresentationNodes.data[char.characterId];
-        //     const records = resp.characterRecords.data[char.characterId];
-
-        // }
-        // // "profileRecords": {
-        // //     "data": {
-        // //         "score": 18000,
-        // // obj keys 
-
-        // resp.characterPresentationNodes
-        // resp.characterRecords
-
-        // // "43046618": {
-        // //     "state": 67,
-        // //     "objectives": [
-        // //         {
-        // //             "objectiveHash": 939401667,
-        // //             "progress": 1,
-        // //             "completionValue": 1,
-        // //             "complete": true,
-        // //             "visible": true
-        // //         }
-        // //     ]
-        // // },
-
-
+        if (resp.profilePresentationNodes!=null && resp.profileRecords!=null){
+            this.parseRecords(resp.profilePresentationNodes, resp.profileRecords);
+        }
+        if (resp.characterPresentationNodes!=null && resp.characterRecords!=null){
+            for (const char of chars){
+                const presentationNodes = resp.characterPresentationNodes.data[char.characterId];
+                const records = resp.characterRecords.data[char.characterId];
+            }
+        }
+        
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists);
     }
 
     private parseRecords(presentationNodes: any, records: any): any{
+        // console.log("hi")
 
     }
 
