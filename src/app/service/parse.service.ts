@@ -1618,12 +1618,15 @@ export class ParseService {
         let progs: Progression[] = [];
         if (j.clanInfo != null && j.clanInfo.d2ClanProgressions != null) {
             Object.keys(j.clanInfo.d2ClanProgressions).forEach((key) => {
+                
                 let p: _Progression = j.clanInfo.d2ClanProgressions[key];
                 let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                 if (prog != null) {
+                    if (key=="584850370"){
+                        c.primaryProgression = prog;
+                    }
                     progs.push(prog);
                 }
-
             });
 
         }

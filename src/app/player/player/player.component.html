@@ -49,15 +49,7 @@
             </span>
           </h4>
 
-          <div class="button-row">
-            <a mat-button routerLink="/vendors">
-              <mat-icon>payment</mat-icon>
-              <span class="d-none d-md-inline">Vendors</span>
-            </a>
-            <!-- <a mat-button>
-                <i class="fa fa-trophy"></i>
-                <span class="d-none d-md-inline">Triumphs</span>
-              </a>       -->
+          <div class="button-row">            
             <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <mat-icon>history</mat-icon>
               <span class="d-none d-md-inline">Activity History</span>
@@ -219,7 +211,8 @@
 
                             </ng-container>
                             <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
-                              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                              <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-square-o"></i>
                             </ng-container>
                           </span>
                         </td>

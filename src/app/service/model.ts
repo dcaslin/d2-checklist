@@ -713,6 +713,7 @@ export class ClanInfo {
     memberCount: number;
     avatarPath: string;
     bannerPath: string;
+    primaryProgression: Progression;
     progressions: Progression[];
 }
 
