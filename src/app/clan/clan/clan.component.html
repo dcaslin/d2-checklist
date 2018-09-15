@@ -57,7 +57,10 @@
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
-                  Clan Progress
+                  Clan Progress 
+                  <ng-container *ngIf="info.primaryProgression!=null"> | Level {{info.primaryProgression.level}} 
+                    &emsp; Remaining XP to get this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit - info.primaryProgression.weeklyProgress)|number}}</b>
+                  </ng-container>
                 </mat-panel-title>
                 <mat-panel-description class="d-none d-md-block">
                   Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
@@ -68,7 +71,7 @@
 
                 <mat-card-header>
 
-                  <mat-card-title>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+                  <mat-card-title><ng-container *ngIf="debugmode"> {{faction.hash}}   </ng-container>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                     &emsp; Remaining XP to get this week:
                     <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b>
                   </mat-card-title>
@@ -189,7 +192,8 @@
                           </ng-container>
                         </span>
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]==null">
-                          <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-square-o"></i>
                         </span>
                       </ng-container> 
                     </td>

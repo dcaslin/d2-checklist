@@ -30,6 +30,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   constructor(storageService: StorageService, private bungieService: BungieService, 
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
+    this.loading = true;
   }
 
   public async setChar(c: Character, alreadyLoading: boolean){

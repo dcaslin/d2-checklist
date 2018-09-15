@@ -17,7 +17,7 @@
         <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="player.characters[0]" (change)="setChar(chargroup.value, false)">
           <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
-            {{c.className}} - {{c.light}}
+            {{c.className}}<span class="d-none d-md-inline"> - {{c.light}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
         <br>
@@ -25,7 +25,11 @@
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="option" style="margin-top: 1em" (change)="option = optionsgroup.value">
           <mat-button-toggle *ngFor="let o of options" [value]="o">
-            {{o}}
+              <i *ngIf="o=='Bounties'" class="fa fa-gift"></i>
+              <i *ngIf="o=='Gear'" class="fa fa-cog"></i>
+              <i *ngIf="o=='Exchange'" class="fa fa-balance-scale"></i>
+              <i *ngIf="o=='Cosmetics'" class="fa fa-diamond"></i>
+              <span class="d-none d-md-inline"> {{o}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
 
@@ -38,7 +42,7 @@
                   <th class="item-icon-cell"></th>
                   <th>Name</th>
                   <th>Objectives</th>
-                  <th>Reward</th>
+                  <th class="d-none d-sm-table-cell">Reward</th>
                   <th>Vendor</th>
                 </tr>
               </thead>
@@ -53,13 +57,12 @@
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                     </td>
 
-
                     <td>
                       <div *ngFor="let o of i.objectives">
                         {{o.total}} {{o.units}}
                       </div>
                     </td>
-                    <td>
+                    <td class="d-none d-sm-table-cell">
                       <div *ngFor="let v of i.value">
                         {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
                       </div>
