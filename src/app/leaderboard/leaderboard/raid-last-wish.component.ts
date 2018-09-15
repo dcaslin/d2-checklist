@@ -49,9 +49,9 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   getData() {
     return this.httpClient.get<any>(this.getAssetPath())
     .toPromise()
-    .then(data => {
-      
-      this.database.setData(this.transform(data));
+    .then((data:_LastWishRep) => {
+      console.log("Total: "+data.total);
+      this.database.setData(this.transform(data.matches));
     })
     .catch(
       function (err) {
@@ -117,6 +117,11 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
     });
   }
 
+}
+
+interface _LastWishRep {
+  matches: _Row[];
+  total: number;
 }
 
 interface _Row {
