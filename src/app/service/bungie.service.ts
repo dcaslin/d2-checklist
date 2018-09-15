@@ -589,7 +589,10 @@ export class BungieService implements OnDestroy {
             let opt = await this.buildReqOptions();
             let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" + membershipId + "/?components=" + sComp, opt).toPromise();
             const resp = this.parseBungieResponse(hResp);
-            const ms: PublicMilestone[] = await this.getPublicMilestones();
+            let ms:PublicMilestone[] = null;
+            if (components.includes("CharacterProgressions")){
+                ms = await this.getPublicMilestones();
+            }
             return this.parseService.parsePlayer(resp, ms);
         }
         catch (err){
@@ -663,6 +666,13 @@ export class BungieService implements OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+    }
+
+    private async makeReq(uri: string): Promise<any>{
+        let opt = await this.buildReqOptions();
+        let hResp = await this.httpClient.get<any>(API_ROOT + uri, opt).toPromise();
+        const resp = this.parseBungieResponse(hResp);
+        return resp;
     }
 
 

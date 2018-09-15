@@ -1,1 +1,37 @@
 @import 'styles-variables';
+
+:host {
+}
+
+.searchField{
+  margin-bottom: 10px;
+}
+
+// a:link {
+//   text-decoration: underline;
+// }
+
+.table-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  max-width: 1200px;
+}
+
+.rankCol{
+  width: 45px !important;
+}
+
+.name{
+  margin-right: 10px;
+}
+
+.note{
+  font-size: smaller;
+  font-weight: lighter;
+  max-width: 800px;
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+}
