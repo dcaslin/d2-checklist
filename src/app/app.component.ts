@@ -43,6 +43,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { link: 'vendors', label: 'Vendors' },
     { link: 'leaderboard/leviathan', label: 'Raid Leaderboard' },
     { link: 'leaderboard/leviathan-prestige', label: 'Prestige Leaderboard' },
+    { link: 'leaderboard/last-wish', label: 'The Last Wish Leaderboard' },
     { link: 'search', label: 'Search Users' },
     { link: 'about', label: 'About' }
   ];

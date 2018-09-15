@@ -37,6 +37,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     if (c==null){
       this.char = null;
       this.vendorData = null;
+      if (!alreadyLoading) this.loading = false;
       return;
     } 
     if (!alreadyLoading) this.loading = true;

@@ -5,7 +5,7 @@ import { takeUntil, first } from 'rxjs/operators';
  */
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
 
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
@@ -20,7 +20,7 @@ const API_ROOT: string = "https://www.bungie.net/Platform/";
 
 @Injectable()
 export class BungieService implements OnDestroy {
-    private selectedUserSub = new BehaviorSubject(null);
+    private selectedUserSub = new ReplaySubject(1);
     public selectedUserFeed: Observable<SelectedUser>;
 
     private publicMilestones: PublicMilestone[] = null;
@@ -121,6 +121,23 @@ export class BungieService implements OnDestroy {
                 }
             });
         }
+    }
+
+    public async getBungieMemberById(id: string): Promise<BungieMember> {
+        const self: BungieService = this;
+
+        return this.buildReqOptions().then(opt => {
+            return this.httpClient.get<any>(API_ROOT + 'User/GetBungieNetUserById/'+id+"/", opt)
+                .toPromise().then(j => {
+                    const resp = self.parseBungieResponse(j);
+                    return self.parseService.parseBungieMember(resp);
+                }).catch(
+                    function (err) {
+                        console.log('Error Searching for player');
+                        self.handleError(err);
+                        return null;
+                    });
+        });
     }
 
     public async searchBungieUsers(name: string): Promise<BungieMember[]> {
@@ -326,7 +343,6 @@ export class BungieService implements OnDestroy {
             } else {
                 this.selectedUser.selectedUserCurrencies = null;
             }
-            // self.emitUsers();
         });
     }
 
@@ -335,7 +351,6 @@ export class BungieService implements OnDestroy {
         this.getClans(membership.bungieId).then(c => {
             if (c != null) {
                 membership.clans = c;
-                // self.emitUsers();
             }
 
         });

@@ -12,7 +12,7 @@ import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
 import { ClanLeaderboardComponent } from './clanleaderboard';
-import { LeviathanComponent, LeviathanPrestigeComponent } from './leaderboard';
+import { LeviathanComponent, LeviathanPrestigeComponent, RaidLastWishComponent } from './leaderboard';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { DestinyCacheService} from './service/destiny-cache.service';
@@ -106,6 +106,16 @@ export class AuthGuard implements CanActivate {
         path: 'leaderboard/leviathan-prestige/:name',
         canActivate: [AuthGuard],
         component: LeviathanPrestigeComponent
+      },
+      {
+        path: 'leaderboard/last-wish/:name',
+        canActivate: [AuthGuard],
+        component: RaidLastWishComponent
+      },
+      {
+        path: 'leaderboard/last-wish',
+        canActivate: [AuthGuard],
+        component: RaidLastWishComponent
       },
       {
         path: 'leaderboard',

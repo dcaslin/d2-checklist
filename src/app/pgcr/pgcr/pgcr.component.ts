@@ -8,6 +8,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
+import { BungieNetUserInfo, BungieMember } from '@app/service/model';
 
 @Component({
   selector: 'pgcr-history',
@@ -34,6 +35,15 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
       this.loading = false;
     });
   }
+
+  
+  public async navigateBnetMember(target: BungieNetUserInfo){
+    const match: BungieMember = await this.bungieService.getBungieMemberById(target.membershipId);
+    if (match==null) return;
+    this.router.navigate(['/',match.bnet.platform.type, match.bnet.name]);
+    return;
+  }
+  
 
   private sub: any;
   ngOnInit() {

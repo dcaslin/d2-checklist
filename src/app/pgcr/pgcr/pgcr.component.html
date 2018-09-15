@@ -32,7 +32,9 @@
               <mat-card-title>
 
                 <b>
-                  <a [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]" color="accent">{{entry.user.displayName}}
+                  <a  *ngIf="entry.user.membershipType!=4"  [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]" color="accent">{{entry.user.displayName}}</a>
+                  <a  *ngIf="entry.user.membershipType==4" href="javascript:void(0)"  color="accent" (click)="navigateBnetMember(entry.bungieNetUserInfo)">
+                      {{entry.user.displayName}}
                   </a>
                 </b>
                 {{entry.characterClass}} {{entry.lightLevel}}

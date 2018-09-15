@@ -1,0 +1,25 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <h1>The Last Wish Raid - World's First Leaderboard</h1>
+      <h2>COMING SOON!</h2>
+
+      <div class="note">Huge thanks to <a href="https://trials.report/"
+        rel="noopener" target="_blank">Destiny Trials Report</a> for the underlying data! 
+        <a href="https://www.reddit.com/r/destinychecklistnet/comments/71qq46/raid_leaderboard_guide/" rel="noopener" target="_blank">More info.</a></div>
+
+     
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  </div>
+</div>
