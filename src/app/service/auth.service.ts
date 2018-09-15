@@ -71,10 +71,9 @@ export class AuthService {
             else if (AuthService.isValidRefresh(this.token)) {
                 return this.refreshToken(this.token.refresh_token);
             }
-            //even the refresh is expired, we're in a weird place, just delete it and refresh
+            //even the refresh is expired, they're actually signed out, reflect this
             else{
-                localStorage.removeItem("authorization");
-                location.reload();
+                this.signOut();
             }
         }
         //no tokens found or they were completely invalid
