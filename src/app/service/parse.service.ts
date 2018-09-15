@@ -1337,7 +1337,8 @@ export class ParseService {
         const charChecklists: CharChecklist[] = this.parseCharChecklists(resp, chars);
 
         let currencies: Currency[] = [];
-        if (resp.profileCurrencies != null) {
+        //hit with a hammer
+        if (resp.profileCurrencies != null && resp.profileCurrencies.data != null && resp.profileCurrencies.data.items != null) {
             resp.profileCurrencies.data.items.forEach(x => {
                 let desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                 if (desc != null) {
