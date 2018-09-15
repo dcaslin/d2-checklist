@@ -37,7 +37,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   }
   
   getAssetPath(): string{
-    return "http://api.trialsofthenine.com/lastwish/";
+    return "https://api.trialsofthenine.com/lastwish/";
     
     //return "/assets/last-wish.json";
   }
