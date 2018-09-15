@@ -71,6 +71,11 @@ export class AuthService {
             else if (AuthService.isValidRefresh(this.token)) {
                 return this.refreshToken(this.token.refresh_token);
             }
+            //even the refresh is expired, we're in a weird place, just delete it and refresh
+            else{
+                localStorage.removeItem("authorization");
+                location.reload();
+            }
         }
         //no tokens found or they were completely invalid
         return Promise.resolve(null);
