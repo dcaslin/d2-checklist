@@ -1080,6 +1080,8 @@ export class ParseService {
                 }
                 if (checklistName == "Forsaken Item Collection - Preview, Profile-wide Items") {
                     checklistName = "Forsaken - Profile";
+                    //ignore
+                    return;
                 }
 
                 const checklist: Checklist = {
@@ -1090,6 +1092,7 @@ export class ParseService {
                     entries: checkListItems,
                     hasDescs: hasDescs
                 }
+
                 checklists.push(checklist);
             });
         }
@@ -1118,8 +1121,9 @@ export class ParseService {
 
                             if (checklistName == "Forsaken Item Collection - Preview, Character Specific Items") {
                                 checklistName = "Forsaken - Char";
+                                return;
                             }
-
+                           
                             checklist = {
                                 hash: key,
                                 name: checklistName,
@@ -1388,12 +1392,44 @@ export class ParseService {
         // }
         bounties.sort(function (a, b) {            
             return b.aggProgress - a.aggProgress;
-        })
+        });
+        // this.parseRecords(resp.profilePresentationNodes, resp.profileRecords);
+        // for (const char of chars){
+    
+        //     const presentationNodes = resp.characterPresentationNodes.data[char.characterId];
+        //     const records = resp.characterRecords.data[char.characterId];
+
+        // }
+        // // "profileRecords": {
+        // //     "data": {
+        // //         "score": 18000,
+        // // obj keys 
+
+        // resp.characterPresentationNodes
+        // resp.characterRecords
+
+        // // "43046618": {
+        // //     "state": 67,
+        // //     "objectives": [
+        // //         {
+        // //             "objectiveHash": 939401667,
+        // //             "progress": 1,
+        // //             "completionValue": 1,
+        // //             "complete": true,
+        // //             "visible": true
+        // //         }
+        // //     ]
+        // // },
+
 
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists);
     }
 
-    private parseInvItem(itm: _InventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any) {
+    private parseRecords(presentationNodes: any, records: any): any{
+
+    }
+
+    private parseInvItem(itm: _InventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any): InventoryItem {
         try {
             //vault bucket
             if (itm.bucketHash == 138197802) {
@@ -1603,6 +1639,7 @@ export class ParseService {
         catch (exc) {
             console.dir(itemComp);
             console.error(exc);
+            return null;
         }
     }
 
@@ -1661,6 +1698,7 @@ export class ParseService {
 
     private parsePGCREntry(e: any): PGCREntry {
         let r: PGCREntry = new PGCREntry();
+        r.bungieNetUserInfo = e.player.bungieNetUserInfo;
         r.characterId = e.characterId;
         r.standing = e.standing;
         r.score = ParseService.getBasicValue(e.score);
@@ -1910,28 +1948,33 @@ export class ParseService {
 
     }
 
+    public parseBungieMember(r: _BungieMember): BungieMember{
+        if (r.isDeleted == true) return;
+        let xbl: BungieMemberPlatform;
+        let psn: BungieMemberPlatform;
+        let bnet: BungieMemberPlatform;
+        if (r.xboxDisplayName != null) {
+            xbl = new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM);
+        }
+        if (r.psnDisplayName != null) {
+            psn = new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM);
+        }
+        if (r.blizzardDisplayName != null) {
+
+            bnet = new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM);
+        }
+        if (xbl == null && psn == null && bnet == null) return null;
+        return new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet);
+
+    }
 
     public parseBungieMembers(results: _BungieMember[]): BungieMember[] {
         if (results == null) return null;
         let returnMe: BungieMember[] = [];
         results.forEach(r => {
-            if (r.isDeleted == true) return;
-            let xbl: BungieMemberPlatform;
-            let psn: BungieMemberPlatform;
-            let bnet: BungieMemberPlatform;
-            if (r.xboxDisplayName != null) {
-                xbl = new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM);
-            }
-            if (r.psnDisplayName != null) {
-                psn = new BungieMemberPlatform(r.psnDisplayName, Const.PSN_PLATFORM);
-            }
-            if (r.blizzardDisplayName != null) {
-
-                bnet = new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM);
-            }
-            if (xbl == null && psn == null && bnet == null) return;
-
-            returnMe.push(new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet));
+            const mem =  this.parseBungieMember(r);
+            if (mem!=null)
+            returnMe.push(mem);
 
         });
         return returnMe;

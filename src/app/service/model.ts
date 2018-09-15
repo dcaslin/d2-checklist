@@ -624,6 +624,7 @@ export class PGCREntry {
     values: any;
     kd: number;
     user: UserInfo;
+    bungieNetUserInfo: BungieNetUserInfo;
 
     characterId: string;
     characterClass: string;

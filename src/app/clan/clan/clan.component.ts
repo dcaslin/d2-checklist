@@ -49,21 +49,10 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   public async navigateBnetMember(target: BungieGroupMember){
-    const matches: BungieMember[] = await this.bungieService.searchBungieUsers(target.bungieNetUserInfo.displayName);
-    if (matches==null) return;
-    for (let x of matches){
-      if (x.bnet == null){
-        continue;
-      }
-      const clans: ClanRow[] = await this.bungieService.getClans(x.id);
-      for (let clan of clans){
-        if (this.info.groupId == clan.id){
-          this.router.navigate(['/',x.bnet.platform.type, x.bnet.name]);
-          return;
-        }
-      }  
-    }
-
+    const match: BungieMember = await this.bungieService.getBungieMemberById(target.bungieNetUserInfo.membershipId);
+    if (match==null) return;
+    this.router.navigate(['/',match.bnet.platform.type, match.bnet.name]);
+    return;
   }
 
   public toggleDateSort() {
@@ -103,9 +92,10 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   private static compareName(a: BungieGroupMember, b: BungieGroupMember): number {
     let bs: string = b.destinyUserInfo.displayName;
     let as: string = a.destinyUserInfo.displayName;
-    if (bs < as) return 1;
-    if (bs > as) return -1;
-    return 0;
+    return as.localeCompare(bs);
+    // if (bs < as) return 1;
+    // if (bs > as) return -1;
+    // return 0;
   }
 
 
