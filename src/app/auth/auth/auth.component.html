@@ -1,8 +1,10 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
-      <h1>Auth</h1>
+        <div class="center-spinner">
+          <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        </div>
+      <h1>Authorizing...</h1>
       <p *ngIf="msg!=null">{{msg}}</p>
     </div>
   </div>

@@ -1,11 +1,15 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
+
+      <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
       <h1>Search Bungie</h1>
-      <div class="note centerMe"><small>Wild-card search Bungie accounts by name. Note that sometimes these are different than gamertags. 
-        Not all Destiny accounts are active or in clans, so some links will strike themselves out when clicked.</small>
-        </div>
+      <div class="note centerMe"><small>Wild-card search Bungie accounts by name. Note that sometimes these are
+          different than gamertags.
+          Not all Destiny accounts are active or in clans, so some links will strike themselves out when clicked.</small>
+      </div>
 
       <div>
 
@@ -13,7 +17,9 @@
           <input matInput placeholder="Bungie name" [(ngModel)]="name" (keyup.enter)="search()">
         </mat-form-field>
         &emsp;
-        <button mat-mini-fab color="primary searchField" (click)="search()" color="primary"><mat-icon>search</mat-icon></button>
+        <button mat-mini-fab color="primary searchField" (click)="search()" color="primary">
+          <mat-icon>search</mat-icon>
+        </button>
       </div>
 
       <table class="responsive-table" *ngIf="accounts!=null && accounts.length>0">
@@ -38,27 +44,27 @@
             </td>
             <td data-label="Playstation">
               <ng-container *ngIf="account.psn!=null">
-                <a href="javascript:void(0)" *ngIf="!account.psn.defunct"  (click)="loadPlayer(account.psn)">{{account.psn.name}}</a>
+                <a href="javascript:void(0)" *ngIf="!account.psn.defunct" (click)="loadPlayer(account.psn)">{{account.psn.name}}</a>
                 <span class="strikethrough" *ngIf="account.psn.defunct">{{account.psn.name}}</span>
               </ng-container>
               <ng-container *ngIf="account.psn==null">&nbsp;</ng-container>
             </td>
             <td data-label="BNet">
               <ng-container *ngIf="account.bnet!=null">
-                <a href="javascript:void(0)" *ngIf="!account.bnet.defunct"  (click)="loadPlayer(account.bnet)">{{account.bnet.name}}</a>
+                <a href="javascript:void(0)" *ngIf="!account.bnet.defunct" (click)="loadPlayer(account.bnet)">{{account.bnet.name}}</a>
                 <span class="strikethrough" *ngIf="account.bnet.defunct">{{account.bnet.name}}</span>
               </ng-container>
               <ng-container *ngIf="account.bnet==null">&nbsp;</ng-container>
             </td>
             <td data-label="Clan">
-              
-                <a href="javascript:void(0)" *ngIf="!account.noClan && account.clans==null"  (click)="loadClan(account)">Clan</a>
-                <span class="strikethrough" *ngIf="account.noClan">Clan</span>
-                <ng-container *ngIf="account.clans!=null">
-                  <div *ngFor="let clan of account.clans">
-                      <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
-                  </div>
-                </ng-container>
+
+              <a href="javascript:void(0)" *ngIf="!account.noClan && account.clans==null" (click)="loadClan(account)">Clan</a>
+              <span class="strikethrough" *ngIf="account.noClan">Clan</span>
+              <ng-container *ngIf="account.clans!=null">
+                <div *ngFor="let clan of account.clans">
+                  <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
+                </div>
+              </ng-container>
             </td>
           </tr>
         </tbody>

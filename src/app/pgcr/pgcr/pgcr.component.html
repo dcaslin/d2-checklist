@@ -1,7 +1,10 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
       <div [ngClass]="animateOnRouteEnter" style="text-align:left">
 
         <ng-container *ngIf="data!=null">
@@ -13,7 +16,8 @@
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </h2>
           <p>
-            Start: {{data.period|date:'short'}} &emsp; Finish: {{data.finish|date:'short'}} &emsp; Duration: {{ data.activityDurationSeconds
+            Start: {{data.period|date:'short'}} &emsp; Finish: {{data.finish|date:'short'}} &emsp; Duration: {{
+            data.activityDurationSeconds
             | amnsTiming:'seconds' }}</p>
           <mat-card class="card" *ngIf="data.teams!=null && data.teams.length>0">
             <mat-card-content>
@@ -32,9 +36,10 @@
               <mat-card-title>
 
                 <b>
-                  <a  *ngIf="entry.user.membershipType!=4"  [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]" color="accent">{{entry.user.displayName}}</a>
-                  <a  *ngIf="entry.user.membershipType==4" href="javascript:void(0)"  color="accent" (click)="navigateBnetMember(entry.bungieNetUserInfo)">
-                      {{entry.user.displayName}}
+                  <a *ngIf="entry.user.membershipType!=4" [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]"
+                    color="accent">{{entry.user.displayName}}</a>
+                  <a *ngIf="entry.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(entry.bungieNetUserInfo)">
+                    {{entry.user.displayName}}
                   </a>
                 </b>
                 {{entry.characterClass}} {{entry.lightLevel}}

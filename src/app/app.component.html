@@ -148,7 +148,9 @@
       <router-outlet #o="outlet"></router-outlet>
       <div *ngIf="(authGuard.loader$ | async)">
         <br>
-        <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+        <div class="center-spinner">
+          <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+        </div>
       </div>
 
       <div class="push"></div>

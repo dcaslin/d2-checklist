@@ -1,13 +1,17 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
 
       <h1>{{getName()}}</h1>
 
-      <div class="note">Huge thanks to <a href="https://trials.report/"
-        rel="noopener" target="_blank">Destiny Trials Report</a> for the underlying data! 
-        <a href="https://www.reddit.com/r/destinychecklistnet/comments/71qq46/raid_leaderboard_guide/" rel="noopener" target="_blank">More info.</a></div>
+      <div class="note">Huge thanks to <a href="https://trials.report/" rel="noopener" target="_blank">Destiny Trials
+          Report</a> for the underlying data!
+        <a href="https://www.reddit.com/r/destinychecklistnet/comments/71qq46/raid_leaderboard_guide/" rel="noopener"
+          target="_blank">More info.</a></div>
 
 
       <div>
@@ -21,9 +25,9 @@
           <ng-container cdkColumnDef="rank">
             <mat-header-cell class="rankCol" *cdkHeaderCellDef mat-sort-header>Rank</mat-header-cell>
             <mat-cell class="rankCol" *cdkCellDef="let row">
-              <a mat-button  [routerLink]="['/pgcr',row.pgcr]">
-                      {{row.rank}} 
-                    </a>
+              <a mat-button [routerLink]="['/pgcr',row.pgcr]">
+                {{row.rank}}
+              </a>
             </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="end">
@@ -36,11 +40,11 @@
             <mat-header-cell *cdkHeaderCellDef mat-sort-header>Fireteam</mat-header-cell>
             <mat-cell class="player-cell" *cdkCellDef="let row">
               <span class="name" *ngFor="let p of row.fireteam">
-                  <a [routerLink]="['/'+p.membershipType, p.displayName]">{{p.displayName}}</a>
-                  <a class="accent-text twitch-url" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
-                    <i class="fa fa-twitch"></i>
-                  </a>
-                </span>
+                <a [routerLink]="['/'+p.membershipType, p.displayName]">{{p.displayName}}</a>
+                <a class="accent-text twitch-url" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
+                  <i class="fa fa-twitch"></i>
+                </a>
+              </span>
             </mat-cell>
           </ng-container>
           <ng-container cdkColumnDef="durationMs">

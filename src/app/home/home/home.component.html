@@ -1,9 +1,12 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
-        <br/>
+        <br />
         <div class="centerMe">
           <mat-form-field class="searchField searchPlatform">
             <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
@@ -27,21 +30,23 @@
           </a>
         </div>
 
-        <div class="info">          
+        <div class="info">
           <mat-card *ngFor="let ms of publicMilestones">
             <mat-card-header>
 
               <div *ngIf="ms.icon!=null" mat-card-avatar class="transparent-icon" [style.background-image]="'url(//www.bungie.net' +  ms.icon  + ')'"></div>
-              <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode"> {{ms.hash}}</span></mat-card-title>
+              <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span
+                  class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode">
+                  {{ms.hash}}</span></mat-card-title>
               <mat-card-subtitle>
                 <span class="d-none d-md-inline">{{ms.desc}}</span> Resets {{ms.end|date:'short'}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content *ngIf="ms.summary==null">
-              
+
 
               <ng-container *ngFor="let aggAct of ms.aggActivities; last as isLastAct">
                 <h3>
-                  {{aggAct.activity.name}} 
+                  {{aggAct.activity.name}}
                   <span *ngFor="let ll of aggAct.lls; last as isLast">{{ll}}
                     <ng-container *ngIf="!isLast"> - </ng-container>
                   </span>
@@ -51,15 +56,15 @@
                   {{ch.name}} - {{ch.desc}} Requires: {{ch.completionValue}} {{ch.progressDescription}}
                 </p>
                 <ng-container *ngIf="aggAct.activity.modifiers!=null && aggAct.activity.modifiers.length>0">
-                    <h4 class="lighter">Modifiers</h4>
-                    <dl>
-                        <ng-container *ngFor="let m of aggAct.activity.modifiers">
-                          <dt class="lighter">{{m.name}}</dt>
-                          <dd>
-                            {{m.desc}}
-                          </dd>
-                        </ng-container>
-                      </dl>
+                  <h4 class="lighter">Modifiers</h4>
+                  <dl>
+                    <ng-container *ngFor="let m of aggAct.activity.modifiers">
+                      <dt class="lighter">{{m.name}}</dt>
+                      <dd>
+                        {{m.desc}}
+                      </dd>
+                    </ng-container>
+                  </dl>
                 </ng-container>
                 <ng-container *ngIf="aggAct.activity.loadoutReqs!=null && aggAct.activity.loadoutReqs.length>0">
                   <h4 class="lighter">Loadout Requirements</h4>

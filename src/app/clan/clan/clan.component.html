@@ -1,7 +1,10 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
       <div class="body clan-body">
 
         <ng-container *ngIf="info==null">
@@ -11,7 +14,7 @@
         <ng-container *ngIf="info!=null">
           <h1>{{info.name}} </h1>
           <div class="button-row">
-           
+
             <!--<button mat-raised-button (click)="router.navigate(['clan', id, 'leaderboard'])">Leaderboards</button>
             <button mat-raised-button>Aggregate Stats (soon)</button>-->
           </div>
@@ -57,9 +60,10 @@
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
-                  Clan Progress 
-                  <ng-container *ngIf="info.primaryProgression!=null"> | Level {{info.primaryProgression.level}} 
-                    &emsp; Remaining XP to get this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit - info.primaryProgression.weeklyProgress)|number}}</b>
+                  Clan Progress
+                  <ng-container *ngIf="info.primaryProgression!=null"> | Level {{info.primaryProgression.level}}
+                    &emsp; Remaining XP to get this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit -
+                      info.primaryProgression.weeklyProgress)|number}}</b>
                   </ng-container>
                 </mat-panel-title>
                 <mat-panel-description class="d-none d-md-block">
@@ -71,7 +75,9 @@
 
                 <mat-card-header>
 
-                  <mat-card-title><ng-container *ngIf="debugmode"> {{faction.hash}}   </ng-container>{{faction.name}} &ensp; Level {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+                  <mat-card-title>
+                    <ng-container *ngIf="debugmode"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
+                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                     &emsp; Remaining XP to get this week:
                     <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b>
                   </mat-card-title>
@@ -98,13 +104,14 @@
             </mat-form-field>
             <mat-form-field *ngIf="modelPlayer!=null && filterMode!='none'">
               <mat-select [(ngModel)]="filterActivity" (selectionChange)="filterPlayers()" placeholder="Activity">
-                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{ mileStoneName.name }}</mat-option>
+                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{
+                  mileStoneName.name }}</mat-option>
               </mat-select>
             </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
-            <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()"> 
-                <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
-                <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
+            <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
+              <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
           <div class="mobile-button-row">
@@ -116,9 +123,9 @@
               <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
               <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
             </button>
-            <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()"> 
-                <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
-                <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
+            <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
+              <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
           <table class="responsive-table clan-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
@@ -143,10 +150,10 @@
 
                   </th>
                   <th matTooltip="Max LL of current chars (actual max could be higher)">
-                      <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                          <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
-                          <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
-                        </a>
+                    <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                      <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
+                      <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
+                    </a>
                   </th>
                 </ng-container>
               </tr>
@@ -157,16 +164,15 @@
                   <a *ngIf="member.destinyUserInfo.membershipType!=4" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
-                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" 
-                    (click)="navigateBnetMember(member)">
-                      {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member)">
+                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
                     <i class="fa fa-refresh"></i>
                   </a>
                 </td>
                 <td *ngIf="member.player==null">N/A</td>
-                
+
                 <ng-container *ngIf="member.player!=null">
                   <td>
                     <ng-container *ngIf="!member.player.superprivate">
@@ -195,7 +201,7 @@
                           <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                           <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-square-o"></i>
                         </span>
-                      </ng-container> 
+                      </ng-container>
                     </td>
                     <td data-label="Max Current Light Level">
                       <ng-container *ngIf="member.player.maxLL">{{member.player.maxLL}}</ng-container>
@@ -232,16 +238,18 @@
                     {{mileStoneName.name}}
                   </th>
                   <th matTooltip="Max LL of current chars (actual max could be higher)">
-                      <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                          <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
-                          <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
-                        </a>
+                    <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                      <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
+                      <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
+                    </a>
                   </th>
                 </ng-container>
               </tr>
             </tfoot>
           </table>
-          <p>Note: The Bungie API will sometimes incorrectly report milestones as complete (or partially complete). If you're a clan leader trying to see when someone last played, trust the "Last Played" column even if some weekly milestones appear to be completed.</p>
+          <p>Note: The Bungie API will sometimes incorrectly report milestones as complete (or partially complete). If
+            you're a clan leader trying to see when someone last played, trust the "Last Played" column even if some
+            weekly milestones appear to be completed.</p>
         </ng-container>
 
       </div>
