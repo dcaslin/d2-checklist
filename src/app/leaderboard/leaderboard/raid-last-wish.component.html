@@ -31,9 +31,14 @@
               </mat-cell>
             </ng-container>
             <ng-container cdkColumnDef="end">
-              <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Complete</mat-header-cell>
-              <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
-                {{row.end|date:'short'}}
+              <mat-header-cell *cdkHeaderCellDef class="d-none d-md-table-cell" mat-sort-header>
+                Since Launch
+              </mat-header-cell>
+              <mat-cell *cdkCellDef="let row" class="d-none d-md-table-cell">
+                  {{row.end | amDifference: LAUNCH_DATE :'seconds' : false  | amnsTiming:'seconds'}}
+                  <span class="">
+                    <br><span class="simple-caption">{{row.end|date:'short'}}</span>
+                  </span>
               </mat-cell>
             </ng-container>
             <ng-container cdkColumnDef="fireteam">
@@ -54,8 +59,7 @@
             <ng-container cdkColumnDef="duration">
               <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Duration</mat-header-cell>
               <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
-                
-              {{ row.duration | amnsTiming:'seconds' }}
+              {{ row.duration | amnsTiming:'seconds' }} h
               </mat-cell>
             </ng-container>
             <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>

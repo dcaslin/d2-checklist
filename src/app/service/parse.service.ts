@@ -919,7 +919,6 @@ export class ParseService {
                         }
                     }
                 }
-
             }
 
             returnMe.push({
@@ -1282,7 +1281,7 @@ export class ParseService {
                     key: p.hash,
                     resets: p.end,
                     rewards: p.rewards,
-                    name: p.name,
+                    name: p.summary==null?p.name:p.summary,
                     desc: p.desc,
                     hasPartial: false
                 };
