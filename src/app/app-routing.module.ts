@@ -11,7 +11,6 @@ import { AboutComponent } from './about';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
-import { ClanLeaderboardComponent } from './clanleaderboard';
 import { LeviathanComponent, LeviathanPrestigeComponent, RaidLastWishComponent } from './leaderboard';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
@@ -81,11 +80,6 @@ export class AuthGuard implements CanActivate {
         path: 'clan/:id',
         canActivate: [AuthGuard],
         component: ClanComponent
-      },
-      {
-        path: 'clan/:id/leaderboard',
-        canActivate: [AuthGuard],
-        component: ClanLeaderboardComponent
       },
       {
         path: 'leaderboard/leviathan',

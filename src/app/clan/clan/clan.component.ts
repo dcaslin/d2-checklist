@@ -144,8 +144,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       member.player.characters.forEach(char => {
         total++;
         const ms = char.milestones[this.filterActivity.key];
-        if (ms==null) comp++;
-        else if (ms.complete==true) comp++;
+        if (ms==null && char.baseCharacterLevel>=char.maxLevel) comp++;
+        else if (ms!=null && ms.complete==true) comp++;
       });
       if (this.filterMode == "zero" && comp == 0) return true;
       if (this.filterMode == "all" && comp == total) return true;
@@ -169,18 +169,14 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.members[this.playerCntr].errorMsg = null;
 
         //also update raid history
-        // this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
-        //   //nothing needed
-        // });
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
+          //nothing needed
+        });
 
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
-        // this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
-        //   x.mots = y;
-        // }).catch(err => {
-        //   // nothing
-        // });
+        
       }
       else {
         this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged in since DLC?";
@@ -297,9 +293,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         //in case this is a retry 
         this.members[this.playerCntr].errorMsg = null;
         //also update raid history
-        // this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
-        //   //nothing needed
-        // });
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
+          //nothing needed
+        });
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
@@ -346,14 +342,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
             this.slowlyLoadRest();
           }
         });
-        // //also load clan stats and leaderboards
-        // this.bungieService.getClanStats(this.id).then( (x)=>{
-        //   console.dir(x);
-
-        // });
-        // this.bungieService.getClanLeaderboards(this.id).then( (x)=>{
-        //   console.dir(x);
-        // });
       }
       else {
         this.loading = false;

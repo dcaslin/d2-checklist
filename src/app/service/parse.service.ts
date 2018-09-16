@@ -520,6 +520,14 @@ export class ParseService {
                             returnMe.spireFastestMs = f;
                         }
                     }
+                    else if (name === "Last Wish"){
+                        let c = ParseService.getBasicValue(act.values.activityCompletions);
+                        returnMe.lwNm += c;
+                        let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                        if ((f > 0) && (returnMe.lwNmFastestMs == null || returnMe.lwNmFastestMs > f)) {
+                            returnMe.lwNmFastestMs = f;
+                        }
+                    }
                 }
                 else if (vDesc.activityTypeHash == 575572995) {
                     //heroic nightfall - scored
@@ -1969,6 +1977,7 @@ export class ParseService {
         var totalPrestige: number = 0;
         var totalEater: number = 0;
         var totalSpire: number = 0;
+        var totalLwNormal: number = 0;
         hist.forEach(a => {
             //ignore not completed
             if (!a.completed) return;
@@ -1983,7 +1992,6 @@ export class ParseService {
             else {
                 console.log("No entry found for activity hash: " + a.referenceId);
             }
-
 
             let d: Date = new Date(a.period);
 
@@ -2017,6 +2025,13 @@ export class ParseService {
                     c.hasSpire = true;
                 }
             }
+            else if (name === "Last Wish") {
+                totalLwNormal++;
+                // if after reset?
+                if (d.getTime() > c.startWeek.getTime()) {
+                    c.hasLwNm = true;
+                }
+            }
             totalRaid++;
         });
         c.lifetimeRaid = totalRaid;
@@ -2024,17 +2039,20 @@ export class ParseService {
         c.lifetimeRaidPrestige = totalPrestige;
         c.lifetimeEater = totalEater;
         c.lifetimeSpire = totalSpire;
+        c.lifetimeLwNormal = totalLwNormal;
 
 
         const EATER_KEY = "1234";
         const SPIRE_KEY = "2345";
         const LEV_NM_KEY = "1235";
         const LEV_HM_KEY = "1236";
+        const LW_NM_KEY = "3456";
         //add psuedo milestone for eater
         let foundEater = false;
         let foundSpire = false;
         let foundNm = false;
         let foundHm = false;
+        let foundLwNm = false;
         for (const msName of msNames) {
             if (msName.key === EATER_KEY) {
                 foundEater = true;
@@ -2047,6 +2065,9 @@ export class ParseService {
             }
             else if (msName.key === LEV_HM_KEY) {
                 foundHm = true;
+            }
+            else if (msName.key === LW_NM_KEY) {
+                foundLwNm = true;
             }
         }
         
@@ -2090,6 +2111,16 @@ export class ParseService {
                 hasPartial: false
             });
         }
+        if (!foundLwNm) {
+            msNames.unshift({
+                key: LW_NM_KEY,
+                resets: c.endWeek.toISOString(),
+                rewards: "Raid Gear",
+                name: "The Last Wish",
+                desc: "Forsaken DLC Raid",
+                hasPartial: false
+            });
+        }
         const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
         c.milestones[EATER_KEY] = eaterPsuedoMs;
         const spirePsuedoMs: MilestoneStatus = new MilestoneStatus(SPIRE_KEY, c.hasSpire, c.hasSpire ? 1 : 0, null);
@@ -2098,6 +2129,8 @@ export class ParseService {
         c.milestones[LEV_NM_KEY] = levNmPsuedoMs;
         const levHmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_HM_KEY, c.hasLevHm, c.hasLevHm ? 1 : 0, null);
         c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
+        const lwNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LW_NM_KEY, c.hasLwNm, c.hasLwNm ? 1 : 0, null);
+        c.milestones[LW_NM_KEY] = lwNmPsuedoMs;
     }
 
     public parsePrestigeNfHistory(msNames: MileStoneName[], c: Character, hist: Activity[]) {

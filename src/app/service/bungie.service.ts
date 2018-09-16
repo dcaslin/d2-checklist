@@ -84,26 +84,11 @@ export class BungieService implements OnDestroy {
         });
     }
 
-
-    public async getMots(platform: number, memberId: string): Promise<MotResponse> {
-        try{
-            let opt = await this.buildReqOptions();
-            let hResp = await this.httpClient.get<any>(API_ROOT + "Destiny2/" + platform + "/Triumphs/" + memberId+"/", opt).toPromise();
-            const resp = this.parseBungieResponse(hResp);
-            return resp;
-        }
-        catch (err){
-            console.log('Error grabbing Mots for player');
-            this.handleError(err);
-            return null;
-        }
-    }
-
-    public checkCurrency(){
-        if (this.selectedUser!=null && this.selectedUser.selectedUserCurrencies!=null){
+    public checkCurrency() {
+        if (this.selectedUser != null && this.selectedUser.selectedUserCurrencies != null) {
             return;
         }
-        else{
+        else {
             this.refreshCurrency();
         }
     }
@@ -112,9 +97,8 @@ export class BungieService implements OnDestroy {
         if (this.selectedUser != null) {
             this.setCurrencies();
         }
-        else{ 
-            console.log("Selected currency but no user");           
-            //this.selectedUserFeed.pipe(first()).subscribe((selectedUser: SelectedUser) => {
+        else {
+            console.log("Selected currency but no user");
             this.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
                 if (this.selectedUser != null) {
                     this.setCurrencies();
@@ -124,60 +108,47 @@ export class BungieService implements OnDestroy {
     }
 
     public async getBungieMemberById(id: string): Promise<BungieMember> {
-        const self: BungieService = this;
-
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'User/GetBungieNetUserById/'+id+"/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parseBungieMember(resp);
-                }).catch(
-                    function (err) {
-                        console.log('Error Searching for player');
-                        self.handleError(err);
-                        return null;
-                    });
-        });
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('User/GetBungieNetUserById/' + id + "/");
+            return this.parseService.parseBungieMember(resp);
+        }
+        catch (err) {
+            this.handleError(err);
+            return null;
+        }
     }
 
     public async searchBungieUsers(name: string): Promise<BungieMember[]> {
-        const self: BungieService = this;
-
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'User/SearchUsers/?q=' + encodeURIComponent(name), opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parseBungieMembers(resp);
-                }).catch(
-                    function (err) {
-                        console.log('Error Searching for player');
-                        self.handleError(err);
-                        return [];
-                    });
-        });
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('User/SearchUsers/?q=' + encodeURIComponent(name));
+            return this.parseService.parseBungieMembers(resp);
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
     }
 
-
-    public getAggHistory(char: Character): Promise<void> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/' + char.membershipType + "/Account/" + char.membershipId + "/Character/" + char.characterId + "/Stats/AggregateActivityStats/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    char.aggHistory = self.parseService.parseAggHistory(resp);
-                    return;
-                }).catch(
-                    function (err) {
-                        console.log('Error getting aggregate history for char');
-                        //self.handleError(err);
-                        return;
-                    });
-        });
+    public async getAggHistory(char: Character): Promise<void> {
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq(
+                'Destiny2/' + char.membershipType + "/Account/" +
+                char.membershipId + "/Character/" + char.characterId +
+                "/Stats/AggregateActivityStats/" + encodeURIComponent(name));
+            char.aggHistory = this.parseService.parseAggHistory(resp);
+            return;
+        }
+        catch (err) {
+            console.log('Error getting aggregate history for char');
+            return;
+        }
     }
 
     public updateAggHistory(chars: Character[]): Promise<void[]> {
         let promises: Promise<void>[] = [];
-
         chars.forEach(c => {
             let p = this.getAggHistory(c);
             promises.push(p);
@@ -186,27 +157,15 @@ export class BungieService implements OnDestroy {
     }
 
     public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
-
         const self: BungieService = this;
         let promises: Promise<void>[] = [];
-
-        // let raidMilestoneName: MileStoneName = null;
-        // msNames.forEach(m => {
-        //     if (m.key == "3660836525") {
-        //         raidMilestoneName = m;
-        //     }
-        // });
-        // if (raidMilestoneName == null) return Promise.resolve(void []);
-
         chars.forEach(c => {
             let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 600).then((hist: Activity[]) => {
                 self.parseService.parseRaidHistory(msNames, c, hist);
             });
             promises.push(p);
         });
-
         return Promise.all(promises);
-
     }
 
     public updateNfHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
@@ -221,121 +180,56 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-
-    // Aggregate clan info: 
-    // https://www.bungie.net/Platform//Destiny2/Stats/AggregateClanStats/1985678
-
-    public getClanStats(clanId: string): Promise<void> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + '/Destiny2/Stats/AggregateClanStats/' + clanId + "/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    //array of 
-                    // {
-                    //     "mode": 7,
-                    //     "statId": "lbSingleGameKills",
-                    //     "value": {
-                    //         "basic": {
-                    //             "value": 0,
-                    //             "displayValue": "729"
-                    //         }
-                    //     }
-                    // }
-                    return resp;
-                }).catch(
-                    function (err) {
-                        console.log("Error finding clan members");
-                        self.handleError(err);
-                        return null;
-                    });
-        });
-    }
-
-
-    // Leaderboards
-    // https://www.bungie.net/Platform/ Destiny2/Stats/Leaderboards/Clans/1985678
-
-    //https://www.bungie.net/Platform/Destiny2/Stats/Leaderboards/Clans/1985678?maxtop=100&modes=2,4
-
-    public getClanLeaderboards(clanId: string, max: number, mode: number): Promise<LeaderBoardList[]> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/Stats/Leaderboards/Clans/' + clanId + "/?maxtop=" + max + "&modes=" + mode, opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parseLeaderBoard(resp);
-                }).catch(
-                    function (err) {
-                        console.log("Error finding clan members");
-                        self.handleError(err);
-                        return null;
-                    });
-        });
-    }
-
-    //get clan members https://www.bungie.net/Platform/GroupV2/1985678/Members/?currentPage=1&memberType=0
-    public getClanInfo(clanId: string): Promise<any> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'GroupV2/' + clanId + "/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parseClanInfo(resp.detail);
-                }).catch(
-                    function (err) {
-                        console.log("Error finding clan members");
-                        console.dir(err);
-                        return [];
-                    });
-        });
+    public async getClanInfo(clanId: string): Promise<any> {
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('GroupV2/' + clanId + '/');
+            return this.parseService.parseClanInfo(resp.detail);
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
     }
 
     //clans never > 100
-    public getClanMembers(clanId: string): Promise<BungieGroupMember[]> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'GroupV2/' + clanId + "/Members/?currentPage=1&memberType=0", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parseClanMembers(resp.results);
-                }).catch(
-                    function (err) {
-                        console.log("Error finding clan members");
-                        self.handleError(err);
-                        return [];
-                    });
-        });
+    public async getClanMembers(clanId: string): Promise<BungieGroupMember[]> {
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('GroupV2/' + clanId + '/Members/?currentPage=1&memberType=0');
+            return this.parseService.parseClanMembers(resp.results);
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
     }
-
 
     public async getClans(bungieId: string): Promise<ClanRow[]> {
-        const self: BungieService = this;
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'GroupV2/User/254/' + bungieId + "/0/1/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    let returnMe: ClanRow[] = [];
-                    resp.results.forEach(r => {
-                        if (r.group != null && r.group.groupType == 1) {
-                            returnMe.push(new ClanRow(r.group.name, r.group.groupId));
-                        }
-                    });
-                    return returnMe;
-                }).catch(
-                    function (err) {
-                        console.log("Error finding clan id");
-                        self.handleError(err);
-                        return [];
-                    });
-        });
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('GroupV2/User/254/' + bungieId + '/0/1/');
+            const returnMe: ClanRow[] = [];
+            const clanMap = {};
+            for (const r of resp.results) {
+                if (r.group != null && r.group.groupType == 1) {
+                    if (clanMap[r.group.groupId] == true) {
+                        continue;
+                    }
+                    returnMe.push(new ClanRow(r.group.name, r.group.groupId));
+                    clanMap[r.group.groupId] = true;
+                }
+            }
+            return returnMe;
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
     }
-
-
 
     private setCurrencies() {
         const self: BungieService = this;
-
         this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
             if (x != null) {
                 this.selectedUser.selectedUserCurrencies = x.currencies;
@@ -352,7 +246,6 @@ export class BungieService implements OnDestroy {
             if (c != null) {
                 membership.clans = c;
             }
-
         });
     }
 
@@ -380,7 +273,6 @@ export class BungieService implements OnDestroy {
             new ActivityMode(7, "AllPvE", "All PvE"),
 
             new ActivityMode(32, "Private Matches", "Private Matches"),
-
 
             new ActivityMode(19, "Iron Banner", "Iron Banner"),
             new ActivityMode(39, "Trials", "Trials"),
@@ -410,20 +302,10 @@ export class BungieService implements OnDestroy {
         ];
     }
 
-    private buildReqOptions(): Promise<any> {
-
-
-        let headers = new HttpHeaders();
-        headers = headers
-            .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('X-API-Key', environment.bungie.apiKey);
-        const httpOptions = {
-            headers: headers
-        };
-
-
-        return this.authService.getKey().then(x => {
-            if (x == null) {
+    private async buildReqOptions(): Promise<any> {
+        try {
+            const key = await this.authService.getKey();
+            if (key == null) {
                 let headers = new HttpHeaders();
                 headers = headers
                     .set('X-API-Key', environment.bungie.apiKey);
@@ -435,12 +317,13 @@ export class BungieService implements OnDestroy {
                 let headers = new HttpHeaders();
                 headers = headers
                     .set('X-API-Key', environment.bungie.apiKey)
-                    .set('Authorization', "Bearer " + x);
+                    .set('Authorization', "Bearer " + key);
                 return {
                     headers: headers
                 };
             }
-        }).catch(err => {
+        }
+        catch (err) {
             console.dir(err);
             let headers = new HttpHeaders();
             headers = headers
@@ -448,7 +331,7 @@ export class BungieService implements OnDestroy {
             return {
                 headers: headers
             };
-        });
+        }
     }
 
     private handleError(err) {
@@ -481,81 +364,69 @@ export class BungieService implements OnDestroy {
         return j.Response;
     }
 
-
-    public getPGCR(instanceId: string): Promise<any> {
-        const self: BungieService = this;
-
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/Stats/PostGameCarnageReport/' + instanceId + "/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    return self.parseService.parsePGCR(resp);
-                }).catch(
-                    function (err) {
-                        console.log('Error Searching for player');
-                        self.handleError(err);
-                        return null;
-                    });
-        });
-    }
-
-    public async loadVendors(c: Character): Promise<SaleItem[]>{
-        let opt = await this.buildReqOptions();
-        let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/'+c.membershipType+'/Profile/'+c.membershipId+'/Character/'+
-            c.characterId+'/Vendors/?components=Vendors,VendorSales,ItemSockets', opt).toPromise();
-        //ItemInstances,ItemCommonData,ItemPlugStates,ItemTalentGrids,ItemStats,ItemObjectives
-        const resp = this.parseBungieResponse(hResp);
-        const vendorData = this.parseService.parseVendorData(resp);
-        return vendorData;
-    }
-
-    public async getPublicMilestones(): Promise<PublicMilestone[]>{
-        if (this.publicMilestones!=null)
-            return this.publicMilestones;
-        try{
-            let opt = await this.buildReqOptions();
-            let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/Milestones/', opt).toPromise();
-            const resp = this.parseBungieResponse(hResp);
-            const reply = this.parseService.parsePublicMilestones(resp);
-            this.publicMilestones = reply;
-            return reply;
+    public async getPGCR(instanceId: string): Promise<any> {
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/');
+            return this.parseService.parsePGCR(resp);
         }
-        catch (err){
-            console.log('Error getting public milestones');
-            console.dir(err);
+        catch (err) {
+            this.handleError(err);
             return null;
         }
     }
 
-    public getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<Activity[]> {
-        const self: BungieService = this;
+    public async loadVendors(c: Character): Promise<SaleItem[]> {
+        try {
+            const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
+                c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemSockets');
+            const vendorData = this.parseService.parseVendorData(resp);
+            return vendorData;
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
+    }
 
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Account/" + membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" + count + "&mode=" + mode + "&page=" + page, opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    if (resp.activities) {
-                        return self.parseService.parseActivities(resp.activities);
-                    }
+    public async getPublicMilestones(): Promise<PublicMilestone[]> {
+        if (this.publicMilestones != null)
+            return this.publicMilestones;
+        try {
+            const resp = await this.makeReq('Destiny2/Milestones/');
+            const vendorData = this.parseService.parseVendorData(resp);
+            const reply = this.parseService.parsePublicMilestones(resp);
+            this.publicMilestones = reply;
+            return reply;
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
+    }
 
-                    return [];
-                }).catch(
-                    function (err) {
-                        console.log('Error Searching for player');
-                        self.handleError(err);
-                        return [];
-                    });
-        });
+    public async getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<Activity[]> {
+        try {
+            const resp = await this.makeReq('Destiny2/' + membershipType + "/Account/" +
+                membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" +
+                count + "&mode=" + mode + "&page=" + page);
+            if (resp.activities) {
+                return this.parseService.parseActivities(resp.activities);
+            }
+            return [];
+        }
+        catch (err) {
+            this.handleError(err);
+            return [];
+        }
     }
 
     public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number): Promise<any[]> {
         let self = this;
         const MAX_PAGE_SIZE: number = 100;
         let curPage: number = 0;
-
         return new Promise(function (resolve, reject) {
             let allMatches: any[] = [];
-
             function processMatches(results: any[]) {
                 if (results == null || results.length == 0 || allMatches.length > max) {
                     resolve(allMatches);
@@ -566,101 +437,72 @@ export class BungieService implements OnDestroy {
                     results.forEach(function (r) {
                         allMatches.push(r);
                     });
-
                     if (allMatches.length > max) {
                         resolve(allMatches);
                         return;
                     }
-
                     return self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE).then(processMatches);
                 }
             }
             self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE).then(processMatches).catch((e) => { reject(e) });
         });
-
     }
 
     public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean): Promise<Player> {
-        const self: BungieService = this;
-        //CharacterEquipment
-        //Profiles,Characters,CharacterProgressions,,CharacterActivities
-        try{
-            let sComp = components.join();
-            let opt = await this.buildReqOptions();
-            let hResp = await this.httpClient.get<any>(API_ROOT + 'Destiny2/' + membershipType + "/Profile/" + membershipId + "/?components=" + sComp, opt).toPromise();
-            const resp = this.parseBungieResponse(hResp);
-            let ms:PublicMilestone[] = null;
-            if (components.includes("CharacterProgressions")){
+        try {
+            const sComp = components.join();
+
+            const resp = await this.makeReq('Destiny2/' + membershipType + "/Profile/" +
+                membershipId + "/?components=" + sComp);
+            let ms: PublicMilestone[] = null;
+            if (components.includes("CharacterProgressions")) {
                 ms = await this.getPublicMilestones();
             }
             return this.parseService.parsePlayer(resp, ms);
         }
-        catch (err){
-            console.log('Error Searching for player');
-                        if (!ignoreErrors) {
-                            self.handleError(err);
-                        }
-                        return null; 
+        catch (err) {
+            if (!ignoreErrors) {
+                this.handleError(err);
+            }
+            return null;
         }
     }
 
-    public searchPlayer(platform: number, gt: string): Promise<SearchResult> {
-        const self: BungieService = this;
-
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-                    //self.notificationService.success("Found " + resp.length + " players");
-                    if (resp.length == 0) {
-                        //self.notificationService.fail("No player found for " + gt + ". Typo? Try another platform?");
-                        return null;
+    public async searchPlayer(platform: number, gt: string): Promise<SearchResult> {
+        try {
+            const resp = await this.makeReq('Destiny2/SearchDestinyPlayer/' + platform + "/" + encodeURIComponent(gt) + "/");
+            if (resp.length == 0) {
+                return null;
+            }
+            if (resp.length > 1) {
+                for (let item of resp) {
+                    if (item.displayName == gt) {
+                        return item;
                     }
-                    if (resp.length > 1) {
-                        for (let item of resp){
-                            if (item.displayName == gt){
-                                return item;
-                            }
-                        }
-                        return resp[0];
-                        // return resp[resp.length - 1];
-                        //self.notificationService.info("Found more than one player for gamertag. Please contact /u/dweezil22 on reddit to tell him!");
-                    }
-                    //hack for 2/informer  broken account
-                    if (resp.length == 1 && resp[0].membershipId == '4611686018465893351') {
-                        resp[0].membershipId = '4611686018428560404';
-                    }
-
-
-
-                    return resp[0];
-
-                }).catch(
-                    function (err) {
-                        console.log('Error Searching for player');
-                        self.handleError(err);
-                        return null;
-                    });
-        });
-
+                }
+                return resp[0];
+            }
+            //hack for 2/informer  broken account
+            if (resp.length == 1 && resp[0].membershipId == '4611686018465893351') {
+                resp[0].membershipId = '4611686018428560404';
+            }
+            return resp[0];
+        }
+        catch (err) {
+            this.handleError(err);
+            return null;
+        }
     }
 
-    public getBungieMembershipsById(bungieId: string): Promise<BungieMembership> {
-        const self: BungieService = this;
-
-        return this.buildReqOptions().then(opt => {
-            return this.httpClient.get<any>(API_ROOT + 'User/GetMembershipsById/' + bungieId + "/-1/", opt)
-                .toPromise().then(j => {
-                    const resp = self.parseBungieResponse(j);
-
-                    return self.parseService.parseBungieMembership(resp);
-                }).catch(
-                    function (err) {
-                        console.log('Error looking up memberships');
-                        self.handleError(err);
-                        return null;
-                    });
-        });
+    public async getBungieMembershipsById(bungieId: string): Promise<BungieMembership> {
+        try {
+            const resp = await this.makeReq('User/GetMembershipsById/' + bungieId + "/-1/");
+            return this.parseService.parseBungieMembership(resp);
+        }
+        catch (err) {
+            this.handleError(err);
+            return null;
+        }
     }
 
     ngOnDestroy(): void {
@@ -668,7 +510,7 @@ export class BungieService implements OnDestroy {
         this.unsubscribe$.complete();
     }
 
-    private async makeReq(uri: string): Promise<any>{
+    private async makeReq(uri: string): Promise<any> {
         let opt = await this.buildReqOptions();
         let hResp = await this.httpClient.get<any>(API_ROOT + uri, opt).toPromise();
         const resp = this.parseBungieResponse(hResp);
