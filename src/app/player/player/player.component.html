@@ -1,7 +1,9 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br />
         <div class="searchRow">
@@ -49,7 +51,7 @@
             </span>
           </h4>
 
-          <div class="button-row">            
+          <div class="button-row">
             <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <mat-icon>history</mat-icon>
               <span class="d-none d-md-inline">Activity History</span>
@@ -296,9 +298,10 @@
                     <h2>Privacy</h2>
                     <p>
                       This user hasn't enabled viewing their non-equipped inventory.<br>
-                      They'd need to <a class="underline" href="https://www.bungie.net/en/Profile/Settings?category=Privacy" target="_blank" rel="noopener">
-                        check the "Show my non-equipped Inventory" at Bungie.net.</a> 
-                      <br><br> 
+                      They'd need to <a class="underline" href="https://www.bungie.net/en/Profile/Settings?category=Privacy"
+                        target="_blank" rel="noopener">
+                        check the "Show my non-equipped Inventory" at Bungie.net.</a>
+                      <br><br>
                       [Hiding non-equipped inventory is the default privacy setting]
                     </p>
                   </ng-container>
@@ -306,7 +309,8 @@
                 <ng-container *ngIf="player.bounties!=null && player.bounties.length>0">
                   <mat-tab-group>
                     <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
-                      <a [routerLink]="['/vendors']" style="margin-top: 5px; margin-bottom: 5px" mat-stroked-button>Available Bounties</a>
+                      <a [routerLink]="['/vendors']" style="margin-top: 5px; margin-bottom: 5px" mat-stroked-button>Available
+                        Bounties</a>
                       <table class="responsive-table">
                         <tbody>
                           <ng-container *ngFor="let g of player.bounties">
@@ -327,11 +331,11 @@
                                   </mat-progress-bar>
                                 </div>
                                 <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
-                                    <div *ngFor="let v of g.values">
-                                        {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
-                                      </div>
+                                  <div *ngFor="let v of g.values">
+                                    {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                                  </div>
                                 </div>
-                              </td>                              
+                              </td>
                             </tr>
                           </ng-container>
                         </tbody>

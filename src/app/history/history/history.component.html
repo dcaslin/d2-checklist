@@ -3,7 +3,9 @@
     <div class="main">
 
 
+        <div class="center-spinner">
       <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <h2 class="centerMe">Activity History - 
           <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>

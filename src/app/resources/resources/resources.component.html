@@ -1,7 +1,10 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Vendors -
           <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]"
@@ -25,11 +28,11 @@
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="option" style="margin-top: 1em" (change)="option = optionsgroup.value">
           <mat-button-toggle *ngFor="let o of options" [value]="o">
-              <i *ngIf="o=='Bounties'" class="fa fa-gift"></i>
-              <i *ngIf="o=='Gear'" class="fa fa-cog"></i>
-              <i *ngIf="o=='Exchange'" class="fa fa-balance-scale"></i>
-              <i *ngIf="o=='Cosmetics'" class="fa fa-diamond"></i>
-              <span class="d-none d-md-inline"> {{o}}</span>
+            <i *ngIf="o=='Bounties'" class="fa fa-gift"></i>
+            <i *ngIf="o=='Gear'" class="fa fa-cog"></i>
+            <i *ngIf="o=='Exchange'" class="fa fa-balance-scale"></i>
+            <i *ngIf="o=='Cosmetics'" class="fa fa-diamond"></i>
+            <span class="d-none d-md-inline"> {{o}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
 
@@ -75,8 +78,8 @@
                         <small>{{c.name}} {{c.quantity}}</small>
                       </div>
                       <div *ngIf="i.status!=null" class="warn-text">
-                          <small>{{i.status}}</small>
-                        </div>
+                        <small>{{i.status}}</small>
+                      </div>
                     </td>
                   </tr>
                 </ng-container>
@@ -129,8 +132,8 @@
                         <small>{{c.name}} {{c.quantity}}</small>
                       </div>
                       <div *ngIf="i.status!=null" class="warn-text">
-                          <small>{{i.status}}</small>
-                        </div>
+                        <small>{{i.status}}</small>
+                      </div>
                     </td>
 
                   </tr>
@@ -155,8 +158,8 @@
                     </td>
                     <td>
                       {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
-                        {{i.itemTypeAndTierDisplayName}} 
-                    </td>                    
+                      {{i.itemTypeAndTierDisplayName}}
+                    </td>
                     <td>
                       {{i.vendor.name}}
                       <span class="type-caption">Resets in {{ i.vendor.nextRefreshDate | amDifference: today |
@@ -174,40 +177,40 @@
             </table>
           </ng-container>
           <ng-container *ngIf="option=='Exchange'">
-              <table class="tidy-table itemTable" style="margin-top: 1em">
-                <thead>
-                  <tr>
-                    <th class="item-icon-cell"></th>
-                    <th>Name</th>
-                    <th>Vendor</th>
+            <table class="tidy-table itemTable" style="margin-top: 1em">
+              <thead>
+                <tr>
+                  <th class="item-icon-cell"></th>
+                  <th>Name</th>
+                  <th>Vendor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let i of vendorData">
+                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'">
+                    <td class="item-icon-cell">
+                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+                    </td>
+                    <td>
+                      {{i.name}} <br>
+                      Quantity: {{i.quantity}}
+                    </td>
+                    <td>
+                      {{i.vendor.name}}
+                      <span class="type-caption">Resets in {{ i.vendor.nextRefreshDate | amDifference: today |
+                        amDuration:'ms'}}</span>
+                      <div *ngFor="let c of i.costs">
+                        <small>Cost: {{c.name}} {{c.quantity}}</small>
+                      </div>
+                      <div *ngIf="i.status!=null" class="warn-text">
+                        <small>{{i.status}}</small>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  <ng-container *ngFor="let i of vendorData">
-                    <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'">
-                      <td class="item-icon-cell">
-                        <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
-                      </td>
-                      <td>
-                        {{i.name}} <br>
-                        Quantity: {{i.quantity}}
-                      </td>                    
-                      <td>
-                        {{i.vendor.name}}
-                        <span class="type-caption">Resets in {{ i.vendor.nextRefreshDate | amDifference: today |
-                          amDuration:'ms'}}</span>
-                        <div *ngFor="let c of i.costs">
-                          <small>Cost: {{c.name}} {{c.quantity}}</small>
-                        </div>
-                        <div *ngIf="i.status!=null" class="warn-text">
-                            <small>{{i.status}}</small>
-                          </div>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </ng-container>
+                </ng-container>
+              </tbody>
+            </table>
+          </ng-container>
         </ng-container>
       </div>
     </div>

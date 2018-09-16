@@ -1,7 +1,10 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
 
 
       <div class="body">
@@ -41,7 +44,8 @@
                     <td>{{entry.rank}}</td>
                     <td>{{entry.value}}</td>
                     <td>
-                      <a [routerLink]="['/'+entry.destinyUserInfo.membershipType, entry.destinyUserInfo.displayName]">{{entry.destinyUserInfo.displayName}} - {{entry.characterClass}}</a>
+                      <a [routerLink]="['/'+entry.destinyUserInfo.membershipType, entry.destinyUserInfo.displayName]">{{entry.destinyUserInfo.displayName}}
+                        - {{entry.characterClass}}</a>
                     </td>
                   </tr>
                 </tbody>

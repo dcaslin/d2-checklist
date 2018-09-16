@@ -1,7 +1,6 @@
 <div class="childComponent">
     <div class="childVert">
       <div class="main">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
   
         <h1>The Last Wish Raid Leaderboard</h1>
   
@@ -14,9 +13,14 @@
           <mat-form-field class="searchField">
             <input matInput #filter placeholder="Filter users">
           </mat-form-field>
+          <mat-checkbox class="example-margin" [(ngModel)]="loading">Checked</mat-checkbox>
         </div>
-  
+
+
         <div class="table-container">
+          <div class="center-spinner">
+            <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+          </div>
           <mat-table class="centerMe leader-table" #table [dataSource]="dataSource" matSort>
             <ng-container cdkColumnDef="rank">
               <mat-header-cell class="rankCol" *cdkHeaderCellDef mat-sort-header>Rank</mat-header-cell>
