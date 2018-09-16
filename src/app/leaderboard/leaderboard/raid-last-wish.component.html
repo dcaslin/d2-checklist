@@ -17,7 +17,7 @@
         </div>
   
         <div class="table-container">
-          <mat-table class="centerMe" #table [dataSource]="dataSource" matSort>
+          <mat-table class="centerMe leader-table" #table [dataSource]="dataSource" matSort>
             <ng-container cdkColumnDef="rank">
               <mat-header-cell class="rankCol" *cdkHeaderCellDef mat-sort-header>Rank</mat-header-cell>
               <mat-cell class="rankCol" *cdkCellDef="let row">
@@ -34,12 +34,16 @@
             </ng-container>
             <ng-container cdkColumnDef="fireteam">
               <mat-header-cell *cdkHeaderCellDef mat-sort-header>Fireteam</mat-header-cell>
-              <mat-cell *cdkCellDef="let row">
+              <mat-cell class="player-cell" *cdkCellDef="let row">
                 <span class="name" *ngFor="let p of row.fireTeam">
                     <a [routerLink]="['/'+row.membershipType, p.displayName]">{{p.displayName}}</a>
-                    <a class="accent-text" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
-                      <i class="fa fa-twitch"></i>
-                    </a>
+                    <ng-container *ngIf="p.twitchUrls!=null">
+                      <a class="accent-text twitch-url" *ngFor="let t of p.twitchUrls" 
+                        rel="noopener" [href]="t" target="_blank">
+                        <i class="fa fa-twitch"></i>
+                      </a>
+                    </ng-container>
+                    
                   </span>
               </mat-cell>
             </ng-container>

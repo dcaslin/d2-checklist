@@ -34,10 +34,10 @@
           </ng-container>
           <ng-container cdkColumnDef="fireteam">
             <mat-header-cell *cdkHeaderCellDef mat-sort-header>Fireteam</mat-header-cell>
-            <mat-cell *cdkCellDef="let row">
+            <mat-cell class="player-cell" *cdkCellDef="let row">
               <span class="name" *ngFor="let p of row.fireteam">
                   <a [routerLink]="['/'+p.membershipType, p.displayName]">{{p.displayName}}</a>
-                  <a class="accent-text" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
+                  <a class="accent-text twitch-url" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
                     <i class="fa fa-twitch"></i>
                   </a>
                 </span>
