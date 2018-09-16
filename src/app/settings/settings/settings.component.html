@@ -44,6 +44,11 @@
         <mat-icon>bug_report</mat-icon> You've enabled debug mode. This might do nothing, or it might show extra information like hashes on certain items. 
         It will probably make your screen more cluttered and ugly, and may screw up mobile views. <mark>If you have any problems you should turn this back off.</mark>
       </p>
+      <div class="button-row" *ngIf="debugmode">
+          <button mat-stroked-button (click)="onFailClick()" >Test Fail</button>
+          <button mat-stroked-button (click)="onSuccessClick()" >Test Success</button>
+          <button mat-stroked-button (click)="onInfoClick()" >Test Info</button>
+      </div>
     </div>
 
     <div *ngIf="disableads===false" class="adRight">

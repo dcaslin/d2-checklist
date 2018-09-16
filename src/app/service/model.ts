@@ -472,10 +472,12 @@ export class Character {
     lifetimeRaidPrestige: number = 0;
     lifetimeEater: number = 0;
     lifetimeSpire: number = 0;
+    lifetimeLwNormal: number = 0;
     hasEater: boolean = false;
     hasSpire: boolean = false;
     hasLevNm: boolean = false;
     hasLevHm: boolean = false;
+    hasLwNm: boolean = false;
     hasPrestigeNf: boolean = false;
     aggHistory: AggHistory;
 
@@ -503,12 +505,14 @@ export class AggHistory {
     spire: number = 0;
     spireFastestMs: number;
 
-
     raid: number = 0;
     raidFastestMs: number;
 
     hmRaid: number = 0;
     hmRaidFastestMs: number;
+
+    lwNm: number = 0;
+    lwNmFastestMs: number;
 }
 
 

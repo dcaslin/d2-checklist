@@ -5,6 +5,7 @@ import { StorageService } from '../../service/storage.service';
 import { Subject } from 'rxjs';
 import { ChildComponent } from '../../shared/child.component';
 import {MatSelectModule} from '@angular/material';
+import { NotificationService } from '@app/service/notification.service';
 
 @Component({
   selector: 'anms-settings',
@@ -31,7 +32,9 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
     { value: true, label: 'Debug' }
   ];
 
-  constructor(storageService: StorageService) {
+  constructor(storageService: StorageService,
+    private notificationService: NotificationService
+    ) {
     super(storageService);
     this.theme = this.storageService.getItem("theme", "default-theme");
 
@@ -60,5 +63,18 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
   onDebugSelect({ value }) {
     this.storageService.setItem("debugmode", value);
   }
+
+  onFailClick(){
+    this.notificationService.fail("Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones at duo. At magna essent volumus ius. Ea rebum lucilius his.");
+  }
+
+  onInfoClick(){
+    this.notificationService.info("Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones at duo. At magna essent volumus ius. Ea rebum lucilius his.");
+  }
+
+  onSuccessClick(){
+    this.notificationService.success("Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones at duo. At magna essent volumus ius. Ea rebum lucilius his.");
+  }
+
 
 }
