@@ -2116,7 +2116,7 @@ export class ParseService {
                 key: LW_NM_KEY,
                 resets: c.endWeek.toISOString(),
                 rewards: "Raid Gear",
-                name: "The Last Wish",
+                name: "Last Wish",
                 desc: "Forsaken DLC Raid",
                 hasPartial: false
             });

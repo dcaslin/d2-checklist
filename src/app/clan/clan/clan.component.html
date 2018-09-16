@@ -61,8 +61,8 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Clan Progress
-                  <ng-container *ngIf="info.primaryProgression!=null"> | Level {{info.primaryProgression.level}}
-                    &emsp; Remaining XP to get this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit -
+                  <ng-container *ngIf="info.primaryProgression!=null"> | Level {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} | 
+                    Remaining XP available this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit -
                       info.primaryProgression.weeklyProgress)|number}}</b>
                   </ng-container>
                 </mat-panel-title>
@@ -77,8 +77,8 @@
 
                   <mat-card-title>
                     <ng-container *ngIf="debugmode"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
-                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
-                    &emsp; Remaining XP to get this week:
+                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}} 
+                    - Remaining XP available this week:
                     <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b>
                   </mat-card-title>
                   <mat-card-subtitle>{{faction.desc}}
