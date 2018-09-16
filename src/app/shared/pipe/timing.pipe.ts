@@ -15,7 +15,13 @@ export class TimingPipe implements PipeTransform {
     if (typeof args === 'undefined' || args.length !== 1) {
       throw new Error('DurationPipe: missing required time unit argument');
     }
-    let m = moment.duration(value, args[0] as moment.unitOfTime.DurationConstructor);
-    return TimingPipe.pad(24*m.days()+m.hours(), 2)+":"+TimingPipe.pad(m.minutes(), 2)+":"+TimingPipe.pad(m.seconds(), 2);
+    const m = moment.duration(value, args[0] as moment.unitOfTime.DurationConstructor);
+    const hours = 24*m.days()+m.hours();
+    if (hours>36){
+      return m.days()+"d "+ TimingPipe.pad(m.hours(), 2)+":"+TimingPipe.pad(m.minutes(), 2)+":"+TimingPipe.pad(m.seconds(), 2);
+    }
+    else{
+      return TimingPipe.pad(hours, 2)+":"+TimingPipe.pad(m.minutes(), 2)+":"+TimingPipe.pad(m.seconds(), 2);
+    }
   }
 }

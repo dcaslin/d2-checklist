@@ -1,7 +1,7 @@
 
 import {fromEvent as observableFromEvent,  Subject ,  Observable } from 'rxjs';
 
-import {debounceTime, takeUntil, distinctUntilChanged} from 'rxjs/operators';
+import { map,debounceTime, takeUntil, distinctUntilChanged} from 'rxjs/operators';
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -27,6 +27,9 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   @ViewChild('filter') filter: ElementRef;
   @ViewChild(MatSort) sort: MatSort;
 
+
+
+  readonly LAUNCH_DATE = "2018-09-14T21:00:00.000Z";
   filterName: string;
 
   displayedColumns = ['rank', 'fireteam', 'end', 'duration',];
@@ -74,7 +77,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
     for (const p of row.players){
       fireTeam.push(this.transformPlayer(row.twitch, p));
     }
-
+    
     return {
       start: row.period,
       end: row.completedAt,
@@ -87,8 +90,6 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   }
   
   transformPlayer(twitchUrls: any, row: _Player): Player{
-    
-
     return {
       membershipId: row.membershipId,
       displayName: row.displayName,
@@ -120,6 +121,65 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   }
 
 }
+    
+/** An example database that the data source uses to retrieve data for the table. */
+export class LastWishDao {
+  constructor(private http: HttpClient) {}
+
+  get(page: number, size: number): Observable<Rows> {
+    const href = 'http://api.trialsofthenine.com/lastwish';
+    const requestUrl = `${href}??page=${page}&size=${size}`;
+
+    return this.http.get<_LastWishRep>(requestUrl).pipe(map(data => 
+      {
+        return this.transform(data);
+      }
+    ));
+  }
+
+  transform(resp: _LastWishRep): Rows{
+    return {
+      rows: this.transformRows(resp.matches),
+      total: resp.total
+    }
+  }
+
+  transformRows(rows: _Row[]): Row[]{
+    const returnMe: Row[] = [];
+    let rank = 0;
+    for (const r of rows){
+      rank++;
+      returnMe.push(this.transformRow(rank, r));
+    }
+    return returnMe;
+  }
+
+  transformRow(rank: number, row: _Row): Row{
+    const fireTeam: Player[] = [];
+    for (const p of row.players){
+      fireTeam.push(this.transformPlayer(row.twitch, p));
+    }
+    return {
+      start: row.period,
+      end: row.completedAt,
+      pgcr: row.instanceId,
+      membershipType: row.membershipType,
+      duration: row.duration, //TODO this is broken
+      fireTeam: fireTeam,
+      rank: rank
+    }
+  }
+  
+  transformPlayer(twitchUrls: any, row: _Player): Player{
+    return {
+      membershipId: row.membershipId,
+      displayName: row.displayName,
+      kills: row.kills,
+      twitchUrls: twitchUrls[row.membershipId]
+    }
+  }
+
+}
 
 interface _LastWishRep {
   matches: _Row[];
@@ -140,6 +200,12 @@ interface _Row {
   players: _Player[];
   twitch: any;
 }
+
+interface Rows {
+  rows: Row[];
+  total: number;
+}
+
 
 interface Row {
   start: string;
