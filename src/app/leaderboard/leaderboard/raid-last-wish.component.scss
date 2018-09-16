@@ -7,6 +7,18 @@
   margin-bottom: 10px;
 }
 
+.twitch-url{
+  margin-left: 0.3em;
+}
+
+
+  
+@media screen and (max-width: 750px) {
+  .player-cell{
+    max-width: 250px;
+  }
+}
+
 // a:link {
 //   text-decoration: underline;
 // }

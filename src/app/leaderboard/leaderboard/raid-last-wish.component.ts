@@ -72,7 +72,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   transformRow(rank: number, row: _Row): Row{
     const fireTeam: Player[] = [];
     for (const p of row.players){
-      fireTeam.push(this.transformPlayer(p));
+      fireTeam.push(this.transformPlayer(row.twitch, p));
     }
 
     return {
@@ -86,12 +86,14 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
     }
   }
   
-  transformPlayer(row: _Player): Player{
+  transformPlayer(twitchUrls: any, row: _Player): Player{
+    
+
     return {
       membershipId: row.membershipId,
       displayName: row.displayName,
       kills: row.kills,
-      twitchUrl: null
+      twitchUrls: twitchUrls[row.membershipId]
     }
   }
 
@@ -136,6 +138,7 @@ interface _Row {
   deaths: number;
   assists: number;
   players: _Player[];
+  twitch: any;
 }
 
 interface Row {
@@ -163,5 +166,5 @@ interface Player {
   membershipId: string;
   displayName: string;
   kills: number;
-  twitchUrl?: string;
+  twitchUrls: string[];
 }

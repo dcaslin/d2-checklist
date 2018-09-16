@@ -11,12 +11,24 @@
 //   text-decoration: underline;
 // }
 
+
+.twitch-url{
+  margin-left: 0.3em;
+}
+
 .table-container {
   display: flex;
   flex-direction: column;
   min-width: 300px;
   max-width: 1200px;
 }
+
+@media screen and (max-width: 750px) {
+  .player-cell{
+    max-width: 250px;
+  }
+}
+
 
 .rankCol{
   width: 45px !important;
