@@ -1,8 +1,8 @@
 
-import { merge, fromEvent as observableFromEvent, Subject, Observable, of as observableOf } from 'rxjs';
+import { merge, fromEvent as observableFromEvent, Subject, Observable, of as observableOf, forkJoin } from 'rxjs';
 
 import { debounceTime, takeUntil, distinctUntilChanged } from 'rxjs/operators';
-import { catchError, map, startWith, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap, flatMap } from 'rxjs/operators';
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
@@ -28,6 +28,10 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   pageIndex = 0;
   pageSize = 10;
   isLoadingResults = true;
+  tempFilter: string = null;
+  filter: string = null;
+
+  readonly manualPage$ = new Subject<PageEvent>();
 
   @ViewChild('paginatorTop') paginatorTop: MatPaginator;
   @ViewChild('paginatorBottom') paginatorBottom: MatPaginator;
@@ -46,6 +50,23 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
     this.router.navigate(['/pgcr', instanceId]);
   }
 
+  search() {
+    if (this.tempFilter!=null && this.tempFilter.trim().length>2){
+      this.filter = this.tempFilter.toUpperCase();
+      const pe = new PageEvent();
+      pe.pageIndex = 0;
+      this.manualPage$.next(pe);
+    }
+  }
+
+  clear(){
+    this.filter = null;
+    this.tempFilter = null;
+    const pe = new PageEvent();
+    pe.pageIndex = 0;
+    this.manualPage$.next(pe);  
+  }
+
   ngOnInit() {
     this.dao = new LastWishDao(this.httpClient);
 
@@ -55,12 +76,11 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
       p = 1;
     }
     const init = new PageEvent();
-    init.pageIndex = p-1;
+    init.pageIndex = p - 1;
 
 
-    const manualPage$ = new Subject<PageEvent>();
 
-    merge(this.paginatorBottom.page, this.paginatorTop.page, manualPage$)
+    merge(this.paginatorBottom.page, this.paginatorTop.page, this.manualPage$)
       .pipe(
         startWith(init),
         switchMap((pe: PageEvent) => {
@@ -69,25 +89,31 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
           this.paginatorBottom.pageIndex = pe.pageIndex;
           this.paginatorTop.pageIndex = pe.pageIndex;
           this.router.navigate(["leaderboard/last-wish/" + (this.pageIndex + 1)]);
-          return this.dao!.get(this.pageIndex, this.pageSize);
+          if (this.filter!=null && this.filter.trim().length>0){
+            return this.dao!.search(this.filter, 100, 2000);
+          }
+          else{
+            return this.dao!.get(this.pageIndex, this.pageSize, this.filter);
+          }
         }),
         catchError(() => {
           return observableOf(null);
         })
-      ).subscribe(data =>{ 
+      ).subscribe(data => {
         this.isLoadingResults = false;
-        if (data==null){
+        if (data == null) {
           this.total = 0;
           this.data = [];
         }
         //off the end
-        else if (this.pageIndex*this.pageSize > data.total){
-          const lastPage = Math.floor(data.total/this.pageSize);
+        else if (this.pageIndex * this.pageSize > data.total) {
+          this.total = data.total;
+          const lastPage = Math.ceil(data.total / this.pageSize);
           const lastPageEvent = new PageEvent();
-          lastPageEvent.pageIndex = lastPage-1;
-          manualPage$.next(lastPageEvent);
+          lastPageEvent.pageIndex = lastPage - 1;
+          this.manualPage$.next(lastPageEvent);
         }
-        else{
+        else {
           this.data = data.rows;
           this.total = data.total;
         }
@@ -100,39 +126,85 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
 export class LastWishDao {
   constructor(private http: HttpClient) { }
 
-  get(page: number, size: number): Observable<Rows> {
-    console.log("Page: " + page + "     size: " + size);
+  search(filter: string, size: number, max: number): Observable<Rows> {
+    return this.get(0, size, filter).pipe(
+      flatMap((data: Rows) => {
+        const realMax = Math.min(data.total, max);
+        const obs = [];
+        obs.push(observableOf(data));
+        let curPage = 1;
+        while (true) {
+          if (curPage * size > realMax) {
+            break;
+          }
+          obs.push(this.get(curPage, size, filter));
+          curPage++;
+        }
+        return forkJoin(obs);
+      }),
+      map((d:Rows[])=>{
+        if (d.length==0){
+          return {
+            rows: [],
+            total: 0
+          };
+        }
+        else{
+          let rows = [];
+          for (let r of d){
+            rows = rows.concat(r.rows);
+          }
+          let total = 0;
+          return {
+            rows: rows,
+            total: rows.length
+          };
+        }
+      })
+    );
+  }
+
+  get(page: number, size: number, filter?: string): Observable<Rows> {
     const href = 'https://api.trialsofthenine.com/lastwish';
     const requestUrl = `${href}?page=${page}&size=${size}`;
 
     return this.http.get<_LastWishRep>(requestUrl).pipe(map(data => {
-      return this.transform(page, size, data);
+      return this.transform(page, size, data, filter);
     }
     ));
   }
 
-  transform(page: number, pageSize: number, resp: _LastWishRep): Rows {
+  transform(page: number, pageSize: number, resp: _LastWishRep, filter?: string): Rows {
     const rankStart = page * pageSize;
     return {
-      rows: this.transformRows(rankStart, resp.matches),
+      rows: this.transformRows(rankStart, resp.matches, filter),
       total: resp.total
     }
   }
 
-  transformRows(rankStart: number, rows: _Row[]): Row[] {
+  transformRows(rankStart: number, rows: _Row[], filter?: string): Row[] {
     const returnMe: Row[] = [];
     let rank = rankStart;
     for (const r of rows) {
       rank++;
-      returnMe.push(this.transformRow(rank, r));
+      const row = this.transformRow(rank, r, filter);
+      if (row != null) returnMe.push(row);
     }
     return returnMe;
   }
 
-  transformRow(rank: number, row: _Row): Row {
+  transformRow(rank: number, row: _Row, filter?: string): Row {
     const fireTeam: Player[] = [];
+    let match = false;
+    if (filter == null || filter.length == 0) match = true;
     for (const p of row.players) {
+      if (!match && p.displayName.toUpperCase().includes(filter)) {
+        match = true;
+      }
       fireTeam.push(this.transformPlayer(row.twitch, p));
+    }
+    if (!match){
+       return null;
     }
     return {
       start: row.period,
