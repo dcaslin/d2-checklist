@@ -102,7 +102,7 @@ export class LastWishDao {
 
   get(page: number, size: number): Observable<Rows> {
     console.log("Page: " + page + "     size: " + size);
-    const href = 'http://api.trialsofthenine.com/lastwish';
+    const href = 'https://api.trialsofthenine.com/lastwish';
     const requestUrl = `${href}?page=${page}&size=${size}`;
 
     return this.http.get<_LastWishRep>(requestUrl).pipe(map(data => {
