@@ -61,7 +61,8 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Clan Progress
-                  <ng-container *ngIf="info.primaryProgression!=null"> | Level {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} | 
+                  <ng-container *ngIf="info.primaryProgression!=null"> | Level
+                    {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
                     Remaining XP available this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit -
                       info.primaryProgression.weeklyProgress)|number}}</b>
                   </ng-container>
@@ -77,7 +78,7 @@
 
                   <mat-card-title>
                     <ng-container *ngIf="debugmode"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
-                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}} 
+                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                     - Remaining XP available this week:
                     <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b>
                   </mat-card-title>
@@ -184,7 +185,7 @@
                     Blocked by privacy settings
                   </td>
                   <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
-                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" [attr.data-label]="mileStoneName.name">
+                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" class="clan-player-ms-cell" [attr.data-label]="mileStoneName.name">
                       <ng-container *ngFor="let char of member.player.characters">
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
@@ -199,7 +200,7 @@
                         </span>
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]==null">
                           <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-square-o"></i>
+                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-minus-square-o" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                         </span>
                       </ng-container>
                     </td>
@@ -247,9 +248,18 @@
               </tr>
             </tfoot>
           </table>
-          <p>Note: The Bungie API will sometimes incorrectly report milestones as complete (or partially complete). If
-            you're a clan leader trying to see when someone last played, trust the "Last Played" column even if some
-            weekly milestones appear to be completed.</p>
+
+          <div class="bottom-note">
+            <ul class="left">
+              <li>Note: The Bungie API will sometimes incorrectly report milestones as complete (or partially
+                complete). If
+                you're a clan leader trying to see when someone last played, trust the "Last Played" column even if
+                some
+                weekly milestones appear to be completed.</li>
+              <li>Milestones with this icon <i class="fa fa-minus-square-o"></i> denote players that are not yet max
+                level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
+            </ul>
+          </div>
         </ng-container>
 
       </div>
