@@ -10,6 +10,9 @@ export class StickyReuseStrategy implements RouteReuseStrategy {
   handlers: {[key: string]: DetachedRouteHandle} = {};
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
+    if (route.routeConfig.path.indexOf("leaderboard")==0){
+      return false;
+    }
     return true;
   }
 

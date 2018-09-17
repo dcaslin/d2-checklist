@@ -23,7 +23,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
   dao: LastWishDao | null;
-  data: Row[] = [];
+  dataRows: Row[] = [];
   total = 0;
   pageIndex = 0;
   pageSize = 10;
@@ -32,6 +32,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   filter: string = null;
 
   readonly manualPage$ = new Subject<PageEvent>();
+  readonly navigate$ = new Subject<string[]>();
 
   @ViewChild('paginatorTop') paginatorTop: MatPaginator;
   @ViewChild('paginatorBottom') paginatorBottom: MatPaginator;
@@ -51,73 +52,90 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   }
 
   search() {
-    if (this.tempFilter!=null && this.tempFilter.trim().length>2){
-      this.filter = this.tempFilter.toUpperCase();
-      const pe = new PageEvent();
-      pe.pageIndex = 0;
-      this.manualPage$.next(pe);
+    if (this.tempFilter != null && this.tempFilter.trim().length > 2) {
+      this.router.navigate(["leaderboard", "last-wish", "search", this.tempFilter]);
     }
   }
 
-  clear(){
-    this.filter = null;
-    this.tempFilter = null;
-    const pe = new PageEvent();
-    pe.pageIndex = 0;
-    this.manualPage$.next(pe);  
+  clear() {
+    this.router.navigate(["leaderboard", "last-wish",1]);
+  }
+
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    console.log("Destroying");
   }
 
   ngOnInit() {
-    this.dao = new LastWishDao(this.httpClient);
+      this.dao = new LastWishDao(this.httpClient);
 
-    const s = this.route.snapshot.paramMap.get('page');
-    let p = parseInt(s);
-    if (!(p >= 1 && p < 100000)) {
-      p = 1;
-    }
-    const init = new PageEvent();
-    init.pageIndex = p - 1;
-
-
-
-    merge(this.paginatorBottom.page, this.paginatorTop.page, this.manualPage$)
-      .pipe(
-        startWith(init),
-        switchMap((pe: PageEvent) => {
-          this.isLoadingResults = true;
-          this.pageIndex = pe.pageIndex;
-          this.paginatorBottom.pageIndex = pe.pageIndex;
-          this.paginatorTop.pageIndex = pe.pageIndex;
-          this.router.navigate(["leaderboard/last-wish/" + (this.pageIndex + 1)]);
-          if (this.filter!=null && this.filter.trim().length>0){
-            return this.dao!.search(this.filter, 100, 2000);
+      this.route.paramMap.pipe(
+        flatMap((params: ParamMap) => {
+          const q = this.route.snapshot.paramMap.get('query');
+          let p = 1;
+          if (q != null && q.trim().length > 2) {
+            this.filter = q;
+            this.tempFilter = q;
           }
-          else{
+          else {
+            const s = this.route.snapshot.paramMap.get('page');
+            p = parseInt(s);
+            if (!(p >= 1 && p < 100000)) {
+              this.router.navigate(["leaderboard", "last-wish", 1]);
+              return observableOf("rerouted");
+            }
+            this.filter = null;
+            this.tempFilter = null;
+          }
+
+          this.isLoadingResults = true;
+          this.pageIndex = p - 1;
+          this.paginatorBottom.pageIndex = this.pageIndex;
+          this.paginatorTop.pageIndex = this.pageIndex;
+          if (this.filter != null && this.filter.trim().length > 0) {
+            return this.dao!.search(this.filter.toUpperCase(), 100, 2000);
+          }
+          else {
             return this.dao!.get(this.pageIndex, this.pageSize, this.filter);
           }
         }),
         catchError(() => {
           return observableOf(null);
-        })
-      ).subscribe(data => {
-        this.isLoadingResults = false;
-        if (data == null) {
-          this.total = 0;
-          this.data = [];
-        }
-        //off the end
-        else if (this.pageIndex * this.pageSize > data.total) {
-          this.total = data.total;
-          const lastPage = Math.ceil(data.total / this.pageSize);
-          const lastPageEvent = new PageEvent();
-          lastPageEvent.pageIndex = lastPage - 1;
-          this.manualPage$.next(lastPageEvent);
-        }
-        else {
-          this.data = data.rows;
-          this.total = data.total;
-        }
+        })).subscribe(data => {
+          this.isLoadingResults = false;
+          if ("rerouted" == data) {
+            return;
+          }
+          if (data == null) {
+            this.total = 0;
+            this.dataRows = [];
+          }
+          //off the end
+          else if (this.pageIndex * this.pageSize > data.total) {
+            console.log("Off end of list");
+            const lastPage = Math.ceil(data.total / this.pageSize);
+            this.router.navigate(["leaderboard", "last-wish", lastPage]);
+          }
+          else {
+            this.dataRows = data.rows;
+            this.total = data.total;
+          }
+        });
 
+      merge(this.paginatorBottom.page, this.paginatorTop.page).pipe(
+        switchMap((pe: ParamMap) => {
+          return observableOf(pe);
+        }
+        ),
+        catchError(() => {
+          return observableOf(null);
+        }),
+        takeUntil(this.unsubscribe$)
+      )
+      .subscribe(pe => {
+        if (pe == null) return;
+        this.router.navigate(["leaderboard", "last-wish", pe.pageIndex + 1]);
       });
   }
 }
@@ -142,16 +160,16 @@ export class LastWishDao {
         }
         return forkJoin(obs);
       }),
-      map((d:Rows[])=>{
-        if (d.length==0){
+      map((d: Rows[]) => {
+        if (d.length == 0) {
           return {
             rows: [],
             total: 0
           };
         }
-        else{
+        else {
           let rows = [];
-          for (let r of d){
+          for (let r of d) {
             rows = rows.concat(r.rows);
           }
           let total = 0;
@@ -203,8 +221,8 @@ export class LastWishDao {
       }
       fireTeam.push(this.transformPlayer(row.twitch, p));
     }
-    if (!match){
-       return null;
+    if (!match) {
+      return null;
     }
     return {
       start: row.period,
