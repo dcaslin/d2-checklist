@@ -102,18 +102,23 @@ export class AuthGuard implements CanActivate {
         component: LeviathanPrestigeComponent
       },
       {
+        path: 'leaderboard/last-wish',
+        redirectTo: 'leaderboard/last-wish/1'
+      },
+      {
+        path: 'leaderboard/last-wish/search/:query',
+        canActivate: [AuthGuard],
+        component: RaidLastWishComponent
+      },
+      {
         path: 'leaderboard/last-wish/:page',
         canActivate: [AuthGuard],
         component: RaidLastWishComponent
       },
-      {
-        path: 'leaderboard/last-wish',
-        canActivate: [AuthGuard],
-        component: RaidLastWishComponent
-      },
+      
       {
         path: 'leaderboard',
-        redirectTo: 'leaderboard/leviathan-prestige'
+        redirectTo: 'leaderboard/last-wish/1'
       },
       {
         path: 'pgcr/:instanceId',

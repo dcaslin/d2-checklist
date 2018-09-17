@@ -18,6 +18,7 @@
           <button mat-button style="margin-left: 5px" (click)="search()" [disabled]="tempFilter==null || tempFilter.trim().length<3">
               <mat-icon>search</mat-icon>Search
           </button>
+          <ng-container *ngIf="debugmode">Temp: {{tempFilter}} &emsp;&emsp;Filter: {{filter}} &emsp;&emsp;Total: {{total}}</ng-container>
         </div>
 
         <div class="table-container">
@@ -26,7 +27,7 @@
           </div>
           <mat-paginator [hidden]="filter!=null && filter.trim().length>0" #paginatorTop [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
             [pageIndex]="pageIndex" [pageSize]="pageSize"></mat-paginator>
-          <mat-table class="centerMe leader-table" [dataSource]="data">
+          <mat-table class="centerMe leader-table" [dataSource]="dataRows">
             <ng-container cdkColumnDef="rank">
               <mat-header-cell class="rankCol" *cdkHeaderCellDef>Rank</mat-header-cell>
               <mat-cell class="rankCol" *cdkCellDef="let row">
@@ -50,7 +51,7 @@
               <mat-header-cell *cdkHeaderCellDef>Fireteam</mat-header-cell>
               <mat-cell class="player-cell" *cdkCellDef="let row">
                 <span class="name" *ngFor="let p of row.fireTeam">
-                    <a [routerLink]="['/'+row.membershipType, p.displayName]">{{p.displayName}}</a>
+                    <a class="name-link" [routerLink]="['/'+row.membershipType, p.displayName]">{{p.displayName}}</a>
                     <ng-container *ngIf="p.twitchUrls!=null">
                       <a class="accent-text twitch-url" *ngFor="let t of p.twitchUrls" 
                         rel="noopener" [href]="t" target="_blank">
