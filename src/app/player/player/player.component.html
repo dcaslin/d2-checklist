@@ -223,7 +223,7 @@
                             </ng-container>
                             <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
                               <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-square-o"></i>
+                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-minus-square-o" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                             </ng-container>
                           </span>
                         </td>
@@ -278,13 +278,16 @@
                 </table>
               </ng-container>
               <div class="bottom-note">
+                  <ul class="left">
+                      <li>Milestones disappear on completion, so it's hard to differentiate between complete and unavailable
+                          milestones. Chars that aren't eligable for milestones may therefore show as complete.</li>
+                      <li>lt = lifetime</li>
+                      <li>Milestones with this icon <i class="fa fa-minus-square-o"></i> denote players that are not yet max
+                        level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
+                  </ul>
                 <!-- * Max LL vendor info provided by
               <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
               <br>  -->
-                * Milestones disappear on completion, so it's hard to differentiate between complete and unavailable
-                milestones. Chars that aren't eligable for milestones may therefore show as complete.
-                <br>
-                * lt = lifetime
               </div>
 
             </mat-tab>

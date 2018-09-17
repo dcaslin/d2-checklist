@@ -18,6 +18,10 @@
   margin-bottom: 10px;
 }
 
+.clan-player-ms-cell{
+  min-width: 60px;
+}
+
 .filter-row{
   
   margin-bottom: 10px;
@@ -27,6 +31,11 @@
     margin-left: 5px;
     margin-right: 5px;
   }
+}
+
+.bottom-note{
+  margin-left: 1.0em;
+  text-align: left;
 }
 
 .filter-count{
