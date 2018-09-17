@@ -297,8 +297,10 @@
                 <ng-container *ngIf="player.bounties==null || player.bounties.length==0">
                   <br>
                   <ng-container *ngIf="(bungieService.selectedUserFeed | async)==null">
-                    <h2>Sign-in Required</h2>
-                    <p>You must sign in for the site to access this info on your account. <b>Click the "Sign In" button
+                    <h2>Bungie Authentication Required</h2>
+                    <p>You must grant this site access to your private Bungie API's for the site to 
+                      access this info on your account 
+                      (like what you might be doing with Destiny Item Manager today). <b>Click the "Sign In" button
                         on the upper
                         right if you want to continue.</b></p>
                   </ng-container>

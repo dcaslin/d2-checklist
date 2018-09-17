@@ -30,10 +30,10 @@ export class AuthGuard implements CanActivate {
     // return Promise.resolve(false);
     return this.destinyCacheService.init().then(val => {
       try{
+        //this will only make a call if the currencies are blank
         this.bungieService.checkCurrency();
       }
       catch (e){
-        console.dir(e);
       }
       this.loader$.next(false);
       return val;
@@ -102,7 +102,7 @@ export class AuthGuard implements CanActivate {
         component: LeviathanPrestigeComponent
       },
       {
-        path: 'leaderboard/last-wish/:name',
+        path: 'leaderboard/last-wish/:page',
         canActivate: [AuthGuard],
         component: RaidLastWishComponent
       },

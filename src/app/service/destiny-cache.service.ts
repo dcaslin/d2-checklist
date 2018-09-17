@@ -15,7 +15,6 @@ export class DestinyCacheService {
   init(): Promise<boolean> {
     let self: DestinyCacheService = this;
     if (self.cache!=null) {
-      console.log("Cache already loaded");
       return Promise.resolve(true);
     }
     return new Promise(function (resolve, reject) {

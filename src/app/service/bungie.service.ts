@@ -98,7 +98,6 @@ export class BungieService implements OnDestroy {
             this.setCurrencies();
         }
         else {
-            console.log("Selected currency but no user");
             this.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
                 if (this.selectedUser != null) {
                     this.setCurrencies();
