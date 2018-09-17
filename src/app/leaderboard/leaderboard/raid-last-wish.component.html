@@ -8,18 +8,23 @@
           rel="noopener" target="_blank">Destiny Trials Report</a> for the underlying data! 
           <a href="https://www.reddit.com/r/destinychecklistnet/comments/9g5r4s/d2checklist_forsaken_last_wish_leaderboard_info/" rel="noopener" target="_blank">More info.</a></div>
   
-        <!-- <div>
+        <div>
           <mat-form-field class="searchField">
-            <input matInput #filter placeholder="Filter users">
+            <input matInput [(ngModel)]="tempFilter" (keyup.enter)="search()" placeholder="Wildcard search">
+            <button mat-button *ngIf="filter!=null" matSuffix mat-icon-button (click)="clear()">
+                <mat-icon>close</mat-icon>
+              </button>
           </mat-form-field>
-          <mat-checkbox *ngIf="debugmode" class="example-margin" [(ngModel)]="loading">Checked</mat-checkbox>
-        </div> -->
+          <button mat-button style="margin-left: 5px" (click)="search()" [disabled]="tempFilter==null || tempFilter.trim().length<3">
+              <mat-icon>search</mat-icon>Search
+          </button>
+        </div>
 
         <div class="table-container">
           <div class="center-spinner">
             <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || isLoadingResults===true"></mat-spinner>
           </div>
-          <mat-paginator #paginatorTop [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
+          <mat-paginator [hidden]="filter!=null && filter.trim().length>0" #paginatorTop [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
             [pageIndex]="pageIndex" [pageSize]="pageSize"></mat-paginator>
           <mat-table class="centerMe leader-table" [dataSource]="data">
             <ng-container cdkColumnDef="rank">
@@ -65,7 +70,7 @@
             <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginatorBottom [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
+          <mat-paginator [hidden]="filter!=null && filter.trim().length>0" #paginatorBottom [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
             [pageIndex]="pageIndex" [pageSize]="pageSize"></mat-paginator>
         </div>
       </div>
