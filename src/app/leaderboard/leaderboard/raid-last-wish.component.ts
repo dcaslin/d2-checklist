@@ -1,14 +1,15 @@
 
-import {fromEvent as observableFromEvent,  Subject ,  Observable } from 'rxjs';
+import { merge, fromEvent as observableFromEvent, Subject, Observable, of as observableOf } from 'rxjs';
 
-import { map,debounceTime, takeUntil, distinctUntilChanged} from 'rxjs/operators';
+import { debounceTime, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort, PageEvent } from '@angular/material';
 import { DurationPipe } from 'ngx-moment';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
@@ -21,13 +22,15 @@ import { StorageService } from '../../service/storage.service';
 export class RaidLastWishComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
-  database = new SortFilterDatabase([]);
-  dataSource: SortFilterDataSource | null;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild('filter') filter: ElementRef;
-  @ViewChild(MatSort) sort: MatSort;
+  dao: LastWishDao | null;
+  data: Row[] = [];
+  total = 0;
+  pageIndex = 0;
+  pageSize = 10;
+  isLoadingResults = true;
 
-
+  @ViewChild('paginatorTop') paginatorTop: MatPaginator;
+  @ViewChild('paginatorBottom') paginatorBottom: MatPaginator;
 
   readonly LAUNCH_DATE = "2018-09-14T21:00:00.000Z";
   filterName: string;
@@ -38,125 +41,97 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
     super(storageService);
 
   }
-  
-  getAssetPath(): string{
-    return "https://api.trialsofthenine.com/lastwish/";
-    
-    //return "/assets/last-wish.json";
-  }
 
   pgcr(instanceId: string) {
     this.router.navigate(['/pgcr', instanceId]);
   }
 
-  getData() {
-    return this.httpClient.get<any>(this.getAssetPath())
-    .toPromise()
-    .then((data:_LastWishRep) => {
-      console.log("Total: "+data.total);
-      this.database.setData(this.transform(data.matches));
-    })
-    .catch(
-      function (err) {
-        console.dir(err);
-      });;
-  }
-
-  transform(rows: _Row[]): Row[]{
-    const returnMe: Row[] = [];
-    let rank = 0;
-    for (const r of rows){
-      rank++;
-      returnMe.push(this.transformRow(rank, r));
-    }
-    return returnMe;
-  }
-
-  transformRow(rank: number, row: _Row): Row{
-    const fireTeam: Player[] = [];
-    for (const p of row.players){
-      fireTeam.push(this.transformPlayer(row.twitch, p));
-    }
-    
-    return {
-      start: row.period,
-      end: row.completedAt,
-      pgcr: row.instanceId,
-      membershipType: row.membershipType,
-      duration: row.duration, //TODO this is broken
-      fireTeam: fireTeam,
-      rank: rank
-    }
-  }
-  
-  transformPlayer(twitchUrls: any, row: _Player): Player{
-    return {
-      membershipId: row.membershipId,
-      displayName: row.displayName,
-      kills: row.kills,
-      twitchUrls: twitchUrls[row.membershipId]
-    }
-  }
-
-  private sub: any;
   ngOnInit() {
-    this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
-    this.database.setData([]);
-    this.getData();
-    observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
-      debounceTime(150),
-      distinctUntilChanged(),)
-      .subscribe(() => {
-        if (!this.dataSource) { return; }
-        this.dataSource.filter = this.filter.nativeElement.value;
+    this.dao = new LastWishDao(this.httpClient);
+
+    const s = this.route.snapshot.paramMap.get('page');
+    let p = parseInt(s);
+    if (!(p >= 1 && p < 100000)) {
+      p = 1;
+    }
+    const init = new PageEvent();
+    init.pageIndex = p-1;
+
+
+    const manualPage$ = new Subject<PageEvent>();
+
+    merge(this.paginatorBottom.page, this.paginatorTop.page, manualPage$)
+      .pipe(
+        startWith(init),
+        switchMap((pe: PageEvent) => {
+          this.isLoadingResults = true;
+          this.pageIndex = pe.pageIndex;
+          this.paginatorBottom.pageIndex = pe.pageIndex;
+          this.paginatorTop.pageIndex = pe.pageIndex;
+          this.router.navigate(["leaderboard/last-wish/" + (this.pageIndex + 1)]);
+          return this.dao!.get(this.pageIndex, this.pageSize);
+        }),
+        catchError(() => {
+          return observableOf(null);
+        })
+      ).subscribe(data =>{ 
+        this.isLoadingResults = false;
+        if (data==null){
+          this.total = 0;
+          this.data = [];
+        }
+        //off the end
+        else if (this.pageIndex*this.pageSize > data.total){
+          const lastPage = Math.floor(data.total/this.pageSize);
+          const lastPageEvent = new PageEvent();
+          lastPageEvent.pageIndex = lastPage-1;
+          manualPage$.next(lastPageEvent);
+        }
+        else{
+          this.data = data.rows;
+          this.total = data.total;
+        }
+
       });
-
-    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
-      let s = params['name'];
-      if (s != null) {
-        this.filter.nativeElement.value = s;
-        this.dataSource.filter = s;
-      }
-    });
   }
-
 }
-    
+
 /** An example database that the data source uses to retrieve data for the table. */
 export class LastWishDao {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   get(page: number, size: number): Observable<Rows> {
+    console.log("Page: " + page + "     size: " + size);
     const href = 'http://api.trialsofthenine.com/lastwish';
-    const requestUrl = `${href}??page=${page}&size=${size}`;
+    const requestUrl = `${href}?page=${page}&size=${size}`;
 
-    return this.http.get<_LastWishRep>(requestUrl).pipe(map(data => 
-      {
-        return this.transform(data);
-      }
+    return this.http.get<_LastWishRep>(requestUrl).pipe(map(data => {
+      return this.transform(page, size, data);
+    }
     ));
   }
 
-  transform(resp: _LastWishRep): Rows{
+  transform(page: number, pageSize: number, resp: _LastWishRep): Rows {
+    const rankStart = page * pageSize;
     return {
-      rows: this.transformRows(resp.matches),
+      rows: this.transformRows(rankStart, resp.matches),
       total: resp.total
     }
   }
 
-  transformRows(rows: _Row[]): Row[]{
+  transformRows(rankStart: number, rows: _Row[]): Row[] {
     const returnMe: Row[] = [];
-    let rank = 0;
-    for (const r of rows){
+    let rank = rankStart;
+    for (const r of rows) {
       rank++;
       returnMe.push(this.transformRow(rank, r));
     }
     return returnMe;
   }
 
-  transformRow(rank: number, row: _Row): Row{
+  transformRow(rank: number, row: _Row): Row {
     const fireTeam: Player[] = [];
-    for (const p of row.players){
+    for (const p of row.players) {
       fireTeam.push(this.transformPlayer(row.twitch, p));
     }
     return {
@@ -169,8 +144,8 @@ export class LastWishDao {
       rank: rank
     }
   }
-  
-  transformPlayer(twitchUrls: any, row: _Player): Player{
+
+  transformPlayer(twitchUrls: any, row: _Player): Player {
     return {
       membershipId: row.membershipId,
       displayName: row.displayName,

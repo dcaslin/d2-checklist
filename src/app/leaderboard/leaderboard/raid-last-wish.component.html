@@ -8,22 +8,22 @@
           rel="noopener" target="_blank">Destiny Trials Report</a> for the underlying data! 
           <a href="https://www.reddit.com/r/destinychecklistnet/comments/9g5r4s/d2checklist_forsaken_last_wish_leaderboard_info/" rel="noopener" target="_blank">More info.</a></div>
   
-  
-        <div>
+        <!-- <div>
           <mat-form-field class="searchField">
             <input matInput #filter placeholder="Filter users">
           </mat-form-field>
           <mat-checkbox *ngIf="debugmode" class="example-margin" [(ngModel)]="loading">Checked</mat-checkbox>
-        </div>
-
+        </div> -->
 
         <div class="table-container">
           <div class="center-spinner">
-            <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+            <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || isLoadingResults===true"></mat-spinner>
           </div>
-          <mat-table class="centerMe leader-table" #table [dataSource]="dataSource" matSort>
+          <mat-paginator #paginatorTop [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
+            [pageIndex]="pageIndex" [pageSize]="pageSize"></mat-paginator>
+          <mat-table class="centerMe leader-table" [dataSource]="data">
             <ng-container cdkColumnDef="rank">
-              <mat-header-cell class="rankCol" *cdkHeaderCellDef mat-sort-header>Rank</mat-header-cell>
+              <mat-header-cell class="rankCol" *cdkHeaderCellDef>Rank</mat-header-cell>
               <mat-cell class="rankCol" *cdkCellDef="let row">
                 <a mat-button  [routerLink]="['/pgcr',row.pgcr]">
                         {{row.rank}} 
@@ -31,7 +31,7 @@
               </mat-cell>
             </ng-container>
             <ng-container cdkColumnDef="end">
-              <mat-header-cell *cdkHeaderCellDef class="d-none d-md-table-cell" mat-sort-header>
+              <mat-header-cell *cdkHeaderCellDef class="d-none d-md-table-cell">
                 Since Launch
               </mat-header-cell>
               <mat-cell *cdkCellDef="let row" class="d-none d-md-table-cell">
@@ -42,7 +42,7 @@
               </mat-cell>
             </ng-container>
             <ng-container cdkColumnDef="fireteam">
-              <mat-header-cell *cdkHeaderCellDef mat-sort-header>Fireteam</mat-header-cell>
+              <mat-header-cell *cdkHeaderCellDef>Fireteam</mat-header-cell>
               <mat-cell class="player-cell" *cdkCellDef="let row">
                 <span class="name" *ngFor="let p of row.fireTeam">
                     <a [routerLink]="['/'+row.membershipType, p.displayName]">{{p.displayName}}</a>
@@ -57,7 +57,7 @@
               </mat-cell>
             </ng-container>
             <ng-container cdkColumnDef="duration">
-              <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell" mat-sort-header>Duration</mat-header-cell>
+              <mat-header-cell *cdkHeaderCellDef class="d-none d-lg-table-cell">Duration</mat-header-cell>
               <mat-cell *cdkCellDef="let row" class="d-none d-lg-table-cell">
               {{ row.duration | amnsTiming:'seconds' }} h
               </mat-cell>
@@ -65,8 +65,8 @@
             <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="10" [pageSizeOptions]="[2, 5, 10, 25, 100]">
-          </mat-paginator>
+          <mat-paginator #paginatorBottom [length]="total" [showFirstLastButtons]="true" [hidePageSize]="true" 
+            [pageIndex]="pageIndex" [pageSize]="pageSize"></mat-paginator>
         </div>
       </div>
       <div *ngIf="disableads===false" class="adRight">
