@@ -136,11 +136,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       return "checklist";
     }
     else if (index === 3){ 
-      return "triumphs";
-    }
-    else if (index === 4){ 
       return "progress";
-    }    
+    }  
+    else if (index === 4){ 
+      return "triumphs";
+    } 
     else if (index === 5){ 
       return "chars";
     }
@@ -163,10 +163,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       else if (tab == "nodes" || tab == "checklist"){
         this.tabs.selectedIndex = 2;
       }
-      else if (tab == "triumphs"){
+      else if (tab == "progress"){
         this.tabs.selectedIndex = 3;
       }
-      else if (tab == "progress"){
+      else if (tab == "triumphs"){
         this.tabs.selectedIndex = 4;
       }
       else if (tab == "chars"){
