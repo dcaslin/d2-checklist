@@ -322,6 +322,16 @@ export class ParseService {
                     if (prog != null) {
                         factions.push(prog);
                     }
+                } // clan XP
+                else if (key == "540048094") {
+                    let p: _Progression = _prog.progressions[key];
+                    let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
+                    prog.name = "Personal Clan XP";
+                    prog.currentProgress = prog.weeklyProgress;
+                    prog.percentToNextLevel = prog.currentProgress/5000;
+                    if (prog != null) {
+                        factions.push(prog);
+                    }
                 }
 
             });
