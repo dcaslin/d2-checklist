@@ -437,6 +437,7 @@ export interface MileStoneName {
     name: string;
     desc: string;
     hasPartial: boolean;
+    neverDisappears?: boolean;
 }
 
 export class Character {
