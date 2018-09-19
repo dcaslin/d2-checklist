@@ -221,7 +221,7 @@
 
 
                             </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null">
+                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
                               <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                               <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-minus-square-o" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                             </ng-container>

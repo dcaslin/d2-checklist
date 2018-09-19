@@ -2079,47 +2079,7 @@ export class ParseService {
                 foundLwNm = true;
             }
         }
-        
-        if (!foundEater) {
-            msNames.push({
-                key: EATER_KEY,
-                resets: c.endWeek.toISOString(),
-                rewards: "Raid Gear",
-                name: "Leviathan, Eater of Worlds",
-                desc: "Complete the Leviathan Raid Lair from CoO",
-                hasPartial: false
-            });
-        }
-        if (!foundSpire) {
-            msNames.push({
-                key: SPIRE_KEY,
-                resets: c.endWeek.toISOString(),
-                rewards: "Raid Gear",
-                name: "Leviathan, Spire of Stars",
-                desc: "Complete the Leviathan Raid Lair from Warmind",
-                hasPartial: false
-            });
-        }
-        if (!foundNm) {
-            msNames.push({
-                key: LEV_NM_KEY,
-                resets: c.endWeek.toISOString(),
-                rewards: "Raid Gear",
-                name: "Leviathan, Raid",
-                desc: "Normal mode raid",
-                hasPartial: false
-            });
-        }
-        if (!foundHm) {
-            msNames.push({
-                key: LEV_HM_KEY,
-                resets: c.endWeek.toISOString(),
-                rewards: "Raid Gear",
-                name: "Leviathan, Prestige",
-                desc: "Prestige mode raid",
-                hasPartial: false
-            });
-        }
+
         if (!foundLwNm) {
             msNames.unshift({
                 key: LW_NM_KEY,
@@ -2127,9 +2087,56 @@ export class ParseService {
                 rewards: "Raid Gear",
                 name: "Last Wish",
                 desc: "Forsaken DLC Raid",
-                hasPartial: false
+                hasPartial: false,
+                neverDisappears: true
             });
         }
+        
+        // if (!foundEater) {
+        //     msNames.push({
+        //         key: EATER_KEY,
+        //         resets: c.endWeek.toISOString(),
+        //         rewards: "Raid Gear",
+        //         name: "Leviathan, Eater of Worlds",
+        //         desc: "Complete the Leviathan Raid Lair from CoO",
+        //         hasPartial: false,
+        //        neverDisappears: true
+        //     });
+        // }
+        // if (!foundSpire) {
+        //     msNames.push({
+        //         key: SPIRE_KEY,
+        //         resets: c.endWeek.toISOString(),
+        //         rewards: "Raid Gear",
+        //         name: "Leviathan, Spire of Stars",
+        //         desc: "Complete the Leviathan Raid Lair from Warmind",
+        //         hasPartial: false,
+        //        neverDisappears: true
+        //     });
+        // }
+        // if (!foundNm) {
+        //     msNames.push({
+        //         key: LEV_NM_KEY,
+        //         resets: c.endWeek.toISOString(),
+        //         rewards: "Raid Gear",
+        //         name: "Leviathan, Raid",
+        //         desc: "Normal mode raid",
+        //         hasPartial: false,
+        //        neverDisappears: true
+        //     });
+        // }
+        // if (!foundHm) {
+        //     msNames.push({
+        //         key: LEV_HM_KEY,
+        //         resets: c.endWeek.toISOString(),
+        //         rewards: "Raid Gear",
+        //         name: "Leviathan, Prestige",
+        //         desc: "Prestige mode raid",
+        //         hasPartial: false,
+        //            neverDisappears: true
+        //     });
+        // }
+        
         const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
         c.milestones[EATER_KEY] = eaterPsuedoMs;
         const spirePsuedoMs: MilestoneStatus = new MilestoneStatus(SPIRE_KEY, c.hasSpire, c.hasSpire ? 1 : 0, null);
