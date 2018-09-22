@@ -2,7 +2,7 @@
 import { takeUntil, switchMap, catchError } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { of as observableOf,combineLatest } from 'rxjs';
+import { of as observableOf, combineLatest } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
@@ -42,12 +42,12 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     }
     if (!alreadyLoading) this.loading = true;
     try {
-      if (this.char!=null && this.char.characterId==c.characterId && this.vendorData!=null && this.vendorData.length>0){
+      if (this.char != null && this.char.characterId == c.characterId && this.vendorData != null && this.vendorData.length > 0) {
 
       }
-      else{
-      this.char = c;
-      this.vendorData = await this.bungieService.loadVendors(c);
+      else {
+        this.char = c;
+        this.vendorData = await this.bungieService.loadVendors(c);
       }
     }
     finally {
@@ -58,56 +58,57 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   private async load2(d: LoadInfo) {
     this.loading = true;
     try {
-      if (d==null || d.user==null){
+      if (d == null || d.user == null) {
         this.player = null;
         this.setChar(null, false);
         this.option = this.options[0];
+        return;
       }
-      else{
-        this.selectedUser = d.user;
-        if (d.tab!=null){
-          let found = false;
-          for (const o of this.options){
-            if (d.tab.toUpperCase()==o.toUpperCase()){
-              this.option = o;
-              found = true;
-              break;
-            }  
-          }
-          //bad option route
-          if (!found){
-            this.router.navigate(["vendors", d.characterId]);
-            return;
+      this.selectedUser = d.user;
+      if (d.tab != null) {
+        let found = false;
+        for (const o of this.options) {
+          if (d.tab.toUpperCase() == o.toUpperCase()) {
+            this.option = o;
+            found = true;
+            break;
           }
         }
-        this.selectedUser = d.user;
-        if (this.player!=null && this.player.profile.userInfo.membershipId == this.selectedUser.selectedUser.membershipId)
-        {
+        //bad option route
+        if (!found) {
+          this.router.navigate(["vendors", d.characterId]);
+          return;
+        }
+      }
+      this.selectedUser = d.user;
+      if (this.player != null && this.player.profile.userInfo.membershipId == this.selectedUser.selectedUser.membershipId) {
 
-        }
-        else{
-          this.player = await this.bungieService.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ['Profiles', 'Characters']);
-        }
-        if (d.characterId!=null){
-          let found = false;
-          for (const c of this.player.characters){
-            if (d.characterId.toUpperCase()==c.characterId){
+      }
+      else {
+        this.player = await this.bungieService.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ['Profiles', 'Characters']);
+      }
+      if (d.characterId != null) {
+        let found = false;
+        for (const c of this.player.characters) {
+          if (d.characterId.toUpperCase() == c.characterId) {
             await this.setChar(c, true);
             found = true;
             break;
-            }  
-          }
-          //bad character route
-          if (!found){
-            this.router.navigate(["vendors"]);
-            return;
           }
         }
-        else{
-          await this.setChar(this.player.characters[0], true);
+        //bad character route
+        if (!found) {
+          this.router.navigate(["vendors"]);
+          return;
         }
-
       }
+      //no char in route, so route them
+      else {
+        this.router.navigate(["vendors", this.player.characters[0].characterId]);
+        return;
+        // await this.setChar(this.player.characters[0], true);
+      }
+
 
 
     }
@@ -119,8 +120,8 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   private sub: any;
   ngOnInit() {
 
-    combineLatest(this.bungieService.selectedUserFeed, this.route.paramMap).pipe(
-      switchMap(([selectedUser, params]) => {
+    combineLatest(this.bungieService.selectedUserFeed, this.route.paramMap, this.route.url).pipe(
+      switchMap(([selectedUser, params, url]) => {
         return observableOf({
           user: selectedUser,
           characterId: params.get('characterId'),
@@ -133,14 +134,14 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       }),
       takeUntil(this.unsubscribe$)
     )
-    .subscribe((d: LoadInfo) => {
-      if (this.char!=null && d.characterId==this.char.characterId && this.selectedUser == d.user){
-        this.option = d.tab;
-      }
-      else{
-        this.load2(d);
-      }
-    });
+      .subscribe((d: LoadInfo) => {
+        if (this.char != null && d.characterId == this.char.characterId && this.selectedUser == d.user) {
+          this.option = d.tab;
+        }
+        else {
+          this.load2(d);
+        }
+      });
   }
 }
 
