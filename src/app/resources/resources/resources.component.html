@@ -13,20 +13,19 @@
 
         <ng-container *ngIf="loading==false && player==null">
           <h2>Bungie Authenticaiton Required</h2>
-          <p>You must grant this site access to your Bungie account for the site to access this info (vendors are part of the private API, like what DIM uses). Click the "Sign In" button on the upper
+          <p>You must grant this site access to your Bungie account for the site to access this info (vendors are part
+            of the private API, like what DIM uses). Click the "Sign In" button on the upper
             right if you want to continue.</p>
         </ng-container>
-
         <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
-          [value]="player.characters[0]" (change)="setChar(chargroup.value, false)">
+          [value]="char" (change)="router.navigate(['vendors',chargroup.value.characterId])">
           <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
             {{c.className}}<span class="d-none d-md-inline"> - {{c.light}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
         <br>
-
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
-          [value]="option" style="margin-top: 1em" (change)="option = optionsgroup.value">
+          [value]="option" style="margin-top: 1em" (change)="router.navigate(['vendors', char.characterId, optionsgroup.value])">
           <mat-button-toggle *ngFor="let o of options" [value]="o">
             <i *ngIf="o=='Bounties'" class="fa fa-gift"></i>
             <i *ngIf="o=='Gear'" class="fa fa-cog"></i>

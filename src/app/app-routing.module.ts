@@ -131,6 +131,15 @@ export class AuthGuard implements CanActivate {
         component: ResourcesComponent
       },
       {
+        path: 'vendors/:characterId',
+        redirectTo: 'vendors/:characterId/Bounties'
+      },
+      {
+        path: 'vendors/:characterId/:tab',
+        canActivate: [AuthGuard],
+        component: ResourcesComponent
+      },
+      {
         path: ':platform/:gt',
         canActivate: [AuthGuard],
         redirectTo: ':platform/:gt/milestones'

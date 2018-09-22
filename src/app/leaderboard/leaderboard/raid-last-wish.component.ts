@@ -42,7 +42,8 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
 
   displayedColumns = ['rank', 'fireteam', 'end', 'duration',];
 
-  constructor(storageService: StorageService, private httpClient: HttpClient, private router: Router, private route: ActivatedRoute) {
+  constructor(storageService: StorageService, private httpClient: HttpClient, private router: Router, 
+    private route: ActivatedRoute) {
     super(storageService);
 
   }
