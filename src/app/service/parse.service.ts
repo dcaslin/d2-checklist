@@ -859,9 +859,9 @@ export class ParseService {
                     }
                 }
             }
-            else{
-                console.log("    Empty activities on milestone: "+desc.displayProperties.name+", hash: "+ms.milestoneHash);
-            }
+            // else{
+            //     console.log("    Empty activities on milestone: "+desc.displayProperties.name+", hash: "+ms.milestoneHash);
+            // }
 
             if (desc.rewards!=null){
                 for (let entryKey in desc.rewards){
