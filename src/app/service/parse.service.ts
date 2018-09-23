@@ -1372,19 +1372,6 @@ export class ParseService {
         let hashRankups: number[] = [];
         let rankups: Rankup[] = [];
 
-        // if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
-        //     Object.keys(resp.characterEquipment.data).forEach((key) => {
-        //         let char: Character = charsDict[key];
-        //         let items: _InventoryItem[] = resp.characterEquipment.data[key].items;
-        //         items.forEach(itm => {
-        //             let parsed: InventoryItem = this.parseInvItem(itm, true, char, vault, resp.itemComponents);
-        //             if (parsed != null) {
-        //                 gear.push(parsed);
-        //             }
-        //         });
-
-        //     });
-        // }
         if (resp.characterInventories != null && resp.characterInventories.data != null) {
             Object.keys(resp.characterInventories.data).forEach((key) => {
                 let char: Character = charsDict[key];
@@ -1397,17 +1384,7 @@ export class ParseService {
                 });
             });
         }
-        // if (resp.profileInventory != null && resp.profileInventory.data != null) {
-        //     //data/items[]
-        //     let items: _InventoryItem[] = resp.profileInventory.data.items;
-        //     items.forEach(itm => {
-        //         let parsed: InventoryItem = this.parseInvItem(itm, false, shared, vault, resp.itemComponents);
-        //         if (parsed != null) {
-        //             gear.push(parsed);
 
-        //         }
-        //     });
-        // }
         bounties.sort(function (a, b) {            
             return b.aggProgress - a.aggProgress;
         });
@@ -1418,6 +1395,7 @@ export class ParseService {
             for (const char of chars){
                 const presentationNodes = resp.characterPresentationNodes.data[char.characterId];
                 const records = resp.characterRecords.data[char.characterId];
+                this.parseRecords(presentationNodes, records);
             }
         }
         
@@ -1425,6 +1403,30 @@ export class ParseService {
     }
 
     private parseRecords(presentationNodes: any, records: any): any{
+        if (presentationNodes==null || records == null) return;
+        if (presentationNodes.data==null || records.data==null) return;
+        if (presentationNodes.data.nodes==null) return;
+        if (records.data.score!=null){
+            //TODO something with score
+        }
+        if (records.data.records!=null)
+            records = records.data.records;
+        else 
+            records = records.data;
+        const nodes = presentationNodes.data.nodes;
+        //score and records on the records
+        for (const key of Object.keys(nodes)){
+            const pDesc = this.destinyCacheService.cache.PresentationNode[key];
+            //ignore "Keep it secret" items
+            if (pDesc.parentNodeHashes==null)
+                continue;
+            if (pDesc.parentNodeHashes.length==0){
+                console.log(pDesc.nodeType+": "+pDesc.displayProperties.name+": "+pDesc.displayProperties.description);
+                console.dir(pDesc);
+            }
+
+        }
+
         // console.log("hi")
 
     }
