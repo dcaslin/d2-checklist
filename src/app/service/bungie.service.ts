@@ -136,7 +136,7 @@ export class BungieService implements OnDestroy {
             const resp = await this.makeReq(
                 'Destiny2/' + char.membershipType + "/Account/" +
                 char.membershipId + "/Character/" + char.characterId +
-                "/Stats/AggregateActivityStats/" + encodeURIComponent(name));
+                "/Stats/AggregateActivityStats/");
             char.aggHistory = this.parseService.parseAggHistory(resp);
             return;
         }
