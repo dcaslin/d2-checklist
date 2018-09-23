@@ -299,9 +299,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
-        // this.bungieService.getMots(x.profile.userInfo.membershipType, x.profile.userInfo.membershipId).then(y => {
-        //   x.mots = y;
-        // });
       }
       else {
         this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged on since DLC?";
