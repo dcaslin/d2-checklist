@@ -15,7 +15,7 @@
                 <mat-icon>close</mat-icon>
               </button>
           </mat-form-field>
-          <button mat-button style="margin-left: 5px" (click)="search()" [disabled]="tempFilter==null || tempFilter.trim().length<3">
+          <button mat-button style="margin-left: 5px" (click)="search()" [disabled]="tempFilter==null || tempFilter.trim().length<4">
               <mat-icon>search</mat-icon>Search
           </button>
           <ng-container *ngIf="debugmode">Temp: {{tempFilter}} &emsp;&emsp;Filter: {{filter}} &emsp;&emsp;Total: {{total}}</ng-container>

@@ -53,7 +53,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   }
 
   search() {
-    if (this.tempFilter != null && this.tempFilter.trim().length > 2) {
+    if (this.tempFilter != null && this.tempFilter.trim().length > 3) {
       this.router.navigate(["leaderboard", "last-wish", "search", this.tempFilter]);
     }
   }
@@ -75,7 +75,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
         flatMap((params: ParamMap) => {
           const q = this.route.snapshot.paramMap.get('query');
           let p = 1;
-          if (q != null && q.trim().length > 2) {
+          if (q != null && q.trim().length > 3) {
             this.filter = q;
             this.tempFilter = q;
           }
