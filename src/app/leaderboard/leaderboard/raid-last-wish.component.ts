@@ -95,7 +95,7 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
           this.paginatorBottom.pageIndex = this.pageIndex;
           this.paginatorTop.pageIndex = this.pageIndex;
           if (this.filter != null && this.filter.trim().length > 0) {
-            return this.dao!.search(this.filter.toUpperCase(), 100, 2000);
+            return this.dao!.search(this.filter.toUpperCase());
           }
           else {
             return this.dao!.get(this.pageIndex, this.pageSize, this.filter);
@@ -145,42 +145,13 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
 export class LastWishDao {
   constructor(private http: HttpClient) { }
 
-  search(filter: string, size: number, max: number): Observable<Rows> {
-    return this.get(0, size, filter).pipe(
-      flatMap((data: Rows) => {
-        const realMax = Math.min(data.total, max);
-        const obs = [];
-        obs.push(observableOf(data));
-        let curPage = 1;
-        while (true) {
-          if (curPage * size > realMax) {
-            break;
-          }
-          obs.push(this.get(curPage, size, filter));
-          curPage++;
-        }
-        return forkJoin(obs);
-      }),
-      map((d: Rows[]) => {
-        if (d.length == 0) {
-          return {
-            rows: [],
-            total: 0
-          };
-        }
-        else {
-          let rows = [];
-          for (let r of d) {
-            rows = rows.concat(r.rows);
-          }
-          let total = 0;
-          return {
-            rows: rows,
-            total: rows.length
-          };
-        }
-      })
-    );
+  search(filter: string): Observable<Rows> {
+    const href = 'https://api.trialsofthenine.com/lastwish';
+    const requestUrl = `${href}?filter=${filter}`;
+
+    return this.http.get<_LastWishRep>(requestUrl).pipe(map(data => {
+      return this.transform(0, 1000, data, null);
+    }));
   }
 
   get(page: number, size: number, filter?: string): Observable<Rows> {
@@ -225,6 +196,8 @@ export class LastWishDao {
     if (!match) {
       return null;
     }
+    let actualRank = rank;
+    if (row.rank!=null) actualRank = row.rank;
     return {
       start: row.period,
       end: row.completedAt,
@@ -232,7 +205,7 @@ export class LastWishDao {
       membershipType: row.membershipType,
       duration: row.duration, //TODO this is broken
       fireTeam: fireTeam,
-      rank: rank
+      rank: actualRank
     }
   }
 
@@ -264,6 +237,7 @@ interface _Row {
   deaths: number;
   assists: number;
   players: _Player[];
+  rank: number;
   twitch: any;
 }
 
