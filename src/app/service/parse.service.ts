@@ -493,6 +493,7 @@ export class ParseService {
                     else {
                         console.log("No entry found for activity hash: " + act.activityhash);
                     }
+                    //console.log(name);
                     if (name === "Leviathan") {
                         //nm
                         if (tier < 2) {
@@ -530,7 +531,7 @@ export class ParseService {
                             returnMe.spireFastestMs = f;
                         }
                     }
-                    else if (name === "Last Wish") {
+                    else if (name.indexOf("Last Wish")==0) {
                         let c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.lwNm += c;
                         let f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
@@ -1387,21 +1388,21 @@ export class ParseService {
         bounties.sort(function (a, b) {
             return b.aggProgress - a.aggProgress;
         });
-        if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
-            if (resp.profilePresentationNodes.data!=null && resp.profilePresentationNodes.data.nodes!=null){
+        // if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
+        //     if (resp.profilePresentationNodes.data!=null && resp.profilePresentationNodes.data.nodes!=null){
 
-                // ignore resp.profileRecords.data.score?
-                this.parseRecords(resp.profilePresentationNodes.data.nodes, resp.profileRecords.data.records);
-            }
-        }
-        if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
-            for (const char of chars) {
-                const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
-                //ignore featured?
-                const records = resp.characterRecords.data[char.characterId].records;
-                this.parseRecords(presentationNodes, records);
-            }
-        }
+        //         // ignore resp.profileRecords.data.score?
+        //         this.parseRecords(resp.profilePresentationNodes.data.nodes, resp.profileRecords.data.records);
+        //     }
+        // }
+        // if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
+        //     for (const char of chars) {
+        //         const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
+        //         //ignore featured?
+        //         const records = resp.characterRecords.data[char.characterId].records;
+        //         this.parseRecords(presentationNodes, records);
+        //     }
+        // }
 
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists);
     }
@@ -2054,7 +2055,7 @@ export class ParseService {
                     c.hasSpire = true;
                 }
             }
-            else if (name === "Last Wish") {
+            else if (name.indexOf("Last Wish")==0) {
                 totalLwNormal++;
                 // if after reset?
                 if (d.getTime() > c.startWeek.getTime()) {
