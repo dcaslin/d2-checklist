@@ -732,22 +732,16 @@ export class ParseService {
             return "Already held";
         }
         return null;
-
-
     }
 
     public parsePublicMilestones(resp: any): PublicMilestone[] {
         const msMilestones: _PublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
-
         Object.keys(resp).forEach(key => {
             const ms: any = resp[key];
             msMilestones.push(ms);
         });
-
-
         for (let ms of msMilestones) {
-
             let rewards = "";
             let rewCnt = 0;
             let desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
@@ -931,6 +925,22 @@ export class ParseService {
                     }
                 }
             }
+
+            if (ms.milestoneHash==3603098564) rewards+=" (600)";
+            else if (ms.milestoneHash==3456) rewards+=" (580-600)";
+            else if (ms.milestoneHash==2171429505) rewards+=" (540)";
+            else if (ms.milestoneHash==2853331463) rewards+=" (540)";
+            else if (ms.milestoneHash==463010297) rewards+=" (520)";
+            else if (ms.milestoneHash==536115997) rewards+=" (520)";
+            else if (ms.milestoneHash==3082135827) rewards+=" (520)";
+            else if (ms.milestoneHash==3448738070) rewards+=" (520)";
+            else if (ms.milestoneHash==1437935813) rewards+=" (520)";
+            else if (ms.milestoneHash==3172444947) rewards+=" (520)";
+            else if (ms.milestoneHash==3312018120) rewards+=" (520)";
+            else if (ms.milestoneHash==157823523) rewards+=" (520)";
+            else if (ms.milestoneHash==941217864) rewards+=" (520)";
+            else if (ms.milestoneHash==1300394968) rewards+=" (520)";
+            else if (ms.milestoneHash==3312018120) rewards+=" (520)";
 
             returnMe.push({
                 hash: ms.milestoneHash + "",
@@ -2105,7 +2115,7 @@ export class ParseService {
             msNames.unshift({
                 key: LW_NM_KEY,
                 resets: c.endWeek.toISOString(),
-                rewards: "Raid Gear",
+                rewards: "Raid Gear (580-600)",
                 name: "Last Wish",
                 desc: "Forsaken DLC Raid",
                 hasPartial: false,
