@@ -278,14 +278,17 @@
                 </table>
               </ng-container>
               <div class="bottom-note">
-                  <ul class="left">
-                      <li>Light level in parentheses after milestones are their suspected Soft Cap. After reaching the SC light level rewards have lower light levels.</li>
-                      <li>Milestones disappear on completion, so it's hard to differentiate between complete and unavailable
-                          milestones. Chars that aren't eligable for milestones may therefore show as complete.</li>
-                      <li>lt = lifetime</li>
-                      <li>Milestones with this icon <i class="fa fa-minus-square-o"></i> denote players that are not yet max
-                        level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
-                  </ul>
+                <ul class="left">
+                  <li>Light level in parentheses after milestones are their suspected Soft Cap. After reaching the SC
+                    light level rewards have lower light levels.</li>
+                  <li>Milestones disappear on completion, so it's hard to differentiate between complete and
+                    unavailable
+                    milestones. Chars that aren't eligable for milestones may therefore show as complete.</li>
+                  <li>lt = lifetime</li>
+                  <li>Milestones with this icon <i class="fa fa-minus-square-o"></i> denote players that are not yet
+                    max
+                    level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
+                </ul>
                 <!-- * Max LL vendor info provided by
               <a href="https://vendorengrams.xyz/" target="_blank" rel="noopener">vendorengrams.xyz</a>. Go there and vote!
               <br>  -->
@@ -302,8 +305,8 @@
                   <br>
                   <ng-container *ngIf="(bungieService.selectedUserFeed | async)==null">
                     <h2>Bungie Authentication Required</h2>
-                    <p>You must grant this site access to your private Bungie API's for the site to 
-                      access this info on your account 
+                    <p>You must grant this site access to your private Bungie API's for the site to
+                      access this info on your account
                       (like what you might be doing with Destiny Item Manager today). <b>Click the "Sign In" button
                         on the upper
                         right if you want to continue.</b></p>
@@ -566,10 +569,21 @@
                 <i class="fa fa-trophy"></i>
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
-              <br>
-              <br>
-              Coming soon!
-             
+              <ng-container *ngIf="player!=null">
+
+                <mat-tab-group>
+                  <mat-tab [label]="r.label" *ngFor="let r of player.records">
+
+                    <br>
+                    <br>
+                    <ul>
+                      <li *ngFor="let r of r.data">
+                        {{r.name}} - {{r.desc}}
+                      </li>
+                    </ul>
+                  </mat-tab>
+                </mat-tab-group>
+              </ng-container>
             </mat-tab> -->
             <mat-tab>
               <ng-template mat-tab-label>

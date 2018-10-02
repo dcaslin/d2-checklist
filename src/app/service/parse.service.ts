@@ -8,7 +8,7 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem, Records
 } from './model';
 @Injectable()
 export class ParseService {
@@ -1398,26 +1398,35 @@ export class ParseService {
         bounties.sort(function (a, b) {
             return b.aggProgress - a.aggProgress;
         });
-        // if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
-        //     if (resp.profilePresentationNodes.data!=null && resp.profilePresentationNodes.data.nodes!=null){
 
-        //         // ignore resp.profileRecords.data.score?
-        //         this.parseRecords(resp.profilePresentationNodes.data.nodes, resp.profileRecords.data.records);
-        //     }
-        // }
-        // if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
-        //     for (const char of chars) {
-        //         const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
-        //         //ignore featured?
-        //         const records = resp.characterRecords.data[char.characterId].records;
-        //         this.parseRecords(presentationNodes, records);
-        //     }
-        // }
+        const records = [];
+        try{
+        if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
+            if (resp.profilePresentationNodes.data!=null && resp.profilePresentationNodes.data.nodes!=null){
 
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists);
+                // ignore resp.profileRecords.data.score?
+                const aRec = this.parseRecords("Profile", resp.profilePresentationNodes.data.nodes, resp.profileRecords.data.records);
+                records.push(aRec);
+            }
+        }
+        if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
+            for (const char of chars) {
+                const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
+                //ignore featured?
+                const _records = resp.characterRecords.data[char.characterId].records;
+                const label = char.className;
+                const charRec = this.parseRecords(label, presentationNodes, _records);
+                records.push(charRec);
+            }
+        }
+    }catch (e){
+        console.dir(e);
     }
 
-    private parseRecords(nodes: any, records: any): any {
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, records);
+    }
+
+    private parseRecords(label: string, nodes: any, records: any): Records {
        
         //score and records on the records
         const roots = [];
@@ -1430,21 +1439,29 @@ export class ParseService {
                 console.log(key+" ___ "+pDesc.nodeType + ": " + pDesc.displayProperties.name + ": " + pDesc.displayProperties.description);
                 // console.dir(pDesc);
                 // console.dir(nodes[key]);
-                roots.push(key);
+                // roots.push(key);
+                roots.push({
+                    name: pDesc.displayProperties.name,
+                    desc: pDesc.displayProperties.description
+                });
             }
         }
 
-        for (const key of roots) {
-            const val = nodes[key];
-            this.handlePresentationNode(key, val);
+        // for (const key of roots) {
+        //     const val = nodes[key];
+        //     this.handlePresentationNode(key, val);
             
-        }
+        // }
 
         // console.log("hi")
+        return {
+            label: label, 
+            data: roots
+        }
 
     }
 
-    private handlePresentationNode(key: string, val: any){
+    private handlePresentationNode(key: string, val: any): any{
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         //todo handle the description and value
         for (const child of pDesc.children.presentationNodes) {
@@ -1456,6 +1473,11 @@ export class ParseService {
         }
         for (const child of pDesc.children.records) {
 
+        }
+
+        return {
+            name: pDesc.displayProperties.name,
+            desc: pDesc.displayProperties.description
         }
 
     }

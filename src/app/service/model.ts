@@ -269,9 +269,10 @@ export class Player {
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
+    records: Records[];
     maxLL: number = 0;
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[], superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[], records: Records[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -283,6 +284,7 @@ export class Player {
         this.hasWellRested = hasWellRested;
         this.checklists = checklists;
         this.charChecklists = charChecklists;
+        this.records = records;
         if (characters!=null && characters.length>0){
             for (let char of characters){
                 if (char.light>this.maxLL){
@@ -291,6 +293,11 @@ export class Player {
             }
         }
     }
+}
+
+export class Records{
+    label: string;
+    data: any;
 }
 
 export class InventoryItem {
