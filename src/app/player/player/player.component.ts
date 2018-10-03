@@ -1,9 +1,9 @@
 
-import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, AfterContentInit, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
-import { Subject } from 'rxjs';
+import { MatTabChangeEvent, MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { Subject, BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
@@ -12,13 +12,20 @@ import { Player, Character, SearchResult, Platform, Const } from "../../service/
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
+import { FlatTreeControl } from '@angular/cdk/tree';
+
+
+export class FileFlatNode {
+  constructor(
+    public expandable: boolean, public filename: string, public level: number, public type: any) { }
+}
 
 @Component({
   selector: 'anms-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss']
 })
-export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy  {
+export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
 
@@ -33,7 +40,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   player: Player;
   hideCompleteChecklist = false;
 
-  constructor(public bungieService: BungieService, 
+  treeControl2: FlatTreeControl<any>;
+  treeFlattener2: MatTreeFlattener<any, FileFlatNode>;
+  recordDatasources: any;
+  collectionDatasources: any;
+
+  constructor(public bungieService: BungieService,
     // private xyzService: XyzService,
     storageService: StorageService,
     private notificationService: NotificationService,
@@ -42,11 +54,53 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
     this.hiddenMilestones = this.loadHiddenMilestones();
+
+    this.treeControl2 = new FlatTreeControl<FileFlatNode>(this._getLevel, this._isExpandable);
+    this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
+
+
   }
 
 
+  transformer2 = (node: any, level: number) => {
+    return new FileFlatNode(!!node.children, node.name, level, node.type);
+  }
+
+  private _getLevel = (node: FileFlatNode) => node.level;
+
+  private _isExpandable = (node: FileFlatNode) => node.expandable;
+
+  private _getChildren = (node: any): Observable<any[]> => observableOf(node.children);
+
+  hasChild = (_: number, _nodeData: FileFlatNode) => _nodeData.expandable;
+
+  
+  private  setPlayer(x: Player): void{
+    this.player = x;
+    if (x!=null){
+      this.recordDatasources = {};
+      for (let r of this.player.records){
+        const dataSource: MatTreeFlatDataSource<any, FileFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+        dataSource.data = r.data;
+        this.recordDatasources[r.label] = dataSource;
+      }
+      this.collectionDatasources = {};
+      for (let c of this.player.collections){
+        const dataSource: MatTreeFlatDataSource<any, FileFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+        dataSource.data = c.data;
+        this.collectionDatasources[c.label] = dataSource;
+      }
+    }
+    else{
+      this.recordDatasources = null;
+      this.collectionDatasources = null;
+    }
+  }
+
+
+
   public historyPlayer(p: Player) {
-    p.profile.userInfo.membershipType,p.profile.userInfo.membershipId
+    p.profile.userInfo.membershipType, p.profile.userInfo.membershipId
     let c: Character = p.characters[0];
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
   }
@@ -54,43 +108,43 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public getRaidLink(p: Player) {
     let platformstr: string;
     let memberid: string;
-    if (p.profile.userInfo.membershipType==1){
+    if (p.profile.userInfo.membershipType == 1) {
       platformstr = "xb";
       memberid = p.profile.userInfo.displayName;
     }
-    else if (p.profile.userInfo.membershipType==2){
+    else if (p.profile.userInfo.membershipType == 2) {
       platformstr = "ps";
       memberid = p.profile.userInfo.displayName;
     }
-    else if (p.profile.userInfo.membershipType==4){
+    else if (p.profile.userInfo.membershipType == 4) {
       platformstr = "pc"
       memberid = p.profile.userInfo.membershipId;
     }
-    return "http://raid.report/"+platformstr+"/"+memberid;
+    return "http://raid.report/" + platformstr + "/" + memberid;
   }
 
-  public getCharacterById(p:Player, id: string){
-    if (p.characters==null) return null;
-    for (let c of p.characters){
-      if (c.characterId === id){
+  public getCharacterById(p: Player, id: string) {
+    if (p.characters == null) return null;
+    for (let c of p.characters) {
+      if (c.characterId === id) {
         return c;
       }
     }
     return null;
   }
 
-  public getTrialsLink(p: Player){
+  public getTrialsLink(p: Player) {
     let platformstr: string;
-    if (p.profile.userInfo.membershipType==1){
+    if (p.profile.userInfo.membershipType == 1) {
       platformstr = "xbox";
     }
-    else if (p.profile.userInfo.membershipType==2){
+    else if (p.profile.userInfo.membershipType == 2) {
       platformstr = "ps";
     }
-    else if (p.profile.userInfo.membershipType==4){
+    else if (p.profile.userInfo.membershipType == 4) {
       platformstr = "pc";
     }
-    return "https://trials.report/report/"+platformstr+"/"+encodeURI(this.gamerTag);
+    return "https://trials.report/report/" + platformstr + "/" + encodeURI(this.gamerTag);
   }
 
 
@@ -118,80 +172,62 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public changeTab(event: MatTabChangeEvent) {
     const tabName: string = this.getTabLabel(event.index);
 
-    if (this.debugmode){
-      console.log("Change tab: "+tabName);
+    if (this.debugmode) {
+      console.log("Change tab: " + tabName);
     }
     this.selectedTab = tabName;
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
   }
 
+  readonly TAB_URI = [
+    "milestones",
+    "bounties",
+    "checklist",
+    "progress",
+    "triumphs",
+    "collections",
+    "chars"
+  ];
+
   private getTabLabel(index: number): string {
-    if (index === 0){ 
-      return "milestones";
-    }
-    else if (index === 1){ 
-      return "bounties";
-    }
-    else if (index === 2){ 
-      return "checklist";
-    }
-    else if (index === 3){ 
-      return "progress";
-    }  
-    else if (index === 4){ 
-      return "triumphs";
-    } 
-    else if (index === 5){ 
-      return "chars";
-    }
-    
+    if (index >= this.TAB_URI.length) return null;
+    return this.TAB_URI[index];
   }
 
   private setTab(): void {
-    if (this.tabs==null){
+    if (this.tabs == null) {
       console.log("--- this.tabs is null");
-       return;
+      return;
     }
     const tab: string = this.selectedTab;
-    if (tab!=null){
-      if (tab == "milestones"){
-        this.tabs.selectedIndex = 0;
-      }
-      else if (tab == "bounties"){
-        this.tabs.selectedIndex = 1;
-      }
-      else if (tab == "nodes" || tab == "checklist"){
-        this.tabs.selectedIndex = 2;
-      }
-      else if (tab == "progress"){
-        this.tabs.selectedIndex = 3;
-      }
-      else if (tab == "triumphs"){
-        this.tabs.selectedIndex = 4;
-      }
-      else if (tab == "chars"){
-        this.tabs.selectedIndex = 5;
-      }
-    }
-    else{
+    if (tab == null) {
       console.log("---tab is null!");
+      return;
+    }
+    let cntr = 0;
+    for (let label of this.TAB_URI) {
+      if (tab == label) {
+        this.tabs.selectedIndex = cntr;
+        break;
+      }
+      cntr++;
     }
   }
 
   private loadHiddenMilestones(): string[] {
-    try{
+    try {
       let sMs: string = localStorage.getItem("hiddenMilestones");
-      let ms:string[] = JSON.parse(sMs);
-      if (ms!=null) return ms;
+      let ms: string[] = JSON.parse(sMs);
+      if (ms != null) return ms;
     }
-    catch (e){
+    catch (e) {
       localStorage.removeItem("hiddenMilestones");
       return [];
     }
     return [];
   }
 
-  private saveHiddenMilestones(): void{
+  private saveHiddenMilestones(): void {
     let sMs = JSON.stringify(this.hiddenMilestones);
     localStorage.setItem("hiddenMilestones", sMs);
   }
@@ -210,29 +246,28 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.gamerTag == null || this.gamerTag.trim().length == 0) {
       return;
     }
-    //this.player = null;
     this.loading = true;
     const p = await this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag);
-    
-    try{ 
+
+    try {
       if (p != null) {
-        const x = await this.bungieService.getChars(p.membershipType, p.membershipId, 
-          ['Profiles','Characters','CharacterProgressions','CharacterActivities',
-          'CharacterEquipment','CharacterInventories',          
-          'ProfileProgression','ItemObjectives','PresentationNodes','Records','Collectibles'
-          //'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
-          //'ItemTalentGrids','ItemCommonData','ProfileInventories'
-        ]);
-        this.player = x;
+        const x = await this.bungieService.getChars(p.membershipType, p.membershipId,
+          ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
+            'CharacterEquipment', 'CharacterInventories',
+            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles'
+            //'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
+            //'ItemTalentGrids','ItemCommonData','ProfileInventories'
+          ]);
+        this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
-        setTimeout(()=>{
+        setTimeout(() => {
           this.setTab();
-        },0)
-        
+        }, 0)
+
         this.loading = false;
 
-        if (x.characters!=null){
+        if (x.characters != null) {
           await this.bungieService.updateAggHistory(x.characters);
           await this.bungieService.updateRaidHistory(x.milestoneList, x.characters);
           // await this.bungieService.updateNfHistory(x.milestoneList, x.characters);
@@ -241,10 +276,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       }
       else {
         this.loading = false;
-        this.player = null;
+        this.setPlayer(null);
       }
     }
-    catch (x){
+    catch (x) {
       this.loading = false;
 
     }
@@ -281,7 +316,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (redirected) return;
 
       //invalid platform
-      if (oNewPlatform==null){
+      if (oNewPlatform == null) {
         this.router.navigate(["home"]);
         return;
       }
@@ -307,3 +342,4 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.storageService.setItem("defaultgt", this.gamerTag);
   }
 }
+

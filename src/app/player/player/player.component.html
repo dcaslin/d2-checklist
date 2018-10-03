@@ -335,11 +335,11 @@
                             <tr *ngIf="g.owner==char">
                               <td class="lead" data-label="">
                                 <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                {{g.name}} 
+                                {{g.name}}
                                 <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
-                                    <i class="fa fa-clock-o"></i>
+                                  <i class="fa fa-clock-o"></i>
                                   {{ g.expirationDate | amDifference: today |
-                                    amDuration:'ms'}} </span>
+                                  amDuration:'ms'}} </span>
                                 <div class="simple-caption">{{g.desc}}</div>
                               </td>
                               <td data-label="">
@@ -574,20 +574,52 @@
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
-
                 <mat-tab-group>
                   <mat-tab [label]="r.label" *ngFor="let r of player.records">
-                    <ul>
-                      <li style="text-align: left" *ngFor="let r of r.data">
-                        <!-- {{r|json}} -->
-                        {{r.name}} - {{r.desc}}
-                         <!-- - {{r.info}} - {{r.value}} -->
-                      </li>
-                    </ul>
+                    <mat-tree [dataSource]="recordDatasources[r.label]" [treeControl]="treeControl2">
+                      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                        <button mat-icon-button disabled></button>
+                        {{node.filename}} : {{node.type}}
+                      </mat-tree-node>
+                      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                          <mat-icon class="mat-icon-rtl-mirror">
+                            {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                          </mat-icon>
+                        </button>
+                        {{node.filename}} : {{node.type}}
+                      </mat-tree-node>
+                    </mat-tree>
                   </mat-tab>
                 </mat-tab-group>
               </ng-container>
-            </mat-tab> -->
+            </mat-tab>
+            <mat-tab>
+              <ng-template mat-tab-label>
+                <i class="fa fa-database"></i>
+                <span class="d-none d-md-inline">&ensp;Collections</span>
+              </ng-template>
+              <ng-container *ngIf="player!=null">
+                <mat-tab-group>
+                  <mat-tab [label]="c.label" *ngFor="let c of player.collections">
+                      <mat-tree [dataSource]="collectionDatasources[c.label]" [treeControl]="treeControl2">
+                          <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                            <button mat-icon-button disabled></button>
+                            {{node.filename}} : {{node.type}}
+                          </mat-tree-node>
+                          <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                              <mat-icon class="mat-icon-rtl-mirror">
+                                {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                              </mat-icon>
+                            </button>
+                            {{node.filename}} : {{node.type}}
+                          </mat-tree-node>
+                        </mat-tree>
+                  </mat-tab>
+                </mat-tab-group>
+              </ng-container>
+            </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fa fa-users"></i>
