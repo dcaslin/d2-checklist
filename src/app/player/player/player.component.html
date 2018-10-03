@@ -335,7 +335,11 @@
                             <tr *ngIf="g.owner==char">
                               <td class="lead" data-label="">
                                 <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                {{g.name}}
+                                {{g.name}} 
+                                <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
+                                    <i class="fa fa-clock-o"></i>
+                                  {{ g.expirationDate | amDifference: today |
+                                    amDuration:'ms'}} </span>
                                 <div class="simple-caption">{{g.desc}}</div>
                               </td>
                               <td data-label="">
@@ -573,12 +577,11 @@
 
                 <mat-tab-group>
                   <mat-tab [label]="r.label" *ngFor="let r of player.records">
-
-                    <br>
-                    <br>
                     <ul>
-                      <li *ngFor="let r of r.data">
+                      <li style="text-align: left" *ngFor="let r of r.data">
+                        <!-- {{r|json}} -->
                         {{r.name}} - {{r.desc}}
+                         <!-- - {{r.info}} - {{r.value}} -->
                       </li>
                     </ul>
                   </mat-tab>

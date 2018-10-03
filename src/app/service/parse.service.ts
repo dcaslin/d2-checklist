@@ -1405,7 +1405,8 @@ export class ParseService {
             if (resp.profilePresentationNodes.data!=null && resp.profilePresentationNodes.data.nodes!=null){
 
                 // ignore resp.profileRecords.data.score?
-                const aRec = this.parseRecords("Profile", resp.profilePresentationNodes.data.nodes, resp.profileRecords.data.records);
+                const aRec = this.parseRecords("Profile", resp.profilePresentationNodes.data.nodes, 
+                resp.profileRecords.data.records, resp.profileCollectibles.data.collectibles);
                 records.push(aRec);
             }
         }
@@ -1414,11 +1415,13 @@ export class ParseService {
                 const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
                 //ignore featured?
                 const _records = resp.characterRecords.data[char.characterId].records;
+                const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
                 const label = char.className;
-                const charRec = this.parseRecords(label, presentationNodes, _records);
+                const charRec = this.parseRecords(label, presentationNodes, _records,_coll);
                 records.push(charRec);
             }
         }
+        console.dir(records);
     }catch (e){
         console.dir(e);
     }
@@ -1426,8 +1429,7 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, records);
     }
 
-    private parseRecords(label: string, nodes: any, records: any): Records {
-       
+    private parseRecords(label: string, nodes: any, records: any, collectibles: any): Records {
         //score and records on the records
         const roots = [];
         for (const key of Object.keys(nodes)) {
@@ -1436,50 +1438,106 @@ export class ParseService {
             if (pDesc.parentNodeHashes == null)
                 continue;
             if (pDesc.parentNodeHashes.length == 0) {
-                console.log(key+" ___ "+pDesc.nodeType + ": " + pDesc.displayProperties.name + ": " + pDesc.displayProperties.description);
-                // console.dir(pDesc);
-                // console.dir(nodes[key]);
-                // roots.push(key);
-                roots.push({
-                    name: pDesc.displayProperties.name,
-                    desc: pDesc.displayProperties.description
-                });
+                const processedNode = this.handlePresentationNode(key, nodes, records, collectibles);
+                if (processedNode!=null)
+                    roots.push(processedNode);
             }
         }
-
-        // for (const key of roots) {
-        //     const val = nodes[key];
-        //     this.handlePresentationNode(key, val);
-            
-        // }
-
-        // console.log("hi")
+        roots.sort(function (a, b) {
+            if (a.order < b.order)
+                return -1;
+            if (a.order > b.order)
+                return 1;
+            return 0;
+        });
         return {
             label: label, 
             data: roots
         }
-
     }
 
-    private handlePresentationNode(key: string, val: any): any{
+    private handlePresentationNode(key: string, nodes: any, records: any, collectibles: any): any{
+        const val = nodes[key];
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
+        if (pDesc==null) return null;
         //todo handle the description and value
-        for (const child of pDesc.children.presentationNodes) {
-
-
+        let info = "";
+        const children = [];
+        let cCount=0;
+        let rCount=0;
+        if (pDesc.children!=null){
+            for (const child of pDesc.children.presentationNodes) {
+                info = "hasPresNodes ";
+                const oChild = this.handlePresentationNode(child.presentationNodeHash, nodes, records, collectibles);
+                if (oChild==null) continue;
+                children.push(oChild);
+                cCount+=oChild.cCount;
+                rCount+=oChild.rCount;
+            }
+            for (const child of pDesc.children.collectibles) {
+                info = "hasColNodes ";
+                const oChild = this.handleCollectibleNode(child.collectibleHash, collectibles);
+                if (oChild!=null)
+                children.push(oChild);
+                cCount++;
+            }
+            for (const child of pDesc.children.records) {
+                info = "hasChildRecords ";
+                const oChild = this.handleRecordNode(child.recordHash, records);
+                if (oChild!=null)
+                children.push(oChild);
+                rCount++;
+            }
         }
-        for (const child of pDesc.children.collectibles) {
-
-        }
-        for (const child of pDesc.children.records) {
-
-        }
+        children.sort(function (a, b) {
+            if (a.index < b.index)
+                return -1;
+            if (a.index > b.index)
+                return 1;
+            return 0;
+        });
 
         return {
+            type: 'presentation',
+            hash: key,
             name: pDesc.displayProperties.name,
-            desc: pDesc.displayProperties.description
+            desc: pDesc.displayProperties.description,
+            index: pDesc.index,
+            //info: info,
+            value: val,
+            children: children,
+            cCount: cCount,
+            rCount: rCount
         }
-
+    }
+    private handleRecordNode(key: string, records: any){
+        const val = records[key];
+        const rDesc = this.destinyCacheService.cache.Record[key];
+        if (rDesc==null) return null;
+        
+        return {
+            type: 'record',
+            hash: key,
+            desc: rDesc,
+            index: rDesc.index,
+            val: val
+        }
+    }
+    private handleCollectibleNode(key: string, collectibles: any){
+        const val = collectibles[key];
+        const cDesc = this.destinyCacheService.cache.Collectible[key];
+        if (cDesc==null) return null;
+        let acquired = false;
+        if (val!=null && val.state!=null && (val.state&1)==0){
+            acquired = true;
+        }
+        return {
+            type: 'collectible',
+            index: cDesc.index,
+            hash: key,
+            desc: cDesc,
+            acquired: acquired
+        }
     }
 
     private parseInvItem(itm: _InventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any): InventoryItem {
@@ -1686,7 +1744,8 @@ export class ParseService {
 
             return new InventoryItem("" + itm.itemHash, desc.displayProperties.name,
                 equipped, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName, itm.quantity,
-                power, damageType, perks, stats, sockets, objectives, desc.displayProperties.description, classAvail, bucketOrder, aggProgress, values
+                power, damageType, perks, stats, sockets, objectives, desc.displayProperties.description, 
+                classAvail, bucketOrder, aggProgress, values, itm.expirationDate
             );
         }
         catch (exc) {
@@ -2374,6 +2433,7 @@ interface _InventoryItem {
     transferStatus: number;
     lockable: boolean;
     state: number;
+    expirationDate: string;
 }
 
 interface _InventoryInstanceData {
