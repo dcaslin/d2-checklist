@@ -219,7 +219,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         const x = await this.bungieService.getChars(p.membershipType, p.membershipId, 
           ['Profiles','Characters','CharacterProgressions','CharacterActivities',
           'CharacterEquipment','CharacterInventories',          
-          'ProfileProgression','ItemObjectives','PresentationNodes','Records'
+          'ProfileProgression','ItemObjectives','PresentationNodes','Records','Collectibles'
           //'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
           //'ItemTalentGrids','ItemCommonData','ProfileInventories'
         ]);

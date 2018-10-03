@@ -320,6 +320,7 @@ export class InventoryItem {
     readonly bucketOrder: number;
     readonly aggProgress: number;
     readonly values: any;
+    readonly expirationDate: string;
     //more to come, locked other stuff
 
     damageTypeString(): string {
@@ -332,7 +333,8 @@ export class InventoryItem {
 
     constructor(hash: string, name: string, equipped: boolean, owner: Character,
         icon: string, type: ItemType, typeName: string, quantity: number,
-        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any, bucketOrder: number, aggProgress: number, values: any
+        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any, 
+        bucketOrder: number, aggProgress: number, values: any, expirationDate: string
     ) {
         this.hash = hash;
         this.name = name;
@@ -353,6 +355,7 @@ export class InventoryItem {
         this.bucketOrder = bucketOrder;
         this.aggProgress = aggProgress;
         this.values = values;
+        this.expirationDate = expirationDate;
     }
 }
 
