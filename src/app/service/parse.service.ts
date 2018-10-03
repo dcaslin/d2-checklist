@@ -8,7 +8,8 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, Nightfall, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventoryPlug, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem, Records
+    Checklist, ChecklistItem, CharCheck, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, LoadoutRequirement, Vendor, SaleItem, 
+    Records
 } from './model';
 @Injectable()
 export class ParseService {
@@ -1400,14 +1401,13 @@ export class ParseService {
         });
 
         const records = [];
+        const collections = [];
         try{
         if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
             if (resp.profilePresentationNodes.data!=null && resp.profilePresentationNodes.data.nodes!=null){
 
                 // ignore resp.profileRecords.data.score?
-                const aRec = this.parseRecords("Profile", resp.profilePresentationNodes.data.nodes, 
-                resp.profileRecords.data.records, resp.profileCollectibles.data.collectibles);
-                records.push(aRec);
+                this.parseAndPushRecordsAndColls("Profile", resp.profilePresentationNodes.data.nodes, resp.profileRecords.data.records, resp.profileCollectibles.data.collectibles, records, collections);
             }
         }
         if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
@@ -1417,21 +1417,22 @@ export class ParseService {
                 const _records = resp.characterRecords.data[char.characterId].records;
                 const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
                 const label = char.className;
-                const charRec = this.parseRecords(label, presentationNodes, _records,_coll);
-                records.push(charRec);
+                this.parseAndPushRecordsAndColls(label, presentationNodes, _records, _coll, records, collections);
             }
         }
         console.dir(records);
+        console.dir(collections);
     }catch (e){
         console.dir(e);
     }
 
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, records);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, records, collections);
     }
 
-    private parseRecords(label: string, nodes: any, records: any, collectibles: any): Records {
+    private parseAndPushRecordsAndColls(label: string, nodes: any, records: any, collectibles: any, recordList: any[], collectionList: any[]): void {
         //score and records on the records
-        const roots = [];
+        const recRoots = [];
+        const colRoots = [];
         for (const key of Object.keys(nodes)) {
             const pDesc = this.destinyCacheService.cache.PresentationNode[key];
             //ignore "Keep it secret" items
@@ -1439,20 +1440,46 @@ export class ParseService {
                 continue;
             if (pDesc.parentNodeHashes.length == 0) {
                 const processedNode = this.handlePresentationNode(key, nodes, records, collectibles);
-                if (processedNode!=null)
-                    roots.push(processedNode);
+                if (processedNode!=null){
+                    if (processedNode.cCount>0 && processedNode.rCount>0){
+                        throw "Oops: "+processedNode.hash+" "+processedNode.name;
+                    }
+                    else if (processedNode.rCount>0){
+                        recRoots.push(processedNode);
+                    }else if (processedNode.cCount>0){
+                        colRoots.push(processedNode);
+                    }else{
+                        console.log("Ignoring empty: "+processedNode.hash+" "+processedNode.name);
+                    }
+                }
             }
         }
-        roots.sort(function (a, b) {
-            if (a.order < b.order)
-                return -1;
-            if (a.order > b.order)
-                return 1;
-            return 0;
-        });
-        return {
-            label: label, 
-            data: roots
+        
+        if (recRoots.length>0){
+            recRoots.sort(function (a, b) {
+                if (a.order < b.order)
+                    return -1;
+                if (a.order > b.order)
+                    return 1;
+                return 0;
+            });
+            recordList.push({
+                label: label, 
+                data: recRoots
+            })
+        }
+        if (colRoots.length>0){
+            colRoots.sort(function (a, b) {
+                if (a.order < b.order)
+                    return -1;
+                if (a.order > b.order)
+                    return 1;
+                return 0;
+            });
+            collectionList.push({
+                label: label, 
+                data: colRoots
+            })
         }
     }
 
