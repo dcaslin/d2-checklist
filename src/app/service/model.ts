@@ -1,5 +1,33 @@
 
+export interface Records{
+    label: string;
+    data: TriumphPresentationNode[];
+}
 
+
+export interface TriumphNode{
+    type: string;
+    hash: string;
+    name: string;
+    desc: string;
+    icon: string;
+    index: string;
+    children: TriumphNode[];
+}
+
+export interface TriumphPresentationNode extends TriumphNode{
+    value: any;
+    cCount: number;
+    rCount: number;
+}
+
+export interface TriumphRecordNode extends TriumphNode{
+   value: any;
+}
+
+export interface TriumphCollectibleNode extends TriumphNode{
+   acquired: boolean;
+}
 export interface Vendor{
     hash: string;
     name: string;
@@ -296,11 +324,6 @@ export class Player {
             }
         }
     }
-}
-
-export interface Records{
-    label: string;
-    data: any[];
 }
 
 export class InventoryItem {
