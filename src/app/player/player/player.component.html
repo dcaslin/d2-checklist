@@ -367,7 +367,6 @@
                 </ng-container>
               </ng-container>
             </mat-tab>
-
             <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fa fa-check-square-o"></i>
@@ -379,7 +378,6 @@
                   <h2>Privacy</h2>
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                 </div>
-
                 <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
                   <mat-expansion-panel *ngFor="let checklist of player.checklists" [expanded]="debugmode">
                     <mat-expansion-panel-header>
@@ -579,7 +577,7 @@
                     <mat-tree [dataSource]="recordDatasources[r.label]" [treeControl]="treeControl2">
                       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
                         <button mat-icon-button disabled></button>
-                        {{node.filename}} : {{node.type}}
+                        {{node.data.name}} : {{node.data.value|json}}
                       </mat-tree-node>
                       <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
                         <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
@@ -587,7 +585,7 @@
                             {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                           </mat-icon>
                         </button>
-                        {{node.filename}} : {{node.type}}
+                        {{node.data.name}} : {{node.data.type}}
                       </mat-tree-node>
                     </mat-tree>
                   </mat-tab>

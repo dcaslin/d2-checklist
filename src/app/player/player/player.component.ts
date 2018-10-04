@@ -8,16 +8,16 @@ import { Subject, BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 // import { XyzService } from "../../service/xyz.service";
-import { Player, Character, SearchResult, Platform, Const } from "../../service/model";
+import { Player, Character, SearchResult, Platform, Const, TriumphNode } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
 import { FlatTreeControl } from '@angular/cdk/tree';
 
 
-export class FileFlatNode {
+export class TriumphFlatNode {
   constructor(
-    public expandable: boolean, public filename: string, public level: number, public type: any) { }
+    public expandable: boolean, public level: number, public data: TriumphNode) { }
 }
 
 @Component({
@@ -41,7 +41,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideCompleteChecklist = false;
 
   treeControl2: FlatTreeControl<any>;
-  treeFlattener2: MatTreeFlattener<any, FileFlatNode>;
+  treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
   recordDatasources: any;
   collectionDatasources: any;
 
@@ -54,25 +54,21 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
     this.hiddenMilestones = this.loadHiddenMilestones();
-
-    this.treeControl2 = new FlatTreeControl<FileFlatNode>(this._getLevel, this._isExpandable);
+    this.treeControl2 = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
-
-
   }
 
-
-  transformer2 = (node: any, level: number) => {
-    return new FileFlatNode(!!node.children, node.name, level, node.type);
+  transformer2 = (node: TriumphNode, level: number) => {
+    return new TriumphFlatNode(!!node.children, level, node);
   }
 
-  private _getLevel = (node: FileFlatNode) => node.level;
+  private _getLevel = (node: TriumphFlatNode) => node.level;
 
-  private _isExpandable = (node: FileFlatNode) => node.expandable;
+  private _isExpandable = (node: TriumphFlatNode) => node.expandable;
 
   private _getChildren = (node: any): Observable<any[]> => observableOf(node.children);
 
-  hasChild = (_: number, _nodeData: FileFlatNode) => _nodeData.expandable;
+  hasChild = (_: number, _nodeData: TriumphFlatNode) => _nodeData.expandable;
 
   
   private  setPlayer(x: Player): void{
@@ -80,13 +76,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (x!=null){
       this.recordDatasources = {};
       for (let r of this.player.records){
-        const dataSource: MatTreeFlatDataSource<any, FileFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+        const dataSource: MatTreeFlatDataSource<any, TriumphFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
         dataSource.data = r.data;
         this.recordDatasources[r.label] = dataSource;
       }
       this.collectionDatasources = {};
       for (let c of this.player.collections){
-        const dataSource: MatTreeFlatDataSource<any, FileFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+        const dataSource: MatTreeFlatDataSource<any, TriumphFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
         dataSource.data = c.data;
         this.collectionDatasources[c.label] = dataSource;
       }
@@ -204,10 +200,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       console.log("---tab is null!");
       return;
     }
+    console.log(tab);
     let cntr = 0;
     for (let label of this.TAB_URI) {
       if (tab == label) {
         this.tabs.selectedIndex = cntr;
+        console.log(label);
         break;
       }
       cntr++;
