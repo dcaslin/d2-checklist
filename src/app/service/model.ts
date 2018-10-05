@@ -1,10 +1,3 @@
-
-export interface Records{
-    label: string;
-    data: TriumphPresentationNode[];
-}
-
-
 export interface TriumphNode{
     type: string;
     hash: string;
@@ -16,17 +9,23 @@ export interface TriumphNode{
 }
 
 export interface TriumphPresentationNode extends TriumphNode{
-    value: any;
+    progress: number,
+    completionValue: number,
+    complete: boolean,
     cCount: number;
     rCount: number;
 }
 
 export interface TriumphRecordNode extends TriumphNode{
-   value: any;
+    objectives: ItemObjective[];
+    complete: boolean;
+    redeemed: boolean;
+    title: boolean;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode{
    acquired: boolean;
+   sourceString: string;
 }
 export interface Vendor{
     hash: string;
@@ -297,12 +296,12 @@ export class Player {
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
-    records: Records[];
-    collections: Records[];
+    records: TriumphNode[];
+    collections: TriumphNode[];
     maxLL: number = 0;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[], 
-            superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[], records: Records[], collections: Records[]) {
+            superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[], records: TriumphNode[], collections: TriumphNode[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;

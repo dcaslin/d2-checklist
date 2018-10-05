@@ -572,12 +572,17 @@
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
-                <mat-tab-group>
-                  <mat-tab [label]="r.label" *ngFor="let r of player.records">
-                    <mat-tree [dataSource]="recordDatasources[r.label]" [treeControl]="treeControl2">
+                    <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
                       <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
                         <button mat-icon-button disabled></button>
-                        {{node.data.name}} : {{node.data.value|json}}
+                        {{node.data.name}} : {{node.data.hash}} {{node.data.desc}}
+
+                        {{node.data.complete}} {{node.data.redeemed}} {{node.data.title}}
+                        <ul>
+                          <li *ngFor="let o of node.data.objectives">
+                            {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}  
+                          </li>
+                        </ul>
                       </mat-tree-node>
                       <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
                         <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
@@ -585,11 +590,10 @@
                             {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                           </mat-icon>
                         </button>
-                        {{node.data.name}} : {{node.data.type}}
+                        {{node.data.name}} {{node.data.hash}}: 
+                        {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}  {{node.data.complete}}
                       </mat-tree-node>
                     </mat-tree>
-                  </mat-tab>
-                </mat-tab-group>
               </ng-container>
             </mat-tab>
             <mat-tab>
@@ -598,24 +602,22 @@
                 <span class="d-none d-md-inline">&ensp;Collections</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
-                <mat-tab-group>
-                  <mat-tab [label]="c.label" *ngFor="let c of player.collections">
-                      <mat-tree [dataSource]="collectionDatasources[c.label]" [treeControl]="treeControl2">
-                          <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-                            <button mat-icon-button disabled></button>
-                            {{node.filename}} : {{node.type}}
-                          </mat-tree-node>
-                          <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-                            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-                              <mat-icon class="mat-icon-rtl-mirror">
-                                {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                              </mat-icon>
-                            </button>
-                            {{node.filename}} : {{node.type}}
-                          </mat-tree-node>
-                        </mat-tree>
-                  </mat-tab>
-                </mat-tab-group>
+                <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
+                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
+                      <button mat-icon-button disabled></button>
+                      {{node.data.name}} : {{node.data.acquired}} {{node.data.sourceString}}
+                    </mat-tree-node>
+                    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                      <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                        <mat-icon class="mat-icon-rtl-mirror">
+                          {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                        </mat-icon>
+                      </button>                        
+                      {{node.data.name}} {{node.data.hash}}: 
+                      {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}  {{node.data.complete}}
+
+                    </mat-tree-node>
+                  </mat-tree>
               </ng-container>
             </mat-tab>
             <mat-tab>
