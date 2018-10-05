@@ -335,7 +335,11 @@
                             <tr *ngIf="g.owner==char">
                               <td class="lead" data-label="">
                                 <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                {{g.name}}
+                                <ng-container *ngIf="g.mapLink==null">{{g.name}} </ng-container>
+                                <a [href]="g.mapLink" *ngIf="g.mapLink!=null" target="_blank" rel="noopener">
+                                  {{g.name}}
+                                  <i class='accent-text fa fa-map-marker'></i>
+                                </a>
                                 <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
                                   <i class="fa fa-clock-o"></i>
                                   {{ g.expirationDate | amDifference: today |
@@ -581,7 +585,13 @@
                       <i *ngIf="node.data.complete && node.data.redeemed" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                       <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fa fa-check-square-o"></i>
                       <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
-                      {{node.data.name}} <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
+
+                      <ng-container *ngIf="node.data.mapLink==null"> {{node.data.name}} </ng-container>
+                      <a [href]="node.data.mapLink" *ngIf="node.data.mapLink!=null" target="_blank" rel="noopener">
+                        {{node.data.name}}
+                        <i class='accent-text fa fa-map-marker'></i>
+                      </a>
+                      <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
                       <br>
                       <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
                         redeemed.<br></span>
@@ -616,9 +626,9 @@
                         <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
                       </ng-container>
                       <br>
-                      
+
                       <ng-container *ngIf="node.data.unredeemedCount==0">
-                          <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+                        <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                       </ng-container>
                       <ng-container *ngIf="node.data.unredeemedCount>0">
                         <!-- <mat-progress-bar class="pres-node-prog" color="warn" mode="determinate" [value]="(node.data.unredeemedCount)*100/node.data.completionValue"></mat-progress-bar> -->
@@ -638,7 +648,8 @@
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
                   <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
-                    <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+                    <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
+                      [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
                     <div style="text-align: left; margin-bottom: 20px">
                       <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                       <i *ngIf="!node.data.acquired" class="fa fa-square-o"></i>
@@ -657,15 +668,16 @@
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                       </mat-icon>
                     </button>
-                    <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+                    <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon"
+                      [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
                     <div style="text-align: left">
                       <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
                       <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
                       {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
                       <span class="simple-caption">
                         {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
-                      </span>                      <br>
-                      <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>                     
+                      </span> <br>
+                      <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                     </div>
 
                     <!-- {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>:
@@ -676,8 +688,9 @@
                 </mat-tree>
               </ng-container>
               <div>
-                  <br>
-                  <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at DestinySets</a>
+                <br>
+                <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at
+                  DestinySets</a>
               </div>
             </mat-tab>
             <mat-tab>
