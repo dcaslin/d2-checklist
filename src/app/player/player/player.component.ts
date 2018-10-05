@@ -42,8 +42,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   treeControl2: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
-  recordDatasources: any;
-  collectionDatasources: any;
+  recordDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
+  collectionDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
 
   constructor(public bungieService: BungieService,
     // private xyzService: XyzService,
@@ -74,22 +74,14 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   private  setPlayer(x: Player): void{
     this.player = x;
     if (x!=null){
-      this.recordDatasources = {};
-      for (let r of this.player.records){
-        const dataSource: MatTreeFlatDataSource<any, TriumphFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
-        dataSource.data = r.data;
-        this.recordDatasources[r.label] = dataSource;
-      }
-      this.collectionDatasources = {};
-      for (let c of this.player.collections){
-        const dataSource: MatTreeFlatDataSource<any, TriumphFlatNode> = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
-        dataSource.data = c.data;
-        this.collectionDatasources[c.label] = dataSource;
-      }
+      this.recordDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+      this.recordDatasource.data = this.player.records;
+      this.collectionDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+      this.collectionDatasource.data = this.player.collections;
     }
     else{
-      this.recordDatasources = null;
-      this.collectionDatasources = null;
+      this.recordDatasource = null;
+      this.collectionDatasource = null;
     }
   }
 
