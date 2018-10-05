@@ -192,12 +192,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       console.log("---tab is null!");
       return;
     }
-    console.log(tab);
     let cntr = 0;
     for (let label of this.TAB_URI) {
       if (tab == label) {
         this.tabs.selectedIndex = cntr;
-        console.log(label);
         break;
       }
       cntr++;

@@ -12,7 +12,7 @@
         </h2>
 
         <ng-container *ngIf="loading==false && player==null">
-          <h2>Bungie Authenticaiton Required</h2>
+          <h2>Bungie Authentication Required</h2>
           <p>You must grant this site access to your Bungie account for the site to access this info (vendors are part
             of the private API, like what DIM uses). Click the "Sign In" button on the upper
             right if you want to continue.</p>
@@ -35,6 +35,12 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
 
+        <div style="margin: 10px">
+        <mat-form-field class="searchField">
+            <input matInput #filter placeholder="Filter items">
+          </mat-form-field>
+        </div>
+
         <ng-container *ngIf="vendorData!=null">
 
           <ng-container *ngIf="option=='Bounties'">
@@ -50,7 +56,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="i.type==ItemType.Bounty">
+                  <tr *ngIf="i.type==ItemType.Bounty && includeItem(i)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
@@ -98,12 +104,12 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(i.type==ItemType.Armor || i.type==ItemType.Weapon) && i.rolledPerks!=null && i.rolledPerks.length>0">
+                  <tr *ngIf="(((i.type==ItemType.Armor || i.type==ItemType.Weapon ) && i.rolledPerks!=null && i.rolledPerks.length>0) || i.type==ItemType.GearMod) &&  includeItem(i)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
+                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}} {{i.hash}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                       <div class="d-block d-md-none">{{i.vendor.name}}</div>
                     </td>
@@ -151,7 +157,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(i.type==ItemType.Mod || i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost)">
+                  <tr *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) &&  includeItem(i)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
@@ -186,7 +192,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'">
+                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'  &&  includeItem(i)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>

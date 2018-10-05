@@ -8,8 +8,8 @@ import {
     BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
     CharacterStat, Currency, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity, 
-    _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge, 
+    Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity,
+    _LoadoutRequirement, _PublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
     LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode
 } from './model';
 @Injectable()
@@ -611,6 +611,7 @@ export class ParseService {
         const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
         if (iDesc == null) return null;
 
+        let searchText = "";
         const costs: any[] = [];
         if (i.costs) {
             for (let cost of i.costs) {
@@ -622,6 +623,7 @@ export class ParseService {
                     hash: cost.itemHash,
                     quantity: cost.quantity
                 });
+                searchText += cDesc.displayProperties.name + " ";
             }
         }
 
@@ -649,7 +651,7 @@ export class ParseService {
                                     name: perkDesc.displayProperties.name,
                                     desc: perkDesc.displayProperties.description,
                                 });
-
+                                searchText += perkDesc.displayProperties.name + " ";
                             }
                         }
 
@@ -663,7 +665,7 @@ export class ParseService {
                                 name: perkDesc.displayProperties.name,
                                 desc: perkDesc.displayProperties.description,
                             });
-
+                            searchText += perkDesc.displayProperties.name + " ";
                         }
                     }
                     if (perkSet.length > 0)
@@ -673,7 +675,6 @@ export class ParseService {
         }
 
         const objectives = [];
-
         if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
             for (let oHash of iDesc.objectives.objectiveHashes) {
                 let oDesc: any = this.destinyCacheService.cache.Objective[oHash];
@@ -681,8 +682,9 @@ export class ParseService {
                     objectives.push({
                         total: oDesc.completionValue,
                         units: oDesc.progressDescription
-                    })
+                    });
 
+                    searchText += oDesc.progressDescription + " ";
                 }
             }
         }
@@ -697,18 +699,28 @@ export class ParseService {
                         name: valDesc.displayProperties.name,
                         quantity: val.quantity
                     });
+                    searchText += valDesc.displayProperties.name + " ";
                 }
 
             }
         }
 
+        let itemType = iDesc.itemType;
+        if (iDesc.itemType == ItemType.Mod && iDesc.itemTypeDisplayName.indexOf("Mod") > 0) {
+            itemType = ItemType.GearMod;
+        }
+
+        
+        searchText += iDesc.displayProperties.name + " "
+        searchText += vendor.name+" ";
+        searchText += iDesc.itemTypeAndTierDisplayName+" ";
 
         return {
             vendor: vendor,
             hash: i.itemHash,
             name: iDesc.displayProperties.name,
             icon: iDesc.displayProperties.icon,
-            type: iDesc.itemType,
+            type: itemType,
             status: this.parseSaleItemStatus(i.saleStatus),
             itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
             itemTypeDisplayName: iDesc.itemTypeDisplayName,
@@ -716,7 +728,8 @@ export class ParseService {
             objectives: objectives,
             rolledPerks: rolledPerks,
             value: values,
-            costs: costs
+            costs: costs,
+            searchText: searchText.toLowerCase()
         }
     }
 
@@ -1381,7 +1394,6 @@ export class ParseService {
         vault.className = "Vault";
         let shared: Character = new Character();
         shared.className = "Shared";
-        let hashRankups: number[] = [];
         let rankups: Rankup[] = [];
 
         if (resp.characterInventories != null && resp.characterInventories.data != null) {
@@ -1401,14 +1413,16 @@ export class ParseService {
             return b.aggProgress - a.aggProgress;
         });
 
-        const nodes:any[] = [];
-        const records:any[] = [];
-        const collections:any[] = [];
+        let triumphScore = null;
+        const nodes: any[] = [];
+        const records: any[] = [];
+        const collections: any[] = [];
         if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
             if (resp.profilePresentationNodes.data != null && resp.profilePresentationNodes.data.nodes != null) {
                 nodes.push(resp.profilePresentationNodes.data.nodes);
                 records.push(resp.profileRecords.data.records);
                 collections.push(resp.profileCollectibles.data.collectibles);
+                triumphScore = resp.profileRecords.data.score;
             }
         }
         if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
@@ -1423,22 +1437,22 @@ export class ParseService {
         }
 
         let recordTree = [];
-        if (records.length>0){
+        if (records.length > 0) {
             recordTree = this.handleRecPresNode("1024788583", nodes, records).children;
         }
         let colTree = [];
-        if (collections.length>0){
+        if (collections.length > 0) {
             colTree = this.handleColPresNode("3790247699", nodes, collections).children;
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, recordTree, colTree);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree);
     }
 
-    private getBestPres(aNodes: any[], key: string): any{
+    private getBestPres(aNodes: any[], key: string): any {
         let bestNode = null;
-        for (const nodes of aNodes){
+        for (const nodes of aNodes) {
             const v = nodes[key];
-            if (v==null) continue;
-            if (bestNode==null || v.progress > bestNode.progress){
+            if (v == null) continue;
+            if (bestNode == null || v.progress > bestNode.progress) {
                 bestNode = v;
             }
         }
@@ -1450,21 +1464,22 @@ export class ParseService {
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) return null;
         const children = [];
-        let cCount = 0;
-        let rCount = 0;
+        let unredeemedCount = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
                 const oChild = this.handleRecPresNode(child.presentationNodeHash, pres, records);
                 if (oChild == null) continue;
                 children.push(oChild);
-                cCount += oChild.cCount;
-                rCount += oChild.rCount;
+                unredeemedCount += oChild.unredeemedCount;
             }
             for (const child of pDesc.children.records) {
                 const oChild = this.handleRecordNode(child.recordHash, records);
-                if (oChild != null)
-                    children.push(oChild);
-                rCount++;
+                if (oChild == null) continue;
+                children.push(oChild);
+
+                if (oChild.complete && !oChild.redeemed) {
+                    unredeemedCount++;
+                }
             }
         }
         children.sort(function (a, b) {
@@ -1482,12 +1497,11 @@ export class ParseService {
             desc: pDesc.displayProperties.description,
             icon: pDesc.displayProperties.icon,
             index: pDesc.index,
-            progress: val.objective==null?0:val.objective.progress,
-            completionValue: val.objective==null?1:val.objective.completionValue,
-            complete: val.objective==null?false:val.objective.complete,
+            progress: val.objective == null ? 0 : val.objective.progress,
+            completionValue: val.objective == null ? 1 : val.objective.completionValue,
+            complete: val.objective == null ? false : val.objective.complete,
             children: children,
-            cCount: cCount,
-            rCount: rCount
+            unredeemedCount: unredeemedCount
         }
     }
 
@@ -1496,30 +1510,33 @@ export class ParseService {
         if (rDesc == null) return null;
         const val = this.getBestRec(records, key);
 
-        const objs = [];
-        for (const o of val.objectives){
+        let objs = [];
+        let totalProgress = 0;
+        for (const o of val.objectives) {
             let oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-            if (oDesc==null) continue;
+            if (oDesc == null) continue;
             const iObj: ItemObjective = {
                 completionValue: oDesc.completionValue,
                 progressDescription: oDesc.progressDescription,
                 progress: o.progress == null ? 0 : o.progress,
                 complete: o.complete
             }
+            totalProgress += oDesc.completionValue;
             objs.push(iObj);
         }
+        if (totalProgress < 2) objs = [];
         let complete = false;
         let redeemed = false;
         let title = false;
         if (val != null && val.state != null) {
-            if (val.state==0){
+            if (val.state == 0) {
                 complete = true;
             }
-            if ((val.state & 1) == 1){
+            if ((val.state & 1) == 1) {
                 redeemed = true;
                 complete = true;
             }
-            if ((val.state & 64) == 65){
+            if ((val.state & 64) == 65) {
                 title = true;
             }
         }
@@ -1539,24 +1556,24 @@ export class ParseService {
         }
     }
 
-    private getBestRec(aNodes: any[], key: string): any{
+    private getBestRec(aNodes: any[], key: string): any {
         let bestNode = null;
-        for (const nodes of aNodes){
+        for (const nodes of aNodes) {
             const v = nodes[key];
-            if (v==null) continue;
-            if (bestNode==null || this.recAvg(v) > this.recAvg(bestNode)){
+            if (v == null) continue;
+            if (bestNode == null || this.recAvg(v) > this.recAvg(bestNode)) {
                 bestNode = v;
             }
         }
         return bestNode;
     }
 
-    private getBestCol(aNodes: any[], key: string): any{
+    private getBestCol(aNodes: any[], key: string): any {
         let bestNode = null;
-        for (const nodes of aNodes){
+        for (const nodes of aNodes) {
             const v = nodes[key];
-            if (v==null) continue;
-            if (bestNode==null || (v.state != null && (v.state & 1) == 0)){
+            if (v == null) continue;
+            if (bestNode == null || (v.state != null && (v.state & 1) == 0)) {
                 bestNode = v;
             }
         }
@@ -1568,21 +1585,16 @@ export class ParseService {
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) return null;
         const children = [];
-        let cCount = 0;
-        let rCount = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
                 const oChild = this.handleColPresNode(child.presentationNodeHash, pres, collectibles);
                 if (oChild == null) continue;
                 children.push(oChild);
-                cCount += oChild.cCount;
-                rCount += oChild.rCount;
             }
             for (const child of pDesc.children.collectibles) {
-                const oChild = this.handleCollectibleNode2(child.collectibleHash, collectibles);
+                const oChild = this.handleCollectibleNode(child.collectibleHash, collectibles);
                 if (oChild != null)
                     children.push(oChild);
-                cCount++;
             }
         }
         children.sort(function (a, b) {
@@ -1600,27 +1612,26 @@ export class ParseService {
             desc: pDesc.displayProperties.description,
             icon: pDesc.displayProperties.icon,
             index: pDesc.index,
-            progress: val.objective==null?0:val.objective.progress,
-            completionValue: val.objective==null?1:val.objective.completionValue,
-            complete: val.objective==null?false:val.objective.complete,
+            progress: val.objective == null ? 0 : val.objective.progress,
+            completionValue: val.objective == null ? 1 : val.objective.completionValue,
+            complete: val.objective == null ? false : val.objective.complete,
             children: children,
-            cCount: cCount,
-            rCount: rCount
+            unredeemedCount: 0
         }
     }
 
-    private recAvg(rec: any): number{
-        if (rec.objectives==null) return 0;
-        let sum=0;
-        for (const o of rec.objectives){
-            if (o.completionValue!=null && o.completionValue>0){
-                sum+=o.progress/o.completionValue;
+    private recAvg(rec: any): number {
+        if (rec.objectives == null) return 0;
+        let sum = 0;
+        for (const o of rec.objectives) {
+            if (o.completionValue != null && o.completionValue > 0) {
+                sum += o.progress / o.completionValue;
             }
         }
         return sum;
     }
 
-    private handleCollectibleNode2(key: string, collectibles: any[]): TriumphCollectibleNode {
+    private handleCollectibleNode(key: string, collectibles: any[]): TriumphCollectibleNode {
         const cDesc = this.destinyCacheService.cache.Collectible[key];
         if (cDesc == null) return null;
         const val = this.getBestCol(collectibles, key);

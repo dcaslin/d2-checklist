@@ -223,6 +223,35 @@ a.underline:link {
   max-width: 250px;
 }
 
+.triumph-icon{
+  float: left;
+  width: 32px;
+  height: 32px;
+  margin: 5px;
+  background-size: cover;
+}
+
+.transparent-branch-icon{
+  float: left;
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  margin: 5px;
+  background-size: cover;
+}
+
+
+.transparent-leaf-icon{
+  float: left;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 5px;
+  margin: 5px;
+  background-size: cover;
+}
+
+
 .item-icon{
   float: left;
   width: 48px;
@@ -257,4 +286,13 @@ a.underline:link {
 
 .check-list-status{
   width: 50px;
+}
+
+.triumph-score{
+  margin: 10px;
+  text-align: left;
+}
+
+.pres-node-prog{
+  max-width: 100px;
 }
