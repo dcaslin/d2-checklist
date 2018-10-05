@@ -1,6 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
+
+import { LowLineService } from "./lowline.service";
 import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
@@ -15,7 +17,10 @@ import {
 @Injectable()
 export class ParseService {
 
-    constructor(private destinyCacheService: DestinyCacheService) { }
+    constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {     
+        this.lowlineService.init();
+    }
+
     MAX_LEVEL: number = 50;
 
     private parseCharacter(c: _Character): Character {
@@ -581,6 +586,12 @@ export class ParseService {
             returnMe = returnMe.concat(items);
 
         }
+        for (const i of returnMe){
+            i.mapLink = this.lowlineService.buildItemLink(i.hash);
+            if (i.mapLink!=null){
+              i.searchText+="maplink";
+            }
+          }
         return returnMe;
     }
 
@@ -1403,6 +1414,7 @@ export class ParseService {
                 items.forEach(itm => {
                     let parsed: InventoryItem = this.parseInvItem(itm, false, char, vault, resp.itemComponents);
                     if (parsed != null) {
+                        parsed.mapLink =this.lowlineService.buildItemLink(parsed.hash);
                         bounties.push(parsed);
                     }
                 });
@@ -1540,6 +1552,9 @@ export class ParseService {
                 title = true;
             }
         }
+        const mapLink = this.lowlineService.buildRecordLink(key);;
+        
+
 
         return {
             type: 'record',
@@ -1552,7 +1567,8 @@ export class ParseService {
             complete: complete,
             redeemed: redeemed,
             title: title,
-            children: null
+            children: null,
+            mapLink: mapLink
         }
     }
 

@@ -9,6 +9,7 @@ import { BungieService } from "../../service/bungie.service";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import { SelectedUser, Player, Character, SaleItem, ItemType } from '@app/service/model';
+import { LowLineService, LowLineResponse } from '@app/service/lowline.service';
 
 @Component({
   selector: 'anms-resources',
@@ -26,12 +27,14 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   options = ["Bounties", "Gear", "Exchange", "Cosmetics"];
   option = this.options[0];
   filterText: string = null;
+  lowLineData: LowLineResponse = null;
 
   ItemType = ItemType;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
+    
     this.loading = true;
   }
 
@@ -54,7 +57,8 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       }
       else {
         this.char = c;
-        this.vendorData = await this.bungieService.loadVendors(c);
+        this.vendorData = await this.bungieService.loadVendors(c);        
+
       }
     }
     finally {
@@ -62,7 +66,21 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     }
   }
 
-  private async load2(d: LoadInfo) {
+  public getMapLinks(itm: SaleItem): string[]{
+    if (this.lowLineData==null) return [];
+    const lData = this.lowLineData.data.items[itm.hash];
+    if (lData==null) return [];
+    for (const index of lData){
+      this.lowLineData.data.nodes[index];
+      //https://lowlidev.com.au/destiny/maps/titan/item/2277930478
+
+    }
+    return 
+
+
+  }
+
+  private async load(d: LoadInfo) {
     this.loading = true;
     try {
       if (d == null || d.user == null) {
@@ -159,7 +177,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
           this.option = d.tab;
         }
         else {
-          this.load2(d);
+          this.load(d);
         }
       });
   }

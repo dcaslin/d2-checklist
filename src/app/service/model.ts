@@ -20,6 +20,7 @@ export interface TriumphRecordNode extends TriumphNode{
     complete: boolean;
     redeemed: boolean;
     title: boolean;
+    mapLink: string;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode{
@@ -55,6 +56,7 @@ export interface SaleItem{
     value: any;
     costs: SaleItemCost[];
     searchText: string;
+    mapLink?: string;
 }
 
 export interface ItemPerks{
@@ -348,6 +350,7 @@ export class InventoryItem {
     readonly aggProgress: number;
     readonly values: any;
     readonly expirationDate: string;
+    public mapLink: string;
     //more to come, locked other stuff
 
     damageTypeString(): string {

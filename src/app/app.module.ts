@@ -8,7 +8,7 @@ import {StickyReuseStrategy} from './sticky-reuse-strategy';
 
 import { AuthService } from './service/auth.service';
 import { BungieService } from './service/bungie.service';
-// import { XyzService } from './service/xyz.service';
+import { LowLineService } from './service/lowline.service';
 import { StorageService } from './service/storage.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { NotificationService } from './service/notification.service';
@@ -66,7 +66,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
   ],
   providers: [
-    //XyzService, 
+    LowLineService,
     BungieService, AuthService, StorageService, NotificationService, 
     DestinyCacheService, ParseService,
     {provide: RouteReuseStrategy, useClass: StickyReuseStrategy}],

@@ -36,7 +36,7 @@
         </mat-button-toggle-group>
 
         <div style="margin: 10px">
-        <mat-form-field class="searchField">
+          <mat-form-field class="searchField">
             <input matInput #filter placeholder="Filter items">
           </mat-form-field>
         </div>
@@ -61,7 +61,12 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
+                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                        {{i.name}}
+                        <i class='accent-text fa fa-map-marker'></i>
+                      </a>
+                      <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                     </td>
 
@@ -109,7 +114,12 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}} {{i.hash}}</ng-container><br>
+                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                        {{i.name}}
+                        <i class='accent-text fa fa-map-marker'></i>
+                      </a>
+                      <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                       <div class="d-block d-md-none">{{i.vendor.name}}</div>
                     </td>
@@ -162,7 +172,12 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}} <ng-container *ngIf="debugmode">{{i.status}}</ng-container><br>
+                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                        {{i.name}}
+                        <i class='accent-text fa fa-map-marker'></i>
+                      </a>
+                      <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       {{i.itemTypeAndTierDisplayName}}
                     </td>
                     <td>
@@ -197,7 +212,12 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      {{i.name}} <br>
+                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                        {{i.name}}
+                        <i class='accent-text fa fa-map-marker'></i>
+                      </a>
+                      <br>
                       Quantity: {{i.quantity}}
                     </td>
                     <td>
