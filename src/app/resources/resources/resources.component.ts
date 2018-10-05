@@ -1,8 +1,8 @@
 
-import { takeUntil, switchMap, catchError } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { takeUntil, switchMap, catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { of as observableOf, combineLatest } from 'rxjs';
+import { fromEvent as observableFromEvent, of as observableOf, combineLatest } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
@@ -18,12 +18,14 @@ import { SelectedUser, Player, Character, SaleItem, ItemType } from '@app/servic
 export class ResourcesComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
+  @ViewChild('filter') filter: ElementRef;
   selectedUser: SelectedUser = null;
   player: Player = null;
   char: Character = null;
   vendorData: SaleItem[] = null;
   options = ["Bounties", "Gear", "Exchange", "Cosmetics"];
   option = this.options[0];
+  filterText: string = null;
 
   ItemType = ItemType;
 
@@ -31,6 +33,11 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
     this.loading = true;
+  }
+
+  public includeItem(itm: SaleItem): boolean{
+    if (this.filterText==null) return true;
+    return itm.searchText.indexOf(this.filterText)>=0;
   }
 
   public async setChar(c: Character, alreadyLoading: boolean) {
@@ -119,6 +126,19 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
 
   private sub: any;
   ngOnInit() {
+
+    observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
+      debounceTime(150),
+      distinctUntilChanged(),)
+      .subscribe(() => {
+        const val: string = this.filter.nativeElement.value;
+        if (val==null || val.trim().length==0){
+          this.filterText = null;
+        }
+        else{
+          this.filterText = val.toLowerCase();
+        }
+      });
 
     combineLatest(this.bungieService.selectedUserFeed, this.route.paramMap, this.route.url).pipe(
       switchMap(([selectedUser, params, url]) => {

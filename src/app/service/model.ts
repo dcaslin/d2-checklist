@@ -12,8 +12,7 @@ export interface TriumphPresentationNode extends TriumphNode{
     progress: number,
     completionValue: number,
     complete: boolean,
-    cCount: number;
-    rCount: number;
+    unredeemedCount: number;
 }
 
 export interface TriumphRecordNode extends TriumphNode{
@@ -55,6 +54,7 @@ export interface SaleItem{
     rolledPerks: ItemPerks[][];
     value: any;
     costs: SaleItemCost[];
+    searchText: string;
 }
 
 export interface ItemPerks{
@@ -296,12 +296,13 @@ export class Player {
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
+    triumphScore: number;
     records: TriumphNode[];
     collections: TriumphNode[];
     maxLL: number = 0;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[], 
-            superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[], records: TriumphNode[], collections: TriumphNode[]) {
+            superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[], collections: TriumphNode[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -313,6 +314,7 @@ export class Player {
         this.hasWellRested = hasWellRested;
         this.checklists = checklists;
         this.charChecklists = charChecklists;
+        this.triumphScore = triumphScore;
         this.records = records;
         this.collections = collections;
         if (characters!=null && characters.length>0){
@@ -824,7 +826,8 @@ export enum ItemType {
 	Emote = 23,
 	Ghost = 24,
 	Package = 25,
-	Bounty = 26
+    Bounty = 26,
+    GearMod = 99  //custom added
 }
 
 export enum DamageType {

@@ -572,28 +572,61 @@
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
-                    <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
-                      <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
-                        <button mat-icon-button disabled></button>
-                        {{node.data.name}} : {{node.data.hash}} {{node.data.desc}}
-
-                        {{node.data.complete}} {{node.data.redeemed}} {{node.data.title}}
-                        <ul>
-                          <li *ngFor="let o of node.data.objectives">
-                            {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}  
-                          </li>
-                        </ul>
-                      </mat-tree-node>
-                      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-                        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-                          <mat-icon class="mat-icon-rtl-mirror">
-                            {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                          </mat-icon>
-                        </button>
-                        {{node.data.name}} {{node.data.hash}}: 
-                        {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}  {{node.data.complete}}
-                      </mat-tree-node>
-                    </mat-tree>
+                <h3 class="triumph-score">Triumph Score: {{player.triumphScore}}</h3>
+                <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                    <button mat-icon-button disabled></button>
+                    <!-- <div *ngIf="node.data.icon!=null" class="transparent-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
+                    <div style="text-align: left; margin-bottom: 20px">
+                      <i *ngIf="node.data.complete && node.data.redeemed" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                      <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fa fa-check-square-o"></i>
+                      <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
+                      {{node.data.name}} <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
+                      <br>
+                      <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
+                        redeemed.<br></span>
+                      <span class="simple-caption">
+                        {{node.data.desc}}
+                      </span>
+                      <div *ngFor="let o of node.data.objectives">
+                        <span class="simple-caption">
+                          <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                          <i *ngIf="!o.complete" class="fa fa-square-o"></i>
+                          {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                        </span>
+                        <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                      </div>
+                    </div>
+                  </mat-tree-node>
+                  <mat-tree-node style="" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                      <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                      </mat-icon>
+                    </button>
+                    <!-- <div *ngIf="node.data.icon!=null" class="triumph-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
+                    <div style="text-align: left">
+                      <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                      <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
+                      {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
+                      <span class="simple-caption">
+                        {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
+                      </span>
+                      <ng-container *ngIf="node.data.unredeemedCount>0">
+                        <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
+                      </ng-container>
+                      <br>
+                      
+                      <ng-container *ngIf="node.data.unredeemedCount==0">
+                          <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+                      </ng-container>
+                      <ng-container *ngIf="node.data.unredeemedCount>0">
+                        <!-- <mat-progress-bar class="pres-node-prog" color="warn" mode="determinate" [value]="(node.data.unredeemedCount)*100/node.data.completionValue"></mat-progress-bar> -->
+                        <mat-progress-bar class="pres-node-prog" color="warn" mode="determinate" [value]="(node.data.unredeemedCount+node.data.progress)*100/node.data.completionValue"></mat-progress-bar>
+                      </ng-container>
+                    </div>
+                  </mat-tree-node>
+                </mat-tree>
               </ng-container>
             </mat-tab>
             <mat-tab>
@@ -603,22 +636,49 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
-                    <mat-tree-node *matTreeNodeDef="let node" matTreeNodeToggle>
-                      <button mat-icon-button disabled></button>
-                      {{node.data.name}} : {{node.data.acquired}} {{node.data.sourceString}}
-                    </mat-tree-node>
-                    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-                      <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
-                        <mat-icon class="mat-icon-rtl-mirror">
-                          {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                        </mat-icon>
-                      </button>                        
-                      {{node.data.name}} {{node.data.hash}}: 
-                      {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}  {{node.data.complete}}
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                    <button mat-icon-button disabled></button>
+                    <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+                    <div style="text-align: left; margin-bottom: 20px">
+                      <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                      <i *ngIf="!node.data.acquired" class="fa fa-square-o"></i>
+                      {{node.data.name}} <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
+                      <br>
+                      <span class="simple-caption">
+                        {{node.data.sourceString}}
+                      </span>
+                    </div>
+                    <!-- {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>: {{node.data.acquired}}
+                    {{node.data.sourceString}} -->
+                  </mat-tree-node>
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                      <mat-icon class="mat-icon-rtl-mirror">
+                        {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                      </mat-icon>
+                    </button>
+                    <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+                    <div style="text-align: left">
+                      <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                      <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
+                      {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
+                      <span class="simple-caption">
+                        {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
+                      </span>                      <br>
+                      <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>                     
+                    </div>
 
-                    </mat-tree-node>
-                  </mat-tree>
+                    <!-- {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>:
+                    {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
+                    {{node.data.complete}} -->
+
+                  </mat-tree-node>
+                </mat-tree>
               </ng-container>
+              <div>
+                  <br>
+                  <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at DestinySets</a>
+              </div>
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
