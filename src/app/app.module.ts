@@ -31,7 +31,7 @@ import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 
 import { AppRoutingModule, AuthGuard } from './app-routing.module';
-import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent } from './app.component';
+import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent } from './app.component';
 
 @NgModule({
   imports: [
@@ -60,10 +60,10 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent
   ],
   entryComponents: [
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent
   ],
   providers: [
     LowLineService,

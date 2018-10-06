@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, Platform, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, PublicMilestone, SaleItem } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, PublicMilestone, SaleItem, Currency } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -22,12 +22,9 @@ const API_ROOT: string = "https://www.bungie.net/Platform/";
 export class BungieService implements OnDestroy {
     private selectedUserSub = new ReplaySubject(1);
     public selectedUserFeed: Observable<SelectedUser>;
-
     private publicMilestones: PublicMilestone[] = null;
-
     private unsubscribe$: Subject<void> = new Subject<void>();
     authInfo: AuthInfo;
-
     selectedUser: SelectedUser;
     apiDown = false;
 
@@ -38,6 +35,17 @@ export class BungieService implements OnDestroy {
         private parseService: ParseService) {
 
         this.selectedUserFeed = this.selectedUserSub.asObservable() as Observable<SelectedUser>;
+        this.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+            if (selectedUser!=null){
+                // //after the fact search for clan
+                this.setClans(this.selectedUser.membership);
+                // //after the fact currency set
+                this.applyCurrencies(this.selectedUser);
+            }
+
+        });
+
+
 
         this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
             this.authInfo = ai;
@@ -52,29 +60,36 @@ export class BungieService implements OnDestroy {
                     selectedUser.membership = membership;
 
                     //For testing, add a fake PSN account
-                    // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-                    // fake.membershipType = 2;
-                    // fake.platformName = "PSN";
-                    // membership.destinyMemberships.push(fake);
+                    let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+                    fake.membershipType = 2;
+                    fake.platformName = "PSN";
+                    membership.destinyMemberships.push(fake);
+
+                    fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+                    fake.membershipType = 4;
+                    fake.platformName = "BNET";
+                    membership.destinyMemberships.push(fake);
+
 
                     let platform: number = 2;
-                    let sPlatform: string = localStorage.getItem("preferredPlatform");
+                    let sPlatform: string = localStorage.getItem("D2STATE-preferredPlatform");
                     if (sPlatform != null) {
                         platform = parseInt(sPlatform);
                     }
+                    else {
+                        console.log("No preferred platform using: " + platform);
+                        selectedUser.promptForPlatform = true;
+                    }
                     membership.destinyMemberships.forEach(m => {
                         if (m.membershipType == platform) {
-                            selectedUser.selectedUser = m;
+                            selectedUser.userInfo = m;
                         }
                     });
-                    if (selectedUser.selectedUser == null) {
-                        selectedUser.selectedUser = membership.destinyMemberships[0];
+                    if (selectedUser.userInfo == null) {
+                        selectedUser.userInfo = membership.destinyMemberships[0];
                     }
                     this.selectedUser = selectedUser;
                     this.emitUsers();
-
-                    //after the fact search for clan
-                    this.setClans(membership);
                 });
             }
             else {
@@ -82,28 +97,6 @@ export class BungieService implements OnDestroy {
                 this.emitUsers();
             }
         });
-    }
-
-    public checkCurrency() {
-        if (this.selectedUser != null && this.selectedUser.selectedUserCurrencies != null) {
-            return;
-        }
-        else {
-            this.refreshCurrency();
-        }
-    }
-
-    public refreshCurrency() {
-        if (this.selectedUser != null) {
-            this.setCurrencies();
-        }
-        else {
-            this.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-                if (this.selectedUser != null) {
-                    this.setCurrencies();
-                }
-            });
-        }
     }
 
     public async getBungieMemberById(id: string): Promise<BungieMember> {
@@ -227,16 +220,12 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private setCurrencies() {
+    private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
         const self: BungieService = this;
-        this.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ["ProfileCurrencies"]).then(x => {
-            if (x != null) {
-                this.selectedUser.selectedUserCurrencies = x.currencies;
+        const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId, ["ProfileCurrencies"], true);
+        if (tempPlayer == null) return;
+        s.selectedUserCurrencies = tempPlayer.currencies;
 
-            } else {
-                this.selectedUser.selectedUserCurrencies = null;
-            }
-        });
     }
 
     private setClans(membership: BungieMembership) {
@@ -249,9 +238,8 @@ export class BungieService implements OnDestroy {
     }
 
     public selectUser(u: UserInfo) {
-        this.selectedUser.selectedUser = u;
-        localStorage.setItem("preferredPlatform", "" + u.membershipType);
-        this.refreshCurrency();
+        this.selectedUser.userInfo = u;
+        localStorage.setItem("D2STATE-preferredPlatform", "" + u.membershipType);
         this.emitUsers();
     }
 

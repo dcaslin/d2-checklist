@@ -7,14 +7,16 @@
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br />
         <div class="searchRow">
-          <mat-form-field class="searchField searchPlatform">
-            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
-              <mat-option *ngFor="let p of platforms" [value]="p">
-                {{ p.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
+            <mat-form-field class="searchField searchPlatform">
+                <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
+                    <mat-select-trigger>
+                        <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+                      </mat-select-trigger>
+                  <mat-option *ngFor="let p of platforms" [value]="p">
+                    <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
           <mat-form-field class="searchField searchGt">
             <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
           </mat-form-field>
@@ -79,7 +81,7 @@
           <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-flag-o"></i>
+                <i class="fas fa-flag"></i>
                 <span class="d-none d-md-inline">&ensp;Milestones</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
@@ -104,7 +106,7 @@
                       <th scope="col" *ngFor="let char of player.characters">
                         {{char.className}} - {{char.light}}
                         <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams">
-                          <i class="warn-text fa fa-2x fa fa-bed"></i>
+                          <i class="warn-text fas fa-2x fas fa-bed"></i>
                         </span>
                       </th>
                     </tr>
@@ -136,16 +138,16 @@
 
                               <div>
                                 <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                                  <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                                  <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
 
                                   <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
                                 </ng-container>
                                 <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                                  <i class="fa fa-square-o"></i>
+                                  <i class="far fa-square"></i>
                                   <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
                                 </ng-container>
                                 <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                                  <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                                  <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
                                   <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
                                 </ng-container>
                               </div>
@@ -161,7 +163,7 @@
                                   <ng-container *ngIf="char.aggHistory.hmNfFastestMs!=null">
                                     | {{char.aggHistory.hmNfFastestMs| amnsTiming:'ms'}}</ng-container>
                                   <span class="trophy">
-                                    <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                                    <i class="trophy fas fa-trophy" aria-hidden="true"></i>
                                   </span>
                                 </div>
                               </div>
@@ -205,7 +207,7 @@
                                     | {{char.aggHistory.hmRaidFastestMs| amnsTiming:'ms'}}
                                   </ng-container>
                                   <span class="trophy">
-                                    <i class="trophy fa fa-trophy" aria-hidden="true"></i>
+                                    <i class="trophy fas fa-trophy" aria-hidden="true"></i>
                                   </span>
                                 </div>
                               </div>
@@ -222,8 +224,8 @@
 
                             </ng-container>
                             <ng-container *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
-                              <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-minus-square-o" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
+                              <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                             </ng-container>
                           </span>
                         </td>
@@ -240,35 +242,35 @@
 
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true">
                             Nightfall
-                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==false">
                             Nightfall
-                            <i class="fa fa-square-o"></i>
+                            <i class="far fa-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true">
                             Raid
-                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==false">
                             Raid
-                            <i class="fa fa-square-o"></i>
+                            <i class="far fa-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true">
                             Crucible
-                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==false">
                             Crucible
-                            <i class="fa fa-square-o"></i>
+                            <i class="far fa-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true">
                             Trials
-                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </span>
                           <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==false">
                             Trials
-                            <i class="fa fa-square-o"></i>
+                            <i class="far fa-square"></i>
                           </span>
                         </div>
                       </td>
@@ -285,7 +287,7 @@
                     unavailable
                     milestones. Chars that aren't eligable for milestones may therefore show as complete.</li>
                   <li>lt = lifetime</li>
-                  <li>Milestones with this icon <i class="fa fa-minus-square-o"></i> denote players that are not yet
+                  <li>Milestones with this icon <i class="far fa-minus-square"></i> denote players that are not yet
                     max
                     level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
                 </ul>
@@ -297,7 +299,7 @@
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-gift"></i>
+                <i class="fas fa-gift"></i>
                 <span class="d-none d-md-inline">&ensp;Bounties</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
@@ -338,18 +340,18 @@
                                 <ng-container *ngIf="g.mapLink==null">{{g.name}} </ng-container>
                                 <a [href]="g.mapLink" *ngIf="g.mapLink!=null" target="_blank" rel="noopener">
                                   {{g.name}}
-                                  <i class='accent-text fa fa-map-marker'></i>
+                                  <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
-                                  <i class="fa fa-clock-o"></i>
+                                  <i class="fas fa-clock"></i>
                                   {{ g.expirationDate | amDifference: today |
                                   amDuration:'ms'}} </span>
                                 <div class="simple-caption">{{g.desc}}</div>
                               </td>
                               <td data-label="">
                                 <div class="obj-desc" *ngFor="let obj of g.objectives">
-                                  <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                  <i *ngIf="!obj.complete" class="fa fa-square-o"></i>
+                                  <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                  <i *ngIf="!obj.complete" class="far fa-square"></i>
                                   {{obj.progressDescription}} {{obj.aggProgress}}
                                   <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
                                   <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
@@ -373,7 +375,7 @@
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-check-square-o"></i>
+                <i class="fas fa-check-square"></i>
                 <span class="d-none d-md-inline">&ensp;Checklist</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
@@ -412,7 +414,7 @@
                                 <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
                                 <ng-container *ngIf="check.mapUrl!=null">
                                   <a [href]="check.mapUrl" target="_blank" rel="noopener">{{check.name}}
-                                    <i class='accent-text fa fa-map-marker'></i>
+                                    <i class='accent-text far fa-map-marker-alt'></i>
                                   </a>
 
                                 </ng-container>
@@ -420,14 +422,14 @@
                                 <span *ngIf="debugmode">
                                   &ensp;[{{check.hash}}] &ensp;
                                   <a href="javascript:void(0)" (click)="routeSearch()">
-                                    <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
+                                    <i class="fas fa-sync fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
                                   </a>
                                 </span>
                               </td>
                               <td>
                                 <span>
-                                  <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                  <i *ngIf="!check.checked" class="fa fa-square-o"></i>
+                                  <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                  <i *ngIf="!check.checked" class="far fa-square"></i>
                                 </span>
                               </td>
                               <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
@@ -468,22 +470,22 @@
                                 <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
                                 <ng-container *ngIf="check.mapUrl!=null">
                                   <a [href]="check.mapUrl" target="_blank" rel="noopener">{{check.name}}
-                                    <i class='accent-text fa fa-map-marker'></i>
+                                    <i class='accent-text far fa-map-marker-alt'></i>
                                   </a>
                                 </ng-container>
                                 <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                                 <span *ngIf="debugmode">
                                   &ensp;[{{check.hash}}] &ensp;
                                   <a href="javascript:void(0)" (click)="routeSearch()">
-                                    <i class="fa fa-refresh fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
+                                    <i class="fas fa-sync fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
                                   </a>
                                 </span>
                               </td>
                               <td>
                                 <span class="space-right" *ngFor="let c of check.checked">
-                                  <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                                  <i *ngIf="!c.checked && !check.oncePerAccount" class="fa fa-square-o"></i>
-                                  <i *ngIf="!c.checked && check.oncePerAccount" class="fa fa-minus-square-o"></i>
+                                  <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                  <i *ngIf="!c.checked && !check.oncePerAccount" class="far fa-square"></i>
+                                  <i *ngIf="!c.checked && check.oncePerAccount" class="far fa-minus-square"></i>
                                 </span>
                               </td>
 
@@ -512,7 +514,7 @@
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-line-chart"></i>
+                <i class="fas fa-chart-line"></i>
                 <span class="d-none d-md-inline">&ensp;Progress</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
@@ -536,11 +538,6 @@
                       <tbody>
                         <tr *ngFor="let faction of char.factions">
                           <td class="lead" data-label="">
-
-                            <!-- <a href="https://vendorengrams.xyz" target="_blank" rel="noopener" matTooltip="Vendor has max LL engrams. See vendorengrams.xyz for more info!"
-                            *ngIf="faction.xyz300">
-                            <i class="warn-text fa fa-diamond fa-2x"></i>
-                          </a> -->
                             <span [matTooltip]="faction.desc">{{faction.name}}</span>
 
 
@@ -572,7 +569,7 @@
 
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-trophy"></i>
+                <i class="fas fa-trophy"></i>
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
@@ -582,14 +579,14 @@
                     <button mat-icon-button disabled></button>
                     <!-- <div *ngIf="node.data.icon!=null" class="transparent-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
                     <div style="text-align: left; margin-bottom: 20px">
-                      <i *ngIf="node.data.complete && node.data.redeemed" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                      <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fa fa-check-square-o"></i>
-                      <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
+                      <i *ngIf="node.data.complete && node.data.redeemed" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!node.data.complete" class="far fa-square"></i>
 
                       <ng-container *ngIf="node.data.mapLink==null"> {{node.data.name}} </ng-container>
                       <a [href]="node.data.mapLink" *ngIf="node.data.mapLink!=null" target="_blank" rel="noopener">
                         {{node.data.name}}
-                        <i class='accent-text fa fa-map-marker'></i>
+                        <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
                       <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
                       <br>
@@ -600,8 +597,8 @@
                       </span>
                       <div *ngFor="let o of node.data.objectives">
                         <span class="simple-caption">
-                          <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                          <i *ngIf="!o.complete" class="fa fa-square-o"></i>
+                          <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="!o.complete" class="far fa-square"></i>
                           {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                         </span>
                         <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
@@ -616,8 +613,8 @@
                     </button>
                     <!-- <div *ngIf="node.data.icon!=null" class="triumph-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
                     <div style="text-align: left">
-                      <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                      <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
+                      <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!node.data.complete" class="far fa-square"></i>
                       {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
                       <span class="simple-caption">
                         {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
@@ -641,7 +638,7 @@
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-database"></i>
+                <i class="fas fa-database"></i>
                 <span class="d-none d-md-inline">&ensp;Collections</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
@@ -651,8 +648,8 @@
                     <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
                       [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
                     <div style="text-align: left; margin-bottom: 20px">
-                      <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                      <i *ngIf="!node.data.acquired" class="fa fa-square-o"></i>
+                      <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!node.data.acquired" class="far fa-square"></i>
                       {{node.data.name}} <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
                       <br>
                       <span class="simple-caption">
@@ -671,8 +668,8 @@
                     <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon"
                       [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
                     <div style="text-align: left">
-                      <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                      <i *ngIf="!node.data.complete" class="fa fa-square-o"></i>
+                      <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!node.data.complete" class="far fa-square"></i>
                       {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
                       <span class="simple-caption">
                         {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
@@ -693,9 +690,9 @@
                   DestinySets</a>
               </div>
             </mat-tab>
-            <mat-tab>
+           <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fa fa-users"></i>
+                <i class="fas fa-users"></i>
                 <span class="d-none d-md-inline">&ensp;Chars</span>
               </ng-template>
               <ng-container *ngIf="player!=null">

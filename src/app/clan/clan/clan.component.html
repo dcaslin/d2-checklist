@@ -24,7 +24,7 @@
 
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true">
               Nightfall
-              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==false">
               Nightfall
@@ -32,7 +32,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==true">
               Raid
-              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==false">
               Raid
@@ -40,7 +40,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==true">
               Crucible
-              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==false">
               Crucible
@@ -48,7 +48,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==true">
               Trials
-              <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==false">
               Trials
@@ -169,7 +169,7 @@
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
-                    <i class="fa fa-refresh"></i>
+                    <i class="fas fa-sync"></i>
                   </a>
                 </td>
                 <td *ngIf="member.player==null">N/A</td>
@@ -189,18 +189,18 @@
                       <ng-container *ngFor="let char of member.player.characters">
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                            <i class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
+                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
                             <i class="fa fa-square-o"></i>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text fa fa-minus-square-o"></i>
+                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
                           </ng-container>
                         </span>
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
-                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fa fa-check-square-o"></i>
-                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="fa fa-minus-square-o" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
+                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                         </span>
                       </ng-container>
                     </td>
@@ -256,7 +256,7 @@
                 you're a clan leader trying to see when someone last played, trust the "Last Played" column even if
                 some
                 weekly milestones appear to be completed.</li>
-              <li>Milestones with this icon <i class="fa fa-minus-square-o"></i> denote players that are not yet max
+              <li>Milestones with this icon <i class="fa far fa-minus-square"></i> denote players that are not yet max
                 level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
             </ul>
           </div>

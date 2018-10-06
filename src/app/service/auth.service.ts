@@ -42,6 +42,7 @@ export class AuthService {
     public signOut() {
         console.log("Signing out, deleting authorization");
         localStorage.removeItem("authorization");
+        localStorage.removeItem("D2STATE-preferredPlatform");
         this.token = null;
         this.emit();
     }

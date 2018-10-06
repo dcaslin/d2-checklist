@@ -8,7 +8,7 @@
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Vendors -
           <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]"
-            *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.selectedUser.platformName}}</a>
+            *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.userInfo.platformName}}</a>
         </h2>
 
         <ng-container *ngIf="loading==false && player==null">
@@ -64,7 +64,7 @@
                       <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text fa fa-map-marker'></i>
+                        <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
                       <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
@@ -117,7 +117,7 @@
                       <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text fa fa-map-marker'></i>
+                        <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
                       <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
@@ -175,7 +175,7 @@
                       <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text fa fa-map-marker'></i>
+                        <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
                       <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       {{i.itemTypeAndTierDisplayName}}
@@ -215,7 +215,7 @@
                       <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text fa fa-map-marker'></i>
+                        <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
                       <br>
                       Quantity: {{i.quantity}}

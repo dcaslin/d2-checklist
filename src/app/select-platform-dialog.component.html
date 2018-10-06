@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Select Platform</h2>
+<mat-dialog-content>
+  
+  <div *ngFor="let u of data" style="margin-bottom: 5px;">
+    <button style="width: 100%" color="primary" mat-raised-button [mat-dialog-close]="u">
+      <i [ngClass]="const.PLATFORMS_DICT[u.membershipType+''].iconClass"></i>&ensp;
+      {{u.platformName}}
+    </button>
+  </div>
+  <p class="simple-caption">Your account has multiple platforms. Please choose one. 
+    You can always change your selection by clicking the <mat-icon class="warn-text">supervisor_account</mat-icon> icon on the top right of the screen.</p>
+</mat-dialog-content>
