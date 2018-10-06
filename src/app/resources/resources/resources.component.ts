@@ -106,11 +106,11 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
         }
       }
       this.selectedUser = d.user;
-      if (this.player != null && this.player.profile.userInfo.membershipId == this.selectedUser.selectedUser.membershipId) {
+      if (this.player != null && this.player.profile.userInfo.membershipId == this.selectedUser.userInfo.membershipId) {
 
       }
       else {
-        this.player = await this.bungieService.getChars(this.selectedUser.selectedUser.membershipType, this.selectedUser.selectedUser.membershipId, ['Profiles', 'Characters']);
+        this.player = await this.bungieService.getChars(this.selectedUser.userInfo.membershipType, this.selectedUser.userInfo.membershipId, ['Profiles', 'Characters']);
       }
       if (d.characterId != null) {
         let found = false;

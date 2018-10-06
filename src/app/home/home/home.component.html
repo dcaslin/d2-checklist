@@ -10,8 +10,11 @@
         <div class="centerMe">
           <mat-form-field class="searchField searchPlatform">
             <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
+                <mat-select-trigger>
+                    <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+                  </mat-select-trigger>
               <mat-option *ngFor="let p of platforms" [value]="p">
-                {{ p.name }}
+                <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>

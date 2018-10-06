@@ -166,9 +166,10 @@ export interface SearchResult {
 }
 
 export class SelectedUser {
-    selectedUser: UserInfo;
+    userInfo: UserInfo;
     selectedUserCurrencies: Currency[];
     membership: BungieMembership;
+    promptForPlatform: boolean = false;
 }
 
 export class BungieMembership {
@@ -652,11 +653,13 @@ export class Platform {
     name: string;
     type: number;
     desc: string;
+    iconClass: string;
 
-    constructor(type: number, name: string, desc: string) {
+    constructor(type: number, name: string, desc: string, iconClass: string) {
         this.type = type;
         this.name = name;
         this.desc = desc;
+        this.iconClass = iconClass;
     }
 }
 
@@ -732,9 +735,9 @@ export class Progression {
 
 export class Const {
 
-    public static XBL_PLATFORM = new Platform(1, "XBL", "Xbox");
-    public static PSN_PLATFORM = new Platform(2, "PSN", "Playstation");
-    public static BNET_PLATFORM = new Platform(4, "BNET", "Battle.net");
+    public static XBL_PLATFORM = new Platform(1, "XBL", "Xbox", "fab fa-xbox");
+    public static PSN_PLATFORM = new Platform(2, "PSN", "Playstation", "fab fa-playstation");
+    public static BNET_PLATFORM = new Platform(4, "BNET", "Battle.net", "fal fa-desktop");
 
     public static PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM
