@@ -26,15 +26,15 @@
         <thead>
           <tr>
             <th scope="col">Name</th>
-            <th scope="col">Xbox</th>
-            <th scope="col">PSN</th>
-            <th scope="col">BNET</th>
+            <th scope="col"><i class="fab fa-xbox"></i>&ensp;Xbox</th>
+            <th scope="col"><i class="fab fa-playstation"></i>&ensp;PSN</th>
+            <th scope="col"><i class="fal fa-desktop"></i>&ensp;BNET</th>
             <th scope="col">Clan</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let account of accounts">
-            <td class="lead" data-label="Name">{{account.name}}</td>
+            <td class="lead" data-label="">{{account.name}}</td>
             <td data-label="Xbox">
               <ng-container *ngIf="account.xbl!=null">
                 <a href="javascript:void(0)" *ngIf="!account.xbl.defunct" (click)="loadPlayer(account.xbl)">{{account.xbl.name}}</a>

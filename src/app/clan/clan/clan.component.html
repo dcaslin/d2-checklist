@@ -28,7 +28,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==false">
               Nightfall
-              <i class="fa fa-square-o"></i>
+              <i class="far fa-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==true">
               Raid
@@ -36,7 +36,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==false">
               Raid
-              <i class="fa fa-square-o"></i>
+              <i class="far fa-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==true">
               Crucible
@@ -44,7 +44,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==false">
               Crucible
-              <i class="fa fa-square-o"></i>
+              <i class="far fa-square"></i>
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==true">
               Trials
@@ -52,7 +52,7 @@
             </span>
             <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==false">
               Trials
-              <i class="fa fa-square-o"></i>
+              <i class="far fa-square"></i>
             </span>
           </mat-card>
 
@@ -111,22 +111,22 @@
             </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
             <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
-              <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
+              <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
+              <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
           <div class="mobile-button-row">
             <button mat-button (click)="toggleMemberSort()">Sort Name
-              <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
-              <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
+              <i *ngIf="sort=='memberDesc'" class="fas fa-sort-down"></i>
+              <i *ngIf="sort=='memberAsc'" class="fas fa-sort-up"></i>
             </button>
             <button mat-button (click)="toggleDateSort()">Sort Last Played
-              <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
-              <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
+              <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
+              <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
             </button>
             <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded" class="fa fa-spinner fa-pulse fa-fw"></i>
-              <i class="fa fa-download" aria-hidden="true"></i> CSV</button>
+              <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
+              <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
           <table class="responsive-table clan-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
@@ -134,14 +134,14 @@
               <tr>
                 <th>
                   <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
-                    <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
-                    <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
+                    <i *ngIf="sort=='memberDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='memberAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
                 <th>
                   <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
-                    <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
-                    <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
+                    <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
@@ -152,8 +152,8 @@
                   </th>
                   <th matTooltip="Max LL of current chars (actual max could be higher)">
                     <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                      <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
-                      <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
+                      <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
+                      <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
                     </a>
                   </th>
                 </ng-container>
@@ -192,7 +192,7 @@
                             <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                            <i class="fa fa-square-o"></i>
+                            <i class="far fa-square"></i>
                           </ng-container>
                           <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
                             <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
@@ -224,14 +224,14 @@
               <tr>
                 <th>
                   <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
-                    <i *ngIf="sort=='memberDesc'" class="fa fa-sort-desc"></i>
-                    <i *ngIf="sort=='memberAsc'" class="fa fa-sort-asc"></i>
+                    <i *ngIf="sort=='memberDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='memberAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
                 <th>
                   <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
-                    <i *ngIf="sort=='dateDesc'" class="fa fa-sort-desc"></i>
-                    <i *ngIf="sort=='dateAsc'" class="fa fa-sort-asc"></i>
+                    <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
@@ -240,8 +240,8 @@
                   </th>
                   <th matTooltip="Max LL of current chars (actual max could be higher)">
                     <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                      <i *ngIf="sort=='llDesc'" class="fa fa-sort-desc"></i>
-                      <i *ngIf="sort=='llAsc'" class="fa fa-sort-asc"></i>
+                      <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
+                      <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
                     </a>
                   </th>
                 </ng-container>

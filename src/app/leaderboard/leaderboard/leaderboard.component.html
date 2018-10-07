@@ -42,7 +42,7 @@
               <span class="name" *ngFor="let p of row.fireteam">
                 <a [routerLink]="['/'+p.membershipType, p.displayName]">{{p.displayName}}</a>
                 <a class="accent-text twitch-url" *ngIf="p.twitchUrl!=null" rel="noopener" [href]="p.twitchUrl" target="_blank">
-                  <i class="fa fa-twitch"></i>
+                  <i class="fab fa-twitch"></i>
                 </a>
               </span>
             </mat-cell>
