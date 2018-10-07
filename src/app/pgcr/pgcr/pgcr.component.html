@@ -9,8 +9,8 @@
 
         <ng-container *ngIf="data!=null">
           <h2>
-            <i *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text fa fa-times" aria-hidden="true"></i>
-            <i *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text fa fa-check" aria-hidden="true"></i>
+            <i *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text fas fa-times" aria-hidden="true"></i>
+            <i *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text fas fa-check" aria-hidden="true"></i>
             PGCR: {{data.mode}} - {{data.name}}
             <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>

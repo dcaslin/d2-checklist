@@ -27,10 +27,10 @@
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="option" style="margin-top: 1em" (change)="router.navigate(['vendors', char.characterId, optionsgroup.value])">
           <mat-button-toggle *ngFor="let o of options" [value]="o">
-            <i *ngIf="o=='Bounties'" class="fa fa-gift"></i>
-            <i *ngIf="o=='Gear'" class="fa fa-cog"></i>
-            <i *ngIf="o=='Exchange'" class="fa fa-balance-scale"></i>
-            <i *ngIf="o=='Cosmetics'" class="fa fa-diamond"></i>
+            <i *ngIf="o=='Bounties'" class="far fa-gift"></i>
+            <i *ngIf="o=='Gear'" class="far fa-cog"></i>
+            <i *ngIf="o=='Exchange'" class="far fa-balance-scale"></i>
+            <i *ngIf="o=='Cosmetics'" class="far fa-palette"></i>
             <span class="d-none d-md-inline"> {{o}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>

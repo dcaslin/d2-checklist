@@ -60,15 +60,15 @@ export class BungieService implements OnDestroy {
                     selectedUser.membership = membership;
 
                     //For testing, add a fake PSN account
-                    let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-                    fake.membershipType = 2;
-                    fake.platformName = "PSN";
-                    membership.destinyMemberships.push(fake);
+                    // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+                    // fake.membershipType = 2;
+                    // fake.platformName = "PSN";
+                    // membership.destinyMemberships.push(fake);
 
-                    fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-                    fake.membershipType = 4;
-                    fake.platformName = "BNET";
-                    membership.destinyMemberships.push(fake);
+                    // fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+                    // fake.membershipType = 4;
+                    // fake.platformName = "BNET";
+                    // membership.destinyMemberships.push(fake);
 
 
                     let platform: number = 2;
@@ -78,7 +78,8 @@ export class BungieService implements OnDestroy {
                     }
                     else {
                         console.log("No preferred platform using: " + platform);
-                        selectedUser.promptForPlatform = true;
+                        if (membership.destinyMemberships.length>1)
+                            selectedUser.promptForPlatform = true;
                     }
                     membership.destinyMemberships.forEach(m => {
                         if (m.membershipType == platform) {
