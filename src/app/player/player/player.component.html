@@ -573,9 +573,11 @@
                 <span class="d-none d-md-inline">&ensp;Triumphs</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
-                <h3 class="triumph-score">Triumph Score: {{player.triumphScore}}</h3>
+                <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
+                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideCompleteTriumph">Hide Completed</mat-checkbox>                
+              </h3> 
                 <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
-                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideTriumph(node)" matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
                     <!-- <div *ngIf="node.data.icon!=null" class="transparent-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
                     <div style="text-align: left; margin-bottom: 20px">
@@ -605,7 +607,7 @@
                       </div>
                     </div>
                   </mat-tree-node>
-                  <mat-tree-node style="" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild"  [hidden]="hideTriumph(node)" matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
                       <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -642,8 +644,11 @@
                 <span class="d-none d-md-inline">&ensp;Collections</span>
               </ng-template>
               <ng-container *ngIf="player!=null">
+                <div class="hide-complete-collectibles">
+                    <mat-checkbox  [(ngModel)]="hideCompleteCollectible">Hide Completed</mat-checkbox>                
+                </div>
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
-                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding>
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideCollectible(node)" matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
                     <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
                       [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
@@ -659,7 +664,7 @@
                     <!-- {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>: {{node.data.acquired}}
                     {{node.data.sourceString}} -->
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideCollectible(node)" matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
                       <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}

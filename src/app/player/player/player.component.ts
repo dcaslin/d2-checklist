@@ -38,6 +38,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   gamerTag: string;
   player: Player;
   hideCompleteChecklist = false;
+  hideCompleteTriumph = false;
+  hideCompleteCollectible = false;
 
   treeControl2: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
@@ -67,6 +69,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   private _getChildren = (node: any): Observable<any[]> => observableOf(node.children);
 
   hasChild = (_: number, _nodeData: TriumphFlatNode) => _nodeData.expandable;
+
+  hideTriumph = (_nodeData: TriumphFlatNode) => this.hideCompleteTriumph && _nodeData.data.complete;
+  hideCollectible = (_nodeData: TriumphFlatNode) => this.hideCompleteCollectible && _nodeData.data.complete;
 
   
   private  setPlayer(x: Player): void{
