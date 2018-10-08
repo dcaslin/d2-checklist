@@ -1663,6 +1663,7 @@ export class ParseService {
             icon: cDesc.displayProperties.icon,
             index: cDesc.index,
             acquired: acquired,
+            complete: acquired,
             sourceString: cDesc.sourceString,
             children: null
         }
