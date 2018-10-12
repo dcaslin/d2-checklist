@@ -17,7 +17,7 @@ import {
 @Injectable()
 export class ParseService {
 
-    constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {     
+    constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {
         this.lowlineService.init();
     }
 
@@ -586,12 +586,12 @@ export class ParseService {
             returnMe = returnMe.concat(items);
 
         }
-        for (const i of returnMe){
+        for (const i of returnMe) {
             i.mapLink = this.lowlineService.buildItemLink(i.hash);
-            if (i.mapLink!=null){
-              i.searchText+="maplink";
+            if (i.mapLink != null) {
+                i.searchText += "maplink";
             }
-          }
+        }
         return returnMe;
     }
 
@@ -721,10 +721,10 @@ export class ParseService {
             itemType = ItemType.GearMod;
         }
 
-        
+
         searchText += iDesc.displayProperties.name + " "
-        searchText += vendor.name+" ";
-        searchText += iDesc.itemTypeAndTierDisplayName+" ";
+        searchText += vendor.name + " ";
+        searchText += iDesc.itemTypeAndTierDisplayName + " ";
 
         return {
             vendor: vendor,
@@ -1386,75 +1386,77 @@ export class ParseService {
             });
         }
 
-        const checklists: Checklist[] = this.parseProfileChecklists(resp);
-        const charChecklists: CharChecklist[] = this.parseCharChecklists(resp, chars);
-
+        let recordTree = [];
+        let colTree = [];
+        let triumphScore = null;
         let currencies: Currency[] = [];
-        //hit with a hammer
-        if (resp.profileCurrencies != null && resp.profileCurrencies.data != null && resp.profileCurrencies.data.items != null) {
-            resp.profileCurrencies.data.items.forEach(x => {
-                let desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
-                if (desc != null) {
-                    currencies.push(new Currency(desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
-                }
-            });
-        }
-
-        let bounties: InventoryItem[] = [];
-        let vault: Character = new Character();
-        vault.className = "Vault";
-        let shared: Character = new Character();
-        shared.className = "Shared";
         let rankups: Rankup[] = [];
-
-        if (resp.characterInventories != null && resp.characterInventories.data != null) {
-            Object.keys(resp.characterInventories.data).forEach((key) => {
-                let char: Character = charsDict[key];
-                let items: _InventoryItem[] = resp.characterInventories.data[key].items;
-                items.forEach(itm => {
-                    let parsed: InventoryItem = this.parseInvItem(itm, false, char, vault, resp.itemComponents);
-                    if (parsed != null) {
-                        parsed.mapLink =this.lowlineService.buildItemLink(parsed.hash);
-                        bounties.push(parsed);
+        let bounties: InventoryItem[] = [];
+        let checklists: Checklist[] = [];
+        let charChecklists: CharChecklist[] = [];
+        if (!superprivate) {
+            checklists = this.parseProfileChecklists(resp);
+            charChecklists = this.parseCharChecklists(resp, chars);
+            //hit with a hammer
+            if (resp.profileCurrencies != null && resp.profileCurrencies.data != null && resp.profileCurrencies.data.items != null) {
+                resp.profileCurrencies.data.items.forEach(x => {
+                    let desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
+                    if (desc != null) {
+                        currencies.push(new Currency(desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
                     }
                 });
+            }
+            let vault: Character = new Character();
+            vault.className = "Vault";
+            let shared: Character = new Character();
+            shared.className = "Shared";
+            if (resp.characterInventories != null && resp.characterInventories.data != null) {
+                Object.keys(resp.characterInventories.data).forEach((key) => {
+                    let char: Character = charsDict[key];
+                    let items: _InventoryItem[] = resp.characterInventories.data[key].items;
+                    items.forEach(itm => {
+                        let parsed: InventoryItem = this.parseInvItem(itm, false, char, vault, resp.itemComponents);
+                        if (parsed != null) {
+                            parsed.mapLink = this.lowlineService.buildItemLink(parsed.hash);
+                            bounties.push(parsed);
+                        }
+                    });
+                });
+            }
+
+            bounties.sort(function (a, b) {
+                return b.aggProgress - a.aggProgress;
             });
-        }
 
-        bounties.sort(function (a, b) {
-            return b.aggProgress - a.aggProgress;
-        });
-
-        let triumphScore = null;
-        const nodes: any[] = [];
-        const records: any[] = [];
-        const collections: any[] = [];
-        if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
-            if (resp.profilePresentationNodes.data != null && resp.profilePresentationNodes.data.nodes != null) {
-                nodes.push(resp.profilePresentationNodes.data.nodes);
-                records.push(resp.profileRecords.data.records);
-                collections.push(resp.profileCollectibles.data.collectibles);
-                triumphScore = resp.profileRecords.data.score;
+            const nodes: any[] = [];
+            const records: any[] = [];
+            const collections: any[] = [];
+            if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
+                if (resp.profilePresentationNodes.data != null && resp.profilePresentationNodes.data.nodes != null) {
+                    nodes.push(resp.profilePresentationNodes.data.nodes);
+                    records.push(resp.profileRecords.data.records);
+                    collections.push(resp.profileCollectibles.data.collectibles);
+                    triumphScore = resp.profileRecords.data.score;
+                }
             }
-        }
-        if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
-            for (const char of chars) {
-                const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
-                const _records = resp.characterRecords.data[char.characterId].records;
-                const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
-                nodes.push(presentationNodes);
-                records.push(_records);
-                collections.push(_coll);
+            if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
+                for (const char of chars) {
+                    const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
+                    const _records = resp.characterRecords.data[char.characterId].records;
+                    const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
+                    nodes.push(presentationNodes);
+                    records.push(_records);
+                    collections.push(_coll);
+                }
             }
-        }
 
-        let recordTree = [];
-        if (records.length > 0) {
-            recordTree = this.handleRecPresNode("1024788583", nodes, records).children;
-        }
-        let colTree = [];
-        if (collections.length > 0) {
-            colTree = this.handleColPresNode("3790247699", nodes, collections).children;
+            if (records.length > 0) {
+                recordTree = this.handleRecPresNode("1024788583", nodes, records).children;
+            }
+
+            if (collections.length > 0) {
+                colTree = this.handleColPresNode("3790247699", nodes, collections).children;
+            }
         }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree);
     }
@@ -1553,7 +1555,7 @@ export class ParseService {
             }
         }
         const mapLink = this.lowlineService.buildRecordLink(key);;
-        
+
 
 
         return {

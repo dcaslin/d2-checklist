@@ -149,11 +149,11 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    public updateRaidHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
+    public updateRaidHistory(msNames: MileStoneName[], chars: Character[], ignoreErrors?: boolean): Promise<void[]> {
         const self: BungieService = this;
         let promises: Promise<void>[] = [];
         chars.forEach(c => {
-            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 600).then((hist: Activity[]) => {
+            let p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 4, 600, ignoreErrors).then((hist: Activity[]) => {
                 self.parseService.parseRaidHistory(msNames, c, hist);
             });
             promises.push(p);
@@ -340,6 +340,11 @@ export class BungieService implements OnDestroy {
 
     private parseBungieResponse(j: any): any {
         if (j.ErrorCode && j.ErrorCode != 1) {
+            if (j.ErrorCode==1665){
+                return {
+                    privacy: true
+                };
+            }
             if (j.ErrorCode === 5) {
                 this.apiDown = true;
             }
@@ -393,23 +398,29 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number): Promise<Activity[]> {
+    public async getActivityHistoryPage(membershipType: number, membershipId: string, characterId: string, mode: number, page: number, count: number, ignoreErrors?: boolean): Promise<Activity[]> {
         try {
             const resp = await this.makeReq('Destiny2/' + membershipType + "/Account/" +
                 membershipId + "/Character/" + characterId + "/Stats/Activities/?count=" +
                 count + "&mode=" + mode + "&page=" + page);
-            if (resp.activities) {
+            if (resp.privacy==true){
+                if (!ignoreErrors){
+                    this.notificationService.info("Player has blocked access to activity history");
+                }
+            }
+            else if (resp.activities) {
                 return this.parseService.parseActivities(resp.activities);
             }
             return [];
         }
         catch (err) {
-            this.handleError(err);
+            if (!ignoreErrors)
+                this.handleError(err);
             return [];
         }
     }
 
-    public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number): Promise<any[]> {
+    public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<any[]> {
         let self = this;
         const MAX_PAGE_SIZE: number = 100;
         let curPage: number = 0;
@@ -429,10 +440,10 @@ export class BungieService implements OnDestroy {
                         resolve(allMatches);
                         return;
                     }
-                    return self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE).then(processMatches);
+                    return self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches);
                 }
             }
-            self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE).then(processMatches).catch((e) => { reject(e) });
+            self.getActivityHistoryPage(membershipType, membershipId, characterId, mode, curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches).catch((e) => { reject(e) });
         });
     }
 

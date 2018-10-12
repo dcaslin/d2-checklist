@@ -169,7 +169,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.members[this.playerCntr].errorMsg = null;
 
         //also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x => {
           //nothing needed
         });
 
@@ -293,7 +293,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         //in case this is a retry 
         this.members[this.playerCntr].errorMsg = null;
         //also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters).then(x => {
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x => {
           //nothing needed
         });
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
