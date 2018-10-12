@@ -5,19 +5,18 @@ export interface TriumphNode{
     desc: string;
     icon: string;
     index: string;
+    complete: boolean;
     children: TriumphNode[];
 }
 
 export interface TriumphPresentationNode extends TriumphNode{
     progress: number,
     completionValue: number,
-    complete: boolean,
     unredeemedCount: number;
 }
 
 export interface TriumphRecordNode extends TriumphNode{
     objectives: ItemObjective[];
-    complete: boolean;
     redeemed: boolean;
     title: boolean;
     mapLink: string;
