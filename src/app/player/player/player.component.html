@@ -39,10 +39,12 @@
           <br>
           <br>
         </ng-container>
+        <ng-container *ngIf="player!=null && player.superprivate">
+            <h4>{{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
+        </ng-container>
 
-        <ng-container *ngIf="player!=null">
+        <ng-container *ngIf="player!=null && !player.superprivate">
           <h4>{{player.profile.userInfo.displayName}} -
-            <span *ngIf="player.superprivate">[hidden by privacy settings]</span>
             <span *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower')) && !player.superprivate">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
             </span>
