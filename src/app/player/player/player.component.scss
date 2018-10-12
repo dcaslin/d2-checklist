@@ -196,6 +196,21 @@ a.underline:link {
   font-weight: lighter;
 }
 
+.hide-complete-triumphs{
+  margin-left: 2em;
+  font-size: small;
+  font-weight: lighter;
+}
+
+.hide-complete-collectibles{
+  text-align: left;
+  margin: 5px;
+  margin-top: 10px;  
+  margin-left: 1em;  
+  font-size: small;
+  font-weight: lighter;
+}
+
 .mat-expansion-panel-header-title, 
 .mat-expansion-panel-header-description {
   flex-basis: 0;
