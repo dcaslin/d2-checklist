@@ -231,6 +231,11 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
               if (char.milestones[mileStoneName.key].complete == true) {
                 total++;
               }
+            } 
+            else if (char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears && char.baseCharacterLevel>=char.maxLevel) {
+              total++;
+              pctTotal++;
+              possible++;
             }
           });
           sCsv += total + ",";
