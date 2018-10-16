@@ -1523,6 +1523,7 @@ export class ParseService {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) return null;
         const val = this.getBestRec(records, key);
+        if (val==null) return null;
 
         let objs = [];
         let totalProgress = 0;
