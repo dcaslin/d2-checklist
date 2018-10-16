@@ -13,7 +13,7 @@ import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
 import { BungieService } from './service/bungie.service';
-import { SelectedUser, ClanRow, UserInfo, Const } from './service/model';
+import { SelectedUser, ClanRow, UserInfo, Const, BungieMember } from './service/model';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { ChildComponent } from './shared/child.component';
@@ -138,16 +138,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  myProfile() {
+  async myProfile() {
     if (this.signedOnUser != null) {
-      this.router.navigate([this.signedOnUser.userInfo.membershipType,
-      this.signedOnUser.userInfo.displayName]);
+      if (this.signedOnUser.userInfo.membershipType==4){
+        const match: BungieMember = await this.bungieService.getBungieMemberById(this.signedOnUser.membership.bungieId);
+        this.router.navigate(['/',match.bnet.platform.type, match.bnet.name]);
+      }
+      else{
+        this.router.navigate([this.signedOnUser.userInfo.membershipType, this.signedOnUser.userInfo.displayName]);
+      }
     }
   }
 
   ngOnInit(): void {
-
-
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser = selectedUser;
       this.loggingOn = false;
