@@ -21,38 +21,10 @@
 
           <mat-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
             <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
-
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==true">
-              Nightfall
-              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.nightfall==false">
-              Nightfall
-              <i class="far fa-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==true">
-              Raid
-              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.raid==false">
-              Raid
-              <i class="far fa-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==true">
-              Crucible
-              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.crucible==false">
-              Crucible
-              <i class="far fa-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==true">
-              Trials
-              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-            </span>
-            <span class="clanMs" *ngIf="modelPlayer.characters[0].clanMilestones.trials==false">
-              Trials
-              <i class="far fa-square"></i>
+            <span style="margin-right: 0.5em"  *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
+                {{clanMs.name}}
+                <i *ngIf="clanMs.earned==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
             </span>
           </mat-card>
 
