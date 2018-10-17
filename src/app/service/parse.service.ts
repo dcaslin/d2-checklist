@@ -7,7 +7,7 @@ import {
     Character, CurrentActivity, Progression, Activity,
     Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
     Const, BungieMembership, BungieMember, BungieMemberPlatform,
-    BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResults,
+    BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResult,
     CharacterStat, Currency, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective, _MilestoneActivity,
@@ -180,33 +180,51 @@ export class ParseService {
                 let ms: _Milestone = _prog.milestones[key];
                 //ignore milestones we're not reporting
                 if (key == "4253138191") {
+                    
+                    const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
 
                     //grab weekly reset from this
                     c.startWeek = new Date(ms.startDate);
                     c.endWeek = new Date(ms.endDate);
 
-                    let clanMilestones: ClanMilestoneResults = new ClanMilestoneResults();
+                    let clanMilestones: ClanMilestoneResult[] = [];
                     ms.rewards.forEach(r => {
+                        //last week, for testing
+                        //if (r.rewardCategoryHash == 4258746474) {
                         //this week
                         if (r.rewardCategoryHash == 1064137897) {
+                            const rewEntryDescs = desc.rewards[r.rewardCategoryHash].rewardEntries;
+
                             r.entries.forEach(rewEnt => {
+
                                 let rewEntKey = rewEnt.rewardEntryHash;
-                                let earned: boolean = rewEnt.earned;
+                                const name = rewEntryDescs[rewEntKey].displayProperties.name;
+                                
+                                const earned: boolean = rewEnt.earned;
+                                const redeemed: boolean = rewEnt.redeemed;
+                                clanMilestones.push({
+                                    name: name,
+                                    earned: earned,
+                                    redeemed: redeemed
+                                });
 
-                                if (rewEntKey == 3789021730) {
-                                    clanMilestones.nightfall = earned;
+                                // if (rewEntKey == 3789021730) {
+                                //     clanMilestones.nightfall = earned;
 
-                                }
-                                else if (rewEntKey == 2112637710) {
-                                    clanMilestones.trials = earned;
+                                // }
+                                // else if (rewEntKey == 2112637710) {
+                                //     clanMilestones.trials = earned;
 
-                                }
-                                else if (rewEntKey == 2043403989) {
-                                    clanMilestones.raid = earned;
-                                }
-                                else if (rewEntKey == 964120289) {
-                                    clanMilestones.crucible = earned;
-                                }
+                                // }
+                                // else if (rewEntKey == 2043403989) {
+                                //     clanMilestones.raid = earned;
+                                // }
+                                // else if (rewEntKey == 964120289) {
+                                //     clanMilestones.crucible = earned;
+                                // }
+                                // else{
+                                //     console.log("--- "+rewEntKey);
+                                // }
                             });
                         }
                     });

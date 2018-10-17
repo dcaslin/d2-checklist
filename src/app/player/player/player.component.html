@@ -239,44 +239,15 @@
                           class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
                       </td>
                       <td [attr.colspan]="player.characters.length">
-
                         <div class="clanMsRow">
-
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==true">
-                            Nightfall
-                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.nightfall==false">
-                            Nightfall
-                            <i class="far fa-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==true">
-                            Raid
-                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.raid==false">
-                            Raid
-                            <i class="far fa-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==true">
-                            Crucible
-                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.crucible==false">
-                            Crucible
-                            <i class="far fa-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==true">
-                            Trials
-                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          </span>
-                          <span class="clanMs" *ngIf="player.characters[0].clanMilestones.trials==false">
-                            Trials
-                            <i class="far fa-square"></i>
+                          <span style="margin-right: 0.5em" *ngFor="let clanMs of player.characters[0].clanMilestones">
+                            {{clanMs.name}}
+                            <i *ngIf="clanMs.earned==true && !clanMs.redeemed==true" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                            <i *ngIf="clanMs.earned==true && clanMs.redeemed==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                            <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
                           </span>
                         </div>
                       </td>
-
                     </tr>
                   </tbody>
                 </table>

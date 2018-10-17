@@ -449,7 +449,7 @@ export class Character {
     wellRested: boolean = false;
     currentActivity: CurrentActivity;
     milestones: { [key: string]: MilestoneStatus };
-    clanMilestones: ClanMilestoneResults;
+    clanMilestones: ClanMilestoneResult[];
     factions: Progression[];
     //progressions: Progression[];
     stats: CharacterStat[];
@@ -527,11 +527,10 @@ export class CharacterStat {
     }
 }
 
-export class ClanMilestoneResults {
-    nightfall: boolean;
-    raid: boolean;
-    crucible: boolean;
-    trials: boolean;
+export interface ClanMilestoneResult {
+    name: string;
+    earned: boolean;
+    redeemed: boolean;
 }
 
 export interface LevelProgression {
