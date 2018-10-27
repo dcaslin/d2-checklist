@@ -7,7 +7,7 @@ import { Subject, BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { Player, Character, SearchResult, Platform, Const, TriumphNode } from "../../service/model";
+import { Player, Character, SearchResult, Platform, Const, TriumphNode, MileStoneName } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
@@ -40,6 +40,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideCompleteChecklist = false;
   hideCompleteTriumph = false;
   hideCompleteCollectible = false;
+
+  hideCompleteChars:string = null;
 
   treeControl2: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
@@ -159,6 +161,37 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
   }
 
+  public toggleHide(hideMe:string) {
+    if (this.hideCompleteChars==hideMe){
+      this.hideCompleteChars = null;
+    }
+    else{
+      this.hideCompleteChars = hideMe;
+    }
+  }
+
+  public hideRow(mileStoneName: MileStoneName): boolean {
+    if (this.hideCompleteChars==null) return false;
+    let allDone = true;
+    for (let char of this.player.characters){
+      let doneChar = false;
+      if (char.milestones[mileStoneName.key]!=null){
+        if (char.milestones[mileStoneName.key].complete==true){
+          if (this.hideCompleteChars==char.characterId) return true;
+          doneChar = true;
+        }
+      }
+      else if (char.baseCharacterLevel>=char.maxLevel){
+        if (char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears){
+          if (this.hideCompleteChars==char.characterId) return true;
+          doneChar = true;
+        }  
+      }
+      allDone = allDone && doneChar;
+    }
+    if (this.hideCompleteChars=="ALL" && allDone) return true;
+    return false;
+  }
 
   public changeTab(event: MatTabChangeEvent) {
     const tabName: string = this.getTabLabel(event.index);
@@ -230,6 +263,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   public showAllMilestones(): void {
     this.hiddenMilestones = [];
+    this.hideCompleteChars = null;
     this.saveHiddenMilestones();
   }
 
