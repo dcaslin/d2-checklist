@@ -94,33 +94,46 @@
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                 </div>
 
+                <div class="mobile-button-row" style="margin-top: 5px">
+                    <span class="mat-caption">Hide Completed</span>
+                </div>
+                <div class="mobile-button-row" style="margin-top: 5px">
+                    <button mat-button (click)="toggleHide('ALL')" [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
+                    <button *ngFor="let c of player.characters" (click)="toggleHide(c.characterId)" [color]="c.characterId==hideCompleteChars?'accent':'default'" mat-button>{{c.className}}</button>
+                </div>
+                
+
                 <div *ngIf="hiddenMilestones.length>0" class="mobile-button-row" style="margin-top: 5px">
-                  <button mat-button (click)="showAllMilestones()">Show hidden milestones</button>
+                  <span class="mat-caption" (click)="showAllMilestones()">Show hidden milestones</span>
                 </div>
 
                 <table class="responsive-table" *ngIf="player.milestoneList.length>0">
                   <thead>
                     <tr>
                       <th scope="col">Activity
-                        <a *ngIf="hiddenMilestones.length>0" href="javascript:void(0)" matTooltip="Show all hidden milestones"
+                        
+                        <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash" matTooltip="Hide milestones where all chars are complete"></i>
+                        <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye" matTooltip="Stop hiding milestones where all chars are complete"></i>
+                        <a *ngIf="hiddenMilestones.length>0 || hideCompleteChars!=null" href="javascript:void(0)" matTooltip="Show all hidden milestones"
                           class="milestoneVisibilityButton" (click)="showAllMilestones()">show all</a>
                       </th>
                       <th scope="col" *ngFor="let char of player.characters">
                         {{char.className}} - {{char.light}}
-                        <span *ngIf="char.wellRested" matTooltip="Well-Rested: Increased XP for Bright Engrams">
-                          <i class="warn-text fas fa-2x fas fa-bed"></i>
-                        </span>
+                        <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId" class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
+                        <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye" matTooltip="Stop hiding milestones that this char has completed"></i>
                       </th>
                     </tr>
                   </thead>
                   <tbody>
                     <ng-container *ngFor="let mileStoneName of player.milestoneList">
-                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
+                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
                         <td class="lead">
-                          <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}} </span>
+                          <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}}</span>
                           <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
                           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
-                            class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">hide</a>
+                            class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
+                            <i class="fal fa-eye-slash"></i>
+                          </a>
 
                           <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
                             Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
