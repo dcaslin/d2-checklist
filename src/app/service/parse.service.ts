@@ -2195,6 +2195,12 @@ export class ParseService {
         if (mode == 57) return "Rumble (Private)";
         if (mode == 58) return "Heroic Adventure";
         if (mode == 59) return "Showdown";
+        if (mode == 60) return "Lockdown";
+        if (mode == 61) return "Scorched";
+        if (mode == 62) return "Scorched Team";
+        if (mode == 63) return "Gambit";
+        if (mode == 64) return "All PvE Competitive";
+        if (mode == 65) return "Breakthrough";
         return "Unknown" + mode;
     }
 
