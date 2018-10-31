@@ -326,14 +326,15 @@ export class ParseService {
         //only progression we care about right now is Legend
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
+                // infamy
                 if (key == "2030054750") {
                     let p: _Progression = _prog.progressions[key];
                     let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     c.legendProgression = prog;
                     c.wellRested = prog.nextLevelAt * 3 > prog.weeklyProgress;
                 }
-                // valor
-                else if (key == "3882308435") {
+                // valor, glory, infamy
+                else if (key == "3882308435" || key == "2679551909" || key == "2772425241") {
                     let p: _Progression = _prog.progressions[key];
                     let prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     if (prog != null) {
