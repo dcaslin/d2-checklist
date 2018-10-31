@@ -251,6 +251,7 @@ export class BungieService implements OnDestroy {
     public getActivityModes(): ActivityMode[] {
         return [
             new ActivityMode(0, "All", "All"), //None
+            new ActivityMode(64, "Gambit", "Gambit"),
             new ActivityMode(4, "Raid", "Raid"),
             new ActivityMode(18, "All Strikes", "All Strikes"),
 
@@ -259,6 +260,7 @@ export class BungieService implements OnDestroy {
 
             new ActivityMode(5, "AllPvP", "All PvP"),
             new ActivityMode(7, "AllPvE", "All PvE"),
+            new ActivityMode(64, "AllPvE Comp", "All PvE Comp"),
 
             new ActivityMode(32, "Private Matches", "Private Matches"),
 
