@@ -525,15 +525,43 @@
                         <tr *ngFor="let faction of char.factions">
                           <td class="lead" data-label="">
                             <span [matTooltip]="faction.desc">{{faction.name}}</span>
-
-
                             <span class="light">Level {{faction.level}} </span>
                             <span class="caption">{{faction.info}}</span>
-
+                            <div class="row dl-row simple-caption">
+                                <dl class="col-xs-3 dl-child">
+                                  <dt>Daily</dt>
+                                  <dd>{{faction.dailyProgress| number:0}}</dd>
+                                </dl>
+                                <dl class="col-xs-3 dl-child">
+                                    <dt>Weekly</dt>
+                                    <dd>{{faction.weeklyProgress| number:0}}</dd>
+                                  </dl>
+                                <dl class="col-xs-3 dl-child">
+                                  <dt>To Next Level</dt>
+                                  <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
+                                    number:0}}</dd>
+                                </dl>
+                                <dl class="col-xs-3 dl-child">
+                                    <dt>Level Cap</dt>
+                                    <dd>
+                                      <ng-container *ngIf="faction.levelCap>0">
+                                      {{faction.levelCap| number:0}}
+                                      </ng-container>
+                                      <ng-container *ngIf="faction.levelCap<=0">
+                                        None
+                                      </ng-container>
+                                    </dd>
+                                  </dl>
+                                  <dl class="col-xs-3 dl-child">
+                                      <dt>Total Earned</dt>
+                                      <dd>
+                                        {{faction.currentProgress|number:0}}
+                                      </dd>
+                                    </dl>
+                              </div>
                           </td>
-                          <td data-label="">
-                            {{faction.currentProgress}} points
-                            <br /> {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+                          <td data-label=""> 
+                            {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                             <div>
                               <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
                               </mat-progress-bar>
