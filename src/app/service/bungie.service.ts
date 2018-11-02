@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, PublicMilestone, SaleItem, Currency, ClanInfo } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -372,7 +372,7 @@ export class BungieService implements OnDestroy {
         return j.Response;
     }
 
-    public async getPGCR(instanceId: string): Promise<any> {
+    public async getPGCR(instanceId: string): Promise<PGCR> {
         try {
             const opt = await this.buildReqOptions();
             const resp = await this.makeReq('Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/');
@@ -435,10 +435,17 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<any[]> {
+    public async getActivityHistoryAsync(membershipType: number, membershipId: string, characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
+        return await this.getActivityHistory(membershipType, membershipId, characterId, mode, max, ignoreErrors);
+
+    }
+
+    public getActivityHistory(membershipType: number, membershipId: string, characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
         let self = this;
-        const MAX_PAGE_SIZE: number = 100;
+        let MAX_PAGE_SIZE: number = 100;
         let curPage: number = 0;
+
+        
         return new Promise(function (resolve, reject) {
             let allMatches: any[] = [];
             function processMatches(results: any[]) {

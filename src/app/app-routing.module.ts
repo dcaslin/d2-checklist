@@ -5,6 +5,7 @@ import { HomeComponent } from './home';
 import { PlayerComponent } from './player';
 import { AuthComponent } from './auth';
 import { HistoryComponent } from './history';
+import { RecentPlayersComponent } from './recent-players';
 import { PGCRComponent } from './pgcr';
 import { ResourcesComponent } from './resources';
 import { AboutComponent } from './about';
@@ -158,6 +159,11 @@ export class AuthGuard implements CanActivate {
         path: 'history/:platform/:memberId/:characterId',
         canActivate: [AuthGuard],
         component: HistoryComponent
+      },
+      {
+        path: 'recent-players/:platform/:memberId/:characterId',
+        canActivate: [AuthGuard],
+        component: RecentPlayersComponent
       }
       , {
         path: '**',

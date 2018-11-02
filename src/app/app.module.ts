@@ -26,6 +26,7 @@ import { LeaderboardModule} from './leaderboard';
 import { PlayerModule } from './player';
 import { AuthModule } from './auth';
 import { HistoryModule } from './history';
+import { RecentPlayersModule } from './recent-players';
 import { PGCRModule } from './pgcr';
 import { ResourcesModule } from './resources';
 import { SettingsModule } from './settings';
@@ -48,6 +49,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     HomeModule,
     PlayerModule,
     HistoryModule,
+    RecentPlayersModule,
     BungieSearchModule,
     ClanSearchModule,
     ClanModule,
