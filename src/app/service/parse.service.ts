@@ -1006,7 +1006,7 @@ export class ParseService {
         returnMe.sort((a, b) => {
             if (a.rewards < b.rewards) return 1;
             if (a.rewards > b.rewards) return -1;
-            if (a.name > b.name) return 1;
+            if (a.name < b.name) return 1;
             if (a.name > b.name) return -1;
             return 0;
         });
