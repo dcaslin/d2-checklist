@@ -60,6 +60,10 @@
               <mat-icon>history</mat-icon>
               <span class="d-none d-md-inline">Activity History</span>
             </a>
+            <a mat-button [routerLink]="['/recent-players', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
+              <mat-icon>group_add</mat-icon>
+              <span class="d-none d-md-inline">Recent Teammates</span>
+            </a>
             <button mat-button [matMenuTriggerFor]="menu">
               <mat-icon>more_vert</mat-icon>
               <span class="d-none d-md-inline">External Links</span>

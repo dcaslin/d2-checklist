@@ -8,7 +8,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { BungieNetUserInfo, BungieMember } from '@app/service/model';
+import { BungieNetUserInfo, BungieMember, PGCR } from '@app/service/model';
 
 @Component({
   selector: 'pgcr-history',
@@ -19,21 +19,21 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
   instanceId: string;
-  data: any;
+  data: PGCR;
 
   constructor(storageService: StorageService, private bungieService: BungieService, 
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
   }
   
-  private load() {
+  private async load() {
     this.loading = true;
-    this.bungieService.getPGCR(this.instanceId).then((res) => {
-      this.data = res;
+    try{
+      this.data = await this.bungieService.getPGCR(this.instanceId);
+    }
+    finally{
       this.loading = false;
-    }).catch((x) => {
-      this.loading = false;
-    });
+    }
   }
 
   

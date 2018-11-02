@@ -46,7 +46,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
     this.selectedMaxResults = this.maxResults[0];
   }
 
-  public history() {
+  public async history() {
     this.loading = true;
     this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId, this.selectedMode.type, this.selectedMaxResults).then((rows: any[]) => {
 

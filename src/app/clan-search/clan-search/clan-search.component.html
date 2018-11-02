@@ -1,7 +1,6 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-
       <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       </div>
@@ -17,14 +16,10 @@
           <mat-icon>search</mat-icon>
         </button>
       </div>
-
       <ng-container *ngIf="clan!=null">
-
         <div>
           <a [routerLink]="['/clan', clan.groupId]">{{clan.name}}</a>
         </div>
-
-
         <mat-card class="clan-card">
           <mat-card-header>
             <div mat-card-avatar class="clan-avatar transparent-icon" [style.background-image]="'url(//www.bungie.net' + clan.avatarPath + ')'"></div>
@@ -42,18 +37,12 @@
               <a mat-button [routerLink]="['/clan', clan.groupId]">VIEW CLAN PROGRESS</a>
             </mat-card-actions>
         </mat-card>
-
       </ng-container>
-
-
-
     </div>
-
     <div *ngIf="disableads===false" class="adRight">
       <small class="adText">Advertisement</small>
       <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
-
   </div>
   <div *ngIf="disableads===false" class="adBottom">
     <small class="adText">Advertisement</small>
