@@ -1,0 +1,20 @@
+@import 'styles-variables';
+
+
+:host {
+}
+
+.clan-card{
+  text-align: left;
+  margin-bottom: 10px;
+  max-width: 500px;
+}
+
+.clan-avator {
+  background-size: cover;
+}
+
+.note{
+  max-width: 500px;
+  margin-bottom: 20px;
+}

@@ -10,7 +10,7 @@ import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
 @Component({
-  selector: 'bungie-search-history',
+  selector: 'bungie-search',
   templateUrl: './bungie-search.component.html',
   styleUrls: ['./bungie-search.component.scss']
 })

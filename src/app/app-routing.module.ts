@@ -10,6 +10,7 @@ import { ResourcesComponent } from './resources';
 import { AboutComponent } from './about';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
+import { ClanSearchComponent } from './clan-search';
 import { ClanComponent } from './clan';
 import { LeviathanComponent, LeviathanPrestigeComponent, RaidLastWishComponent } from './leaderboard';
 import { Injectable } from '@angular/core';
@@ -70,6 +71,10 @@ export class AuthGuard implements CanActivate {
         path: 'search',
         canActivate: [AuthGuard],
         component: BungieSearchComponent
+      }, {
+        path: 'searchClans',
+        canActivate: [AuthGuard],
+        component: ClanSearchComponent
       }
       , {
         path: 'search/:name',

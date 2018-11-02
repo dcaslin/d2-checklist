@@ -10,7 +10,7 @@ import { Observable, Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, PublicMilestone, SaleItem, Currency } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus, PublicMilestone, SaleItem, Currency, ClanInfo } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -121,6 +121,19 @@ export class BungieService implements OnDestroy {
         catch (err) {
             this.handleError(err);
             return [];
+        }
+    }
+
+    
+    public async searchClans(name: string): Promise<ClanInfo> {
+        try {
+            const opt = await this.buildReqOptions();
+            const resp = await this.makeReq('GroupV2/Name/' + encodeURIComponent(name)+"/1/");
+            return this.parseService.parseClanInfo(resp.detail);
+        }
+        catch (err) {
+            this.handleError(err);
+            return null;
         }
     }
 

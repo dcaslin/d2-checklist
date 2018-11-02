@@ -1910,6 +1910,7 @@ export class ParseService {
 
         let c: ClanInfo = new ClanInfo();
         c.groupId = j.groupId;
+        c.about = j.about;
         c.name = j.name;
         c.creationDate = j.creationDate;
         c.memberCount = j.memberCount;
