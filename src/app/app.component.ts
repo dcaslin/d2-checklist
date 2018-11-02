@@ -39,20 +39,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logo = require('../assets/logo.svg');
 
-  navigation = [
-    { link: 'home', label: 'Home' },
-    { link: 'vendors', label: 'Vendors' },
-    { link: 'leaderboard/leviathan', label: 'Raid Leaderboard' },
-    { link: 'leaderboard/leviathan-prestige', label: 'Prestige Leaderboard' },
-    { link: 'leaderboard/last-wish', label: 'The Last Wish Leaderboard' },
-    { link: 'search', label: 'Search Users' },
-    { link: 'about', label: 'About' }
-  ];
-  navigationSideMenu = [
-    ...this.navigation,
-    { link: 'settings', label: 'Settings' }
-  ];
-
   //signed on info
   loggingOn = true;
   signedOnUser: SelectedUser = null;

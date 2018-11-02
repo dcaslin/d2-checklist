@@ -20,6 +20,7 @@ import { SharedModule } from '@app/shared';
 import {ChildComponent} from './shared/child.component';
 import { HomeModule } from './home';
 import { BungieSearchModule } from './bungie-search';
+import { ClanSearchModule } from './clan-search';
 import { ClanModule } from './clan';
 import { LeaderboardModule} from './leaderboard';
 import { PlayerModule } from './player';
@@ -48,6 +49,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     PlayerModule,
     HistoryModule,
     BungieSearchModule,
+    ClanSearchModule,
     ClanModule,
     LeaderboardModule,
     PGCRModule,

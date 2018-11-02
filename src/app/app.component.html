@@ -8,20 +8,53 @@
       </div>
       <mat-nav-list>
         <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.userInfo!=null">
-          {{this.signedOnUser.userInfo.displayName}} - {{this.signedOnUser.userInfo.platformName}}
+            <mat-icon>account_circle</mat-icon>&ensp;{{this.signedOnUser.userInfo.displayName}} - {{this.signedOnUser.userInfo.platformName}}
         </a>
-        <a mat-list-item (click)="sidenav.close();loadClan(this.signedOnUser.membership.clans[0])" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length==1">
-          My Clan
-        </a>
-        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length>1">
+        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null">
           <a *ngFor="let clan of this.signedOnUser.membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
-            {{clan.name}}
+              <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
           </a>
         </ng-container>
-        <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null">
-          My Info&ensp;<i [ngClass]="const.PLATFORMS_DICT[this.signedOnUser.userInfo.membershipType+''].iconClass"></i></a>
-        <a mat-list-item *ngFor="let item of navigationSideMenu" (click)="sidenav.close()" [routerLink]="[item.link]" routerLinkActive="active">
-          {{item.label}}
+        
+        <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
+          <mat-icon>home</mat-icon>&ensp;Home
+        </a>
+        <!-- <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
+            <mat-icon>favorite</mat-icon>&ensp;Friends
+        </a> -->
+        <a mat-list-item (click)="sidenav.close()" routerLink="vendors" routerLinkActive="active">
+          <mat-icon>payment</mat-icon>&ensp;Vendors
+        </a>
+        <a mat-list-item [matMenuTriggerFor]="searchMobileMenu">
+          <mat-icon>search</mat-icon>&ensp;Search
+        </a>
+        <mat-menu #searchMobileMenu="matMenu">
+            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
+              Search Users
+            </button>
+            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
+              Search Clans
+            </button>                
+        </mat-menu>
+        <a mat-list-item [matMenuTriggerFor]="leaderboardMobileMenu">
+          <mat-icon>score</mat-icon>&ensp;Leaderboards
+        </a>
+        <mat-menu #leaderboardMobileMenu="matMenu">
+            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">
+              Leviathan Normal
+            </button>
+            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">
+              Leviathan Prestige
+            </button>
+            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="leaderboard/last-wish" routerLinkActive="active">
+              Last Wish
+            </button>
+        </mat-menu>
+        <a mat-list-item (click)="sidenav.close()" routerLink="about" routerLinkActive="active">
+          <mat-icon>info</mat-icon>&ensp;About
+        </a>
+        <a mat-list-item (click)="sidenav.close()" routerLink="settings" routerLinkActive="active">
+          <mat-icon>settings</mat-icon>&ensp;Settings
         </a>
       </mat-nav-list>
     </mat-sidenav>
@@ -37,12 +70,19 @@
           <span routerLink="" class="branding spacer d-none d-md-inline">
             <img class="logo" [src]="logo" /> D2 Checklist</span>
           <span class="d-none d-md-inline">
-            <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">Home</button>
+            <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">
+                <mat-icon>home</mat-icon>
+                <span class="d-none d-xl-inline"> Home</span>
+            </button>
+            <!-- <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
+                <mat-icon>favorite</mat-icon>
+                <span class="d-none d-xl-inline"> Friends</span>
+            </button> -->
             <button mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
               <mat-icon>payment</mat-icon>
               <span class="d-none d-xl-inline"> Vendors</span>
             </button>
-            <button mat-button [matMenuTriggerFor]="leaderboardMenu">
+            <button mat-button class="nav-button" [matMenuTriggerFor]="leaderboardMenu">
               <mat-icon>score</mat-icon>
               <span class="d-none d-xl-inline"> Leaderboards</span>
             </button>
@@ -57,13 +97,25 @@
                   Last Wish
                 </button>
             </mat-menu>
+            <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
+              <mat-icon>search</mat-icon>
+              <span class="d-none d-xl-inline"> Search</span>
+            </button>
+            <mat-menu #searchMenu="matMenu">
+                <button  mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
+                  Search Users
+                </button>
+                <button mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
+                  Search Clans
+                </button>                
+            </mat-menu>
 
 
             
-            <button mat-button class="nav-button" routerLink="search" routerLinkActive="active">
+            <!-- <button mat-button class="nav-button" routerLink="search" routerLinkActive="active">
               <mat-icon>search</mat-icon>
               <span class="d-none d-xl-inline"> Search Users</span>
-            </button>
+            </button> -->
             <button mat-button class="nav-button" routerLink="about" routerLinkActive="active">
               <mat-icon>info</mat-icon>
               <span class="d-none d-xl-inline"> About</span>
@@ -122,7 +174,6 @@
                 <span>{{clan.name}}</span>
               </button>
             </mat-menu>
-
           </ng-container>
 
           <button mat-button class="d-none d-md-inline nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">

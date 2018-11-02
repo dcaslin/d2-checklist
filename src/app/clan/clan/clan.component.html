@@ -35,8 +35,7 @@
                   Clan Progress
                   <ng-container *ngIf="info.primaryProgression!=null"> | Level
                     {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
-                    Remaining XP available this week:<b>&ensp;{{(info.primaryProgression.weeklyLimit -
-                      info.primaryProgression.weeklyProgress)|number}}</b>
+                    XP progress this week:<b>&ensp;{{(info.primaryProgression.weeklyProgress)|number}}</b>
                   </ng-container>
                 </mat-panel-title>
                 <mat-panel-description class="d-none d-md-block">
@@ -51,8 +50,8 @@
                   <mat-card-title>
                     <ng-container *ngIf="debugmode"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
                     {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
-                    - Remaining XP available this week:
-                    <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b>
+                    <!-- - Remaining XP available this week:
+                    <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b> -->
                   </mat-card-title>
                   <mat-card-subtitle>{{faction.desc}}
                   </mat-card-subtitle>
@@ -139,18 +138,25 @@
                   </a>
                   <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member)">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                  </a>
+                  </a>                  
                   <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
-                    <i class="fas fa-sync"></i>
+                    &ensp;<i class="fas fa-sync"></i>
                   </a>
                 </td>
                 <td *ngIf="member.player==null">N/A</td>
 
                 <ng-container *ngIf="member.player!=null">
                   <td>
-                    <ng-container *ngIf="!member.player.superprivate">
-                      {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                    <ng-container  *ngIf="!member.player.superprivate">
+                        <span *ngIf="member.isOnline" class="accent-text" matTooltip="Playing right now!">                  
+                            <i class="fal fa-gamepad fa-2x"></i>
+                        </span>
+                        <ng-container *ngIf="!member.isOnline">
+                          {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                        </ng-container>
                     </ng-container>
+
+                    
                   </td>
                   <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
                     [attr.colspan]="modelPlayer.milestoneList.length">

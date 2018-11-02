@@ -64,7 +64,7 @@ export class AuthService {
         if (this.token != null) {
             if (AuthService.isValid(this.token)) {
                 if (loadedFromFile) {
-                    //update all our in-memory friends, things changed
+                    //update all our in-memory data, things changed
                     this.storeToken(this.token, false)
                 }
                 return Promise.resolve(this.token);
