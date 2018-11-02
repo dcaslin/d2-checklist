@@ -40,8 +40,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideCompleteChecklist = false;
   hideCompleteTriumph = false;
   hideCompleteCollectible = false;
+  sort = "rewardsDesc";
 
-  hideCompleteChars:string = null;
+  hideCompleteChars: string = null;
 
   treeControl2: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
@@ -75,16 +76,18 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideTriumph = (_nodeData: TriumphFlatNode) => this.hideCompleteTriumph && _nodeData.data.complete;
   hideCollectible = (_nodeData: TriumphFlatNode) => this.hideCompleteCollectible && _nodeData.data.complete;
 
-  
-  private  setPlayer(x: Player): void{
+
+  private setPlayer(x: Player): void {
     this.player = x;
-    if (x!=null){
+    if (x != null) {
+      this.sort = "rewardsDesc";
       this.recordDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
       this.recordDatasource.data = this.player.records;
       this.collectionDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
       this.collectionDatasource.data = this.player.collections;
+      
     }
-    else{
+    else {
       this.recordDatasource = null;
       this.collectionDatasource = null;
     }
@@ -161,35 +164,35 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
   }
 
-  public toggleHide(hideMe:string) {
-    if (this.hideCompleteChars==hideMe){
+  public toggleHide(hideMe: string) {
+    if (this.hideCompleteChars == hideMe) {
       this.hideCompleteChars = null;
     }
-    else{
+    else {
       this.hideCompleteChars = hideMe;
     }
   }
 
   public hideRow(mileStoneName: MileStoneName): boolean {
-    if (this.hideCompleteChars==null) return false;
+    if (this.hideCompleteChars == null) return false;
     let allDone = true;
-    for (let char of this.player.characters){
+    for (let char of this.player.characters) {
       let doneChar = false;
-      if (char.milestones[mileStoneName.key]!=null){
-        if (char.milestones[mileStoneName.key].complete==true){
-          if (this.hideCompleteChars==char.characterId) return true;
+      if (char.milestones[mileStoneName.key] != null) {
+        if (char.milestones[mileStoneName.key].complete == true) {
+          if (this.hideCompleteChars == char.characterId) return true;
           doneChar = true;
         }
       }
-      else if (char.baseCharacterLevel>=char.maxLevel){
-        if (char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears){
-          if (this.hideCompleteChars==char.characterId) return true;
+      else if (char.baseCharacterLevel >= char.maxLevel) {
+        if (char.milestones[mileStoneName.key] == null && !mileStoneName.neverDisappears) {
+          if (this.hideCompleteChars == char.characterId) return true;
           doneChar = true;
-        }  
+        }
       }
       allDone = allDone && doneChar;
     }
-    if (this.hideCompleteChars=="ALL" && allDone) return true;
+    if (this.hideCompleteChars == "ALL" && allDone) return true;
     return false;
   }
 
@@ -213,10 +216,95 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     "chars"
   ];
 
+  public sortByName(): void {
+    if (this.sort === "nameAsc") {
+      this.sort = "nameDesc";
+    }
+    else {
+      this.sort = "nameAsc";
+    }
+    this.sortMileStones();
+  }
+  public sortByReset(): void {
+    if (this.sort === "resetDesc") {
+      this.sort = "resetAsc";
+    }
+    else {
+      this.sort = "resetDesc";
+    }
+    this.sortMileStones();
+  }
+
+  public sortByRewards(): void {
+    if (this.sort === "rewardsDesc") {
+      this.sort = "rewardsAsc";
+    }
+    else {
+      this.sort = "rewardsDesc";
+    }
+    this.sortMileStones();
+  }
+
   private getTabLabel(index: number): string {
     if (index >= this.TAB_URI.length) return null;
     return this.TAB_URI[index];
   }
+
+  private sortMileStones() {
+    if (this.player == null || this.player.milestoneList == null) return;
+    if (this.sort == "rewardsDesc") {
+      this.player.milestoneList.sort((a, b) => {
+        if (a.rewards < b.rewards) return 1;
+        if (a.rewards > b.rewards) return -1;
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+    }
+    else if (this.sort == "rewardsAsc") {
+      this.player.milestoneList.sort((a, b) => {
+        if (a.rewards < b.rewards) return -1;
+        if (a.rewards > b.rewards) return 1;
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+    }
+    else if (this.sort == "resetDesc") {
+      this.player.milestoneList.sort((a, b) => {
+        if (a.resets < b.resets) return 1;
+        if (a.resets > b.resets) return -1;
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+    }
+    else if (this.sort == "resetAsc") {
+      this.player.milestoneList.sort((a, b) => {
+        if (a.resets < b.resets) return -1;
+        if (a.resets > b.resets) return 1;
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+    }
+    else if (this.sort == "nameAsc") {
+      this.player.milestoneList.sort((a, b) => {
+        if (a.name > b.name) return 1;
+        if (a.name < b.name) return -1;
+        return 0;
+      });
+    }
+    else if (this.sort == "nameDesc") {
+      this.player.milestoneList.sort((a, b) => {
+        if (a.name > b.name) return -1;
+        if (a.name < b.name) return 1;
+        return 0;
+      });
+    }
+
+  }
+
 
   private setTab(): void {
     if (this.tabs == null) {

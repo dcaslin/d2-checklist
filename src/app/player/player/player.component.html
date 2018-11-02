@@ -128,7 +128,13 @@
                     <ng-container *ngFor="let mileStoneName of player.milestoneList">
                       <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
                         <td class="lead">
-                          <span [matTooltip]="mileStoneName.desc">{{mileStoneName.name}}</span>
+                          <span [matTooltip]="mileStoneName.desc">
+                              <a href="javascript:void(0)" (click)="sortByName()">
+                                  {{mileStoneName.name}}
+                                  <i *ngIf="sort=='nameDesc'" class="fal fa-sort-down"></i>
+                                  <i *ngIf="sort=='nameAsc'" class="fal fa-sort-up"></i>
+                              </a>
+                          </span>
                           <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
                           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
                             class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
@@ -136,14 +142,23 @@
                           </a>
 
                           <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
-                            Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
+                            <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByReset()">
+                              Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
+                              
+                              <i *ngIf="sort=='resetDesc'" class="fal fa-sort-down"></i>
+                              <i *ngIf="sort=='resetAsc'" class="fal fa-sort-up"></i>
+                            </a>
                             <ng-container *ngIf="debugmode">
                               <br> {{mileStoneName.resets|date:'short'}}
                             </ng-container>
                           </span>
                           <br>
                           <span class="simple-caption">
-                            {{mileStoneName.rewards}}
+                              <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">{{mileStoneName.rewards}}
+                              
+                                  <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
+                                  <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
+                              </a>
                           </span>
 
                         </td>
