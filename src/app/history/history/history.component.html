@@ -8,7 +8,12 @@
         </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <h2 class="centerMe">Activity History - 
-          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]" *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
+          <a  *ngIf="player!=null && this.player.profile.userInfo.membershipType!=4" [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]">
+            {{player.profile.userInfo.displayName}}
+          </a>
+          <ng-container *ngIf="player!=null && this.player.profile.userInfo.membershipType==4">
+              {{player.profile.userInfo.displayName}}
+          </ng-container>
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <a mat-raised-button *ngFor="let c of player.characters" 
