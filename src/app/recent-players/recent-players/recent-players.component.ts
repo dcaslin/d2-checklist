@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { Player, Character, Platform, ActivityMode, Const, Activity, PGCR } from "../../service/model";
+import { Player, Character, Platform, ActivityMode, Const, Activity, PGCR, UserInfo, PGCREntry, BungieNetUserInfo, BungieMember } from "../../service/model";
 import { MatPaginator, MatSort } from '@angular/material';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
@@ -32,6 +32,8 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   msg: string;
   rows: Activity[];
   rowCntr: number = 0;
+  friendsDict = {};
+  friends = [];
   
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -57,6 +59,8 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
       else{
         this.rows = r;
       }
+      this.friendsDict = {};
+      this.friends = [];
       this.rowCntr = 0;
       this.msg = "Analyzing " + this.rows.length + " matches...";
       this.loadNextRow();
@@ -68,15 +72,12 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
 
   private async loadNextRow(): Promise<void> {
     if (this.rowCntr >= this.rows.length) {
-      //done
       return;
     }
-
     const row = this.rows[this.rowCntr];
     try {
       const data:PGCR = await this.bungieService.getPGCR(row.instanceId);
       this.processPGCR(data);
-      console.log(data.instanceId);
     }
     finally {
       this.rowCntr++;
@@ -85,6 +86,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   }
 
   private processPGCR(p:PGCR){
+    if (p==null) return;
     let targetFireTeamId = null;
     for (const e of p.entries){
       if (e.characterId==this.characterId){
@@ -96,15 +98,42 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     for (const e of p.entries){
       if (e.characterId!=this.characterId){
         if (e.fireteamId==targetFireTeamId){
-          console.log(e.user.displayName);
+          this.countFriend(p, e);
         }
       }
     }
+  }
 
+  private countFriend(p:PGCR, e: PGCREntry) {
+    if (this.friendsDict[e.user.membershipId]==null){
+      this.friendsDict[e.user.membershipId] = {
+        user: e.user,
+        bungieNetUserInfo: e.bungieNetUserInfo,
+        instances: []
+      }
+      this.friends.push(this.friendsDict[e.user.membershipId]);
+    }
+    this.friendsDict[e.user.membershipId].instances.push(p);
+
+    this.friends.sort((a, b) => {
+      if (a.instances.length > b.instances.length ) return -1;
+      if (a.instances.length  < b.instances.length ) return 1;
+
+      if (a.user.name > b.user.name) return 1;
+      if (a.user.name < b.user.name) return -1;
+      return 0;
+    });
   }
 
   pgcr(instanceId: string) {
     this.router.navigate(['/pgcr', instanceId]);
+  }
+
+  public async navigateBnetMember(target: BungieNetUserInfo){
+    const match: BungieMember = await this.bungieService.getBungieMemberById(target.membershipId);
+    if (match==null) return;
+    this.router.navigate(['/',match.bnet.platform.type, match.bnet.name]);
+    return;
   }
 
   ngOnInit() {
@@ -125,4 +154,10 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     });
   }
 
+}
+
+interface Friend {
+  user: UserInfo[];
+  bungieNetUserInfo: BungieNetUserInfo;
+  instances: PGCR[];
 }

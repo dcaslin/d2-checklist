@@ -1,11 +1,23 @@
 @import 'styles-variables';
 
-:host {
+.friend-icon{
+  width: 32px;
+  height: 32px;
+  border-radius: 25%;
+  background-size: cover;
+  display: inline-block;
+}
+
+.icon-cell{
+  width: 37px; 
+  padding-left: 5px; 
+  padding-right: 0em;
 }
 
 .searchField{
   width: 100px;
   margin-bottom: 10px;
+  margin-right: 5px;
 }
 
 a:link {
@@ -22,6 +34,7 @@ a:link {
   display: flex;
   flex-direction: column;
   min-width: 300px;
+  max-width: 800px;
 }
 
 .button-row {

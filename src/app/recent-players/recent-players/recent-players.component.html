@@ -8,12 +8,16 @@
       </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <h2 class="centerMe">Recent Teammates -
-          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]"
-            *ngIf="player!=null">{{player.profile.userInfo.displayName}}</a>
+            <a  *ngIf="player!=null && this.player.profile.userInfo.membershipType!=4" [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]">
+              {{player.profile.userInfo.displayName}}
+            </a>
+            <ng-container *ngIf="player!=null && this.player.profile.userInfo.membershipType==4">
+                {{player.profile.userInfo.displayName}}
+            </ng-container>
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <a mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'"
-            [routerLink]="['/history',this.membershipType, this.membershipId, c.characterId]">{{c.className}} -
+            [routerLink]="['/recent-players',this.membershipType, this.membershipId, c.characterId]">{{c.className}} -
             {{c.light}}</a>
         </div>
         <br />
@@ -26,7 +30,7 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field class="searchField">
+          <mat-form-field style="margin-left: 5px" class="searchField">
             <mat-select [(ngModel)]="selectedMaxResults" (selectionChange)="history()" placeholder="Max Results">
               <mat-option *ngFor="let p of maxResults" [value]="p">
                 {{ p }}
@@ -42,9 +46,46 @@
           <div *ngIf="rowCntr < rows.length">
             Analyzing match {{rowCntr}} / {{this.rows.length}}...
           </div>
-          <div *ngIf="rowCntr >= rows.length">
-            Done analysis!
-          </div>
+          <table class="recent-players-table itemTable" style="margin-top: 1em">
+            <thead>
+              <tr>
+                <th class="icon-cell"></th>
+                <th>Name <i [hidden]="rowCntr >= rows.length" class="far fa-spinner fa-pulse fa-fw"></i></th>
+                <th>Total</th>
+                <th class="d-none d-lg-table-cell">Dates</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="friends.length==0">
+                <td colspan="3">
+                  No matches found
+                </td>
+                <td class="d-none d-lg-table-cell">
+                </td>
+              </tr>
+              <tr *ngFor="let friend of friends">
+                <td class="icon-cell">
+                  <span *ngIf="friend.user.icon!=null" class="friend-icon" [style.background-image]="'url(//www.bungie.net' + friend.user.icon + ')'"></span>
+                </td>
+                <td>
+                  <a *ngIf="friend.user.membershipType!=4" [routerLink]="['/'+friend.user.membershipType, friend.user.displayName]"
+                    color="accent">{{friend.user.displayName}}</a>
+                  <a *ngIf="friend.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(friend.bungieNetUserInfo)">
+                    {{friend.user.displayName}}
+                  </a>
+                </td>
+                <td>{{friend.instances.length}}</td>
+                <td class="d-none d-lg-table-cell">
+                  <div *ngFor="let i of friend.instances">
+                    <a color="primary" [routerLink]="['/pgcr', i.instanceId]">
+                      {{i.mode}} - {{i.name}}
+                    </a>
+                    , {{i.period|date:'shortDate'}}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
