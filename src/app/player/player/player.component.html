@@ -40,22 +40,26 @@
           <br>
         </ng-container>
         <ng-container *ngIf="player!=null && player.superprivate">
-            <h4>{{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
+            <h4><i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i> {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
         </ng-container>
 
         <ng-container *ngIf="player!=null && !player.superprivate">
-          <h4>{{player.profile.userInfo.displayName}} -
-            <span *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower')) && !player.superprivate">
-              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
-            </span>
-            <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
-              Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
-              amDifference:player.currentActivity.dateActivityStarted|
-              amDuration:'ms'}} ago
-            </span>
-          </h4>
+          <h1>
+              <i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i> {{player.profile.userInfo.displayName}}              
+              <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]==true?'warn-text':''" (click)="storageService.toggleFav(player.profile.userInfo)" href="javascript:void(0)"> <i style="font-weight: normal !important" class="far fa-heart"></i></a>
+          </h1>
+          <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
+              <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
+                  Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+              </ng-container>
+                <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
+                  Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
+                  amDifference:player.currentActivity.dateActivityStarted|
+                  amDuration:'ms'}} ago
+                </span>
+          </div>
 
-          <div class="button-row">
+          <div class="button-row">              
             <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <mat-icon>history</mat-icon>
               <span class="d-none d-md-inline">Activity History</span>

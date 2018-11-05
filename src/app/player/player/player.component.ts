@@ -7,7 +7,7 @@ import { Subject, BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from "../../service/bungie.service";
-import { Player, Character, SearchResult, Platform, Const, TriumphNode, MileStoneName } from "../../service/model";
+import { Player, Character, SearchResult, Platform, Const, TriumphNode, MileStoneName, UserInfo } from "../../service/model";
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
@@ -30,6 +30,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   @ViewChild('maintabs') tabs: MatTabGroup;
 
+  public const: Const = Const;
   platforms: Platform[];
   selectedPlatform: Platform;
   hiddenMilestones: string[];
@@ -59,6 +60,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.hiddenMilestones = this.loadHiddenMilestones();
     this.treeControl2 = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
+
+    
   }
 
   transformer2 = (node: TriumphNode, level: number) => {

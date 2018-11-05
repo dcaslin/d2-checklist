@@ -47,6 +47,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     this.selectedMode = this.activityModes[0];
     this.maxResults = [5, 10, 20, 50];
     this.selectedMaxResults = this.maxResults[0];
+    
   }
 
   public async history() {
