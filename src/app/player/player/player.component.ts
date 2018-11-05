@@ -48,9 +48,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   selectedTab: string;
   gamerTag: string;
   player: Player;
-  hideCompleteChecklist = false;
-  hideCompleteTriumph = false;
-  hideCompleteCollectible = false;
+  hideComplete = false;
   initTreeNodeHash: string = null;
   sort = 'rewardsDesc';
 
@@ -71,6 +69,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.hiddenMilestones = this.loadHiddenMilestones();
     this.treeControl2 = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
+    this.hideComplete = localStorage.getItem('hide-completed') === 'true';
 
   }
 
@@ -86,8 +85,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   hasChild = (_: number, _nodeData: TriumphFlatNode) => _nodeData.expandable;
 
-  hideTriumph = (_nodeData: TriumphFlatNode) => this.hideCompleteTriumph && _nodeData.data.complete;
-  hideCollectible = (_nodeData: TriumphFlatNode) => this.hideCompleteCollectible && _nodeData.data.complete;
+  hideNode = (_nodeData: TriumphFlatNode) => this.hideComplete && _nodeData.data.complete;
 
   private getParentNode(node: TriumphFlatNode): TriumphFlatNode {
     const currentLevel = this.treeControl2.getLevel(node);
@@ -429,6 +427,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.loading = false;
 
     }
+  }
+
+  public hideCompleteChange() {
+    localStorage.setItem('hide-completed', '' + this.hideComplete);
   }
 
   ngOnInit() {
