@@ -415,7 +415,7 @@
                     </mat-expansion-panel-header>
                     <div class="checklist-body">
                       <div class="hide-complete">
-                        <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide Completed</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
                       </div>
                       <table class="checklist-table">
                         <thead>
@@ -427,7 +427,7 @@
                         </thead>
                         <tbody>
                           <ng-container *ngFor="let check of checklist.entries">
-                            <tr *ngIf="!hideCompleteChecklist || !check.checked">
+                            <tr *ngIf="!hideComplete || !check.checked">
                               <td>
                                 <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
                                 <ng-container *ngIf="check.mapUrl!=null">
@@ -472,7 +472,7 @@
                     </mat-expansion-panel-header>
                     <div class="checklist-body">
                       <div class="hide-complete">
-                        <mat-checkbox [(ngModel)]="hideCompleteChecklist">Hide All Completed</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide All Completed</mat-checkbox>
                       </div>
                       <table class="checklist-table">
                         <thead>
@@ -483,7 +483,7 @@
                         </thead>
                         <tbody>
                           <ng-container *ngFor="let check of checklist.entries">
-                            <tr *ngIf="!hideCompleteChecklist || !check.allDone">
+                            <tr *ngIf="!hideComplete || !check.allDone">
                               <td>
                                 <ng-container *ngIf="check.mapUrl==null">{{check.name}}</ng-container>
                                 <ng-container *ngIf="check.mapUrl!=null">
@@ -620,10 +620,10 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideCompleteTriumph">Hide Completed</mat-checkbox>
+                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
                 </h3>
                 <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
-                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideTriumph(node)"
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
                     matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
                     <div style="text-align: left; margin-bottom: 20px">
@@ -653,7 +653,7 @@
                       </div>
                     </div>
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideTriumph(node)"
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)"
                     matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
@@ -690,10 +690,10 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <div class="hide-complete-collectibles">
-                  <mat-checkbox [(ngModel)]="hideCompleteCollectible">Hide Completed</mat-checkbox>
+                  <mat-checkbox [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
                 </div>
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
-                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideCollectible(node)"
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
                     matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
                     <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
@@ -708,7 +708,7 @@
                       </span>
                     </div>
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideCollectible(node)"
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)"
                     matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
