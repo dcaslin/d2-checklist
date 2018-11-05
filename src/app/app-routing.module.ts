@@ -29,14 +29,7 @@ export class AuthGuard implements CanActivate {
 
   canActivate(): Promise<boolean> {
     this.loader$.next(true);
-    // return Promise.resolve(false);
     return this.destinyCacheService.init().then(val => {
-      // try{
-      //   //this will only make a call if the currencies are blank
-      //   this.bungieService.checkCurrency();
-      // }
-      // catch (e){
-      // }
       this.loader$.next(false);
       return val;
     });

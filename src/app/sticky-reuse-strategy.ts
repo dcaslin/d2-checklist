@@ -14,23 +14,26 @@ export class StickyReuseStrategy implements RouteReuseStrategy {
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-    this.handlers[this.cookPath(route.routeConfig.path)] = handle;
+    this.handlers[this.cookPath(route)] = handle;
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    return !!route.routeConfig && !!this.handlers[this.cookPath(route.routeConfig.path)];
+    return !!route.routeConfig && !!this.handlers[this.cookPath(route)];
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
     if (!route.routeConfig) { return null; }
-    return this.handlers[this.cookPath(route.routeConfig.path)];
+    return this.handlers[this.cookPath(route)];
   }
 
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    return future.routeConfig === curr.routeConfig;
+    const val = this.cookPath(future) === this.cookPath(curr);
+    return val;
   }
 
-  private cookPath(origPath: string): string {
+  private cookPath(route: ActivatedRouteSnapshot): string {
+    if (route == null || route.routeConfig == null || route.routeConfig.path == null) { return null; }
+    const origPath = route.routeConfig.path;
     let s: string;
     if (origPath === ':platform/:gt/:tab/:treeHash') {
       s = ':platform/:gt/:tab';

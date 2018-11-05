@@ -483,5 +483,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   onGtChange() {
     this.storageService.setItem('defaultgt', this.gamerTag);
   }
+
+
+  ngOnDestroy(): void {
+    super.ngOnDestroy();
+    console.log('Destroying player component');
+  }
 }
 
