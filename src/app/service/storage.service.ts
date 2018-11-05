@@ -12,7 +12,7 @@ export interface Action {
 const APP_PREFIX = 'D2STATE-';
 
 @Injectable()
-export class StorageService {  
+export class StorageService {
   private settingSub = new Subject();
   public settingFeed: Observable<any>;
 
@@ -23,35 +23,34 @@ export class StorageService {
 
   setItem(key: string, value: any) {
     localStorage.setItem(`${APP_PREFIX}${key}`, JSON.stringify(value));
-    let emitMe = {};
-    emitMe[key] = value; 
+    const emitMe = {};
+    emitMe[key] = value;
     this.settingSub.next(emitMe);
   }
 
-  getFavKey(userInfo: UserInfo){
-    return userInfo.membershipType+"-"+userInfo.membershipId;
+  getFavKey(userInfo: UserInfo) {
+    return userInfo.membershipType + '-' + userInfo.membershipId;
   }
-  
-  toggleFav(userInfo: UserInfo){
+
+  toggleFav(userInfo: UserInfo) {
     const key = this.getFavKey(userInfo);
-    const favorites = this.getItem("favorites", {});
-    if (favorites[key]==true){
+    const favorites = this.getItem('favorites', {});
+    if (favorites[key] === true) {
       delete favorites[key];
-    }
-    else{
+    } else {
       favorites[key] = true;
     }
-    this.setItem("favorites", favorites);
+    this.setItem('favorites', favorites);
   }
 
 
-  getItem(key: string, defVal?:any) {
-    let val = JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`));
-    if (val==null) return defVal;
+  getItem(key: string, defVal?: any) {
+    const val = JSON.parse(localStorage.getItem(`${APP_PREFIX}${key}`));
+    if (val == null) { return defVal; }
     return val;
   }
 
-  refresh(){
+  refresh() {
     this.settingSub.next(StorageService.load());
   }
 

@@ -14,7 +14,7 @@ import { NotificationService } from '@app/service/notification.service';
 })
 export class SettingsComponent extends ChildComponent implements OnInit, OnDestroy {
 
-  theme: string = "default-theme";
+  theme = 'default-theme';
 
   themes = [
     { value: 'default-theme', label: 'Default' },
@@ -28,7 +28,7 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
   ];
 
   debugChoices = [
-    { value: false, label: "Normal" },
+    { value: false, label: 'Normal' },
     { value: true, label: 'Debug' }
   ];
 
@@ -36,7 +36,7 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
     private notificationService: NotificationService
     ) {
     super(storageService);
-    this.theme = this.storageService.getItem("theme", "default-theme");
+    this.theme = this.storageService.getItem('theme', 'default-theme');
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
@@ -53,27 +53,33 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
   }
 
   onThemeSelect({ value }) {
-    this.storageService.setItem("theme", value);
+    this.storageService.setItem('theme', value);
   }
 
   onDisableAdsSelect({ value }) {
-    this.storageService.setItem("disableads", value);
+    this.storageService.setItem('disableads', value);
   }
-  
+
   onDebugSelect({ value }) {
-    this.storageService.setItem("debugmode", value);
+    this.storageService.setItem('debugmode', value);
   }
 
-  onFailClick(){
-    this.notificationService.fail("Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones at duo. At magna essent volumus ius. Ea rebum lucilius his.");
+  onFailClick() {
+    this.notificationService.fail('Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, ' +
+    ' eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones ' +
+    ' at duo. At magna essent volumus ius. Ea rebum lucilius his.');
   }
 
-  onInfoClick(){
-    this.notificationService.info("Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones at duo. At magna essent volumus ius. Ea rebum lucilius his.");
+  onInfoClick() {
+    this.notificationService.info('Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, ' +
+    ' eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones ' +
+    ' at duo. At magna essent volumus ius. Ea rebum lucilius his.');
   }
 
-  onSuccessClick(){
-    this.notificationService.success("Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones at duo. At magna essent volumus ius. Ea rebum lucilius his.");
+  onSuccessClick() {
+    this.notificationService.success('Lorem ipsum dolor sit amet, te sint laudem corrumpit quo, ad vel novum inciderint liberavisse, ' +
+    ' eleifend imperdiet consetetur cu eum. Nec quot justo molestiae ut. Laoreet inciderint ad vix. Diceret facilis definitiones ' +
+    ' at duo. At magna essent volumus ius. Ea rebum lucilius his.');
   }
 
 

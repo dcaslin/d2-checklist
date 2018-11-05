@@ -33,7 +33,8 @@ import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 
 import { AppRoutingModule, AuthGuard } from './app-routing.module';
-import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent } from './app.component';
+import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
+  SelectPlatformDialogComponent } from './app.component';
 
 @NgModule({
   imports: [
@@ -71,7 +72,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   ],
   providers: [
     LowLineService,
-    BungieService, AuthService, StorageService, NotificationService, 
+    BungieService, AuthService, StorageService, NotificationService,
     DestinyCacheService, ParseService,
     {provide: RouteReuseStrategy, useClass: StickyReuseStrategy}],
   bootstrap: [AppComponent]

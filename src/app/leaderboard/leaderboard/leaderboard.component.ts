@@ -29,19 +29,19 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
 
   filterName: string;
 
-  displayedColumns = ['rank', 'fireteam', 'end', 'durationMs',];
+  displayedColumns = ['rank', 'fireteam', 'end', 'durationMs', ];
 
   constructor(storageService: StorageService, private httpClient: HttpClient, private router: Router, private route: ActivatedRoute) {
     super(storageService);
 
   }
 
-  getName(): string{
-    return "";
+  getName(): string {
+    return '';
   }
-  
-  getAssetPath(): string{
-    return "";
+
+  getAssetPath(): string {
+    return '';
   }
 
   pgcr(instanceId: string) {
@@ -56,24 +56,23 @@ export class LeaderboardComponent extends ChildComponent implements OnInit, OnDe
     .catch(
       function (err) {
         console.dir(err);
-      });;
+      }); ;
   }
 
-  private sub: any;
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
     this.database.setData([]);
     this.getData();
     observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
       debounceTime(150),
-      distinctUntilChanged(),)
+      distinctUntilChanged(), )
       .subscribe(() => {
         if (!this.dataSource) { return; }
         this.dataSource.filter = this.filter.nativeElement.value;
       });
 
-    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
-      let s = params['name'];
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      const s = params['name'];
       if (s != null) {
         this.filter.nativeElement.value = s;
         this.dataSource.filter = s;

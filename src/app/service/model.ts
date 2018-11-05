@@ -1,4 +1,41 @@
-export interface TriumphNode{
+export enum ItemType {
+    None = 0,
+  Currency = 1,
+  Armor = 2,
+  Weapon = 3,
+  Message = 7,
+  Engram = 8,
+  Consumable = 9,
+  ExchangeMaterial = 10,
+  MissionReward = 11,
+  QuestStep = 12,
+  QuestStepComplete = 13,
+  Emblem = 14,
+  Quest = 15,
+  Subclass = 16,
+  ClanBanner = 17,
+  Aura = 18,
+  Mod = 19,
+  Dummy = 20,
+  Ship = 21,
+  Vehicle = 22,
+  Emote = 23,
+  Ghost = 24,
+  Package = 25,
+    Bounty = 26,
+    GearMod = 99  // custom added
+}
+
+export enum DamageType {
+    None = 0,
+    Kinetic = 1,
+    Arc = 2,
+    Thermal = 3,
+    Void = 4,
+    Raid = 5
+}
+
+export interface TriumphNode {
     type: string;
     hash: string;
     name: string;
@@ -9,24 +46,25 @@ export interface TriumphNode{
     children: TriumphNode[];
 }
 
-export interface TriumphPresentationNode extends TriumphNode{
+export interface TriumphPresentationNode extends TriumphNode {
     progress: number,
     completionValue: number,
     unredeemedCount: number;
 }
 
-export interface TriumphRecordNode extends TriumphNode{
+export interface TriumphRecordNode extends TriumphNode {
     objectives: ItemObjective[];
     redeemed: boolean;
     title: boolean;
     mapLink: string;
+    score: number;
 }
 
-export interface TriumphCollectibleNode extends TriumphNode{
+export interface TriumphCollectibleNode extends TriumphNode {
    acquired: boolean;
    sourceString: string;
 }
-export interface Vendor{
+export interface Vendor {
     hash: string;
     name: string;
     icon: string;
@@ -34,15 +72,15 @@ export interface Vendor{
     nextRefreshDate: string;
 }
 
-export interface SaleItemCost{
+export interface SaleItemCost {
     hash: string;
     name: string;
     quantity: number;
 }
 
-export interface SaleItem{
+export interface SaleItem {
     vendor: Vendor;
-    hash: string; 
+    hash: string;
     name: string;
     icon: string;
     type: ItemType;
@@ -58,7 +96,7 @@ export interface SaleItem{
     mapLink?: string;
 }
 
-export interface ItemPerks{
+export interface ItemPerks {
     icon: string;
     hash: string;
     name: string;
@@ -74,18 +112,18 @@ export interface PublicMilestone {
     order: number;
     icon: string;
     activities: MilestoneActivity[];
-    aggActivities: AggMilestoneActivity[]; 
+    aggActivities: AggMilestoneActivity[];
     rewards: string;
     summary: string;
 
 }
 
-export interface AggMilestoneActivity{
+export interface AggMilestoneActivity {
     lls: number[],
     activity: MilestoneActivity
 }
 
-export interface MilestoneActivity{
+export interface MilestoneActivity {
     hash: string;
     name: string;
     desc: string;
@@ -104,34 +142,34 @@ export interface LoadoutRequirement {
     allowedWeaponSubTypes: string[];
 }
 
-export interface MilestoneChallenge{
-    
+export interface MilestoneChallenge {
+
     name: string;
     desc: string;
     completionValue: number;
     progressDescription: number;
 }
 
-export interface _PublicMilestone {
+export interface PrivPublicMilestone {
     milestoneHash: number;
-    activities: _MilestoneActivity[];
-    availableQuests: _AvailableQuest[];
+    activities: PrivMilestoneActivity[];
+    availableQuests: PrivAvailableQuest[];
     startDate: string;
     endDate: string;
     order: number;
 }
 
-interface _AvailableQuest {
+interface PrivAvailableQuest {
     questItemHash: number;
 }
 
-export interface _LoadoutRequirement {
+export interface PrivLoadoutRequirement {
     equipmentSlotHash: number;
     allowedEquippedItemHashes: any[];
     allowedWeaponSubTypes: number[];
 }
 
-export interface _MilestoneActivity {
+export interface PrivMilestoneActivity {
     activityHash: string;
     challengeObjectiveHashes: any[];
     modifierHashes: string[];
@@ -168,7 +206,7 @@ export class SelectedUser {
     userInfo: UserInfo;
     selectedUserCurrencies: Currency[];
     membership: BungieMembership;
-    promptForPlatform: boolean = false;
+    promptForPlatform = false;
 }
 
 export class BungieMembership {
@@ -301,10 +339,12 @@ export class Player {
     triumphScore: number;
     records: TriumphNode[];
     collections: TriumphNode[];
-    maxLL: number = 0;
+    maxLL = 0;
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[], currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[], 
-            superprivate: boolean, hasWellRested: boolean, checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[], collections: TriumphNode[]) {
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[],
+        currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[],            superprivate: boolean, hasWellRested: boolean,
+        checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
+        collections: TriumphNode[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -319,9 +359,9 @@ export class Player {
         this.triumphScore = triumphScore;
         this.records = records;
         this.collections = collections;
-        if (characters!=null && characters.length>0){
-            for (let char of characters){
-                if (char.light>this.maxLL){
+        if (characters != null && characters.length > 0) {
+            for (const char of characters) {
+                if (char.light > this.maxLL) {
                     this.maxLL = char.light;
                 }
             }
@@ -351,7 +391,7 @@ export class InventoryItem {
     readonly values: any;
     readonly expirationDate: string;
     public mapLink: string;
-    //more to come, locked other stuff
+    // more to come, locked other stuff
 
     damageTypeString(): string {
         return DamageType[this.damageType];
@@ -363,7 +403,8 @@ export class InventoryItem {
 
     constructor(hash: string, name: string, equipped: boolean, owner: Character,
         icon: string, type: ItemType, typeName: string, quantity: number,
-        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[], sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any, 
+        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[],
+        sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string
     ) {
         this.hash = hash;
@@ -446,27 +487,27 @@ export class Character {
     classType: number;
     levelProgression: LevelProgression;
     legendProgression: Progression;
-    wellRested: boolean = false;
+    wellRested = false;
     currentActivity: CurrentActivity;
     milestones: { [key: string]: MilestoneStatus };
     clanMilestones: ClanMilestoneResult[];
     factions: Progression[];
-    //progressions: Progression[];
+    // progressions: Progression[];
     stats: CharacterStat[];
     startWeek: Date;
     endWeek: Date;
-    lifetimeRaid: number = 0;
-    lifetimeRaidNormal: number = 0;
-    lifetimeRaidPrestige: number = 0;
-    lifetimeEater: number = 0;
-    lifetimeSpire: number = 0;
-    lifetimeLwNormal: number = 0;
-    hasEater: boolean = false;
-    hasSpire: boolean = false;
-    hasLevNm: boolean = false;
-    hasLevHm: boolean = false;
-    hasLwNm: boolean = false;
-    hasPrestigeNf: boolean = false;
+    lifetimeRaid = 0;
+    lifetimeRaidNormal = 0;
+    lifetimeRaidPrestige = 0;
+    lifetimeEater = 0;
+    lifetimeSpire = 0;
+    lifetimeLwNormal = 0;
+    hasEater = false;
+    hasSpire = false;
+    hasLevNm = false;
+    hasLevHm = false;
+    hasLwNm = false;
+    hasPrestigeNf = false;
     aggHistory: AggHistory;
 
 }
@@ -481,25 +522,25 @@ export class Nightfall {
 }
 
 export class AggHistory {
-    nf: number = 0;
+    nf = 0;
     nfFastestMs: number;
 
-    hmNf: number = 0;
+    hmNf = 0;
     hmNfFastestMs: number;
 
-    eater: number = 0;
+    eater = 0;
     eaterFastestMs: number;
 
-    spire: number = 0;
+    spire = 0;
     spireFastestMs: number;
 
-    raid: number = 0;
+    raid = 0;
     raidFastestMs: number;
 
-    hmRaid: number = 0;
+    hmRaid = 0;
     hmRaidFastestMs: number;
 
-    lwNm: number = 0;
+    lwNm = 0;
     lwNmFastestMs: number;
 }
 
@@ -551,11 +592,11 @@ export class PGCR {
     period: string;
     activityDurationSeconds: number;
     finish: string;
-    //Acitivity Details
+    // Acitivity Details
     referenceId: number;
     instanceId: string;
     mode: string;
-    name: string; //from referenceId
+    name: string; // from referenceId
     isPrivate: boolean;
     entries: PGCREntry[];
     level: number;
@@ -673,7 +714,7 @@ export class ClanRow {
 export class BungieMember {
     name: string;
     id: string;
-    noClan: boolean = false;
+    noClan = false;
     clans: ClanRow[] = null;
     xbl: BungieMemberPlatform;
     psn: BungieMemberPlatform;
@@ -691,7 +732,7 @@ export class BungieMember {
 export class BungieMemberPlatform {
     name: string;
     platform: Platform;
-    defunct: boolean = false;
+    defunct = false;
 
     constructor(name: string, platform: Platform) {
         this.name = name;
@@ -734,18 +775,18 @@ export class Progression {
 
 export class Const {
 
-    public static XBL_PLATFORM = new Platform(1, "XBL", "Xbox", "fab fa-xbox");
-    public static PSN_PLATFORM = new Platform(2, "PSN", "Playstation", "fab fa-playstation");
-    public static BNET_PLATFORM = new Platform(4, "BNET", "Battle.net", "fal fa-desktop");
+    public static XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
+    public static PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
+    public static BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fal fa-desktop');
 
     public static PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM
     ];
 
     public static PLATFORMS_DICT = {
-        "1": Const.XBL_PLATFORM,
-        "2": Const.PSN_PLATFORM,
-        "4": Const.BNET_PLATFORM
+        '1': Const.XBL_PLATFORM,
+        '2': Const.PSN_PLATFORM,
+        '4': Const.BNET_PLATFORM
     }
 }
 
@@ -804,46 +845,5 @@ export class Perk {
         this.active = active;
         this.visible = visible;
     }
-
-}
-
-export enum ItemType {
-    None = 0,
-	Currency = 1,
-	Armor = 2,
-	Weapon = 3,
-	Message = 7,
-	Engram = 8,
-	Consumable = 9,
-	ExchangeMaterial = 10,
-	MissionReward = 11,
-	QuestStep = 12,
-	QuestStepComplete = 13,
-	Emblem = 14,
-	Quest = 15,
-	Subclass = 16,
-	ClanBanner = 17,
-	Aura = 18,
-	Mod = 19,
-	Dummy = 20,
-	Ship = 21,
-	Vehicle = 22,
-	Emote = 23,
-	Ghost = 24,
-	Package = 25,
-    Bounty = 26,
-    GearMod = 99  //custom added
-}
-
-export enum DamageType {
-    None = 0,
-    Kinetic = 1,
-    Arc = 2,
-    Thermal = 3,
-    Void = 4,
-    Raid = 5
-}
-
-export class Socket {
 
 }

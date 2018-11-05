@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { InventoryItem, ItemType} from "../../../service/model";
+import { InventoryItem, ItemType} from '../../../service/model';
 
 @Component({
     selector: 'anms-gear',
@@ -11,5 +11,5 @@ import { InventoryItem, ItemType} from "../../../service/model";
     @Input() gear: InventoryItem[];
 
     ItemType = ItemType;
-    
+
 }

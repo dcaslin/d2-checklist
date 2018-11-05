@@ -20,6 +20,55 @@ import { ChildComponent } from './shared/child.component';
 import { AuthGuard } from '@app/app-routing.module';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
+
+@Component({
+  selector: 'anms-success-snack',
+  templateUrl: 'snackbars/success.html',
+  styleUrls: ['snackbars/success.css'],
+})
+export class SuccessSnackbarComponent {
+  message: string;
+
+}
+
+@Component({
+  selector: 'anms-info-snack',
+  templateUrl: 'snackbars/info.html',
+  styleUrls: ['snackbars/info.css'],
+})
+export class InfoSnackbarComponent {
+  message: string;
+
+}
+
+@Component({
+  selector: 'anms-warn-snack',
+  templateUrl: 'snackbars/warn.html',
+  styleUrls: ['snackbars/warn.css'],
+})
+export class WarnSnackbarComponent {
+  message: string;
+
+}
+
+@Component({
+  selector: 'anms-select-platform-dialog',
+  templateUrl: './select-platform-dialog.component.html',
+})
+export class SelectPlatformDialogComponent {
+  public const: Const = Const;
+  newMessage = '';
+  constructor(
+    public dialogRef: MatDialogRef<SelectPlatformDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: UserInfo[]) { }
+
+
+  onSelect(u: UserInfo): void {
+    this.dialogRef.close(u);
+  }
+}
+
+
 @Component({
   selector: 'anms-root',
   templateUrl: './app.component.html',
@@ -39,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logo = require('../assets/logo.svg');
 
-  //signed on info
+  // signed on info
   loggingOn = true;
   signedOnUser: SelectedUser = null;
   public const: Const = Const;
@@ -67,33 +116,31 @@ export class AppComponent implements OnInit, OnDestroy {
             this.componentCssClass = x.theme;
             this.overlayContainer.getContainerElement().classList.add(x.theme);
 
-            //this.overlayContainer.themeClass = x.theme;
+            // this.overlayContainer.themeClass = x.theme;
           }
           if (x.disableads != null) {
             this.disableads = x.disableads;
           }
         });
-    //emit current settings
+    // emit current settings
     this.storageService.refresh();
 
     this.notificationService.notifyFeed.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
         x => {
-          if (x.mode === "success") {
-            let snackRef = this.snackBar.openFromComponent(SuccessSnackbarComponent, {
+          if (x.mode === 'success') {
+            const snackRef = this.snackBar.openFromComponent(SuccessSnackbarComponent, {
               duration: 2000
             });
             snackRef.instance.message = x.message;
-          }
-          else if (x.mode === "info") {
-            let snackRef = this.snackBar.openFromComponent(InfoSnackbarComponent, {
+          } else if (x.mode === 'info') {
+            const snackRef = this.snackBar.openFromComponent(InfoSnackbarComponent, {
               duration: 2000
             });
             snackRef.instance.message = x.message;
-          }
-          else if (x.mode === "error") {
-            let snackRef = this.snackBar.openFromComponent(WarnSnackbarComponent, {
+          } else if (x.mode === 'error') {
+            const snackRef = this.snackBar.openFromComponent(WarnSnackbarComponent, {
               duration: 5000
             });
             snackRef.instance.message = x.message;
@@ -106,13 +153,13 @@ export class AppComponent implements OnInit, OnDestroy {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-     dc.width = "300px";
+     dc.width = '300px';
      dc.data = this.signedOnUser.membership.destinyMemberships;
 
     const dialogRef = this.dialog.open(SelectPlatformDialogComponent, dc);
 
     dialogRef.afterClosed().subscribe(async (result) => {
-      if (result==null) return;
+      if (result == null) { return; }
       this.selectUser(result);
     });
   }
@@ -120,17 +167,16 @@ export class AppComponent implements OnInit, OnDestroy {
 
   loadClan(clanRow: ClanRow) {
     if (this.signedOnUser != null) {
-      this.router.navigate(["clan", clanRow.id]);
+      this.router.navigate(['clan', clanRow.id]);
     }
   }
 
   async myProfile() {
     if (this.signedOnUser != null) {
-      if (this.signedOnUser.userInfo.membershipType==4){
+      if (this.signedOnUser.userInfo.membershipType === 4) {
         const match: BungieMember = await this.bungieService.getBungieMemberById(this.signedOnUser.membership.bungieId);
-        this.router.navigate(['/',match.bnet.platform.type, match.bnet.name]);
-      }
-      else{
+        this.router.navigate(['/', match.bnet.platform.type, match.bnet.name]);
+      } else {
         this.router.navigate([this.signedOnUser.userInfo.membershipType, this.signedOnUser.userInfo.displayName]);
       }
     }
@@ -140,8 +186,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser = selectedUser;
       this.loggingOn = false;
-      if (selectedUser==null) return;
-      if (selectedUser.promptForPlatform==true){
+      if (selectedUser == null) { return; }
+      if (selectedUser.promptForPlatform === true) {
         selectedUser.promptForPlatform = false;
         this.openDialog();
       }
@@ -153,18 +199,16 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(
         (navEnd: NavigationEnd) => {
           try {
-            const parts = navEnd.urlAfterRedirects.split("/");
-            let logMe = "";
-            if (parts.length == 4) {
+            const parts = navEnd.urlAfterRedirects.split('/');
+            let logMe = '';
+            if (parts.length === 4) {
               logMe = parts[parts.length - 1];
-            }
-            else if (parts.length > 1) {
+            } else if (parts.length > 1) {
               logMe = parts[1];
             }
-            logMe += "-" + (this.disableads ? 'disabledAds' : 'enabledAds');
+            logMe += '-' + (this.disableads ? 'disabledAds' : 'enabledAds');
             (window as any).ga('send', 'pageview', logMe);
-          }
-          catch (err) {
+          } catch (err) {
             console.dir(err);
           }
         }
@@ -190,57 +234,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   onLogoutClick() {
-    console.log("Logout clicked, signing out.");
+    console.log('Logout clicked, signing out.');
     this.authService.signOut();
   }
 
-}
-
-
-@Component({
-  selector: 'success-snack',
-  templateUrl: 'snackbars/success.html',
-  styleUrls: ['snackbars/success.css'],
-})
-export class SuccessSnackbarComponent {
-  message: string;
-
-}
-
-@Component({
-  selector: 'info-snack',
-  templateUrl: 'snackbars/info.html',
-  styleUrls: ['snackbars/info.css'],
-})
-export class InfoSnackbarComponent {
-  message: string;
-
-}
-
-
-@Component({
-  selector: 'warn-snack',
-  templateUrl: 'snackbars/warn.html',
-  styleUrls: ['snackbars/warn.css'],
-})
-export class WarnSnackbarComponent {
-  message: string;
-
-}
-
-@Component({
-  selector: 'anms-select-platform-dialog',
-  templateUrl: './select-platform-dialog.component.html',
-})
-export class SelectPlatformDialogComponent {
-  public const: Const = Const;
-  newMessage = '';
-  constructor(
-    public dialogRef: MatDialogRef<SelectPlatformDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: UserInfo[]) { }
-
-
-  onSelect(u: UserInfo): void {
-    this.dialogRef.close(u);
-  }
 }

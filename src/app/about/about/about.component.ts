@@ -12,7 +12,7 @@ import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 })
 export class AboutComponent extends ChildComponent  implements OnInit {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-  constructor(storageService: StorageService) { 
+  constructor(storageService: StorageService) {
     super(storageService);
   }
 

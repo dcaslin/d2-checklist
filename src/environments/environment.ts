@@ -7,12 +7,12 @@ const packageJson = require('../../package.json');
 
 export const environment = {
   bungie: {
-    apiKey: "c0e2cdba952945ec8a988fcfcf47441e",
-    authUrl: "https://www.bungie.net/en/OAuth/Authorize",
-    clientId: "21055",
-    clientSecret: "niRAEaUutpPWxkBOoFhAbf2XRAY587B7sC.N7rat3yI"
+    apiKey: 'c0e2cdba952945ec8a988fcfcf47441e',
+    authUrl: 'https://www.bungie.net/en/OAuth/Authorize',
+    clientId: '21055',
+    clientSecret: 'niRAEaUutpPWxkBOoFhAbf2XRAY587B7sC.N7rat3yI'
   },
-  xyzApiKey: "2a35cd994912b3b167741c621f381234",
+  xyzApiKey: '2a35cd994912b3b167741c621f381234',
   production: false,
   versions: {
     app: packageJson.version,
