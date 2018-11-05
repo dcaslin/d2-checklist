@@ -13,7 +13,7 @@
             </a>
             <ng-container *ngIf="player!=null && this.player.profile.userInfo.membershipType==4">
                 {{player.profile.userInfo.displayName}}
-            </ng-container>
+            </ng-container>            
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <a mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'"
@@ -72,6 +72,9 @@
                     color="accent">{{friend.user.displayName}}</a>
                   <a *ngIf="friend.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(friend.bungieNetUserInfo)">
                     {{friend.user.displayName}}
+                  </a>
+                  <a style="margin-left:0.5em" [ngClass]="favorites[storageService.getFavKey(friend.user)]==true?'warn-text':''" (click)="storageService.toggleFav(friend.user)" href="javascript:void(0)">
+                    <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
                 </td>
                 <td>{{friend.instances.length}}</td>

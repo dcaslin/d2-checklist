@@ -21,10 +21,10 @@
 
           <mat-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
             <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
-            <span style="margin-right: 0.5em"  *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
-                {{clanMs.name}}
-                <i *ngIf="clanMs.earned==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
+            <span style="margin-right: 0.5em" *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
+              {{clanMs.name}}
+              <i *ngIf="clanMs.earned==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+              <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
             </span>
           </mat-card>
 
@@ -138,8 +138,12 @@
                   </a>
                   <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member)">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                  </a>                  
-                  <a *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
+                  </a>
+                  <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(member.destinyUserInfo)]==true?'warn-text':''"
+                    (click)="storageService.toggleFav(member.destinyUserInfo)" href="javascript:void(0)">
+                    <i style="font-weight: normal !important" class="far fa-heart"></i>
+                  </a>
+                  <a style="margin-left:0.25em" *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
                     &ensp;<i class="fas fa-sync"></i>
                   </a>
                 </td>
@@ -147,23 +151,24 @@
 
                 <ng-container *ngIf="member.player!=null">
                   <td>
-                    <ng-container  *ngIf="!member.player.superprivate">
-                        <span *ngIf="member.isOnline" class="accent-text" matTooltip="Playing right now!">                  
-                            <i class="fal fa-gamepad fa-2x"></i>
-                        </span>
-                        <ng-container *ngIf="!member.isOnline">
-                          {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
-                        </ng-container>
+                    <ng-container *ngIf="!member.player.superprivate">
+                      <span *ngIf="member.isOnline" class="accent-text" matTooltip="Playing right now!">
+                        <i class="fal fa-gamepad fa-2x"></i>
+                      </span>
+                      <ng-container *ngIf="!member.isOnline">
+                        {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                      </ng-container>
                     </ng-container>
 
-                    
+
                   </td>
                   <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
                     [attr.colspan]="modelPlayer.milestoneList.length">
                     Blocked by privacy settings
                   </td>
                   <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
-                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" class="clan-player-ms-cell" [attr.data-label]="mileStoneName.name">
+                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" class="clan-player-ms-cell"
+                      [attr.data-label]="mileStoneName.name">
                       <ng-container *ngFor="let char of member.player.characters">
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">

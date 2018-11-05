@@ -16,7 +16,7 @@ import { ClanComponent } from './clan';
 import { LeviathanComponent, LeviathanPrestigeComponent, RaidLastWishComponent } from './leaderboard';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-import { DestinyCacheService} from './service/destiny-cache.service';
+import { DestinyCacheService } from './service/destiny-cache.service';
 import { Subject } from 'rxjs';
 import { BungieService } from '@app/service/bungie.service';
 
@@ -46,129 +46,127 @@ export class AuthGuard implements CanActivate {
 @NgModule({
   imports: [RouterModule.forRoot(
     [{
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
-      }
+      path: '',
+      redirectTo: 'home',
+      pathMatch: 'full'
+    }
       , {
-        path: 'home',
-        canActivate: [AuthGuard],
-        component: HomeComponent
-      },
-      {
-        path: 'auth',
-        component: AuthComponent
-      },
+      path: 'home',
+      canActivate: [AuthGuard],
+      component: HomeComponent
+    },
+    {
+      path: 'auth',
+      component: AuthComponent
+    },
 
-      {
-        path: 'settings',
-        canActivate: [AuthGuard],
-        component: SettingsComponent
-      }, {
-        path: 'about',
-        canActivate: [AuthGuard],
-        component: AboutComponent
-      }, {
-        path: 'search',
-        canActivate: [AuthGuard],
-        component: BungieSearchComponent
-      }, {
-        path: 'searchClans',
-        canActivate: [AuthGuard],
-        component: ClanSearchComponent
-      }
+    {
+      path: 'settings',
+      canActivate: [AuthGuard],
+      component: SettingsComponent
+    }, {
+      path: 'about',
+      canActivate: [AuthGuard],
+      component: AboutComponent
+    }, {
+      path: 'search',
+      canActivate: [AuthGuard],
+      component: BungieSearchComponent
+    }, {
+      path: 'searchClans',
+      canActivate: [AuthGuard],
+      component: ClanSearchComponent
+    }, {
+      path: 'search/:name',
+      canActivate: [AuthGuard],
+      component: BungieSearchComponent
+    }, {
+      path: 'clan/:id',
+      canActivate: [AuthGuard],
+      component: ClanComponent
+    },
+    {
+      path: 'leaderboard/leviathan',
+      canActivate: [AuthGuard],
+      component: LeviathanComponent
+    },
+    {
+      path: 'leaderboard/leviathan/:name',
+      canActivate: [AuthGuard],
+      component: LeviathanComponent
+    },
+    {
+      path: 'leaderboard/leviathan-prestige',
+      canActivate: [AuthGuard],
+      component: LeviathanPrestigeComponent
+    },
+    {
+      path: 'leaderboard/leviathan-prestige/:name',
+      canActivate: [AuthGuard],
+      component: LeviathanPrestigeComponent
+    },
+    {
+      path: 'leaderboard/last-wish',
+      redirectTo: 'leaderboard/last-wish/1'
+    },
+    {
+      path: 'leaderboard/last-wish/search/:query',
+      canActivate: [AuthGuard],
+      component: RaidLastWishComponent
+    },
+    {
+      path: 'leaderboard/last-wish/:page',
+      canActivate: [AuthGuard],
+      component: RaidLastWishComponent
+    },
+
+    {
+      path: 'leaderboard',
+      redirectTo: 'leaderboard/last-wish/1'
+    },
+    {
+      path: 'pgcr/:instanceId',
+      canActivate: [AuthGuard],
+      component: PGCRComponent
+    },
+    {
+      path: 'vendors',
+      canActivate: [AuthGuard],
+      component: ResourcesComponent
+    },
+    {
+      path: 'vendors/:characterId',
+      redirectTo: 'vendors/:characterId/Bounties'
+    },
+    {
+      path: 'vendors/:characterId/:tab',
+      canActivate: [AuthGuard],
+      component: ResourcesComponent
+    },
+    {
+      path: ':platform/:gt',
+      canActivate: [AuthGuard],
+      redirectTo: ':platform/:gt/milestones'
+    },
+    {
+      path: ':platform/:gt/:tab',
+      canActivate: [AuthGuard],
+      component: PlayerComponent
+    },
+    {
+      path: 'history/:platform/:memberId/:characterId',
+      canActivate: [AuthGuard],
+      component: HistoryComponent
+    },
+    {
+      path: 'recent-players/:platform/:memberId/:characterId',
+      canActivate: [AuthGuard],
+      component: RecentPlayersComponent
+    }
       , {
-        path: 'search/:name',
-        canActivate: [AuthGuard],
-        component: BungieSearchComponent
-      }
-      , {
-        path: 'clan/:id',
-        canActivate: [AuthGuard],
-        component: ClanComponent
-      },
-      {
-        path: 'leaderboard/leviathan',
-        canActivate: [AuthGuard],
-        component: LeviathanComponent
-      },
-      {
-        path: 'leaderboard/leviathan/:name',
-        canActivate: [AuthGuard],
-        component: LeviathanComponent
-      },
-      {
-        path: 'leaderboard/leviathan-prestige',
-        canActivate: [AuthGuard],
-        component: LeviathanPrestigeComponent
-      },
-      {
-        path: 'leaderboard/leviathan-prestige/:name',
-        canActivate: [AuthGuard],
-        component: LeviathanPrestigeComponent
-      },
-      {
-        path: 'leaderboard/last-wish',
-        redirectTo: 'leaderboard/last-wish/1'
-      },
-      {
-        path: 'leaderboard/last-wish/search/:query',
-        canActivate: [AuthGuard],
-        component: RaidLastWishComponent
-      },
-      {
-        path: 'leaderboard/last-wish/:page',
-        canActivate: [AuthGuard],
-        component: RaidLastWishComponent
-      },
-      
-      {
-        path: 'leaderboard',
-        redirectTo: 'leaderboard/last-wish/1'
-      },
-      {
-        path: 'pgcr/:instanceId',
-        canActivate: [AuthGuard],
-        component: PGCRComponent
-      },
-      {
-        path: 'vendors',
-        canActivate: [AuthGuard],
-        component: ResourcesComponent
-      },
-      {
-        path: 'vendors/:characterId',
-        redirectTo: 'vendors/:characterId/Bounties'
-      },
-      {
-        path: 'vendors/:characterId/:tab',
-        canActivate: [AuthGuard],
-        component: ResourcesComponent
-      },
-      {
-        path: ':platform/:gt',
-        canActivate: [AuthGuard],
-        redirectTo: ':platform/:gt/milestones'
-      },
-      {
-        path: ':platform/:gt/:tab',
-        canActivate: [AuthGuard],
-        component: PlayerComponent
-      },
-      {
-        path: 'history/:platform/:memberId/:characterId',
-        canActivate: [AuthGuard],
-        component: HistoryComponent
-      },
-      {
-        path: 'recent-players/:platform/:memberId/:characterId',
-        canActivate: [AuthGuard],
-        component: RecentPlayersComponent
-      }
-      , {
-        path: '**',
-        redirectTo: 'home'
-      }
+      path: '**',
+      redirectTo: 'home'
+    }
     ], { useHash: false })],
   exports: [RouterModule],
   providers: [AuthGuard]
