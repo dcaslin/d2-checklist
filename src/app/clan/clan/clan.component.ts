@@ -6,15 +6,16 @@ import { Subject } from 'rxjs';
 import { MatPaginator, MatSort } from '@angular/material';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { BungieService } from "../../service/bungie.service";
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, BungieGroupMember, ClanInfo, MileStoneName, ClanRow } from "../../service/model";
+import { BungieService } from '../../service/bungie.service';
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player,
+  BungieGroupMember, ClanInfo, MileStoneName, ClanRow } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import * as moment from 'moment';
 import { extractStyleParams } from '@angular/animations/browser/src/util';
 
 @Component({
-  selector: 'clan-history',
+  selector: 'anms-clan-history',
   templateUrl: './clan.component.html',
   styleUrls: ['./clan.component.scss']
 })
@@ -26,11 +27,11 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   members: BungieGroupMember[] = [];
   sortedMembers: BungieGroupMember[] = [];
   modelPlayer: Player;
-  sort: string = "memberAsc";
+  sort = 'memberAsc';
   playerCntr: 0;
   allLoaded: boolean;
 
-  filterMode: string = "none";
+  filterMode = 'none';
   filterActivity: MileStoneName = null;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
@@ -39,50 +40,47 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   public toggleMemberSort() {
-    if (this.sort == "memberAsc") {
-      this.sort = "memberDesc";
-    }
-    else {
-      this.sort = "memberAsc";
+    if (this.sort === 'memberAsc') {
+      this.sort = 'memberDesc';
+    } else {
+      this.sort = 'memberAsc';
     }
     this.sortData();
   }
 
-  public async navigateBnetMember(target: BungieGroupMember){
+  public async navigateBnetMember(target: BungieGroupMember) {
     const match: BungieMember = await this.bungieService.getBungieMemberById(target.bungieNetUserInfo.membershipId);
-    if (match==null) return;
-    this.router.navigate(['/',match.bnet.platform.type, match.bnet.name]);
+    if (match == null) { return; }
+    this.router.navigate(['/', match.bnet.platform.type, match.bnet.name]);
     return;
   }
 
   public toggleDateSort() {
-    if (this.sort == "dateAsc") {
-      this.sort = "dateDesc";
-    }
-    else {
-      this.sort = "dateAsc";
+    if (this.sort === 'dateAsc') {
+      this.sort = 'dateDesc';
+    } else {
+      this.sort = 'dateAsc';
     }
     this.sortData();
   }
-  
+
   public toggleLLSort() {
-    if (this.sort == "llAsc") {
-      this.sort = "llDesc";
-    }
-    else {
-      this.sort = "llAsc";
+    if (this.sort === 'llAsc') {
+      this.sort = 'llDesc';
+    } else {
+      this.sort = 'llAsc';
     }
     this.sortData();
   }
 
   private static compareDate(a: BungieGroupMember, b: BungieGroupMember): number {
-    let aD: number = 0;
-    let bD: number = 0;
-    if (a.player != null) aD = Date.parse(a.player.profile.dateLastPlayed);
-    if (b.player != null) bD = Date.parse(b.player.profile.dateLastPlayed);
+    let aD = 0;
+    let bD = 0;
+    if (a.player != null) { aD = Date.parse(a.player.profile.dateLastPlayed); }
+    if (b.player != null) { bD = Date.parse(b.player.profile.dateLastPlayed); }
 
-    if (aD < bD) return 1;
-    if (aD > bD) return -1;
+    if (aD < bD) { return 1; }
+    if (aD > bD) { return -1; }
     return 0;
   }
 
@@ -90,8 +88,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     return ClanComponent.compareDate(a, b) * -1;
   }
   private static compareName(a: BungieGroupMember, b: BungieGroupMember): number {
-    let bs: string = b.destinyUserInfo.displayName;
-    let as: string = a.destinyUserInfo.displayName;
+    const bs: string = b.destinyUserInfo.displayName;
+    const as: string = a.destinyUserInfo.displayName;
     return as.localeCompare(bs);
     // if (bs < as) return 1;
     // if (bs > as) return -1;
@@ -101,15 +99,15 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
   private static compareLLs(a: BungieGroupMember, b: BungieGroupMember): number {
     let aPts = -1;
-    if (a.player!=null && a.player.maxLL!=null){
+    if (a.player != null && a.player.maxLL != null) {
       aPts = a.player.maxLL;
     }
     let bPts = -1;
-    if (b.player!=null && b.player.maxLL!=null){
+    if (b.player != null && b.player.maxLL != null) {
       bPts = b.player.maxLL;
     }
-    if (bPts < aPts) return 1;
-    if (bPts > aPts) return -1;
+    if (bPts < aPts) { return 1; }
+    if (bPts > aPts) { return -1; }
     return 0;
   }
   private static compareLLsReverse(a, b): number {
@@ -121,7 +119,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private filterPlayers() {
-    if (this.filterMode == "none") {
+    if (this.filterMode === 'none') {
       this.filterActivity = null;
     }
     this.sortData();
@@ -129,89 +127,87 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private sortData(): void {
-    //restore list
-    let temp = this.members.slice(0);
-    //filter list if necessary
+    // restore list
+    const temp = this.members.slice(0);
+    // filter list if necessary
 
     this.sortedMembers = temp.filter(member => {
-      if (this.filterActivity == null) return true;
-      if (member.player == null) return false;
-      if (member.player.characters == null) return false;
-      if (member.player.characters.length == 0) return false;
-      if (member.player.characters[0].milestones == null) return false;
-      let comp: number = 0;
-      let total: number = 0;
+      if (this.filterActivity == null) { return true; }
+      if (member.player == null) { return false; }
+      if (member.player.characters == null) { return false; }
+      if (member.player.characters.length === 0) { return false; }
+      if (member.player.characters[0].milestones == null) { return false; }
+      let comp = 0;
+      let total = 0;
       member.player.characters.forEach(char => {
         total++;
         const ms = char.milestones[this.filterActivity.key];
-        if (ms==null && char.baseCharacterLevel>=char.maxLevel) comp++;
-        else if (ms!=null && ms.complete==true) comp++;
+        if (ms == null && char.baseCharacterLevel >= char.maxLevel) { comp++; } else if (ms != null && ms.complete === true) { comp++; }
       });
-      if (this.filterMode == "zero" && comp == 0) return true;
-      if (this.filterMode == "all" && comp == total) return true;
+      if (this.filterMode === 'zero' && comp === 0) { return true; }
+      if (this.filterMode === 'all' && comp === total) { return true; }
       return false;
     });
 
-    if (this.sort == "memberAsc") this.sortedMembers.sort(ClanComponent.compareName);
-    if (this.sort == "memberDesc") this.sortedMembers.sort(ClanComponent.compareNameReverse);
-    if (this.sort == "dateAsc") this.sortedMembers.sort(ClanComponent.compareDate);
-    if (this.sort == "dateDesc") this.sortedMembers.sort(ClanComponent.compareDateReverse);
-    if (this.sort == "llAsc") this.sortedMembers.sort(ClanComponent.compareLLs);
-    if (this.sort == "llDesc") this.sortedMembers.sort(ClanComponent.compareLLsReverse);
+    if (this.sort === 'memberAsc') { this.sortedMembers.sort(ClanComponent.compareName); }
+    if (this.sort === 'memberDesc') { this.sortedMembers.sort(ClanComponent.compareNameReverse); }
+    if (this.sort === 'dateAsc') { this.sortedMembers.sort(ClanComponent.compareDate); }
+    if (this.sort === 'dateDesc') { this.sortedMembers.sort(ClanComponent.compareDateReverse); }
+    if (this.sort === 'llAsc') { this.sortedMembers.sort(ClanComponent.compareLLs); }
+    if (this.sort === 'llDesc') { this.sortedMembers.sort(ClanComponent.compareLLsReverse); }
   }
 
   public loadSpecificPlayer(target: BungieGroupMember) {
-    this.bungieService.getChars(target.destinyUserInfo.membershipType, target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions']).then(x => {
+    this.bungieService.getChars(target.destinyUserInfo.membershipType,
+      target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions']).then(x => {
       target.player = x;
-      //hack for raid
+      // hack for raid
       if (x != null && x.characters != null) {
-        //in case this is a retry 
+        // in case this is a retry
         this.members[this.playerCntr].errorMsg = null;
 
-        //also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x => {
-          //nothing needed
+        // also update raid history
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x2 => {
+          // nothing needed
         });
 
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
-        
-      }
-      else {
-        this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged in since DLC?";
+
+      } else {
+        this.members[this.playerCntr].errorMsg = 'Unabled to load player data, have they logged in since DLC?';
       }
     });
   }
 
   private downloadCsvReport() {
-    let sDate = new Date().toISOString().slice(0, 10);
-    let sCsv = "member,platform,chars,lastPlayed days ago,";
+    const sDate = new Date().toISOString().slice(0, 10);
+    let sCsv = 'member,platform,chars,lastPlayed days ago,';
     this.modelPlayer.milestoneList.forEach(m => {
       let tempName = m.name;
-      tempName = m.name.replace(",", "_");
-      sCsv += tempName + ",";
-      sCsv += tempName + "%,";
+      tempName = m.name.replace(',', '_');
+      sCsv += tempName + ',';
+      sCsv += tempName + '%,';
     });
-    sCsv += "\n";
+    sCsv += '\n';
 
     this.members.forEach(member => {
-      if (member.destinyUserInfo == null) return;
-      if (member.player == null) return;
+      if (member.destinyUserInfo == null) { return; }
+      if (member.player == null) { return; }
 
-      sCsv += member.destinyUserInfo.displayName + ",";
-      sCsv += member.destinyUserInfo.platformName + ",";
+      sCsv += member.destinyUserInfo.displayName + ',';
+      sCsv += member.destinyUserInfo.platformName + ',';
       if (member.player.characters != null) {
-        sCsv += member.player.characters.length + ",";
-      }
-      else {
-        sCsv += "0,";
+        sCsv += member.player.characters.length + ',';
+      } else {
+        sCsv += '0,';
       }
 
-      let today = moment();
-      let lastPlayed = moment(member.player.profile.dateLastPlayed);
-      let diff = today.diff(lastPlayed, "days");
-      sCsv += diff + ",";
+      const today = moment();
+      const lastPlayed = moment(member.player.profile.dateLastPlayed);
+      const diff = today.diff(lastPlayed, 'days');
+      sCsv += diff + ',';
 
       if (member.player.characters != null) {
         this.modelPlayer.milestoneList.forEach(mileStoneName => {
@@ -228,35 +224,35 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
                 pctTotal += char.milestones[mileStoneName.key].pct;
                 possible++;
               }
-              if (char.milestones[mileStoneName.key].complete == true) {
+              if (char.milestones[mileStoneName.key].complete === true) {
                 total++;
               }
-            } 
-            else if (char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears && char.baseCharacterLevel>=char.maxLevel) {
+            } else if (char.milestones[mileStoneName.key] == null && !mileStoneName.neverDisappears
+              && char.baseCharacterLevel >= char.maxLevel) {
               total++;
               pctTotal++;
               possible++;
             }
           });
-          sCsv += total + ",";
-          if (possible == 0) possible = 1;
-          sCsv += pctTotal / possible + ",";
+          sCsv += total + ',';
+          if (possible === 0) { possible = 1; }
+          sCsv += pctTotal / possible + ',';
         });
       }
-      sCsv += "\n";
+      sCsv += '\n';
 
     });
 
-    this.downloadCsv("clan-progress-" + sDate + ".csv", sCsv);
+    this.downloadCsv('clan-progress-' + sDate + '.csv', sCsv);
   }
 
 
   private downloadCsv(filename: string, csv: string) {
-    console.log("Downloading csv: " + filename);
-    let anch: HTMLAnchorElement = document.createElement('a');
-    anch.setAttribute("href", 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
-    anch.setAttribute("download", filename);
-    anch.setAttribute("visibility", "hidden");
+    console.log('Downloading csv: ' + filename);
+    const anch: HTMLAnchorElement = document.createElement('a');
+    anch.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+    anch.setAttribute('download', filename);
+    anch.setAttribute('visibility', 'hidden');
     document.body.appendChild(anch);
     anch.click();
   }
@@ -270,7 +266,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     }
 
 
-    this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType, this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
+    this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType,
+      this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
       if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
         // const list = [];
         // const removeHashes = [
@@ -291,22 +288,21 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         //   }
         // }
         // x.milestoneList = list;;
-        
+
         this.modelPlayer = x;
       }
       if (x != null && x.characters != null) {
-        //in case this is a retry 
+        // in case this is a retry
         this.members[this.playerCntr].errorMsg = null;
-        //also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x => {
-          //nothing needed
+        // also update raid history
+        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x2 => {
+          // nothing needed
         });
         // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
         //   //nothing needed
         // });
-      }
-      else {
-        this.members[this.playerCntr].errorMsg = "Unabled to load player data, have they logged on since DLC?";
+      } else {
+        this.members[this.playerCntr].errorMsg = 'Unabled to load player data, have they logged on since DLC?';
       }
       this.members[this.playerCntr].player = x;
       this.playerCntr++;
@@ -314,9 +310,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       this.slowlyLoadRest();
     }).catch(err => {
       console.dir(err);
-      //reloading mid load can break this
+      // reloading mid load can break this
       if (this.members[this.playerCntr] != null) {
-        console.log("Skipping error on " + this.members[this.playerCntr].destinyUserInfo.displayName + " and continuing");
+        console.log('Skipping error on ' + this.members[this.playerCntr].destinyUserInfo.displayName + ' and continuing');
 
         this.playerCntr++;
         this.slowlyLoadRest();
@@ -335,7 +331,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.bungieService.getClanInfo(this.id).then(i => {
       this.info = i;
       if (i != null) {
-        //load the clan members
+        // load the clan members
         this.bungieService.getClanMembers(this.id).then(x => {
           this.members = x;
           this.sortedMembers = this.members.slice(0);
@@ -344,8 +340,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
             this.slowlyLoadRest();
           }
         });
-      }
-      else {
+      } else {
         this.loading = false;
       }
 
@@ -354,9 +349,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     });
   }
 
-  private sub: any;
   ngOnInit() {
-    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       this.id = params['id'];
       if (this.id != null) {
         this.load();

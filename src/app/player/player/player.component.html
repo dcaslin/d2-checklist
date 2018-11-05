@@ -7,16 +7,16 @@
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br />
         <div class="searchRow">
-            <mat-form-field class="searchField searchPlatform">
-                <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
-                    <mat-select-trigger>
-                        <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
-                      </mat-select-trigger>
-                  <mat-option *ngFor="let p of platforms" [value]="p">
-                    <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
+          <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
+              <mat-select-trigger>
+                <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+              </mat-select-trigger>
+              <mat-option *ngFor="let p of platforms" [value]="p">
+                <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
           <mat-form-field class="searchField searchGt">
             <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
           </mat-form-field>
@@ -40,26 +40,29 @@
           <br>
         </ng-container>
         <ng-container *ngIf="player!=null && player.superprivate">
-            <h4><i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i> {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
+          <h4><i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
+            {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
         </ng-container>
 
         <ng-container *ngIf="player!=null && !player.superprivate">
           <h1>
-              <i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i> {{player.profile.userInfo.displayName}}              
-              <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]==true?'warn-text':''" (click)="storageService.toggleFav(player.profile.userInfo)" href="javascript:void(0)"> <i style="font-weight: normal !important" class="far fa-heart"></i></a>
+            <i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
+            {{player.profile.userInfo.displayName}}
+            <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]==true?'warn-text':''" (click)="storageService.toggleFav(player.profile.userInfo)"
+              href="javascript:void(0)"> <i style="font-weight: normal !important" class="far fa-heart"></i></a>
           </h1>
           <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
-              <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
-                  Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
-              </ng-container>
-                <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
-                  Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
-                  amDifference:player.currentActivity.dateActivityStarted|
-                  amDuration:'ms'}} ago
-                </span>
+            <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
+              Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+            </ng-container>
+            <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
+              Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
+              amDifference:player.currentActivity.dateActivityStarted|
+              amDuration:'ms'}} ago
+            </span>
           </div>
 
-          <div class="button-row">              
+          <div class="button-row">
             <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <mat-icon>history</mat-icon>
               <span class="d-none d-md-inline">Activity History</span>
@@ -103,13 +106,14 @@
                 </div>
 
                 <div class="mobile-button-row" style="margin-top: 5px">
-                    <span class="mat-caption">Hide Completed</span>
+                  <span class="mat-caption">Hide Completed</span>
                 </div>
                 <div class="mobile-button-row" style="margin-top: 5px">
-                    <button mat-button (click)="toggleHide('ALL')" [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
-                    <button *ngFor="let c of player.characters" (click)="toggleHide(c.characterId)" [color]="c.characterId==hideCompleteChars?'accent':'default'" mat-button>{{c.className}}</button>
+                  <button mat-button (click)="toggleHide('ALL')" [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
+                  <button *ngFor="let c of player.characters" (click)="toggleHide(c.characterId)" [color]="c.characterId==hideCompleteChars?'accent':'default'"
+                    mat-button>{{c.className}}</button>
                 </div>
-                
+
 
                 <div *ngIf="hiddenMilestones.length>0" class="mobile-button-row" style="margin-top: 5px">
                   <span class="mat-caption" (click)="showAllMilestones()">Show hidden milestones</span>
@@ -119,16 +123,21 @@
                   <thead>
                     <tr>
                       <th scope="col">Activity
-                        
-                        <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash" matTooltip="Hide milestones where all chars are complete"></i>
-                        <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye" matTooltip="Stop hiding milestones where all chars are complete"></i>
-                        <a *ngIf="hiddenMilestones.length>0 || hideCompleteChars!=null" href="javascript:void(0)" matTooltip="Show all hidden milestones"
-                          class="milestoneVisibilityButton" (click)="showAllMilestones()">show all</a>
+
+                        <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash"
+                          matTooltip="Hide milestones where all chars are complete"></i>
+                        <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
+                          matTooltip="Stop hiding milestones where all chars are complete"></i>
+                        <a *ngIf="hiddenMilestones.length>0 || hideCompleteChars!=null" href="javascript:void(0)"
+                          matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show
+                          all</a>
                       </th>
                       <th scope="col" *ngFor="let char of player.characters">
                         {{char.className}} - {{char.light}}
-                        <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId" class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
-                        <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye" matTooltip="Stop hiding milestones that this char has completed"></i>
+                        <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId"
+                          class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
+                        <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
+                          matTooltip="Stop hiding milestones that this char has completed"></i>
                       </th>
                     </tr>
                   </thead>
@@ -137,11 +146,11 @@
                       <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
                         <td class="lead">
                           <span [matTooltip]="mileStoneName.desc">
-                              <a href="javascript:void(0)" (click)="sortByName()">
-                                  {{mileStoneName.name}}
-                                  <i *ngIf="sort=='nameDesc'" class="fal fa-sort-down"></i>
-                                  <i *ngIf="sort=='nameAsc'" class="fal fa-sort-up"></i>
-                              </a>
+                            <a href="javascript:void(0)" (click)="sortByName()">
+                              {{mileStoneName.name}}
+                              <i *ngIf="sort=='nameDesc'" class="fal fa-sort-down"></i>
+                              <i *ngIf="sort=='nameAsc'" class="fal fa-sort-up"></i>
+                            </a>
                           </span>
                           <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
                           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
@@ -152,7 +161,7 @@
                           <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
                             <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByReset()">
                               Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
-                              
+
                               <i *ngIf="sort=='resetDesc'" class="fal fa-sort-down"></i>
                               <i *ngIf="sort=='resetAsc'" class="fal fa-sort-up"></i>
                             </a>
@@ -162,11 +171,11 @@
                           </span>
                           <br>
                           <span class="simple-caption">
-                              <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">{{mileStoneName.rewards}}
-                              
-                                  <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
-                                  <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
-                              </a>
+                            <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">{{mileStoneName.rewards}}
+
+                              <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
+                              <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
+                            </a>
                           </span>
 
                         </td>
@@ -551,39 +560,39 @@
                             <span class="light">Level {{faction.level}} </span>
                             <span class="caption">{{faction.info}}</span>
                             <div class="row dl-row simple-caption">
-                                <dl class="col-xs-3 dl-child">
-                                  <dt>Daily</dt>
-                                  <dd>{{faction.dailyProgress| number:0}}</dd>
-                                </dl>
-                                <dl class="col-xs-3 dl-child">
-                                    <dt>Weekly</dt>
-                                    <dd>{{faction.weeklyProgress| number:0}}</dd>
-                                  </dl>
-                                <dl class="col-xs-3 dl-child">
-                                  <dt>To Next Level</dt>
-                                  <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
-                                    number:0}}</dd>
-                                </dl>
-                                <dl class="col-xs-3 dl-child">
-                                    <dt>Level Cap</dt>
-                                    <dd>
-                                      <ng-container *ngIf="faction.levelCap>0">
-                                      {{faction.levelCap| number:0}}
-                                      </ng-container>
-                                      <ng-container *ngIf="faction.levelCap<=0">
-                                        None
-                                      </ng-container>
-                                    </dd>
-                                  </dl>
-                                  <dl class="col-xs-3 dl-child">
-                                      <dt>Total Earned</dt>
-                                      <dd>
-                                        {{faction.currentProgress|number:0}}
-                                      </dd>
-                                    </dl>
-                              </div>
+                              <dl class="col-xs-3 dl-child">
+                                <dt>Daily</dt>
+                                <dd>{{faction.dailyProgress| number:0}}</dd>
+                              </dl>
+                              <dl class="col-xs-3 dl-child">
+                                <dt>Weekly</dt>
+                                <dd>{{faction.weeklyProgress| number:0}}</dd>
+                              </dl>
+                              <dl class="col-xs-3 dl-child">
+                                <dt>To Next Level</dt>
+                                <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
+                                  number:0}}</dd>
+                              </dl>
+                              <dl class="col-xs-3 dl-child">
+                                <dt>Level Cap</dt>
+                                <dd>
+                                  <ng-container *ngIf="faction.levelCap>0">
+                                    {{faction.levelCap| number:0}}
+                                  </ng-container>
+                                  <ng-container *ngIf="faction.levelCap<=0">
+                                    None
+                                  </ng-container>
+                                </dd>
+                              </dl>
+                              <dl class="col-xs-3 dl-child">
+                                <dt>Total Earned</dt>
+                                <dd>
+                                  {{faction.currentProgress|number:0}}
+                                </dd>
+                              </dl>
+                            </div>
                           </td>
-                          <td data-label=""> 
+                          <td data-label="">
                             {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                             <div>
                               <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
@@ -611,12 +620,12 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideCompleteTriumph">Hide Completed</mat-checkbox>                
-              </h3> 
+                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideCompleteTriumph">Hide Completed</mat-checkbox>
+                </h3>
                 <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
-                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideTriumph(node)" matTreeNodeToggle matTreeNodePadding>
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideTriumph(node)"
+                    matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
-                    <!-- <div *ngIf="node.data.icon!=null" class="transparent-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
                     <div style="text-align: left; margin-bottom: 20px">
                       <i *ngIf="node.data.complete && node.data.redeemed" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
@@ -632,7 +641,7 @@
                       <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
                         redeemed.<br></span>
                       <span class="simple-caption">
-                        {{node.data.desc}}
+                        {{node.data.score}} pts. {{node.data.desc}}
                       </span>
                       <div *ngFor="let o of node.data.objectives">
                         <span class="simple-caption">
@@ -644,13 +653,13 @@
                       </div>
                     </div>
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild"  [hidden]="hideTriumph(node)" matTreeNodePadding>
-                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideTriumph(node)"
+                    matTreeNodePadding>
+                    <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                       </mat-icon>
                     </button>
-                    <!-- <div *ngIf="node.data.icon!=null" class="triumph-icon" [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div> -->
                     <div style="text-align: left">
                       <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.complete" class="far fa-square"></i>
@@ -667,7 +676,6 @@
                         <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                       </ng-container>
                       <ng-container *ngIf="node.data.unredeemedCount>0">
-                        <!-- <mat-progress-bar class="pres-node-prog" color="warn" mode="determinate" [value]="(node.data.unredeemedCount)*100/node.data.completionValue"></mat-progress-bar> -->
                         <mat-progress-bar class="pres-node-prog" color="warn" mode="determinate" [value]="(node.data.unredeemedCount+node.data.progress)*100/node.data.completionValue"></mat-progress-bar>
                       </ng-container>
                     </div>
@@ -682,10 +690,11 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <div class="hide-complete-collectibles">
-                    <mat-checkbox  [(ngModel)]="hideCompleteCollectible">Hide Completed</mat-checkbox>                
+                  <mat-checkbox [(ngModel)]="hideCompleteCollectible">Hide Completed</mat-checkbox>
                 </div>
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
-                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideCollectible(node)" matTreeNodeToggle matTreeNodePadding>
+                  <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideCollectible(node)"
+                    matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
                     <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
                       [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
@@ -698,11 +707,10 @@
                         {{node.data.sourceString}}
                       </span>
                     </div>
-                    <!-- {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>: {{node.data.acquired}}
-                    {{node.data.sourceString}} -->
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideCollectible(node)" matTreeNodePadding>
-                    <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.filename">
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideCollectible(node)"
+                    matTreeNodePadding>
+                    <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                       </mat-icon>
@@ -718,11 +726,6 @@
                       </span> <br>
                       <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                     </div>
-
-                    <!-- {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>:
-                    {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
-                    {{node.data.complete}} -->
-
                   </mat-tree-node>
                 </mat-tree>
               </ng-container>
@@ -732,7 +735,7 @@
                   DestinySets</a>
               </div>
             </mat-tab>
-           <mat-tab>
+            <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fas fa-users"></i>
                 <span class="d-none d-md-inline">&ensp;Chars</span>

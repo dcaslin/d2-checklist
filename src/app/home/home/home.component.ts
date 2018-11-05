@@ -6,10 +6,10 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { Const, Platform, PublicMilestone } from "../../service/model";
+import { Const, Platform, PublicMilestone } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
-import { BungieService } from "../../service/bungie.service";
-import { Nightfall } from "../../service/model";
+import { BungieService } from '../../service/bungie.service';
+import { Nightfall } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 
 @Component({
@@ -57,9 +57,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private setPlatform(type: number) {
-    //already set
-    if (this.selectedPlatform != null && this.selectedPlatform.type === type) return;
-    this.selectedPlatform = Const.PLATFORMS_DICT["" + type];
+    // already set
+    if (this.selectedPlatform != null && this.selectedPlatform.type === type) { return; }
+    this.selectedPlatform = Const.PLATFORMS_DICT['' + type];
   }
 
   public routeSearch(): void {
@@ -74,11 +74,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   onPlatformChange() {
-    this.storageService.setItem("defaultplatform", this.selectedPlatform.type);
+    this.storageService.setItem('defaultplatform', this.selectedPlatform.type);
   }
 
   onGtChange() {
-    this.storageService.setItem("defaultgt", this.gamerTag);
+    this.storageService.setItem('defaultgt', this.gamerTag);
   }
 
   ngOnInit() {

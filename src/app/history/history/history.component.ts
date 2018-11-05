@@ -5,8 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { BungieService } from "../../service/bungie.service";
-import { Player, Character, Platform, ActivityMode, Const } from "../../service/model";
+import { BungieService } from '../../service/bungie.service';
+import { Player, Character, Platform, ActivityMode, Const } from '../../service/model';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MatPaginator, MatSort } from '@angular/material';
 import { DurationPipe } from 'ngx-moment';
@@ -48,7 +48,8 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   public async history() {
     this.loading = true;
-    this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId, this.selectedMode.type, this.selectedMaxResults).then((rows: any[]) => {
+    this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId,
+      this.selectedMode.type, this.selectedMaxResults).then((rows: any[]) => {
 
       this.database.setData(rows);
       this.loading = false;
@@ -62,22 +63,21 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
     this.router.navigate(['/pgcr', instanceId]);
   }
 
-  private sub: any;
   ngOnInit() {
     this.dataSource = new SortFilterDataSource(this.database, this.paginator, this.sort);
 
-    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const platform: string = params['platform'];
 
       this.database.setData([]);
-      if (platform == null) return;
+      if (platform == null) { return; }
 
-      let selPlatform = Const.PLATFORMS_DICT[platform];
-      
+      const selPlatform = Const.PLATFORMS_DICT[platform];
+
       if (selPlatform != null) {
         this.membershipType = selPlatform.type;
         this.membershipId = params['memberId'];
-        this.bungieService.getChars(this.membershipType, this.membershipId, ["Profiles", "Characters"], false).then(p=>{
+        this.bungieService.getChars(this.membershipType, this.membershipId, ['Profiles', 'Characters'], false).then(p => {
           this.player = p;
 
         });

@@ -49,7 +49,7 @@ import { RouterModule } from '@angular/router';
     MomentModule,
     AdsenseModule.forRoot({
       adClient: 'ca-pub-4577479845324857',
-      adSlot: 7862857321 //7862857321 responsive right 6246523328 responsive banner
+      adSlot: 7862857321 // 7862857321 responsive right 6246523328 responsive banner
     }),
 
     MatButtonModule,
@@ -82,7 +82,7 @@ import { RouterModule } from '@angular/router';
   exports: [
     RouterModule,
     PipeModule,
-    
+
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

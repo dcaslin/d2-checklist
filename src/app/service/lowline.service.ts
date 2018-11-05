@@ -12,46 +12,45 @@ export class LowLineService implements OnDestroy {
     constructor(private httpClient: HttpClient) {
     }
 
-    public async init(): Promise<void>{
-        if (this.data!=null) return;
-        else{
+    public async init(): Promise<void> {
+        if (this.data != null) { return; } else {
             const temp = await this.load();
-            if (temp.success==true){
+            if (temp.success === true) {
                 this.data = temp;
             }
             return null;
         }
-    } 
+    }
 
-    //https://lowlidev.com.au/destiny/maps/titan/item/2277930478
-    public buildItemLink(itmHash: string): string{
-        
-        if (this.data==null) return null;
+    // https://lowlidev.com.au/destiny/maps/titan/item/2277930478
+    public buildItemLink(itmHash: string): string {
+
+        if (this.data == null) { return null; }
         const lData = this.data.data.items[itmHash];
-        if (lData==null) return null;
-        for (const index of lData){
+        if (lData == null) { return null; }
+        for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
-            const l = "https://lowlidev.com.au/destiny/maps/"+p.destinationId+"/item/"+itmHash;
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/item/' + itmHash;
             return l;
         }
         return null;
     }
 
-    //https://lowlidev.com.au/destiny/maps/{destination}/record/{recordHash}
-    public buildRecordLink(hash: string): string{
-        
-        if (this.data==null) return null;
+    // https://lowlidev.com.au/destiny/maps/{destination}/record/{recordHash}
+    public buildRecordLink(hash: string): string {
+
+        if (this.data == null) { return null; }
         const lData = this.data.data.records[hash];
-        if (lData==null) return null;
-        for (const index of lData){
+        if (lData == null) { return null; }
+        for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
-            const l = "https://lowlidev.com.au/destiny/maps/"+p.destinationId+"/record/"+hash;
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/record/' + hash;
             return l;
         }
         return null;
     }
 
-    
+
     private async load(): Promise<LowLineResponse> {
         const requestUrl = 'https://lowlidev.com.au/destiny/api/v2/map/supported';
         return this.httpClient.get<LowLineResponse>(requestUrl).toPromise();
@@ -70,10 +69,10 @@ export interface LowLineResponse {
     success: boolean;
     data: LowLineData;
   }
-  
+
   interface LowLineData {
-    items: any; //dictionary of number arrays
-    records: any; //dictionary of number arrays
+    items: any; // dictionary of number arrays
+    records: any; // dictionary of number arrays
     nodes: LowLineParentNode[]
   }
 
@@ -84,7 +83,7 @@ export interface LowLineResponse {
     bubbleHash: number;
     node: LowLineNode;
   }
-  
+
   interface LowLineNode {
     x: number;
     y: number;
@@ -102,3 +101,4 @@ export interface LowLineResponse {
     recordHash: string;
     objectiveHash: string;
   }
+

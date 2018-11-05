@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
-type Options = "success" | "error" | "info";
+type Options = 'success' | 'error' | 'info';
 
 export interface Notification {
   mode: Options;
@@ -27,8 +27,8 @@ export class NotificationService {
   }
   public fail(msg: string): void {
     this.notify({
-      mode: "error",
-      title: "Error",
+      mode: 'error',
+      title: 'Error',
       message: msg
     });
     return;
@@ -40,16 +40,16 @@ export class NotificationService {
 
   public success(msg: string): void {
     this.notify({
-      mode: "success",
-      title: "Success",
+      mode: 'success',
+      title: 'Success',
       message: msg
     });
   }
 
   public info(msg: string): void {
     this.notify({
-      mode: "info",
-      title: "Info",
+      mode: 'info',
+      title: 'Info',
       message: msg
     });
   }

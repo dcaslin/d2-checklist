@@ -144,16 +144,6 @@ export class AuthGuard implements CanActivate {
       component: ResourcesComponent
     },
     {
-      path: ':platform/:gt',
-      canActivate: [AuthGuard],
-      redirectTo: ':platform/:gt/milestones'
-    },
-    {
-      path: ':platform/:gt/:tab',
-      canActivate: [AuthGuard],
-      component: PlayerComponent
-    },
-    {
       path: 'history/:platform/:memberId/:characterId',
       canActivate: [AuthGuard],
       component: HistoryComponent
@@ -162,8 +152,23 @@ export class AuthGuard implements CanActivate {
       path: 'recent-players/:platform/:memberId/:characterId',
       canActivate: [AuthGuard],
       component: RecentPlayersComponent
-    }
-      , {
+    },
+    {
+      path: ':platform/:gt/:tab/:treeHash',
+      canActivate: [AuthGuard],
+      component: PlayerComponent
+    },
+    {
+      path: ':platform/:gt/:tab',
+      canActivate: [AuthGuard],
+      component: PlayerComponent
+    },
+    {
+      path: ':platform/:gt',
+      canActivate: [AuthGuard],
+      redirectTo: ':platform/:gt/milestones'
+    },
+    {
       path: '**',
       redirectTo: 'home'
     }

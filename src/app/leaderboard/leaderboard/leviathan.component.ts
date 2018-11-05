@@ -8,12 +8,12 @@ import { LeaderboardComponent } from './leaderboard.component';
 })
 export class LeviathanComponent extends LeaderboardComponent {
 
-    getName(): string{
-        return "Leviathan Raid Leaderboard";
+    getName(): string {
+        return 'Leviathan Raid Leaderboard';
     }
 
-    getAssetPath(): string{
-        return "/assets/leviathan.json";
+    getAssetPath(): string {
+        return '/assets/leviathan.json';
     }
 
 }

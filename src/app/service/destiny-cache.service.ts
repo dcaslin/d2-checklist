@@ -13,26 +13,26 @@ export class DestinyCacheService {
   }
 
   init(): Promise<boolean> {
-    let self: DestinyCacheService = this;
-    if (self.cache!=null) {
+    const self: DestinyCacheService = this;
+    if (self.cache != null) {
       return Promise.resolve(true);
     }
     return new Promise(function (resolve, reject) {
-      JSZipUtils.getBinaryContent("/assets/destiny2.zip?v="+env.versions.app, function (err, data) {
+      JSZipUtils.getBinaryContent('/assets/destiny2.zip?v=' + env.versions.app, function (err, data) {
         if (err) {
           reject(err);
           return;
         }
-        let zip: any = new JSZip();
-        zip.loadAsync(data).then(function (zip) {
-          zip.file("destiny2.json").async("string").then(function (data) {
-              self.cache = JSON.parse(data);
-              console.log("Init cache load");
+        const zip: any = new JSZip();
+        zip.loadAsync(data).then(function (zip2) {
+          zip2.file('destiny2.json').async('string').then(function (data2) {
+              self.cache = JSON.parse(data2);
+              console.log('Init cache load');
               resolve(true);
               return;
             },
-            function (err) {
-              reject(err);
+            function (err2) {
+              reject(err2);
               return;
             });
         });

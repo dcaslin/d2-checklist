@@ -4,13 +4,13 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { BungieService } from "../../service/bungie.service";
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, ClanRow } from "../../service/model";
+import { BungieService } from '../../service/bungie.service';
+import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, ClanRow } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
 @Component({
-  selector: 'bungie-search',
+  selector: 'anms-bungie-search',
   templateUrl: './bungie-search.component.html',
   styleUrls: ['./bungie-search.component.scss']
 })
@@ -30,29 +30,28 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
     this.bungieService.searchPlayer(a.platform.type, a.name).then((p: SearchResult) => {
       if (p != null) {
 
-        this.bungieService.getChars(p.membershipType, p.membershipId, ["Profiles", "Characters"]).then((x: Player) => {
+        this.bungieService.getChars(p.membershipType, p.membershipId, ['Profiles', 'Characters']).then((x: Player) => {
           this.loading = false;
-          if (x!=null)
+          if (x != null) {
             this.router.navigate([a.platform.type, a.name]);
-          else
+          } else {
             a.defunct = true;
+          }
         });
 
-      }
-      else {
+      } else {
         a.defunct = true;
         this.loading = false;
       }
     });
   }
 
-  private loadClan(member: BungieMember){
-    
-    this.bungieService.getClans(member.id).then((x: ClanRow[])=>{
-      if (x.length==0){
+  private loadClan(member: BungieMember) {
+
+    this.bungieService.getClans(member.id).then((x: ClanRow[]) => {
+      if (x.length === 0) {
         member.noClan = true;
-      }
-      else{
+      } else {
         member.clans = x;
         // if (x.length==1)
         //   this.router.navigate(["clan", x[0].id]);
@@ -61,13 +60,13 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   }
 
   search() {
-    if (this.name!=null){
-      this.router.navigate(["search", this.name]);
+    if (this.name != null) {
+      this.router.navigate(['search', this.name]);
     }
-   
+
   }
 
-  private load(){
+  private load() {
     this.loading = true;
     this.bungieService.searchBungieUsers(this.name)
       .then((x: BungieMember[]) => {
@@ -79,9 +78,8 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
       });
   }
 
-  private sub: any;
   ngOnInit() {
-    this.sub = this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       this.name = params['name'];
       if (this.name != null) {
         this.load();
