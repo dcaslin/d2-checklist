@@ -19,9 +19,9 @@
         <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
           <mat-icon>home</mat-icon>&ensp;Home
         </a>
-        <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
+        <!-- <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
             <mat-icon>favorite</mat-icon>&ensp;Friends
-        </a>
+        </a> -->
         <a mat-list-item (click)="sidenav.close()" routerLink="vendors" routerLinkActive="active">
           <mat-icon>payment</mat-icon>&ensp;Vendors
         </a>
@@ -74,10 +74,10 @@
                 <mat-icon>home</mat-icon>
                 <span class="d-none d-xl-inline"> Home</span>
             </button>
-            <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
+            <!-- <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
                 <mat-icon>favorite</mat-icon>
                 <span class="d-none d-xl-inline"> Friends</span>
-            </button>
+            </button> -->
             <button mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
               <mat-icon>payment</mat-icon>
               <span class="d-none d-xl-inline"> Vendors</span>
@@ -153,7 +153,7 @@
           <ng-container *ngIf="this.signedOnUser.selectedUserCurrencies!=null">
             <span class="currency-icons">
               <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
-                <span class="currency-chip" [matTooltip]="c.count+' '+c.name">
+                <span *ngIf="c.hash!='3147280338'" class="currency-chip" [matTooltip]="c.count+' '+c.name">
                   <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
                   <span> {{c.count|number}}</span>
                 </span>

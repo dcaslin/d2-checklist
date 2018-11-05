@@ -431,11 +431,13 @@ export class InventoryItem {
 }
 
 export class Currency {
+    hash: string;
     name: string;
     icon: string;
     count: number;
 
-    constructor(name: string, icon: string, count: number) {
+    constructor(hash: string, name: string, icon: string, count: number) {
+        this.hash = hash;
         this.name = name;
         this.icon = icon;
         this.count = count;

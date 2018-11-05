@@ -1394,7 +1394,7 @@ export class ParseService {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
-                        currencies.push(new Currency(desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
+                        currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
                     }
                 });
             }
