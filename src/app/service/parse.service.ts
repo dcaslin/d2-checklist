@@ -1316,7 +1316,6 @@ export class ParseService {
                 } catch (e) {
                     p.end = null;
                 }
-
                 const ms: MileStoneName = {
                     key: p.hash,
                     resets: p.end,
@@ -1325,6 +1324,10 @@ export class ParseService {
                     desc: p.desc,
                     hasPartial: false
                 };
+                // Fix heroic advenstures
+                if (ms.resets === '1970-01-01T00:00:00.000Z') {
+                    ms.resets = null;
+                }
                 milestoneList.push(ms);
                 milestonesByKey[p.hash] = ms;
             }
@@ -1518,7 +1521,7 @@ export class ParseService {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
         const val = this.getBestRec(records, key);
-        if (val === null) { return null; }
+        if (val == null) { return null; }
 
         let objs = [];
         let totalProgress = 0;

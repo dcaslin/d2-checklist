@@ -147,7 +147,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   public branchNodeClick(hash: string): void {
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, hash]);
+    this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, {id: hash}]);
   }
 
   public historyPlayer(p: Player) {
@@ -438,7 +438,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
       const tab: string = params['tab'];
-      this.initTreeNodeHash = params['treeHash'];
+      this.initTreeNodeHash = params['id'];
 
       // nothing changed
       if (this.currentGt === newGt && this.currentPlatform === newPlatform) {

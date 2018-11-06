@@ -31,6 +31,7 @@ import { PGCRModule } from './pgcr';
 import { ResourcesModule } from './resources';
 import { SettingsModule } from './settings';
 import { AboutModule } from './about';
+import { FriendsModule } from './friends';
 
 import { AppRoutingModule, AuthGuard } from './app-routing.module';
 import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
@@ -46,6 +47,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     SharedModule,
 
     AboutModule,
+    FriendsModule,
     SettingsModule,
     HomeModule,
     PlayerModule,

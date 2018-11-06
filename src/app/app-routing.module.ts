@@ -9,6 +9,7 @@ import { RecentPlayersComponent } from './recent-players';
 import { PGCRComponent } from './pgcr';
 import { ResourcesComponent } from './resources';
 import { AboutComponent } from './about';
+import { FriendsComponent } from './friends';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanSearchComponent } from './clan-search';
@@ -45,119 +46,149 @@ export class AuthGuard implements CanActivate {
     }
       , {
       path: 'home',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: HomeComponent
     },
     {
       path: 'auth',
+      pathMatch: 'full',
       component: AuthComponent
     },
 
     {
       path: 'settings',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: SettingsComponent
     }, {
       path: 'about',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: AboutComponent
     }, {
+      path: 'friends',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      component: FriendsComponent
+    }, {
       path: 'search',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: BungieSearchComponent
     }, {
       path: 'searchClans',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: ClanSearchComponent
     }, {
       path: 'search/:name',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: BungieSearchComponent
     }, {
       path: 'clan/:id',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: ClanComponent
     },
     {
       path: 'leaderboard/last-wish/search/:query',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: RaidLastWishComponent
     },
     {
       path: 'leaderboard/last-wish/:page',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: RaidLastWishComponent
     },
     {
       path: 'leaderboard/leviathan/:name',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: LeviathanComponent
     },
     {
       path: 'leaderboard/leviathan-prestige/:name',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: LeviathanPrestigeComponent
     },
     {
       path: 'leaderboard/leviathan',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: LeviathanComponent
     },
     {
       path: 'leaderboard/leviathan-prestige',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: LeviathanPrestigeComponent
     },
     {
       path: 'leaderboard/last-wish',
+      pathMatch: 'full',
       redirectTo: 'leaderboard/last-wish/1'
     },
 
     {
       path: 'leaderboard',
+      pathMatch: 'full',
       redirectTo: 'leaderboard/last-wish/1'
     },
     {
       path: 'pgcr/:instanceId',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: PGCRComponent
     },
     {
       path: 'vendors/:characterId/:tab',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: ResourcesComponent
     },
     {
       path: 'vendors/:characterId',
+      pathMatch: 'full',
       redirectTo: 'vendors/:characterId/Bounties'
     },
     {
       path: 'vendors',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: ResourcesComponent
     },
     {
       path: 'history/:platform/:memberId/:characterId',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: HistoryComponent
     },
     {
       path: 'recent-players/:platform/:memberId/:characterId',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: RecentPlayersComponent
     },
     {
-      path: ':platform/:gt/:tab/:treeHash',
+      path: ':platform/:gt/:tab',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: PlayerComponent
     },
     {
       path: ':platform/:gt/:tab',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       component: PlayerComponent
     },
     {
       path: ':platform/:gt',
+      pathMatch: 'full',
       canActivate: [AuthGuard],
       redirectTo: ':platform/:gt/milestones'
     },

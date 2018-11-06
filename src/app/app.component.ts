@@ -122,8 +122,6 @@ export class AppComponent implements OnInit, OnDestroy {
             this.disableads = x.disableads;
           }
         });
-    // emit current settings
-    this.storageService.refresh();
 
     this.notificationService.notifyFeed.pipe(
       takeUntil(this.unsubscribe$))

@@ -41,7 +41,7 @@
                   <a *ngIf="entry.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(entry.bungieNetUserInfo)">
                     {{entry.user.displayName}}
                   </a>
-                  <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(entry.user)]==true?'warn-text':''"
+                  <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
                     (click)="storageService.toggleFav(entry.user)" href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>

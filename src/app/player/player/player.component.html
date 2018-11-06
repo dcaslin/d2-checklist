@@ -48,7 +48,7 @@
           <h1>
             <i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
             {{player.profile.userInfo.displayName}}
-            <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]==true?'warn-text':''" (click)="storageService.toggleFav(player.profile.userInfo)"
+            <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(player.profile.userInfo)"
               href="javascript:void(0)"> <i style="font-weight: normal !important" class="far fa-heart"></i></a>
           </h1>
           <div class="simple-caption" *ngIf="player!=null && !player.superprivate">

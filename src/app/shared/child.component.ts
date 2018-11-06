@@ -2,7 +2,8 @@
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnDestroy } from '@angular/core';
 import { StorageService } from '../service/storage.service';
-import { Subject } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { UserInfo } from '@app/service/model';
 
 
 @Component({
@@ -11,43 +12,20 @@ import { Subject } from 'rxjs';
 })
 export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
+    private favoriteSub: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
+    public favoriteFeed: Observable<UserInfo[]>;
+
     disableads = false;
     debugmode = false;
-    favorites = {};
+    favorites: { [id: string]: UserInfo} = {};
     loading = false;
 
     ua = '';
 
     storageService: StorageService;
 
-    private static _getBrowserAndVersion(): string {
-        const ua: string = window.navigator.userAgent;
-        let M: string[] = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
-        let tem;
-        if (/trident/i.test(M[1])) {
-            tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
-            return 'IE ' + (tem[1] || '');
-        }
-        if (M[1] === 'Chrome') {
-            tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
-            if (tem != null) { return tem.slice(1).join(' ').replace('OPR', 'Opera'); }
-        }
-        M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
-        if ((tem = ua.match(/version\/(\d+)/i)) != null) { M.splice(1, 1, tem[1]); }
-        return M.join(' ');
-    }
-
-    private static getBrowserAndVersion(): any {
-        const s: string = ChildComponent._getBrowserAndVersion();
-        const as: string[] = s.split(' ');
-        return {
-            type: as[0].toLocaleLowerCase(),
-            version: as[1]
-        }
-    }
-
     constructor(storageService: StorageService) {
-
+        this.favoriteFeed = this.favoriteSub.asObservable() as Observable<UserInfo[]>;
         this.storageService = storageService;
         this.disableads = this.storageService.getItem('disableads', false);
         this.debugmode = this.storageService.getItem('debugmode', false);
@@ -67,12 +45,15 @@ export class ChildComponent implements OnDestroy {
             takeUntil(this.unsubscribe$))
             .subscribe(
                 x => {
-                    if (x.favorites != null) {
-                        this.favorites = x.favorites;
+                    if (x.friends != null) {
+                        this.favorites = x.friends;
+                        const aFavs: UserInfo[] = [];
+                        for (const key of Object.keys(x.friends)) {
+                            aFavs.push(x.friends[key]);
+                        }
+                        this.favoriteSub.next(aFavs);
                     }
                 });
-        this.storageService.refresh();
-        this.storageService.refresh();
     }
 
     ngOnDestroy(): void {

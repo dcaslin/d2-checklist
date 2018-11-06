@@ -1,0 +1,25 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+
+      <h1>Friends</h1>
+      <div class="info">
+        <section class="body-2">Coming soon! See a clan-like view of a select subset of your friends all in one place.
+          To select friends, browse players on the site and click the <i style="font-weight: normal !important" class="far fa-heart"></i>
+          so that it looks like this <span class="warn-text"><i style="font-weight: normal !important" class="far fa-heart"></i></span>.
+        </section>
+      </div>
+      <h4 *ngFor="let f of friends">{{f.displayName}}</h4>
+
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  </div>
+</div>

@@ -73,7 +73,7 @@
                   <a *ngIf="friend.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(friend.bungieNetUserInfo)">
                     {{friend.user.displayName}}
                   </a>
-                  <a style="margin-left:0.5em" [ngClass]="favorites[storageService.getFavKey(friend.user)]==true?'warn-text':''" (click)="storageService.toggleFav(friend.user)" href="javascript:void(0)">
+                  <a style="margin-left:0.5em" [ngClass]="favorites[storageService.getFavKey(friend.user)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(friend.user)" href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
                 </td>
