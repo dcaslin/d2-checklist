@@ -84,6 +84,7 @@ export interface SaleItem {
     name: string;
     icon: string;
     type: ItemType;
+    tierType: number;
     status: string;
     itemTypeAndTierDisplayName: string;
     itemTypeDisplayName: string;

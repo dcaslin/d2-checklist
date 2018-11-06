@@ -569,6 +569,14 @@ export class ParseService {
                 i.searchText += 'maplink';
             }
         }
+        returnMe.sort((a, b) => {
+            if (a.tierType < b.tierType) { return 1; }
+            if (a.tierType > b.tierType) { return -1; }
+            if (a.name < b.name) { return -1; }
+            if (a.name > b.name) { return 1; }
+            return 0;
+        });
+
         return returnMe;
     }
 
@@ -718,6 +726,9 @@ export class ParseService {
 
         searchText += iDesc.displayProperties.name + ' '
         searchText += vendor.name + ' ';
+        if (vendor.hash === '2190858386') {
+            searchText += 'Xur ';
+        }
         searchText += iDesc.itemTypeAndTierDisplayName + ' ';
 
         return {
@@ -726,6 +737,7 @@ export class ParseService {
             name: iDesc.displayProperties.name,
             icon: iDesc.displayProperties.icon,
             type: itemType,
+            tierType: iDesc.tierType != null ? iDesc.tierType : -1,
             status: this.parseSaleItemStatus(i.saleStatus),
             itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
             itemTypeDisplayName: iDesc.itemTypeDisplayName,
@@ -996,8 +1008,8 @@ export class ParseService {
         returnMe.sort((a, b) => {
             if (a.rewards < b.rewards) { return 1; }
             if (a.rewards > b.rewards) { return -1; }
-            if (a.name < b.name) { return 1; }
-            if (a.name > b.name) { return -1; }
+            if (a.name < b.name) { return -1; }
+            if (a.name > b.name) { return 1; }
             return 0;
         });
         return returnMe;
