@@ -34,13 +34,7 @@ export class StickyReuseStrategy implements RouteReuseStrategy {
   private cookPath(route: ActivatedRouteSnapshot): string {
     if (route == null || route.routeConfig == null || route.routeConfig.path == null) { return null; }
     const origPath = route.routeConfig.path;
-    let s: string;
-    if (origPath === ':platform/:gt/:tab/:treeHash') {
-      s = ':platform/:gt/:tab';
-    } else {
-      s = origPath;
-    }
-    return s;
+    return origPath;
   }
 
 }

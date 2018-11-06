@@ -67,9 +67,9 @@ export class SortFilterDataSource extends DataSource<any> {
           // const valueA = propertyA==null||isNaN(+propertyA) ? propertyA : +propertyA;
           // const valueB = propertyB!=null&&isNaN(+propertyB) ? propertyB : +propertyB;
           let returnMe = 0;
-          if (propertyA === null && propertyB !== null) {
+          if (propertyA == null && propertyB != null) {
             returnMe = -1;
-          } else if (propertyA !== null && propertyB === null) {
+          } else if (propertyA != null && propertyB == null) {
             returnMe = 1;
           } else if (propertyA < propertyB) {
             returnMe = -1;

@@ -52,7 +52,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
           this.gamerTag = x.defaultgt;
         }
       });
-    this.storageService.refresh();
 
   }
 

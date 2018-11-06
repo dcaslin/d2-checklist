@@ -46,7 +46,6 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
           this.theme = x.theme;
         }
       });
-    this.storageService.refresh();
   }
 
   ngOnInit() {
