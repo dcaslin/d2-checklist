@@ -2,17 +2,13 @@
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { MatPaginator, MatSort } from '@angular/material';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player,
-  BungieGroupMember, ClanInfo, MileStoneName, ClanRow } from '../../service/model';
+import { BungieMember, Player, BungieGroupMember, ClanInfo, MileStoneName } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import * as moment from 'moment';
-import { extractStyleParams } from '@angular/animations/browser/src/util';
 
 @Component({
   selector: 'anms-clan-history',
@@ -91,9 +87,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     const bs: string = b.destinyUserInfo.displayName;
     const as: string = a.destinyUserInfo.displayName;
     return as.localeCompare(bs);
-    // if (bs < as) return 1;
-    // if (bs > as) return -1;
-    // return 0;
   }
 
 
@@ -127,10 +120,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private sortData(): void {
-    // restore list
     const temp = this.members.slice(0);
-    // filter list if necessary
-
     this.sortedMembers = temp.filter(member => {
       if (this.filterActivity == null) { return true; }
       if (member.player == null) { return false; }
@@ -170,11 +160,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x2 => {
           // nothing needed
         });
-
-        // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
-        //   //nothing needed
-        // });
-
       } else {
         this.members[this.playerCntr].errorMsg = 'Unabled to load player data, have they logged in since DLC?';
       }
@@ -257,38 +242,14 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     anch.click();
   }
 
-
   private slowlyLoadRest() {
-
     if (this.playerCntr >= this.members.length) {
       this.allLoaded = true;
       return;
     }
-
-
     this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType,
       this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
       if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
-        // const list = [];
-        // const removeHashes = [
-        //   "3603098564",
-        //   "536115997",
-        //   "4253138191",
-        //   "534869653"
-        //   // "536115997",
-        //   // "3660836525",
-        //   // "2986584050",
-        //   // "2683538554",
-        //   // "4253138191",
-        //   // "534869653"
-        // ];
-        // for (let r of x.milestoneList){
-        //   if (!(removeHashes.indexOf(r.key)>0)){
-        //     list.push(r);
-        //   }
-        // }
-        // x.milestoneList = list;;
-
         this.modelPlayer = x;
       }
       if (x != null && x.characters != null) {
@@ -298,11 +259,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x2 => {
           // nothing needed
         });
-        // this.bungieService.updateNfHistory(x.milestoneList, x.characters).then(x => {
-        //   //nothing needed
-        // });
       } else {
-        this.members[this.playerCntr].errorMsg = 'Unabled to load player data, have they logged on since DLC?';
+        this.members[this.playerCntr].errorMsg = 'Unable to load player data';
       }
       this.members[this.playerCntr].player = x;
       this.playerCntr++;

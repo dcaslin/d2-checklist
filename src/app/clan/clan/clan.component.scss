@@ -1,87 +1,78 @@
 @import 'styles-variables';
+:host {}
 
-
-:host {
+.clan-body {
+    max-width: 2000px !important;
 }
 
-
-.clan-body{
-  max-width: 2000px !important;
+.clan-table {
+    max-width: 2000px !important;
 }
 
-.clan-table{
-  max-width: 2000px !important;
+.clan-card {
+    text-align: left;
+    margin-bottom: 10px;
 }
 
-.clan-card{
-  text-align: left;
-  margin-bottom: 10px;
+.clan-player-ms-cell {
+    min-width: 60px;
 }
 
-.clan-player-ms-cell{
-  min-width: 60px;
+.filter-row {
+    margin-bottom: 10px;
+    & .mat-form-field {
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
 }
 
-.filter-row{
-  
-  margin-bottom: 10px;
-  
-  & .mat-form-field{  
+.bottom-note {
+    margin-left: 1.0em;
+    text-align: left;
+}
+
+.filter-count {
+    font-weight: bold;
+    white-space: nowrap;
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
-  }
-}
-
-.bottom-note{
-  margin-left: 1.0em;
-  text-align: left;
-}
-
-.filter-count{
-  font-weight: bold;
-  white-space:nowrap;
-  margin-bottom: 10px;
-  margin-left: 5px;
-  margin-right: 5px;
 }
 
 .button-row {
-  & button{  
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
+    & button {
+        margin-bottom: 10px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
 }
 
-.clanMs{
-  font-weight: bold;
-  font-size: larger;
-  margin-bottom: 5px;
-  margin-right: 10px;
-  margin-left: 10px;
-  
+.clanMs {
+    font-weight: bold;
+    font-size: larger;
+    margin-bottom: 5px;
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
-.clanMsRow{
-  text-align: left;
+.clanMsRow {
+    text-align: left;
 }
-
 
 .clan-header-image {
-  background-size: cover;
+    background-size: cover;
 }
 
 .body {
-  max-width: 1200px;
-  margin: 10px auto 0 auto;
-  padding-bottom: 10px;
-  font-size: 0.9em;
-  letter-spacing: .01px;
-  //overflow-wrap: break-word;
-  z-index: 1;
+    max-width: 1200px;
+    margin: 10px auto 0 auto;
+    padding-bottom: 10px;
+    font-size: 0.9em;
+    letter-spacing: .01px;
+    z-index: 1;
 }
 
 span.check {
-  margin-right: 0.15em;
+    margin-right: 0.15em;
 }

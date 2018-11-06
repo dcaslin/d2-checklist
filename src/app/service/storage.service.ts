@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { UserInfo } from './model';
+import { BungieService } from './bungie.service';
 
 
 export interface Action {
@@ -17,8 +18,10 @@ export class StorageService {
   public settingFeed: Observable<any>;
 
 
-  constructor() {
-    this.settingSub =  new BehaviorSubject(StorageService.load());
+  constructor(
+    private bungieService: BungieService,
+  ) {
+    this.settingSub = new BehaviorSubject(StorageService.load());
     this.settingFeed = this.settingSub.asObservable() as Observable<Notification>;
   }
 
@@ -29,17 +32,32 @@ export class StorageService {
     this.settingSub.next(emitMe);
   }
 
+  public hideMilestone(ms: string): void {
+    const clone = this.getItem('hiddenmilestones', []);
+    clone.push(ms);
+    this.setItem('hiddenmilestones', clone);
+  }
+
+  public showAllMilestones(): void {
+    this.setItem('hiddenmilestones', []);
+  }
+
   getFavKey(userInfo: UserInfo) {
     return userInfo.membershipType + '-' + userInfo.membershipId;
   }
 
-  toggleFav(userInfo: UserInfo) {
+  async toggleFav(userInfo: UserInfo, bungieMembershipId: string): Promise<void> {
+    if (bungieMembershipId == null) {
+      const bm = await this.bungieService.getBungieMembershipsById(userInfo.membershipId, userInfo.membershipType);
+      bungieMembershipId = bm.bungieId;
+    }
     const key = this.getFavKey(userInfo);
-    const favorites: { [id: string]: UserInfo}  = this.getItem('friends', {});
+    const favorites: { [id: string]: UserInfo } = this.getItem('friends', {});
     if (favorites[key] !== undefined) {
       delete favorites[key];
     } else {
       favorites[key] = userInfo;
+      favorites[key].bungieMembershipId = bungieMembershipId;
     }
     this.setItem('friends', favorites);
   }

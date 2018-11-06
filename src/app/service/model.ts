@@ -227,6 +227,13 @@ export class BungieGroupMember {
     errorMsg: string;
 }
 
+
+export class FriendListEntry {
+    user: UserInfo;
+    player?: Player;
+    errorMsg?: string;
+}
+
 export interface BungieNetUserInfo {
     supplementalDisplayName: string;
     iconPath: string;
@@ -241,6 +248,7 @@ export interface UserInfo {
     platformName: string;
     displayName: string;
     icon: string;
+    bungieMembershipId?: string;
 }
 
 export class LeaderBoardList {

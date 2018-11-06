@@ -2,14 +2,123 @@
   <div class="childVert">
     <div class="main">
 
+
       <h1>Friends</h1>
-      <div class="info">
-        <section class="body-2">Coming soon! See a clan-like view of a select subset of your friends all in one place.
-          To select friends, browse players on the site and click the <i style="font-weight: normal !important" class="far fa-heart"></i>
+      <div class="info centerMe">
+        <section class="body-2" style="text-align: left">To select friends, browse players on the site and click the <i
+            style="font-weight: normal !important" class="far fa-heart"></i>
           so that it looks like this <span class="warn-text"><i style="font-weight: normal !important" class="far fa-heart"></i></span>.
         </section>
+        <div class="button-row">
+          <a mat-button (click)="load()">Refresh</a>
+          <a mat-button (click)="showAllMilestones()" *ngIf="hiddenMilestones.length>0">Show Hidden Milestones</a>
+        </div>
       </div>
-      <h4 *ngFor="let f of friends">{{f.displayName}}</h4>
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || (modelPlayer==null && this.members.length>0)"></mat-spinner>
+      </div>
+      <div class="body clan-body">
+        <table class="responsive-table clan-table" *ngIf="this.members!=null && this.modelPlayer!=null">
+          <thead>
+            <tr>
+              <th>
+                Member
+              </th>
+              <ng-container *ngIf="modelPlayer!=null">
+                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                  <th [matTooltip]="mileStoneName.desc" *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
+                    {{mileStoneName.name}}
+                    <span *ngIf="debugmode">{{mileStoneName.key}}</span>
+                    <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                      class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
+                      <i class="fal fa-eye-slash"></i>
+                    </a>
+
+                  </th>
+                </ng-container>
+              </ng-container>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let member of members">
+              <td class="lead">
+                <a *ngIf="member.user.membershipType!=4" [routerLink]="['/',member.user.membershipType, member.user.displayName]">
+                  {{member.user.displayName}}
+                </a>
+                <a *ngIf="member.user.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member.user.bungieMembershipId)">
+                  {{member.user.displayName}}
+                </a>
+                <a style="margin-left:0.25em" *ngIf="member.player==null" href="javascript:void(0)" (click)="loadPlayer(member)">
+                  &ensp;<i class="fas fa-sync"></i>
+                </a>
+                <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(member.user)]!==undefined?'warn-text':''"
+                  (click)="storageService.toggleFav(member.user, member.bungieMembershipId)" href="javascript:void(0)">
+                  <i style="font-weight: normal !important" class="far fa-times"></i>
+                </a>
+
+                <ng-container *ngIf="member.player!=null  && !member.player.superprivate">
+                  <br>
+                  <span class="simple-caption-no-margin">{{member.player.maxLL}}LL.
+                    {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                  </span>
+                </ng-container>
+
+              </td>
+
+              <ng-container *ngIf="member.player!=null">
+
+                <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
+                  [attr.colspan]="modelPlayer.milestoneList.length">
+                  Blocked by privacy settings
+                </td>
+                <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
+                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+
+                    <td *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
+                      [attr.data-label]="mileStoneName.name">
+
+                      <span>
+                        <a style="float: left" href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                          class="mobileVisibilityButton responsive-table-inline-mobile-only" (click)="hideMilestone(mileStoneName.key)">
+                          <i class="fal fa-eye-slash"></i>
+                        </a>
+                      </span>
+                      <ng-container *ngFor="let char of member.player.characters">
+                        <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          </ng-container>
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                            <i class="far fa-square"></i>
+                          </ng-container>
+                          <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
+                          </ng-container>
+                        </span>
+                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
+                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
+                        </span>
+                      </ng-container>
+                    </td>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
+                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                  <td *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">...</td>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="member.errorMsg!=null && modelPlayer!=null">
+                <td colspan="0">
+                  {{member.errorMsg}}
+                </td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
 
     </div>
     <div *ngIf="disableads===false" class="adRight">

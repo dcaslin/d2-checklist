@@ -43,7 +43,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public const: Const = Const;
   platforms: Platform[];
   selectedPlatform: Platform;
-  hiddenMilestones: string[];
   msg: string;
   selectedTab: string;
   gamerTag: string;
@@ -66,7 +65,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
-    this.hiddenMilestones = this.loadHiddenMilestones();
+
     this.treeControl2 = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
     this.hideComplete = localStorage.getItem('hide-completed') === 'true';
@@ -201,8 +200,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public routeSearch(): void {
 
     // if route hasn't changed it won't refresh, so we have to force it
-    if (this.selectedPlatform.type == this.route.snapshot.params.platform &&
-      this.gamerTag == this.route.snapshot.params.gt) {
+    if (this.selectedPlatform.type === this.route.snapshot.params.platform &&
+      this.gamerTag === this.route.snapshot.params.gt) {
       this.performSearch();
       return;
     }
@@ -360,32 +359,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
   }
 
-  private loadHiddenMilestones(): string[] {
-    try {
-      const sMs: string = localStorage.getItem('hiddenMilestones');
-      const ms: string[] = JSON.parse(sMs);
-      if (ms != null) { return ms; }
-    } catch (e) {
-      localStorage.removeItem('hiddenMilestones');
-      return [];
-    }
-    return [];
-  }
-
-  private saveHiddenMilestones(): void {
-    const sMs = JSON.stringify(this.hiddenMilestones);
-    localStorage.setItem('hiddenMilestones', sMs);
+  public showAllMilestones(): void {
+    this.storageService.showAllMilestones();
+    this.hideCompleteChars = null;
   }
 
   public hideMilestone(ms: string): void {
-    this.hiddenMilestones.push(ms);
-    this.saveHiddenMilestones();
-  }
-
-  public showAllMilestones(): void {
-    this.hiddenMilestones = [];
-    this.hideCompleteChars = null;
-    this.saveHiddenMilestones();
+    this.storageService.hideMilestone(ms);
   }
 
   public async performSearch(): Promise < void > {
