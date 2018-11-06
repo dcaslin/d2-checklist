@@ -626,6 +626,22 @@ export class ParseService {
                 const socketTemplate = iDesc.sockets.socketEntries[cntr];
 
                 // 2846385770
+                if (socketTemplate.reusablePlugItems != null && socketTemplate.reusablePlugItems.length > 0 ) {
+                    const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                    if (perkDesc != null && perkDesc.itemTypeAndTierDisplayName === 'Exotic Intrinsic'
+                        && (iDesc.itemTypeAndTierDisplayName.indexOf('Exotic') >= 0)) {
+                        const perkSet = [];
+                        perkSet.push({
+                            hash: socketVal.plugHash,
+                            icon: perkDesc.displayProperties.icon,
+                            name: perkDesc.displayProperties.name,
+                            desc: perkDesc.displayProperties.description,
+                        });
+                        searchText += perkDesc.displayProperties.name + ' ';
+                        console.log(perkDesc.displayProperties.name);
+                        rolledPerks.push(perkSet);
+                    }
+                }
 
                 if (socketTemplate.randomizedPlugItems != null && socketTemplate.randomizedPlugItems.length > 0) {
                     const perkSet = [];
