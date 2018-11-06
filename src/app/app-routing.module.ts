@@ -79,12 +79,27 @@ export class AuthGuard implements CanActivate {
       component: ClanComponent
     },
     {
-      path: 'leaderboard/leviathan',
+      path: 'leaderboard/last-wish/search/:query',
+      canActivate: [AuthGuard],
+      component: RaidLastWishComponent
+    },
+    {
+      path: 'leaderboard/last-wish/:page',
+      canActivate: [AuthGuard],
+      component: RaidLastWishComponent
+    },
+    {
+      path: 'leaderboard/leviathan/:name',
       canActivate: [AuthGuard],
       component: LeviathanComponent
     },
     {
-      path: 'leaderboard/leviathan/:name',
+      path: 'leaderboard/leviathan-prestige/:name',
+      canActivate: [AuthGuard],
+      component: LeviathanPrestigeComponent
+    },
+    {
+      path: 'leaderboard/leviathan',
       canActivate: [AuthGuard],
       component: LeviathanComponent
     },
@@ -94,23 +109,8 @@ export class AuthGuard implements CanActivate {
       component: LeviathanPrestigeComponent
     },
     {
-      path: 'leaderboard/leviathan-prestige/:name',
-      canActivate: [AuthGuard],
-      component: LeviathanPrestigeComponent
-    },
-    {
       path: 'leaderboard/last-wish',
       redirectTo: 'leaderboard/last-wish/1'
-    },
-    {
-      path: 'leaderboard/last-wish/search/:query',
-      canActivate: [AuthGuard],
-      component: RaidLastWishComponent
-    },
-    {
-      path: 'leaderboard/last-wish/:page',
-      canActivate: [AuthGuard],
-      component: RaidLastWishComponent
     },
 
     {
@@ -123,7 +123,7 @@ export class AuthGuard implements CanActivate {
       component: PGCRComponent
     },
     {
-      path: 'vendors',
+      path: 'vendors/:characterId/:tab',
       canActivate: [AuthGuard],
       component: ResourcesComponent
     },
@@ -132,7 +132,7 @@ export class AuthGuard implements CanActivate {
       redirectTo: 'vendors/:characterId/Bounties'
     },
     {
-      path: 'vendors/:characterId/:tab',
+      path: 'vendors',
       canActivate: [AuthGuard],
       component: ResourcesComponent
     },

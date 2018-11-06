@@ -38,6 +38,10 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     this.loading = true;
   }
 
+  public navigateStuff(val: string){
+    this.router.navigate(['vendors', this.char.characterId, val]);
+  }
+
   public includeItem(itm: SaleItem): boolean {
     if (this.filterText == null) { return true; }
     return itm.searchText.indexOf(this.filterText) >= 0;
@@ -154,7 +158,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       takeUntil(this.unsubscribe$)
     )
       .subscribe((d: LoadInfo) => {
-        if (this.char != null && d.characterId === this.char.characterId && this.selectedUser === d.user) {
+        if (this.char != null && d.characterId == this.char.characterId && this.selectedUser == d.user) {
           this.option = d.tab;
         } else {
           this.load(d);
