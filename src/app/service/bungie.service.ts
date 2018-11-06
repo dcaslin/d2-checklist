@@ -52,7 +52,7 @@ export class BungieService implements OnDestroy {
         this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
             this.authInfo = ai;
             if (ai != null) {
-                this.getBungieMembershipsById(ai.memberId).then((membership: BungieMembership) => {
+                this.getBungieMembershipsById(ai.memberId, -1).then((membership: BungieMembership) => {
                     if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length === 0) {
                         console.log('No membership found for id, signing out.');
                         this.authService.signOut();
@@ -159,7 +159,7 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    public updateRaidHistory(msNames: MileStoneName[], chars: Character[], ignoreErrors?: boolean): Promise<void[]> {
+    public async updateRaidHistory(msNames: MileStoneName[], chars: Character[], ignoreErrors?: boolean): Promise<void[]> {
         const self: BungieService = this;
         const promises: Promise<void>[] = [];
         chars.forEach(c => {
@@ -230,10 +230,15 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
+        console.log('Applying currencies');
         const self: BungieService = this;
         const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId, ['ProfileCurrencies'], true);
-        if (tempPlayer == null) { return; }
+        if (tempPlayer == null) {
+            console.log('No player to apply currencies to');
+            return;
+        }
         s.selectedUserCurrencies = tempPlayer.currencies;
+        console.log('Applied currencies');
 
     }
 
@@ -476,6 +481,9 @@ export class BungieService implements OnDestroy {
             if (!ignoreErrors) {
                 this.handleError(err);
             }
+            else{
+                console.log(err);
+            }
             return null;
         }
     }
@@ -505,9 +513,9 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async getBungieMembershipsById(bungieId: string): Promise<BungieMembership> {
+    public async getBungieMembershipsById(bungieId: string, type: number): Promise<BungieMembership> {
         try {
-            const resp = await this.makeReq('User/GetMembershipsById/' + bungieId + '/-1/');
+            const resp = await this.makeReq('User/GetMembershipsById/' + bungieId + '/' + type + '/');
             return this.parseService.parseBungieMembership(resp);
         } catch (err) {
             this.handleError(err);

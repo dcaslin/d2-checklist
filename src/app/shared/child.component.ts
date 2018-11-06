@@ -14,10 +14,11 @@ export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
     private favoriteSub: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
     public favoriteFeed: Observable<UserInfo[]>;
+    public hiddenMilestones: string[] = [];
 
     disableads = false;
     debugmode = false;
-    favorites: { [id: string]: UserInfo} = {};
+    favorites: { [id: string]: UserInfo } = {};
     loading = false;
 
     ua = '';
@@ -39,12 +40,6 @@ export class ChildComponent implements OnDestroy {
                     if (x.debugmode != null) {
                         this.debugmode = x.debugmode;
                     }
-                });
-
-        this.storageService.settingFeed.pipe(
-            takeUntil(this.unsubscribe$))
-            .subscribe(
-                x => {
                     if (x.friends != null) {
                         this.favorites = x.friends;
                         const aFavs: UserInfo[] = [];
@@ -52,6 +47,9 @@ export class ChildComponent implements OnDestroy {
                             aFavs.push(x.friends[key]);
                         }
                         this.favoriteSub.next(aFavs);
+                    }
+                    if (x.hiddenmilestones != null) {
+                        this.hiddenMilestones = x.hiddenmilestones;
                     }
                 });
     }

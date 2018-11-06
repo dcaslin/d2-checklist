@@ -42,7 +42,7 @@
                     {{entry.user.displayName}}
                   </a>
                   <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
-                    (click)="storageService.toggleFav(entry.user)" href="javascript:void(0)">
+                    (click)="storageService.toggleFav(entry.user, entry.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
                 </b>

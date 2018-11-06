@@ -140,7 +140,7 @@
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
-                    (click)="storageService.toggleFav(member.destinyUserInfo)" href="javascript:void(0)">
+                    (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
                   <a style="margin-left:0.25em" *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
