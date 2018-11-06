@@ -131,7 +131,8 @@
 
                               <span *ngIf="perk.icon!=null" class="small-item-icon transparent-icon"
                                 [style.background-image]="'url(//www.bungie.net' +perk.icon + ')'"></span>
-                              {{perk.name}}
+                              {{perk.name}} 
+                              <ng-container *ngIf="debugmode">{{perk.hash}}</ng-container>
                             </span>
                             <span style="width: 1em;" *ngIf="!isLast2"></span>
                           </ng-container>
