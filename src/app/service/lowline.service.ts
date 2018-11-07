@@ -22,7 +22,6 @@ export class LowLineService implements OnDestroy {
         }
     }
 
-    // https://lowlidev.com.au/destiny/maps/titan/item/2277930478
     public buildItemLink(itmHash: string): string {
 
         if (this.data == null) { return null; }
@@ -30,13 +29,12 @@ export class LowLineService implements OnDestroy {
         if (lData == null) { return null; }
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
-            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/item/' + itmHash;
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/item/' + itmHash + '&origin=d2checklist';;
             return l;
         }
         return null;
     }
 
-    // https://lowlidev.com.au/destiny/maps/{destination}/record/{recordHash}
     public buildRecordLink(hash: string): string {
 
         if (this.data == null) { return null; }
@@ -44,7 +42,7 @@ export class LowLineService implements OnDestroy {
         if (lData == null) { return null; }
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
-            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/record/' + hash;
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/record/' + hash + '&origin=d2checklist';;
             return l;
         }
         return null;
