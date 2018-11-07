@@ -1108,15 +1108,14 @@ export class ParseService {
                         hasDescs = true;
                     }
 
-                    // https://lowlidev.com.au/destiny/maps/mars/3240044932
                     let mapUrl = null;
                     // sleeper nodes and memory fragments
                     if (key === '365218222' || key === '2955980198') {
-                        mapUrl = 'https://lowlidev.com.au/destiny/maps/mars/' + hash;
+                        mapUrl = 'https://lowlidev.com.au/destiny/maps/mars/' + hash + '&origin=d2checklist';
                     } else if (key === '2360931290') {
                         const loc = entry.destinationHash;
 
-                        mapUrl = 'https://lowlidev.com.au/destiny/maps/' + loc + '/' + hash;
+                        mapUrl = 'https://lowlidev.com.au/destiny/maps/' + loc + '/' + hash + '&origin=d2checklist';
                         // // 130
                         // if (hash=="2117645021"){
                         //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/ghost-scan/21";
@@ -1218,13 +1217,11 @@ export class ParseService {
                                 }
                             }
                             if (checklistItem == null) {
-
-                                // https://lowlidev.com.au/destiny/maps/mars/3240044932
                                 let mapUrl = null;
                                 // region chests & lost sectors
                                 if (key === '1697465175' || key === '3142056444') {
                                     const loc = entry.destinationHash;
-                                    mapUrl = 'https://lowlidev.com.au/destiny/maps/' + loc + '/' + hash;
+                                    mapUrl = 'https://lowlidev.com.au/destiny/maps/' + loc + '/' + hash + '&origin=d2checklist';
                                 }
                                 const name = entry.displayProperties.name;
 
