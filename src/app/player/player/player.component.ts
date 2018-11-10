@@ -203,7 +203,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     // if route hasn't changed it won't refresh, so we have to force it
     if (this.selectedPlatform.type === +this.route.snapshot.params.platform &&
       this.gamerTag === this.route.snapshot.params.gt) {
-      this.performSearch();
+      this.performSearch(true);
       return;
     }
 
@@ -369,12 +369,16 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.storageService.hideMilestone(ms);
   }
 
-  public async performSearch(): Promise < void > {
+  public async performSearch(forceRefresh?: boolean): Promise < void > {
     if (this.gamerTag == null || this.gamerTag.trim().length === 0) {
       return;
     }
     this.loading = true;
-    this.setPlayer(null);
+    console.log("Force refresh: "+forceRefresh);
+    //set player to empty unless we're refreshing in place
+    if (forceRefresh!==true){
+      this.setPlayer(null);
+    }
     const p = await this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag);
 
     try {
