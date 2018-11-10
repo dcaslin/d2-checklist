@@ -374,6 +374,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       return;
     }
     this.loading = true;
+    this.setPlayer(null);
     const p = await this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag);
 
     try {
