@@ -198,9 +198,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   public routeSearch(): void {
+    console.log("Force search");
 
     // if route hasn't changed it won't refresh, so we have to force it
-    if (this.selectedPlatform.type === this.route.snapshot.params.platform &&
+    if (this.selectedPlatform.type === +this.route.snapshot.params.platform &&
       this.gamerTag === this.route.snapshot.params.gt) {
       this.performSearch();
       return;
