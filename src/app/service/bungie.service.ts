@@ -339,7 +339,7 @@ export class BungieService implements OnDestroy {
     private handleError(err) {
         console.dir(err);
         if (err.status === 0) {
-            this.notificationService.fail('Connection refused? Is your internet connected?' +
+            this.notificationService.fail('Connection refused? Is your internet connected? ' +
                 'Are you using something like Privacy Badger? ' +
                 'If so, please whitelist Bungie.net or disable it for this site');
         } else if (err.message != null) {
