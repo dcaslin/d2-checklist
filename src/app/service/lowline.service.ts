@@ -29,7 +29,7 @@ export class LowLineService implements OnDestroy {
         if (lData == null) { return null; }
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
-            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/item/' + itmHash + '&origin=d2checklist';;
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/item/' + itmHash + '?origin=d2checklist';;
             return l;
         }
         return null;
@@ -42,7 +42,7 @@ export class LowLineService implements OnDestroy {
         if (lData == null) { return null; }
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
-            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/record/' + hash + '&origin=d2checklist';;
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/record/' + hash + '?origin=d2checklist';;
             return l;
         }
         return null;
