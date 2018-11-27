@@ -1605,7 +1605,7 @@ export class ParseService {
             title: title,
             children: null,
             mapLink: mapLink,
-            score: rDesc.completionInfo.ScoreValue
+            score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue
         }
     }
 
