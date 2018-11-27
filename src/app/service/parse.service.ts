@@ -1625,6 +1625,9 @@ export class ParseService {
 
     private handleColPresNode(key: string, pres: any[], collectibles: any[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
+        if (val == null) {
+            return null;
+        }
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) { return null; }
         const children = [];
