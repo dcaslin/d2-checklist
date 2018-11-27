@@ -631,6 +631,9 @@ export class ParseService {
             const socketArray = itemSockets.sockets;
             for (let cntr = 0; cntr < socketArray.length; cntr++) {
                 const socketVal = socketArray[cntr];
+                if (iDesc.sockets==null) {
+                    continue;
+                }
                 const socketTemplate = iDesc.sockets.socketEntries[cntr];
 
                 // 2846385770
