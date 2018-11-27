@@ -777,6 +777,9 @@ export class ParseService {
             let rewards = '';
             let rewCnt = 0;
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
+            if (desc == null) {
+                 continue;
+            }
             let icon = desc.displayProperties.icon;
             const activities: MilestoneActivity[] = [];
             if (ms.activities != null) {
@@ -1069,6 +1072,9 @@ export class ParseService {
                 if (key === '110198094') { return; }
                 const vals: any = oChecklists[key];
                 const desc: any = this.destinyCacheService.cache.Checklist[key];
+                if (desc == null) {
+                    return;
+                }
                 let cntr = 0, cntChecked = 0;
                 const checkListItems: ChecklistItem[] = [];
                 let hasDescs = false;
@@ -1421,7 +1427,8 @@ export class ParseService {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
             // hit with a hammer
-            if (resp.profileCurrencies != null && resp.profileCurrencies.data != null && resp.profileCurrencies.data.items != null) {
+            if (resp.profileCurrencies != null && resp.profileCurrencies.data != null && 
+                resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
