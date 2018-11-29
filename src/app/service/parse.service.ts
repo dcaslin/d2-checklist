@@ -1117,33 +1117,11 @@ export class ParseService {
                         hasDescs = true;
                     }
 
-                    let mapUrl = null;
-                    // sleeper nodes and memory fragments
-                    if (key === '365218222' || key === '2955980198') {
-                        mapUrl = 'https://lowlidev.com.au/destiny/maps/mars/' + hash + '?origin=d2checklist';
-                    } else if (key === '2360931290') {
-                        const loc = entry.destinationHash;
-
-                        mapUrl = 'https://lowlidev.com.au/destiny/maps/' + loc + '/' + hash + '?origin=d2checklist';
-                        // // 130
-                        // if (hash=="2117645021"){
-                        //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/ghost-scan/21";
-                        // }
-                        // // 131
-                        // else if (hash=="3070955226"){
-                        //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/ghost-scan/22";
-                        // }
-                        // else {
-                        //     mapUrl = "https://lowlidev.com.au/destiny/maps/"+loc+"/"+hash;
-                        // }
-                    }
-
-
                     const checklistItem: ChecklistItem = {
                         hash: hash,
                         name: name,
                         checked: checked,
-                        mapUrl: mapUrl,
+                        mapLink: this.lowlineService.buildChecklistLink(hash),
                         desc: cDesc
                     };
                     checkListItems.push(checklistItem);
@@ -1226,21 +1204,14 @@ export class ParseService {
                                 }
                             }
                             if (checklistItem == null) {
-                                let mapUrl = null;
-                                // region chests & lost sectors
-                                if (key === '1697465175' || key === '3142056444') {
-                                    const loc = entry.destinationHash;
-                                    mapUrl = 'https://lowlidev.com.au/destiny/maps/' + loc + '/' + hash + '?origin=d2checklist';
-                                }
                                 const name = entry.displayProperties.name;
-
                                 checklistItem = {
                                     hash: hash,
                                     name: name,
                                     allDone: false,
                                     // weird adventures that are only once per account
                                     oncePerAccount: (hash === '844419501' || hash === '1942564430') ? true : false,
-                                    mapUrl: mapUrl,
+                                    mapLink: this.lowlineService.buildChecklistLink(hash),
                                     checked: []
                                 };
                                 checklist.entries.push(checklistItem);

@@ -294,7 +294,7 @@ export interface ChecklistItem {
     name: string;
     checked: boolean;
     desc: string;
-    mapUrl: string;
+    mapLink?: string;
 }
 
 export interface Checklist {
@@ -317,7 +317,7 @@ export interface CharChecklistItem {
     allDone: boolean;
     oncePerAccount: boolean;
     checked: CharCheck[];
-    mapUrl;
+    mapLink?: string;
 }
 
 export interface CharTotal {
