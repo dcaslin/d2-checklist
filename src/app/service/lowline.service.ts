@@ -22,6 +22,19 @@ export class LowLineService implements OnDestroy {
         }
     }
 
+    public buildChecklistLink(itmHash: string): string {
+
+        if (this.data == null) { return null; }
+        const lData = this.data.data.checklists[itmHash];
+        if (lData == null) { return null; }
+        for (const index of lData) {
+            const p: LowLineParentNode = this.data.data.nodes[index];
+            const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/' + itmHash + '?origin=d2checklist';
+            return l;
+        }
+        return null;
+    }
+
     public buildItemLink(itmHash: string): string {
 
         if (this.data == null) { return null; }
@@ -69,6 +82,7 @@ export interface LowLineResponse {
   }
 
   interface LowLineData {
+    checklists: any; // dictionary of number arrays
     items: any; // dictionary of number arrays
     records: any; // dictionary of number arrays
     nodes: LowLineParentNode[]
