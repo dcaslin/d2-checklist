@@ -86,6 +86,11 @@
   .accent-text{
     color: mat-color($accent, 700);
   }
+
+  .extraLowLink{
+    margin-left: 5px;
+    font-weight: lighter;
+  }
   
   .warn-text{
     color: mat-color($warn);

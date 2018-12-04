@@ -61,8 +61,8 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                      <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
@@ -114,11 +114,11 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                      <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
-                      </a>
+                      </a>                      
                       <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                       <div class="d-block d-md-none">{{i.vendor.name}}</div>
@@ -173,8 +173,8 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                      <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
@@ -213,8 +213,8 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      <ng-container *ngIf="i.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.mapLink" *ngIf="i.mapLink!=null" target="_blank" rel="noopener">
+                      <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>

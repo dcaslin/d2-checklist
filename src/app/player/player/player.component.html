@@ -355,8 +355,8 @@
                             <tr *ngIf="g.owner==char">
                               <td class="lead" data-label="">
                                 <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                <ng-container *ngIf="g.mapLink==null">{{g.name}} </ng-container>
-                                <a [href]="g.mapLink" *ngIf="g.mapLink!=null" target="_blank" rel="noopener">
+                                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.name}} </ng-container>
+                                <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                                   {{g.name}}
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
@@ -430,13 +430,10 @@
                             <ng-container *ngFor="let check of checklist.entries">
                               <tr *ngIf="!hideComplete || !check.checked">
                                 <td>
-                                  <ng-container *ngIf="check.mapLink==null">{{check.name}}</ng-container>
-                                  <ng-container *ngIf="check.mapLink!=null">
-                                    <a [href]="check.mapLink" target="_blank" rel="noopener">{{check.name}}
-                                      <i class='accent-text far fa-map-marker-alt'></i>
-                                    </a>
-
-                                  </ng-container>
+                                  <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
+                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}}
+                                    <i class='far fa-map-marker-alt'></i>
+                                  </a>
 
                                   <span *ngIf="debugmode">
                                     &ensp;[{{check.hash}}] &ensp;
@@ -487,12 +484,11 @@
                           <ng-container *ngFor="let check of checklist.entries">
                             <tr *ngIf="!hideComplete || !check.allDone">
                               <td>
-                                <ng-container *ngIf="check.mapLink==null">{{check.name}}</ng-container>
-                                <ng-container *ngIf="check.mapLink!=null">
-                                  <a [href]="check.mapLink" target="_blank" rel="noopener">{{check.name}}
-                                    <i class='accent-text far fa-map-marker-alt'></i>
+                                  <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
+                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}}
+                                    <i class='far fa-map-marker-alt'></i>
                                   </a>
-                                </ng-container>
+
                                 <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                                 <span *ngIf="debugmode">
                                   &ensp;[{{check.hash}}] &ensp;
@@ -633,8 +629,8 @@
                       <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.complete" class="far fa-square"></i>
 
-                      <ng-container *ngIf="node.data.mapLink==null"> {{node.data.name}} </ng-container>
-                      <a [href]="node.data.mapLink" *ngIf="node.data.mapLink!=null" target="_blank" rel="noopener">
+                      <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null"> {{node.data.name}} </ng-container>
+                      <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{node.data.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>

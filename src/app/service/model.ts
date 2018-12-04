@@ -56,8 +56,8 @@ export interface TriumphRecordNode extends TriumphNode {
     objectives: ItemObjective[];
     redeemed: boolean;
     title: boolean;
-    mapLink: string;
     score: number;
+    lowLinks?: LowLinks;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
@@ -94,7 +94,7 @@ export interface SaleItem {
     value: any;
     costs: SaleItemCost[];
     searchText: string;
-    mapLink?: string;
+    lowLinks?: LowLinks;
 }
 
 export interface ItemPerks {
@@ -294,7 +294,7 @@ export interface ChecklistItem {
     name: string;
     checked: boolean;
     desc: string;
-    mapLink?: string;
+    lowLinks?: LowLinks;
 }
 
 export interface Checklist {
@@ -317,7 +317,13 @@ export interface CharChecklistItem {
     allDone: boolean;
     oncePerAccount: boolean;
     checked: CharCheck[];
+    lowLinks?: LowLinks;
+}
+
+export interface LowLinks {
     mapLink?: string;
+    loreLink?: string;
+    videoLink?: string;
 }
 
 export interface CharTotal {
@@ -399,7 +405,7 @@ export class InventoryItem {
     readonly aggProgress: number;
     readonly values: any;
     readonly expirationDate: string;
-    public mapLink: string;
+    public lowLinks: LowLinks;
     // more to come, locked other stuff
 
     damageTypeString(): string {
