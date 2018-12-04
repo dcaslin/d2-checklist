@@ -564,10 +564,7 @@ export class ParseService {
 
         }
         for (const i of returnMe) {
-            i.mapLink = this.lowlineService.buildItemLink(i.hash);
-            if (i.mapLink != null) {
-                i.searchText += 'maplink';
-            }
+            i.lowLinks = this.lowlineService.buildItemLink(i.hash);
         }
         returnMe.sort((a, b) => {
             if (a.tierType < b.tierType) { return 1; }
@@ -1121,7 +1118,7 @@ export class ParseService {
                         hash: hash,
                         name: name,
                         checked: checked,
-                        mapLink: this.lowlineService.buildChecklistLink(hash),
+                        lowLinks: this.lowlineService.buildChecklistLink(hash),
                         desc: cDesc
                     };
                     checkListItems.push(checklistItem);
@@ -1211,7 +1208,7 @@ export class ParseService {
                                     allDone: false,
                                     // weird adventures that are only once per account
                                     oncePerAccount: (hash === '844419501' || hash === '1942564430') ? true : false,
-                                    mapLink: this.lowlineService.buildChecklistLink(hash),
+                                    lowLinks: this.lowlineService.buildChecklistLink(hash),
                                     checked: []
                                 };
                                 checklist.entries.push(checklistItem);
@@ -1418,7 +1415,7 @@ export class ParseService {
                     items.forEach(itm => {
                         const parsed: InventoryItem = this.parseInvItem(itm, false, char, vault, resp.itemComponents);
                         if (parsed != null) {
-                            parsed.mapLink = this.lowlineService.buildItemLink(parsed.hash);
+                            parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                             bounties.push(parsed);
                         }
                     });
@@ -1559,9 +1556,6 @@ export class ParseService {
                 title = true;
             }
         }
-        const mapLink = this.lowlineService.buildRecordLink(key);
-
-
 
         return {
             type: 'record',
@@ -1575,7 +1569,7 @@ export class ParseService {
             redeemed: redeemed,
             title: title,
             children: null,
-            mapLink: mapLink,
+            lowLinks: this.lowlineService.buildRecordLink(key),
             score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue
         }
     }

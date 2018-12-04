@@ -2,6 +2,7 @@ import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { merge, fromEvent as observableFromEvent, Subject, Observable, of as observableOf, forkJoin } from 'rxjs';
 import { catchError, map, startWith, switchMap, flatMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { LowLinks } from './model';
 
 @Injectable()
 export class LowLineService implements OnDestroy {
@@ -22,7 +23,7 @@ export class LowLineService implements OnDestroy {
         }
     }
 
-    public buildChecklistLink(itmHash: string): string {
+    public buildChecklistLink(itmHash: string): LowLinks {
 
         if (this.data == null) { return null; }
         const lData = this.data.data.checklists[itmHash];
@@ -30,12 +31,16 @@ export class LowLineService implements OnDestroy {
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
             const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/' + itmHash + '?origin=d2checklist';
-            return l;
+            return {
+                mapLink: l,
+                loreLink: p.node.link,
+                videoLink: p.node.videoLink
+            };
         }
-        return null;
+        return {};
     }
 
-    public buildItemLink(itmHash: string): string {
+    public buildItemLink(itmHash: string): LowLinks {
 
         if (this.data == null) { return null; }
         const lData = this.data.data.items[itmHash];
@@ -43,12 +48,16 @@ export class LowLineService implements OnDestroy {
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
             const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/item/' + itmHash + '?origin=d2checklist';;
-            return l;
+            return {
+                mapLink: l,
+                loreLink: p.node.link,
+                videoLink: p.node.videoLink
+            };
         }
-        return null;
+        return {};
     }
 
-    public buildRecordLink(hash: string): string {
+    public buildRecordLink(hash: string): LowLinks {
 
         if (this.data == null) { return null; }
         const lData = this.data.data.records[hash];
@@ -56,9 +65,13 @@ export class LowLineService implements OnDestroy {
         for (const index of lData) {
             const p: LowLineParentNode = this.data.data.nodes[index];
             const l = 'https://lowlidev.com.au/destiny/maps/' + p.destinationId + '/record/' + hash + '?origin=d2checklist';;
-            return l;
+            return {
+                mapLink: l,
+                loreLink: p.node.link,
+                videoLink: p.node.videoLink
+            };
         }
-        return null;
+        return {};
     }
 
 
