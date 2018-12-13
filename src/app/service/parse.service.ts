@@ -526,6 +526,14 @@ export class ParseService {
                             returnMe.lwNmFastestMs = f;
                         }
                     }
+                    else if (name.indexOf('Scourge of the Past') === 0) {
+                        const c = ParseService.getBasicValue(act.values.activityCompletions);
+                        returnMe.spNm += c;
+                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                        if ((f > 0) && (returnMe.spNmFastestMs == null || returnMe.spNmFastestMs > f)) {
+                            returnMe.spNmFastestMs = f;
+                        }
+                    }
                 } else if (vDesc.activityTypeHash === 575572995) {
                     // heroic nightfall - scored
                     if (vDesc.directActivityModeHash === 532484583) {
@@ -1308,6 +1316,8 @@ export class ParseService {
                     '2683538554' === p.hash ||  // spire
                     '3660836525' === p.hash ||  // raid
                     '534869653' === p.hash ||   // xur
+                    '1342567285' === p.hash ||   // scourge
+                    '4128810957' === p.hash ||   // eva return
                     '4253138191' === p.hash    // weekly clan engrams
                 ) {
                     continue;
@@ -2132,6 +2142,7 @@ export class ParseService {
         let totalEater = 0;
         let totalSpire = 0;
         let totalLwNormal = 0;
+        let totalSpNormal = 0;
         hist.forEach(a => {
             // ignore not completed
             if (!a.completed) { return; }
@@ -2180,7 +2191,14 @@ export class ParseService {
                 if (d.getTime() > c.startWeek.getTime()) {
                     c.hasLwNm = true;
                 }
+            } else if (name.indexOf('Scourge of the Past') === 0) {
+                totalSpNormal++;
+                // if after reset?
+                if (d.getTime() > c.startWeek.getTime()) {
+                    c.hasSpNm = true;
+                }
             }
+            
             totalRaid++;
         });
         c.lifetimeRaid = totalRaid;
@@ -2189,6 +2207,7 @@ export class ParseService {
         c.lifetimeEater = totalEater;
         c.lifetimeSpire = totalSpire;
         c.lifetimeLwNormal = totalLwNormal;
+        c.lifetimeSpNormal = totalSpNormal;
 
 
         const EATER_KEY = '1234';
@@ -2196,12 +2215,14 @@ export class ParseService {
         const LEV_NM_KEY = '1235';
         const LEV_HM_KEY = '1236';
         const LW_NM_KEY = '3456';
+        const SP_NM_KEY = '4567';
         // add psuedo milestone for eater
         let foundEater = false;
         let foundSpire = false;
         let foundNm = false;
         let foundHm = false;
         let foundLwNm = false;
+        let foundSpNm = false;
         for (const msName of msNames) {
             if (msName.key === EATER_KEY) {
                 foundEater = true;
@@ -2213,6 +2234,8 @@ export class ParseService {
                 foundHm = true;
             } else if (msName.key === LW_NM_KEY) {
                 foundLwNm = true;
+            } else if (msName.key === SP_NM_KEY) {
+                foundSpNm = true;
             }
         }
 
@@ -2223,6 +2246,17 @@ export class ParseService {
                 rewards: 'Raid Gear (580-600)',
                 name: 'Last Wish',
                 desc: 'Forsaken DLC Raid',
+                hasPartial: false,
+                neverDisappears: true
+            });
+        }
+        if (!foundSpNm) {
+            msNames.unshift({
+                key: SP_NM_KEY,
+                resets: c.endWeek.toISOString(),
+                rewards: 'Raid Gear (600+)',
+                name: 'Scourge of the Past',
+                desc: 'Newest Raid Lair',
                 hasPartial: false,
                 neverDisappears: true
             });
@@ -2283,6 +2317,9 @@ export class ParseService {
         c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
         const lwNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LW_NM_KEY, c.hasLwNm, c.hasLwNm ? 1 : 0, null);
         c.milestones[LW_NM_KEY] = lwNmPsuedoMs;
+        const spNmPsuedoMs: MilestoneStatus = new MilestoneStatus(SP_NM_KEY, c.hasSpNm, c.hasSpNm ? 1 : 0, null);
+        c.milestones[SP_NM_KEY] = spNmPsuedoMs;
+
     }
 
     public parsePrestigeNfHistory(msNames: MileStoneName[], c: Character, hist: Activity[]) {

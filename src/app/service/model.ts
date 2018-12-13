@@ -519,11 +519,13 @@ export class Character {
     lifetimeEater = 0;
     lifetimeSpire = 0;
     lifetimeLwNormal = 0;
+    lifetimeSpNormal = 0;
     hasEater = false;
     hasSpire = false;
     hasLevNm = false;
     hasLevHm = false;
     hasLwNm = false;
+    hasSpNm = false;
     hasPrestigeNf = false;
     aggHistory: AggHistory;
 
@@ -559,6 +561,10 @@ export class AggHistory {
 
     lwNm = 0;
     lwNmFastestMs: number;
+
+
+    spNm = 0;
+    spNmFastestMs: number;
 }
 
 

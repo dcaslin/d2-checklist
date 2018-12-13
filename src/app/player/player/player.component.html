@@ -267,6 +267,15 @@
                                   </ng-container>
                                 </div>
                               </div>
+                              <div class="lifetime" *ngIf="mileStoneName.key==4567 && char.aggHistory!=null">
+                                <div>Lifetime</div>
+                                <div>
+                                  <b>{{char.aggHistory.spNm|number : '2.0-0'}}</b>
+                                  <ng-container *ngIf="char.aggHistory.spNmFastestMs!=null">
+                                    | {{char.aggHistory.spNmFastestMs| amnsTiming:'ms'}}
+                                  </ng-container>
+                                </div>
+                              </div>
 
 
                             </ng-container>
