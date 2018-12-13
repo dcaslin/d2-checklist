@@ -66,6 +66,7 @@
               <mat-cell *cdkCellDef="let row">
                 {{row.name}}
                 <i class="fas fa-shield-check" *ngIf="row.success"></i>
+                <span *ngIf="debugmode">{{row.referenceId}}</span>
               </mat-cell>
             </ng-container>
             <ng-container cdkColumnDef="kd">
