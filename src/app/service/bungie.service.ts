@@ -230,7 +230,6 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
-        console.log('Applying currencies');
         const self: BungieService = this;
         const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId, ['ProfileCurrencies'], true);
         if (tempPlayer == null) {
@@ -238,7 +237,6 @@ export class BungieService implements OnDestroy {
             return;
         }
         s.selectedUserCurrencies = tempPlayer.currencies;
-        console.log('Applied currencies');
 
     }
 
@@ -468,17 +466,16 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean): Promise<Player> {
+    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean): Promise<Player> {
         try {
             const sComp = components.join();
-
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' +
                 membershipId + '/?components=' + sComp);
             let ms: PublicMilestone[] = null;
             if (components.includes('CharacterProgressions')) {
                 ms = await this.getPublicMilestones();
             }
-            return this.parseService.parsePlayer(resp, ms);
+            return this.parseService.parsePlayer(resp, ms, detailedInv);
         } catch (err) {
             if (!ignoreErrors) {
                 this.handleError(err);

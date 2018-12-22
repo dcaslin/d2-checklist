@@ -32,6 +32,7 @@ import { ResourcesModule } from './resources';
 import { SettingsModule } from './settings';
 import { AboutModule } from './about';
 import { FriendsModule } from './friends';
+import { GearModule } from './gear';
 
 import { AppRoutingModule, AuthGuard } from './app-routing.module';
 import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
@@ -48,6 +49,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
 
     AboutModule,
     FriendsModule,
+    GearModule,
     SettingsModule,
     HomeModule,
     PlayerModule,

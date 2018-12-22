@@ -10,6 +10,7 @@ import { PGCRComponent } from './pgcr';
 import { ResourcesComponent } from './resources';
 import { AboutComponent } from './about';
 import { FriendsComponent } from './friends';
+import { GearComponent } from './gear';
 import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanSearchComponent } from './clan-search';
@@ -71,6 +72,11 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: FriendsComponent
+    }, {
+      path: 'gear',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      component: GearComponent
     }, {
       path: 'search',
       pathMatch: 'full',

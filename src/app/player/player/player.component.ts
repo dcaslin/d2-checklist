@@ -1,8 +1,8 @@
 
 import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTabChangeEvent, MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
+import { MatTabChangeEvent, MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
 import { Observable, of as observableOf } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
@@ -61,7 +61,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   constructor(public bungieService: BungieService,
     storageService: StorageService,
     private notificationService: NotificationService,
-    private route: ActivatedRoute, private router: Router) {
+    private route: ActivatedRoute, private router: Router,
+    public dialog: MatDialog) {
     super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
@@ -146,7 +147,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   public branchNodeClick(hash: string): void {
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, {id: hash}]);
+    this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, { id: hash }]);
   }
 
   public historyPlayer(p: Player) {
@@ -198,7 +199,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   public routeSearch(): void {
-    console.log("Force search");
 
     // if route hasn't changed it won't refresh, so we have to force it
     if (this.selectedPlatform.type === +this.route.snapshot.params.platform &&
@@ -250,7 +250,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.selectedTab !== tabName) {
 
       if (this.debugmode) {
-        console.log('Change tab: ' + tabName);
       }
       this.selectedTab = tabName;
       this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
@@ -342,12 +341,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   private setTab(): void {
     if (this.tabs == null) {
-      console.log('--- this.tabs is null');
       return;
     }
     const tab: string = this.selectedTab;
     if (tab == null) {
-      console.log('---tab is null!');
       return;
     }
     let cntr = 0;
@@ -369,14 +366,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.storageService.hideMilestone(ms);
   }
 
-  public async performSearch(forceRefresh?: boolean): Promise < void > {
+  public async performSearch(forceRefresh?: boolean): Promise<void> {
     if (this.gamerTag == null || this.gamerTag.trim().length === 0) {
       return;
     }
     this.loading = true;
-    console.log("Force refresh: "+forceRefresh);
     //set player to empty unless we're refreshing in place
-    if (forceRefresh!==true){
+    if (forceRefresh !== true) {
       this.setPlayer(null);
     }
     const p = await this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag);
@@ -473,9 +469,31 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
 
+  public openQuestDialog(quest: any): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    //dc.width = '500px';
+    dc.data = quest;
+    const dialogRef = this.dialog.open(QuestDialogComponent, dc);
+  }
+
+
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    console.log('Destroying player component');
   }
 }
 
+
+@Component({
+  selector: 'anms-quest-dialog',
+  templateUrl: './quest-dialog.component.html',
+  styleUrls: ['./quest-dialog.component.scss']
+})
+export class QuestDialogComponent {
+  public const: Const = Const;
+  constructor(
+    public dialogRef: MatDialogRef<QuestDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
+}

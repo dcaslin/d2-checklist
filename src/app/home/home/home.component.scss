@@ -22,11 +22,28 @@
   display: inline-block;
 }
 
-.info{
+.more-info{
   text-align: left; 
   max-width: 700px;
   margin-right: 10px;
   margin-left: 10px;
+}
+
+
+.info{
+  max-width: 700px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-bottom: 25px;
+  margin-top: 5px;
+}
+
+.info-section{
+  text-align: left;
+}
+
+a.underline:link {
+  text-decoration: underline;
 }
 
 .home-button-row{

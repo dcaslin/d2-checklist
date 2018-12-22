@@ -1,0 +1,251 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+
+
+      <h1><i class="fas fa-bow-arrow"></i> Gear</h1>
+      <p class="simple-caption">
+        <span class="warn-text">This is alpha code, still a work in progress</span>
+      </p>
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+      </div>
+
+      <ng-container *ngIf="loading==false && selectedUser==null">
+        <h2>Bungie Authentication Required</h2>
+        <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
+          site to access this info
+          (gear management is part of the private API, like what DIM uses). Click the "Sign In" button on the upper
+          right if you want to continue.</p>
+      </ng-container>
+
+      <div style="margin: 10px" [hidden]="selectedUser==null">
+        <mat-form-field class="searchField">
+          <input matInput #filter placeholder="Wildcard filter">
+        </mat-form-field>
+        <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
+      </div>
+
+      <ng-container *ngIf="selectedUser!=null">
+        <mat-tab-group>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <i class="fas fa-axe-battle"></i>
+              <span class="d-none d-md-inline">&ensp;Weapons</span>
+            </ng-template>
+            <table class="tidy-table">
+              <thead>
+                <tr>
+                  <th>Light</th>
+                  <th>Name</th>
+                  <th>Stats</th>
+                  <th>Sockets</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let i of gear">
+                  <tr *ngIf="i.type == ItemType.Weapon">
+                    <td>
+                        <div *ngIf="i.icon!=null" class="item-image" 
+                          [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+                          [class.masterworked]="i.masterworked"
+                          >
+                          <div *ngIf="i.power>0" class="primary-stat"
+                              [class.void]="i.damageType===DamageType.Void"
+                              [class.arc]="i.damageType===DamageType.Arc"
+                              [class.solar]="i.damageType===DamageType.Thermal"
+                            >
+                            {{i.power}}
+                            
+                          </div>
+                          <div class="gear-lock">
+                              <i *ngIf="i.locked" class="fas fa-lock-alt"></i>
+                              <!-- <i *ngIf="!i.locked" class="fas fa-lock-open-alt"></i> -->
+                          </div>
+                          
+                          <div class="gear-notes">
+                              <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                      {{i.locked}} {{i.masterworked}} {{i.tracked}}
+                      {{i.hash}} {{i.name}}
+                      <br> {{i.typeString()}}|{{i.typeName}}
+                      <br> {{i.power}} {{i.damageTypeString()}}
+                      <br> Quantity: {{i.quantity}}
+                      <br> Equipped: {{i.equipped}}
+                      <br> Owner: {{i.owner.className}}
+                    </td>
+                    <td>
+                      
+                    </td>
+                    <td>
+
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <i class="fas fa-helmet-battle"></i>
+              <span class="d-none d-md-inline">&ensp;Armor</span>
+            </ng-template>
+            <table class="tidy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Stats</th>
+                  <th>Sockets</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let i of gear">
+                  <tr *ngIf="i.type == ItemType.Armor">
+                    <td>
+                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+                      {{i.hash}} {{i.name}}
+                      <br> {{i.typeName}}
+                      <br> {{i.power}}
+                      <br> Equipped: {{i.equipped}}
+                      <br> Owner: {{i.owner.className}}
+                    </td>
+
+                    <td>
+                      <ng-container *ngFor="let s of i.stats">
+                        <div [matTooltip]="s.desc">{{s.name}}: {{s.value}}</div>
+                      </ng-container>
+                    </td>
+                    <td>
+                      <div *ngFor="let socket of i.sockets" class="socket">
+                        <span class="accent-text" *ngIf="socket.bonusLight>0">{{socket.bonusLight}}</span>
+                        <span *ngFor="let plug of socket.plugs; let last = last" [matTooltip]="plug.desc"
+                          [class.text-muted]="!plug.active" [class.active]="plug.active">
+                          {{plug.name}}
+                          <ng-container *ngIf="!last">|</ng-container>
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </mat-tab>
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <i class="fas fa-book-spells"></i>
+              <span class="d-none d-md-inline">&ensp;Mods</span>
+            </ng-template>
+            <table class="tidy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Perks</th>
+                  <th>Sockets</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let i of gear">
+                  <tr *ngIf="i.type == ItemType.GearMod">
+                    <td>
+                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+                      {{i.hash}} {{i.name}}
+                      <br> {{i.typeString()}}|{{i.typeName}}
+                      <br> {{i.power}} {{i.damageTypeString()}}
+                      <br> Quantity: {{i.quantity}}
+                      <br> Equipped: {{i.equipped}}
+                      <br> Owner: {{i.owner.className}}
+                    </td>
+
+                    <td>
+                      <div *ngFor="let p of i.perks">{{p.hash}}: {{p.name}} - {{p.desc}}, {{p.active}},{{p.visible}}</div>
+                    </td>
+                    <td>
+                      <div *ngFor="let socket of i.sockets">
+                        <span *ngFor="let plug of socket.plugs">
+                          < {{plug.hash}} {{plug.name}} {{plug.active}}>
+                        </span>
+                      </div>
+                    </td>
+
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </mat-tab>
+          <mat-tab>
+
+            <ng-template mat-tab-label>
+              <i class="fas fa-flask-potion"></i>
+              <span class="d-none d-md-inline">&ensp;Consumable</span>
+            </ng-template>
+            <table class="tidy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let i of gear">
+                  <tr *ngIf="i.type == ItemType.Consumable">
+                    <td>
+                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+                      {{i.hash}} {{i.name}}
+                      <br> {{i.typeString()}}|{{i.typeName}}
+                      <br> {{i.power}} {{i.damageTypeString()}}
+                      <br> Quantity: {{i.quantity}}
+                      <br> Equipped: {{i.equipped}}
+                      <br> Owner: {{i.owner.className}}
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </mat-tab>
+          <mat-tab>
+
+            <ng-template mat-tab-label>
+              <i class="fas fa-gem"></i>
+              <span class="d-none d-md-inline">&ensp;Material</span>
+            </ng-template>
+            <table class="tidy-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let i of gear">
+                  <tr *ngIf="i.type == ItemType.ExchangeMaterial">
+                    <td>
+                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
+                      {{i.hash}} {{i.name}}
+                      <br> {{i.typeString()}}|{{i.typeName}}
+                      <br> {{i.power}} {{i.damageTypeString()}}
+                      <br> Quantity: {{i.quantity}}
+                      <br> Equipped: {{i.equipped}}
+                      <br> Owner: {{i.owner.className}}
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </mat-tab>
+
+        </mat-tab-group>
+
+      </ng-container>
+    </div>
+    <div *ngIf="disableads===false" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="disableads===false" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  </div>
+</div>
