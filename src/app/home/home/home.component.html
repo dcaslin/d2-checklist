@@ -10,9 +10,9 @@
         <div class="centerMe">
           <mat-form-field class="searchField searchPlatform">
             <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
-                <mat-select-trigger>
-                    <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
-                  </mat-select-trigger>
+              <mat-select-trigger>
+                <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+              </mat-select-trigger>
               <mat-option *ngFor="let p of platforms" [value]="p">
                 <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
               </mat-option>
@@ -26,10 +26,9 @@
           </button>
         </div>
 
-
         <div class="home-button-row">
-          <a mat-raised-button class="home-button" color="accent" [ngClass]="animateOnRouteEnter" target="_blank" href="https://amzn.to/2tGons4">
-            <i class="fab fa-amazon"></i> Order Destiny 2: Forsaken
+          <a mat-raised-button class="home-button" color="accent" [ngClass]="animateOnRouteEnter" target="_blank" href="https://amzn.to/2S6jAuf">
+            <i class="fab fa-amazon"></i> Order Forsaken Annual Pass
           </a>
           <div class="spacer"></div>
           <a mat-raised-button class="home-button" color="primary" [ngClass]="animateOnRouteEnter" target="_blank" href="https://imgur.com/a/dUlLzny">
@@ -37,7 +36,36 @@
           </a>
         </div>
 
-        <div class="info">
+
+        <div class="row info">
+          <div class="col-sm-6 info-section">
+            <h4>
+              <a href="https://www.reddit.com/r/DestinyTheGame/comments/9t16yz/list_of_heroic_story_missions_from_fastest_to/"
+                class="underline" target="_blank" rel="noopener">
+                Daily Missions</a> </h4>
+            <ul>
+              <li *ngFor="let m of missions">{{m}}</li>
+            </ul>
+          </div>
+          <div class="col-sm-6 info-section">
+            <h4>Burns</h4>
+            <ul>
+              <li *ngFor="let b of burns">{{b.name}}</li>
+            </ul>
+            <h4>Flashpoint {{flashpoint}}</h4>
+          </div>
+        </div>
+
+        <div class="home-button-row">
+          <button *ngIf="!showMoreInfo" mat-raised-button (click)="showMoreInfo=true">
+            <i class="fal fa-eye"></i> Show Detailed Milestones
+          </button>
+          <button *ngIf="showMoreInfo" mat-raised-button (click)="showMoreInfo=false">
+            <i class="fal fa-eye-slash"></i> Hide Detailed Milestones
+          </button>
+        </div>
+
+        <div *ngIf="showMoreInfo" class="more-info">
           <mat-card *ngFor="let ms of publicMilestones">
             <mat-card-header>
 

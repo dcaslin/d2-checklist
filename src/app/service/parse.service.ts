@@ -12,7 +12,7 @@ import {
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective, PrivMilestoneActivity,
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode
+    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState
 } from './model';
 @Injectable()
 export class ParseService {
@@ -123,19 +123,19 @@ export class ParseService {
                 info = 'Nessus';
             } else if (name === 'Dead Zone Scout') {
                 name = 'Devrim';
-                 info = 'EDZ';
+                info = 'EDZ';
             } else if (name === 'Vanguard Tactical') {
                 name = 'Zavala';
-                 info = 'Strikes';
+                info = 'Strikes';
             } else if (name === 'Vanguard Research') {
                 name = 'Ikora';
-                 info = 'Research';
+                info = 'Research';
             } else if (name === 'Fragmented Researcher') {
                 name = 'Asher';
                 info = 'IO';
             } else if (name === 'Field Commander') {
                 name = 'Sloane';
-                 info = 'Titan';
+                info = 'Titan';
             } else if (name === 'The Crucible') {
                 name = 'Crucible';
                 info = 'Shaxx';
@@ -220,24 +220,6 @@ export class ParseService {
                                     earned: earned,
                                     redeemed: redeemed
                                 });
-
-                                // if (rewEntKey == 3789021730) {
-                                //     clanMilestones.nightfall = earned;
-
-                                // }
-                                // else if (rewEntKey == 2112637710) {
-                                //     clanMilestones.trials = earned;
-
-                                // }
-                                // else if (rewEntKey == 2043403989) {
-                                //     clanMilestones.raid = earned;
-                                // }
-                                // else if (rewEntKey == 964120289) {
-                                //     clanMilestones.crucible = earned;
-                                // }
-                                // else{
-                                //     console.log("--- "+rewEntKey);
-                                // }
                             });
                         }
                     });
@@ -485,7 +467,6 @@ export class ParseService {
                     } else {
                         console.log('No entry found for activity hash: ' + act.activityhash);
                     }
-                    // console.log(name);
                     if (name === 'Leviathan') {
                         // nm
                         if (tier < 2) {
@@ -636,13 +617,13 @@ export class ParseService {
             const socketArray = itemSockets.sockets;
             for (let cntr = 0; cntr < socketArray.length; cntr++) {
                 const socketVal = socketArray[cntr];
-                if (iDesc.sockets==null) {
+                if (iDesc.sockets == null) {
                     continue;
                 }
                 const socketTemplate = iDesc.sockets.socketEntries[cntr];
 
                 // 2846385770
-                if (socketTemplate.reusablePlugItems != null && socketTemplate.reusablePlugItems.length > 0 ) {
+                if (socketTemplate.reusablePlugItems != null && socketTemplate.reusablePlugItems.length > 0) {
                     const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
                     if (perkDesc != null && perkDesc.itemTypeAndTierDisplayName === 'Exotic Intrinsic'
                         && (iDesc.itemTypeAndTierDisplayName.indexOf('Exotic') >= 0)) {
@@ -654,7 +635,6 @@ export class ParseService {
                             desc: perkDesc.displayProperties.description,
                         });
                         searchText += perkDesc.displayProperties.name + ' ';
-                        console.log(perkDesc.displayProperties.name);
                         rolledPerks.push(perkSet);
                     }
                 }
@@ -783,7 +763,7 @@ export class ParseService {
             let rewCnt = 0;
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
-                 continue;
+                continue;
             }
             let icon = desc.displayProperties.icon;
             const activities: MilestoneActivity[] = [];
@@ -893,9 +873,6 @@ export class ParseService {
                     }
                 }
             }
-            // else{
-            //     console.log("    Empty activities on milestone: "+desc.displayProperties.name+", hash: "+ms.milestoneHash);
-            // }
 
             if (desc.rewards != null) {
                 for (const entryKey of Object.keys(desc.rewards)) {
@@ -955,6 +932,11 @@ export class ParseService {
                 }
                 aggActivities.push(aggAct);
             }
+            aggActivities.sort(function (a, b) {
+                return a.activity.ll - b.activity.ll;
+            });
+
+
             let summary = null;
             if (nothingInteresting && aggActivities.length > 0) {
                 summary = '';
@@ -1282,7 +1264,7 @@ export class ParseService {
 
 
 
-    public parsePlayer(resp: any, publicMilestones: PublicMilestone[]): Player {
+    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean): Player {
         if (resp.profile != null && resp.profile.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s profile.');
         }
@@ -1399,13 +1381,15 @@ export class ParseService {
         const currencies: Currency[] = [];
         const rankups: Rankup[] = [];
         const bounties: InventoryItem[] = [];
+        const quests: InventoryItem[] = [];
+        const gear: InventoryItem[] = [];
         let checklists: Checklist[] = [];
         let charChecklists: CharChecklist[] = [];
         if (!superprivate) {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
             // hit with a hammer
-            if (resp.profileCurrencies != null && resp.profileCurrencies.data != null && 
+            if (resp.profileCurrencies != null && resp.profileCurrencies.data != null &&
                 resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
@@ -1423,13 +1407,46 @@ export class ParseService {
                     const char: Character = charsDict[key];
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     items.forEach(itm => {
-                        const parsed: InventoryItem = this.parseInvItem(itm, false, char, vault, resp.itemComponents);
+                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv);
                         if (parsed != null) {
-                            parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
-                            bounties.push(parsed);
+                            if (parsed.type === ItemType.Bounty) {
+                                parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
+                                bounties.push(parsed);
+                            }
+                            else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
+                                parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
+                                quests.push(parsed);
+                            }
+                            else {
+                                gear.push(parsed);
+                            }
                         }
                     });
                 });
+            }
+            if (detailedInv === true) {
+                if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
+                    Object.keys(resp.characterEquipment.data).forEach((key) => {
+                        const char: Character = charsDict[key];
+                        const items: PrivInventoryItem[] = resp.characterEquipment.data[key].items;
+                        items.forEach(itm => {
+                            const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv);
+                            if (parsed != null) {
+                                gear.push(parsed);
+                            }
+                        });
+                    });
+
+                }
+                if (resp.profileInventory != null && resp.profileInventory.data != null) {
+                    const items: PrivInventoryItem[] = resp.profileInventory.data.items;
+                    items.forEach(itm => {
+                        const parsed: InventoryItem = this.parseInvItem(itm, vault, resp.itemComponents, detailedInv, vault, shared);
+                        if (parsed != null) {
+                            gear.push(parsed);
+                        }
+                    });
+                }
             }
 
             bounties.sort(function (a, b) {
@@ -1466,8 +1483,8 @@ export class ParseService {
                 colTree = this.handleColPresNode('3790247699', nodes, collections).children;
             }
         }
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties,
-            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree);
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
+            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -1687,55 +1704,133 @@ export class ParseService {
         }
     }
 
-    private parseInvItem(itm: PrivInventoryItem, equipped: boolean, owner: Character, vaultChar: Character, itemComp: any): InventoryItem {
-        try {
-            // vault bucket
-            if (itm.bucketHash === 138197802) {
-                owner = vaultChar;
+    private parseQuestStep(stepHash: number, currentStepHash: number): any{
+        const desc: any = this.destinyCacheService.cache.InventoryItem[stepHash];
+        if (desc==null) return null;
+        const values = [];
+        if (desc.value != null && desc.value.itemValue != null) {
+            for (const val of desc.value.itemValue) {
+                if (val.itemHash === 0) { continue; }
+                const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+                if (valDesc != null) {
+                    values.push({
+                        name: valDesc.displayProperties.name,
+                        quantity: val.quantity
+                    });
+                }
+            }
+        }
+        const objectives = [];
+        if (desc.objectives!=null && desc.objectives.objectiveHashes!=null){
+            for (const objectiveHash of desc.objectives.objectiveHashes) {
+                const oDesc = this.destinyCacheService.cache.Objective[objectiveHash];
+                const iObj: ItemObjective = {
+                    completionValue: oDesc.completionValue,
+                    progressDescription: oDesc.progressDescription,
+                    progress: 0, 
+                    complete: false
+                }
+                objectives.push(iObj);
+            }
+        }
+        return {
+            name: desc.displayProperties.displayName,
+            desc: desc.displayProperties.description,
+            objectives: objectives,
+            values: values,
+            current: currentStepHash == stepHash
+        }
+    }
+
+    private parseQuestLine(qli: number, stepHash: number): any{
+        const qdesc: any = this.destinyCacheService.cache.InventoryItem[qli];
+        if (qdesc==null) return null;
+        if (qdesc.setData==null) return null;
+        const qType = qdesc.setData.setType;
+        if (qType!='quest_global'){
+            return null;
+        }
+        const steps = qdesc.setData.itemList;
+        let cntr=0;
+        let stepNum = -1;
+        const oSteps = [];
+        let progress = "";
+        for (const step of steps){
+            cntr++;
+            const oStep = this.parseQuestStep(step.itemHash, stepHash);
+            if (oStep != null){
+                oSteps.push(oStep);
+                if (oStep.current){
+                    progress = cntr+"/"+steps.length;
+                }
             }
 
+        }
+        return {
+            name: qdesc.displayProperties.name,
+            steps: oSteps,
+            progress: progress
+        }
+    }
+
+    private parseInvItem(itm: PrivInventoryItem, owner: Character, itemComp: any, detailedInv?: boolean, vaultChar?: Character, sharedChar?: Character): InventoryItem {
+        try {
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
                 return null;
                 // return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
             }
+            let type: ItemType = desc.itemType;
+            if (!detailedInv) {
+                if (desc.itemType !== ItemType.Bounty && desc.itemType !== ItemType.Quest && desc.itemType !== ItemType.QuestStep) {
+                    return null;
+                }
+            }
+            else {
+                if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
+                    type = ItemType.GearMod;
+                }
+                else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
+                    type = ItemType.ExchangeMaterial;
+                }
+                if (
+                    type != ItemType.Weapon
+                    && type != ItemType.Armor
+                    && type != ItemType.GearMod
+                    && type != ItemType.ExchangeMaterial
+                    && type != ItemType.Consumable) {
+                    return null;
+                }
+            }
 
-            // if (
-            //     desc.itemType != ItemType.Weapon
-            //     && desc.itemType != ItemType.Armor
-            //     && desc.itemType != ItemType.Mod
-            //     && (desc.inventory.bucketTypeHash != 1469714392)
-            //     ) {
-            //     return null;
-            // }
+            // TODO desc.questlineItemHash
 
+            // vault bucket, 
+            if (owner === vaultChar && itm.bucketHash != 138197802) {
+                owner = sharedChar;
+            }
 
-            if (desc.itemType !== ItemType.Bounty) { return null; }
-
-            const type: ItemType = desc.itemType;
-            // if (desc.inventory.bucketTypeHash == 1469714392) {
-            //     type = ItemType.Consumable;
-            // }
-            // let rank: number = null;
             const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
             if (itemComp != null) {
                 if (itemComp.objectives != null && itemComp.objectives.data != null) {
                     const objs: any = itemComp.objectives.data[itm.itemInstanceId];
-                    for (const o of objs.objectives) {
-                        const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-                        const iObj: ItemObjective = {
-                            completionValue: oDesc.completionValue,
-                            progressDescription: oDesc.progressDescription,
-                            progress: o.progress == null ? 0 : o.progress,
-                            complete: o.complete
-                        }
+                    if (objs != null) {
+                        for (const o of objs.objectives) {
+                            const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                            const iObj: ItemObjective = {
+                                completionValue: oDesc.completionValue,
+                                progressDescription: oDesc.progressDescription,
+                                progress: o.progress == null ? 0 : o.progress,
+                                complete: o.complete
+                            }
 
-                        if (iObj.completionValue != null && iObj.completionValue > 0) {
-                            progTotal += 100 * iObj.progress / iObj.completionValue;
-                            progCnt++;
+                            if (iObj.completionValue != null && iObj.completionValue > 0) {
+                                progTotal += 100 * iObj.progress / iObj.completionValue;
+                                progCnt++;
+                            }
+                            objectives.push(iObj);
                         }
-                        objectives.push(iObj);
                     }
                 }
             }
@@ -1743,8 +1838,6 @@ export class ParseService {
             if (progCnt > 0) {
                 aggProgress = progTotal / progCnt;
             }
-
-
             const classAvail: any = {};
             if (desc.itemCategoryHashes != null) {
                 for (const hash of desc.itemCategoryHashes) {
@@ -1761,11 +1854,24 @@ export class ParseService {
                 }
             }
 
-            const power = 0;
-            const damageType: DamageType = DamageType.None;
+            let power = 0;
+            let damageType: DamageType = DamageType.None;
+            let equipped = false;
+            let canEquip = false;
             const perks: Perk[] = [];
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
+
+            if (detailedInv && itemComp.instances!=null && itemComp.instances.data!=null){
+                const instanceData = itemComp.instances.data[itm.itemInstanceId];
+                if (instanceData!=null){
+                    if (instanceData.primaryStat!=null)
+                        power = instanceData.primaryStat.value;
+                    damageType = instanceData.damageType;
+                    equipped = instanceData.isEquipped;
+                    canEquip = instanceData.canEquip;
+                }
+            }
 
             const values = [];
             if (desc.value != null && desc.value.itemValue != null) {
@@ -1782,11 +1888,28 @@ export class ParseService {
                 }
             }
 
+            const locked:boolean = (itm.state & ItemState.Locked)>0;
+            const masterworked = (itm.state & ItemState.Masterwork)>0;
+            const tracked = (itm.state & ItemState.Tracked)>0;
+
             const bucketOrder = null;
+
+            let info = desc.itemTypeAndTierDisplayName; 
+            if (desc.objectives!=null && type == ItemType.QuestStep){
+                const qli = desc.objectives.questlineItemHash;
+                if (qli!=null){
+                    info = this.parseQuestLine(qli, itm.itemHash);
+                    if (info==null) return null;
+                }
+            }
+            
             return new InventoryItem('' + itm.itemHash, desc.displayProperties.name,
-                equipped, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName, itm.quantity,
-                power, damageType, perks, stats, sockets, objectives, desc.displayProperties.description,
-                classAvail, bucketOrder, aggProgress, values, itm.expirationDate
+                equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName, 
+                itm.quantity,
+                power, damageType, perks, stats, sockets, objectives, 
+                desc.displayProperties.description,
+                classAvail, bucketOrder, aggProgress, values, itm.expirationDate, 
+                locked, masterworked, tracked, info
             );
         } catch (exc) {
             console.dir(itemComp);
@@ -2198,7 +2321,7 @@ export class ParseService {
                     c.hasSpNm = true;
                 }
             }
-            
+
             totalRaid++;
         });
         c.lifetimeRaid = totalRaid;
@@ -2490,11 +2613,13 @@ interface PrivInventoryItem {
     bindStatus: number;
     location: number;
     bucketHash: number;
-    transferStatus: number;
+    transferStatus: number; //0 can transfer, 1 equipped, 2 not transferrable, 4 no room in dest
     lockable: boolean;
     state: number;
     expirationDate: string;
 }
+
+
 
 interface PrivInventoryInstanceData {
     damageType: number; // YES

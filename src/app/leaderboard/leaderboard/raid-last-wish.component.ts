@@ -199,7 +199,6 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
-    console.log('Destroying');
   }
 
   ngOnInit() {
@@ -244,7 +243,6 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
             this.total = 0;
             this.dataRows = [];
           } else if (this.pageIndex * this.pageSize > data.total) {
-            console.log('Off end of list');
             const lastPage = Math.ceil(data.total / this.pageSize);
             this.router.navigate(['leaderboard', 'last-wish', lastPage]);
           } else {

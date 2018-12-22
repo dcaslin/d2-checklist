@@ -48,8 +48,9 @@
           <h1>
             <i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
             {{player.profile.userInfo.displayName}}
-            <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(player.profile.userInfo, null)"
-              href="javascript:void(0)"> <i style="font-weight: normal !important" class="far fa-heart"></i></a>
+            <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
+              (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i style="font-weight: normal !important"
+                class="far fa-heart"></i></a>
           </h1>
           <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
             <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
@@ -327,7 +328,9 @@
             <mat-tab>
               <ng-template mat-tab-label>
                 <i class="fas fa-gift"></i>
-                <span class="d-none d-md-inline">&ensp;Bounties</span>
+                <span class="d-none d-md-inline">&ensp;Bounties
+                  <span class="d-none d-lg-inline">/Quests</span>
+                </span>
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <ng-container *ngIf="player.bounties==null || player.bounties.length==0">
@@ -356,45 +359,93 @@
                 <ng-container *ngIf="player.bounties!=null && player.bounties.length>0">
                   <mat-tab-group>
                     <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
-                      <a [routerLink]="['/vendors']" style="margin-top: 5px; margin-bottom: 5px" mat-stroked-button>Available
-                        Bounties</a>
-                      <table class="responsive-table">
-                        <tbody>
-                          <ng-container *ngFor="let g of player.bounties">
-                            <tr *ngIf="g.owner==char">
-                              <td class="lead" data-label="">
-                                <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.name}} </ng-container>
-                                <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null" target="_blank" rel="noopener">
-                                  {{g.name}}
-                                  <i class='accent-text far fa-map-marker-alt'></i>
-                                </a>
-                                <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
-                                  <i class="fas fa-clock"></i>
-                                  {{ g.expirationDate | amDifference: today |
-                                  amDuration:'ms'}} </span>
-                                <div class="simple-caption">{{g.desc}}</div>
-                              </td>
-                              <td data-label="">
-                                <div class="obj-desc" *ngFor="let obj of g.objectives">
-                                  <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                                  <i *ngIf="!obj.complete" class="far fa-square"></i>
-                                  {{obj.progressDescription}} {{obj.aggProgress}}
-                                  <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                                  <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
-                                    mode="determinate" [value]="100*obj.progress/obj.completionValue">
-                                  </mat-progress-bar>
-                                </div>
-                                <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
-                                  <div *ngFor="let v of g.values">
-                                    {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
-                                  </div>
-                                </div>
-                              </td>
-                            </tr>
-                          </ng-container>
-                        </tbody>
-                      </table>
+
+                      <mat-tab-group>
+                        <mat-tab label="Bounties">
+                          <table class="responsive-table">
+                            <tbody>
+                              <ng-container *ngFor="let g of player.bounties">
+                                <tr *ngIf="g.owner==char">
+                                  <td class="lead" data-label="">
+                                    <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                                    <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.name}}
+                                    </ng-container>
+                                    <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
+                                      target="_blank" rel="noopener">
+                                      {{g.name}}
+                                      <i class='accent-text far fa-map-marker-alt'></i>
+                                    </a>
+                                    <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
+                                      <i class="fas fa-clock"></i>
+                                      {{ g.expirationDate | amDifference: today |
+                                      amDuration:'ms'}} </span>
+                                    <div class="simple-caption">{{g.desc}}</div>
+                                  </td>
+                                  <td data-label="">
+                                    <div class="obj-desc" *ngFor="let obj of g.objectives">
+                                      <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="!obj.complete" class="far fa-square"></i>
+                                      {{obj.progressDescription}} {{obj.aggProgress}}
+                                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                                      <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
+                                        mode="determinate" [value]="100*obj.progress/obj.completionValue">
+                                      </mat-progress-bar>
+                                    </div>
+                                    <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+                                      <div *ngFor="let v of g.values">
+                                        {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                                      </div>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+
+                        </mat-tab>
+                        <mat-tab label="Quests">
+                            <table class="responsive-table">
+                                <tbody>
+                                  <ng-container *ngFor="let g of player.quests">
+                                    <tr *ngIf="g.owner==char">
+                                      <td class="lead" data-label="">
+                                        <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                                        <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.info.name}}: {{g.name}}
+                                        </ng-container>
+                                        <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
+                                          target="_blank" rel="noopener">
+                                          {{g.info.name}}: {{g.name}}
+                                          <i class='accent-text far fa-map-marker-alt'></i>
+                                        </a>
+                                        <a mat-button (click)="openQuestDialog(g.info)">
+                                            <i class="far fa-project-diagram"></i> Questline {{g.info.progress}}
+                                        </a>
+
+                                        <span *ngIf="debugmode">&ensp;[{{g.hash}}]</span>
+                                        <div class="simple-caption">{{g.desc}}</div>
+                                      </td>
+                                      <td data-label="">
+                                        <div class="obj-desc" *ngFor="let obj of g.objectives">
+                                          <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                          <i *ngIf="!obj.complete" class="far fa-square"></i>
+                                          {{obj.progressDescription}} {{obj.aggProgress}}
+                                          <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                                          <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
+                                            mode="determinate" [value]="100*obj.progress/obj.completionValue">
+                                          </mat-progress-bar>
+                                        </div>
+                                        <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+                                          <div *ngFor="let v of g.values">
+                                            {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                                          </div>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  </ng-container>
+                                </tbody>
+                              </table>
+                        </mat-tab>
+                      </mat-tab-group>
                     </mat-tab>
                   </mat-tab-group>
                 </ng-container>
@@ -425,7 +476,8 @@
                       </mat-expansion-panel-header>
                       <div class="checklist-body">
                         <div class="hide-complete">
-                          <mat-checkbox [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
+                          <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide
+                            Completed</mat-checkbox>
                         </div>
                         <table class="checklist-table">
                           <thead>
@@ -440,7 +492,8 @@
                               <tr *ngIf="!hideComplete || !check.checked">
                                 <td>
                                   <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
-                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}}
+                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
+                                    target="_blank" rel="noopener">{{check.name}}
                                     <i class='far fa-map-marker-alt'></i>
                                   </a>
 
@@ -480,7 +533,8 @@
                     </mat-expansion-panel-header>
                     <div class="checklist-body">
                       <div class="hide-complete">
-                        <mat-checkbox [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide All Completed</mat-checkbox>
+                        <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide All
+                          Completed</mat-checkbox>
                       </div>
                       <table class="checklist-table">
                         <thead>
@@ -493,10 +547,11 @@
                           <ng-container *ngFor="let check of checklist.entries">
                             <tr *ngIf="!hideComplete || !check.allDone">
                               <td>
-                                  <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
-                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}}
-                                    <i class='far fa-map-marker-alt'></i>
-                                  </a>
+                                <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
+                                <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
+                                  target="_blank" rel="noopener">{{check.name}}
+                                  <i class='far fa-map-marker-alt'></i>
+                                </a>
 
                                 <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                                 <span *ngIf="debugmode">
@@ -627,7 +682,8 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
+                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide
+                    Completed</mat-checkbox>
                 </h3>
                 <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
                   <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
@@ -638,8 +694,10 @@
                       <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.complete" class="far fa-square"></i>
 
-                      <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null"> {{node.data.name}} </ng-container>
-                      <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null" target="_blank" rel="noopener">
+                      <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null">
+                        {{node.data.name}} </ng-container>
+                      <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null"
+                        target="_blank" rel="noopener">
                         {{node.data.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
@@ -660,8 +718,7 @@
                       </div>
                     </div>
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)"
-                    matTreeNodePadding>
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
@@ -697,7 +754,7 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <div class="hide-complete-collectibles">
-                  <mat-checkbox [(ngModel)]="hideComplete"  (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
+                  <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
                 </div>
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
                   <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
@@ -715,8 +772,7 @@
                       </span>
                     </div>
                   </mat-tree-node>
-                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)"
-                    matTreeNodePadding>
+                  <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
                         {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}

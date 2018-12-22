@@ -7,18 +7,24 @@
         <span>D2 Checklist</span>
       </div>
       <mat-nav-list>
-        <a mat-list-item (click)="sidenav.close();myProfile()" *ngIf="this.signedOnUser!=null && this.signedOnUser.userInfo!=null">
-            <mat-icon>account_circle</mat-icon>&ensp;{{this.signedOnUser.userInfo.displayName}} - {{this.signedOnUser.userInfo.platformName}}
-        </a>
-        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null">
-          <a *ngFor="let clan of this.signedOnUser.membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
-              <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
+        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.userInfo!=null">
+          <a mat-list-item (click)="sidenav.close();myProfile()" >
+              <mat-icon>account_circle</mat-icon>&ensp;{{this.signedOnUser.userInfo.displayName}} - {{this.signedOnUser.userInfo.platformName}}
           </a>
-        </ng-container>
+          <ng-container *ngIf="this.signedOnUser.membership.clans!=null">
+            <a *ngFor="let clan of this.signedOnUser.membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
+                <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
+            </a>
+          </ng-container>
+          <mat-divider></mat-divider>
+       </ng-container>
         
         <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
           <mat-icon>home</mat-icon>&ensp;Home
         </a>
+        <!-- <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
+          <i class="fas fa-bow-arrow"></i>&ensp;Gear
+        </a> -->
         <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
             <mat-icon>favorite</mat-icon>&ensp;Friends
         </a>
@@ -74,6 +80,10 @@
                 <mat-icon>home</mat-icon>
                 <span class="d-none d-xl-inline"> Home</span>
             </button>
+            <!-- <button mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
+                <i class="fas fa-bow-arrow"></i>
+                <span class="d-none d-xl-inline"> Gear</span>
+            </button> -->
             <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
                 <mat-icon>favorite</mat-icon>
                 <span class="d-none d-xl-inline"> Friends</span>

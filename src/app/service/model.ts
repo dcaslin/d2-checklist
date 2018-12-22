@@ -26,6 +26,13 @@ export enum ItemType {
     GearMod = 99  // custom added
 }
 
+export enum ItemState {
+    None = 0,
+    Locked = 1,
+    Tracked = 2,
+    Masterwork = 4
+}
+
 export enum DamageType {
     None = 0,
     Kinetic = 1,
@@ -348,24 +355,32 @@ export class Player {
     milestoneList: MileStoneName[];
     currencies: Currency[];
     bounties: InventoryItem[];
+    quests: InventoryItem[];
     rankups: Rankup[];
     checklists: Checklist[];
     charChecklists: CharChecklist[];
     triumphScore: number;
     records: TriumphNode[];
     collections: TriumphNode[];
+    gear: InventoryItem[];
     maxLL = 0;
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, milestoneList: MileStoneName[],
-        currencies: Currency[], bounties: InventoryItem[], rankups: Rankup[],            superprivate: boolean, hasWellRested: boolean,
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, 
+        milestoneList: MileStoneName[],
+        currencies: Currency[], 
+        bounties: InventoryItem[], 
+        quests: InventoryItem[], 
+        
+        rankups: Rankup[],            superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[]) {
+        collections: TriumphNode[], gear: InventoryItem[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
         this.milestoneList = milestoneList;
         this.currencies = currencies;
         this.bounties = bounties;
+        this.quests = quests;
         this.rankups = rankups;
         this.superprivate = superprivate;
         this.hasWellRested = hasWellRested;
@@ -374,6 +389,7 @@ export class Player {
         this.triumphScore = triumphScore;
         this.records = records;
         this.collections = collections;
+        this.gear = gear;
         if (characters != null && characters.length > 0) {
             for (const char of characters) {
                 if (char.light > this.maxLL) {
@@ -388,6 +404,7 @@ export class InventoryItem {
     readonly hash: string;
     readonly name: string;
     readonly equipped: boolean;
+    readonly canEquip: boolean;
     readonly icon: string;
     readonly owner?: Character;
     readonly type: ItemType;
@@ -405,6 +422,11 @@ export class InventoryItem {
     readonly aggProgress: number;
     readonly values: any;
     readonly expirationDate: string;
+    readonly locked: boolean;
+    readonly masterworked: boolean;
+    readonly tracked: boolean;
+    readonly info: any;
+
     public lowLinks: LowLinks;
     // more to come, locked other stuff
 
@@ -416,16 +438,19 @@ export class InventoryItem {
         return ItemType[this.type];
     }
 
-    constructor(hash: string, name: string, equipped: boolean, owner: Character,
+    constructor(hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Character,
         icon: string, type: ItemType, typeName: string, quantity: number,
         power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any,
-        bucketOrder: number, aggProgress: number, values: any, expirationDate: string
+        bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
+        locked: boolean, masterworked: boolean, tracked: boolean, info: any
     ) {
         this.hash = hash;
         this.name = name;
         this.equipped = equipped;
+        this.canEquip = canEquip;
         this.owner = owner;
+
         this.icon = icon;
         this.type = type;
         this.typeName = typeName;
@@ -442,6 +467,11 @@ export class InventoryItem {
         this.aggProgress = aggProgress;
         this.values = values;
         this.expirationDate = expirationDate;
+        this.locked = locked;
+        this.masterworked = masterworked;
+        this.tracked = tracked;
+
+        this.info = info;
     }
 }
 

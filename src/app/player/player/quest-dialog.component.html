@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Quest: {{data.name}}</h2>
+<mat-dialog-content>
+  <table class="responsive-table">
+    <tbody>
+      <tr *ngFor="let step of data.steps; index as i" >
+        <td [class.accent-bg-text]="step.current">{{i+1}}) {{step.desc}}</td>
+        <td [class.accent-bg-text]="step.current">
+          <div *ngFor="let obj of step.objectives">
+            {{obj.progressDescription}}
+            <span *ngIf="obj.completionValue>1">{{obj.completionValue}}</span>
+          </div>
+          <div *ngFor="let val of step.values" class="accent-text">
+            Reward: {{val.name}}
+            <span *ngIf="val.quantity>1">{{val.quantity}}</span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>

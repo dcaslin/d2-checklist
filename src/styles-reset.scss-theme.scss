@@ -7,36 +7,6 @@
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
 
-  // tool bar color overrides
-  // .mat-toolbar {
-  //   padding: 0px;
-  // }
-
-  // .mat-toolbar-row {
-  //   padding-left: 16px;
-  //   padding-right: 16px;
-  //   //background: mat-color($background, app-bar);
-  //   //color: mat-color($foreground, text);
-
-  //   &.mat-default{
-  //     background: mat-color($background, app-bar);
-  //     color: mat-color($foreground, text);
-  //   }
-
-  //   &.mat-primary {
-  //     @include _mat-toolbar-color($primary);
-  //   }
-
-  //   &.mat-accent {
-  //     @include _mat-toolbar-color($accent);
-  //   }
-
-  //   &.mat-warn {
-  //     @include _mat-toolbar-color($warn);
-  //   }
-  // }
-
-
   a {
     color: mat-color($foreground, text);
 
@@ -49,7 +19,6 @@
     border-color: mat-color($foreground, divider);
     border-top-style: solid;
     border-bottom-style: none;
-
   }
 
   code {
@@ -61,17 +30,12 @@
     color: mat-color($primary, default-contrast);
     background-color: mat-color($primary);
   }
-
   
   .transparent-icon {
-    
-    // filter: invert(100%);
     background-size: cover;
     background-color: mat-color($primary);
     opacity: 0.90;
-    // background-blend-mode: color-burn;
   }
-
 
   .accent-bg-text{
     color: mat-color($accent, default-contrast);
@@ -86,12 +50,12 @@
   .accent-text{
     color: mat-color($accent, 700);
   }
-
-  .extraLowLink{
-    margin-left: 5px;
-    font-weight: lighter;
+  
+  .masterworked{
+    box-shadow:0 0 20px mat-color($accent, 700);
   }
   
+
   .warn-text{
     color: mat-color($warn);
   }
@@ -132,7 +96,6 @@
     font-size: smaller;
     color: mat-color($foreground, secondary-text);
   }
-  
 
   table.responsive-table {
     border: 1px solid mat-color($background, disabled-list-option);
@@ -282,6 +245,7 @@
     & td {
       padding: .625em;
       text-align: left;
+      vertical-align: top;
     }
     & td.lead {
       padding: .625em;
@@ -399,8 +363,5 @@
       width: 100%;
     }
   }
-
-  
-
 }
 

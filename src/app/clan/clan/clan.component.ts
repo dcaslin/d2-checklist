@@ -233,7 +233,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
 
   private downloadCsv(filename: string, csv: string) {
-    console.log('Downloading csv: ' + filename);
     const anch: HTMLAnchorElement = document.createElement('a');
     anch.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
     anch.setAttribute('download', filename);

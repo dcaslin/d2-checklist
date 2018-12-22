@@ -6,7 +6,7 @@ import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
 import { Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { Const, Platform, PublicMilestone } from '../../service/model';
+import { Const, Platform, PublicMilestone, NameDesc } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { BungieService } from '../../service/bungie.service';
 import { Nightfall } from '../../service/model';
@@ -29,11 +29,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   gamerTag: string;
   dontSearch: boolean;
   publicMilestones: PublicMilestone[];
-
-  navigation = [
-    { link: 'checklist', label: 'Checklist' },
-    { link: 'progress', label: 'Progress' }
-  ];
+  burns: NameDesc[] = [];
+  missions: string[] = [];
+  flashpoint: string = "";
+  showMoreInfo = false;
 
   constructor(storageService: StorageService, private bungieService: BungieService, private router: Router) {
     super(storageService);
@@ -83,6 +82,29 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.bungieService.getPublicMilestones().then(ms => {
       this.publicMilestones = ms;
+      if (ms!=null){
+        for (let m of ms){
+          //daily heroic
+          if ("3082135827" === m.hash){
+            const missions = [];
+            for (let a of m.aggActivities){
+              let name = a.activity.name+" "+a.activity.ll; 
+              name = name.replace("Daily Heroic Story Mission: ", "");
+              missions.push(name);
+            }
+            this.missions = missions;
+          }
+          else if ("3172444947" === m.hash){
+            this.burns = m.aggActivities[0].activity.modifiers;
+          }
+          else if ("463010297" === m.hash){
+            let name = m.summary;
+            name = name.replace("FLASHPOINT: ","");
+            this.flashpoint = name;
+          }
+
+        }
+      }
     });
 
 
