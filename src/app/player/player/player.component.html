@@ -409,7 +409,7 @@
                                   <ng-container *ngFor="let g of player.quests">
                                     <tr *ngIf="g.owner==char">
                                       <td class="lead" data-label="">
-                                        <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                                        <span *ngIf="g.icon!=null" class="item-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
                                         <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.info.name}}: {{g.name}}
                                         </ng-container>
                                         <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
