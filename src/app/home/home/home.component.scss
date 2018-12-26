@@ -111,7 +111,6 @@ dl{
   margin-right: 10px;
 }
 
-
 @media (max-width: map-get($grid-breakpoints, md)) {
   .body-text {
       width: auto;
@@ -119,8 +118,6 @@ dl{
 }
 
 @media (max-width: map-get($grid-breakpoints, sm)) {
-
-
   .body-text {
     width: auto;
   }

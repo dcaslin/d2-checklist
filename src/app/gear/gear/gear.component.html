@@ -1,15 +1,24 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-
-
-      <h1><i class="fas fa-bow-arrow"></i> Gear</h1>
       <p class="simple-caption">
         <span class="warn-text">This is alpha code, still a work in progress</span>
       </p>
       <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       </div>
+
+      <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
+        (change)="option=optionsgroup.value">
+        <mat-button-toggle *ngFor="let o of options" [value]="o">
+          <i *ngIf="o.name=='Weapons'" class="far fa-axe-battle"></i>
+          <i *ngIf="o.name=='Armor'" class="far fa-helmet-battle"></i>
+          <i *ngIf="o.name=='Mods'" class="far fa-book-spells"></i>
+          <i *ngIf="o.name=='Consumable'" class="far fa-flask-potion"></i>
+          <i *ngIf="o.name=='Material'" class="far fa-gem"></i>
+          <span class="d-none d-md-inline"> {{o.name}}</span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
 
       <ng-container *ngIf="loading==false && selectedUser==null">
         <h2>Bungie Authentication Required</h2>
@@ -25,216 +34,101 @@
         </mat-form-field>
         <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
       </div>
-
       <ng-container *ngIf="selectedUser!=null">
-        <mat-tab-group>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fas fa-axe-battle"></i>
-              <span class="d-none d-md-inline">&ensp;Weapons</span>
-            </ng-template>
-            <table class="tidy-table">
-              <thead>
-                <tr>
-                  <th>Light</th>
-                  <th>Name</th>
-                  <th>Stats</th>
-                  <th>Sockets</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let i of gear">
-                  <tr *ngIf="i.type == ItemType.Weapon">
-                    <td>
-                        <div *ngIf="i.icon!=null" class="item-image" 
-                          [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
-                          [class.masterworked]="i.masterworked"
-                          >
-                          <div *ngIf="i.power>0" class="primary-stat"
-                              [class.void]="i.damageType===DamageType.Void"
-                              [class.arc]="i.damageType===DamageType.Arc"
-                              [class.solar]="i.damageType===DamageType.Thermal"
-                            >
-                            {{i.power}}
-                            
-                          </div>
-                          <div class="gear-lock">
-                              <i *ngIf="i.locked" class="fas fa-lock-alt"></i>
-                              <!-- <i *ngIf="!i.locked" class="fas fa-lock-open-alt"></i> -->
-                          </div>
-                          
-                          <div class="gear-notes">
-                              <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                      {{i.locked}} {{i.masterworked}} {{i.tracked}}
-                      {{i.hash}} {{i.name}}
-                      <br> {{i.typeString()}}|{{i.typeName}}
-                      <br> {{i.power}} {{i.damageTypeString()}}
-                      <br> Quantity: {{i.quantity}}
-                      <br> Equipped: {{i.equipped}}
-                      <br> Owner: {{i.owner.className}}
-                    </td>
-                    <td>
-                      
-                    </td>
-                    <td>
+        <table class="tidy-table">
+          <thead>
+            <tr>
+              <th style="width: 100px">Light</th>
+              <th style="width: 150px">Name</th>
+              <th style="width: 150px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mastwork</th>
+              <th style="width: 150px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mod</th>
+              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Sockets</th>
+              <th *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let i of gear">
+              <tr *ngIf="i.type == option.type">
+                <td>
+                  <div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+                    [class.masterworked]="i.masterworked">
+                    <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
+                      [class.arc]="i.damageType===DamageType.Arc" [class.solar]="i.damageType===DamageType.Thermal">
+                      {{i.power}}
 
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fas fa-helmet-battle"></i>
-              <span class="d-none d-md-inline">&ensp;Armor</span>
-            </ng-template>
-            <table class="tidy-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Stats</th>
-                  <th>Sockets</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let i of gear">
-                  <tr *ngIf="i.type == ItemType.Armor">
-                    <td>
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
-                      {{i.hash}} {{i.name}}
-                      <br> {{i.typeName}}
-                      <br> {{i.power}}
-                      <br> Equipped: {{i.equipped}}
-                      <br> Owner: {{i.owner.className}}
-                    </td>
+                    </div>
+                    <div class="gear-lock">
+                      <i *ngIf="i.locked" class="fas fa-lock-alt"></i>
+                      <!-- <i *ngIf="!i.locked" class="fas fa-lock-open-alt"></i> -->
+                    </div>
 
-                    <td>
-                      <ng-container *ngFor="let s of i.stats">
-                        <div [matTooltip]="s.desc">{{s.name}}: {{s.value}}</div>
-                      </ng-container>
-                    </td>
-                    <td>
-                      <div *ngFor="let socket of i.sockets" class="socket">
-                        <span class="accent-text" *ngIf="socket.bonusLight>0">{{socket.bonusLight}}</span>
-                        <span *ngFor="let plug of socket.plugs; let last = last" [matTooltip]="plug.desc"
-                          [class.text-muted]="!plug.active" [class.active]="plug.active">
-                          {{plug.name}}
-                          <ng-container *ngIf="!last">|</ng-container>
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </mat-tab>
-          <mat-tab>
-            <ng-template mat-tab-label>
-              <i class="fas fa-book-spells"></i>
-              <span class="d-none d-md-inline">&ensp;Mods</span>
-            </ng-template>
-            <table class="tidy-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Perks</th>
-                  <th>Sockets</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let i of gear">
-                  <tr *ngIf="i.type == ItemType.GearMod">
-                    <td>
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
-                      {{i.hash}} {{i.name}}
-                      <br> {{i.typeString()}}|{{i.typeName}}
-                      <br> {{i.power}} {{i.damageTypeString()}}
-                      <br> Quantity: {{i.quantity}}
-                      <br> Equipped: {{i.equipped}}
-                      <br> Owner: {{i.owner.className}}
-                    </td>
+                    <div class="gear-notes">
+                      <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
+                      <!-- <span *ngIf="i.quantity>1" title="Quantity">{{i.quantity}}</span> -->
+                    </div>
+                  </div>
+                </td>
+                <td class="gear-name-cell">
+                  {{i.name}}
+                  <span *ngIf="debugmode">[{{i.hash}}]</span>
+                  <br>{{i.typeName}}
+                  <br> Owner: {{i.owner.className}}
+                  <br>
+                  <a href="javascript:void(0)" *ngIf="!i.showStats && i.stats!=null && i.stats.length>0" (click)="i.showStats=true" >
+                    Stats <i class="fas fa-plus"></i>
+                  </a>
+                  <a href="javascript:void(0)" *ngIf="i.showStats" (click)="i.showStats=false" >
+                      Stats <i class="fas fa-minus"></i>
+                  </a>
+                  <table *ngIf="i.showStats==true">
+                      <thead>
+                        <tr>
+                          <th>Stat</th>
+                          <th>Base</th>
+                          <th>Curr</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let stat of i.stats">
+                          <td>{{stat.name}}</td>
+                          <td>{{stat.baseValue}}</td>
+                          <td>{{stat.value}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-                    <td>
-                      <div *ngFor="let p of i.perks">{{p.hash}}: {{p.name}} - {{p.desc}}, {{p.active}},{{p.visible}}</div>
-                    </td>
-                    <td>
-                      <div *ngFor="let socket of i.sockets">
-                        <span *ngFor="let plug of socket.plugs">
-                          < {{plug.hash}} {{plug.name}} {{plug.active}}>
-                        </span>
-                      </div>
-                    </td>
 
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </mat-tab>
-          <mat-tab>
+                </td>
+                <td class="gear-name-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
 
-            <ng-template mat-tab-label>
-              <i class="fas fa-flask-potion"></i>
-              <span class="d-none d-md-inline">&ensp;Consumable</span>
-            </ng-template>
-            <table class="tidy-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let i of gear">
-                  <tr *ngIf="i.type == ItemType.Consumable">
-                    <td>
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
-                      {{i.hash}} {{i.name}}
-                      <br> {{i.typeString()}}|{{i.typeName}}
-                      <br> {{i.power}} {{i.damageTypeString()}}
-                      <br> Quantity: {{i.quantity}}
-                      <br> Equipped: {{i.equipped}}
-                      <br> Owner: {{i.owner.className}}
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </mat-tab>
-          <mat-tab>
-
-            <ng-template mat-tab-label>
-              <i class="fas fa-gem"></i>
-              <span class="d-none d-md-inline">&ensp;Material</span>
-            </ng-template>
-            <table class="tidy-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let i of gear">
-                  <tr *ngIf="i.type == ItemType.ExchangeMaterial">
-                    <td>
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></span>
-                      {{i.hash}} {{i.name}}
-                      <br> {{i.typeString()}}|{{i.typeName}}
-                      <br> {{i.power}} {{i.damageTypeString()}}
-                      <br> Quantity: {{i.quantity}}
-                      <br> Equipped: {{i.equipped}}
-                      <br> Owner: {{i.owner.className}}
-                    </td>
-                  </tr>
-                </ng-container>
-              </tbody>
-            </table>
-          </mat-tab>
-
-        </mat-tab-group>
+                    <div *ngIf="i.masterwork.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.masterwork.icon + ')'"></div>
+                    {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode">[{{i.masterwork.hash}}]</ng-container>
+                  </div>
+                </td>
+                <td class="gear-name-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
+                    <div *ngIf="i.mod.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
+                    {{i.mod.name}} <ng-container *ngIf="debugmode">[{{i.mod.hash}}]</ng-container>
+                  </div>
+                </td>
+                <td *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
+                      [matTooltip]="plug.desc">
+                      <div *ngIf="plug.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + plug.icon + ')'"></div>
+                      {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
+                      <ng-container *ngIf="!isLastPlug">|</ng-container>
+                    </span>
+                  </div>
+                </td>
+                <td *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
+                  {{i.quantity}}
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
 
       </ng-container>
     </div>

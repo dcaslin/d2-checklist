@@ -123,8 +123,7 @@
                 <table class="responsive-table" *ngIf="player.milestoneList.length>0">
                   <thead>
                     <tr>
-                      <th scope="col">Activity
-
+                      <th scope="col" style="width: 25%">Activity
                         <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash"
                           matTooltip="Hide milestones where all chars are complete"></i>
                         <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
@@ -410,15 +409,15 @@
                                     <tr *ngIf="g.owner==char">
                                       <td class="lead" data-label="">
                                         <span *ngIf="g.icon!=null" class="item-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                        <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.info.name}}: {{g.name}}
+                                        <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.questline.name}}: {{g.name}}
                                         </ng-container>
                                         <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
                                           target="_blank" rel="noopener">
-                                          {{g.info.name}}: {{g.name}}
+                                          {{g.questline.name}}: {{g.name}}
                                           <i class='accent-text far fa-map-marker-alt'></i>
                                         </a>
-                                        <a mat-button (click)="openQuestDialog(g.info)">
-                                            <i class="far fa-project-diagram"></i> Questline {{g.info.progress}}
+                                        <a mat-button (click)="openQuestDialog(g.questline)">
+                                            <i class="far fa-project-diagram"></i> Questline {{g.questline.progress}}
                                         </a>
 
                                         <span *ngIf="debugmode">&ensp;[{{g.hash}}]</span>
