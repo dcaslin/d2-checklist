@@ -21,6 +21,13 @@ export class GearComponent extends ChildComponent implements OnInit {
   player: Player = null;
   @ViewChild('filter') filter: ElementRef;
   filterText: string = null;
+  options = [
+    {name:'Weapons', type: ItemType.Weapon}, 
+    {name:'Armor', type: ItemType.Armor}, 
+    {name:'Mods', type: ItemType.GearMod}, 
+    {name:'Consumable', type: ItemType.Consumable}, 
+    {name:'Material', type: ItemType.ExchangeMaterial}];
+  option = this.options[0];
 
 
   gear: InventoryItem[] = [];

@@ -42,6 +42,15 @@ export enum DamageType {
     Raid = 5
 }
 
+export interface MastworkInfo {
+    hash: string;
+    name: string;
+    desc: string;
+    icon: string;
+    tier: number;
+}
+
+
 export interface TriumphNode {
     type: string;
     hash: string;
@@ -412,7 +421,6 @@ export class InventoryItem {
     readonly quantity: number;
     readonly power: number;
     readonly damageType: DamageType;
-    readonly perks: Perk[];
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
     readonly objectives: ItemObjective[];
@@ -424,8 +432,11 @@ export class InventoryItem {
     readonly expirationDate: string;
     readonly locked: boolean;
     readonly masterworked: boolean;
+    readonly masterwork: MastworkInfo;
+    readonly mod: InventoryPlug;
     readonly tracked: boolean;
-    readonly info: any;
+    readonly questline: Questline;
+    readonly searchText: string;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -440,10 +451,11 @@ export class InventoryItem {
 
     constructor(hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Character,
         icon: string, type: ItemType, typeName: string, quantity: number,
-        power: number, damageType: DamageType, perks: Perk[], stats: InventoryStat[],
+        power: number, damageType: DamageType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
-        locked: boolean, masterworked: boolean, tracked: boolean, info: any
+        locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean, 
+        questline: Questline, searchText: string
     ) {
         this.hash = hash;
         this.name = name;
@@ -457,7 +469,6 @@ export class InventoryItem {
         this.quantity = quantity;
         this.power = power;
         this.damageType = damageType;
-        this.perks = perks;
         this.stats = stats;
         this.sockets = sockets;
         this.objectives = objectives;
@@ -469,9 +480,12 @@ export class InventoryItem {
         this.expirationDate = expirationDate;
         this.locked = locked;
         this.masterworked = masterworked;
+        this.masterwork = masterwork;
+        this.mod = mod;
         this.tracked = tracked;
+        this.questline = questline;
+        this.searchText = searchText;
 
-        this.info = info;
     }
 }
 
@@ -480,7 +494,6 @@ export class Currency {
     name: string;
     icon: string;
     count: number;
-
     constructor(hash: string, name: string, icon: string, count: number) {
         this.hash = hash;
         this.name = name;
@@ -847,36 +860,38 @@ export class InventoryStat {
     readonly name: string;
     readonly desc: string;
     readonly value: number;
+    baseValue: number;
 
-    constructor(name, desc, value) {
+    constructor(name, desc, value, baseValue) {
         this.name = name;
         this.desc = desc;
         this.value = value;
+        this.baseValue = baseValue;
     }
 }
 
 export class InventorySocket {
     readonly plugs: InventoryPlug[];
-    readonly bonusLight: number;
 
-    constructor(plugs: InventoryPlug[], bonusLight: number) {
+    constructor(plugs: InventoryPlug[]) {
         this.plugs = plugs;
-        this.bonusLight = bonusLight;
-
     }
 
 }
 
 export class InventoryPlug {
     readonly hash: string;
+
     readonly name: string;
     readonly desc: string;
+    readonly icon: string;
     readonly active: boolean;
 
-    constructor(hash: string, name: string, desc: string, active: boolean) {
+    constructor(hash: string, name: string, desc: string, icon: string, active: boolean) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
+        this.icon = icon;
         this.active = active;
     }
 }
@@ -898,5 +913,25 @@ export class Perk {
         this.active = active;
         this.visible = visible;
     }
+}
 
+export interface Questline{
+    hash: string;
+    name: string;
+    steps: QuestlineStep[],
+    progress: string;
+}
+
+export interface QuestlineStep{
+    name: string,
+    desc: string,
+    objectives: ItemObjective[],
+    values: QuestStepReward[],
+    current: boolean
+}
+
+export interface QuestStepReward {
+    hash: string;
+    name: string;
+    quantity: number;
 }

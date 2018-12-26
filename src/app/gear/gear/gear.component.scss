@@ -1,6 +1,6 @@
 @import 'styles-variables';
 
-.item-icon{
+  .item-icon{
     //  width: 19px;
     //  height: 19px;
     width: 64px;
@@ -8,6 +8,28 @@
   
     background-size: cover;
     display: inline-block;
+  }
+
+
+  .plug-icon{
+    width: 1em;
+    height: 1em;
+    background-size: cover;
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+
+  div.bottom{
+    border-bottom: 1px solid rgb(221,221,221);
+  }
+
+  // table.tidy-table {
+  //   table-layout: auto !important;
+  // }
+
+  .not-selected-plug{
+    opacity: 0.50;
   }
 
   .item-image{
@@ -90,4 +112,8 @@
 
 .arc{
   background: #85c5ec;
+}
+
+.gear-name-cell {
+  font-size: smaller;
 }

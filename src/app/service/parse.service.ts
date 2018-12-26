@@ -12,7 +12,7 @@ import {
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective, PrivMilestoneActivity,
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState
+    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline
 } from './model';
 @Injectable()
 export class ParseService {
@@ -1704,9 +1704,9 @@ export class ParseService {
         }
     }
 
-    private parseQuestStep(stepHash: number, currentStepHash: number): any{
+    private parseQuestStep(stepHash: number, currentStepHash: number): QuestlineStep {
         const desc: any = this.destinyCacheService.cache.InventoryItem[stepHash];
-        if (desc==null) return null;
+        if (desc == null) return null;
         const values = [];
         if (desc.value != null && desc.value.itemValue != null) {
             for (const val of desc.value.itemValue) {
@@ -1714,6 +1714,7 @@ export class ParseService {
                 const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
                 if (valDesc != null) {
                     values.push({
+                        hash: valDesc.hash,
                         name: valDesc.displayProperties.name,
                         quantity: val.quantity
                     });
@@ -1721,13 +1722,13 @@ export class ParseService {
             }
         }
         const objectives = [];
-        if (desc.objectives!=null && desc.objectives.objectiveHashes!=null){
+        if (desc.objectives != null && desc.objectives.objectiveHashes != null) {
             for (const objectiveHash of desc.objectives.objectiveHashes) {
                 const oDesc = this.destinyCacheService.cache.Objective[objectiveHash];
                 const iObj: ItemObjective = {
                     completionValue: oDesc.completionValue,
                     progressDescription: oDesc.progressDescription,
-                    progress: 0, 
+                    progress: 0,
                     complete: false
                 }
                 objectives.push(iObj);
@@ -1742,35 +1743,111 @@ export class ParseService {
         }
     }
 
-    private parseQuestLine(qli: number, stepHash: number): any{
+    private parseQuestLine(qli: number, stepHash: number): Questline {
         const qdesc: any = this.destinyCacheService.cache.InventoryItem[qli];
-        if (qdesc==null) return null;
-        if (qdesc.setData==null) return null;
+        if (qdesc == null) return null;
+        if (qdesc.setData == null) return null;
         const qType = qdesc.setData.setType;
-        if (qType!='quest_global'){
+        if (qType != 'quest_global') {
             return null;
         }
         const steps = qdesc.setData.itemList;
-        let cntr=0;
+        let cntr = 0;
         let stepNum = -1;
         const oSteps = [];
         let progress = "";
-        for (const step of steps){
+        for (const step of steps) {
             cntr++;
             const oStep = this.parseQuestStep(step.itemHash, stepHash);
-            if (oStep != null){
+            if (oStep != null) {
                 oSteps.push(oStep);
-                if (oStep.current){
-                    progress = cntr+"/"+steps.length;
+                if (oStep.current) {
+                    progress = cntr + "/" + steps.length;
                 }
             }
 
         }
         return {
+            hash: qdesc.hash,
             name: qdesc.displayProperties.name,
             steps: oSteps,
             progress: progress
         }
+    }
+
+    private cookDamageType(damageType: DamageType): string {
+
+        if (damageType == DamageType.None) return "None";
+        else if (damageType == DamageType.Kinetic) return "Kinetic";
+        else if (damageType == DamageType.Arc) return "Arc";
+        else if (damageType == DamageType.Thermal) return "Solar";
+        else if (damageType == DamageType.Void) return "Void";
+        else return "";
+
+    }
+
+    private parseMasterwork(plugDesc: any): MastworkInfo {
+        if (plugDesc.plug == null) return null;
+        if (plugDesc.plug.plugCategoryIdentifier == null) return null;
+        if (plugDesc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") < 0) {
+            return null;
+        }
+        const catId = plugDesc.plug.plugCategoryIdentifier;
+        let mwName = catId.substring(catId.indexOf("masterworks.stat.") + "masterworks.stat.".length, catId.length).toUpperCase();
+        const name = plugDesc.displayProperties.name; //Tier 3 Weapon, Tier 3 Armor, or Masterwork
+        let tier;
+        if ("Masterwork" == name) {
+            tier = 10;
+        }
+        else {
+            tier = parseInt(plugDesc.displayProperties.name[5]);
+        }
+        //resistance_3  DamageType(3=Thermal)
+        if (mwName.indexOf("RESISTANCE") == 0) {
+            const damageType: DamageType = parseInt(mwName.substring("RESISTANCE_".length, mwName.length));
+            mwName = this.cookDamageType(damageType);
+        }
+        return {
+            hash: plugDesc.hash,
+            name: mwName,
+            desc: plugDesc.displayProperties.description,
+            icon: plugDesc.displayProperties.icon,
+            tier: tier
+        };
+    }
+
+    private parseMod(plugDesc: any): InventoryPlug {
+        // if (plugDesc.inventory == null) return null;
+        // if (plugDesc.inventory.bucketTypeHash != 3313201758) return null;
+        if (plugDesc.displayProperties.name == "Empty Mod Socket") return null;
+        if (plugDesc.displayProperties.name == "Default Ornament") return null;
+        if (plugDesc.itemTypeDisplayName != null && plugDesc.itemTypeDisplayName.indexOf("Ornament") >= 0) {
+            return null;
+        }
+        if (plugDesc.displayProperties.name.indexOf("Catalyst") >= 0) {
+            return null;
+        }
+        if (plugDesc.hash==3786277607) //legacy MW armor slot
+            return null;
+        const ch = plugDesc.plug.plugCategoryHash;
+        if (ch == 2973005342 || //shader
+            ch == 2947756142) //masterwork tracker
+            return null;
+        return new InventoryPlug(plugDesc.hash,
+            plugDesc.displayProperties.name, plugDesc.displayProperties.description,
+            plugDesc.displayProperties.icon, true);
+    }
+
+    private getPlugName(plugDesc: any): string {
+        let name = plugDesc.displayProperties.name;
+        if (plugDesc.plug == null) return null;
+        if (plugDesc.plug.plugCategoryIdentifier == null) return null;
+        if (plugDesc.plug.plugCategoryHash == null) return null;
+        const ch = plugDesc.plug.plugCategoryHash;
+        if (ch == 2947756142) //hide trackers
+            return null;
+
+        return name;
     }
 
     private parseInvItem(itm: PrivInventoryItem, owner: Character, itemComp: any, detailedInv?: boolean, vaultChar?: Character, sharedChar?: Character): InventoryItem {
@@ -1801,9 +1878,18 @@ export class ParseService {
                     && type != ItemType.Consumable) {
                     return null;
                 }
-            }
 
-            // TODO desc.questlineItemHash
+                if (type == ItemType.Consumable){
+                    if (desc.hash==3487922223 || //datalattice
+                        desc.hash == 950899352 || //dusklight shard
+                        desc.hash == 1305274547 || //phaseglass
+                        desc.hash == 49145143 ||//simulation seeds
+                        desc.hash == 31293053 ||//seraphite
+                        desc.hash == 1177810185){ //etheric spiral
+                            type = ItemType.ExchangeMaterial;
+                        }
+                }
+            }
 
             // vault bucket, 
             if (owner === vaultChar && itm.bucketHash != 138197802) {
@@ -1858,18 +1944,140 @@ export class ParseService {
             let damageType: DamageType = DamageType.None;
             let equipped = false;
             let canEquip = false;
-            const perks: Perk[] = [];
+            let searchText = "";
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
+            let mw: MastworkInfo = null;
+            let mod: InventoryPlug = null;
 
-            if (detailedInv && itemComp.instances!=null && itemComp.instances.data!=null){
-                const instanceData = itemComp.instances.data[itm.itemInstanceId];
-                if (instanceData!=null){
-                    if (instanceData.primaryStat!=null)
-                        power = instanceData.primaryStat.value;
-                    damageType = instanceData.damageType;
-                    equipped = instanceData.isEquipped;
-                    canEquip = instanceData.canEquip;
+            if (detailedInv) {
+                if (itemComp.instances != null && itemComp.instances.data != null) {
+                    const instanceData = itemComp.instances.data[itm.itemInstanceId];
+                    if (instanceData != null) {
+                        if (instanceData.primaryStat != null)
+                            power = instanceData.primaryStat.value;
+                        damageType = instanceData.damageType;
+                        equipped = instanceData.isEquipped;
+                        canEquip = instanceData.canEquip;
+                    }
+                }
+                if (itemComp.stats != null && itemComp.stats.data != null) {
+                    const statDict: { [hash: string]: InventoryStat; } = {};
+                    const instanceData = itemComp.stats.data[itm.itemInstanceId];
+                    if (instanceData != null && instanceData.stats != null) {
+                        Object.keys(instanceData.stats).forEach(key => {
+                            const val: any = instanceData.stats[key];
+                            const jDesc: any = this.destinyCacheService.cache.Stat[key];
+                            statDict[key] = new InventoryStat(jDesc.displayProperties.name,
+                                jDesc.displayProperties.description, val.value, null);
+                        });
+                        const ostats = desc.stats.stats;
+                        Object.keys(ostats).forEach(key => {
+                            const val: any = ostats[key];
+                            const baseValue = val.value;
+                            if (statDict[key] == null) {
+                                const jDesc: any = this.destinyCacheService.cache.Stat[key];
+                                statDict[key] = new InventoryStat(jDesc.displayProperties.name,
+                                    jDesc.displayProperties.description, null, baseValue);
+                            }
+                            else {
+                                statDict[key].baseValue = baseValue;
+                            }
+                        });
+                        Object.keys(statDict).forEach(key => {
+                            const val = statDict[key];
+                            if (val.baseValue > 0 || val.value > 0) {
+                                if (val.name != "Defense" && val.name != "Power" && val.name.length > 0) {
+                                    stats.push(val);
+                                }
+                            }
+                        });
+
+
+
+                        stats.sort(function (a, b) {
+                            const bs: string = b.name;
+                            const as: string = a.name;
+                            if (bs < as) { return 1; }
+                            if (bs > as) { return -1; }
+                            return 0;
+                        });
+                    }
+                }
+
+                if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {
+                    const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
+                    if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
+                        for (const jCat of desc.sockets.socketCategories) {
+                            let isMod = false;
+                            // armor and weapon mods
+                            if (jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949) {
+                                isMod = true;
+                            }
+
+                            const socketArray = itemSockets.sockets;
+                            if (jCat.socketIndexes == null) continue;
+                            for (const index of jCat.socketIndexes) {
+                                // const jSocketDesc = desc.sockets.socketEntries[index];
+                                const socketVal = socketArray[index];
+                                const plugs: InventoryPlug[] = [];
+                                if (socketVal.reusablePlugs != null) {
+                                    for (const plug of socketVal.reusablePlugs) {
+                                        const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
+                                        if (plugDesc == null) continue;
+                                        if (isMod) {
+                                            const mwInfo = this.parseMasterwork(plugDesc);
+                                            if (mwInfo != null) {
+                                                mw = mwInfo;
+                                                continue;
+                                            }
+                                            const modInfo = this.parseMod(plugDesc);
+                                            if (modInfo != null) {
+                                                mod = modInfo;
+                                                continue;
+                                            }
+                                            continue;
+                                        }
+                                        const name = this.getPlugName(plugDesc);
+                                        if (name == null) continue;
+                                        const oPlug = new InventoryPlug(plugDesc.hash,
+                                            name, plugDesc.displayProperties.description,
+                                            plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
+                                        plugs.push(oPlug);
+                                    }
+                                }
+                                else if (socketVal.plugHash != null) {
+                                    const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                                    if (plugDesc == null) continue;
+                                    if (isMod) {
+                                        const mwInfo = this.parseMasterwork(plugDesc);
+                                        if (mwInfo != null) {
+                                            mw = mwInfo;
+                                            continue;
+                                        }
+                                        const modInfo = this.parseMod(plugDesc);
+                                        if (modInfo != null) {
+                                            mod = modInfo;
+                                            continue;
+                                        }
+                                        continue;
+                                    }
+                                    const name = this.getPlugName(plugDesc);
+                                    if (name == null) continue;
+                                    const oPlug = new InventoryPlug(plugDesc.hash,
+                                        name, plugDesc.displayProperties.description,
+                                        plugDesc.displayProperties.icon, true);
+                                    plugs.push(oPlug);
+                                }
+                                if (plugs.length > 0) {
+                                    sockets.push(new InventorySocket(plugs));
+                                }
+
+                            }
+
+
+                        }
+                    }
                 }
             }
 
@@ -1888,28 +2096,28 @@ export class ParseService {
                 }
             }
 
-            const locked:boolean = (itm.state & ItemState.Locked)>0;
-            const masterworked = (itm.state & ItemState.Masterwork)>0;
-            const tracked = (itm.state & ItemState.Tracked)>0;
+            const locked: boolean = (itm.state & ItemState.Locked) > 0;
+            const masterworked = (itm.state & ItemState.Masterwork) > 0;
+            const tracked = (itm.state & ItemState.Tracked) > 0;
 
             const bucketOrder = null;
 
-            let info = desc.itemTypeAndTierDisplayName; 
-            if (desc.objectives!=null && type == ItemType.QuestStep){
+            let questline: Questline = null;
+            if (desc.objectives != null && type == ItemType.QuestStep) {
                 const qli = desc.objectives.questlineItemHash;
-                if (qli!=null){
-                    info = this.parseQuestLine(qli, itm.itemHash);
-                    if (info==null) return null;
+                if (qli != null) {
+                    questline = this.parseQuestLine(qli, itm.itemHash);
+                    if (questline == null) return null;
                 }
             }
-            
+
             return new InventoryItem('' + itm.itemHash, desc.displayProperties.name,
-                equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName, 
+                equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
-                power, damageType, perks, stats, sockets, objectives, 
+                power, damageType, stats, sockets, objectives,
                 desc.displayProperties.description,
-                classAvail, bucketOrder, aggProgress, values, itm.expirationDate, 
-                locked, masterworked, tracked, info
+                classAvail, bucketOrder, aggProgress, values, itm.expirationDate,
+                locked, masterworked, mw, mod, tracked, questline, searchText
             );
         } catch (exc) {
             console.dir(itemComp);
