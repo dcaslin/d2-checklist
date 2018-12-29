@@ -1,15 +1,15 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <p class="simple-caption">
+      <!-- <p class="simple-caption">
         <span class="warn-text">This is alpha code, still a work in progress</span>
-      </p>
-      <div class="center-spinner">
+      </p> -->
+      <div class="fixed-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       </div>
 
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
-        (change)="option=optionsgroup.value">
+        (change)="option=optionsgroup.value; filterGear()">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
           <i *ngIf="o.name=='Weapons'" class="far fa-axe-battle"></i>
           <i *ngIf="o.name=='Armor'" class="far fa-helmet-battle"></i>
@@ -33,83 +33,104 @@
           <input matInput #filter placeholder="Wildcard filter">
         </mat-form-field>
         <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
+        <a mat-button *ngIf="markService.dirty" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
+
+        {{gearToShow.length}} / {{total}}
       </div>
       <ng-container *ngIf="selectedUser!=null">
-        <table class="tidy-table">
+        <table class="tidy-table mark-table">
           <thead>
-            <tr>
+            <tr class="junk">
               <th style="width: 100px">Light</th>
               <th style="width: 150px">Name</th>
-              <th style="width: 150px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mastwork</th>
-              <th style="width: 150px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mod</th>
+              <th style="width: 120px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mastwork</th>
+              <th style="width: 120px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mod</th>
               <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Sockets</th>
               <th *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">Quantity</th>
+              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" style="width: 200px">Tag</th>
             </tr>
           </thead>
           <tbody>
-            <ng-container *ngFor="let i of gear">
-              <tr *ngIf="i.type == option.type">
+            <ng-container *ngFor="let i of gearToShow">
+              <tr [ngClass]="i.mark">
                 <td>
                   <div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
                     [class.masterworked]="i.masterworked">
                     <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
                       [class.arc]="i.damageType===DamageType.Arc" [class.solar]="i.damageType===DamageType.Thermal">
                       {{i.power}}
-
                     </div>
                     <div class="gear-lock">
                       <i *ngIf="i.locked" class="fas fa-lock-alt"></i>
                       <!-- <i *ngIf="!i.locked" class="fas fa-lock-open-alt"></i> -->
                     </div>
-
                     <div class="gear-notes">
                       <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
                       <!-- <span *ngIf="i.quantity>1" title="Quantity">{{i.quantity}}</span> -->
                     </div>
+                  </div>
+                  <span *ngIf="i.markLabel!=null">[{{i.markLabel}}]</span><br>
+                  <div class="break-easy">
+                    <small *ngIf="i.canReallyEquip">
+                      <i>
+                        <a href="javascript:void(0);" (click)="equip(i)">Equip</a>
+                      </i>
+                    </small>
+                    <ng-container *ngFor="let target of i.options">
+                      <small>
+                        <i>
+                          <a href="javascript:void(0);" (click)="transfer(i, target)">{{target.label}}</a>
+                        </i>
+                      </small>
+                    </ng-container>
                   </div>
                 </td>
                 <td class="gear-name-cell">
                   {{i.name}}
                   <span *ngIf="debugmode">[{{i.hash}}]</span>
                   <br>{{i.typeName}}
-                  <br> Owner: {{i.owner.className}}
-                  <br>
-                  <a href="javascript:void(0)" *ngIf="!i.showStats && i.stats!=null && i.stats.length>0" (click)="i.showStats=true" >
+                  <br> Owner: {{i.owner.label}}
+                  <br> Bucket: {{i.inventoryBucket}}
+                  <br> Tier: {{i.tier}}<br>
+                  <a href="javascript:void(0)" *ngIf="!i.showStats && i.stats!=null && i.stats.length>0" (click)="i.showStats=true">
                     Stats <i class="fas fa-plus"></i>
                   </a>
-                  <a href="javascript:void(0)" *ngIf="i.showStats" (click)="i.showStats=false" >
-                      Stats <i class="fas fa-minus"></i>
+                  <a href="javascript:void(0)" *ngIf="i.showStats" (click)="i.showStats=false">
+                    Stats <i class="fas fa-minus"></i>
                   </a>
                   <table *ngIf="i.showStats==true">
-                      <thead>
-                        <tr>
-                          <th>Stat</th>
-                          <th>Base</th>
-                          <th>Curr</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let stat of i.stats">
-                          <td>{{stat.name}}</td>
-                          <td>{{stat.baseValue}}</td>
-                          <td>{{stat.value}}</td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <thead>
+                      <tr>
+                        <th>Stat</th>
+                        <th>Base</th>
+                        <th>Curr</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let stat of i.stats">
+                        <td>{{stat.name}}</td>
+                        <td>{{stat.baseValue}}</td>
+                        <td>{{stat.value}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
 
 
                 </td>
                 <td class="gear-name-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
-
-                    <div *ngIf="i.masterwork.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.masterwork.icon + ')'"></div>
+                    <div *ngIf="i.masterwork.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.masterwork.icon + ')'"></div>
+                    <br>
                     {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode">[{{i.masterwork.hash}}]</ng-container>
+
                   </div>
                 </td>
                 <td class="gear-name-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
-                    <div *ngIf="i.mod.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
+                    <div *ngIf="i.mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
+                    <br>
                     {{i.mod.name}} <ng-container *ngIf="debugmode">[{{i.mod.hash}}]</ng-container>
+
                   </div>
                 </td>
                 <td *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
@@ -124,6 +145,24 @@
                 </td>
                 <td *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
                   {{i.quantity}}
+                </td>
+                <td *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <button (click)="mark('upgrade',i)" mat-stroked-button class="tag-button upgrade-button">
+                    <i class="fas fa-level-up-alt"></i>
+                  </button>
+                  <button (click)="mark('keep',i)" mat-stroked-button class="tag-button keep-button">
+                    <i class="fas fa-save"></i>
+                  </button>
+                  <button (click)="mark('infuse',i)" mat-stroked-button class="tag-button infuse-button">
+                    <i class="fas fa-syringe"></i>
+                  </button>
+                  <button (click)="mark('junk',i)" mat-stroked-button class="tag-button junk-button">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                  <mat-form-field>
+                      <input matInput placeholder="Notes" maxlength="100"
+                      [(ngModel)]="i.notes" placeholder="Notes" (change)="itemNotesChanged(i)">
+                  </mat-form-field>                  
                 </td>
               </tr>
             </ng-container>

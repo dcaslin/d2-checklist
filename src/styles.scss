@@ -25,21 +25,38 @@
 .default-theme {
   @include angular-material-theme($anms-theme);
   @include custom-components-theme($anms-theme);
+  @include default-gear-tags;
+ 
 }
 
 .light-theme {
   @include angular-material-theme($anms-light-theme);
   @include custom-components-theme($anms-light-theme);
+  @include default-gear-tags;
 }
 
 .black-theme {
   @include angular-material-theme($anms-black-theme);
   @include custom-components-theme($anms-black-theme);
+  @include black-gear-tags;
+
 }
 
 .break-easy{
   word-break: break-all;
 }
+
+.fixed-spinner {
+  z-index: 1000;
+  position: fixed; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
+  top: 45%;
+  width: 100px; /* Need a specific value to work */
+}
+
 
 .center-spinner {
   z-index: 1000;

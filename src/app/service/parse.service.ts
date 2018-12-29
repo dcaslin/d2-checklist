@@ -12,7 +12,7 @@ import {
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective, PrivMilestoneActivity,
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline
+    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target
 } from './model';
 @Injectable()
 export class ParseService {
@@ -23,17 +23,13 @@ export class ParseService {
     }
 
     private parseCharacter(c: PrivCharacter): Character {
-        const char: Character = new Character();
+        const char: Character = new Character(c.membershipType, c.membershipId, 
+            this.destinyCacheService.cache.Class[c.classHash].displayProperties.name, c.light, c.characterId);
 
-        char.membershipId = c.membershipId;
-        char.membershipType = c.membershipType;
-
-        char.characterId = c.characterId;
         char.dateLastPlayed = c.dateLastPlayed;
         char.minutesPlayedThisSession = c.minutesPlayedThisSession;
         char.minutesPlayedTotal = c.minutesPlayedTotal;
 
-        char.light = c.light;
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
         char.levelProgression = c.levelProgression;
@@ -42,7 +38,6 @@ export class ParseService {
 
         char.gender = this.destinyCacheService.cache.Gender[c.genderHash].displayProperties.name;
         char.race = this.destinyCacheService.cache.Race[c.raceHash].displayProperties.name;
-        char.className = this.destinyCacheService.cache.Class[c.classHash].displayProperties.name;
         char.classType = c.classType;
         char.stats = [];
         Object.keys(c.stats).forEach(key => {
@@ -1385,6 +1380,8 @@ export class ParseService {
         const gear: InventoryItem[] = [];
         let checklists: Checklist[] = [];
         let charChecklists: CharChecklist[] = [];
+        let vault: Vault = null;
+        let shared: Shared = null;
         if (!superprivate) {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
@@ -1398,16 +1395,17 @@ export class ParseService {
                     }
                 });
             }
-            const vault: Character = new Character();
-            vault.className = 'Vault';
-            const shared: Character = new Character();
-            shared.className = 'Shared';
+            vault = new Vault();
+            shared = new Shared();
+
             if (resp.characterInventories != null && resp.characterInventories.data != null) {
                 Object.keys(resp.characterInventories.data).forEach((key) => {
                     const char: Character = charsDict[key];
+                    const options: Target[] = chars.filter(c => c!==char);
+                    options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     items.forEach(itm => {
-                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv);
+                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options);
                         if (parsed != null) {
                             if (parsed.type === ItemType.Bounty) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
@@ -1428,9 +1426,11 @@ export class ParseService {
                 if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
                     Object.keys(resp.characterEquipment.data).forEach((key) => {
                         const char: Character = charsDict[key];
+                        const options: Target[] = chars.filter(c => c!==char);
+                        options.push(vault);
                         const items: PrivInventoryItem[] = resp.characterEquipment.data[key].items;
                         items.forEach(itm => {
-                            const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv);
+                            const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options);
                             if (parsed != null) {
                                 gear.push(parsed);
                             }
@@ -1441,7 +1441,18 @@ export class ParseService {
                 if (resp.profileInventory != null && resp.profileInventory.data != null) {
                     const items: PrivInventoryItem[] = resp.profileInventory.data.items;
                     items.forEach(itm => {
-                        const parsed: InventoryItem = this.parseInvItem(itm, vault, resp.itemComponents, detailedInv, vault, shared);
+
+                        // shared inv bucket from "Vault"
+                        let owner = vault;
+                        let options: Target[];
+                        if (itm.bucketHash != 138197802) {
+                            owner = shared;
+                            options = [vault];
+                        }
+                        else{
+                            options = chars.slice();
+                        }
+                        const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
                         if (parsed != null) {
                             gear.push(parsed);
                         }
@@ -1484,7 +1495,7 @@ export class ParseService {
             }
         }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
-            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear);
+            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear, vault, shared);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -1850,7 +1861,7 @@ export class ParseService {
         return name;
     }
 
-    private parseInvItem(itm: PrivInventoryItem, owner: Character, itemComp: any, detailedInv?: boolean, vaultChar?: Character, sharedChar?: Character): InventoryItem {
+    private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv?: boolean, options?: Target[]): InventoryItem {
         try {
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
@@ -1881,6 +1892,7 @@ export class ParseService {
 
                 if (type == ItemType.Consumable){
                     if (desc.hash==3487922223 || //datalattice
+                        desc.hash==2014411539 || //alkane dust
                         desc.hash == 950899352 || //dusklight shard
                         desc.hash == 1305274547 || //phaseglass
                         desc.hash == 49145143 ||//simulation seeds
@@ -1889,11 +1901,6 @@ export class ParseService {
                             type = ItemType.ExchangeMaterial;
                         }
                 }
-            }
-
-            // vault bucket, 
-            if (owner === vaultChar && itm.bucketHash != 138197802) {
-                owner = sharedChar;
             }
 
             const objectives: ItemObjective[] = [];
@@ -1924,22 +1931,6 @@ export class ParseService {
             if (progCnt > 0) {
                 aggProgress = progTotal / progCnt;
             }
-            const classAvail: any = {};
-            if (desc.itemCategoryHashes != null) {
-                for (const hash of desc.itemCategoryHashes) {
-                    if (hash === 21) {
-                        classAvail['2'] = true;
-                        // warlock 2
-                    } else if (hash === 22) {
-                        classAvail['0'] = true;
-                        // titan 0
-                    } else if (hash === 23) {
-                        classAvail['1'] = true;
-                        // hunter 1
-                    }
-                }
-            }
-
             let power = 0;
             let damageType: DamageType = DamageType.None;
             let equipped = false;
@@ -1950,7 +1941,21 @@ export class ParseService {
             let mw: MastworkInfo = null;
             let mod: InventoryPlug = null;
 
+            let invBucket = null;
+            let tier = null;
+
             if (detailedInv) {
+
+                if (desc.inventory!=null){
+                    tier = desc.inventory.tierTypeName;
+                    const bucketHash = desc.inventory.bucketTypeHash;
+                    if (bucketHash!=null){
+                        const bDesc = this.destinyCacheService.cache.InventoryBucket[bucketHash];
+                        if (bDesc!=null){
+                            invBucket = bDesc.displayProperties.name;
+                        }
+                    }
+                }
                 if (itemComp.instances != null && itemComp.instances.data != null) {
                     const instanceData = itemComp.instances.data[itm.itemInstanceId];
                     if (instanceData != null) {
@@ -2014,7 +2019,6 @@ export class ParseService {
                             if (jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949) {
                                 isMod = true;
                             }
-
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) continue;
                             for (const index of jCat.socketIndexes) {
@@ -2072,15 +2076,11 @@ export class ParseService {
                                 if (plugs.length > 0) {
                                     sockets.push(new InventorySocket(plugs));
                                 }
-
                             }
-
-
                         }
                     }
                 }
             }
-
             const values = [];
             if (desc.value != null && desc.value.itemValue != null) {
                 for (const val of desc.value.itemValue) {
@@ -2095,7 +2095,6 @@ export class ParseService {
 
                 }
             }
-
             const locked: boolean = (itm.state & ItemState.Locked) > 0;
             const masterworked = (itm.state & ItemState.Masterwork) > 0;
             const tracked = (itm.state & ItemState.Tracked) > 0;
@@ -2111,13 +2110,16 @@ export class ParseService {
                 }
             }
 
-            return new InventoryItem('' + itm.itemHash, desc.displayProperties.name,
+            searchText = desc.displayProperties.name;
+            searchText = searchText.toLowerCase();
+
+            return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
                 power, damageType, stats, sockets, objectives,
                 desc.displayProperties.description,
-                classAvail, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText
+                desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
+                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options
             );
         } catch (exc) {
             console.dir(itemComp);

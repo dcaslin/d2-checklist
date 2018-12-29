@@ -10,9 +10,11 @@ import { Observable, Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember,
+import {
+    Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember,
     BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus,
-    PublicMilestone, SaleItem, Currency, ClanInfo, PGCR } from './model';
+    PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target
+} from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
@@ -165,8 +167,8 @@ export class BungieService implements OnDestroy {
         chars.forEach(c => {
             const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId,
                 4, 600, ignoreErrors).then((hist: Activity[]) => {
-                self.parseService.parseRaidHistory(msNames, c, hist);
-            });
+                    self.parseService.parseRaidHistory(msNames, c, hist);
+                });
             promises.push(p);
         });
         return Promise.all(promises);
@@ -480,7 +482,7 @@ export class BungieService implements OnDestroy {
             if (!ignoreErrors) {
                 this.handleError(err);
             }
-            else{
+            else {
                 console.log(err);
             }
             return null;
@@ -522,6 +524,38 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean): Promise<boolean> {
+        try {
+            await this.postReq("Destiny2/Actions/Items/TransferItem/", {
+                characterId: target.id,
+                itemId: item.id,
+                itemReferenceHash: item.hash,
+                membershipType: membershipType,
+                stackSize: item.quantity,
+                transferToVault: isVault
+            });
+            return true;
+        } catch (err) {
+            this.handleError(err);
+            return false;
+        }
+    }
+
+
+    public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
+        try {
+            await this.postReq("Destiny2/Actions/Items/EquipItem/", {
+                characterId: item.owner.id,
+                itemId: item.id,
+                membershipType: membershipType
+            });
+            return true;
+        } catch (err) {
+            this.handleError(err);
+            return false;
+        }
+    }
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
@@ -530,6 +564,13 @@ export class BungieService implements OnDestroy {
     private async makeReq(uri: string): Promise<any> {
         const opt = await this.buildReqOptions();
         const hResp = await this.httpClient.get<any>(API_ROOT + uri, opt).toPromise();
+        const resp = this.parseBungieResponse(hResp);
+        return resp;
+    }
+
+    private async postReq(uri: string, payload: any): Promise<any> {
+        const opt = await this.buildReqOptions();
+        const hResp = await this.httpClient.post<any>(API_ROOT + uri, payload, opt).toPromise();
         const resp = this.parseBungieResponse(hResp);
         return resp;
     }
