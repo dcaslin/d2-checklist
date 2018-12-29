@@ -1,16 +1,13 @@
 
-import { merge, fromEvent as observableFromEvent, Subject, Observable, of as observableOf, forkJoin } from 'rxjs';
+import { merge, Subject, Observable, of as observableOf } from 'rxjs';
 
-import { debounceTime, takeUntil, distinctUntilChanged } from 'rxjs/operators';
-import { catchError, map, startWith, switchMap, flatMap } from 'rxjs/operators';
-import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { takeUntil,  catchError, map, switchMap, flatMap } from 'rxjs/operators';
+import { Component,  OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
-import { MatPaginator, MatSort, PageEvent } from '@angular/material';
-import { DurationPipe } from 'ngx-moment';
+import { MatPaginator, PageEvent } from '@angular/material';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
@@ -204,52 +201,52 @@ export class RaidLastWishComponent extends ChildComponent implements OnInit, OnD
   ngOnInit() {
       this.dao = new LastWishDao(this.httpClient);
 
-      this.route.paramMap.pipe(
-        flatMap((params: ParamMap) => {
-          const q = this.route.snapshot.paramMap.get('query');
-          let p = 1;
-          if (q != null && q.trim().length > 3) {
-            this.filter = q;
-            this.tempFilter = q;
-          } else {
-            const s = this.route.snapshot.paramMap.get('page');
-            p = parseInt(s, 10);
-            if (!(p >= 1 && p < 100000)) {
-              this.router.navigate(['leaderboard', 'last-wish', 1]);
-              return observableOf('rerouted');
-            }
-            this.filter = null;
-            this.tempFilter = null;
-          }
+      // this.route.paramMap.pipe(
+      //   switchMap((params: ParamMap) => {
+      //     const q = this.route.snapshot.paramMap.get('query');
+      //     let p = 1;
+      //     if (q != null && q.trim().length > 3) {
+      //       this.filter = q;
+      //       this.tempFilter = q;
+      //     } else {
+      //       const s = this.route.snapshot.paramMap.get('page');
+      //       p = parseInt(s, 10);
+      //       if (!(p >= 1 && p < 100000)) {
+      //         this.router.navigate(['leaderboard', 'last-wish', 1]);
+      //         return observableOf('rerouted');
+      //       }
+      //       this.filter = null;
+      //       this.tempFilter = null;
+      //     }
 
-          this.isLoadingResults = true;
-          this.pageIndex = p - 1;
-          this.paginatorBottom.pageIndex = this.pageIndex;
-          this.paginatorTop.pageIndex = this.pageIndex;
-          if (this.filter != null && this.filter.trim().length > 0) {
-            return this.dao!.search(this.filter.toUpperCase());
-          } else {
-            return this.dao!.get(this.pageIndex, this.pageSize, this.filter);
-          }
-        }),
-        catchError(() => {
-          return observableOf(null);
-        })).subscribe(data => {
-          this.isLoadingResults = false;
-          if ('rerouted' === data) {
-            return;
-          }
-          if (data == null) {
-            this.total = 0;
-            this.dataRows = [];
-          } else if (this.pageIndex * this.pageSize > data.total) {
-            const lastPage = Math.ceil(data.total / this.pageSize);
-            this.router.navigate(['leaderboard', 'last-wish', lastPage]);
-          } else {
-            this.dataRows = data.rows;
-            this.total = data.total;
-          }
-        });
+      //     this.isLoadingResults = true;
+      //     this.pageIndex = p - 1;
+      //     this.paginatorBottom.pageIndex = this.pageIndex;
+      //     this.paginatorTop.pageIndex = this.pageIndex;
+      //     if (this.filter != null && this.filter.trim().length > 0) {
+      //       return this.dao!.search(this.filter.toUpperCase());
+      //     } else {
+      //       return this.dao!.get(this.pageIndex, this.pageSize, this.filter);
+      //     }
+      //   }),
+      //   catchError(() => {
+      //     return observableOf(null);
+      //   })).subscribe(data => {
+      //     this.isLoadingResults = false;
+      //     if ('rerouted' === data) {
+      //       return;
+      //     }
+      //     if (data == null) {
+      //       this.total = 0;
+      //       this.dataRows = [];
+      //     } else if (this.pageIndex * this.pageSize > data.total) {
+      //       const lastPage = Math.ceil(data.total / this.pageSize);
+      //       this.router.navigate(['leaderboard', 'last-wish', lastPage]);
+      //     } else {
+      //       this.dataRows = data.rows;
+      //       this.total = data.total;
+      //     }
+      //   });
 
       merge(this.paginatorBottom.page, this.paginatorTop.page).pipe(
         switchMap((pe: ParamMap) => {

@@ -1,27 +1,34 @@
+export enum ClassAllowed {
+    Titan = 0,
+    Hunter = 1,
+    Warlock = 2,
+    Any = 3
+}
+
 export enum ItemType {
     None = 0,
-  Currency = 1,
-  Armor = 2,
-  Weapon = 3,
-  Message = 7,
-  Engram = 8,
-  Consumable = 9,
-  ExchangeMaterial = 10,
-  MissionReward = 11,
-  QuestStep = 12,
-  QuestStepComplete = 13,
-  Emblem = 14,
-  Quest = 15,
-  Subclass = 16,
-  ClanBanner = 17,
-  Aura = 18,
-  Mod = 19,
-  Dummy = 20,
-  Ship = 21,
-  Vehicle = 22,
-  Emote = 23,
-  Ghost = 24,
-  Package = 25,
+    Currency = 1,
+    Armor = 2,
+    Weapon = 3,
+    Message = 7,
+    Engram = 8,
+    Consumable = 9,
+    ExchangeMaterial = 10,
+    MissionReward = 11,
+    QuestStep = 12,
+    QuestStepComplete = 13,
+    Emblem = 14,
+    Quest = 15,
+    Subclass = 16,
+    ClanBanner = 17,
+    Aura = 18,
+    Mod = 19,
+    Dummy = 20,
+    Ship = 21,
+    Vehicle = 22,
+    Emote = 23,
+    Ghost = 24,
+    Package = 25,
     Bounty = 26,
     GearMod = 99  // custom added
 }
@@ -77,8 +84,8 @@ export interface TriumphRecordNode extends TriumphNode {
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
-   acquired: boolean;
-   sourceString: string;
+    acquired: boolean;
+    sourceString: string;
 }
 export interface Vendor {
     hash: string;
@@ -372,17 +379,19 @@ export class Player {
     records: TriumphNode[];
     collections: TriumphNode[];
     gear: InventoryItem[];
+    vault: Target;
+    shared: Target;
     maxLL = 0;
 
-    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity, 
+    constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
-        currencies: Currency[], 
-        bounties: InventoryItem[], 
-        quests: InventoryItem[], 
-        
-        rankups: Rankup[],            superprivate: boolean, hasWellRested: boolean,
+        currencies: Currency[],
+        bounties: InventoryItem[],
+        quests: InventoryItem[],
+
+        rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[], gear: InventoryItem[]) {
+        collections: TriumphNode[], gear: InventoryItem[], vault?: Target, shared?: Target) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -406,16 +415,19 @@ export class Player {
                 }
             }
         }
+        this.vault = vault;
+        this.shared = shared;
     }
 }
 
 export class InventoryItem {
+    readonly id: string;
     readonly hash: string;
     readonly name: string;
-    readonly equipped: boolean;
+    equipped: boolean;
     readonly canEquip: boolean;
     readonly icon: string;
-    readonly owner?: Character;
+    owner?: Target;
     readonly type: ItemType;
     readonly typeName: string;
     readonly quantity: number;
@@ -425,7 +437,7 @@ export class InventoryItem {
     readonly sockets: InventorySocket[];
     readonly objectives: ItemObjective[];
     readonly desc: string;
-    readonly classAvail: any;
+    readonly classAllowed: ClassAllowed;
     readonly bucketOrder: number;
     readonly aggProgress: number;
     readonly values: any;
@@ -437,6 +449,13 @@ export class InventoryItem {
     readonly tracked: boolean;
     readonly questline: Questline;
     readonly searchText: string;
+    public markLabel: string;
+    public mark: string;
+    public notes: string;
+    public inventoryBucket: string;
+    public tier: string;
+    public readonly options: Target[] = [];
+    public canReallyEquip: boolean;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -449,14 +468,15 @@ export class InventoryItem {
         return ItemType[this.type];
     }
 
-    constructor(hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Character,
+    constructor(id: string, hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Target,
         icon: string, type: ItemType, typeName: string, quantity: number,
         power: number, damageType: DamageType, stats: InventoryStat[],
-        sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAvail: any,
+        sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
-        locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean, 
-        questline: Questline, searchText: string
+        locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean,
+        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[]
     ) {
+        this.id = id;
         this.hash = hash;
         this.name = name;
         this.equipped = equipped;
@@ -473,7 +493,7 @@ export class InventoryItem {
         this.sockets = sockets;
         this.objectives = objectives;
         this.desc = desc;
-        this.classAvail = classAvail;
+        this.classAllowed = classAllowed;
         this.bucketOrder = bucketOrder;
         this.aggProgress = aggProgress;
         this.values = values;
@@ -485,6 +505,10 @@ export class InventoryItem {
         this.tracked = tracked;
         this.questline = questline;
         this.searchText = searchText;
+
+        this.inventoryBucket = inventoryBucket;
+        this.tier = tier;
+        this.options = options;
 
     }
 }
@@ -528,14 +552,40 @@ export interface MileStoneName {
     neverDisappears?: boolean;
 }
 
-export class Character {
-    membershipId: string;
-    membershipType: number;
-    characterId: string;
+export abstract class Target {
+    public readonly label: string;
+    public readonly id: string;
+
+    constructor(label: string, id: string) {
+        this.label = label;
+        this.id = id;
+    }
+}
+
+export class Vault extends Target {
+    constructor() {
+        super("Vault", "vault");
+    }
+}
+
+
+export class Shared extends Target {
+    constructor() {
+        super("Shared", "shared");
+    }
+}
+
+
+export class Character extends Target {
+    readonly membershipId: string;
+    readonly membershipType: number;
+    readonly characterId: string;
+    readonly className: string;
+    readonly light: number;
+
     dateLastPlayed: string;
     minutesPlayedThisSession: string;
     minutesPlayedTotal: string;
-    light: number;
     emblemBackgroundPath: string;
     emblemPath: string;
     baseCharacterLevel: number;
@@ -543,7 +593,6 @@ export class Character {
     percentToNextLevel: number;
     race: string;
     gender: string;
-    className: string;
     classType: number;
     levelProgression: LevelProgression;
     legendProgression: Progression;
@@ -552,7 +601,6 @@ export class Character {
     milestones: { [key: string]: MilestoneStatus };
     clanMilestones: ClanMilestoneResult[];
     factions: Progression[];
-    // progressions: Progression[];
     stats: CharacterStat[];
     startWeek: Date;
     endWeek: Date;
@@ -571,6 +619,15 @@ export class Character {
     hasSpNm = false;
     hasPrestigeNf = false;
     aggHistory: AggHistory;
+
+    constructor(membershipType: number, membershipId: string, className: string, light: number, characterId: string) {
+        super(className + "(" + light + ")", characterId);
+        this.membershipType = membershipType;
+        this.membershipId = membershipId;
+        this.className = className;
+        this.light = light;
+
+    }
 
 }
 
@@ -915,14 +972,14 @@ export class Perk {
     }
 }
 
-export interface Questline{
+export interface Questline {
     hash: string;
     name: string;
     steps: QuestlineStep[],
     progress: string;
 }
 
-export interface QuestlineStep{
+export interface QuestlineStep {
     name: string,
     desc: string,
     objectives: ItemObjective[],

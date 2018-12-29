@@ -20,6 +20,27 @@
     margin-left: 2px;
   }
 
+
+// upgrade: hsla(200, 65%, 19%, 1)  #113b50
+// keep: hsla(103, 44%, 19%, 1) #27461b
+// infuse: hsla(50, 81%, 23%, 1) #6a5a0b
+// junk: hsla(0, 43%, 19%, 1) #451c1c
+
+  .tag-button{
+    margin: 2px;
+    font-size: 1em;
+  }
+
+  .mod-icon{
+    width: 3em;
+    height: 3em;
+    background-size: cover;
+    display: inline-block;
+    margin-top: 2px;
+    margin-left: 2px;
+  }
+
+
   div.bottom{
     border-bottom: 1px solid rgb(221,221,221);
   }

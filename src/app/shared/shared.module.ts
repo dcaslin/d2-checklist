@@ -37,6 +37,7 @@ import { MomentModule } from 'ngx-moment';
 import {
   CdkTableModule
 } from '@angular/cdk/table/';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 import { RouterModule } from '@angular/router';
 
 
@@ -75,7 +76,8 @@ import { RouterModule } from '@angular/router';
     MatSortModule,
     MatPaginatorModule,
     MatTableModule,
-    CdkTableModule
+    CdkTableModule,
+    ScrollingModule
   ],
   declarations: [
   ],
@@ -111,7 +113,8 @@ import { RouterModule } from '@angular/router';
     MatSortModule,
     MatPaginatorModule,
     MatTableModule,
-    CdkTableModule
+    CdkTableModule,
+    ScrollingModule
   ]
 })
 export class SharedModule { }
