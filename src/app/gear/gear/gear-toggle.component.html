@@ -1,0 +1,7 @@
+<ng-container *ngIf="!hidden">
+    <button mat-button [matMenuTriggerFor]="menu"><i [class]="iconClass"></i>{{title}}</button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu>
+  </ng-container>

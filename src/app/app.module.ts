@@ -11,6 +11,7 @@ import { BungieService } from './service/bungie.service';
 import { LowLineService } from './service/lowline.service';
 import { MarkService } from './service/mark.service';
 import { BucketService, Bucket } from './service/bucket.service';
+import { GearService } from './service/gear.service';
 import { StorageService } from './service/storage.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { NotificationService } from './service/notification.service';
@@ -77,7 +78,7 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent
   ],
   providers: [
-    LowLineService, MarkService, BucketService, 
+    LowLineService, MarkService, BucketService, GearService,
     BungieService, AuthService, StorageService, NotificationService,
     DestinyCacheService, ParseService,
     {provide: RouteReuseStrategy, useClass: StickyReuseStrategy}],

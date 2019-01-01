@@ -1818,6 +1818,8 @@ export class ParseService {
             const damageType: DamageType = parseInt(mwName.substring("RESISTANCE_".length, mwName.length));
             mwName = this.cookDamageType(damageType);
         }
+        mwName = mwName.toLowerCase();
+        mwName = mwName.charAt(0).toUpperCase()+mwName.slice(1);
         return {
             hash: plugDesc.hash,
             name: mwName,
@@ -1943,6 +1945,7 @@ export class ParseService {
 
             let invBucket = null;
             let tier = null;
+            let isRandomRoll = false;
 
             if (detailedInv) {
 
@@ -2022,9 +2025,12 @@ export class ParseService {
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) continue;
                             for (const index of jCat.socketIndexes) {
-                                // const jSocketDesc = desc.sockets.socketEntries[index];
+                                const socketDesc = desc.sockets.socketEntries[index];
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
+
+                                isRandomRoll = isRandomRoll || socketDesc.randomizedPlugItems!=null && socketDesc.randomizedPlugItems.length > 0;
+
                                 if (socketVal.reusablePlugs != null) {
                                     for (const plug of socketVal.reusablePlugs) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
@@ -2111,6 +2117,19 @@ export class ParseService {
             }
 
             searchText = desc.displayProperties.name;
+            if (mw!=null){
+                searchText += " "+mw.name;
+            }
+            if (mod!=null){
+                searchText += " "+mod.name;
+            }
+            if (sockets!=null){
+                for (const s of sockets){
+                    for (const p of s.plugs){
+                        searchText += " "+p.name;
+                    }
+                }
+            }
             searchText = searchText.toLowerCase();
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
@@ -2119,7 +2138,7 @@ export class ParseService {
                 power, damageType, stats, sockets, objectives,
                 desc.displayProperties.description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options
+                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options, isRandomRoll
             );
         } catch (exc) {
             console.dir(itemComp);

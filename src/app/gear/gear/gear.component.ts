@@ -6,24 +6,31 @@ import { fromEvent as observableFromEvent, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Character, Target, Vault } from '@app/service/model';
+import { Player, InventoryItem, SelectedUser, ItemType, DamageType } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
-import { BucketService, Bucket } from '@app/service/bucket.service';
+import { GearService } from '@app/service/gear.service';
 
 // DONE equip gear
 // DONE transfer gear
-// TODO count dupes and show in window
-// TODO lock unlock gear
-// TODO compare all like items in modal
-// TODO stats modal
-// TODO auto process locking items
-// TODO sort (light, masterwork tier, mod, quantity)
+// DONE sort (light, masterwork tier, mod, quantity)
+// DONE lock unlock gear
+// DONE is random roll
+// DONE count dupes 
+// DONE improve search text to include perks
+
 // TODO filter UI
-// TODO is random roll
 // weap & armor global: tags, owner, rarity, 20/50/100/All rows
 // weap: type,
 // armor: type, class
+
+
+// TODO compare all like items in modal
+// TODO stats modal
+// TODO auto process locking items
+// TODO make work in mobile
+// TODO final tweaks to UI
+
 
 @Component({
   selector: 'anms-gear',
@@ -46,18 +53,23 @@ export class GearComponent extends ChildComponent implements OnInit {
     { name: 'Consumable', type: ItemType.Consumable },
     { name: 'Material', type: ItemType.ExchangeMaterial }];
   option = this.options[0];
-
-
-  gear: InventoryItem[] = [];
+  sortBy: string = "power";
+  sortDesc: boolean = true;
   gearToShow: InventoryItem[] = [];
   total: number = 0;
 
   ItemType = ItemType;
   DamageType = DamageType;
 
+
+  filterChanged(): void{
+    console.log("Filter changed");
+  }
+
+
   constructor(storageService: StorageService, private bungieService: BungieService,
-    public markService: MarkService, private bucketService: BucketService,
-    private route: ActivatedRoute, private router: Router) {
+    public markService: MarkService,
+    public gearService: GearService) {
     super(storageService);
     this.loading = true;
     this.marks = this.markService.buildEmptyMarks(null, null);
@@ -73,132 +85,101 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.markService.updateItem(item);
   }
 
+  showCopies(i: InventoryItem){
+    alert("TODO: show copies");  
+  }
+
+
+  showItem(i: InventoryItem){
+    alert("TODO: show item");  
+  }
+
+  sort(val: string) {
+    if (val == this.sortBy) {
+      this.sortDesc = !this.sortDesc;
+    }
+    else {
+      this.sortBy = val;
+      this.sortDesc = true;
+    }
+    this.filterGear();
+  }
+
+
+
+  filterItem(i: InventoryItem): boolean {
+    if (i.searchText.indexOf(this.filterText)>=0) return true;
+    if (i.notes!=null && i.notes.indexOf(this.filterText)>=0) return true;
+    return false;
+
+  }
 
   filterGear() {
-    let tempGear = this.gear.filter(i => i.type == this.option.type);
+    if (this.player == null) return;
+    let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     if (this.filterText != null && this.filterText.trim().length > 0) {
-      tempGear = tempGear.filter(i => i.searchText.indexOf(this.filterText) >= 0);
+      tempGear = tempGear.filter(this.filterItem, this);
     }
     this.total = tempGear.length;
+
+    if (this.sortBy == "masterwork" || this.sortBy == "mod") {
+      tempGear.sort((a: any, b: any): number => {
+        let aV = "";
+        let bV = "";
+        if (this.sortBy == "masterwork") {
+          aV = a[this.sortBy] != null ? a[this.sortBy].tier : -1;
+          bV = b[this.sortBy] != null ? b[this.sortBy].tier : -1;
+        }
+        else if (this.sortBy == "mod") {
+          aV = a[this.sortBy] != null ? a[this.sortBy].name : "";
+          bV = b[this.sortBy] != null ? b[this.sortBy].name : "";
+        }
+
+        if (aV < bV) {
+          return this.sortDesc ? 1 : -1;
+        } else if (aV > bV) {
+          return this.sortDesc ? -1 : 1;
+        } else {
+          if (this.sortBy == "masterwork") {    
+            aV = a[this.sortBy] != null ? a[this.sortBy].name : "";
+            bV = b[this.sortBy] != null ? b[this.sortBy].name : "";
+            if (aV < bV) {
+              return this.sortDesc ? 1 : -1;
+            } else if (aV > bV) {
+              return this.sortDesc ? -1 : 1;
+            }
+          }
+          return 0;
+        }
+      });
+    }
+    else {
+      tempGear.sort((a: any, b: any): number => {
+        const aV = a[this.sortBy] != null ? a[this.sortBy] : "";
+        const bV = b[this.sortBy] != null ? b[this.sortBy] : "";
+
+        if (aV < bV) {
+          return this.sortDesc ? 1 : -1;
+        } else if (aV > bV) {
+          return this.sortDesc ? -1 : 1;
+        } else {
+          return 0;
+        }
+      });
+    }
     this.gearToShow = tempGear.slice(0, 20);
   }
 
-
-  public canEquip(itm: InventoryItem){
-    if (!itm.canEquip) return false;
-    if (itm.equipped == true) return false;
-    if (itm.classAllowed === ClassAllowed.Any) return true;
-    //vault and shared can't equip
-    if (!(itm.owner instanceof Character)) return false;
-    if (ClassAllowed[itm.classAllowed] === (itm.owner as Character).className)
-      return true;
-    return false;
-  }
-
-
-  public async transfer(itm: InventoryItem, target: Target):Promise<boolean> {
-
-    try {
-      this.loading = true;
-
-      //equip something else from our bucket, if we can
-      if (itm.equipped){
-        let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
-        if (equipMe==null){
-          throw new Error("Nothing to equip to replace "+itm.name);
-        }
-        const equipSuccess = this.equip(equipMe);
-        if (!equipSuccess){
-          return false;
-        }
-      }
-      //if the target is the vault, we just need to put it there
-      let success;
-      if (target instanceof Vault){
-        success = await this.bungieService.transfer(this.selectedUser.userInfo.membershipType, 
-          itm.owner, itm, true);
-        if (success){
-          itm.options.push(itm.owner);
-          itm.owner = this.player.vault;
-          itm.options.splice(itm.options.indexOf(itm.owner), 1);
-        }
-      }
-      //if it's in the vault, we just need to pull it out to our char
-      else if (itm.owner instanceof Vault){
-        success = await this.bungieService.transfer(this.selectedUser.userInfo.membershipType, 
-          target, itm, false);
-        if (success){
-          itm.options.push(itm.owner);
-          itm.owner = target;
-          itm.options.splice(itm.options.indexOf(itm.owner), 1);
-        }
-      }
-      //otherwise we need to put it in vault, then pull it again
-      else{
-        success = await this.bungieService.transfer(this.selectedUser.userInfo.membershipType, itm.owner, itm, true);
-        if (success){
-          itm.options.push(itm.owner);
-          itm.owner = this.player.vault;
-          itm.options.splice(itm.options.indexOf(itm.owner), 1);
-        }
-        success = await this.bungieService.transfer(this.selectedUser.userInfo.membershipType, target, itm, false);
-        if (success){
-          itm.options.push(itm.owner);
-          itm.owner = target;
-          itm.options.splice(itm.options.indexOf(itm.owner), 1);
-        }
-      }
-    }
-    finally{ 
-      itm.canReallyEquip = this.canEquip(itm);
-      this.loading = false;
-    }
-  }
-
-
-  public async equip(itm: InventoryItem): Promise<boolean> {
-    try {
-      this.loading = true;
-      const success = await this.bungieService.equip(this.selectedUser.userInfo.membershipType, itm);
-      if (success === true) {
-        const bucket: Bucket = this.bucketService.getBucket(itm.owner, itm.inventoryBucket);
-        const oldEquipped = bucket.equipped;
-        oldEquipped.equipped = false;
-        itm.equipped = true;
-        bucket.equipped = itm;
-        itm.equipped = true;
-
-        itm.canReallyEquip = this.canEquip(itm);
-        oldEquipped.canReallyEquip = this.canEquip(oldEquipped);
-        return true;
-      }
-      return false;
-    }
-    finally{ 
-      this.loading = false;
-    }
-  }
 
   public async load() {
     this.loading = true;
     try {
       if (this.selectedUser == null) {
         this.player = null;
-        this.gear = [];
         this.filterGear();
         return;
       }
-      this.player = await this.bungieService.getChars(this.selectedUser.userInfo.membershipType,
-        this.selectedUser.userInfo.membershipId, ['Profiles', 'Characters',
-          'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
-          'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-          'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories'], false, true);
-      this.gear = this.player.gear;
-      for (const g of this.gear){
-        g.canReallyEquip = this.canEquip(g);
-      }
-      this.bucketService.init(this.player.characters, this.player.vault, this.player.shared, this.player.gear);
-      this.markService.processItems(this.gear);
+      this.player = await this.gearService.loadGear(this.selectedUser);
       this.filterGear();
     }
     finally {
@@ -209,7 +190,8 @@ export class GearComponent extends ChildComponent implements OnInit {
   async loadMarks() {
     this.marks = await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
       this.selectedUser.userInfo.membershipId);
-    this.markService.processItems(this.gear);
+    if (this.player != null)
+      this.markService.processItems(this.player.gear);
 
   }
 

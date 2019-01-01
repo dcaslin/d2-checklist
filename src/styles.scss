@@ -43,7 +43,14 @@
 }
 
 .break-easy{
+
+  word-wrap: break-word;
   word-break: break-all;
+}
+
+.break-word{
+  word-wrap: break-word;
+  word-break: normal;
 }
 
 .fixed-spinner {
