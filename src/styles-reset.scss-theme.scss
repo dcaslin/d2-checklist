@@ -52,7 +52,7 @@
   }
   
   .masterworked{
-    box-shadow:0 0 20px mat-color($accent, 700);
+    box-shadow:0 0 10px mat-color($accent, 700);
   }
   
 
@@ -95,6 +95,14 @@
   .type-caption{
     font-size: smaller;
     color: mat-color($foreground, secondary-text);
+  }
+
+  .bordered {
+    // border: 2px solid mat-color($background, disabled-list-option);
+    // border-collapse: collapse;
+    // border-radius: 10px;
+    padding: 5px;
+
   }
 
   table.responsive-table {

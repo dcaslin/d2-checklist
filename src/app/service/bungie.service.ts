@@ -556,6 +556,22 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    public async setLock(membershipType: number, item: InventoryItem, locked: boolean): Promise<boolean> {
+        try {
+            await this.postReq("Destiny2/Actions/Items/SetLockState/", {
+                characterId: item.owner.id,
+                itemId: item.id,
+                membershipType: membershipType,
+                state: locked
+            });
+            return true;
+        } catch (err) {
+            this.handleError(err);
+            return false;
+        }
+    }
+
+
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

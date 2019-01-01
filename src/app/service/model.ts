@@ -442,7 +442,7 @@ export class InventoryItem {
     readonly aggProgress: number;
     readonly values: any;
     readonly expirationDate: string;
-    readonly locked: boolean;
+    public locked: boolean;
     readonly masterworked: boolean;
     readonly masterwork: MastworkInfo;
     readonly mod: InventoryPlug;
@@ -455,7 +455,9 @@ export class InventoryItem {
     public inventoryBucket: string;
     public tier: string;
     public readonly options: Target[] = [];
+    public readonly isRandomRoll: boolean;
     public canReallyEquip: boolean;
+    public copies: number = 1;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -474,7 +476,7 @@ export class InventoryItem {
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean,
-        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[]
+        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[], isRandomRoll: boolean
     ) {
         this.id = id;
         this.hash = hash;
@@ -509,7 +511,7 @@ export class InventoryItem {
         this.inventoryBucket = inventoryBucket;
         this.tier = tier;
         this.options = options;
-
+        this.isRandomRoll = isRandomRoll;
     }
 }
 
@@ -621,7 +623,7 @@ export class Character extends Target {
     aggHistory: AggHistory;
 
     constructor(membershipType: number, membershipId: string, className: string, light: number, characterId: string) {
-        super(className + "(" + light + ")", characterId);
+        super(className, characterId);
         this.membershipType = membershipType;
         this.membershipId = membershipId;
         this.className = className;

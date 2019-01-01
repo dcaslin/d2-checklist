@@ -45,9 +45,12 @@
     border-bottom: 1px solid rgb(221,221,221);
   }
 
-  // table.tidy-table {
-  //   table-layout: auto !important;
-  // }
+  table.tidy-table {
+    table-layout: auto !important;
+    & td {
+      font-size: 14px;
+    }
+  }
 
   .not-selected-plug{
     opacity: 0.50;
@@ -135,6 +138,18 @@
   background: #85c5ec;
 }
 
-.gear-name-cell {
-  font-size: smaller;
+.item-name{ 
+  font-size: larger;
+}
+
+a:link {
+  text-decoration: underline;
+}
+
+.options{
+  margin-top:5px;
+}
+
+.limited-gear-width{
+  max-width: 150px;
 }

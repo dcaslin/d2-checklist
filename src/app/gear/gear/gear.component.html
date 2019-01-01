@@ -5,7 +5,7 @@
         <span class="warn-text">This is alpha code, still a work in progress</span>
       </p> -->
       <div class="fixed-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || gearService.loading===true"></mat-spinner>
       </div>
 
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
@@ -32,6 +32,56 @@
         <mat-form-field class="searchField">
           <input matInput #filter placeholder="Wildcard filter">
         </mat-form-field>
+
+        <!-- <anms-gear-toggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"></anms-gear-toggle> -->
+
+        <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+          <button mat-button [matMenuTriggerFor]="menu1"><i class="fas fa-tags"></i> Tags</button>
+          <mat-menu #menu1="matMenu">
+            <button mat-menu-item>Select All</button>
+            <button mat-menu-item><mat-checkbox (click)="$event.stopPropagation()"></mat-checkbox> Item 1</button>
+            <button mat-menu-item><mat-checkbox (click)="$event.stopPropagation()"></mat-checkbox> Item 2</button>
+          </mat-menu>
+        </ng-container>
+
+        <ng-container *ngIf="option.type==ItemType.Weapon">
+          <button mat-button [matMenuTriggerFor]="menu2"><i class="fas fa-swords"></i> Type</button>
+          <mat-menu #menu2="matMenu">
+            <button mat-menu-item>Item 1</button>
+            <button mat-menu-item>Item 2</button>
+          </mat-menu>
+        </ng-container>
+        <ng-container *ngIf="option.type==ItemType.Armor">
+          <button mat-button [matMenuTriggerFor]="menu8"><i class="fas fa-helmet-battle"></i> Type</button>
+          <mat-menu #menu8="matMenu">
+            <button mat-menu-item>Item 1</button>
+            <button mat-menu-item>Item 2</button>
+          </mat-menu>
+        </ng-container>
+        <ng-container *ngIf="option.type==ItemType.Armor">
+          <button mat-button [matMenuTriggerFor]="menu7"><i class="fas fa-hood-cloak"></i>Class</button>
+          <mat-menu #menu7="matMenu">
+            <button mat-menu-item>Item 1</button>
+            <button mat-menu-item>Item 2</button>
+          </mat-menu>
+        </ng-container>
+        <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+          <button mat-button [matMenuTriggerFor]="menu3"><i class="fas fa-users"></i> Owner</button>
+          <mat-menu #menu3="matMenu">
+            <button mat-menu-item>Item 1</button>
+            <button mat-menu-item>Item 2</button>
+          </mat-menu>
+        </ng-container>
+        <button mat-button [matMenuTriggerFor]="menu4"><i class="fas fa-balance-scale"></i> Rarity</button>
+        <mat-menu #menu4="matMenu">
+          <button mat-menu-item>Item 1</button>
+          <button mat-menu-item>Item 2</button>
+        </mat-menu>
+        <button mat-button [matMenuTriggerFor]="menu4"><i class="fas fa-plus-square"></i> Show</button>
+        <mat-menu #menu4="matMenu">
+          <button mat-menu-item>Item 1</button>
+          <button mat-menu-item>Item 2</button>
+        </mat-menu>
         <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
         <a mat-button *ngIf="markService.dirty" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
 
@@ -41,19 +91,40 @@
         <table class="tidy-table mark-table">
           <thead>
             <tr class="junk">
-              <th style="width: 100px">Light</th>
-              <th style="width: 150px">Name</th>
-              <th style="width: 120px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mastwork</th>
-              <th style="width: 120px" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Mod</th>
-              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">Sockets</th>
-              <th *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">Quantity</th>
-              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" style="width: 200px">Tag</th>
+              <th class="limited-gear-width">
+                <a href="javascript:void(0)" (click)="sort('power')">Light</a>
+              </th>
+              <th class="limited-gear-width">
+                <a href="javascript:void(0)" (click)="sort('name')">Name</a>
+              </th>
+              <th class="limited-gear-width">
+                <a href="javascript:void(0)" (click)="sort('typeName')">Type</a>
+              </th>
+              <th class="limited-gear-width">
+                <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
+              </th>
+              <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('masterwork')">Mastwork</a>
+              </th>
+              <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('mod')">Mod</a>
+              </th>
+              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                Sockets
+              </th>
+
+              <th class="limited-gear-width" *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('quantity')">Quantity</a>
+              </th>
+              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" style="width: 200px">
+                Tag
+              </th>
             </tr>
           </thead>
           <tbody>
             <ng-container *ngFor="let i of gearToShow">
               <tr [ngClass]="i.mark">
-                <td>
+                <td class="limited-gear-width">
                   <div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
                     [class.masterworked]="i.masterworked">
                     <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
@@ -61,43 +132,40 @@
                       {{i.power}}
                     </div>
                     <div class="gear-lock">
-                      <i *ngIf="i.locked" class="fas fa-lock-alt"></i>
-                      <!-- <i *ngIf="!i.locked" class="fas fa-lock-open-alt"></i> -->
+                      <i *ngIf="i.locked" (click)="gearService.setLock(player, i, false)" class="fas fa-lock-alt"></i>
+                      <i *ngIf="!i.locked && (i.type==ItemType.Weapon || i.type==ItemType.Armor)" (click)="gearService.setLock(player, i, true)"
+                        class="fas fa-lock-open-alt"></i>
                     </div>
                     <div class="gear-notes">
                       <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
-                      <!-- <span *ngIf="i.quantity>1" title="Quantity">{{i.quantity}}</span> -->
                     </div>
                   </div>
-                  <span *ngIf="i.markLabel!=null">[{{i.markLabel}}]</span><br>
-                  <div class="break-easy">
-                    <small *ngIf="i.canReallyEquip">
+                  <div>{{i.owner.label}}</div>
+                </td>
+                <td class="limited-gear-width">
+                  <a class="item-name" href="javascript:void(0)" (click)="showItem(i)">{{i.name}}</a>
+                  <span *ngIf="debugmode">[{{i.hash}}]</span>
+
+                  <div class="options bordered">
+                    <div *ngIf="i.canReallyEquip">
                       <i>
-                        <a href="javascript:void(0);" (click)="equip(i)">Equip</a>
+                        <a href="javascript:void(0);" (click)="gearService.equip(player, i)">Equip</a>
                       </i>
-                    </small>
+                    </div>
                     <ng-container *ngFor="let target of i.options">
-                      <small>
+                      <div>
                         <i>
-                          <a href="javascript:void(0);" (click)="transfer(i, target)">{{target.label}}</a>
+                          <a href="javascript:void(0);" (click)="gearService.transfer(player, i, target)">{{target.label}}</a>
                         </i>
-                      </small>
+                      </div>
                     </ng-container>
                   </div>
-                </td>
-                <td class="gear-name-cell">
-                  {{i.name}}
-                  <span *ngIf="debugmode">[{{i.hash}}]</span>
-                  <br>{{i.typeName}}
-                  <br> Owner: {{i.owner.label}}
-                  <br> Bucket: {{i.inventoryBucket}}
-                  <br> Tier: {{i.tier}}<br>
-                  <a href="javascript:void(0)" *ngIf="!i.showStats && i.stats!=null && i.stats.length>0" (click)="i.showStats=true">
+                  <!-- <a href="javascript:void(0)" *ngIf="!i.showStats && i.stats!=null && i.stats.length>0" (click)="i.showStats=true">
                     Stats <i class="fas fa-plus"></i>
                   </a>
                   <a href="javascript:void(0)" *ngIf="i.showStats" (click)="i.showStats=false">
                     Stats <i class="fas fa-minus"></i>
-                  </a>
+                  </a> -->
                   <table *ngIf="i.showStats==true">
                     <thead>
                       <tr>
@@ -117,18 +185,26 @@
 
 
                 </td>
-                <td class="gear-name-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <td class="limited-gear-width">
+                  {{i.typeName}}
+                </td>
+                <td class="limited-gear-width">
+                  <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}}</a><br>
+                  <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
+                  <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
+                </td>
+                <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
-                    <div *ngIf="i.masterwork.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.masterwork.icon + ')'"></div>
-                    <br>
+                    <!-- <div *ngIf="i.masterwork.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.masterwork.icon + ')'"></div>
+                    <br> -->
                     {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode">[{{i.masterwork.hash}}]</ng-container>
 
                   </div>
                 </td>
-                <td class="gear-name-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
-                    <div *ngIf="i.mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
-                    <br>
+                    <!-- <div *ngIf="i.mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
+                    <br> -->
                     {{i.mod.name}} <ng-container *ngIf="debugmode">[{{i.mod.hash}}]</ng-container>
 
                   </div>
@@ -137,13 +213,13 @@
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc">
-                      <div *ngIf="plug.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + plug.icon + ')'"></div>
+                      <!-- <div *ngIf="plug.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + plug.icon + ')'"></div> -->
                       {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
                   </div>
                 </td>
-                <td *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
+                <td class="limited-gear-width" *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
                   {{i.quantity}}
                 </td>
                 <td *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
@@ -160,9 +236,9 @@
                     <i class="fas fa-trash-alt"></i>
                   </button>
                   <mat-form-field>
-                      <input matInput placeholder="Notes" maxlength="100"
-                      [(ngModel)]="i.notes" placeholder="Notes" (change)="itemNotesChanged(i)">
-                  </mat-form-field>                  
+                    <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
+                      (change)="itemNotesChanged(i)">
+                  </mat-form-field>
                 </td>
               </tr>
             </ng-container>
