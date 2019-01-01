@@ -19,6 +19,8 @@ import { GearService } from '@app/service/gear.service';
 // DONE count dupes 
 // DONE improve search text to include perks
 
+//TODO show class for armor
+
 // TODO filter UI
 // weap & armor global: tags, owner, rarity, 20/50/100/All rows
 // weap: type,

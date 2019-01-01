@@ -33,7 +33,7 @@
           <input matInput #filter placeholder="Wildcard filter">
         </mat-form-field>
 
-        <!-- <anms-gear-toggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"></anms-gear-toggle> -->
+        <!--<anms-gear-toggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"></anms-gear-toggle>-->
 
         <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
           <button mat-button [matMenuTriggerFor]="menu1"><i class="fas fa-tags"></i> Tags</button>

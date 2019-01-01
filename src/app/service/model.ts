@@ -624,6 +624,7 @@ export class Character extends Target {
 
     constructor(membershipType: number, membershipId: string, className: string, light: number, characterId: string) {
         super(className, characterId);
+        this.characterId = characterId;
         this.membershipType = membershipType;
         this.membershipId = membershipId;
         this.className = className;

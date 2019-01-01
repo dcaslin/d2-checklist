@@ -26,6 +26,7 @@ export class LowLineService implements OnDestroy {
     public buildChecklistLink(itmHash: string): LowLinks {
 
         if (this.data == null) { return null; }
+        if (this.data.data == null) { return null; }
         const lData = this.data.data.checklists[itmHash];
         if (lData == null) { return null; }
         for (const index of lData) {
@@ -43,6 +44,7 @@ export class LowLineService implements OnDestroy {
     public buildItemLink(itmHash: string): LowLinks {
 
         if (this.data == null) { return null; }
+        if (this.data.data == null) { return null; }
         const lData = this.data.data.items[itmHash];
         if (lData == null) { return null; }
         for (const index of lData) {
@@ -60,6 +62,7 @@ export class LowLineService implements OnDestroy {
     public buildRecordLink(hash: string): LowLinks {
 
         if (this.data == null) { return null; }
+        if (this.data.data == null) { return null; }
         const lData = this.data.data.records[hash];
         if (lData == null) { return null; }
         for (const index of lData) {
