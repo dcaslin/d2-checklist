@@ -3,13 +3,16 @@ import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
 import { BucketService, Bucket } from './bucket.service';
 import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, Vault } from './model';
+import { WishlistService } from './wishlist.service';
 
 @Injectable()
 export class GearService {
     loading = false;
 
     constructor(private bungieService: BungieService,
-        public markService: MarkService, private bucketService: BucketService) {
+        public markService: MarkService, 
+        private bucketService: BucketService,
+        private wishlistService: WishlistService) {
     }
 
     public async loadGear(selectedUser: SelectedUser): Promise<Player> {
@@ -34,14 +37,15 @@ export class GearService {
                     item.copies = items.length;
                 }
             }
-
             this.bucketService.init(player.characters, player.vault, player.shared, player.gear);
             this.markService.processItems(player.gear);
+            this.wishlistService.processItems(player.gear);
             return player;
         } finally {
             this.loading = false;
         }
     }
+
 
     public canEquip(itm: InventoryItem) {
         //ignore itm.canEquip

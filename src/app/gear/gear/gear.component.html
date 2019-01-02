@@ -33,54 +33,42 @@
           <input matInput #filter placeholder="Wildcard filter">
         </mat-form-field>
 
-        <!--<anms-gear-toggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"></anms-gear-toggle>-->
+        <anms-gear-toggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.Weapon, ItemType.Armor]" [currentItemType]="option.type">
+        </anms-gear-toggle>
 
-        <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-          <button mat-button [matMenuTriggerFor]="menu1"><i class="fas fa-tags"></i> Tags</button>
-          <mat-menu #menu1="matMenu">
-            <button mat-menu-item>Select All</button>
-            <button mat-menu-item><mat-checkbox (click)="$event.stopPropagation()"></mat-checkbox> Item 1</button>
-            <button mat-menu-item><mat-checkbox (click)="$event.stopPropagation()"></mat-checkbox> Item 2</button>
-          </mat-menu>
-        </ng-container>
+        <anms-gear-toggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+        </anms-gear-toggle>
 
-        <ng-container *ngIf="option.type==ItemType.Weapon">
-          <button mat-button [matMenuTriggerFor]="menu2"><i class="fas fa-swords"></i> Type</button>
-          <mat-menu #menu2="matMenu">
-            <button mat-menu-item>Item 1</button>
-            <button mat-menu-item>Item 2</button>
-          </mat-menu>
-        </ng-container>
-        <ng-container *ngIf="option.type==ItemType.Armor">
-          <button mat-button [matMenuTriggerFor]="menu8"><i class="fas fa-helmet-battle"></i> Type</button>
-          <mat-menu #menu8="matMenu">
-            <button mat-menu-item>Item 1</button>
-            <button mat-menu-item>Item 2</button>
-          </mat-menu>
-        </ng-container>
-        <ng-container *ngIf="option.type==ItemType.Armor">
-          <button mat-button [matMenuTriggerFor]="menu7"><i class="fas fa-hood-cloak"></i>Class</button>
-          <mat-menu #menu7="matMenu">
-            <button mat-menu-item>Item 1</button>
-            <button mat-menu-item>Item 2</button>
-          </mat-menu>
-        </ng-container>
-        <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-          <button mat-button [matMenuTriggerFor]="menu3"><i class="fas fa-users"></i> Owner</button>
-          <mat-menu #menu3="matMenu">
-            <button mat-menu-item>Item 1</button>
-            <button mat-menu-item>Item 2</button>
-          </mat-menu>
-        </ng-container>
-        <button mat-button [matMenuTriggerFor]="menu4"><i class="fas fa-balance-scale"></i> Rarity</button>
-        <mat-menu #menu4="matMenu">
-          <button mat-menu-item>Item 1</button>
-          <button mat-menu-item>Item 2</button>
-        </mat-menu>
-        <button mat-button [matMenuTriggerFor]="menu4"><i class="fas fa-plus-square"></i> Show</button>
-        <mat-menu #menu4="matMenu">
-          <button mat-menu-item>Item 1</button>
-          <button mat-menu-item>Item 2</button>
+        <anms-gear-toggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+        </anms-gear-toggle>
+
+
+        <anms-gear-toggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
+        </anms-gear-toggle>
+        <anms-gear-toggle iconClass="fas fa-flask-potion" title="Type" [choices]="consumableTypeChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.Consumable]" [currentItemType]="option.type">
+        </anms-gear-toggle>
+        <anms-gear-toggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
+        </anms-gear-toggle>
+        <anms-gear-toggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+        </anms-gear-toggle>
+        <anms-gear-toggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices" (change)="filterChanged()">
+        </anms-gear-toggle>
+        <anms-gear-toggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices" (change)="filterChanged()">
+        </anms-gear-toggle>
+
+        <button mat-button [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i> Show</button>
+        <mat-menu #menuShow="matMenu">
+          <button mat-menu-item (click)="show(20)"><i *ngIf="size==20" class="fas fa-check"></i> 20 rows</button>
+          <button mat-menu-item (click)="show(50)"><i *ngIf="size==50" class="fas fa-check"></i> 50 rows</button>
+          <button mat-menu-item (click)="show(100)"><i *ngIf="size==100" class="fas fa-check"></i> 100 rows</button>
+          <button mat-menu-item (click)="show(-1)"><i *ngIf="size==-1" class="fas fa-check"></i> All rows</button>
         </mat-menu>
         <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
         <a mat-button *ngIf="markService.dirty" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
@@ -143,6 +131,7 @@
                   <div>{{i.owner.label}}</div>
                 </td>
                 <td class="limited-gear-width">
+                  <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these." class="fas fa-star accent-text"></i>
                   <a class="item-name" href="javascript:void(0)" (click)="showItem(i)">{{i.name}}</a>
                   <span *ngIf="debugmode">[{{i.hash}}]</span>
 

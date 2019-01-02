@@ -448,7 +448,7 @@ export class InventoryItem {
     readonly mod: InventoryPlug;
     readonly tracked: boolean;
     readonly questline: Questline;
-    readonly searchText: string;
+    public searchText: string;
     public markLabel: string;
     public mark: string;
     public notes: string;
@@ -458,6 +458,7 @@ export class InventoryItem {
     public readonly isRandomRoll: boolean;
     public canReallyEquip: boolean;
     public copies: number = 1;
+    public godRoll = false;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff

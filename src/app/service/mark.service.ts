@@ -180,14 +180,13 @@ export class MarkService implements OnDestroy {
     }
 
 
-    public async loadPlayer(platform: number, memberId: string): Promise<Marks> {
+    public async loadPlayer(platform: number, memberId: string): Promise<void> {
         platform = 20 + platform;
         let marks = await this.load(platform, memberId);
         if (marks.memberId == null) {
             marks = this.buildEmptyMarks(platform, memberId);
         }
         this.currentMarks = marks;
-        return marks;
     }
 
     ngOnDestroy(): void {

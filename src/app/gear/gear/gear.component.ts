@@ -6,10 +6,12 @@ import { fromEvent as observableFromEvent, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType } from '@app/service/model';
+import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
+import { Choice } from './gear-toggle.component';
+import { WishlistService } from '@app/service/wishlist.service';
 
 // DONE equip gear
 // DONE transfer gear
@@ -41,10 +43,31 @@ import { GearService } from '@app/service/gear.service';
 })
 export class GearComponent extends ChildComponent implements OnInit {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
+
+  readonly markChoices: Choice[] = [
+    new Choice("upgrade", "Upgrade"),
+    new Choice("keep", "Keep"),
+    new Choice("infuse", "Infuse"),
+    new Choice("junk", "Junk"),
+    new Choice(null, "Not Marked")
+  ];
+  readonly classTypeChoices: Choice[] = [
+    new Choice(ClassAllowed.Titan + "", "Titan"),
+    new Choice(ClassAllowed.Warlock + "", "Warlock"),
+    new Choice(ClassAllowed.Hunter + "", "Hunter"),
+    new Choice(ClassAllowed.Any + "", "Any"),
+  ];
+  weaponTypeChoices: Choice[] = [];
+  armorTypeChoices: Choice[] = [];
+  modTypeChoices: Choice[] = [];
+  consumableTypeChoices: Choice[] = [];
+  exchangeTypeChoices: Choice[] = [];
+  ownerChoices: Choice[] = [];
+  rarityChoices: Choice[] = [];
+
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
 
   selectedUser: SelectedUser = null;
-  marks: Marks = null;
   player: Player = null;
   @ViewChild('filter') filter: ElementRef;
   filterText: string = null;
@@ -58,23 +81,28 @@ export class GearComponent extends ChildComponent implements OnInit {
   sortBy: string = "power";
   sortDesc: boolean = true;
   gearToShow: InventoryItem[] = [];
+  size = 20;
   total: number = 0;
 
   ItemType = ItemType;
   DamageType = DamageType;
 
+  show(count: number) {
+    this.size = count;
+    this.filterChanged();
+  }
 
-  filterChanged(): void{
-    console.log("Filter changed");
+  filterChanged(): void {
+    this.filterGear();
   }
 
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public markService: MarkService,
-    public gearService: GearService) {
+    public gearService: GearService,
+    private wishlistSerivce: WishlistService) {
     super(storageService);
     this.loading = true;
-    this.marks = this.markService.buildEmptyMarks(null, null);
   }
 
   itemNotesChanged(item: InventoryItem) {
@@ -87,13 +115,13 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.markService.updateItem(item);
   }
 
-  showCopies(i: InventoryItem){
-    alert("TODO: show copies");  
+  showCopies(i: InventoryItem) {
+    alert("TODO: show copies");
   }
 
 
-  showItem(i: InventoryItem){
-    alert("TODO: show item");  
+  showItem(i: InventoryItem) {
+    alert("TODO: show item");
   }
 
   sort(val: string) {
@@ -110,8 +138,8 @@ export class GearComponent extends ChildComponent implements OnInit {
 
 
   filterItem(i: InventoryItem): boolean {
-    if (i.searchText.indexOf(this.filterText)>=0) return true;
-    if (i.notes!=null && i.notes.indexOf(this.filterText)>=0) return true;
+    if (i.searchText.indexOf(this.filterText) >= 0) return true;
+    if (i.notes != null && i.notes.indexOf(this.filterText) >= 0) return true;
     return false;
 
   }
@@ -142,7 +170,7 @@ export class GearComponent extends ChildComponent implements OnInit {
         } else if (aV > bV) {
           return this.sortDesc ? -1 : 1;
         } else {
-          if (this.sortBy == "masterwork") {    
+          if (this.sortBy == "masterwork") {
             aV = a[this.sortBy] != null ? a[this.sortBy].name : "";
             bV = b[this.sortBy] != null ? b[this.sortBy].name : "";
             if (aV < bV) {
@@ -169,7 +197,10 @@ export class GearComponent extends ChildComponent implements OnInit {
         }
       });
     }
-    this.gearToShow = tempGear.slice(0, 20);
+    if (this.size > 0)
+      this.gearToShow = tempGear.slice(0, this.size);
+    else
+      this.gearToShow = tempGear.slice(0);
   }
 
 
@@ -178,10 +209,11 @@ export class GearComponent extends ChildComponent implements OnInit {
     try {
       if (this.selectedUser == null) {
         this.player = null;
-        this.filterGear();
-        return;
       }
-      this.player = await this.gearService.loadGear(this.selectedUser);
+      else {
+        this.player = await this.gearService.loadGear(this.selectedUser);
+      }
+      this.generateChoices();
       this.filterGear();
     }
     finally {
@@ -189,16 +221,68 @@ export class GearComponent extends ChildComponent implements OnInit {
     }
   }
 
+  private generateChoices() {
+    if (this.player == null) return;
+    if (this.player.gear == null) return;
+
+    const tempOwners = [];
+    for (const char of this.player.characters) {
+      tempOwners.push(new Choice(char.id, char.label));
+    }
+    tempOwners.push(new Choice(this.player.vault.id, this.player.vault.label));
+    tempOwners.push(new Choice(this.player.shared.id, this.player.shared.label));
+    this.ownerChoices = tempOwners;
+
+    const temp: any = {};
+    temp["rarity"] = {};
+    for (const i of this.player.gear) {
+      if (temp[i.type + ""] == null) {
+        temp[i.type + ""] = [];
+      }
+      temp[i.type + ""][i.typeName] = true;
+      temp["rarity"][i.tier] = true;
+
+    }
+    const arrays: any = {};
+    for (const key in temp) {
+      const arr = [];
+      for (const typeName in temp[key]) {
+        arr.push(new Choice(typeName, typeName));
+      }
+      arr.sort(function (a, b) {
+        if (a.display < b.display)
+          return -1;
+        if (a.display > b.display)
+          return 1;
+        return 0;
+      });
+      arrays[key] = arr;
+    }
+    this.weaponTypeChoices = arrays[ItemType.Weapon + ""];
+    this.armorTypeChoices = arrays[ItemType.Armor + ""];
+    this.modTypeChoices = arrays[ItemType.GearMod + ""];
+    this.consumableTypeChoices = arrays[ItemType.Consumable + ""];
+    this.exchangeTypeChoices = arrays[ItemType.ExchangeMaterial + ""];
+    this.rarityChoices = arrays["rarity"];
+  }
+
   async loadMarks() {
-    this.marks = await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
+    await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
       this.selectedUser.userInfo.membershipId);
     if (this.player != null)
       this.markService.processItems(this.player.gear);
-
   }
+
+  async loadWishlist() {
+    await this.wishlistSerivce.init();
+    if (this.player != null)
+      this.wishlistSerivce.processItems(this.player.gear);
+  }
+
 
   ngOnInit() {
     this.load();
+    this.loadWishlist();
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.selectedUser = selectedUser;
