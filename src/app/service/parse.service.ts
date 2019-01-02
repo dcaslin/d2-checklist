@@ -23,7 +23,7 @@ export class ParseService {
     }
 
     private parseCharacter(c: PrivCharacter): Character {
-        const char: Character = new Character(c.membershipType, c.membershipId, 
+        const char: Character = new Character(c.membershipType, c.membershipId,
             this.destinyCacheService.cache.Class[c.classHash].displayProperties.name, c.light, c.characterId);
 
         char.dateLastPlayed = c.dateLastPlayed;
@@ -1401,7 +1401,7 @@ export class ParseService {
             if (resp.characterInventories != null && resp.characterInventories.data != null) {
                 Object.keys(resp.characterInventories.data).forEach((key) => {
                     const char: Character = charsDict[key];
-                    const options: Target[] = chars.filter(c => c!==char);
+                    const options: Target[] = chars.filter(c => c !== char);
                     options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     items.forEach(itm => {
@@ -1426,7 +1426,7 @@ export class ParseService {
                 if (resp.characterEquipment != null && resp.characterEquipment.data != null) {
                     Object.keys(resp.characterEquipment.data).forEach((key) => {
                         const char: Character = charsDict[key];
-                        const options: Target[] = chars.filter(c => c!==char);
+                        const options: Target[] = chars.filter(c => c !== char);
                         options.push(vault);
                         const items: PrivInventoryItem[] = resp.characterEquipment.data[key].items;
                         items.forEach(itm => {
@@ -1449,7 +1449,7 @@ export class ParseService {
                             owner = shared;
                             options = [vault];
                         }
-                        else{
+                        else {
                             options = chars.slice();
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
@@ -1819,7 +1819,7 @@ export class ParseService {
             mwName = this.cookDamageType(damageType);
         }
         mwName = mwName.toLowerCase();
-        mwName = mwName.charAt(0).toUpperCase()+mwName.slice(1);
+        mwName = mwName.charAt(0).toUpperCase() + mwName.slice(1);
         return {
             hash: plugDesc.hash,
             name: mwName,
@@ -1840,14 +1840,24 @@ export class ParseService {
         if (plugDesc.displayProperties.name.indexOf("Catalyst") >= 0) {
             return null;
         }
-        if (plugDesc.hash==3786277607) //legacy MW armor slot
+        if (plugDesc.hash == 3786277607) //legacy MW armor slot
             return null;
         const ch = plugDesc.plug.plugCategoryHash;
         if (ch == 2973005342 || //shader
             ch == 2947756142) //masterwork tracker
             return null;
+        let desc = plugDesc.displayProperties.description;
+        if (desc == null || desc.trim().length == 0) {
+            if (plugDesc.perks != null && plugDesc.perks.length >= 1) {
+                const perkHash = plugDesc.perks[0].perkHash;
+                const perkDesc: any = this.destinyCacheService.cache.Perk[perkHash];
+                if (perkDesc != null) {
+                    desc = perkDesc.displayProperties.description;
+                }
+            }
+        }
         return new InventoryPlug(plugDesc.hash,
-            plugDesc.displayProperties.name, plugDesc.displayProperties.description,
+            plugDesc.displayProperties.name, desc,
             plugDesc.displayProperties.icon, true);
     }
 
@@ -1892,16 +1902,16 @@ export class ParseService {
                     return null;
                 }
 
-                if (type == ItemType.Consumable){
-                    if (desc.hash==3487922223 || //datalattice
-                        desc.hash==2014411539 || //alkane dust
+                if (type == ItemType.Consumable) {
+                    if (desc.hash == 3487922223 || //datalattice
+                        desc.hash == 2014411539 || //alkane dust
                         desc.hash == 950899352 || //dusklight shard
                         desc.hash == 1305274547 || //phaseglass
                         desc.hash == 49145143 ||//simulation seeds
                         desc.hash == 31293053 ||//seraphite
-                        desc.hash == 1177810185){ //etheric spiral
-                            type = ItemType.ExchangeMaterial;
-                        }
+                        desc.hash == 1177810185) { //etheric spiral
+                        type = ItemType.ExchangeMaterial;
+                    }
                 }
             }
 
@@ -1949,12 +1959,12 @@ export class ParseService {
 
             if (detailedInv) {
 
-                if (desc.inventory!=null){
+                if (desc.inventory != null) {
                     tier = desc.inventory.tierTypeName;
                     const bucketHash = desc.inventory.bucketTypeHash;
-                    if (bucketHash!=null){
+                    if (bucketHash != null) {
                         const bDesc = this.destinyCacheService.cache.InventoryBucket[bucketHash];
-                        if (bDesc!=null){
+                        if (bDesc != null) {
                             invBucket = bDesc.displayProperties.name;
                         }
                     }
@@ -2029,7 +2039,7 @@ export class ParseService {
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
 
-                                isRandomRoll = isRandomRoll || socketDesc.randomizedPlugItems!=null && socketDesc.randomizedPlugItems.length > 0;
+                                isRandomRoll = isRandomRoll || socketDesc.randomizedPlugItems != null && socketDesc.randomizedPlugItems.length > 0;
 
                                 if (socketVal.reusablePlugs != null) {
                                     for (const plug of socketVal.reusablePlugs) {
@@ -2117,16 +2127,16 @@ export class ParseService {
             }
 
             searchText = desc.displayProperties.name;
-            if (mw!=null){
-                searchText += " "+mw.name;
+            if (mw != null) {
+                searchText += " " + mw.name;
             }
-            if (mod!=null){
-                searchText += " "+mod.name;
+            if (mod != null) {
+                searchText += " " + mod.name;
             }
-            if (sockets!=null){
-                for (const s of sockets){
-                    for (const p of s.plugs){
-                        searchText += " "+p.name;
+            if (sockets != null) {
+                for (const s of sockets) {
+                    for (const p of s.plugs) {
+                        searchText += " " + p.name;
                     }
                 }
             }

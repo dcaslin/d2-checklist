@@ -20,8 +20,9 @@ import { WishlistService } from '@app/service/wishlist.service';
 // DONE is random roll
 // DONE count dupes 
 // DONE improve search text to include perks
+// DONE hard coded wishlist
 
-//TODO show class for armor
+//DONE show class for armor
 
 // TODO filter UI
 // weap & armor global: tags, owner, rarity, 20/50/100/All rows
@@ -34,7 +35,7 @@ import { WishlistService } from '@app/service/wishlist.service';
 // TODO auto process locking items
 // TODO make work in mobile
 // TODO final tweaks to UI
-
+// TODO wish list configurability
 
 @Component({
   selector: 'anms-gear',
@@ -86,6 +87,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   ItemType = ItemType;
   DamageType = DamageType;
+  ClassAllowed = ClassAllowed;
 
   show(count: number) {
     this.size = count;

@@ -26,7 +26,7 @@ export class WishlistService implements OnDestroy {
               data[c.itemHash].push(c);
             }
             this.data = data;
-            console.log("Loaded "+this.data.length+" wish list items");
+            console.log("Loaded "+temp.length+" wish list items");
         }
     }
 
