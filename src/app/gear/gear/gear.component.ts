@@ -10,7 +10,7 @@ import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
-import { Choice } from './gear-toggle.component';
+import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { WishlistService } from '@app/service/wishlist.service';
 
 // DONE equip gear
@@ -52,6 +52,8 @@ export class GearComponent extends ChildComponent implements OnInit {
     new Choice("junk", "Junk"),
     new Choice(null, "Not Marked")
   ];
+
+
   readonly classTypeChoices: Choice[] = [
     new Choice(ClassAllowed.Titan + "", "Titan"),
     new Choice(ClassAllowed.Warlock + "", "Warlock"),
@@ -65,6 +67,27 @@ export class GearComponent extends ChildComponent implements OnInit {
   exchangeTypeChoices: Choice[] = [];
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
+
+  @ViewChild('#markToggle')
+  public markToggle: GearToggleComponent;
+  @ViewChild('#weaponTypeToggle')
+  public weaponTypeToggle: GearToggleComponent;
+  @ViewChild('#armorTypeToggle')
+  public armorTypeToggle: GearToggleComponent;
+  @ViewChild('#modTypeToggle')
+  public modTypeToggle: GearToggleComponent;
+  @ViewChild('#consumableTypeToggle')
+  public consumableTypeToggle: GearToggleComponent;
+  @ViewChild('#exchangeTypeToggle')
+  public exchangeTypeToggle: GearToggleComponent;
+  @ViewChild('#classTypeToggle')
+  public classTypeToggle: GearToggleComponent;
+  @ViewChild('#ownerToggle')
+  public ownerToggle: GearToggleComponent;
+  @ViewChild('#rarityToggle')
+  public rarityToggle: GearToggleComponent;
+
+
 
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
 

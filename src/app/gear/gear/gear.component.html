@@ -33,34 +33,33 @@
           <input matInput #filter placeholder="Wildcard filter">
         </mat-form-field>
 
-        <anms-gear-toggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"
+        <anms-gear-toggle #markToggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.Weapon, ItemType.Armor]" [currentItemType]="option.type">
         </anms-gear-toggle>
 
-        <anms-gear-toggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices" (change)="filterChanged()"
+        <anms-gear-toggle #weaponTypeToggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
         </anms-gear-toggle>
 
-        <anms-gear-toggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices" (change)="filterChanged()"
+        <anms-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
         </anms-gear-toggle>
 
-
-        <anms-gear-toggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices" (change)="filterChanged()"
+        <anms-gear-toggle #modTypeToggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
         </anms-gear-toggle>
-        <anms-gear-toggle iconClass="fas fa-flask-potion" title="Type" [choices]="consumableTypeChoices" (change)="filterChanged()"
+        <anms-gear-toggle #consumableTypeToggle iconClass="fas fa-flask-potion" title="Type" [choices]="consumableTypeChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.Consumable]" [currentItemType]="option.type">
         </anms-gear-toggle>
-        <anms-gear-toggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices" (change)="filterChanged()"
+        <anms-gear-toggle #exchangeTypeToggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
         </anms-gear-toggle>
-        <anms-gear-toggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices" (change)="filterChanged()"
+        <anms-gear-toggle #classTypeToggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices" (change)="filterChanged()"
           [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
         </anms-gear-toggle>
-        <anms-gear-toggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices" (change)="filterChanged()">
+        <anms-gear-toggle #ownerToggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices" (change)="filterChanged()">
         </anms-gear-toggle>
-        <anms-gear-toggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices" (change)="filterChanged()">
+        <anms-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices" (change)="filterChanged()">
         </anms-gear-toggle>
 
         <button mat-button [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i> Show</button>
