@@ -8,7 +8,7 @@ import { ItemType } from '@app/service/model';
 })
 export class GearToggleComponent implements OnInit {
   _currentItemType: ItemType;
-  hidden: boolean; 
+  public hidden: boolean; 
 
   @Input()
   set currentItemType(currentItemType: ItemType) {
@@ -38,6 +38,7 @@ export class GearToggleComponent implements OnInit {
 
   private emit(){
     this.change.emit({
+      title: this.title,
       hidden: this.hidden,
       choices: this.choices
     }); 
@@ -80,6 +81,7 @@ export class GearToggleComponent implements OnInit {
 }
 
 export interface ToggleInfo {
+  title: string;
   hidden: boolean;
   choices: Choice[];
 }
