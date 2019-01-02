@@ -43,9 +43,11 @@
               <a href="https://www.reddit.com/r/DestinyTheGame/comments/9t16yz/list_of_heroic_story_missions_from_fastest_to/"
                 class="underline" target="_blank" rel="noopener">
                 Daily Missions</a> </h4>
-            <ul>
-              <li *ngFor="let m of missions">{{m}}</li>
-            </ul>
+            <div>
+              <ul style="min-width: 250px">
+                <li *ngFor="let m of missions"><span *ngIf="m.time<100">{{m.time}} mins - </span> {{m.name}}   <div *ngIf="debugmode">[{{m.hash}}]</div></li>
+              </ul>
+            </div>
           </div>
           <div class="col-sm-6 info-section">
             <h4>Burns</h4>

@@ -30,7 +30,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   dontSearch: boolean;
   publicMilestones: PublicMilestone[];
   burns: NameDesc[] = [];
-  missions: string[] = [];
+  missions: any[] = [];
   flashpoint: string = "";
   showMoreInfo = false;
 
@@ -79,6 +79,31 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.storageService.setItem('defaultgt', this.gamerTag);
   }
 
+  private static getMissionLength(hash: string): number{
+    
+    // Combustion 280 [3271773240], 7
+    if (hash=="3271773240"){
+      return 7;
+    }
+    // Hope 280[129918239], 6
+    else if (hash=="129918239"){
+      return 7;
+    }
+    // Deep Storage 310[1872813880], 6
+    else if (hash=="1872813880"){
+      return 6;
+    }
+    // Ice and Shadow 360[2660895412], 5
+    else if (hash=="2660895412"){
+      return 5;
+    }
+    // Ace in the Hole 500[2962137994], 15
+    else if (hash=="2962137994"){
+      return 15;
+    }
+    return 100;
+  }
+
   ngOnInit() {
     this.bungieService.getPublicMilestones().then(ms => {
       this.publicMilestones = ms;
@@ -88,10 +113,23 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
           if ("3082135827" === m.hash){
             const missions = [];
             for (let a of m.aggActivities){
-              let name = a.activity.name+" "+a.activity.ll; 
+              let name = a.activity.name;
               name = name.replace("Daily Heroic Story Mission: ", "");
-              missions.push(name);
+              const time = HomeComponent.getMissionLength(a.activity.hash);
+
+              missions.push({
+                name: name,
+                hash: a.activity.hash,
+                time: time
+                });
             }
+            missions.sort((a: any, b: any): number => {
+              let aV = a.time;
+              let bV = b.time;
+              if (aV<bV) return -1;
+              else if (aV>bV) return 1;
+              else return 0;
+            });
             this.missions = missions;
           }
           else if ("3172444947" === m.hash){
