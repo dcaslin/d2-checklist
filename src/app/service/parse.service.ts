@@ -347,7 +347,7 @@ export class ParseService {
 
         factions.sort(function (a, b) {
             return b.percentToNextLevel - a.percentToNextLevel;
-        })
+        });
         c.factions = factions;
 
         // progressions we'll ignore for now, factions has it all

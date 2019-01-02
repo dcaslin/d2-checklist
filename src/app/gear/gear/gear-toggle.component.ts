@@ -44,7 +44,7 @@ export class GearToggleComponent implements OnInit {
   }
 
   private checkDisplay(){
-    if (this.displayOptions!=null){
+    if (this.displayOptions!=null && this.displayOptions.length>0){
       if (this.displayOptions.indexOf(this._currentItemType)>=0){
         this.hidden = false;
       }
@@ -58,7 +58,7 @@ export class GearToggleComponent implements OnInit {
 
   selectAll() {
     for (const ch of this.choices){
-      ch.setValue(true);
+      ch.value = true;
     }
     this.emit();
   }
@@ -66,14 +66,14 @@ export class GearToggleComponent implements OnInit {
   exclusiveSelect(choice) {
     for (const ch of this.choices){
       if (ch !== choice)
-        ch.setValue(false);
+        ch.value = false;
     }
-    choice.setValue(true);
+    choice.value = true;
     this.emit();
   }
 
   select(event, choice) {
-    choice.setValue(!choice.getValue());
+    choice.value = !choice.value;
     this.change.emit();
     event.stopPropagation();
   }
@@ -104,11 +104,11 @@ export class Choice {
     this.otherFields = otherFields;
   }
 
-  getValue(): boolean {
+  get value(): boolean {
     return this._value;
   }
 
-  setValue(value: boolean) {
+  set value(value: boolean) {
     this._value = value;
     for (const ch of this.children) {
       ch._value = value;
