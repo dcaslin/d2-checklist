@@ -63,6 +63,7 @@ export class GearService {
     public async transfer(player: Player, itm: InventoryItem, target: Target): Promise<boolean> {
         try {
             this.loading = true;
+            
             //equip something else from our bucket, if we can
             if (itm.equipped) {
                 let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
@@ -74,12 +75,17 @@ export class GearService {
                     return false;
                 }
             }
+
             //if the target is the vault, we just need to put it there
             let success;
             if (target instanceof Vault) {
+                let owner = itm.owner;
+                if (owner == player.shared){
+                    owner = player.characters[0];
+                }
                 
                 success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    itm.owner, itm, true);
+                    owner, itm, true);
                 if (success) {
                     itm.options.push(itm.owner);
                     itm.owner = player.vault;
@@ -88,8 +94,12 @@ export class GearService {
             }
             //if it's in the vault, we just need to pull it out to our char
             else if (itm.owner instanceof Vault) {
+                let tempTarget = target;
+                if (target==player.shared){
+                    tempTarget = player.characters[0];
+                }
                 success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    target, itm, false);
+                    tempTarget, itm, false);
                 if (success) {
                     itm.options.push(itm.owner);
                     itm.owner = target;

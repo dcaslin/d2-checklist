@@ -8,7 +8,7 @@ import { ItemType } from '@app/service/model';
 })
 export class GearToggleComponent implements OnInit {
   _currentItemType: ItemType;
-  public hidden: boolean; 
+  hidden: boolean; 
 
   @Input()
   set currentItemType(currentItemType: ItemType) {
@@ -56,12 +56,19 @@ export class GearToggleComponent implements OnInit {
    }
   }
 
+  isAllSelected(){
+    for (const ch of this.choices){
+      if (!ch.value) return false;
+    } 
+    return true;
+  }
 
-  selectAll() {
+  selectAll(noEmit?:boolean) {
     for (const ch of this.choices){
       ch.value = true;
     }
-    this.emit();
+    if (!noEmit)
+      this.emit();
   }
 
   exclusiveSelect(choice) {
@@ -78,6 +85,15 @@ export class GearToggleComponent implements OnInit {
     this.change.emit();
     event.stopPropagation();
   }
+
+  public isChosen(val: any): boolean {
+    if (this.hidden==true) return true;
+    if (this.choices.length==null || this.choices.length==0) return true;
+    for (const c of this.choices){
+      if (c.value==true && c.matchValue == val) return true;
+    }
+    return false;
+  }
 }
 
 export interface ToggleInfo {
@@ -87,7 +103,7 @@ export interface ToggleInfo {
 }
 
 export class Choice {
-  readonly field: string;
+  readonly matchValue: string;
   readonly otherFields: string[];
   readonly display: string;
   private _value = true;
@@ -95,11 +111,11 @@ export class Choice {
   parent: Choice;
   children: Choice[] = [];
 
-  constructor(field: string, display: string, value?: boolean, children?: Choice[], otherFields?: string[]) {
-    this.field = field;
+  constructor(matchValue: string, display: string, value?: boolean, children?: Choice[], otherFields?: string[]) {
+    this.matchValue = matchValue;
     this.display = display;
-    if (value) this._value = value;
-    if (children) this.children = children;
+    if (value!=undefined) this._value = value;
+    if (children!=undefined) this.children = children;
     this.children.forEach(
       ch => ch.parent = this
     )
