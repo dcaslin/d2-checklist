@@ -92,7 +92,7 @@
                 <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
               </th>
               <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                <a href="javascript:void(0)" (click)="sort('masterwork')">Mastwork</a>
+                <a href="javascript:void(0)" (click)="sort('masterwork')">Masterwork</a>
               </th>
               <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('mod')">Mod</a>
@@ -176,6 +176,7 @@
                 </td>
                 <td class="limited-gear-width">
                   {{i.typeName}}
+                  <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}</ng-container>
                 </td>
                 <td class="limited-gear-width">
                   <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}}</a><br>
@@ -188,6 +189,8 @@
                     <br> -->
                     {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode">[{{i.masterwork.hash}}]</ng-container>
 
+                    <mat-progress-bar mode="determinate" 
+                    [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
                   </div>
                 </td>
                 <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
