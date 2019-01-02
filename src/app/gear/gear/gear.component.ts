@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -42,7 +42,7 @@ import { WishlistService } from '@app/service/wishlist.service';
   templateUrl: './gear.component.html',
   styleUrls: ['./gear.component.scss']
 })
-export class GearComponent extends ChildComponent implements OnInit {
+export class GearComponent extends ChildComponent implements OnInit, AfterViewInit {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
   readonly markChoices: Choice[] = [
@@ -68,24 +68,27 @@ export class GearComponent extends ChildComponent implements OnInit {
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
 
-  @ViewChild('#markToggle')
+  @ViewChild('markToggle')
   public markToggle: GearToggleComponent;
-  @ViewChild('#weaponTypeToggle')
+  @ViewChild('weaponTypeToggle')
   public weaponTypeToggle: GearToggleComponent;
-  @ViewChild('#armorTypeToggle')
+  @ViewChild('armorTypeToggle')
   public armorTypeToggle: GearToggleComponent;
-  @ViewChild('#modTypeToggle')
+  @ViewChild('modTypeToggle')
   public modTypeToggle: GearToggleComponent;
-  @ViewChild('#consumableTypeToggle')
+  @ViewChild('consumableTypeToggle')
   public consumableTypeToggle: GearToggleComponent;
-  @ViewChild('#exchangeTypeToggle')
+  @ViewChild('exchangeTypeToggle')
   public exchangeTypeToggle: GearToggleComponent;
-  @ViewChild('#classTypeToggle')
+  @ViewChild('classTypeToggle')
   public classTypeToggle: GearToggleComponent;
-  @ViewChild('#ownerToggle')
+  @ViewChild('ownerToggle')
   public ownerToggle: GearToggleComponent;
-  @ViewChild('#rarityToggle')
+  @ViewChild('rarityToggle')
   public rarityToggle: GearToggleComponent;
+
+  filters: GearToggleComponent[] = [];
+  filtersDirty: boolean =  false;
 
 
 
@@ -118,7 +121,18 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   filterChanged(): void {
+    this.filtersDirty = this.checkFilterDirty();
     this.filterGear();
+  }
+
+  resetFilters(): void{
+    this.filter.nativeElement.value = "";
+    this.filterText = null;
+    for (const toggle of this.filters){
+      toggle.selectAll(true);
+    }
+    this.filterChanged();
+
   }
 
 
@@ -169,14 +183,54 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   }
 
+  private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
+    if (this.filterText != null && this.filterText.trim().length > 0) {
+      return gear.filter(this.filterItem, this);
+    }
+    else {
+      return gear;
+    }
+  }
+
+  checkFilterDirty(){
+    if (this.filterText!=null && this.filterText.trim().length>0) return true;
+    for (const toggle of this.filters){
+      if (!toggle.isAllSelected()) return true;
+    }
+    return false;
+  }
+
+  private toggleFilterSingle(i: InventoryItem): boolean {
+    if (!this.markToggle.isChosen(i.mark)) return false;
+    if (!this.weaponTypeToggle.isChosen(i.typeName)) return false;
+    if (!this.armorTypeToggle.isChosen(i.typeName)) return false;
+    if (!this.modTypeToggle.isChosen(i.typeName)) return false;
+    if (!this.consumableTypeToggle.isChosen(i.typeName)) return false;
+    if (!this.exchangeTypeToggle.isChosen(i.typeName)) return false;
+
+    if (!this.ownerToggle.isChosen(i.owner.id)) return false;
+    if (!this.rarityToggle.isChosen(i.tier)) return false;
+    if (!this.classTypeToggle.isChosen(i.classAllowed)) return false;
+
+    return true;
+  }
+
+  private toggleFilter(gear: InventoryItem[]): InventoryItem[] {
+    const returnMe: InventoryItem[] = [];
+    for (const i of gear) {
+      if (this.toggleFilterSingle(i)) {
+        returnMe.push(i);
+      }
+    }
+    return returnMe;
+  }
+
   filterGear() {
     if (this.player == null) return;
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
-    if (this.filterText != null && this.filterText.trim().length > 0) {
-      tempGear = tempGear.filter(this.filterItem, this);
-    }
+    tempGear = this.wildcardFilter(tempGear);
+    tempGear = this.toggleFilter(tempGear);
     this.total = tempGear.length;
-
     if (this.sortBy == "masterwork" || this.sortBy == "mod") {
       tempGear.sort((a: any, b: any): number => {
         let aV = "";
@@ -246,9 +300,11 @@ export class GearComponent extends ChildComponent implements OnInit {
     }
   }
 
-  private generateChoices() {
+  private generateChoices(force?: boolean) {
     if (this.player == null) return;
     if (this.player.gear == null) return;
+    if (this.player.gear.length == 0) return;
+    if (this.weaponTypeChoices.length > 0 && !force) return;
 
     const tempOwners = [];
     for (const char of this.player.characters) {
@@ -305,15 +361,27 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
 
+  ngAfterViewInit() {
+    this.filters.push(this.markToggle);
+    this.filters.push(this.weaponTypeToggle);
+    this.filters.push(this.armorTypeToggle);
+    this.filters.push(this.modTypeToggle);
+    this.filters.push(this.consumableTypeToggle);
+    this.filters.push(this.exchangeTypeToggle);
+    this.filters.push(this.ownerToggle);
+    this.filters.push(this.rarityToggle);
+    this.filters.push(this.classTypeToggle);
+  }
+
   ngOnInit() {
-    this.load();
-    this.loadWishlist();
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.selectedUser = selectedUser;
       this.loadMarks();
       this.load();
     });
+    this.loadWishlist();
+
 
     this.noteChanged.pipe(
       takeUntil(this.unsubscribe$),
@@ -334,7 +402,7 @@ export class GearComponent extends ChildComponent implements OnInit {
         } else {
           this.filterText = val.toLowerCase();
         }
-        this.filterGear();
+        this.filterChanged();
       });
   }
 }

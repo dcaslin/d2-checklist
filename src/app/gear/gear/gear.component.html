@@ -71,6 +71,12 @@
         </mat-menu>
         <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
         <a mat-button *ngIf="markService.dirty" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
+        <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
+            <span class="fa-stack">
+                <i class="fas fa-filter fa-stack-1x"></i>
+                <i class="fas fa-ban fa-stack-2x warn-text"></i>
+              </span>
+        </a>
 
         {{gearToShow.length}} / {{total}}
       </div>
@@ -176,6 +182,8 @@
                 <td class="limited-gear-width">
                   {{i.typeName}}
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}</ng-container>
+                  <ng-container *ngIf="debugmode"><br>[{{i.inventoryBucket}}]</ng-container>
+
                 </td>
                 <td class="limited-gear-width">
                   <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}}</a><br>

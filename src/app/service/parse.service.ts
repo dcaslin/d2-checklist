@@ -1450,7 +1450,7 @@ export class ParseService {
                             options = [vault];
                         }
                         else {
-                            options = chars.slice();
+                            options = [shared];
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
                         if (parsed != null) {
