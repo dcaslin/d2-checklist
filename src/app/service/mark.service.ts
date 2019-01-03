@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject,  } from 'rxjs';
+import { Subject, } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import * as LZString from 'lz-string';
@@ -12,10 +12,17 @@ export class MarkService implements OnDestroy {
     // have an observable for dirty that's debounced to once every second that writes updates to server
     private marksChanged: Subject<boolean> = new Subject<boolean>();
     public dirty = false;
-    private currentMarks:Marks = null;
+    public markChoices: MarkChoice[];
+    public markDict: {[id: string] : MarkChoice};
+    private currentMarks: Marks = null;
 
     constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
         // auto save every 5 seconds if dirty
+        this.markChoices = MarkService.buildMarkChoices();
+        this.markDict = {};
+        for (const mc of this.markChoices){
+            this.markDict[mc.value] = mc;
+        }
         this.marksChanged.pipe(
             takeUntil(this.unsubscribe$),
             debounceTime(5000))
@@ -37,7 +44,7 @@ export class MarkService implements OnDestroy {
             .toPromise().then(result => {
                 if (result.status && result.status === "success") {
                     this.dirty = false;
-                  }
+                }
             });
     }
 
@@ -49,7 +56,32 @@ export class MarkService implements OnDestroy {
         return this.httpClient.get<Marks>(requestUrl).toPromise();
     }
 
-    public buildEmptyMarks(platform: number, memberId: string) {
+    public static buildMarkChoices(): MarkChoice[] {
+        const a = [];
+        a.push({
+            label: "Upgrade",
+            value: "upgrade",
+            iconClass: "fas fa-level-up-alt"
+        });
+        a.push({
+            label: "Keep",
+            value: "keep",
+            iconClass: "fas fa-save"
+        });
+        a.push({
+            label: "Infuse",
+            value: "infuse",
+            iconClass: "fas fa-syringe"
+        });
+        a.push({
+            label: "Junk",
+            value: "junk",
+            iconClass: "fas fa-trash-alt"
+        });
+        return a;
+    }
+
+    private static buildEmptyMarks(platform: number, memberId: string) {
         return {
             marked: {},
             notes: {},
@@ -73,19 +105,19 @@ export class MarkService implements OnDestroy {
             let mark: any = m[item.id];
             if (mark != null && mark.trim().length > 0) {
                 if (mark == "upgrade") {
-                    item.markLabel = "Upgrade Me";
+                    item.markLabel = "Upgrade";
                     item.mark = mark;
                 }
                 else if (mark == "keep") {
-                    item.markLabel = "Keep Me";
+                    item.markLabel = "Keep";
                     item.mark = mark;
                 }
                 else if (mark == "infuse") {
-                    item.markLabel = "Infusion Fuel";
+                    item.markLabel = "Infuse";
                     item.mark = mark;
                 }
                 else if (mark == "junk") {
-                    item.markLabel = "Dismantle Me";
+                    item.markLabel = "Junk";
                     item.mark = mark;
                 }
                 else {
@@ -136,40 +168,31 @@ export class MarkService implements OnDestroy {
 
     public processItems(items: InventoryItem[]): void {
         //if we don't have both, don't do anything
-        if (this.currentMarks==null || items.length==0) return;
+        if (this.currentMarks == null || items.length == 0) return;
         let updatedMarks: boolean = MarkService.processMarks(this.currentMarks.marked, items);
         let updatedNotes: boolean = MarkService.processNotes(this.currentMarks.notes, items);
         this.dirty = this.dirty || updatedNotes || updatedMarks;
     }
 
     updateItem(item: InventoryItem): void {
-        if (item.id==null) return;
+        if (item.id == null) return;
         if (item.mark == null) {
             item.markLabel = null;
             delete this.currentMarks.marked[item.id];
         }
         else {
-
-            if (item.mark == "upgrade") {
-                item.markLabel = "Upgrade Me";
+            const mc: MarkChoice = this.markDict[item.mark];
+            if (mc!=null){
+                item.markLabel = mc.label
             }
-            else if (item.mark == "keep") {
-                item.markLabel = "Keep Me";
-            }
-            else if (item.mark == "infuse") {
-                item.markLabel = "Infusion Fuel";
-            }
-            else if (item.mark == "junk") {
-                item.markLabel = "Dismantle Me";
-            }
-            else {
+            else{
                 console.log("Ignoring mark: " + item.mark);
                 item.mark == null;
                 return;
             }
             this.currentMarks.marked[item.id] = item.mark;
         }
-        if (item.notes == null || item.notes.trim().length==0) {
+        if (item.notes == null || item.notes.trim().length == 0) {
             delete this.currentMarks.notes[item.id];
         }
         else {
@@ -184,7 +207,7 @@ export class MarkService implements OnDestroy {
         platform = 20 + platform;
         let marks = await this.load(platform, memberId);
         if (marks.memberId == null) {
-            marks = this.buildEmptyMarks(platform, memberId);
+            marks = MarkService.buildEmptyMarks(platform, memberId);
         }
         this.currentMarks = marks;
     }
@@ -209,6 +232,12 @@ export interface Marks {
     memberId: string;
 }
 
+export interface MarkChoice {
+    label: string;
+    value: string;
+    iconClass: string;
+}
+
 interface SaveResult {
     status: string;
-  }
+}

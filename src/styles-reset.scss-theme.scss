@@ -276,6 +276,23 @@
     }
   }
 
+  table.gear-table {
+    border: 1px solid mat-color($background, disabled-list-option);
+    & tr {
+      background:  mat-color($background, card);
+      border: 1px solid mat-color($background, unselected-chip);
+    }
+    & td.lead {
+      & .caption {
+        color: mat-color($foreground, secondary-text);
+      }
+    }
+    & th {
+      color: mat-color($foreground, secondary-text);
+    }
+  }
+
+
   table.recent-players-table{
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;

@@ -947,6 +947,7 @@ export class InventoryPlug {
     readonly desc: string;
     readonly icon: string;
     readonly active: boolean;
+    public godRoll: boolean = false;
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean) {
         this.hash = hash;

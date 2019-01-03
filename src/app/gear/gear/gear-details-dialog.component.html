@@ -1,79 +1,116 @@
-<h2 mat-dialog-title>{{data[0].name}}
-
-    <span class="simple-caption">{{data[0].desc}}</span>
+<h2 mat-dialog-title>{{items[0].name}}
+    <span class="simple-caption">{{items[0].desc}}</span>
 </h2>
+<div>
+    <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
+</div>
 <mat-dialog-content>
-    <table class="tidy-table mark-table">
+    <table class="gear-table mark-table">
         <tbody>
             <tr>
-                <th>Power</th>
-                <td *ngFor="let g of data">{{g.power}}</td>
-            </tr>
-            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
-                <th>Masterwork</th>
-                <td *ngFor="let i of data">
-                    <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
-                        {{i.masterwork.name}} {{i.masterwork.tier}}
-                        <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
-                    </div>
-                </td>
-            </tr>
-            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
-                <th>Mod</th>
-                <td *ngFor="let i of data">
-                    <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
-                        {{i.mod.name}}
-                    </div>
-                </td>
-            </tr>
-            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
-                <th>Sockets</th>
-                <td *ngFor="let i of data">
-                    <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
-                        <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
-                            [matTooltip]="plug.desc">
-                            {{plug.name}}
-                            <ng-container *ngIf="!isLastPlug"><br></ng-container>
-                        </span>
-                    </div>
-                </td>
-            </tr>
-            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
-                <th>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Stat</th>
-                                <th>Base</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let stat of data[0].stats">
-                                <td>{{stat.name}}</td>
-                                <td>{{stat.baseValue}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <th>Light</th>
+                <ng-container *ngFor="let i of items">
 
-                </th>
-                <td *ngFor="let i of data">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Curr</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let stat of i.stats">
-                                <td>
-                                    <ng-container *ngIf="stat.value!=null">{{stat.value}}</ng-container>
-                                    <ng-container *ngIf="stat.value==null">-</ng-container>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
+                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                        {{i.power}}
+                        <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
+                            class="fas fa-star accent-text"></i>
+                    </td>
+                </ng-container>
+
             </tr>
+            <tr>
+                <th>Tag</th>
+
+                <ng-container *ngFor="let i of items">
+
+                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                        <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']" [matMenuTriggerFor]="menu">
+                            <ng-container *ngIf="i.mark==null">
+                                <i class="fas fa-tags"></i>&ensp;
+                                Unmarked
+                            </ng-container>
+                            <ng-container *ngIf="i.mark!=null">
+                                <i [class]="parent.markService.markDict[i.mark].iconClass"></i>&ensp;
+                                {{i.markLabel}}
+                            </ng-container>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <ng-container *ngFor="let mc of parent.markService.markChoices">
+                                <button *ngIf="mc.value!=i.mark" mat-menu-item 
+                                (click)="parent.mark(mc.value,i)">
+                                    <i [class]="mc.iconClass"></i>&ensp;
+                                    {{mc.label}}
+                                </button>
+                            </ng-container>
+
+                            <button *ngIf="i.mark!=null" mat-menu-item (click)="parent.mark(null,i)">
+                                Remove Mark
+                            </button>
+                        </mat-menu>
+                    </td>
+                </ng-container>
+            </tr>
+            <tr *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
+                <th>Masterwork</th>
+
+                <ng-container *ngFor="let i of items">
+
+                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                        <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
+                            {{i.masterwork.name}} {{i.masterwork.tier}}
+                            <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'"
+                                [value]="i.masterwork.tier*10"></mat-progress-bar>
+                        </div>
+                    </td>
+                </ng-container>
+            </tr>
+            <tr *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
+                <th>Mod</th>
+
+                <ng-container *ngFor="let i of items">
+
+                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                        <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
+                            {{i.mod.name}}
+                        </div>
+                    </td>
+                </ng-container>
+            </tr>
+            <tr *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
+                <th>Sockets</th>
+
+                <ng-container *ngFor="let i of items">
+
+                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                        <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
+                            <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
+                                [matTooltip]="plug.desc">
+                                <i *ngIf="plug.godRoll" matTooltip="God roll!" class="fas fa-star accent-text"></i>
+                  
+                                {{plug.name}}
+                                <ng-container *ngIf="!isLastPlug"><br></ng-container>
+                            </span>
+                        </div>
+                    </td>
+                </ng-container>
+            </tr>
+
+            <ng-container *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
+                <tr *ngFor="let stat of items[0].stats; let cntr = index">
+                    <td>{{stat.name}}
+                        <ng-container *ngIf="stat.baseValue!=null">
+                            {{stat.baseValue}}
+                        </ng-container>
+                    </td>
+
+                    <ng-container *ngFor="let i of items">
+                        <td *ngIf="!hideJunk || i.mark!='junk'">
+                            {{i.stats[cntr].value}}
+                        </td>
+                    </ng-container>
+                </tr>
+            </ng-container>
         </tbody>
     </table>
 </mat-dialog-content>

@@ -1,3 +1,5 @@
+
+
 @import 'styles-variables';
 
 @import '~bootstrap/scss/bootstrap-reboot';
@@ -239,4 +241,8 @@
 
 .space-right{
   margin-right: 0.30em !important;
+}
+
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
+  line-height: 32px !important;
 }

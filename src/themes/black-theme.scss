@@ -9,26 +9,26 @@ $anms-black-theme: mat-dark-theme(
 );
 
 @mixin black-gear-tags {
-    .upgrade-button{
+    button.upgrade{
         background-color: hsl(200, 65%, 35%);;
     }
     .mark-table>tbody>tr.upgrade>td{
         background-color: hsl(200, 65%, 15%);
     }
-    .keep-button{
+    button.keep{
         background-color: hsl(103, 44%, 35%);
     }
     .mark-table>tbody>tr.keep>td, 
     {
         background-color: hsl(103, 44%, 15%); 
     }
-    .infuse-button{
+    button.infuse{
         background-color: hsl(50, 81%, 35%);
     }
     .mark-table>tbody>tr.infuse>td{
         background-color: hsl(50, 81%, 15%);
     }
-    .junk-button{
+    button.junk{
         background-color: hsl(0, 43%, 35%);
     }
     .mark-table>tbody>tr.junk>td{

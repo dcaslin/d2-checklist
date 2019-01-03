@@ -28,9 +28,9 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 
 
 // TODO compare all like items in modal
-   // TODO tagging in modal
-   // hide junk checkbox in modal
-   // fix stats layout
+// TODO tagging in modal
+// hide junk checkbox in modal
+// fix stats layout
 
 // TODO auto process locking items
 // TODO make work in mobile
@@ -50,7 +50,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     new Choice("keep", "Keep"),
     new Choice("infuse", "Infuse"),
     new Choice("junk", "Junk"),
-    new Choice(null, "Not Marked")
+    new Choice(null, "Unmarked")
   ];
 
 
@@ -88,7 +88,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public rarityToggle: GearToggleComponent;
 
   filters: GearToggleComponent[] = [];
-  filtersDirty: boolean =  false;
+  filtersDirty: boolean = false;
 
 
 
@@ -125,10 +125,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterGear();
   }
 
-  resetFilters(): void{
+  resetFilters(): void {
     this.filter.nativeElement.value = "";
     this.filterText = null;
-    for (const toggle of this.filters){
+    for (const toggle of this.filters) {
       toggle.selectAll(true);
     }
     this.filterChanged();
@@ -153,18 +153,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (marking === item.mark) marking = null;
     item.mark = marking;
     this.markService.updateItem(item);
+    this.filterGear();
   }
 
   showCopies(i: InventoryItem) {
     const copies = [i];
-    for (const g of this.player.gear){
-      if (g.hash === i.hash && g.id!=i.id){
+    for (const g of this.player.gear) {
+      if (g.hash === i.hash && g.id != i.id) {
         copies.push(g);
       }
     }
     this.openGearDialog(copies);
   }
-
 
   showItem(i: InventoryItem) {
     this.openGearDialog([i]);
@@ -181,13 +181,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterGear();
   }
 
-
-
   filterItem(i: InventoryItem): boolean {
     if (i.searchText.indexOf(this.filterText) >= 0) return true;
     if (i.notes != null && i.notes.indexOf(this.filterText) >= 0) return true;
     return false;
-
   }
 
   private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
@@ -199,9 +196,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
   }
 
-  checkFilterDirty(){
-    if (this.filterText!=null && this.filterText.trim().length>0) return true;
-    for (const toggle of this.filters){
+  checkFilterDirty() {
+    if (this.filterText != null && this.filterText.trim().length > 0) return true;
+    for (const toggle of this.filters) {
       if (!toggle.isAllSelected()) return true;
     }
     return false;
@@ -214,11 +211,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (!this.modTypeToggle.isChosen(i.typeName)) return false;
     if (!this.consumableTypeToggle.isChosen(i.typeName)) return false;
     if (!this.exchangeTypeToggle.isChosen(i.typeName)) return false;
-
     if (!this.ownerToggle.isChosen(i.owner.id)) return false;
     if (!this.rarityToggle.isChosen(i.tier)) return false;
     if (!this.classTypeToggle.isChosen(i.classAllowed)) return false;
-
     return true;
   }
 
@@ -384,9 +379,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public openGearDialog(items: InventoryItem[]): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
-    dc.autoFocus = true;
+    //dc.autoFocus = true;
     //dc.width = '500px';
-    dc.data = items;
+    dc.data = {
+      parent: this,
+      items: items
+    };
     const dialogRef = this.dialog.open(GearDetailsDialogComponent, dc);
   }
 
@@ -433,8 +431,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 })
 export class GearDetailsDialogComponent {
   ItemType = ItemType;
+  hideJunk = false;
+  items: InventoryItem[];
+  parent: GearComponent
   constructor(
     public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
+    @Inject(MAT_DIALOG_DATA) public data: any) { 
+      this.items = data.items;
+      this.parent = data.parent;
+
+    }
 
 }
