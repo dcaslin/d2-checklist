@@ -137,9 +137,8 @@
                 </td>
                 <td class="limited-gear-width">
                   <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these." class="fas fa-star accent-text"></i>
-                  <a class="item-name" href="javascript:void(0)" (click)="showItem(i)">{{i.name}}</a>
+                  <a class="item-name" href="javascript:void(0)" [matTooltip]="i.desc" (click)="showItem(i)">{{i.name}}</a>
                   <span *ngIf="debugmode">[{{i.hash}}]</span>
-
                   <div class="options bordered">
                     <div *ngIf="i.canReallyEquip">
                       <i>

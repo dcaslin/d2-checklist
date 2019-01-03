@@ -1,0 +1,79 @@
+<h2 mat-dialog-title>{{data[0].name}}
+
+    <span class="simple-caption">{{data[0].desc}}</span>
+</h2>
+<mat-dialog-content>
+    <table class="tidy-table mark-table">
+        <tbody>
+            <tr>
+                <th>Power</th>
+                <td *ngFor="let g of data">{{g.power}}</td>
+            </tr>
+            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
+                <th>Masterwork</th>
+                <td *ngFor="let i of data">
+                    <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
+                        {{i.masterwork.name}} {{i.masterwork.tier}}
+                        <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
+                    </div>
+                </td>
+            </tr>
+            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
+                <th>Mod</th>
+                <td *ngFor="let i of data">
+                    <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
+                        {{i.mod.name}}
+                    </div>
+                </td>
+            </tr>
+            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
+                <th>Sockets</th>
+                <td *ngFor="let i of data">
+                    <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
+                        <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
+                            [matTooltip]="plug.desc">
+                            {{plug.name}}
+                            <ng-container *ngIf="!isLastPlug"><br></ng-container>
+                        </span>
+                    </div>
+                </td>
+            </tr>
+            <tr *ngIf="data[0].type==ItemType.Weapon || data[0].type==ItemType.Armor">
+                <th>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Stat</th>
+                                <th>Base</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let stat of data[0].stats">
+                                <td>{{stat.name}}</td>
+                                <td>{{stat.baseValue}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </th>
+                <td *ngFor="let i of data">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Curr</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let stat of i.stats">
+                                <td>
+                                    <ng-container *ngIf="stat.value!=null">{{stat.value}}</ng-container>
+                                    <ng-container *ngIf="stat.value==null">-</ng-container>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</mat-dialog-content>
