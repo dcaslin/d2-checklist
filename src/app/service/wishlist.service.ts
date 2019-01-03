@@ -68,7 +68,7 @@ export class WishlistService implements OnDestroy {
             }
             if (rollMatches){
               i.godRoll = true;
-              i.searchText = i.searchText+" godroll";
+              i.searchText = i.searchText+" godroll is:wishlist";
 
               for (const desiredPerk of c.recommendedPerks){
                 for (const s of i.sockets){

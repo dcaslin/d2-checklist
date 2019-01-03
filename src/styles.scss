@@ -48,6 +48,7 @@
 
   word-wrap: break-word;
   word-break: break-all;
+  white-space: unset;
 }
 
 .break-word{
@@ -245,4 +246,9 @@
 
 .mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
   line-height: 32px !important;
+}
+
+mat-form-field.full-width .mat-form-field-infix{
+    min-width: 0;
+    width: 100% !important;
 }
