@@ -1827,6 +1827,7 @@ export class ParseService {
         }
         mwName = mwName.toLowerCase();
         mwName = mwName.charAt(0).toUpperCase() + mwName.slice(1);
+        mwName = mwName.replace("_"," ");
         return {
             hash: plugDesc.hash,
             name: mwName,
@@ -1863,6 +1864,7 @@ export class ParseService {
                 }
             }
         }
+        const name = plugDesc.displayProperties.name.replace("_"," ");
         return new InventoryPlug(plugDesc.hash,
             plugDesc.displayProperties.name, desc,
             plugDesc.displayProperties.icon, true);
@@ -2136,9 +2138,13 @@ export class ParseService {
             searchText = desc.displayProperties.name;
             if (mw != null) {
                 searchText += " " + mw.name;
+                if (mw.tier==10){
+                    searchText += " is:masterwork";
+                }
             }
             if (mod != null) {
                 searchText += " " + mod.name;
+                searchText += " is:hasmod";
             }
             if (sockets != null) {
                 for (const s of sockets) {

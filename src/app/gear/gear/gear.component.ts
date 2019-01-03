@@ -27,13 +27,15 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE filter UI
 
 
-// TODO compare all like items in modal
-// TODO tagging in modal
-// hide junk checkbox in modal
-// fix stats layout
+// DONE compare all like items in modal
+// DONE tagging in modal
+// DONE hide junk checkbox in modal
+// DONE fix stats layout
+
+// TODO make work in mobile
 
 // TODO auto process locking items
-// TODO make work in mobile
+
 // TODO final tweaks to UI
 // TODO wish list configurability
 
@@ -44,6 +46,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 })
 export class GearComponent extends ChildComponent implements OnInit, AfterViewInit {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
+  filtering = false;
 
   readonly markChoices: Choice[] = [
     new Choice("upgrade", "Upgrade"),
@@ -92,6 +95,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
 
+  private filterChangedSubject: Subject<void> = new Subject<void>();
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
 
   selectedUser: SelectedUser = null;
@@ -121,8 +125,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterChanged(): void {
-    this.filtersDirty = this.checkFilterDirty();
-    this.filterGear();
+    this.filtering = true;
+    this.filterChangedSubject.next();
   }
 
   resetFilters(): void {
@@ -388,6 +392,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     const dialogRef = this.dialog.open(GearDetailsDialogComponent, dc);
   }
 
+  
+
+  public showWildcardHelp(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    
+    dc.data = {
+    };
+    const dialogRef = this.dialog.open(GearHelpDialogComponent, dc);
+  }
 
   ngOnInit() {
     // selected user changed
@@ -398,6 +412,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     });
     this.loadWishlist();
 
+    this.filterChangedSubject.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(50))
+      .subscribe(() => {
+        this.filtersDirty = this.checkFilterDirty();
+        this.filterGear();    
+        this.filtering = false;
+      });
+
 
     this.noteChanged.pipe(
       takeUntil(this.unsubscribe$),
@@ -406,7 +429,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         this.markService.updateItem(itm);
       });
 
-    // filter changed
     observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(150),
@@ -440,6 +462,20 @@ export class GearDetailsDialogComponent {
       this.items = data.items;
       this.parent = data.parent;
 
+    }
+
+}
+
+@Component({
+  selector: 'anms-gear-help-dialog',
+  templateUrl: './gear-help-dialog.component.html',
+  styleUrls: ['./gear.component.scss']
+})
+export class GearHelpDialogComponent {
+
+  constructor(
+    public dialogRef: MatDialogRef<GearHelpDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { 
     }
 
 }

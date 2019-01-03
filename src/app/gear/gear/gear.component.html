@@ -6,10 +6,11 @@
       </p> -->
       <div class="fixed-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || gearService.loading===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="filtering===true && !(loading===true || gearService.loading===true)"></mat-spinner>
       </div>
 
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
-        (change)="option=optionsgroup.value; filterGear()">
+        (change)="option=optionsgroup.value; filterChanged()">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
           <i *ngIf="o.name=='Weapons'" class="far fa-axe-battle"></i>
           <i *ngIf="o.name=='Armor'" class="far fa-helmet-battle"></i>
@@ -31,6 +32,9 @@
       <div style="margin: 10px" [hidden]="selectedUser==null">
         <mat-form-field class="searchField">
           <input matInput #filter placeholder="Wildcard filter">
+          <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
+            <mat-icon>help_outline</mat-icon>
+          </button>
         </mat-form-field>
 
         <anms-gear-toggle #markToggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"
@@ -91,26 +95,26 @@
               <th class="limited-gear-width">
                 <a href="javascript:void(0)" (click)="sort('name')">Name</a>
               </th>
-              <th class="limited-gear-width">
+              <th class="limited-gear-width hide-mobile-table-cell">
                 <a href="javascript:void(0)" (click)="sort('typeName')">Type</a>
               </th>
-              <th class="limited-gear-width">
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
               </th>
-              <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('masterwork')">Masterwork</a>
               </th>
-              <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('mod')">Mod</a>
               </th>
-              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+              <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 Sockets
               </th>
 
               <th class="limited-gear-width" *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('quantity')">Quantity</a>
               </th>
-              <th *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" style="width: 200px">
+              <th class="tag-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 Tag
               </th>
             </tr>
@@ -130,11 +134,14 @@
                       <i *ngIf="!i.locked && (i.type==ItemType.Weapon || i.type==ItemType.Armor)" (click)="gearService.setLock(player, i, true)"
                         class="fas fa-lock-open-alt"></i>
                     </div>
-                    <div class="gear-notes">
+                    <div class="gear-equipped">
                       <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
                     </div>
                   </div>
                   <div>{{i.owner.label}}</div>
+                  <div class="mobile-only-block">
+                      <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}} copies</a><br>
+                  </div>
                 </td>
                 <td class="limited-gear-width">
                   <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
@@ -143,27 +150,39 @@
                   <span *ngIf="debugmode">[{{i.hash}}]</span>
                   <div class="options bordered">
                     <div class="item-option" *ngIf="i.canReallyEquip">
-                        <a href="javascript:void(0);" (click)="gearService.equip(player, i)">Equip</a>
+                      <a href="javascript:void(0);" (click)="gearService.equip(player, i)">Equip</a>
                     </div>
                     <ng-container *ngFor="let target of i.options">
                       <div class="item-option">
-                          <a href="javascript:void(0);" (click)="gearService.transfer(player, i, target)">{{target.label}}</a>
+                        <a href="javascript:void(0);" (click)="gearService.transfer(player, i, target)">{{target.label}}</a>
                       </div>
                     </ng-container>
                   </div>
+                  <div class="mobile-only-block">
+                      <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
+                        <code class="break-easy">{{i.masterwork.name}} {{i.masterwork.tier}}</code>
+                        <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
+                      </div>
+  
+                      <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
+                        <code class="break-easy">{{i.mod.name}}</code>
+                      </div>
+                    </div>
+  
                 </td>
-                <td class="limited-gear-width">
+               
+                <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}</ng-container>
                   <ng-container *ngIf="debugmode"><br>[{{i.inventoryBucket}}]</ng-container>
 
                 </td>
-                <td class="limited-gear-width">
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}}</a><br>
                   <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
                   <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                 </td>
-                <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
                     <!-- <div *ngIf="i.masterwork.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.masterwork.icon + ')'"></div>
                     <br> -->
@@ -172,7 +191,7 @@
                     <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
                   </div>
                 </td>
-                <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
                     <!-- <div *ngIf="i.mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
                     <br> -->
@@ -180,12 +199,12 @@
 
                   </div>
                 </td>
-                <td *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
+                <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc">
                       <i *ngIf="plug.godRoll" matTooltip="God roll!" class="fas fa-star accent-text"></i>
-                  
+
                       <!-- <div *ngIf="plug.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + plug.icon + ')'"></div> -->
                       {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
@@ -195,15 +214,19 @@
                 <td class="limited-gear-width" *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor">
                   {{i.quantity}}
                 </td>
-                <td *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <button *ngFor="let mc of markService.markChoices" 
-                    (click)="mark(mc.value,i)" mat-icon-button [ngClass]="['tag-button',mc.value]">
-                    <i [class]="mc.iconClass"></i>
-                  </button>
-                  <mat-form-field>
-                    <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
-                      (change)="itemNotesChanged(i)">
-                  </mat-form-field>
+                <td class="tag-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <div>
+                    <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
+                      [ngClass]="['tag-button',mc.value]">
+                      <i [class]="mc.iconClass"></i>
+                    </button>
+                  </div>
+                  <div>
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
+                        (change)="itemNotesChanged(i)">
+                    </mat-form-field>
+                  </div>
                 </td>
               </tr>
             </ng-container>
