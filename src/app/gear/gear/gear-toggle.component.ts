@@ -104,56 +104,12 @@ export interface ToggleInfo {
 
 export class Choice {
   readonly matchValue: string;
-  readonly otherFields: string[];
   readonly display: string;
-  private _value = true;
-  private _indeterminate = false;
-  parent: Choice;
-  children: Choice[] = [];
+  public value = true;
 
-  constructor(matchValue: string, display: string, value?: boolean, children?: Choice[], otherFields?: string[]) {
+  constructor(matchValue: string, display: string, value?: boolean) {
     this.matchValue = matchValue;
     this.display = display;
-    if (value!=undefined) this._value = value;
-    if (children!=undefined) this.children = children;
-    this.children.forEach(
-      ch => ch.parent = this
-    )
-    this.otherFields = otherFields;
-  }
-
-  get value(): boolean {
-    return this._value;
-  }
-
-  set value(value: boolean) {
-    this._value = value;
-    for (const ch of this.children) {
-      ch._value = value;
-    }
-    if (!value && this.parent) {
-      this.parent._value = false;
-    }
-    else if (this.parent != null) {
-      let allTrue = true;
-      let allFalse = true;
-      for (const ch of this.parent.children) {
-        if (ch._value == false) {
-          allTrue = false;
-        }
-        else if (ch._value == true) {
-          allFalse = false;
-        }
-      }
-      if (!allTrue || !allFalse) {
-        this.parent._value = false;
-        this.parent._indeterminate = true;
-      }
-      else {
-        this.parent._indeterminate = true;
-        if (allTrue) this.parent._value = true;
-        else this.parent._value = false;
-      }
-    }
+    if (value!=undefined) this.value = value;
   }
 }

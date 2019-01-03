@@ -1454,6 +1454,13 @@ export class ParseService {
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
                         if (parsed != null) {
+                            if (parsed.type==ItemType.Weapon||parsed.type==ItemType.Armor){
+                                parsed.options.pop();
+                                for (const c of chars){
+                                    parsed.options.push(c);
+                                }
+
+                            }
                             gear.push(parsed);
                         }
                     });
@@ -2140,6 +2147,12 @@ export class ParseService {
                     }
                 }
             }
+            if (isRandomRoll==true){
+                searchText+= " random";
+            }
+            else{
+                searchText+= " fixed";
+            }
             searchText = searchText.toLowerCase();
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
@@ -2148,7 +2161,7 @@ export class ParseService {
                 power, damageType, stats, sockets, objectives,
                 desc.displayProperties.description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options, isRandomRoll
+                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), isRandomRoll
             );
         } catch (exc) {
             console.dir(itemComp);

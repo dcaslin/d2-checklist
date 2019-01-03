@@ -20,15 +20,17 @@
     margin-left: 2px;
   }
 
-
-// upgrade: hsla(200, 65%, 19%, 1)  #113b50
-// keep: hsla(103, 44%, 19%, 1) #27461b
-// infuse: hsla(50, 81%, 23%, 1) #6a5a0b
-// junk: hsla(0, 43%, 19%, 1) #451c1c
-
   .tag-button{
     margin: 2px;
     font-size: 1em;
+  }
+
+  .detail-tag-button{
+    margin: 0px;
+    padding-left: 7px;
+    padding-right: 7px;
+    line-height: 30px;
+    font-size: small;
   }
 
   .mod-icon{
@@ -44,11 +46,44 @@
   div.bottom{
     border-bottom: 1px solid rgb(221,221,221);
   }
+  $gear-table-padding: .400em;
 
-  table.tidy-table {
-    table-layout: auto !important;
+  table.gear-table {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: 1250px;
+    table-layout: auto;
+    & caption {
+      font-size: 1.5em;
+      margin: .5em 0 .75em;
+    }
+    & tr {
+      padding: .35em;
+    }
     & td {
       font-size: 14px;
+      padding: $gear-table-padding;
+      text-align: left;
+      vertical-align: top;
+    }
+    & td.lead {
+      padding: $gear-table-padding;
+      text-align: left;
+      font-weight: bold;
+
+      & .caption {
+        float: right;
+        font-size: smaller;
+        font-weight: lighter;
+      }
+    }
+    & th {
+      padding: $gear-table-padding;
+      text-align: left;
+      font-size: .85em;
+      letter-spacing: .1em;
     }
   }
 
@@ -139,7 +174,12 @@
 }
 
 .item-name{ 
-  font-size: larger;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.item-option{
+  font-size: 12px;
 }
 
 a:link {
