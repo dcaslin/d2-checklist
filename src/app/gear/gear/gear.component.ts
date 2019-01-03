@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -12,6 +12,7 @@ import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { WishlistService } from '@app/service/wishlist.service';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
 
 // DONE equip gear
 // DONE transfer gear
@@ -23,15 +24,14 @@ import { WishlistService } from '@app/service/wishlist.service';
 // DONE hard coded wishlist
 
 //DONE show class for armor
-
-// TODO filter UI
-// weap & armor global: tags, owner, rarity, 20/50/100/All rows
-// weap: type,
-// armor: type, class
+// DONE filter UI
 
 
 // TODO compare all like items in modal
-// TODO stats modal
+   // TODO tagging in modal
+   // hide junk checkbox in modal
+   // fix stats layout
+
 // TODO auto process locking items
 // TODO make work in mobile
 // TODO final tweaks to UI
@@ -139,7 +139,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   constructor(storageService: StorageService, private bungieService: BungieService,
     public markService: MarkService,
     public gearService: GearService,
-    private wishlistSerivce: WishlistService) {
+    private wishlistSerivce: WishlistService,
+    public dialog: MatDialog) {
     super(storageService);
     this.loading = true;
   }
@@ -155,12 +156,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   showCopies(i: InventoryItem) {
-    alert("TODO: show copies");
+    const copies = [i];
+    for (const g of this.player.gear){
+      if (g.hash === i.hash && g.id!=i.id){
+        copies.push(g);
+      }
+    }
+    this.openGearDialog(copies);
   }
 
 
   showItem(i: InventoryItem) {
-    alert("TODO: show item");
+    this.openGearDialog([i]);
   }
 
   sort(val: string) {
@@ -373,6 +380,17 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filters.push(this.classTypeToggle);
   }
 
+
+  public openGearDialog(items: InventoryItem[]): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    //dc.width = '500px';
+    dc.data = items;
+    const dialogRef = this.dialog.open(GearDetailsDialogComponent, dc);
+  }
+
+
   ngOnInit() {
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
@@ -405,4 +423,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         this.filterChanged();
       });
   }
+}
+
+
+@Component({
+  selector: 'anms-gear-details-dialog',
+  templateUrl: './gear-details-dialog.component.html',
+  styleUrls: ['./gear.component.scss']
+})
+export class GearDetailsDialogComponent {
+  ItemType = ItemType;
+  constructor(
+    public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
+
 }
