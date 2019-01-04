@@ -33,6 +33,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE fix stats layout
 // DONE make work in mobile
 
+// TODO shardit keepit copy paste
 // TODO auto process locking items
 // TODO final tweaks to UI
 // TODO wish list configurability
@@ -165,6 +166,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         copies.push(g);
       }
     }
+    copies.sort(function (a, b) {
+      if (a.power < b.power)
+        return -1;
+      if (a.power > b.power)
+        return 1;
+      return 0;
+    });
     this.openGearDialog(copies);
   }
 
