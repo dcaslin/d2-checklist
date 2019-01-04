@@ -37,8 +37,10 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE auto process locking items
 // DONE shard mode
 
+// TODO Fix BLAH, remove "copies" from mobile, remove <code>
 // TODO shardit keepit copy paste
 // TODO final tweaks to UI
+// TODO upgrade like names, and fix armor utilities
 // TODO wish list configurability
 
 @Component({
