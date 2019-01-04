@@ -24,6 +24,23 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 
+lz-string
+WTFPL
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+                    Version 2, December 2004 
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> 
+
+ Everyone is permitted to copy and distribute verbatim or modified 
+ copies of this license document, and changing it is allowed as long 
+ as the name is changed. 
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
+
+  0. You just DO WHAT THE FUCK YOU WANT TO.
+
+
 webpack
 MIT
 Copyright JS Foundation and other contributors
@@ -46,23 +63,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-lz-string
-WTFPL
-DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-                    Version 2, December 2004 
-
- Copyright (C) 2004 Sam Hocevar <sam@hocevar.net> 
-
- Everyone is permitted to copy and distribute verbatim or modified 
- copies of this license document, and changing it is allowed as long 
- as the name is changed. 
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE 
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION 
-
-  0. You just DO WHAT THE FUCK YOU WANT TO.
 
 
 tslib
@@ -405,26 +405,14 @@ THE SOFTWARE.
 
 @angular/material/progress-spinner
 
-@angular/material/core
-
-@angular/material/menu
-
-@angular/material/icon
-
-@angular/material/progress-bar
-
-@angular/material/tabs
-
-@angular/material/expansion
-
 @angular/forms
 MIT
 
-@angular/material/checkbox
+@angular/material/button-toggle
 
-@angular/material/tree
+@angular/material/progress-bar
 
-@angular/material/card
+@angular/material/form-field
 
 ng2-adsense
 MIT
@@ -451,6 +439,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+@angular/material/icon
+
+@angular/material/menu
+
+@angular/material/checkbox
+
+@angular/material/core
+
+@angular/material/tabs
+
+@angular/material/expansion
+
+@angular/material/tree
+
+@angular/material/card
+
 ngx-moment
 MIT
 The MIT License (MIT)
@@ -476,11 +480,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-@angular/material/form-field
-
 @angular/material/select
-
-@angular/material/button-toggle
 
 @angular/material/table
 

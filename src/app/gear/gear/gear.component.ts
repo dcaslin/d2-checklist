@@ -23,7 +23,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE improve search text to include perks
 // DONE hard coded wishlist
 
-//DONE show class for armor
+// DONE show class for armor
 // DONE filter UI
 
 
@@ -31,11 +31,9 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE tagging in modal
 // DONE hide junk checkbox in modal
 // DONE fix stats layout
-
-// TODO make work in mobile
+// DONE make work in mobile
 
 // TODO auto process locking items
-
 // TODO final tweaks to UI
 // TODO wish list configurability
 

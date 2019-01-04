@@ -11,7 +11,7 @@
                 <th>Light</th>
                 <ng-container *ngFor="let i of items">
 
-                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         {{i.power}}
                         <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
                             class="fas fa-star accent-text"></i>
@@ -21,10 +21,9 @@
             </tr>
             <tr>
                 <th>Tag</th>
-
                 <ng-container *ngFor="let i of items">
 
-                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']" [matMenuTriggerFor]="menu">
                             <ng-container *ngIf="i.mark==null">
                                 <i class="fas fa-tags"></i>&ensp;
@@ -56,7 +55,7 @@
 
                 <ng-container *ngFor="let i of items">
 
-                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
                             {{i.masterwork.name}} {{i.masterwork.tier}}
                             <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'"
@@ -70,7 +69,7 @@
 
                 <ng-container *ngFor="let i of items">
 
-                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
                             {{i.mod.name}}
                         </div>
@@ -82,7 +81,7 @@
 
                 <ng-container *ngFor="let i of items">
 
-                    <td *ngIf="!hideJunk || i.mark!='junk'">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                                 [matTooltip]="plug.desc">
@@ -105,7 +104,7 @@
                     </td>
 
                     <ng-container *ngFor="let i of items">
-                        <td *ngIf="!hideJunk || i.mark!='junk'">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             {{i.stats[cntr].value}}
                         </td>
                     </ng-container>
