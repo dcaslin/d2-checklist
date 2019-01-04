@@ -12,26 +12,26 @@ $anms-black-theme: mat-dark-theme(
     button.upgrade{
         background-color: hsl(200, 65%, 35%);;
     }
-    .mark-table>tbody>tr.upgrade>td{
+    .mark-table>tbody>tr.upgrade>td, .mark-table>tbody>tr>td.upgrade{
         background-color: hsl(200, 65%, 15%);
     }
     button.keep{
         background-color: hsl(103, 44%, 35%);
     }
-    .mark-table>tbody>tr.keep>td, 
+    .mark-table>tbody>tr.keep>td, .mark-table>tbody>tr>td.keep
     {
         background-color: hsl(103, 44%, 15%); 
     }
     button.infuse{
         background-color: hsl(50, 81%, 35%);
     }
-    .mark-table>tbody>tr.infuse>td{
+    .mark-table>tbody>tr.infuse>td, , .mark-table>tbody>tr>td.infuse{
         background-color: hsl(50, 81%, 15%);
     }
     button.junk{
         background-color: hsl(0, 43%, 35%);
     }
-    .mark-table>tbody>tr.junk>td{
+    .mark-table>tbody>tr.junk>td, .mark-table>tbody>tr>td.junk{
         background-color: hsl(0, 43%, 15%);
     }
 }

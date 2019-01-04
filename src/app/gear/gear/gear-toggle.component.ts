@@ -4,7 +4,7 @@ import { ItemType } from '@app/service/model';
 @Component({
   selector: 'anms-gear-toggle',
   templateUrl: './gear-toggle.component.html',
-  styleUrls: ['./gear-toggle.component.scss']
+  styleUrls: ['./gear.component.scss']
 })
 export class GearToggleComponent implements OnInit {
   _currentItemType: ItemType;

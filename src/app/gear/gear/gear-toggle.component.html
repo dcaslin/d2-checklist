@@ -1,5 +1,7 @@
 <ng-container *ngIf="!hidden">
-  <button mat-button [matMenuTriggerFor]="menu"><i [class]="iconClass"></i>&ensp;{{title}}</button>
+  <button mat-button [matMenuTriggerFor]="menu"><i [class]="iconClass"></i>
+    <span class="hide-mobile-inline">&ensp;{{title}}</span>
+  </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="selectAll()">Select All</button>
     <button *ngFor="let choice of choices" mat-menu-item (click)="exclusiveSelect(choice)">

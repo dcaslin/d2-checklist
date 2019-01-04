@@ -236,11 +236,18 @@ a:link {
         width: 35px;
         height: 35px;
     }
-    
+}
 
+.filter-buttons{
+    display: block;
 }
 
 @media screen and (min-width: 1019px) {
+    .filter-buttons{
+        display: inline;
+    }
+    
+
     .hide-mobile-inline {
         display: inline;
         visibility: visible;
@@ -262,6 +269,7 @@ a:link {
         visibility: hidden;
     }
     .tag-cell{
+        min-width: 190px;
         max-width: 200px;
     }
     

@@ -36,45 +36,49 @@
             <mat-icon>help_outline</mat-icon>
           </button>
         </mat-form-field>
+        <div class="filter-buttons">
 
-        <anms-gear-toggle #markToggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"
-          [displayOptions]="[ItemType.Weapon, ItemType.Armor]" [currentItemType]="option.type">
-        </anms-gear-toggle>
+          <anms-gear-toggle #markToggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices" (change)="filterChanged()"
+            [displayOptions]="[ItemType.Weapon, ItemType.Armor]" [currentItemType]="option.type">
+          </anms-gear-toggle>
 
-        <anms-gear-toggle #weaponTypeToggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices"
-          (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-        </anms-gear-toggle>
+          <anms-gear-toggle #weaponTypeToggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+          </anms-gear-toggle>
 
-        <anms-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices"
-          (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-        </anms-gear-toggle>
+          <anms-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+          </anms-gear-toggle>
 
-        <anms-gear-toggle #modTypeToggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices"
-          (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
-        </anms-gear-toggle>
-        <anms-gear-toggle #consumableTypeToggle iconClass="fas fa-flask-potion" title="Type" [choices]="consumableTypeChoices"
-          (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]" [currentItemType]="option.type">
-        </anms-gear-toggle>
-        <anms-gear-toggle #exchangeTypeToggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices"
-          (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
-        </anms-gear-toggle>
-        <anms-gear-toggle #classTypeToggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices"
-          (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-        </anms-gear-toggle>
-        <anms-gear-toggle #ownerToggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices" (change)="filterChanged()">
-        </anms-gear-toggle>
-        <anms-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices"
-          (change)="filterChanged()">
-        </anms-gear-toggle>
+          <anms-gear-toggle #modTypeToggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
+          </anms-gear-toggle>
+          <anms-gear-toggle #consumableTypeToggle iconClass="fas fa-flask-potion" title="Type" [choices]="consumableTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]" [currentItemType]="option.type">
+          </anms-gear-toggle>
+          <anms-gear-toggle #exchangeTypeToggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
+          </anms-gear-toggle>
+          <anms-gear-toggle #classTypeToggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+          </anms-gear-toggle>
+          <anms-gear-toggle #ownerToggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices" (change)="filterChanged()">
+          </anms-gear-toggle>
+          <anms-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices"
+            (change)="filterChanged()">
+          </anms-gear-toggle>
 
-        <button mat-button [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i> Show</button>
+        </div>
+        <button mat-button [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i>
+          <span class="hide-mobile-inline">&ensp;Show</span></button>
         <mat-menu #menuShow="matMenu">
           <button mat-menu-item (click)="show(20)"><i *ngIf="size==20" class="fas fa-check"></i> 20 rows</button>
           <button mat-menu-item (click)="show(50)"><i *ngIf="size==50" class="fas fa-check"></i> 50 rows</button>
           <button mat-menu-item (click)="show(100)"><i *ngIf="size==100" class="fas fa-check"></i> 100 rows</button>
           <button mat-menu-item (click)="show(-1)"><i *ngIf="size==-1" class="fas fa-check"></i> All rows</button>
         </mat-menu>
-        <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
+        <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i>
+          <span class="hide-mobile-inline">&ensp;Refresh</span></a>
         <a mat-button *ngIf="markService.dirty" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
         <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
           <span class="fa-stack">
@@ -83,7 +87,7 @@
           </span>
         </a>
 
-        {{gearToShow.length}} / {{total}}
+        <span class="simple-caption">{{gearToShow.length}} / {{total}}</span>
       </div>
       <ng-container *ngIf="selectedUser!=null">
         <table class="gear-table mark-table">
@@ -140,7 +144,7 @@
                   </div>
                   <div>{{i.owner.label}}</div>
                   <div class="mobile-only-block">
-                      <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}} copies</a><br>
+                    <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}} copies</a><br>
                   </div>
                 </td>
                 <td class="limited-gear-width">
@@ -159,18 +163,18 @@
                     </ng-container>
                   </div>
                   <div class="mobile-only-block">
-                      <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
-                        <code class="break-easy">{{i.masterwork.name}} {{i.masterwork.tier}}</code>
-                        <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
-                      </div>
-  
-                      <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
-                        <code class="break-easy">{{i.mod.name}}</code>
-                      </div>
+                    <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
+                      <code class="break-easy">{{i.masterwork.name}} {{i.masterwork.tier}}</code>
+                      <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
                     </div>
-  
+
+                    <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
+                      <code class="break-easy">{{i.mod.name}}</code>
+                    </div>
+                  </div>
+
                 </td>
-               
+
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}</ng-container>
