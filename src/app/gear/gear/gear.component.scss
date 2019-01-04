@@ -63,6 +63,10 @@ table.gear-table {
         padding: $gear-table-padding;
         text-align: left;
         vertical-align: top;
+        & .caption {
+            float: right;
+            font-weight: lighter;
+        }
     }
     & td.lead {
         padding: $gear-table-padding;
@@ -183,10 +187,21 @@ a:link {
 }
 
 .limited-gear-width {
-    max-width: 150px;
+    max-width: 175px;
+}
+
+.item-menu-button{
+    width: 40px;
+    margin-left: -5px;
+    margin-right: -5px;
 }
 
 .hide-mobile-inline {
+    display: none;
+    visibility: hidden;
+}
+
+.hide-mobile-block {
     display: none;
     visibility: hidden;
 }
@@ -217,7 +232,7 @@ a:link {
 }
 
 .tag-cell{
-    max-width: 100px;
+    max-width: 75px;
 }
 
 .mat-form-field-infix {        
@@ -227,15 +242,6 @@ a:link {
 
 @media screen and (max-width: 1019px) {
     
-    .limited-gear-width {
-        max-width: 110px;
-    }
-
-    .tag-button {
-        font-size: 1.0em;
-        width: 35px;
-        height: 35px;
-    }
 }
 
 .filter-buttons{
@@ -250,6 +256,11 @@ a:link {
 
     .hide-mobile-inline {
         display: inline;
+        visibility: visible;
+    }
+
+    .hide-mobile-block {
+        display: block;
         visibility: visible;
     }
     .mobile-only-inline {
@@ -273,4 +284,9 @@ a:link {
         max-width: 200px;
     }
     
+}
+
+.small-icon-button{
+  //  height: 30px;
+  //  width: 30px;
 }

@@ -6,7 +6,7 @@ import { fromEvent as observableFromEvent, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed } from '@app/service/model';
+import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
@@ -33,8 +33,11 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE fix stats layout
 // DONE make work in mobile
 
+// DONE refresh filter aftre transfer
+// DONE auto process locking items
+// DONE shard mode
+
 // TODO shardit keepit copy paste
-// TODO auto process locking items
 // TODO final tweaks to UI
 // TODO wish list configurability
 
@@ -146,6 +149,20 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public dialog: MatDialog) {
     super(storageService);
     this.loading = true;
+  }
+
+  public async syncLocks(){
+    await this.gearService.processGearLocks(this.player);
+  }
+
+  public async transfer(player: Player, itm: InventoryItem, target: Target){
+    await this.gearService.transfer(player, itm, target);
+    this.filterChanged();
+  }
+
+  public async equip(player: Player, itm: InventoryItem){
+    await this.gearService.equip(player, itm);
+    this.filterChanged();
   }
 
   itemNotesChanged(item: InventoryItem) {
@@ -294,6 +311,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.gearToShow = tempGear.slice(0);
   }
 
+  public async shardMode() {
+    await this.load();
+    await this.gearService.shardMode(this.player);
+  }
 
   public async load() {
     this.loading = true;
@@ -385,6 +406,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filters.push(this.classTypeToggle);
   }
 
+  public showUtilities(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+    };
+    const dialogRef = this.dialog.open(GearUtilitiesDialogComponent, dc);
+  }
 
   public openGearDialog(items: InventoryItem[]): void {
     const dc = new MatDialogConfig();
@@ -469,8 +498,23 @@ export class GearDetailsDialogComponent {
       this.parent = data.parent;
 
     }
-
 }
+
+
+@Component({
+  selector: 'anms-gear-utilities-dialog',
+  templateUrl: './gear-utilities-dialog.component.html',
+  styleUrls: ['./gear.component.scss']
+})
+export class GearUtilitiesDialogComponent {
+  parent: GearComponent
+  constructor(
+    public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { 
+      this.parent = data.parent;
+    }
+}
+
 
 @Component({
   selector: 'anms-gear-help-dialog',
