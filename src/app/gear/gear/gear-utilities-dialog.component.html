@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Blah
+</h2>
+<mat-dialog-content>
+    <p>
+        <button mat-raised-button color="primary" (click)="parent.syncLocks()">Sync Locks</button> Update the lock state of your items
+        to match their tags. Upgrade/Keep items will be locked. Infuse/Junk items will be unlocked.
+    </p>
+    <p>
+        <button mat-raised-button color="primary" (click)="parent.shardMode()">Shard mode</button> Clears all non-equipped items from your most
+        recent character, then transfers all the junk that will fit to them, so you can quickly and safely shard things
+        in bulk.
+    </p>
+</mat-dialog-content>

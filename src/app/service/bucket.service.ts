@@ -13,6 +13,14 @@ export class BucketService {
         return this.buckets[target.id][bucketName];
     }
 
+    public getBuckets(target: Target): Bucket[]{
+        const aBuckets = [];
+        for (const key in this.buckets[target.id]){
+            aBuckets.push(this.buckets[target.id][key]);;
+        }
+        return aBuckets;
+    }
+
     init(chars: Target[], vault: Target, shared: Target, items: InventoryItem[]) {
         this.buckets = {};
         for (let cntr = 0; cntr < chars.length; cntr++) {
@@ -49,6 +57,13 @@ export class Bucket {
 
     constructor(name: string) {
         this.name = name;
+    }
+
+    remove(item: InventoryItem): boolean{
+        let index = this.items.indexOf(item);
+        if (index==-1) return false;
+        this.items.splice(index, 1);
+        return true;
     }
 
     otherItem(notMe: InventoryItem): InventoryItem {

@@ -97,14 +97,6 @@
     color: mat-color($foreground, secondary-text);
   }
 
-  .bordered {
-    // border: 2px solid mat-color($background, disabled-list-option);
-    // border-collapse: collapse;
-    // border-radius: 10px;
-    padding: 5px;
-
-  }
-
   table.responsive-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;

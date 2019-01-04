@@ -13,11 +13,12 @@ import { ParseService } from './parse.service';
 import {
     Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember,
     BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus,
-    PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target
+    PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault
 } from './model';
 
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { BucketService, Bucket } from './bucket.service';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
 
@@ -524,7 +525,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean): Promise<boolean> {
+    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService): Promise<boolean> {
         try {
             await this.postReq("Destiny2/Actions/Items/TransferItem/", {
                 characterId: target.id,
@@ -534,6 +535,21 @@ export class BungieService implements OnDestroy {
                 stackSize: item.quantity,
                 transferToVault: isVault
             });
+            let to:Target;
+            let from:Target;
+            if (isVault==true){
+                to = vault;
+                from = target;
+            }
+            else{
+                to = target;
+                from = vault;
+            }
+            const fromBucket: Bucket = bucketService.getBucket(from, item.inventoryBucket);
+            const toBucket: Bucket = bucketService.getBucket(to, item.inventoryBucket);
+            fromBucket.remove(item);
+            toBucket.items.push(item);
+
             return true;
         } catch (err) {
             this.handleError(err);
@@ -542,13 +558,15 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
+    public async equip(membershipType: number, item: InventoryItem, bucketService: BucketService): Promise<boolean> {
         try {
             await this.postReq("Destiny2/Actions/Items/EquipItem/", {
                 characterId: item.owner.id,
                 itemId: item.id,
                 membershipType: membershipType
             });
+            const bucket: Bucket = bucketService.getBucket(item.owner, item.inventoryBucket);
+            bucket.equipped = item;
             return true;
         } catch (err) {
             this.handleError(err);
@@ -556,10 +574,10 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async setLock(membershipType: number, item: InventoryItem, locked: boolean): Promise<boolean> {
+    public async setLock(membershipType: number, characterId: string, item: InventoryItem, locked: boolean): Promise<boolean> {
         try {
             await this.postReq("Destiny2/Actions/Items/SetLockState/", {
-                characterId: item.owner.id,
+                characterId: characterId,
                 itemId: item.id,
                 membershipType: membershipType,
                 state: locked

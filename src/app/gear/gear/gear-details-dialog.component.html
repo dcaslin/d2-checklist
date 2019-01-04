@@ -98,9 +98,9 @@
             <ng-container *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
                 <tr *ngFor="let stat of items[0].stats; let cntr = index">
                     <td>{{stat.name}}
-                        <ng-container *ngIf="stat.baseValue!=null">
+                        <span class="caption" *ngIf="stat.baseValue!=null">
                             {{stat.baseValue}}
-                        </ng-container>
+                        </span>
                     </td>
 
                     <ng-container *ngFor="let i of items">

@@ -21,6 +21,10 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
 
+      <span [hidden]="selectedUser==null">
+        <button style="margin-left: 15px" mat-button (click)="showUtilities()"><i class="fas fa-tools"></i>
+          <span class="hide-mobile-inline">&ensp;Utilities</span></button>
+      </span>
       <ng-container *ngIf="loading==false && selectedUser==null">
         <h2>Bungie Authentication Required</h2>
         <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
@@ -142,7 +146,7 @@
                       <i *ngIf="i.equipped" class="fas fa-shield-check" title="Equipped"></i>
                     </div>
                   </div>
-                  <div>{{i.owner.label}}</div>
+                  <br>
                   <div class="mobile-only-block">
                     <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}} copies</a><br>
                   </div>
@@ -150,18 +154,30 @@
                 <td class="limited-gear-width">
                   <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
                     class="fas fa-star accent-text"></i>
-                  <a class="item-name" href="javascript:void(0)" [matTooltip]="i.desc" (click)="showItem(i)">{{i.name}}</a>
+
+                  <a class="item-name" href="javascript:void(0)" [matTooltip]="i.desc" (click)="showItem(i)">
+                    {{i.name}}
+                  </a>
+                  <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </a>
+                  <mat-menu #itemMenu="matMenu">
+                    <button mat-menu-item *ngIf="i.canReallyEquip" (click)="equip(player, i)">
+                      <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                    </button>
+                    <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
+                      <i class="fal fa-exchange"></i> Transfer to {{target.label}}
+                    </button>
+                    <button mat-menu-item (click)="copy(i)">
+                      <i class="fal fa-copy"></i> Copy for reddit
+                    </button>
+                  </mat-menu>
                   <span *ngIf="debugmode">[{{i.hash}}]</span>
-                  <div class="options bordered">
-                    <div class="item-option" *ngIf="i.canReallyEquip">
-                      <a href="javascript:void(0);" (click)="gearService.equip(player, i)">Equip</a>
-                    </div>
-                    <ng-container *ngFor="let target of i.options">
-                      <div class="item-option">
-                        <a href="javascript:void(0);" (click)="gearService.transfer(player, i, target)">{{target.label}}</a>
-                      </div>
-                    </ng-container>
-                  </div>
+
+                  <div class="simple-caption">{{i.owner.label}}</div>
+
+
+
                   <div class="mobile-only-block">
                     <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
                       <code class="break-easy">{{i.masterwork.name}} {{i.masterwork.tier}}</code>
@@ -219,11 +235,23 @@
                   {{i.quantity}}
                 </td>
                 <td class="tag-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <div>
+                  <div class="hide-mobile-block">
                     <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
                       [ngClass]="['tag-button',mc.value]">
                       <i [class]="mc.iconClass"></i>
                     </button>
+                  </div>
+                  <div class="mobile-only-block">
+                    <button mat-icon-button [matMenuTriggerFor]="tagMenu">
+                      <i class="fas fa-tags"></i> Tag
+                    </button>
+                    <mat-menu #tagMenu="matMenu">
+                      <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-menu-item
+                        [ngClass]="['tag-button',mc.value]">
+                        <i [class]="mc.iconClass"></i>
+                        {{mc.value}}
+                      </button>
+                    </mat-menu>
                   </div>
                   <div>
                     <mat-form-field class="full-width">

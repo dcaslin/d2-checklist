@@ -4,13 +4,15 @@ import { MarkService } from './mark.service';
 import { BucketService, Bucket } from './bucket.service';
 import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, Vault } from './model';
 import { WishlistService } from './wishlist.service';
+import { NotificationService } from './notification.service';
 
 @Injectable()
 export class GearService {
     loading = false;
 
     constructor(private bungieService: BungieService,
-        public markService: MarkService, 
+        public markService: MarkService,
+        private notificationService: NotificationService,
         private bucketService: BucketService,
         private wishlistService: WishlistService) {
     }
@@ -26,14 +28,14 @@ export class GearService {
             const gearById: { [key: string]: InventoryItem[]; } = {};
             for (const g of player.gear) {
                 this.canEquip(g);
-                if (gearById[g.hash]==null){
+                if (gearById[g.hash] == null) {
                     gearById[g.hash] = [];
                 }
                 gearById[g.hash].push(g);
             }
             for (const key of Object.keys(gearById)) {
                 const items = gearById[key];
-                for (const item of items){
+                for (const item of items) {
                     item.copies = items.length;
                 }
             }
@@ -49,21 +51,121 @@ export class GearService {
 
     public canEquip(itm: InventoryItem) {
         //ignore itm.canEquip
-        if (itm.equipped == true || !(itm.owner instanceof Character)){ 
+        if (itm.equipped == true || !(itm.owner instanceof Character)) {
             itm.canReallyEquip = false;
         }
-        else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner as Character).className){
+        else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner as Character).className) {
             itm.canReallyEquip = true;
         }
-        else{
-            itm.canReallyEquip = false;   
+        else {
+            itm.canReallyEquip = false;
         }
+    }
+
+    private static async delay(ms: number) {
+        await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("fired"));
+    }
+
+    public async shardMode(player: Player) {
+        const target = player.characters[0];
+        const buckets = this.bucketService.getBuckets(target);
+        let totalErr = 0;
+
+        let moved = 0;
+        let err = 0;
+        for (const bucket of buckets) {
+            for (const i of bucket.items) {
+                if (i.equipped == false && i.mark != "junk") {
+                    try {
+                        await this.transfer(player, i, player.vault);
+                        moved++;
+                    }
+                    catch (e) {
+                        err++;
+                        totalErr++;
+                    }
+                }
+            }
+        }
+        if (err == 0)
+            this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault");
+        else
+            this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault. " + err + " items failed to move.");
+
+        moved = 0;
+        let storeErr = 0;
+
+        for (const i of player.gear) {
+
+            //might we move it?
+            if (i.mark == "junk" && i.owner.id != target.id) {
+                //is bucket full?
+                const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
+                if (targetBucket.items.length < 10) {
+                    console.log("Move " + i.name + " to " + target.label + " " + targetBucket.name);
+                    try {
+                        await this.transfer(player, i, target);
+                        moved++;
+                    }
+                    catch (e) {
+                        storeErr++;
+                    }
+                }
+            }
+
+
+        }
+        //10 items can be held, including equipped
+        if (storeErr == 0)
+            this.notificationService.info("Moved " + moved + " items to " + target.label);
+        else
+            this.notificationService.info("Moved " + moved + " items to " + target.label + ". " + storeErr + " items failed to move.");
+
+        if (totalErr == 0)
+            this.notificationService.success("Done! All set to start sharding!");
+    }
+
+    public async processGearLocks(player: Player): Promise<void> {
+        const gear = player.gear;
+        let lockCnt = 0;
+        let unlockedCnt = 0;
+        let errCnt = 0;
+        for (const i of gear) {
+            if (i.mark == null) continue;
+            if (i.mark == "upgrade" || i.mark == "keep") {
+                if (i.locked == false) {
+                    try {
+                        await this.setLock(player, i, true);
+                        this.notificationService.info('Locked ' + i.name + ' on ' + i.owner.label);
+                        lockCnt++;
+                    }
+                    catch (e) {
+                        this.notificationService.info('Failed to lock ' + i.name + ' on ' + i.owner.label);
+                        errCnt++;
+                    }
+                }
+            }
+            else if (i.mark == "junk" || i.mark == "infuse") {
+                if (i.locked == true) {
+                    try {
+                        await this.setLock(player, i, false);
+                        this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.label);
+                        unlockedCnt++;
+                    }
+                    catch (e) {
+                        this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.label);
+                        errCnt++;
+                    }
+                }
+            }
+        }
+        this.notificationService.info('Done! Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
     }
 
     public async transfer(player: Player, itm: InventoryItem, target: Target): Promise<boolean> {
         try {
             this.loading = true;
-            
+
             //equip something else from our bucket, if we can
             if (itm.equipped) {
                 let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
@@ -80,12 +182,12 @@ export class GearService {
             let success;
             if (target instanceof Vault) {
                 let owner = itm.owner;
-                if (owner == player.shared){
+                if (owner == player.shared) {
                     owner = player.characters[0];
                 }
-                
+
                 success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    owner, itm, true);
+                    owner, itm, true, player.vault, this.bucketService);
                 if (success) {
                     itm.options.push(itm.owner);
                     itm.owner = player.vault;
@@ -95,11 +197,11 @@ export class GearService {
             //if it's in the vault, we just need to pull it out to our char
             else if (itm.owner instanceof Vault) {
                 let tempTarget = target;
-                if (target==player.shared){
+                if (target == player.shared) {
                     tempTarget = player.characters[0];
                 }
                 success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    tempTarget, itm, false);
+                    tempTarget, itm, false, player.vault, this.bucketService);
                 if (success) {
                     itm.options.push(itm.owner);
                     itm.owner = target;
@@ -108,13 +210,15 @@ export class GearService {
             }
             //otherwise we need to put it in vault, then pull it again
             else {
-                success = await this.bungieService.transfer(player.profile.userInfo.membershipType, itm.owner, itm, true);
+                success = await this.bungieService.transfer(player.profile.userInfo.membershipType, 
+                    itm.owner, itm, true, player.vault, this.bucketService);
                 if (success) {
                     itm.options.push(itm.owner);
                     itm.owner = player.vault;
                     itm.options.splice(itm.options.indexOf(itm.owner), 1);
                 }
-                success = await this.bungieService.transfer(player.profile.userInfo.membershipType, target, itm, false);
+                success = await this.bungieService.transfer(player.profile.userInfo.membershipType, 
+                    target, itm, false, player.vault, this.bucketService);
                 if (success) {
                     itm.options.push(itm.owner);
                     itm.owner = target;
@@ -131,7 +235,14 @@ export class GearService {
     public async setLock(player: Player, itm: InventoryItem, locked: boolean): Promise<boolean> {
         try {
             this.loading = true;
-            const success = await this.bungieService.setLock(player.profile.userInfo.membershipType, itm, locked);
+            let owner;
+            if (itm.owner == player.vault || itm.owner == player.shared) {
+                owner = player.characters[0];
+            }
+            else {
+                owner = itm.owner;
+            }
+            const success = await this.bungieService.setLock(player.profile.userInfo.membershipType, owner.id, itm, locked);
             if (success === true) {
                 itm.locked = locked;
                 return true;
@@ -146,7 +257,7 @@ export class GearService {
     public async equip(player: Player, itm: InventoryItem): Promise<boolean> {
         try {
             this.loading = true;
-            const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm);
+            const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm, this.bucketService);
             if (success === true) {
                 const bucket: Bucket = this.bucketService.getBucket(itm.owner, itm.inventoryBucket);
                 const oldEquipped = bucket.equipped;
