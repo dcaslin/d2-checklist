@@ -1,5 +1,5 @@
 
-import {takeUntil} from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
@@ -43,14 +43,14 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
-      x => {
-        if (x.defaultplatform != null) {
-          this.setPlatform(x.defaultplatform);
-        }
-        if (x.defaultgt != null) {
-          this.gamerTag = x.defaultgt;
-        }
-      });
+        x => {
+          if (x.defaultplatform != null) {
+            this.setPlatform(x.defaultplatform);
+          }
+          if (x.defaultgt != null) {
+            this.gamerTag = x.defaultgt;
+          }
+        });
 
   }
 
@@ -79,27 +79,45 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.storageService.setItem('defaultgt', this.gamerTag);
   }
 
-  private static getMissionLength(hash: string): number{
-    
+  private static getMissionLength(hash: string): number {
+
     // Combustion 280 [3271773240], 7
-    if (hash=="3271773240"){
+    if (hash == "3271773240") {
       return 7;
     }
     // Hope 280[129918239], 6
-    else if (hash=="129918239"){
+    else if (hash == "129918239") {
       return 7;
     }
     // Deep Storage 310[1872813880], 6
-    else if (hash=="1872813880"){
+    else if (hash == "1872813880") {
       return 6;
     }
     // Ice and Shadow 360[2660895412], 5
-    else if (hash=="2660895412"){
+    else if (hash == "2660895412") {
       return 5;
     }
     // Ace in the Hole 500[2962137994], 15
-    else if (hash=="2962137994"){
+    else if (hash == "2962137994") {
       return 15;
+    }
+    // Utopia
+    else if (hash == "271962655") {
+      return 6;
+    }
+    // Scorned
+    else if (hash == "1132291813") {
+      return 9;
+    }
+    // Chosen
+    else if (hash == "1906514856") {
+      return 9;
+    }  // Hijacked
+    else if (hash == "4244464899") {
+      return 6;
+    }  // Pilgrimage
+    else if (hash == "3008658049") {
+      return 7;
     }
     return 100;
   }
@@ -107,12 +125,12 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.bungieService.getPublicMilestones().then(ms => {
       this.publicMilestones = ms;
-      if (ms!=null){
-        for (let m of ms){
+      if (ms != null) {
+        for (let m of ms) {
           //daily heroic
-          if ("3082135827" === m.hash){
+          if ("3082135827" === m.hash) {
             const missions = [];
-            for (let a of m.aggActivities){
+            for (let a of m.aggActivities) {
               let name = a.activity.name;
               name = name.replace("Daily Heroic Story Mission: ", "");
               const time = HomeComponent.getMissionLength(a.activity.hash);
@@ -121,23 +139,23 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
                 name: name,
                 hash: a.activity.hash,
                 time: time
-                });
+              });
             }
             missions.sort((a: any, b: any): number => {
               let aV = a.time;
               let bV = b.time;
-              if (aV<bV) return -1;
-              else if (aV>bV) return 1;
+              if (aV < bV) return -1;
+              else if (aV > bV) return 1;
               else return 0;
             });
             this.missions = missions;
           }
-          else if ("3172444947" === m.hash){
+          else if ("3172444947" === m.hash) {
             this.burns = m.aggActivities[0].activity.modifiers;
           }
-          else if ("463010297" === m.hash){
+          else if ("463010297" === m.hash) {
             let name = m.summary;
-            name = name.replace("FLASHPOINT: ","");
+            name = name.replace("FLASHPOINT: ", "");
             this.flashpoint = name;
           }
 
