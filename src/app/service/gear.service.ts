@@ -82,13 +82,13 @@ export class GearService {
                         moved++;
                     }
                     catch (e) {
-                        console.log("Error moving "+i.name+" to vault: "+e);
+                        console.log("Error moving " + i.name + " to vault: " + e);
                         err++;
                         totalErr++;
                     }
                 }
-                else{
-                    console.log("Skipped "+i.name +" "+i.equipped+" "+i.mark);
+                else {
+                    // console.log("Skipped "+i.name +" "+i.equipped+" "+i.mark);
                 }
             }
         }
@@ -159,9 +159,9 @@ export class GearService {
             if (i.mark == "upgrade") {
                 let copies = this.findCopies(i, player);
                 copies = copies.filter(copy => copy.mark == "infuse");
+                copies = copies.filter(copy => copy.power > i.power);
                 //nothing to infuse
                 if (copies.length == 0) {
-                    console.log("No infuse for: " + i.name);
                     continue;
                 }
                 copies.push(i);
@@ -169,7 +169,6 @@ export class GearService {
                 copies = copies.filter(copy => copy.owner.id != target.id);
                 //nothing to infuse
                 if (copies.length == 0) {
-                    console.log("Nothing to move for: " + i.name);
                     continue;
                 }
 
@@ -178,16 +177,25 @@ export class GearService {
                     console.log("Move " + i.name + " to " + target.label + " " + targetBucket.name);
 
                     this.notificationService.info("Prepping " + i.name + " for upgrade (" + copies.length + " total)");
-                    try {
-                        for (const moveMe of copies) {
-                            console.log("    From " + moveMe.owner.label);
-                            await this.transfer(player, moveMe, target);
-                            moved++;
+                    for (const moveMe of copies) {
+                        console.log("    From " + moveMe.owner.label);
+                        try {
+                            const success = await this.transfer(player, moveMe, target);
+                            if (success)
+                                moved++;
+                            else {
+                                console.log("Couldn't move " + moveMe.name);
+                                this.notificationService.fail("Unable to move " + moveMe.name + " from " + moveMe.owner.label + ". Nothing else to equip?");
+                                storeErr++;
+                            }
+                        }
+                        catch (e) {
+                            console.log("Couldn't move " + moveMe.name);
+                            this.notificationService.fail("Unable to move " + moveMe.name + " from " + moveMe.owner.label + ". Nothing else to equip?");
+                            storeErr++;
                         }
                     }
-                    catch (e) {
-                        storeErr++;
-                    }
+
                 }
             }
         }
@@ -197,8 +205,10 @@ export class GearService {
         else
             this.notificationService.info("Moved " + moved + " items to " + target.label + ". " + storeErr + " items failed to move.");
 
-        if (totalErr == 0)
+        if (totalErr == 0 && storeErr == 0)
             this.notificationService.success("Done! All set to start upgrading!");
+        else
+            this.notificationService.fail("Done! But not all items could be moved ("+(totalErr+storeErr)+" failed)");
     }
 
 
