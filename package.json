@@ -46,6 +46,7 @@
     "lz-string": "^1.4.4",
     "moment": "^2.23.0",
     "ng2-adsense": "^5.4.0",
+    "ngx-clipboard": "^11.1.9",
     "ngx-moment": "^3.3.0",
     "node-uuid": "^1.4.8",
     "rxjs": "^6.3.3",

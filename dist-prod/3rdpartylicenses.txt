@@ -410,6 +410,8 @@ MIT
 
 @angular/material/button-toggle
 
+@angular/material/menu
+
 @angular/material/progress-bar
 
 @angular/material/form-field
@@ -441,9 +443,13 @@ SOFTWARE.
 
 @angular/material/icon
 
-@angular/material/menu
-
 @angular/material/checkbox
+
+ngx-window-token
+MIT
+
+ngx-clipboard
+MIT
 
 @angular/material/core
 
