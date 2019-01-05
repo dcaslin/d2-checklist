@@ -223,7 +223,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   public async syncLocks(){
+    await this.load();
     await this.gearService.processGearLocks(this.player);
+    this.filterChanged();
   }
 
   public async transfer(player: Player, itm: InventoryItem, target: Target){
@@ -248,19 +250,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   showCopies(i: InventoryItem) {
-    const copies = [i];
-    for (const g of this.player.gear) {
-      if (g.hash === i.hash && g.id != i.id) {
-        copies.push(g);
-      }
-    }
-    copies.sort(function (a, b) {
-      if (a.power < b.power)
-        return 1;
-      if (a.power > b.power)
-        return -1;
-      return 0;
-    });
+    const copies = this.gearService.findCopies(i, this.player);
     this.openGearDialog(copies);
   }
 
@@ -388,8 +378,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
+  public async upgradeMode() {
+    await this.load();
+    await this.gearService.upgradeMode(this.player);
+    this.filterChanged();
+  }
+
   public async load() {
     this.loading = true;
+
+    this.notificationService.info("Loading gear...");
     try {
       if (this.selectedUser == null) {
         this.player = null;
