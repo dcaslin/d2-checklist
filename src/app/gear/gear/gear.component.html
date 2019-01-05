@@ -148,7 +148,7 @@
                   </div>
                   <br>
                   <div class="mobile-only-block">
-                    <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}} copies</a><br>
+                    <button mat-button (click)="showCopies(i)"> {{i.copies}} <i class="fal fa-clone"></i></button>
                   </div>
                 </td>
                 <td class="limited-gear-width">
@@ -168,7 +168,7 @@
                     <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
                       <i class="fal fa-exchange"></i> Transfer to {{target.label}}
                     </button>
-                    <button mat-menu-item (click)="copy(i)">
+                    <button mat-menu-item *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" (click)="copyToClipboard(i)">
                       <i class="fal fa-copy"></i> Copy for reddit
                     </button>
                   </mat-menu>
@@ -180,12 +180,12 @@
 
                   <div class="mobile-only-block">
                     <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
-                      <code class="break-easy">{{i.masterwork.name}} {{i.masterwork.tier}}</code>
+                      {{i.masterwork.name}} {{i.masterwork.tier}}
                       <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
                     </div>
 
                     <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
-                      <code class="break-easy">{{i.mod.name}}</code>
+                      {{i.mod.name}}
                     </div>
                   </div>
 
@@ -193,14 +193,14 @@
 
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
+                  <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
+                  <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}</ng-container>
                   <ng-container *ngIf="debugmode"><br>[{{i.inventoryBucket}}]</ng-container>
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <a href="javascript:void(0)" (click)="showCopies(i)">{{i.copies}}</a><br>
-                  <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
-                  <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
+                    <button mat-button (click)="showCopies(i)"> {{i.copies}} <i class="fal fa-clone"></i></button>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
@@ -223,7 +223,8 @@
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc">
-                      <i *ngIf="plug.godRoll" matTooltip="God roll!" class="fas fa-star accent-text"></i>
+                      <i *ngIf="plug.godRoll && i.godRoll" class="fas fa-star accent-text"></i>
+                      <i *ngIf="plug.godRoll && !i.godRoll && highlightAllPerks" class="fas fa-star"></i>
 
                       <!-- <div *ngIf="plug.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + plug.icon + ')'"></div> -->
                       {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>

@@ -85,7 +85,8 @@
                         <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                                 [matTooltip]="plug.desc">
-                                <i *ngIf="plug.godRoll" matTooltip="God roll!" class="fas fa-star accent-text"></i>
+                                <i *ngIf="plug.godRoll && i.godRoll" class="fas fa-star accent-text"></i>
+                                <i *ngIf="plug.godRoll && !i.godRoll && parent.highlightAllPerks" class="fas fa-star"></i>
                   
                                 {{plug.name}}
                                 <ng-container *ngIf="!isLastPlug"><br></ng-container>

@@ -13,6 +13,8 @@ import { GearService } from '@app/service/gear.service';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { WishlistService } from '@app/service/wishlist.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
+import { ClipboardService } from 'ngx-clipboard';
+import { NotificationService } from '@app/service/notification.service';
 
 // DONE equip gear
 // DONE transfer gear
@@ -37,11 +39,11 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angu
 // DONE auto process locking items
 // DONE shard mode
 
-// TODO Fix BLAH, remove "copies" from mobile, remove <code>
-// TODO shardit keepit copy paste
-// TODO final tweaks to UI
+// DONE Fix BLAH, remove "copies" from mobile, remove <code>
+// DONE shardit keepit copy paste
+// DONE option to highlight any god perks
+// DONE wish list configurability
 // TODO upgrade like names, and fix armor utilities
-// TODO wish list configurability
 
 @Component({
   selector: 'anms-gear',
@@ -98,6 +100,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   filtersDirty: boolean = false;
 
 
+  private static HIGHLIGHT_ALL_PERKS_KEY = "highlightAllPerks";
+  private static WISHLIST_OVERRIDE_URL_KEY = "wishlistOverrideUrl";
+  public wishlistOverrideUrl;
+  public highlightAllPerks = false;
 
   private filterChangedSubject: Subject<void> = new Subject<void>();
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
@@ -143,14 +149,74 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   }
 
+  copyToClipboard(i: InventoryItem){
+    let markup = "**"+i.name+"**\n\n";
+    for (const socket of i.sockets){
+      markup+="\n\n* ";
+      for (const plug of socket.plugs){
+        markup+=plug.name;
+        if (plug!==socket.plugs[socket.plugs.length-1]){
+          markup+=" / "
+        }
+      }
+    }
+    markup += "\n\n";
+    if (i.masterwork!=null){
+      markup += "\n\n* *Masterwork: "+i.masterwork.name+" "+i.masterwork.tier +"*";
+    }
+    if (i.mod!=null){
+      markup += "\n\n* *Mod: "+i.mod.name+"*";
+    }
+    console.log(markup);
+    this.clipboardService.copyFromContent(markup);
+    this.notificationService.success("Copied "+i.name+" to clipboard");
+  }
+
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public markService: MarkService,
     public gearService: GearService,
     private wishlistSerivce: WishlistService,
+    private clipboardService: ClipboardService,
+    private notificationService: NotificationService,
     public dialog: MatDialog) {
     super(storageService);
     this.loading = true;
+    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY)=="true"){
+      this.highlightAllPerks = true;
+    }
+    const wishlistOverrideUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
+    if (wishlistOverrideUrl!=null){
+      this.wishlistOverrideUrl = wishlistOverrideUrl;
+    }
+  }
+
+  public updateHighlightAllPerks(){
+    if (this.highlightAllPerks==true){
+      localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, "true");
+    }
+    else{
+      localStorage.removeItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY);
+    }
+  }
+
+
+
+  public async updateWishlistOverrideUrl(newVal: string) {
+    //just reload the page if this works, easier then worrying about it
+    if (newVal==null){
+      localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
+      location.reload();
+      return;
+    }
+    const tempRolls = await this.wishlistSerivce.load(newVal);
+    if (tempRolls.length>0){
+      //validate URL
+      localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY, newVal);
+      this.wishlistOverrideUrl = newVal;
+      await this.loadWishlist();
+      location.reload();
+    }
   }
 
   public async syncLocks(){
@@ -390,9 +456,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadWishlist() {
-    await this.wishlistSerivce.init();
+    await this.wishlistSerivce.init(this.wishlistOverrideUrl);
     if (this.player != null)
       this.wishlistSerivce.processItems(this.player.gear);
+    this.filterChanged();
   }
 
 
@@ -510,6 +577,8 @@ export class GearDetailsDialogComponent {
 })
 export class GearUtilitiesDialogComponent {
   parent: GearComponent
+  tempWishlistOverrideUrl: string;
+  WishlistService = WishlistService;
   constructor(
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { 
