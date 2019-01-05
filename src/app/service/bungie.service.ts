@@ -525,7 +525,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService): Promise<boolean> {
+    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService): Promise<void> {
         try {
             await this.postReq("Destiny2/Actions/Items/TransferItem/", {
                 characterId: target.id,
@@ -549,24 +549,20 @@ export class BungieService implements OnDestroy {
             const toBucket: Bucket = bucketService.getBucket(to, item.inventoryBucket);
             fromBucket.remove(item);
             toBucket.items.push(item);
-
-            return true;
         } catch (err) {
             this.handleError(err);
-            return false;
+            throw "Failed to transfer "+item.name;
         }
     }
 
 
-    public async equip(membershipType: number, item: InventoryItem, bucketService: BucketService): Promise<boolean> {
+    public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
         try {
             await this.postReq("Destiny2/Actions/Items/EquipItem/", {
                 characterId: item.owner.id,
                 itemId: item.id,
                 membershipType: membershipType
             });
-            const bucket: Bucket = bucketService.getBucket(item.owner, item.inventoryBucket);
-            bucket.equipped = item;
             return true;
         } catch (err) {
             this.handleError(err);

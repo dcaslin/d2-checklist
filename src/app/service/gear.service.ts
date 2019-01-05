@@ -60,6 +60,7 @@ export class GearService {
         else {
             itm.canReallyEquip = false;
         }
+        // console.log("Can Really Equip " + itm.name + " on " + itm.owner.label + ": " + itm.canReallyEquip);
     }
 
     private static async delay(ms: number) {
@@ -180,14 +181,8 @@ export class GearService {
                     for (const moveMe of copies) {
                         console.log("    From " + moveMe.owner.label);
                         try {
-                            const success = await this.transfer(player, moveMe, target);
-                            if (success)
-                                moved++;
-                            else {
-                                console.log("Couldn't move " + moveMe.name);
-                                this.notificationService.fail("Unable to move " + moveMe.name + " from " + moveMe.owner.label + ". Nothing else to equip?");
-                                storeErr++;
-                            }
+                            await this.transfer(player, moveMe, target);
+                            moved++;
                         }
                         catch (e) {
                             console.log("Couldn't move " + moveMe.name);
@@ -208,7 +203,7 @@ export class GearService {
         if (totalErr == 0 && storeErr == 0)
             this.notificationService.success("Done! All set to start upgrading!");
         else
-            this.notificationService.fail("Done! But not all items could be moved ("+(totalErr+storeErr)+" failed)");
+            this.notificationService.fail("Done! But not all items could be moved (" + (totalErr + storeErr) + " failed)");
     }
 
 
@@ -249,7 +244,7 @@ export class GearService {
         this.notificationService.info('Done! Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
     }
 
-    public async transfer(player: Player, itm: InventoryItem, target: Target): Promise<boolean> {
+    public async transfer(player: Player, itm: InventoryItem, target: Target): Promise<void> {
         try {
             this.loading = true;
 
@@ -262,25 +257,23 @@ export class GearService {
                 console.log(itm.name + " was equipped. Equipping " + equipMe.name + " in its place.");
                 const equipSuccess = await this.equip(player, equipMe);
                 if (!equipSuccess) {
-                    return false;
+                    throw ("Could not equip " + equipMe.name + " on " + equipMe.owner.label);
                 }
             }
 
             //if the target is the vault, we just need to put it there
-            let success;
             if (target instanceof Vault) {
                 let owner = itm.owner;
                 if (owner == player.shared) {
                     owner = player.characters[0];
                 }
 
-                success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
+                await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     owner, itm, true, player.vault, this.bucketService);
-                if (success) {
-                    itm.options.push(itm.owner);
-                    itm.owner = player.vault;
-                    itm.options.splice(itm.options.indexOf(itm.owner), 1);
-                }
+                itm.options.push(itm.owner);
+                itm.owner = player.vault;
+                itm.options.splice(itm.options.indexOf(itm.owner), 1);
+
             }
             //if it's in the vault, we just need to pull it out to our char
             else if (itm.owner instanceof Vault) {
@@ -288,32 +281,26 @@ export class GearService {
                 if (target == player.shared) {
                     tempTarget = player.characters[0];
                 }
-                success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
+                await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     tempTarget, itm, false, player.vault, this.bucketService);
-                if (success) {
-                    itm.options.push(itm.owner);
-                    itm.owner = target;
-                    itm.options.splice(itm.options.indexOf(itm.owner), 1);
-                }
+                itm.options.push(itm.owner);
+                itm.owner = target;
+                itm.options.splice(itm.options.indexOf(itm.owner), 1);
+
             }
             //otherwise we need to put it in vault, then pull it again
             else {
-                success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
+                await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     itm.owner, itm, true, player.vault, this.bucketService);
-                if (success) {
-                    itm.options.push(itm.owner);
-                    itm.owner = player.vault;
-                    itm.options.splice(itm.options.indexOf(itm.owner), 1);
-                }
-                success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    target, itm, false, player.vault, this.bucketService);
-                if (success) {
-                    itm.options.push(itm.owner);
-                    itm.owner = target;
-                    itm.options.splice(itm.options.indexOf(itm.owner), 1);
-                }
+                itm.options.push(itm.owner);
+                itm.owner = player.vault;
+                itm.options.splice(itm.options.indexOf(itm.owner), 1);
             }
-            return true;
+            await this.bungieService.transfer(player.profile.userInfo.membershipType,
+                target, itm, false, player.vault, this.bucketService);
+            itm.options.push(itm.owner);
+            itm.owner = target;
+            itm.options.splice(itm.options.indexOf(itm.owner), 1);
         }
         finally {
             this.canEquip(itm);
@@ -346,7 +333,7 @@ export class GearService {
     public async equip(player: Player, itm: InventoryItem): Promise<boolean> {
         try {
             this.loading = true;
-            const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm, this.bucketService);
+            const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm);
             if (success === true) {
                 const bucket: Bucket = this.bucketService.getBucket(itm.owner, itm.inventoryBucket);
                 const oldEquipped = bucket.equipped;
