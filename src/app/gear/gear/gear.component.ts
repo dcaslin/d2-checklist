@@ -44,6 +44,9 @@ import { NotificationService } from '@app/service/notification.service';
 // DONE option to highlight any god perks
 // DONE wish list configurability
 // TODO upgrade like names, and fix armor utilities
+// DONE update filter after shard mode
+// DONE default check non god roll perks
+// DONE sort copies by light level
 
 @Component({
   selector: 'anms-gear',
@@ -103,7 +106,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   private static HIGHLIGHT_ALL_PERKS_KEY = "highlightAllPerks";
   private static WISHLIST_OVERRIDE_URL_KEY = "wishlistOverrideUrl";
   public wishlistOverrideUrl;
-  public highlightAllPerks = false;
+  public highlightAllPerks = true;
 
   private filterChangedSubject: Subject<void> = new Subject<void>();
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
@@ -182,8 +185,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public dialog: MatDialog) {
     super(storageService);
     this.loading = true;
-    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY)=="true"){
-      this.highlightAllPerks = true;
+    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY)=="false"){
+      this.highlightAllPerks = false;
     }
     const wishlistOverrideUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
     if (wishlistOverrideUrl!=null){
@@ -192,8 +195,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   public updateHighlightAllPerks(){
-    if (this.highlightAllPerks==true){
-      localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, "true");
+    if (this.highlightAllPerks==false){
+      localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, "false");
     }
     else{
       localStorage.removeItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY);
@@ -253,9 +256,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     copies.sort(function (a, b) {
       if (a.power < b.power)
-        return -1;
-      if (a.power > b.power)
         return 1;
+      if (a.power > b.power)
+        return -1;
       return 0;
     });
     this.openGearDialog(copies);
@@ -382,6 +385,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async shardMode() {
     await this.load();
     await this.gearService.shardMode(this.player);
+    this.filterChanged();
   }
 
   public async load() {
