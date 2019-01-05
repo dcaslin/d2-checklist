@@ -229,7 +229,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   public async transfer(player: Player, itm: InventoryItem, target: Target){
-    await this.gearService.transfer(player, itm, target);
+    try{
+      await this.gearService.transfer(player, itm, target);
+    }
+    catch (e){
+      this.notificationService.fail(e);
+    }
     this.filterChanged();
   }
 
