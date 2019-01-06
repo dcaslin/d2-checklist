@@ -1,9 +1,8 @@
-<h2 mat-dialog-title>{{items[0].name}}
-    <span class="simple-caption">{{items[0].desc}}</span>
-</h2>
-<div>
-    <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
+<div mat-dialog-title style="margin-bottom: 0px">
+    {{items[0].name}}
+    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{items[0].typeName}}</span><br><span class="simple-caption-no-margin hide-mobile-inline">{{items[0].desc}}</span>
 </div>
+<mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
 <mat-dialog-content>
     <table class="gear-table mark-table">
         <tbody>
