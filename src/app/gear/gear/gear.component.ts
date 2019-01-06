@@ -327,42 +327,78 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.classTypeToggle);
   }
 
-  private toggleFilterSingle(i: InventoryItem): boolean {
+  private toggleFilterSingle(i: InventoryItem, report: any): boolean {
 
     if (!this.markToggle.isChosen(this.option.type, i.mark)) { 
-      console.log("Filtered by mark: "+i.name);
+      const key = "mark";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.weaponTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      console.log("Filtered by weapon type: "+i.name);
+      const key = "weaponType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      console.log("Filtered by armor type: "+i.name);
+      const key = "armorType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.modTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      console.log("Filtered by mod type: "+i.name);
+      const key = "modType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.consumableTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      console.log("Filtered by consumable type: "+i.name);
+      const key = "consumableType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.exchangeTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      console.log("Filtered by exchangetype: "+i.name);
+      const key = "exchangeType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.ownerToggle.isChosen(this.option.type, i.owner.id)) { 
-      console.log("Filtered by owner: "+i.name);
+      const key = "owner";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.rarityToggle.isChosen(this.option.type, i.tier)) { 
-      console.log("Filtered by rarity: "+i.name);
+      const key = "rarity";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     if (!this.classTypeToggle.isChosen(this.option.type, i.classAllowed)) { 
-      console.log("Filtered by class: "+i.name);
+      const key = "classType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
       return false; 
     }
     return true;
@@ -383,10 +419,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
     this.appendToggleFilterNotes();
     const returnMe: InventoryItem[] = [];
+    const report: any = {}
     for (const i of gear) {
-      if (this.toggleFilterSingle(i)) {
+      if (this.toggleFilterSingle(i, report)) {
         returnMe.push(i);
       }
+    }
+    console.log("Filter report: ");
+    for (const key in report){
+      console.log("    "+key+": "+report[key]);
     }
     return returnMe;
   }
