@@ -157,27 +157,27 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   }
 
-  copyToClipboard(i: InventoryItem){
-    let markup = "**"+i.name+"**\n\n";
-    for (const socket of i.sockets){
-      markup+="\n\n* ";
-      for (const plug of socket.plugs){
-        markup+=plug.name;
-        if (plug!==socket.plugs[socket.plugs.length-1]){
-          markup+=" / "
+  copyToClipboard(i: InventoryItem) {
+    let markup = "**" + i.name + "**\n\n";
+    for (const socket of i.sockets) {
+      markup += "\n\n* ";
+      for (const plug of socket.plugs) {
+        markup += plug.name;
+        if (plug !== socket.plugs[socket.plugs.length - 1]) {
+          markup += " / "
         }
       }
     }
     markup += "\n\n";
-    if (i.masterwork!=null){
-      markup += "\n\n* *Masterwork: "+i.masterwork.name+" "+i.masterwork.tier +"*";
+    if (i.masterwork != null) {
+      markup += "\n\n* *Masterwork: " + i.masterwork.name + " " + i.masterwork.tier + "*";
     }
-    if (i.mod!=null){
-      markup += "\n\n* *Mod: "+i.mod.name+"*";
+    if (i.mod != null) {
+      markup += "\n\n* *Mod: " + i.mod.name + "*";
     }
     console.log(markup);
     this.clipboardService.copyFromContent(markup);
-    this.notificationService.success("Copied "+i.name+" to clipboard");
+    this.notificationService.success("Copied " + i.name + " to clipboard");
   }
 
 
@@ -190,20 +190,20 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public dialog: MatDialog) {
     super(storageService);
     this.loading = true;
-    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY)=="false"){
+    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == "false") {
       this.highlightAllPerks = false;
     }
     const wishlistOverrideUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
-    if (wishlistOverrideUrl!=null){
+    if (wishlistOverrideUrl != null) {
       this.wishlistOverrideUrl = wishlistOverrideUrl;
     }
   }
 
-  public updateHighlightAllPerks(){
-    if (this.highlightAllPerks==false){
+  public updateHighlightAllPerks() {
+    if (this.highlightAllPerks == false) {
       localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, "false");
     }
-    else{
+    else {
       localStorage.removeItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY);
     }
   }
@@ -212,13 +212,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async updateWishlistOverrideUrl(newVal: string) {
     //just reload the page if this works, easier then worrying about it
-    if (newVal==null){
+    if (newVal == null) {
       localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
       location.reload();
       return;
     }
     const tempRolls = await this.wishlistSerivce.load(newVal);
-    if (tempRolls.length>0){
+    if (tempRolls.length > 0) {
       //validate URL
       localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY, newVal);
       this.wishlistOverrideUrl = newVal;
@@ -227,23 +227,23 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
   }
 
-  public async syncLocks(){
+  public async syncLocks() {
     await this.load();
     await this.gearService.processGearLocks(this.player);
     this.filterChanged();
   }
 
-  public async transfer(player: Player, itm: InventoryItem, target: Target){
-    try{
+  public async transfer(player: Player, itm: InventoryItem, target: Target) {
+    try {
       await this.gearService.transfer(player, itm, target);
     }
-    catch (e){
+    catch (e) {
       this.notificationService.fail(e);
     }
     this.filterChanged();
   }
 
-  public async equip(player: Player, itm: InventoryItem){
+  public async equip(player: Player, itm: InventoryItem) {
     await this.gearService.equip(player, itm);
     this.filterChanged();
   }
@@ -285,8 +285,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return false;
   }
 
-  private appendFilterNote(key, val){
-    this.filterNotes.push(key+" <"+this.filterText+">");
+  private appendFilterNote(key, val) {
+    this.filterNotes.push(key + " <" + this.filterText + ">");
   }
 
   private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
@@ -307,16 +307,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return false;
   }
 
-  private appendToggleFilterNote(t: GearToggleComponent){
-    if (t==null) return;
+  private appendToggleFilterNote(t: GearToggleComponent) {
+    if (t == null) return;
     const note = t.getNotes();
-    if (note!=null){
-        this.filterNotes.push(note);
+    if (note != null) {
+      this.filterNotes.push(note);
     }
   }
 
-  private appendToggleFilterNotes(){
-    this.appendToggleFilterNote(this.markToggle); 
+  private appendToggleFilterNotes() {
+    this.appendToggleFilterNote(this.markToggle);
     this.appendToggleFilterNote(this.weaponTypeToggle);
     this.appendToggleFilterNote(this.armorTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
@@ -352,12 +352,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterGear() {
+    console.log("Filter gear")
     this.filterNotes = [];
     if (this.player == null) return;
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
     tempGear = this.toggleFilter(tempGear);
-    this.total = tempGear.length;
     if (this.sortBy == "masterwork" || this.sortBy == "mod") {
       tempGear.sort((a: any, b: any): number => {
         let aV = "";
@@ -391,14 +391,20 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     else {
       tempGear.sort((a: any, b: any): number => {
-        const aV = a[this.sortBy] != null ? a[this.sortBy] : "";
-        const bV = b[this.sortBy] != null ? b[this.sortBy] : "";
+        try {
+          const aV = a[this.sortBy] != null ? a[this.sortBy] : "";
+          const bV = b[this.sortBy] != null ? b[this.sortBy] : "";
 
-        if (aV < bV) {
-          return this.sortDesc ? 1 : -1;
-        } else if (aV > bV) {
-          return this.sortDesc ? -1 : 1;
-        } else {
+          if (aV < bV) {
+            return this.sortDesc ? 1 : -1;
+          } else if (aV > bV) {
+            return this.sortDesc ? -1 : 1;
+          } else {
+            return 0;
+          }
+        }
+        catch(e){
+          console.log("Error sorting: "+e);
           return 0;
         }
       });
@@ -407,6 +413,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.gearToShow = tempGear.slice(0, this.size);
     else
       this.gearToShow = tempGear.slice(0);
+    
+    this.total = tempGear.length;
+    console.log("Gear to show: " + this.gearToShow.length);
   }
 
   public async shardMode() {
@@ -421,10 +430,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
-  public async load(initialLoad?:boolean) {
+  public async load(initialLoad?: boolean) {
     this.loading = true;
 
-    if (initialLoad!=true){
+    if (initialLoad != true) {
       this.notificationService.info("Loading gear...");
     }
     try {
@@ -537,12 +546,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     const dialogRef = this.dialog.open(GearDetailsDialogComponent, dc);
   }
 
-  
+
 
   public showWildcardHelp(): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
-    
+
     dc.data = {
     };
     const dialogRef = this.dialog.open(GearHelpDialogComponent, dc);
@@ -562,11 +571,11 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       debounceTime(50))
       .subscribe(() => {
         this.filtersDirty = this.checkFilterDirty();
-        try{
-          this.filterGear();    
+        try {
+          this.filterGear();
         }
-        catch (e){
-          console.log("Error filtering: "+e);
+        catch (e) {
+          console.log("Error filtering: " + e);
         }
         this.filtering = false;
       });
@@ -608,11 +617,11 @@ export class GearDetailsDialogComponent {
   parent: GearComponent
   constructor(
     public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      this.items = data.items;
-      this.parent = data.parent;
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.items = data.items;
+    this.parent = data.parent;
 
-    }
+  }
 }
 
 
@@ -627,9 +636,9 @@ export class GearUtilitiesDialogComponent {
   WishlistService = WishlistService;
   constructor(
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-      this.parent = data.parent;
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.parent = data.parent;
+  }
 }
 
 
@@ -642,7 +651,7 @@ export class GearHelpDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<GearHelpDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
-    }
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+  }
 
 }
