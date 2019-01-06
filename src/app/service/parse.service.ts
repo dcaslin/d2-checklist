@@ -1889,6 +1889,10 @@ export class ParseService {
                 return null;
                 // return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
             }
+            //anything with no type goes away too
+            if (desc.itemTypeDisplayName==null){
+                return null;
+            }
             let type: ItemType = desc.itemType;
             if (!detailedInv) {
                 if (desc.itemType !== ItemType.Bounty && desc.itemType !== ItemType.Quest && desc.itemType !== ItemType.QuestStep) {

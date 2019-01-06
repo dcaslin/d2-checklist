@@ -256,7 +256,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (marking === item.mark) marking = null;
     item.mark = marking;
     this.markService.updateItem(item);
-    this.filterGear();
+    this.filterChanged();
   }
 
   showCopies(i: InventoryItem) {
@@ -276,7 +276,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.sortBy = val;
       this.sortDesc = true;
     }
-    this.filterGear();
+    this.filterChanged();
   }
 
   filterItem(i: InventoryItem): boolean {
@@ -433,7 +433,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         this.player = await this.gearService.loadGear(this.selectedUser);
       }
       this.generateChoices();
-      this.filterGear();
+      this.filterChanged();
     }
     finally {
       this.loading = false;
@@ -560,7 +560,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       debounceTime(50))
       .subscribe(() => {
         this.filtersDirty = this.checkFilterDirty();
-        this.filterGear();    
+        try{
+          this.filterGear();    
+        }
+        catch (e){
+          console.log("Error filtering: "+e);
+        }
         this.filtering = false;
       });
 
