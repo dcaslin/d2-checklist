@@ -103,6 +103,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   filters: GearToggleComponent[] = [];
   filtersDirty: boolean = false;
+  filterNotes: string[] = [];
 
 
   private static HIGHLIGHT_ALL_PERKS_KEY = "highlightAllPerks";
@@ -282,8 +283,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return false;
   }
 
+  private appendFilterNote(key, val){
+    this.filterNotes.push(key+" <"+this.filterText+">");
+  }
+
   private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
     if (this.filterText != null && this.filterText.trim().length > 0) {
+      this.filterNotes.push("wildcard = " + this.filterText);
       return gear.filter(this.filterItem, this);
     }
     else {
@@ -297,6 +303,26 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       if (!toggle.isAllSelected()) return true;
     }
     return false;
+  }
+
+  private appendToggleFilterNote(t: GearToggleComponent){
+    if (t==null) return;
+    const note = t.getNotes();
+    if (note!=null){
+        this.filterNotes.push(note);
+    }
+  }
+
+  private appendToggleFilterNotes(){
+    this.appendToggleFilterNote(this.markToggle); 
+    this.appendToggleFilterNote(this.weaponTypeToggle);
+    this.appendToggleFilterNote(this.armorTypeToggle);
+    this.appendToggleFilterNote(this.modTypeToggle);
+    this.appendToggleFilterNote(this.consumableTypeToggle);
+    this.appendToggleFilterNote(this.exchangeTypeToggle);
+    this.appendToggleFilterNote(this.ownerToggle);
+    this.appendToggleFilterNote(this.rarityToggle);
+    this.appendToggleFilterNote(this.classTypeToggle);
   }
 
   private toggleFilterSingle(i: InventoryItem): boolean {
@@ -313,6 +339,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private toggleFilter(gear: InventoryItem[]): InventoryItem[] {
+    this.appendToggleFilterNotes();
     const returnMe: InventoryItem[] = [];
     for (const i of gear) {
       if (this.toggleFilterSingle(i)) {
@@ -323,6 +350,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterGear() {
+    this.filterNotes = [];
     if (this.player == null) return;
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);

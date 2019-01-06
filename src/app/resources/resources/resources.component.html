@@ -127,7 +127,7 @@
                       <ng-container *ngFor="let perks of i.rolledPerks; last as isLast">
                         <div>
                           <ng-container *ngFor="let perk of perks; last as isLast2">
-                            <span [matTooltip]="perk.desc" style="white-space: nowrap;">
+                            <span [matTooltip]="perk.desc" matTooltipClass="preserve-white-space" style="white-space: nowrap;">
 
                               <span *ngIf="perk.icon!=null" class="small-item-icon transparent-icon"
                                 [style.background-image]="'url(//www.bungie.net' +perk.icon + ')'"></span>
