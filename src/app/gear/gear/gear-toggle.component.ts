@@ -12,8 +12,18 @@ export class GearToggleComponent implements OnInit {
 
   @Input()
   set currentItemType(currentItemType: ItemType) {
-    this._currentItemType = currentItemType;
-    this.checkDisplay();
+    this.updateCurrentItemType(currentItemType);
+  }
+
+  public setCurrentItemType(currentItemType: ItemType) {
+    this.updateCurrentItemType(currentItemType, true);
+  }
+
+  private updateCurrentItemType(currentItemType: ItemType, noEmit?:boolean){
+    if (currentItemType!==this._currentItemType){
+      this._currentItemType = currentItemType;
+      this.checkDisplay(noEmit);
+    }
   }
 
   @Input()
@@ -44,7 +54,7 @@ export class GearToggleComponent implements OnInit {
     });
   }
 
-  private checkDisplay() {
+  private checkDisplay(noEmit?:boolean) {
     if (this.displayOptions != null && this.displayOptions.length > 0) {
       if (this.displayOptions.indexOf(this._currentItemType) >= 0) {
         this.hidden = false;
@@ -52,7 +62,8 @@ export class GearToggleComponent implements OnInit {
       else {
         this.hidden = true;
       }
-      this.emit();
+      if (noEmit!=true)
+        this.emit();
     }
   }
 
@@ -101,8 +112,12 @@ export class GearToggleComponent implements OnInit {
     }
   }
 
-  public isChosen(val: any): boolean {
+  public isChosen(optionType: ItemType, val: any): boolean {
     if (this.hidden == true) return true;
+    if (optionType!=this._currentItemType){
+      console.log("OOPS");
+    }
+
     if (this.choices.length == null || this.choices.length == 0) return true;
     for (const c of this.choices) {
       if (c.value == true && c.matchValue == val) return true;
