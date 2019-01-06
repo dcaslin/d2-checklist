@@ -328,39 +328,40 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private toggleFilterSingle(i: InventoryItem): boolean {
-    if (!this.markToggle.isChosen(i.mark)) { 
+
+    if (!this.markToggle.isChosen(this.option.type, i.mark)) { 
       console.log("Filtered by mark: "+i.name);
       return false; 
     }
-    if (!this.weaponTypeToggle.isChosen(i.typeName)) { 
+    if (!this.weaponTypeToggle.isChosen(this.option.type, i.typeName)) { 
       console.log("Filtered by weapon type: "+i.name);
       return false; 
     }
-    if (!this.armorTypeToggle.isChosen(i.typeName)) { 
+    if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) { 
       console.log("Filtered by armor type: "+i.name);
       return false; 
     }
-    if (!this.modTypeToggle.isChosen(i.typeName)) { 
+    if (!this.modTypeToggle.isChosen(this.option.type, i.typeName)) { 
       console.log("Filtered by mod type: "+i.name);
       return false; 
     }
-    if (!this.consumableTypeToggle.isChosen(i.typeName)) { 
+    if (!this.consumableTypeToggle.isChosen(this.option.type, i.typeName)) { 
       console.log("Filtered by consumable type: "+i.name);
       return false; 
     }
-    if (!this.exchangeTypeToggle.isChosen(i.typeName)) { 
+    if (!this.exchangeTypeToggle.isChosen(this.option.type, i.typeName)) { 
       console.log("Filtered by exchangetype: "+i.name);
       return false; 
     }
-    if (!this.ownerToggle.isChosen(i.owner.id)) { 
+    if (!this.ownerToggle.isChosen(this.option.type, i.owner.id)) { 
       console.log("Filtered by owner: "+i.name);
       return false; 
     }
-    if (!this.rarityToggle.isChosen(i.tier)) { 
+    if (!this.rarityToggle.isChosen(this.option.type, i.tier)) { 
       console.log("Filtered by rarity: "+i.name);
       return false; 
     }
-    if (!this.classTypeToggle.isChosen(i.classAllowed)) { 
+    if (!this.classTypeToggle.isChosen(this.option.type, i.classAllowed)) { 
       console.log("Filtered by class: "+i.name);
       return false; 
     }
@@ -368,6 +369,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private toggleFilter(gear: InventoryItem[]): InventoryItem[] {
+    // hit it with a hammer, owner and rarity are fine
+    this.markToggle.setCurrentItemType(this.option.type);
+    this.weaponTypeToggle.setCurrentItemType(this.option.type);
+    this.armorTypeToggle.setCurrentItemType(this.option.type);
+    this.modTypeToggle.setCurrentItemType(this.option.type);
+    this.consumableTypeToggle.setCurrentItemType(this.option.type);
+    this.exchangeTypeToggle.setCurrentItemType(this.option.type);
+    this.ownerToggle.setCurrentItemType(this.option.type);
+    this.rarityToggle.setCurrentItemType(this.option.type);
+    this.classTypeToggle.setCurrentItemType(this.option.type);
+
+
     this.appendToggleFilterNotes();
     const returnMe: InventoryItem[] = [];
     for (const i of gear) {
