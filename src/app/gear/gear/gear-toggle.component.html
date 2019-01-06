@@ -4,9 +4,9 @@
   </button>
   <mat-menu #menu="matMenu">
     <button mat-menu-item (click)="selectAll()">Select All</button>
-    <button *ngFor="let choice of choices" mat-menu-item (click)="exclusiveSelect(choice)">
+    <a *ngFor="let choice of choices" mat-menu-item (click)="exclusiveSelect(choice)">
       <mat-checkbox [(ngModel)]="choice.value" (click)="select($event, choice); false"></mat-checkbox>
       {{choice.display}}
-    </button>
+    </a>
   </mat-menu>
 </ng-container>

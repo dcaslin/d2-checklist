@@ -421,10 +421,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
-  public async load() {
+  public async load(initialLoad?:boolean) {
     this.loading = true;
 
-    this.notificationService.info("Loading gear...");
+    if (initialLoad!=true){
+      this.notificationService.info("Loading gear...");
+    }
     try {
       if (this.selectedUser == null) {
         this.player = null;
@@ -551,7 +553,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.selectedUser = selectedUser;
       this.loadMarks();
-      this.load();
+      this.load(true);
     });
     this.loadWishlist();
 

@@ -50,6 +50,7 @@ export class WishlistService implements OnDestroy {
 
   public processItems(items: InventoryItem[]): void {
     console.log("Processing wishlist");
+    if (this.data==null) return;
     for (const i of items) {
       if (this.data[i.hash] != null) {
         //for each curated roll
