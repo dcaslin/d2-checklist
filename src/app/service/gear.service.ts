@@ -51,7 +51,7 @@ export class GearService {
 
     public canEquip(itm: InventoryItem) {
         //ignore itm.canEquip
-        if (itm.equipped == true || !(itm.owner instanceof Character)) {
+        if (itm.equipped == true || (itm.owner.id == "vault") || (itm.owner.id == "shared")) {
             itm.canReallyEquip = false;
         }
         else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner as Character).className) {
@@ -68,6 +68,7 @@ export class GearService {
     }
 
     private async clearInvForMode(target: Target, player: Player, ignoreMark: string): Promise<number> {
+        console.log("Clearing inventory ahead of a mode.");
         this.notificationService.info("Clearing inventory ahead of time...");
         const buckets = this.bucketService.getBuckets(target);
         let totalErr = 0;
@@ -97,6 +98,7 @@ export class GearService {
             this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault");
         else
             this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault. " + err + " items failed to move.");
+        console.log("Done clearning inventory. " + totalErr + " errors.");
 
         return totalErr;
     }
@@ -262,7 +264,7 @@ export class GearService {
             }
 
             //if the target is the vault, we just need to put it there
-            if (target instanceof Vault) {
+            if (target.id == "vault") {
                 let owner = itm.owner;
                 if (owner == player.shared) {
                     owner = player.characters[0];
@@ -276,7 +278,7 @@ export class GearService {
 
             }
             //if it's in the vault, we just need to pull it out to our char
-            else if (itm.owner instanceof Vault) {
+            else if (itm.owner.id == "vault") {
                 let tempTarget = target;
                 if (target == player.shared) {
                     tempTarget = player.characters[0];
@@ -295,12 +297,14 @@ export class GearService {
                 itm.options.push(itm.owner);
                 itm.owner = player.vault;
                 itm.options.splice(itm.options.indexOf(itm.owner), 1);
+
+                await this.bungieService.transfer(player.profile.userInfo.membershipType,
+                    target, itm, false, player.vault, this.bucketService);
+                itm.options.push(itm.owner);
+                itm.owner = target;
+                itm.options.splice(itm.options.indexOf(itm.owner), 1);
             }
-            await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                target, itm, false, player.vault, this.bucketService);
-            itm.options.push(itm.owner);
-            itm.owner = target;
-            itm.options.splice(itm.options.indexOf(itm.owner), 1);
+
         }
         finally {
             this.canEquip(itm);
