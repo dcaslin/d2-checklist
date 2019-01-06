@@ -26,7 +26,7 @@
               </th>
               <ng-container *ngIf="modelPlayer!=null">
                 <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                  <th [matTooltip]="mileStoneName.desc" *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
+                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1">
                     {{mileStoneName.name}}
                     <span *ngIf="debugmode">{{mileStoneName.key}}</span>
                     <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"

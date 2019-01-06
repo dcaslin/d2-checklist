@@ -145,7 +145,7 @@
                     <ng-container *ngFor="let mileStoneName of player.milestoneList">
                       <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
                         <td class="lead">
-                          <span [matTooltip]="mileStoneName.desc">
+                          <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
                             <a href="javascript:void(0)" (click)="sortByName()">
                               {{mileStoneName.name}}
                               <i *ngIf="sort=='nameDesc'" class="fal fa-sort-down"></i>
@@ -617,7 +617,7 @@
                       <tbody>
                         <tr *ngFor="let faction of char.factions">
                           <td class="lead" data-label="">
-                            <span [matTooltip]="faction.desc">{{faction.name}}</span>
+                            <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
                             <span class="light">Level {{faction.level}} </span>
                             <span class="caption">{{faction.info}}</span>
                             <div class="row dl-row simple-caption">
@@ -864,7 +864,7 @@
 
                     <div class="stat-chip-list">
                       <ng-container *ngFor="let stat of char.stats; let i=index">
-                        <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc">{{stat.name}}:
+                        <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc" matTooltipClass="preserve-white-space">{{stat.name}}:
                           {{stat.value}}</span>
                       </ng-container>
                     </div>

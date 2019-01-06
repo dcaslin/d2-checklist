@@ -55,7 +55,7 @@
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc">
+                        <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc" matTooltipClass="preserve-white-space">
                             {{i.masterwork.name}} {{i.masterwork.tier}}
                             <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'"
                                 [value]="i.masterwork.tier*10"></mat-progress-bar>
@@ -69,7 +69,7 @@
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc">
+                        <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc" matTooltipClass="preserve-white-space">
                             {{i.mod.name}}
                         </div>
                     </td>
@@ -83,7 +83,7 @@
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
-                                [matTooltip]="plug.desc">
+                                [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
                                 <i *ngIf="plug.godRoll && i.godRoll" class="fas fa-star accent-text"></i>
                                 <i *ngIf="plug.godRoll && !i.godRoll && parent.highlightAllPerks" class="fas fa-star"></i>
                   

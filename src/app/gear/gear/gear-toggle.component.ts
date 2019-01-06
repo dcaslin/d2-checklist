@@ -94,6 +94,19 @@ export class GearToggleComponent implements OnInit {
     }
     return false;
   }
+
+  public getNotes(): string{
+    if (this.hidden==true) return null;
+    if (this.choices.length==null || this.choices.length==0) return null;
+    if (this.isAllSelected()) return null;
+    let s = this.title+": \n";
+    for (const c of this.choices){
+      if (c.value==false ){
+        s+="    "+c.display+"\n";
+      }
+    }
+    return s;
+  }
 }
 
 export interface ToggleInfo {

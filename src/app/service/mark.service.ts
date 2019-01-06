@@ -71,7 +71,7 @@ export class MarkService implements OnDestroy {
         a.push({
             label: "Infuse",
             value: "infuse",
-            iconClass: "fas fa-syringe"
+            iconClass: "fas fa-code-merge"
         });
         a.push({
             label: "Junk",
