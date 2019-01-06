@@ -35,7 +35,10 @@
 
       <div style="margin: 10px" [hidden]="selectedUser==null">
         <mat-form-field class="searchField">
-          <input matInput #filter placeholder="Wildcard filter">
+          <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter">
+          <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear" (click)="visibleFilterText=null;filterText=null;filterChanged()">
+            <mat-icon>close</mat-icon>
+          </button>
           <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
             <mat-icon>help_outline</mat-icon>
           </button>
