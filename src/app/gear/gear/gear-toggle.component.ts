@@ -8,14 +8,14 @@ import { ItemType } from '@app/service/model';
 })
 export class GearToggleComponent implements OnInit {
   _currentItemType: ItemType;
-  hidden: boolean; 
+  hidden: boolean;
 
   @Input()
   set currentItemType(currentItemType: ItemType) {
     this._currentItemType = currentItemType;
     this.checkDisplay();
   }
- 
+
   @Input()
   displayOptions: ItemType[];
 
@@ -32,77 +32,92 @@ export class GearToggleComponent implements OnInit {
 
 
 
-  ngOnInit(){
+  ngOnInit() {
     this.checkDisplay();
   }
 
-  private emit(){
+  private emit() {
     this.change.emit({
       title: this.title,
       hidden: this.hidden,
       choices: this.choices
-    }); 
+    });
   }
 
-  private checkDisplay(){
-    if (this.displayOptions!=null && this.displayOptions.length>0){
-      if (this.displayOptions.indexOf(this._currentItemType)>=0){
+  private checkDisplay() {
+    if (this.displayOptions != null && this.displayOptions.length > 0) {
+      if (this.displayOptions.indexOf(this._currentItemType) >= 0) {
         this.hidden = false;
       }
-      else{
+      else {
         this.hidden = true;
       }
       this.emit();
-   }
+    }
   }
 
-  isAllSelected(){
-    for (const ch of this.choices){
+  isAllSelected() {
+    for (const ch of this.choices) {
       if (!ch.value) return false;
-    } 
+    }
     return true;
   }
 
-  selectAll(noEmit?:boolean) {
-    for (const ch of this.choices){
-      ch.value = true;
+  selectAll(noEmit?: boolean) {
+    try {
+      console.log("selectAll");
+      for (const ch of this.choices) {
+        ch.value = true;
+      }
+      if (!noEmit)
+        this.emit();
+    } catch (e) {
+      console.log("Error selectAll: " + e);
     }
-    if (!noEmit)
-      this.emit();
   }
 
   exclusiveSelect(choice) {
-    for (const ch of this.choices){
-      if (ch !== choice)
-        ch.value = false;
+    try {
+      console.log("exclusiveSelect");
+      for (const ch of this.choices) {
+        if (ch !== choice)
+          ch.value = false;
+      }
+      choice.value = true;
+      this.emit();
+    } catch (e) {
+      console.log("Error exclusiveSelect: " + e);
     }
-    choice.value = true;
-    this.emit();
   }
 
   select(event, choice) {
-    choice.value = !choice.value;
-    this.change.emit();
-    event.stopPropagation();
+    try {
+      console.log("Select");
+      choice.value = !choice.value;
+      this.change.emit();
+      event.stopPropagation();
+    } catch (e) {
+      console.log("Error select: " + e);
+    }
   }
 
   public isChosen(val: any): boolean {
-    if (this.hidden==true) return true;
-    if (this.choices.length==null || this.choices.length==0) return true;
-    for (const c of this.choices){
-      if (c.value==true && c.matchValue == val) return true;
+    if (this.hidden == true) return true;
+    if (this.choices.length == null || this.choices.length == 0) return true;
+    for (const c of this.choices) {
+      if (c.value == true && c.matchValue == val) return true;
     }
     return false;
   }
 
-  public getNotes(): string{
-    if (this.hidden==true) return null;
-    if (this.choices.length==null || this.choices.length==0) return null;
+  public getNotes(): string {
+    if (this.hidden == true) return null;
+    if (this.choices.length == null || this.choices.length == 0) return null;
     if (this.isAllSelected()) return null;
-    let s = this.title+": \n";
-    for (const c of this.choices){
-      if (c.value==false ){
-        s+="    "+c.display+"\n";
+    let s = this.title + ": \n";
+    for (const c of this.choices) {
+      if (c.value == false) {
+        s += "    " + c.display + "\n";
       }
     }
     return s;
@@ -123,6 +138,6 @@ export class Choice {
   constructor(matchValue: string, display: string, value?: boolean) {
     this.matchValue = matchValue;
     this.display = display;
-    if (value!=undefined) this.value = value;
+    if (value != undefined) this.value = value;
   }
 }
