@@ -43,10 +43,12 @@ import { NotificationService } from '@app/service/notification.service';
 // DONE shardit keepit copy paste
 // DONE option to highlight any god perks
 // DONE wish list configurability
-// TODO upgrade like names, and fix armor utilities
+// DONE upgrade like names, and fix armor utilities
 // DONE update filter after shard mode
 // DONE default check non god roll perks
 // DONE sort copies by light level
+
+// TODO show type name on item details
 
 @Component({
   selector: 'anms-gear',

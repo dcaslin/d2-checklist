@@ -69,22 +69,24 @@
   }
 
   .simple-caption{
-    font-size: 1.5em;
     margin: .5em 0 .75em;
     font-size: smaller;
     font-weight: lighter;
     color: mat-color($foreground, secondary-text);
   }
   
+  .simple-darker-caption-no-margin{
+    font-size: smaller;
+    color: mat-color($foreground, secondary-text);
+  }
+
   .simple-caption-no-margin{
-    font-size: 1.5em;    
     font-size: smaller;
     font-weight: lighter;
     color: mat-color($foreground, secondary-text);
   }
   
   .simple-warn-caption{
-    font-size: 1.5em;
     margin: .5em 0 .75em;
     font-size: smaller;
     font-weight: lighter;
