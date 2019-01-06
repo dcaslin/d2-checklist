@@ -116,6 +116,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   selectedUser: SelectedUser = null;
   player: Player = null;
+  visibleFilterText = null;
   @ViewChild('filter') filter: ElementRef;
   filterText: string = null;
   options = [
@@ -147,6 +148,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   resetFilters(): void {
     this.filter.nativeElement.value = "";
+    this.visibleFilterText = null;
     this.filterText = null;
     for (const toggle of this.filters) {
       toggle.selectAll(true);
