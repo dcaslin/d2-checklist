@@ -352,12 +352,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterGear() {
-    console.log("Filter gear")
+    console.log("Filter gear: Previous length "+ this.gearToShow.length)
     this.filterNotes = [];
     if (this.player == null) return;
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
+    console.log("After wildcard: "+tempGear.length);
     tempGear = this.toggleFilter(tempGear);
+    console.log("After toggle: "+tempGear.length);
     if (this.sortBy == "masterwork" || this.sortBy == "mod") {
       tempGear.sort((a: any, b: any): number => {
         let aV = "";
@@ -415,7 +417,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.gearToShow = tempGear.slice(0);
     
     this.total = tempGear.length;
-    console.log("Gear to show: " + this.gearToShow.length);
+    console.log("Gear to show current length: " + this.gearToShow.length);
   }
 
   public async shardMode() {
