@@ -84,6 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
   disableads: boolean;
 
   version = env.versions.app;
+  debugmode = false;
   year = new Date().getFullYear();
 
   logo = require('../assets/logo.svg');
