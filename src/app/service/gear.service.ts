@@ -125,14 +125,17 @@ export class GearService {
                 }
             }
         }
-        //10 items can be held, including equipped
-        if (storeErr == 0)
-            this.notificationService.info("Moved " + moved + " items to " + target.label);
-        else
-            this.notificationService.info("Moved " + moved + " items to " + target.label + ". " + storeErr + " items failed to move.");
+        const msg = "Moved " + moved + " items to " + target.label;
 
-        if (totalErr == 0)
-            this.notificationService.success("Done! All set to start sharding!");
+        if (totalErr>0){
+            this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
+        }
+        else if (moved==0){
+            this.notificationService.success("Nothing left to shard!");
+        }
+        else{
+            this.notificationService.success("Done! All set to start sharding! "+msg);
+        }
     }
 
     public findCopies(i: InventoryItem, player: Player): InventoryItem[] {
@@ -154,9 +157,8 @@ export class GearService {
 
     public async upgradeMode(player: Player) {
         const target = player.characters[0];
-        const totalErr = await this.clearInvForMode(target, player, "xxx");
+        let totalErr = await this.clearInvForMode(target, player, "xxx");
         let moved = 0;
-        let storeErr = 0;
         for (const i of player.gear) {
             //is it marked for upgrade
             if (i.mark == "upgrade") {
@@ -178,7 +180,6 @@ export class GearService {
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if ((targetBucket.items.length + copies.length) <= 10) {
                     console.log("Move " + i.name + " to " + target.label + " " + targetBucket.name);
-
                     this.notificationService.info("Prepping " + i.name + " for upgrade (" + copies.length + " total)");
                     for (const moveMe of copies) {
                         console.log("    From " + moveMe.owner.label);
@@ -189,23 +190,23 @@ export class GearService {
                         catch (e) {
                             console.log("Couldn't move " + moveMe.name);
                             this.notificationService.fail("Unable to move " + moveMe.name + " from " + moveMe.owner.label + ". Nothing else to equip?");
-                            storeErr++;
+                            totalErr++;
                         }
                     }
 
                 }
             }
         }
-        //10 items can be held, including equipped
-        if (storeErr == 0)
-            this.notificationService.info("Moved " + moved + " items to " + target.label);
-        else
-            this.notificationService.info("Moved " + moved + " items to " + target.label + ". " + storeErr + " items failed to move.");
-
-        if (totalErr == 0 && storeErr == 0)
-            this.notificationService.success("Done! All set to start upgrading!");
-        else
-            this.notificationService.fail("Done! But not all items could be moved (" + (totalErr + storeErr) + " failed)");
+        const msg = "Moved " + moved + " items to " + target.label;
+        if (totalErr>0){
+            this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
+        }
+        else if (moved==0){
+            this.notificationService.success("Nothing left to cheaply upgrade!");
+        }
+        else{
+            this.notificationService.success("Done! All set to start upgrading! "+msg);
+        }
     }
 
 
