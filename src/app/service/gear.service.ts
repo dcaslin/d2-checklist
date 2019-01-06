@@ -254,7 +254,18 @@ export class GearService {
             if (itm.equipped == true) {
                 let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
                 if (equipMe == null) {
-                    throw new Error("Nothing to equip to replace " + itm.name);
+                    // grab something from the vault
+                    const vaultItem: InventoryItem = this.bucketService.getBucket(player.vault, itm.inventoryBucket).otherItem(itm);
+                    if (vaultItem == null) {
+                        throw new Error("Nothing to equip to replace " + itm.name);
+                    }
+                    // transfer to source player
+                    await this.transfer(player, vaultItem, itm.owner);
+                    // get a reference to it now that it's on that other player
+                    equipMe = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
+                    if (equipMe == null) {
+                        throw new Error("2) Nothing to equip to replace " + itm.name);
+                    }
                 }
                 console.log(itm.name + " was equipped. Equipping " + equipMe.name + " in its place.");
                 const equipSuccess = await this.equip(player, equipMe);
