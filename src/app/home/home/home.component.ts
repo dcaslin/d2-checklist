@@ -2,14 +2,13 @@
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatTabChangeEvent, MatTabGroup } from '@angular/material';
-import { Subject } from 'rxjs';
+import { MatTabGroup } from '@angular/material';
+import { environment as env } from '@env/environment';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { Const, Platform, PublicMilestone, NameDesc } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { BungieService } from '../../service/bungie.service';
-import { Nightfall } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 
 @Component({
@@ -23,6 +22,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatTabGroup) tabs: MatTabGroup;
 
+  version = env.versions.app;
   platforms: Platform[];
   selectedPlatform: Platform;
   selectedTab: string;
@@ -115,9 +115,26 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     }  // Hijacked
     else if (hash == "4244464899") {
       return 6;
-    }  // Pilgrimage
+    }  
+    // Pilgrimage
     else if (hash == "3008658049") {
       return 7;
+    }
+    // Riptide 
+    else if (hash == "3205547455") {
+      return 5;
+    }
+    // Payback
+    else if (hash == "1023966646") {
+      return 7;
+    }
+    // Beyond Infity
+    else if (hash == "1259766043") {
+      return 11;
+    }
+    // Nothing Left To Say
+    else if (hash == "2146977720") {
+      return 13;
     }
     return 100;
   }

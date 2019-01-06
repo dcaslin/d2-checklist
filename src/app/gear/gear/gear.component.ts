@@ -328,15 +328,42 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private toggleFilterSingle(i: InventoryItem): boolean {
-    if (!this.markToggle.isChosen(i.mark)) return false;
-    if (!this.weaponTypeToggle.isChosen(i.typeName)) return false;
-    if (!this.armorTypeToggle.isChosen(i.typeName)) return false;
-    if (!this.modTypeToggle.isChosen(i.typeName)) return false;
-    if (!this.consumableTypeToggle.isChosen(i.typeName)) return false;
-    if (!this.exchangeTypeToggle.isChosen(i.typeName)) return false;
-    if (!this.ownerToggle.isChosen(i.owner.id)) return false;
-    if (!this.rarityToggle.isChosen(i.tier)) return false;
-    if (!this.classTypeToggle.isChosen(i.classAllowed)) return false;
+    if (!this.markToggle.isChosen(i.mark)) { 
+      console.log("Filtered by mark: "+i.name);
+      return false; 
+    }
+    if (!this.weaponTypeToggle.isChosen(i.typeName)) { 
+      console.log("Filtered by weapon type: "+i.name);
+      return false; 
+    }
+    if (!this.armorTypeToggle.isChosen(i.typeName)) { 
+      console.log("Filtered by armor type: "+i.name);
+      return false; 
+    }
+    if (!this.modTypeToggle.isChosen(i.typeName)) { 
+      console.log("Filtered by mod type: "+i.name);
+      return false; 
+    }
+    if (!this.consumableTypeToggle.isChosen(i.typeName)) { 
+      console.log("Filtered by consumable type: "+i.name);
+      return false; 
+    }
+    if (!this.exchangeTypeToggle.isChosen(i.typeName)) { 
+      console.log("Filtered by exchangetype: "+i.name);
+      return false; 
+    }
+    if (!this.ownerToggle.isChosen(i.owner.id)) { 
+      console.log("Filtered by owner: "+i.name);
+      return false; 
+    }
+    if (!this.rarityToggle.isChosen(i.tier)) { 
+      console.log("Filtered by rarity: "+i.name);
+      return false; 
+    }
+    if (!this.classTypeToggle.isChosen(i.classAllowed)) { 
+      console.log("Filtered by class: "+i.name);
+      return false; 
+    }
     return true;
   }
 
@@ -352,14 +379,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterGear() {
-    console.log("Filter gear: Previous length "+ this.gearToShow.length)
+    console.log("Filter gear: Previous length " + this.gearToShow.length)
     this.filterNotes = [];
     if (this.player == null) return;
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
-    console.log("After wildcard: "+tempGear.length);
+    console.log("After wildcard: " + tempGear.length);
     tempGear = this.toggleFilter(tempGear);
-    console.log("After toggle: "+tempGear.length);
+    console.log("After toggle: " + tempGear.length);
     if (this.sortBy == "masterwork" || this.sortBy == "mod") {
       tempGear.sort((a: any, b: any): number => {
         let aV = "";
@@ -405,8 +432,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
             return 0;
           }
         }
-        catch(e){
-          console.log("Error sorting: "+e);
+        catch (e) {
+          console.log("Error sorting: " + e);
           return 0;
         }
       });
@@ -415,7 +442,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.gearToShow = tempGear.slice(0, this.size);
     else
       this.gearToShow = tempGear.slice(0);
-    
+
     this.total = tempGear.length;
     console.log("Gear to show current length: " + this.gearToShow.length);
   }
