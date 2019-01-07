@@ -73,6 +73,8 @@ export interface TriumphPresentationNode extends TriumphNode {
     progress: number,
     completionValue: number,
     unredeemedCount: number;
+    pts: number;
+    totalPts: number;
 }
 
 export interface TriumphRecordNode extends TriumphNode {
