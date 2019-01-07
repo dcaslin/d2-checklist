@@ -42,20 +42,6 @@
               Search Clans
             </button>                
         </mat-menu>
-        <a mat-list-item [matMenuTriggerFor]="leaderboardMobileMenu">
-          <mat-icon>score</mat-icon>&ensp;Leaderboards
-        </a>
-        <mat-menu #leaderboardMobileMenu="matMenu">
-            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">
-              Leviathan Normal
-            </button>
-            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">
-              Leviathan Prestige
-            </button>
-            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="leaderboard/last-wish" routerLinkActive="active">
-              Last Wish
-            </button>
-        </mat-menu>
         <a mat-list-item (click)="sidenav.close()" routerLink="about" routerLinkActive="active">
           <mat-icon>info</mat-icon>&ensp;About
         </a>
@@ -92,21 +78,6 @@
               <mat-icon>payment</mat-icon>
               <span class="d-none d-xl-inline"> Vendors</span>
             </button>
-            <button mat-button class="nav-button" [matMenuTriggerFor]="leaderboardMenu">
-              <mat-icon>score</mat-icon>
-              <span class="d-none d-xl-inline"> Leaderboards</span>
-            </button>
-            <mat-menu #leaderboardMenu="matMenu">
-                <button  mat-menu-item class="nav-button" routerLink="leaderboard/leviathan" routerLinkActive="active">
-                  Leviathan Normal
-                </button>
-                <button mat-menu-item class="nav-button" routerLink="leaderboard/leviathan-prestige" routerLinkActive="active">
-                  Leviathan Prestige
-                </button>
-                <button mat-menu-item class="nav-button" routerLink="leaderboard/last-wish" routerLinkActive="active">
-                  Last Wish
-                </button>
-            </mat-menu>
             <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
               <mat-icon>search</mat-icon>
               <span class="d-none d-xl-inline"> Search</span>

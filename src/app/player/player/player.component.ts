@@ -1,13 +1,13 @@
 
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, Inject } from '@angular/core';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, Inject, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabChangeEvent, MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
-import { Observable, of as observableOf } from 'rxjs';
+import { Observable, of as observableOf, fromEvent as observableFromEvent, combineLatest, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { Player, Character, Platform, Const, TriumphNode, MileStoneName } from '../../service/model';
+import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
@@ -39,6 +39,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   ];
 
   @ViewChild('maintabs') tabs: MatTabGroup;
+
+  private triumphSearchSubject: Subject<void> = new Subject<void>();
+
+
+  public triumphFilterText: string = null;
+  public filteredTriumphs: TriumphRecordNode[] = [];
 
   public const: Const = Const;
   platforms: Platform[];
@@ -109,12 +115,39 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
   }
 
+  triumphSearchChange(event: any){
+    this.triumphSearchSubject.next();
+  }
+
+  private filterTriumphs() {
+    console.log("Filter triumphs");
+    if (this.triumphFilterText == null || this.triumphFilterText.trim().length == 0) {
+      this.filteredTriumphs = [];
+      return;
+    }
+    if (this.player == null || this.player.searchableTriumphs == null) {
+      this.filteredTriumphs = [];
+      return;
+    }
+    const temp = [];
+    const filterText = this.triumphFilterText.toLowerCase();
+    for (const t of this.player.searchableTriumphs) {
+      if (temp.length > 20) break;
+      if (t.searchText.indexOf(filterText) >= 0) {
+        temp.push(t);
+      }
+    }
+    this.filteredTriumphs = temp;
+  }
+
   private setPlayer(x: Player): void {
     this.player = x;
     if (x != null) {
       this.sort = 'rewardsDesc';
       this.recordDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+
       this.recordDatasource.data = this.player.records;
+      this.filterTriumphs();
       if (this.selectedTab === 'triumphs') {
         if (this.initTreeNodeHash != null) {
           for (const n of this.treeControl2.dataNodes) {
@@ -458,6 +491,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
       this.performSearch();
     });
+
+    this.triumphSearchSubject.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(50))
+      .subscribe(() => {
+       this.filterTriumphs();
+      });
 
   }
 
