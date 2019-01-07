@@ -83,6 +83,7 @@ export interface TriumphRecordNode extends TriumphNode {
     lowLinks?: LowLinks;
     percent: number;
     searchText: string;
+    invisible: boolean;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {

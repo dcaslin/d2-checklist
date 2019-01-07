@@ -54,6 +54,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   gamerTag: string;
   player: Player;
   hideComplete = false;
+  showZeroPtTriumphs = false;
+  showInvisTriumphs = false;
   initTreeNodeHash: string = null;
   sort = 'rewardsDesc';
 
@@ -76,6 +78,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.treeControl2 = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
     this.hideComplete = localStorage.getItem('hide-completed') === 'true';
+    this.showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
+    this.showInvisTriumphs = localStorage.getItem('show-invis-triumph') === 'true';
 
   }
 
@@ -120,7 +124,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   private filterTriumphs() {
-    console.log("Filter triumphs");
     if (this.triumphFilterText == null || this.triumphFilterText.trim().length == 0) {
       this.filteredTriumphs = [];
       return;
@@ -418,7 +421,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles'
             // 'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
-          ]);
+          ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
@@ -446,6 +449,17 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   public hideCompleteChange() {
     localStorage.setItem('hide-completed', '' + this.hideComplete);
+  }
+
+
+  public showZeroPtTriumphsChange () {
+    localStorage.setItem('show-zero-pt-triumphs', '' + this.showZeroPtTriumphs);
+    this.performSearch(true);
+  }
+
+  public showInvisTriumphsChange(){
+    localStorage.setItem('show-invis-triumphs', '' + this.showInvisTriumphs);
+    this.performSearch(true);
   }
 
   ngOnInit() {

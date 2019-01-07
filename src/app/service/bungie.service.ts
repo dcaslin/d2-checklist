@@ -469,7 +469,7 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean): Promise<Player> {
+    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
         try {
             const sComp = components.join();
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' +
@@ -478,7 +478,7 @@ export class BungieService implements OnDestroy {
             if (components.includes('CharacterProgressions')) {
                 ms = await this.getPublicMilestones();
             }
-            return this.parseService.parsePlayer(resp, ms, detailedInv);
+            return this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
         } catch (err) {
             if (!ignoreErrors) {
                 this.handleError(err);
