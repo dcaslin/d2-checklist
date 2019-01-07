@@ -1,7 +1,7 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <div class="center-spinner">
+      <div class="fixed-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
       </div>
       <div class="body-text" [ngClass]="animateOnRouteEnter">
@@ -754,7 +754,15 @@
                   </mat-tab>
                   <mat-tab label="Closest">
                     <div>
-                      <div class="left">Nearest Triumphs</div>
+                      <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
+                        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs" (ngModelChange)="showZeroPtTriumphsChange()">
+                          Show Zero Pt
+                        </mat-checkbox>
+                        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs" (ngModelChange)="showInvisTriumphsChange()">
+                            Show Invisible
+                          </mat-checkbox>
+                      </h3>
+
                       <table class="responsive-table">
                         <tbody>
                           <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
@@ -768,7 +776,7 @@
                                   {{t.name}}
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
-                                <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <ng-container *ngIf="debugmode">{{t.hash}} {{t.invisible}}</ng-container>
                               </td>
                               <td class="left" data-label="">
                                 {{t.percent}}%
@@ -807,12 +815,12 @@
 
                       <div *ngIf="filteredTriumphs.length==0" class="left" style="margin: 10px">
                         <ng-container *ngIf="triumphFilterText==null || triumphFilterText.length==0">
-                            Type above to search
+                          Type above to search
                         </ng-container>
                         <ng-container *ngIf="triumphFilterText!=null && triumphFilterText.length>0">
-                            No results, change your search
+                          No results, change your search
                         </ng-container>
-                        
+
                       </div>
                       <table class="responsive-table">
                         <tbody>

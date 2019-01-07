@@ -1259,7 +1259,7 @@ export class ParseService {
 
 
 
-    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean): Player {
+    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?:boolean, showInvisTriumphs?: boolean): Player {
         if (resp.profile != null && resp.profile.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s profile.');
         }
@@ -1507,8 +1507,13 @@ export class ParseService {
                 for (const key in leafSet){
                     triumphLeaves.push(leafSet[key]);
                 }
-                
                 lowHangingTriumphs = triumphLeaves.filter((l) => {return !l.complete});
+                if (showZeroPtTriumphs!=true){
+                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => {return l.score>0});
+                }
+                if (showInvisTriumphs!=true){
+                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => {return !l.invisible});
+                }
                 lowHangingTriumphs.sort((a,b)=>{
                     if (a.percent>b.percent) return -1;
                     if (a.percent<b.percent) return 1;
@@ -1627,15 +1632,19 @@ export class ParseService {
         let complete = false;
         let redeemed = false;
         let title = false;
+        let invisible = false;
         if (val != null && val.state != null) {
             if (val.state === 0) {
                 complete = true;
             }
-            if ((val.state & 1) === 1) {
+            if ((val.state & 1) > 0) {
                 redeemed = true;
                 complete = true;
             }
-            if ((val.state & 64) === 65) {
+            if ((val.state & 16) > 0) {
+                invisible = true;
+            }
+            if ((val.state & 64) > 0) {
                 title = true;
             }
         }
@@ -1665,7 +1674,8 @@ export class ParseService {
             lowLinks: this.lowlineService.buildRecordLink(key),
             score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue,
             percent: percent, 
-            searchText: searchText.toLowerCase()
+            searchText: searchText.toLowerCase(),
+            invisible: invisible
         }
     }
 
