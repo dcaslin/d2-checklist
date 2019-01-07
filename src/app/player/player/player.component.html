@@ -735,7 +735,7 @@
                           <i *ngIf="!node.data.complete" class="far fa-square"></i>
                           {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
                           <span class="simple-caption">
-                            {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
+                            {{node.data.progress}}/{{node.data.completionValue}} | {{node.data.pts}}/{{node.data.totalPts}} pts 
                           </span>
                           <ng-container *ngIf="node.data.unredeemedCount>0">
                             <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>

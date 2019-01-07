@@ -1555,12 +1555,16 @@ export class ParseService {
         if (pDesc == null) { return null; }
         const children = [];
         let unredeemedCount = 0;
+        let pts = 0;
+        let total = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
                 const oChild = this.handleRecPresNode(child.presentationNodeHash, pres, records, triumphLeaves);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
+                total+=oChild.totalPts;
+                pts+=oChild.pts;
             }
             for (const child of pDesc.children.records) {
                 const oChild = this.handleRecordNode(child.recordHash, records);
@@ -1571,6 +1575,10 @@ export class ParseService {
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
                 }
+                if (oChild.complete && oChild.redeemed){
+                    pts+=oChild.score;
+                }
+                total+=oChild.score;
             }
         }
         children.sort(function (a, b) {
@@ -1594,7 +1602,9 @@ export class ParseService {
             completionValue: val.objective == null ? 1 : val.objective.completionValue,
             complete: val.objective == null ? false : val.objective.complete,
             children: children,
-            unredeemedCount: unredeemedCount
+            unredeemedCount: unredeemedCount,
+            pts: pts,
+            totalPts: total
         }
     }
 
@@ -1745,7 +1755,9 @@ export class ParseService {
             completionValue: val.objective == null ? 1 : val.objective.completionValue,
             complete: val.objective == null ? false : val.objective.complete,
             children: children,
-            unredeemedCount: 0
+            unredeemedCount: 0,
+            pts: 0,
+            totalPts: 0
         }
     }
 
