@@ -81,6 +81,8 @@ export interface TriumphRecordNode extends TriumphNode {
     title: boolean;
     score: number;
     lowLinks?: LowLinks;
+    percent: number;
+    searchText: string;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
@@ -205,6 +207,7 @@ export interface ItemObjective {
     progressDescription: string;
     progress: number;
     complete: boolean;
+    percent: number;
 }
 
 export class ActivityMode {
@@ -378,6 +381,8 @@ export class Player {
     triumphScore: number;
     records: TriumphNode[];
     collections: TriumphNode[];
+    lowHangingTriumphs:TriumphRecordNode[];
+    searchableTriumphs: TriumphRecordNode[];
     gear: InventoryItem[];
     vault: Target;
     shared: Target;
@@ -391,7 +396,7 @@ export class Player {
 
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[], gear: InventoryItem[], vault?: Target, shared?: Target) {
+        collections: TriumphNode[], gear: InventoryItem[], vault?: Target, shared?: Target, lowHangingTriumphs?:TriumphRecordNode[], searchableTriumphs?:TriumphRecordNode[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -417,6 +422,8 @@ export class Player {
         }
         this.vault = vault;
         this.shared = shared;
+        this.lowHangingTriumphs = lowHangingTriumphs;
+        this.searchableTriumphs = searchableTriumphs;
     }
 }
 

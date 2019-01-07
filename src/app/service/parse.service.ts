@@ -1370,7 +1370,10 @@ export class ParseService {
             });
         }
 
-        let recordTree = [];
+        let recordTree = [];        
+        let lowHangingTriumphs:TriumphRecordNode[] = [];
+        let searchableTriumphs:TriumphRecordNode[] = [];
+
         let colTree = [];
         let triumphScore = null;
         const currencies: Currency[] = [];
@@ -1494,7 +1497,31 @@ export class ParseService {
             }
 
             if (records.length > 0) {
-                recordTree = this.handleRecPresNode('1024788583', nodes, records).children;
+                let  triumphLeaves:TriumphRecordNode[] = [];
+                recordTree = this.handleRecPresNode('1024788583', nodes, records, triumphLeaves).children;
+                const leafSet = {};
+                for (const t of triumphLeaves){
+                    leafSet[t.hash] = t;
+                }
+                triumphLeaves = [];
+                for (const key in leafSet){
+                    triumphLeaves.push(leafSet[key]);
+                }
+                
+                lowHangingTriumphs = triumphLeaves.filter((l) => {return !l.complete});
+                lowHangingTriumphs.sort((a,b)=>{
+                    if (a.percent>b.percent) return -1;
+                    if (a.percent<b.percent) return 1;
+                    return 0;
+                });
+                searchableTriumphs = triumphLeaves.sort((a,b)=>{
+                    // if (a.percent>b.percent) return -1;
+                    // if (a.percent<b.percent) return 1;
+                    if (a.name<b.name) return -1;
+                    if (a.name<b.name) return 0;
+                    return 0;
+                });
+                lowHangingTriumphs = lowHangingTriumphs.slice(0,10); 
             }
 
             if (collections.length > 0) {
@@ -1502,7 +1529,7 @@ export class ParseService {
             }
         }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
-            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear, vault, shared);
+            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear, vault, shared, lowHangingTriumphs, searchableTriumphs);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -1517,7 +1544,7 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleRecPresNode(key: string, pres: any[], records: any[]): TriumphPresentationNode {
+    private handleRecPresNode(key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) { return null; }
@@ -1525,7 +1552,7 @@ export class ParseService {
         let unredeemedCount = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleRecPresNode(child.presentationNodeHash, pres, records);
+                const oChild = this.handleRecPresNode(child.presentationNodeHash, pres, records, triumphLeaves);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
@@ -1533,6 +1560,7 @@ export class ParseService {
             for (const child of pDesc.children.records) {
                 const oChild = this.handleRecordNode(child.recordHash, records);
                 if (oChild == null) { continue; }
+                triumphLeaves.push(oChild);
                 children.push(oChild);
 
                 if (oChild.complete && !oChild.redeemed) {
@@ -1571,7 +1599,7 @@ export class ParseService {
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
 
-        let objs = [];
+        let objs:ItemObjective[] = [];
         let totalProgress = 0;
         for (const o of val.objectives) {
             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
@@ -1580,8 +1608,18 @@ export class ParseService {
                 completionValue: oDesc.completionValue,
                 progressDescription: oDesc.progressDescription,
                 progress: o.progress == null ? 0 : o.progress,
-                complete: o.complete
+                complete: o.complete,
+                percent: 0
             }
+            
+            let max = iObj.completionValue;
+            if (iObj.completionValue==null || iObj.completionValue<=0){
+                max = 1;
+            }
+            let objPercent = 100 * iObj.progress/max;
+            if (objPercent>100) objPercent = 100;
+            iObj.percent = Math.floor(objPercent);
+
             totalProgress += oDesc.completionValue;
             objs.push(iObj);
         }
@@ -1601,7 +1639,17 @@ export class ParseService {
                 title = true;
             }
         }
-
+        let searchText = rDesc.displayProperties.name+" "+rDesc.displayProperties.description;
+        let percent = 0;
+        if (objs.length>0){
+            let sum = 0;
+            for (const o of objs){
+                sum+=o.percent;
+                searchText += " "+o.progressDescription;
+            }
+            percent = Math.floor(sum/objs.length);    
+        }
+        
         return {
             type: 'record',
             hash: key,
@@ -1615,7 +1663,9 @@ export class ParseService {
             title: title,
             children: null,
             lowLinks: this.lowlineService.buildRecordLink(key),
-            score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue
+            score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue,
+            percent: percent, 
+            searchText: searchText.toLowerCase()
         }
     }
 
@@ -1747,7 +1797,8 @@ export class ParseService {
                     completionValue: oDesc.completionValue,
                     progressDescription: oDesc.progressDescription,
                     progress: 0,
-                    complete: false
+                    complete: false,
+                    percent: 0
                 }
                 objectives.push(iObj);
             }
@@ -1940,12 +1991,15 @@ export class ParseService {
                                 completionValue: oDesc.completionValue,
                                 progressDescription: oDesc.progressDescription,
                                 progress: o.progress == null ? 0 : o.progress,
-                                complete: o.complete
+                                complete: o.complete,
+                                percent: 0
                             }
+
 
                             if (iObj.completionValue != null && iObj.completionValue > 0) {
                                 progTotal += 100 * iObj.progress / iObj.completionValue;
                                 progCnt++;
+                                iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
                             }
                             objectives.push(iObj);
                         }
