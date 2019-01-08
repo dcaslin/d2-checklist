@@ -1295,7 +1295,9 @@ export class ParseService {
                     '534869653' === p.hash ||   // xur
                     '1342567285' === p.hash ||   // scourge
                     '4128810957' === p.hash ||   // eva return
-                    '4253138191' === p.hash    // weekly clan engrams
+                    '4253138191' === p.hash ||   // weekly clan engrams
+                    '3177730289' === p.hash ||   // season of giving
+                    '2188900244' === p.hash    // recipe for success
                 ) {
                     continue;
                 }
@@ -1313,7 +1315,7 @@ export class ParseService {
                     desc: p.desc,
                     hasPartial: false
                 };
-                // Fix heroic advenstures
+                // Fix heroic adventures
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
                     ms.resets = null;
                 }
