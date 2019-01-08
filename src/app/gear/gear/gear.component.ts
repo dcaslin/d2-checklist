@@ -302,7 +302,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   checkFilterDirty() {
     if (this.filterText != null && this.filterText.trim().length > 0) return true;
     for (const toggle of this.filters) {
-      if (!toggle.isAllSelected()) return true;
+      if (!toggle.isAllSelected) return true;
     }
     return false;
   }
