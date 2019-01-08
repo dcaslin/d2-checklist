@@ -67,6 +67,7 @@ export interface TriumphNode {
     index: string;
     complete: boolean;
     children: TriumphNode[];
+    path: string[];
 }
 
 export interface TriumphPresentationNode extends TriumphNode {

@@ -735,7 +735,8 @@
                           <i *ngIf="!node.data.complete" class="far fa-square"></i>
                           {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
                           <span class="simple-caption">
-                            {{node.data.progress}}/{{node.data.completionValue}} | {{node.data.pts}}/{{node.data.totalPts}} pts 
+                            {{node.data.progress}}/{{node.data.completionValue}} |
+                            {{node.data.pts}}/{{node.data.totalPts}} pts
                           </span>
                           <ng-container *ngIf="node.data.unredeemedCount>0">
                             <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
@@ -759,8 +760,8 @@
                           Show Zero Pt
                         </mat-checkbox>
                         <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs" (ngModelChange)="showInvisTriumphsChange()">
-                            Show Invisible
-                          </mat-checkbox>
+                          Show Invisible
+                        </mat-checkbox>
                       </h3>
 
                       <table class="responsive-table">
@@ -777,6 +778,16 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}} {{t.invisible}}</ng-container>
+                                <span class="simple-caption">
+                                  <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                                    <ng-container *ngIf="i>0">
+                                      {{p}}
+                                      <ng-container *ngIf="!isLast">
+                                        /
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-container>
+                                </span>
                               </td>
                               <td class="left" data-label="">
                                 {{t.percent}}%
@@ -835,6 +846,16 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <span class="simple-caption">
+                                  <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                                    <ng-container *ngIf="i>0">
+                                      {{p}}
+                                      <ng-container *ngIf="!isLast">
+                                        /
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-container>
+                                </span>
                               </td>
                               <td class="left" data-label="">
                                 {{t.percent}}%
