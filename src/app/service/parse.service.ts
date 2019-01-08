@@ -1895,28 +1895,26 @@ export class ParseService {
         if (plugDesc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") < 0) {
             return null;
         }
-        const catId = plugDesc.plug.plugCategoryIdentifier;
-        let mwName = catId.substring(catId.indexOf("masterworks.stat.") + "masterworks.stat.".length, catId.length).toUpperCase();
-        const name = plugDesc.displayProperties.name; //Tier 3 Weapon, Tier 3 Armor, or Masterwork
-        let tier;
-        if ("Masterwork" == name) {
-            tier = 10;
+        //from here on out we know its MW
+        if (plugDesc.investmentStats==null || plugDesc.investmentStats.length==0){
+            console.log("Missing investment stats?");
+            return null;
+        }        
+        const invStats = plugDesc.investmentStats[0];
+        const tier = invStats.value;
+        const statHash = invStats.statTypeHash;
+        const statDesc: any = this.destinyCacheService.cache.Stat[statHash];
+        if (statDesc==null){
+            console.log("Missing statsDesc for "+statHash);
+            return null;
         }
-        else {
-            tier = parseInt(plugDesc.displayProperties.name[5]);
-        }
-        //resistance_3  DamageType(3=Thermal)
-        if (mwName.indexOf("RESISTANCE") == 0) {
-            const damageType: DamageType = parseInt(mwName.substring("RESISTANCE_".length, mwName.length));
-            mwName = this.cookDamageType(damageType);
-        }
-        mwName = mwName.toLowerCase();
-        mwName = mwName.charAt(0).toUpperCase() + mwName.slice(1);
-        mwName = mwName.replace("_"," ");
+        const name = statDesc.displayProperties.name;
+        const desc = statDesc.displayProperties.description;
+
         return {
             hash: plugDesc.hash,
-            name: mwName,
-            desc: plugDesc.displayProperties.description,
+            name: name,
+            desc: desc,
             icon: plugDesc.displayProperties.icon,
             tier: tier
         };
@@ -2230,9 +2228,9 @@ export class ParseService {
             searchText = desc.displayProperties.name;
             if (mw != null) {
                 searchText += " " + mw.name;
-                if (mw.tier==10){
-                    searchText += " is:masterwork";
-                }
+            }
+            if (masterworked){
+                searchText += " is:masterwork";
             }
             if (mod != null) {
                 searchText += " " + mod.name;

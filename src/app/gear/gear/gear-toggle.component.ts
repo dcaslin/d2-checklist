@@ -9,6 +9,7 @@ import { ItemType } from '@app/service/model';
 export class GearToggleComponent implements OnInit {
   _currentItemType: ItemType;
   hidden: boolean;
+  isAllSelected: boolean = true;
 
   @Input()
   set currentItemType(currentItemType: ItemType) {
@@ -47,6 +48,7 @@ export class GearToggleComponent implements OnInit {
   }
 
   private emit() {
+    this.setAllSelected();
     this.change.emit({
       title: this.title,
       hidden: this.hidden,
@@ -67,11 +69,14 @@ export class GearToggleComponent implements OnInit {
     }
   }
 
-  isAllSelected() {
+  setAllSelected() {
     for (const ch of this.choices) {
-      if (!ch.value) return false;
+      if (!ch.value){
+          this.isAllSelected = false;
+         return ;
+      }
     }
-    return true;
+    this.isAllSelected = true;
   }
 
   selectAll(noEmit?: boolean) {
@@ -82,6 +87,8 @@ export class GearToggleComponent implements OnInit {
       }
       if (!noEmit)
         this.emit();
+      else
+        this.setAllSelected();
     } catch (e) {
       console.log("Error selectAll: " + e);
     }
@@ -114,6 +121,7 @@ export class GearToggleComponent implements OnInit {
 
   public isChosen(optionType: ItemType, val: any): boolean {
     if (this.hidden == true) return true;
+    if (this.isAllSelected) return true;
     if (optionType!=this._currentItemType){
       console.log("OOPS");
     }
@@ -128,7 +136,7 @@ export class GearToggleComponent implements OnInit {
   public getNotes(): string {
     if (this.hidden == true) return null;
     if (this.choices.length == null || this.choices.length == 0) return null;
-    if (this.isAllSelected()) return null;
+    if (this.isAllSelected) return null;
     let s = this.title + ": \n";
     for (const c of this.choices) {
       if (c.value == false) {

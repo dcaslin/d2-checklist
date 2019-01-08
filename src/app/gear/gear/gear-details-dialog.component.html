@@ -57,8 +57,9 @@
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc" matTooltipClass="preserve-white-space">
                             {{i.masterwork.name}} {{i.masterwork.tier}}
-                            <mat-progress-bar mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'"
-                                [value]="i.masterwork.tier*10"></mat-progress-bar>
+                            
+                            <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
+                            <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate" [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2"></mat-progress-bar>
                         </div>
                     </td>
                 </ng-container>
