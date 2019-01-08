@@ -1498,7 +1498,7 @@ export class ParseService {
 
             if (records.length > 0) {
                 let  triumphLeaves:TriumphRecordNode[] = [];
-                recordTree = this.handleRecPresNode('1024788583', nodes, records, triumphLeaves).children;
+                recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves).children;
                 const leafSet = {};
                 for (const t of triumphLeaves){
                     leafSet[t.hash] = t;
@@ -1530,7 +1530,7 @@ export class ParseService {
             }
 
             if (collections.length > 0) {
-                colTree = this.handleColPresNode('3790247699', nodes, collections).children;
+                colTree = this.handleColPresNode([], '3790247699', nodes, collections).children;
             }
         }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
@@ -1549,17 +1549,18 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleRecPresNode(key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[]): TriumphPresentationNode {
+    private handleRecPresNode(path: string[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) { return null; }
+        path.push(pDesc.displayProperties.name);
         const children = [];
         let unredeemedCount = 0;
         let pts = 0;
         let total = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleRecPresNode(child.presentationNodeHash, pres, records, triumphLeaves);
+                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
@@ -1567,7 +1568,7 @@ export class ParseService {
                 pts+=oChild.pts;
             }
             for (const child of pDesc.children.records) {
-                const oChild = this.handleRecordNode(child.recordHash, records);
+                const oChild = this.handleRecordNode(path.slice(), child.recordHash, records);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
                 children.push(oChild);
@@ -1602,17 +1603,20 @@ export class ParseService {
             completionValue: val.objective == null ? 1 : val.objective.completionValue,
             complete: val.objective == null ? false : val.objective.complete,
             children: children,
+            path: path,
             unredeemedCount: unredeemedCount,
             pts: pts,
             totalPts: total
         }
     }
 
-    private handleRecordNode(key: string, records: any[]): TriumphRecordNode {
+    private handleRecordNode(path: string[], key: string, records: any[]): TriumphRecordNode {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
+        path.push(rDesc.displayProperties.name);
+
 
         let objs:ItemObjective[] = [];
         let totalProgress = 0;
@@ -1681,6 +1685,7 @@ export class ParseService {
             redeemed: redeemed,
             title: title,
             children: null,
+            path: path,
             lowLinks: this.lowlineService.buildRecordLink(key),
             score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue,
             percent: percent, 
@@ -1713,22 +1718,23 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleColPresNode(key: string, pres: any[], collectibles: any[]): TriumphPresentationNode {
+    private handleColPresNode(path: string[], key: string, pres: any[], collectibles: any[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         if (val == null) {
             return null;
         }
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) { return null; }
+        path.push(pDesc.displayProperties.name);
         const children = [];
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleColPresNode(child.presentationNodeHash, pres, collectibles);
+                const oChild = this.handleColPresNode(path.slice(0), child.presentationNodeHash, pres, collectibles);
                 if (oChild == null) { continue; }
                 children.push(oChild);
             }
             for (const child of pDesc.children.collectibles) {
-                const oChild = this.handleCollectibleNode(child.collectibleHash, collectibles);
+                const oChild = this.handleCollectibleNode(path.slice(0), child.collectibleHash, collectibles);
                 if (oChild != null) {
                     children.push(oChild);
                 }
@@ -1755,6 +1761,7 @@ export class ParseService {
             completionValue: val.objective == null ? 1 : val.objective.completionValue,
             complete: val.objective == null ? false : val.objective.complete,
             children: children,
+            path: path,
             unredeemedCount: 0,
             pts: 0,
             totalPts: 0
@@ -1772,10 +1779,12 @@ export class ParseService {
         return sum;
     }
 
-    private handleCollectibleNode(key: string, collectibles: any[]): TriumphCollectibleNode {
+    private handleCollectibleNode(path: string[], key: string, collectibles: any[]): TriumphCollectibleNode {
         const cDesc = this.destinyCacheService.cache.Collectible[key];
         if (cDesc == null) { return null; }
         const val = this.getBestCol(collectibles, key);
+        path.push(cDesc.displayProperties.name);
+
         let acquired = false;
         if (val != null && val.state != null && (val.state & 1) === 0) {
             acquired = true;
@@ -1790,7 +1799,8 @@ export class ParseService {
             acquired: acquired,
             complete: acquired,
             sourceString: cDesc.sourceString,
-            children: null
+            children: null,
+            path: path
         }
     }
 
