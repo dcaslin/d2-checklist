@@ -10,7 +10,12 @@ export class BucketService {
     private buckets: any;
 
     getBucket(target: Target, bucketName: string): Bucket {
-        return this.buckets[target.id][bucketName];
+        const returnMe = this.buckets[target.id][bucketName];
+        if (returnMe==null){
+            console.log("No bucket found for "+target.label+"|"+bucketName+", using shared");
+            return this.buckets['shared'][bucketName];
+        }
+        return returnMe;
     }
 
     public getBuckets(target: Target): Bucket[]{

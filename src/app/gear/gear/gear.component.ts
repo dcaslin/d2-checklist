@@ -425,22 +425,23 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         returnMe.push(i);
       }
     }
-    console.log("Filter report: ");
-    for (const key in report){
-      console.log("    "+key+": "+report[key]);
-    }
+    
+    // console.log("Filter report: ");
+    // for (const key in report){
+    //   console.log("    "+key+": "+report[key]);
+    // }
     return returnMe;
   }
 
   filterGear() {
-    console.log("Filter gear: Previous length " + this.gearToShow.length)
+    // console.log("Filter gear: Previous length " + this.gearToShow.length)
     this.filterNotes = [];
     if (this.player == null) return;
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
-    console.log("After wildcard: " + tempGear.length);
+    // console.log("After wildcard: " + tempGear.length);
     tempGear = this.toggleFilter(tempGear);
-    console.log("After toggle: " + tempGear.length);
+    // console.log("After toggle: " + tempGear.length);
     if (this.sortBy == "masterwork" || this.sortBy == "mod") {
       tempGear.sort((a: any, b: any): number => {
         let aV = "";
