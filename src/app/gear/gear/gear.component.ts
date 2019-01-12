@@ -6,7 +6,7 @@ import { fromEvent as observableFromEvent, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target } from '@app/service/model';
+import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
@@ -74,6 +74,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     new Choice(ClassAllowed.Hunter + "", "Hunter"),
     new Choice(ClassAllowed.Any + "", "Any"),
   ];
+  readonly equippedChoices: Choice[] = [
+    new Choice("true", "Equipped"),
+    new Choice("false", "Not Equipped")
+  ];
   weaponTypeChoices: Choice[] = [];
   armorTypeChoices: Choice[] = [];
   modTypeChoices: Choice[] = [];
@@ -98,6 +102,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public classTypeToggle: GearToggleComponent;
   @ViewChild('ownerToggle')
   public ownerToggle: GearToggleComponent;
+  @ViewChild('equippedToggle')
+  public equippedToggle: GearToggleComponent;
   @ViewChild('rarityToggle')
   public rarityToggle: GearToggleComponent;
 
@@ -323,6 +329,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.consumableTypeToggle);
     this.appendToggleFilterNote(this.exchangeTypeToggle);
     this.appendToggleFilterNote(this.ownerToggle);
+    this.appendToggleFilterNote(this.equippedToggle);
     this.appendToggleFilterNote(this.rarityToggle);
     this.appendToggleFilterNote(this.classTypeToggle);
   }
@@ -385,6 +392,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false; 
     }
+    if (!this.equippedToggle.isChosen(this.option.type, ""+i.equipped)) { 
+      const key = "equipped";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false; 
+    }
     if (!this.rarityToggle.isChosen(this.option.type, i.tier)) { 
       const key = "rarity";
       if (report[key]==null){
@@ -413,6 +428,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.consumableTypeToggle.setCurrentItemType(this.option.type);
     this.exchangeTypeToggle.setCurrentItemType(this.option.type);
     this.ownerToggle.setCurrentItemType(this.option.type);
+    this.equippedToggle.setCurrentItemType(this.option.type);
     this.rarityToggle.setCurrentItemType(this.option.type);
     this.classTypeToggle.setCurrentItemType(this.option.type);
 
@@ -605,8 +621,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filters.push(this.consumableTypeToggle);
     this.filters.push(this.exchangeTypeToggle);
     this.filters.push(this.ownerToggle);
+    this.filters.push(this.equippedToggle);
     this.filters.push(this.rarityToggle);
     this.filters.push(this.classTypeToggle);
+  }
+
+  public showArmorPerks(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+    };
+    const dialogRef = this.dialog.open(ArmorPerksDialogComponent, dc);
   }
 
   public showUtilities(): void {
@@ -708,6 +734,61 @@ export class GearDetailsDialogComponent {
   }
 }
 
+@Component({
+  selector: 'anms-armor-perks-dialog',
+  templateUrl: './armor-perks-dialog.component.html',
+  styleUrls: ['./gear.component.scss']
+})
+export class ArmorPerksDialogComponent {
+  parent: GearComponent
+  tempWishlistOverrideUrl: string;
+  WishlistService = WishlistService;
+  constructor(
+    public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
+    this.parent = data.parent;
+  }
+
+  public getPerks(char: Character, gear: InventoryItem[]): InventoryPlug[]{
+    const activePerks: InventoryPlug[] = [];
+    for(const g of gear){
+      if (g.type!=ItemType.Armor) continue;
+      if (!g.equipped) continue;
+      if (g.owner.id != char.id) continue;
+      for (const s of g.sockets){
+        for (const p of s.plugs){
+          if (!p.active) continue;
+          if (p.name.endsWith("Armor")) continue;
+          if (p.name.endsWith("Mod")) continue;
+          activePerks.push(p);
+        }
+      }
+    }
+    const perkSet = {};
+    for (const p of activePerks){
+      if (perkSet[p.name]==null){
+        perkSet[p.name] = {
+          perk: p,
+          count: 0
+        };
+      }
+      perkSet[p.name].count = perkSet[p.name].count+1;
+    }
+    const returnMe = [];
+    for (const key in perkSet){
+      returnMe.push(perkSet[key]);
+    }
+    returnMe.sort(function (a, b) {
+      if (a.perk.name < b.perk.name)
+        return -1;
+      if (a.perk.name > b.perk.name)
+        return 1;
+      return 0;
+    });
+    return returnMe;
+  }
+
+}
 
 @Component({
   selector: 'anms-gear-utilities-dialog',

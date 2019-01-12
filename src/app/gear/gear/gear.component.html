@@ -21,8 +21,11 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
 
-      <span [hidden]="selectedUser==null">
-        <button style="margin-left: 15px" mat-button (click)="showUtilities()"><i class="fas fa-tools"></i>
+      <span style="margin-left: 15px" [hidden]="selectedUser==null">
+
+        <button mat-button (click)="showArmorPerks()"><i class="far fa-stars"></i>
+          <span class="hide-mobile-inline">&ensp;Armor Perk Summary</span></button>
+        <button mat-button (click)="showUtilities()"><i class="far fa-tools"></i>
           <span class="hide-mobile-inline">&ensp;Utilities</span></button>
       </span>
       <ng-container *ngIf="loading==false && selectedUser==null">
@@ -71,6 +74,9 @@
           </anms-gear-toggle>
           <anms-gear-toggle #ownerToggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices" (change)="filterChanged()">
           </anms-gear-toggle>
+          <anms-gear-toggle #equippedToggle iconClass="fas fa-tshirt" title="Equipped" [choices]="equippedChoices" (change)="filterChanged()"
+          [displayOptions]="[ItemType.Weapon, ItemType.Armor]" [currentItemType]="option.type">
+            </anms-gear-toggle>
           <anms-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices"
             (change)="filterChanged()">
           </anms-gear-toggle>
