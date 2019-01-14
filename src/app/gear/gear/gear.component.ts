@@ -12,7 +12,7 @@ import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { WishlistService } from '@app/service/wishlist.service';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonToggleGroup } from '@angular/material';
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '@app/service/notification.service';
 
@@ -86,6 +86,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
 
+  @ViewChild('optionsgroup')
+  public optionsgroup: MatButtonToggleGroup;
+
   @ViewChild('markToggle')
   public markToggle: GearToggleComponent;
   @ViewChild('weaponTypeToggle')
@@ -128,6 +131,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   options = [
     { name: 'Weapons', type: ItemType.Weapon },
     { name: 'Armor', type: ItemType.Armor },
+    { name: 'Ghosts', type: ItemType.Ghost },
+    { name: 'Vehicles', type: ItemType.Vehicle },
     { name: 'Mods', type: ItemType.GearMod },
     { name: 'Consumable', type: ItemType.Consumable },
     { name: 'Material', type: ItemType.ExchangeMaterial }];
@@ -682,6 +687,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       .subscribe(() => {
         this.filtersDirty = this.checkFilterDirty();
         try {
+          this.option = this.optionsgroup.value;
           this.filterGear();
         }
         catch (e) {
