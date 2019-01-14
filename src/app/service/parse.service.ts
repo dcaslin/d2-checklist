@@ -1500,7 +1500,7 @@ export class ParseService {
 
             if (records.length > 0) {
                 let  triumphLeaves:TriumphRecordNode[] = [];
-                recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves).children;
+                recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs).children;
                 const leafSet = {};
                 for (const t of triumphLeaves){
                     leafSet[t.hash] = t;
@@ -1551,7 +1551,7 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleRecPresNode(path: string[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[]): TriumphPresentationNode {
+    private handleRecPresNode(path: string[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[],  showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) { return null; }
@@ -1562,7 +1562,7 @@ export class ParseService {
         let total = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves);
+                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves,  showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
@@ -1570,7 +1570,7 @@ export class ParseService {
                 pts+=oChild.pts;
             }
             for (const child of pDesc.children.records) {
-                const oChild = this.handleRecordNode(path.slice(), child.recordHash, records);
+                const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
                 children.push(oChild);
@@ -1584,6 +1584,7 @@ export class ParseService {
                 total+=oChild.score;
             }
         }
+        if (children==null || children.length==0) return null;
         children.sort(function (a, b) {
             if (a.index < b.index) {
                 return -1;
@@ -1612,7 +1613,7 @@ export class ParseService {
         }
     }
 
-    private handleRecordNode(path: string[], key: string, records: any[]): TriumphRecordNode {
+    private handleRecordNode(path: string[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphRecordNode {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
         const val = this.getBestRec(records, key);
@@ -1664,6 +1665,8 @@ export class ParseService {
                 title = true;
             }
         }
+        if (invisible && !showInvisTriumphs) return null;
+
         let searchText = rDesc.displayProperties.name+" "+rDesc.displayProperties.description;
         let percent = 0;
         if (objs.length>0){
@@ -1674,7 +1677,9 @@ export class ParseService {
             }
             percent = Math.floor(sum/objs.length);    
         }
-        
+        const pts = rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue;
+        if (!showZeroPtTriumphs &&  pts==0) return null;
+
         return {
             type: 'record',
             hash: key,
@@ -1689,7 +1694,7 @@ export class ParseService {
             children: null,
             path: path,
             lowLinks: this.lowlineService.buildRecordLink(key),
-            score: rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue,
+            score: pts,
             percent: percent, 
             searchText: searchText.toLowerCase(),
             invisible: invisible
@@ -2260,6 +2265,10 @@ export class ParseService {
             else{
                 searchText+= " fixed";
             }
+            if (damageType!=null && damageType!=DamageType.None){
+                searchText+= " "+this.cookDamageType(damageType);
+            }
+
             searchText = searchText.toLowerCase();
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
