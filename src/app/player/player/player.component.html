@@ -686,8 +686,16 @@
                 <mat-tab-group>
                   <mat-tab label="Triumphs">
                     <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide
-                        Completed</mat-checkbox>
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">
+                        Hide Completed
+                      </mat-checkbox>
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs" (ngModelChange)="showZeroPtTriumphsChange()">
+                        Show Zero Pt
+                      </mat-checkbox>
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs" (ngModelChange)="showInvisTriumphsChange()">
+                        Show Invisible
+                      </mat-checkbox>
+
                     </h3>
 
                     <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
