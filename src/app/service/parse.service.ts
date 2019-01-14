@@ -1296,8 +1296,8 @@ export class ParseService {
                     '1342567285' === p.hash ||   // scourge
                     '4128810957' === p.hash ||   // eva return
                     '4253138191' === p.hash ||   // weekly clan engrams
-                    '3177730289' === p.hash ||   // season of giving
-                    '2188900244' === p.hash    // recipe for success
+                    '3177730289' === p.hash //||   // season of giving
+                    //'2188900244' === p.hash    // recipe for success
                 ) {
                     continue;
                 }
