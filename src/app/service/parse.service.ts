@@ -1989,10 +1989,16 @@ export class ParseService {
                 else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
                 }
-                if (
+                
+                else if (desc.itemType === ItemType.Ship) {
+                    type = ItemType.Vehicle;
+                }
+                else if (
                     type != ItemType.Weapon
                     && type != ItemType.Armor
                     && type != ItemType.GearMod
+                    && type != ItemType.Ghost
+                    && type != ItemType.Vehicle
                     && type != ItemType.ExchangeMaterial
                     && type != ItemType.Consumable) {
                     return null;
@@ -2127,6 +2133,11 @@ export class ParseService {
                     if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
                         for (const jCat of desc.sockets.socketCategories) {
                             let isMod = false;
+                            
+                            //skip ghost mods
+                            if (jCat.socketCategoryHash == 3379164649){
+                                continue;
+                            }
                             // armor and weapon mods
                             if (jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949) {
                                 isMod = true;
