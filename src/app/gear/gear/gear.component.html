@@ -61,6 +61,9 @@
           <anms-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
           </anms-gear-toggle>
+          <anms-gear-toggle #vehicleTypeToggle iconClass="fas fa-plane-alt" title="Type" [choices]="vehicleTypeChoices"
+          (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]" [currentItemType]="option.type">
+        </anms-gear-toggle>
 
           <anms-gear-toggle #modTypeToggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">

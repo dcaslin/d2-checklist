@@ -80,6 +80,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ];
   weaponTypeChoices: Choice[] = [];
   armorTypeChoices: Choice[] = [];
+  vehicleTypeChoices: Choice[] = [];
   modTypeChoices: Choice[] = [];
   consumableTypeChoices: Choice[] = [];
   exchangeTypeChoices: Choice[] = [];
@@ -95,6 +96,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public weaponTypeToggle: GearToggleComponent;
   @ViewChild('armorTypeToggle')
   public armorTypeToggle: GearToggleComponent;
+  @ViewChild('vehicleTypeToggle')
+  public vehicleTypeToggle: GearToggleComponent;
   @ViewChild('modTypeToggle')
   public modTypeToggle: GearToggleComponent;
   @ViewChild('consumableTypeToggle')
@@ -330,6 +333,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.markToggle);
     this.appendToggleFilterNote(this.weaponTypeToggle);
     this.appendToggleFilterNote(this.armorTypeToggle);
+    this.appendToggleFilterNote(this.vehicleTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
     this.appendToggleFilterNote(this.consumableTypeToggle);
     this.appendToggleFilterNote(this.exchangeTypeToggle);
@@ -359,6 +363,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) { 
       const key = "armorType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false; 
+    }
+    if (!this.vehicleTypeToggle.isChosen(this.option.type, i.typeName)) { 
+      const key = "vehicleType";
       if (report[key]==null){
         report[key] = 0;
       }
@@ -429,6 +441,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.markToggle.setCurrentItemType(this.option.type);
     this.weaponTypeToggle.setCurrentItemType(this.option.type);
     this.armorTypeToggle.setCurrentItemType(this.option.type);
+    this.vehicleTypeToggle.setCurrentItemType(this.option.type);
     this.modTypeToggle.setCurrentItemType(this.option.type);
     this.consumableTypeToggle.setCurrentItemType(this.option.type);
     this.exchangeTypeToggle.setCurrentItemType(this.option.type);
@@ -597,6 +610,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     this.weaponTypeChoices = arrays[ItemType.Weapon + ""];
     this.armorTypeChoices = arrays[ItemType.Armor + ""];
+    this.vehicleTypeChoices = arrays[ItemType.Vehicle + ""];
     this.modTypeChoices = arrays[ItemType.GearMod + ""];
     this.consumableTypeChoices = arrays[ItemType.Consumable + ""];
     this.exchangeTypeChoices = arrays[ItemType.ExchangeMaterial + ""];
@@ -622,6 +636,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filters.push(this.markToggle);
     this.filters.push(this.weaponTypeToggle);
     this.filters.push(this.armorTypeToggle);
+    this.filters.push(this.vehicleTypeToggle);
     this.filters.push(this.modTypeToggle);
     this.filters.push(this.consumableTypeToggle);
     this.filters.push(this.exchangeTypeToggle);
