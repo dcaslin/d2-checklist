@@ -168,6 +168,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
      else if (hash == "2772894447") {
       return 7;
     }
+    // A Deadly Trial
+    else if (hash == "4234327344") {
+      return 5;
+    }
     return 100;
   }
 

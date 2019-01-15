@@ -1459,7 +1459,7 @@ export class ParseService {
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
                         if (parsed != null) {
-                            if (parsed.type==ItemType.Weapon||parsed.type==ItemType.Armor){
+                            if (parsed.type==ItemType.Weapon||parsed.type==ItemType.Armor||parsed.type==ItemType.Ghost||parsed.type==ItemType.Vehicle){
                                 parsed.options.pop();
                                 for (const c of chars){
                                     parsed.options.push(c);
