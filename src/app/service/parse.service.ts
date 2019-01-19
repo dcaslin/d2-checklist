@@ -35,6 +35,14 @@ export class ParseService {
         char.levelProgression = c.levelProgression;
         char.baseCharacterLevel = c.baseCharacterLevel;
         char.percentToNextLevel = c.percentToNextLevel / 100;
+        char.title = "";
+        if (c.titleRecordHash!=null){
+            const rDesc = this.destinyCacheService.cache.Record[c.titleRecordHash];
+            if (rDesc!=null){
+                char.title = rDesc.titleInfo.titlesByGenderHash[c.genderHash];
+            }
+        
+        }
 
         char.gender = this.destinyCacheService.cache.Gender[c.genderHash].displayProperties.name;
         char.race = this.destinyCacheService.cache.Race[c.raceHash].displayProperties.name;
@@ -755,6 +763,7 @@ export class ParseService {
         });
         for (const ms of msMilestones) {
             let rewards = '';
+            let pl = 0;
             let rewCnt = 0;
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
@@ -945,36 +954,37 @@ export class ParseService {
                 }
             }
 
-            if (ms.milestoneHash === 3603098564) {
-                rewards += ' (600)';
-            } else if (ms.milestoneHash === 3456) {
-                rewards += ' (580-600)';
+            if (ms.milestoneHash === 2188900244){
+                pl = 652;
+            }
+            else if (ms.milestoneHash === 3603098564) {
+                pl = 650;
             } else if (ms.milestoneHash === 2171429505) {
-                rewards += ' (540)';
+                pl = 648;
             } else if (ms.milestoneHash === 2853331463) {
-                rewards += ' (540)';
+                pl = 649;
             } else if (ms.milestoneHash === 463010297) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 536115997) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 3082135827) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 3448738070) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 1437935813) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 3172444947) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 3312018120) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 157823523) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 941217864) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 1300394968) {
-                rewards += ' (520)';
+                pl = 520;
             } else if (ms.milestoneHash === 3312018120) {
-                rewards += ' (520)';
+                pl = 520;
             }
 
             returnMe.push({
@@ -988,12 +998,15 @@ export class ParseService {
                 activities: activities,
                 aggActivities: aggActivities,
                 rewards: rewards,
+                pl: pl,
                 summary: summary
             });
 
         }
 
         returnMe.sort((a, b) => {
+            if (a.pl < b.pl) { return 1; }
+            if (a.pl > b.pl) { return -1; }
             if (a.rewards < b.rewards) { return 1; }
             if (a.rewards > b.rewards) { return -1; }
             if (a.name < b.name) { return -1; }
@@ -1311,6 +1324,7 @@ export class ParseService {
                     key: p.hash,
                     resets: p.end,
                     rewards: p.rewards,
+                    pl: p.pl,
                     name: p.summary == null ? p.name : p.summary,
                     desc: p.desc,
                     hasPartial: false
@@ -1535,8 +1549,16 @@ export class ParseService {
                 colTree = this.handleColPresNode([], '3790247699', nodes, collections).children;
             }
         }
+        let title = "";
+        for (const char of chars){
+            if (char.title!=null && char.title.trim().length>0){
+                title = char.title;
+                break;
+            }
+        }
+
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
-            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear, vault, shared, lowHangingTriumphs, searchableTriumphs);
+            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, gear, vault, shared, lowHangingTriumphs, searchableTriumphs, title);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -2330,6 +2352,9 @@ export class ParseService {
 
 
         returnMe.sort(function (a, b) {
+            if (a.isOnline && !b.isOnline) return -1;
+            if (!a.isOnline && b.isOnline) return -1;
+
             const bs: string = b.destinyUserInfo.displayName;
             const as: string = a.destinyUserInfo.displayName;
             if (bs < as) { return 1; }
@@ -2729,23 +2754,24 @@ export class ParseService {
                 foundSpNm = true;
             }
         }
-
         if (!foundLwNm) {
-            msNames.unshift({
+            msNames.push({
                 key: LW_NM_KEY,
                 resets: c.endWeek.toISOString(),
-                rewards: 'Raid Gear (580-600)',
+                rewards: 'Raid Gear',
                 name: 'Last Wish',
+                pl: 641,
                 desc: 'Forsaken DLC Raid',
                 hasPartial: false,
                 neverDisappears: true
             });
         }
         if (!foundSpNm) {
-            msNames.unshift({
+            msNames.push({
                 key: SP_NM_KEY,
                 resets: c.endWeek.toISOString(),
-                rewards: 'Raid Gear (600+)',
+                rewards: 'Raid Gear',
+                pl: 642,
                 name: 'Scourge of the Past',
                 desc: 'Newest Raid Lair',
                 hasPartial: false,
@@ -2884,6 +2910,7 @@ interface PrivCharacter {
     levelProgression: LevelProgression;
     baseCharacterLevel: number;
     percentToNextLevel: number;
+    titleRecordHash: number;
 }
 
 interface PrivMilestone {

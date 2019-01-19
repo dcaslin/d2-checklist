@@ -23,9 +23,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   members: BungieGroupMember[] = [];
   sortedMembers: BungieGroupMember[] = [];
   modelPlayer: Player;
-  sort = 'memberAsc';
-  playerCntr: 0;
+  sort = 'dateAsc';
   allLoaded: boolean;
+  raidsLoading: boolean;
 
   filterMode = 'none';
   filterActivity: MileStoneName = null;
@@ -147,23 +147,69 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     if (this.sort === 'llDesc') { this.sortedMembers.sort(ClanComponent.compareLLsReverse); }
   }
 
-  public loadSpecificPlayer(target: BungieGroupMember) {
-    this.bungieService.getChars(target.destinyUserInfo.membershipType,
-      target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions']).then(x => {
+  public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {
+    if (target.player != null && !reload) return;
+
+    try {
+      const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType, target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true);
       target.player = x;
-      // hack for raid
+      if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
+        this.modelPlayer = x;
+      }
       if (x != null && x.characters != null) {
         // in case this is a retry
-        this.members[this.playerCntr].errorMsg = null;
-
-        // also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x2 => {
-          // nothing needed
-        });
+        target.errorMsg = null;
       } else {
-        this.members[this.playerCntr].errorMsg = 'Unabled to load player data, have they logged in since DLC?';
+        target.errorMsg = 'Unabled to load player data';
       }
-    });
+      if (reload == true) {
+        await this.loadRaidHistory(target, true);
+      }
+    }
+    catch (err) {
+      console.dir(err);
+      console.log('Skipping error on ' + target.destinyUserInfo.displayName + ' and continuing');
+      target.errorMsg = 'Unabled to load player data';
+    }
+    let allLoaded = true;
+    for (const t of this.members) {
+      if (t.errorMsg == null && t.player == null) {
+        allLoaded = false;
+        break;
+      }
+    }
+
+    if (allLoaded) this.allLoaded = true;
+    this.sortData();
+  }
+
+  private async loadRaidHistory(target: BungieGroupMember, reload: boolean): Promise<void> {
+    try {
+      if (target.player != null) {
+        if (target.player.raidChecked && !reload) return;
+        await this.bungieService.updateRaidHistory(target.player, true);
+      }
+    }
+    catch (x) {
+      console.log(x);
+    }
+    let allLoaded = true;
+    for (const t of this.members) {
+      if ((t.player == null && t.errorMsg == null) || (t.player != null && !t.player.raidChecked)) {
+        allLoaded = false;
+        break;
+      }
+    }
+
+    if (allLoaded) this.raidsLoading = false;
+  }
+
+  private async loadRaidHistories(): Promise<void> {
+    this.raidsLoading = true;
+    console.log("Load raid history");
+    for (const t of this.members) {
+      this.loadRaidHistory(t, false);
+    }
   }
 
   private downloadCsvReport() {
@@ -241,69 +287,35 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     anch.click();
   }
 
-  private slowlyLoadRest() {
-    if (this.playerCntr >= this.members.length) {
-      this.allLoaded = true;
-      return;
-    }
-    this.bungieService.getChars(this.members[this.playerCntr].destinyUserInfo.membershipType,
-      this.members[this.playerCntr].destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true).then(x => {
-      if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
-        this.modelPlayer = x;
-      }
-      if (x != null && x.characters != null) {
-        // in case this is a retry
-        this.members[this.playerCntr].errorMsg = null;
-        // also update raid history
-        this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true).then(x2 => {
-          // nothing needed
-        });
-      } else {
-        this.members[this.playerCntr].errorMsg = 'Unable to load player data';
-      }
-      this.members[this.playerCntr].player = x;
-      this.playerCntr++;
-      this.sortData();
-      this.slowlyLoadRest();
-    }).catch(err => {
-      console.dir(err);
-      // reloading mid load can break this
-      if (this.members[this.playerCntr] != null) {
-        console.log('Skipping error on ' + this.members[this.playerCntr].destinyUserInfo.displayName + ' and continuing');
-
-        this.playerCntr++;
-        this.slowlyLoadRest();
-      }
-    });
-
-  }
-
-  private load() {
+  private async load() {
     this.loading = true;
     this.members = [];
     this.modelPlayer = null;
-    this.playerCntr = 0;
     this.allLoaded = false;
-
-    this.bungieService.getClanInfo(this.id).then(i => {
+    this.raidsLoading = false;
+    try {
+      const i = await this.bungieService.getClanInfo(this.id);
       this.info = i;
       if (i != null) {
         // load the clan members
-        this.bungieService.getClanMembers(this.id).then(x => {
-          this.members = x;
-          this.sortedMembers = this.members.slice(0);
-          this.loading = false;
-          if (this.members.length > 0) {
-            this.slowlyLoadRest();
+        const members = await this.bungieService.getClanMembers(this.id);
+        this.members = members;
+        this.sortedMembers = this.members.slice(0);
+        this.loading = false;
+        for (const t of this.members) {
+          if (this.modelPlayer == null) {
+            await this.loadSpecificPlayer(t, false);
           }
-        });
+          else {
+            this.loadSpecificPlayer(t, false);
+          }
+        }
       } else {
         this.loading = false;
       }
-
-    }).catch((x) => {
+    } catch (x) {
       this.loading = false;
-    });
+    };
   }
 
   ngOnInit() {

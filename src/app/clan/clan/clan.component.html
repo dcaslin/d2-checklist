@@ -78,7 +78,23 @@
               </mat-select>
             </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
+            <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
+              <i class="fas fa-book-dead" aria-hidden="true"></i> Raids
+              <i [hidden]="!raidsLoading" class="far fa-spinner fa-pulse fa-fw"></i>
+            </button>
             <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
+              <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
+           
+          </div>
+
+
+          <div class="mobile-button-row">
+            <button mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
+              <i class="fas fa-book-dead" aria-hidden="true"></i> Raids
+              <i [hidden]="!raidsLoading" class="far fa-spinner fa-pulse fa-fw"></i>
+            </button>
+            <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
               <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
               <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
           </div>
@@ -92,10 +108,8 @@
               <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
               <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
             </button>
-            <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
-              <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
           </div>
+
 
           <table class="responsive-table clan-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
             <thead>
@@ -131,18 +145,22 @@
               <tr *ngFor="let member of sortedMembers">
                 <td class="lead">
                   <a *ngIf="member.destinyUserInfo.membershipType!=4" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
-                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}} 
                   </a>
                   <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member)">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
-                    (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
+                    (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
+                    href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
-                  <a style="margin-left:0.25em" *ngIf="member.player==null" href="javascript:void(0)" (click)="loadSpecificPlayer(member)">
+                  <a style="margin-left:0.25em" href="javascript:void(0)" (click)="loadSpecificPlayer(member, true)">
                     &ensp;<i class="fas fa-sync"></i>
                   </a>
+                  <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
+                    {{member.player.title}}
+                  </span>
                 </td>
                 <td *ngIf="member.player==null">N/A</td>
 

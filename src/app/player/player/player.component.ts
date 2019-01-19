@@ -328,6 +328,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.player == null || this.player.milestoneList == null) { return; }
     if (this.sort === 'rewardsDesc') {
       this.player.milestoneList.sort((a, b) => {
+        if (a.pl < b.pl) { return 1; }
+        if (a.pl > b.pl) { return -1; }
         if (a.rewards < b.rewards) { return 1; }
         if (a.rewards > b.rewards) { return -1; }
         if (a.name > b.name) { return 1; }
@@ -336,6 +338,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       });
     } else if (this.sort === 'rewardsAsc') {
       this.player.milestoneList.sort((a, b) => {
+        if (a.pl < b.pl) { return -1; }
+        if (a.pl > b.pl) { return 1; }
         if (a.rewards < b.rewards) { return -1; }
         if (a.rewards > b.rewards) { return 1; }
         if (a.name > b.name) { return 1; }
@@ -433,7 +437,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
         if (x.characters != null) {
           await this.bungieService.updateAggHistory(x.characters);
-          await this.bungieService.updateRaidHistory(x.milestoneList, x.characters);
+          await this.bungieService.updateRaidHistory(x);
           // await this.bungieService.updateNfHistory(x.milestoneList, x.characters);
           // await this.xyzService.updateDrops(x);
         }

@@ -144,6 +144,7 @@ export interface PublicMilestone {
     activities: MilestoneActivity[];
     aggActivities: AggMilestoneActivity[];
     rewards: string;
+    pl: number;
     summary: string;
 
 }
@@ -391,6 +392,8 @@ export class Player {
     vault: Target;
     shared: Target;
     maxLL = 0;
+    raidChecked = false;
+    title;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
@@ -400,7 +403,7 @@ export class Player {
 
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[], gear: InventoryItem[], vault?: Target, shared?: Target, lowHangingTriumphs?:TriumphRecordNode[], searchableTriumphs?:TriumphRecordNode[]) {
+        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target, lowHangingTriumphs:TriumphRecordNode[], searchableTriumphs:TriumphRecordNode[], title: string) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -428,6 +431,7 @@ export class Player {
         this.shared = shared;
         this.lowHangingTriumphs = lowHangingTriumphs;
         this.searchableTriumphs = searchableTriumphs;
+        this.title = title;
     }
 }
 
@@ -560,6 +564,7 @@ export interface MileStoneName {
     key: string;
     resets: string;
     rewards: string;
+    pl: number;
     name: string;
     desc: string;
     hasPartial: boolean;
@@ -605,6 +610,7 @@ export class Character extends Target {
     baseCharacterLevel: number;
     maxLevel: number;
     percentToNextLevel: number;
+    title: string
     race: string;
     gender: string;
     classType: number;

@@ -52,6 +52,7 @@
               (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i style="font-weight: normal !important"
                 class="far fa-heart"></i></a>
           </h1>
+          <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
           <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
             <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
@@ -133,7 +134,7 @@
                           all</a>
                       </th>
                       <th scope="col" *ngFor="let char of player.characters">
-                        {{char.className}} - {{char.light}}
+                        {{char.className}} - {{char.light}} {{char.title}}
                         <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId"
                           class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
                         <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
@@ -179,7 +180,7 @@
                           </span>
 
                         </td>
-                        <td [attr.data-label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+                        <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
                           <span class="check">
                             <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
 
