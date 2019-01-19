@@ -377,7 +377,9 @@ export class BungieService implements OnDestroy {
     public async getPGCR(instanceId: string): Promise<PGCR> {
         try {
             const opt = await this.buildReqOptions();
-            const resp = await this.makeReq('Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/');
+            const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/'+instanceId + '/';
+            const hResp = await this.httpClient.get<any>(url, opt).toPromise();
+            const resp = this.parseBungieResponse(hResp);
             return this.parseService.parsePGCR(resp);
         } catch (err) {
             this.handleError(err);
