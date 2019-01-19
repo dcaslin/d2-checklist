@@ -162,13 +162,16 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    public async updateRaidHistory(msNames: MileStoneName[], chars: Character[], ignoreErrors?: boolean): Promise<void[]> {
+    public async updateRaidHistory(x: Player, ignoreErrors?: boolean): Promise<void[]> {
+        const msNames: MileStoneName[] = x.milestoneList;
+        const chars: Character[] = x.characters;
         const self: BungieService = this;
         const promises: Promise<void>[] = [];
         chars.forEach(c => {
             const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId,
-                4, 600, ignoreErrors).then((hist: Activity[]) => {
+                4, 99, ignoreErrors).then((hist: Activity[]) => {
                     self.parseService.parseRaidHistory(msNames, c, hist);
+                    x.raidChecked = true;
                 });
             promises.push(p);
         });
@@ -187,14 +190,14 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    public async getClanInfo(clanId: string): Promise<any> {
+    public async getClanInfo(clanId: string): Promise<ClanInfo> {
         try {
             const opt = await this.buildReqOptions();
             const resp = await this.makeReq('GroupV2/' + clanId + '/');
             return this.parseService.parseClanInfo(resp.detail);
         } catch (err) {
             this.handleError(err);
-            return [];
+            throw "Error loading clan info: " + err;
         }
     }
 
@@ -400,7 +403,6 @@ export class BungieService implements OnDestroy {
         }
         try {
             const resp = await this.makeReq('Destiny2/Milestones/');
-            const vendorData = this.parseService.parseVendorData(resp);
             const reply = this.parseService.parsePublicMilestones(resp);
             this.publicMilestones = reply;
             return reply;
@@ -448,7 +450,7 @@ export class BungieService implements OnDestroy {
         return new Promise(function (resolve, reject) {
             const allMatches: any[] = [];
             function processMatches(results: any[]) {
-                if (results == null || results.length === 0 || allMatches.length > max) {
+                if (results == null || results.length === 0 || results.length < MAX_PAGE_SIZE || allMatches.length >= max) {
                     resolve(allMatches);
                     return;
                 } else {
@@ -535,13 +537,13 @@ export class BungieService implements OnDestroy {
                 stackSize: item.quantity,
                 transferToVault: isVault
             });
-            let to:Target;
-            let from:Target;
-            if (isVault==true){
+            let to: Target;
+            let from: Target;
+            if (isVault == true) {
                 to = vault;
                 from = target;
             }
-            else{
+            else {
                 to = target;
                 from = vault;
             }
@@ -551,7 +553,7 @@ export class BungieService implements OnDestroy {
             toBucket.items.push(item);
         } catch (err) {
             this.handleError(err);
-            throw "Failed to transfer "+item.name;
+            throw "Failed to transfer " + item.name;
         }
     }
 

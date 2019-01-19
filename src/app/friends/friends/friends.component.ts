@@ -57,7 +57,7 @@ export class FriendsComponent extends ChildComponent implements OnInit {
       // in case this is a retry
       friend.errorMsg = null;
       // this will operate directly on x.characters
-      await this.bungieService.updateRaidHistory(x.milestoneList, x.characters, true);
+      await this.bungieService.updateRaidHistory(x, true);
     } else {
       friend.errorMsg = 'Unable to load player data';
     }
