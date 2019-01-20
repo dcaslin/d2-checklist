@@ -112,7 +112,7 @@ export class GearToggleComponent implements OnInit {
     try {
       console.log("Select");
       choice.value = !choice.value;
-      this.change.emit();
+      this.emit();
       event.stopPropagation();
     } catch (e) {
       console.log("Error select: " + e);
