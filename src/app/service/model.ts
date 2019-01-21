@@ -57,6 +57,19 @@ export interface MastworkInfo {
     tier: number;
 }
 
+export interface Seal {
+    hash: string;
+    name: string;
+    desc: string;
+    icon: string;
+    children: TriumphNode[];
+    title: string;
+
+    percent: number;
+    progress: number,
+    completionValue: number,
+    complete: boolean
+}
 
 export interface TriumphNode {
     type: string;
@@ -67,7 +80,12 @@ export interface TriumphNode {
     index: string;
     complete: boolean;
     children: TriumphNode[];
-    path: string[];
+    path: PathEntry[];
+}
+
+export interface PathEntry{
+    path: string;
+    hash: string;
 }
 
 export interface TriumphPresentationNode extends TriumphNode {
@@ -387,6 +405,7 @@ export class Player {
     records: TriumphNode[];
     collections: TriumphNode[];
     lowHangingTriumphs:TriumphRecordNode[];
+    seals:Seal[];
     searchableTriumphs: TriumphRecordNode[];
     gear: InventoryItem[];
     vault: Target;
@@ -403,7 +422,7 @@ export class Player {
 
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target, lowHangingTriumphs:TriumphRecordNode[], searchableTriumphs:TriumphRecordNode[], title: string) {
+        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target, lowHangingTriumphs:TriumphRecordNode[], searchableTriumphs:TriumphRecordNode[], seals:Seal[], title: string) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -431,6 +450,7 @@ export class Player {
         this.shared = shared;
         this.lowHangingTriumphs = lowHangingTriumphs;
         this.searchableTriumphs = searchableTriumphs;
+        this.seals = seals;
         this.title = title;
     }
 }

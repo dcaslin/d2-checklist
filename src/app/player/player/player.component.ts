@@ -39,6 +39,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   ];
 
   @ViewChild('maintabs') tabs: MatTabGroup;
+  @ViewChild('triumphtabs') triumphtabs: MatTabGroup;
 
   private triumphSearchSubject: Subject<void> = new Subject<void>();
 
@@ -56,12 +57,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideComplete = false;
   showZeroPtTriumphs = false;
   showInvisTriumphs = false;
-  initTreeNodeHash: string = null;
+  selectedTreeNodeHash: string = null;
   sort = 'rewardsDesc';
 
   hideCompleteChars: string = null;
 
-  treeControl2: FlatTreeControl<any>;
+  triumphTreeControl: FlatTreeControl<any>;
+  collectionTreeControl: FlatTreeControl<any>;
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
   recordDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
   collectionDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
@@ -75,7 +77,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
 
-    this.treeControl2 = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
+    this.triumphTreeControl = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
+    this.collectionTreeControl = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
     this.hideComplete = localStorage.getItem('hide-completed') === 'true';
     this.showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
@@ -97,29 +100,29 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   hideNode = (_nodeData: TriumphFlatNode) => this.hideComplete && _nodeData.data.complete;
 
-  private getParentNode(node: TriumphFlatNode): TriumphFlatNode {
-    const currentLevel = this.treeControl2.getLevel(node);
+  private getParentNode(tree: FlatTreeControl<any>, node: TriumphFlatNode): TriumphFlatNode {
+    const currentLevel = tree.getLevel(node);
     if (currentLevel < 1) {
       return null;
     }
-    const startIndex = this.treeControl2.dataNodes.indexOf(node) - 1;
+    const startIndex = tree.dataNodes.indexOf(node) - 1;
     for (let i = startIndex; i >= 0; i--) {
-      const currentNode = this.treeControl2.dataNodes[i];
-      if (this.treeControl2.getLevel(currentNode) < currentLevel) {
+      const currentNode = tree.dataNodes[i];
+      if (tree.getLevel(currentNode) < currentLevel) {
         return currentNode;
       }
     }
   }
 
-  private expandParents(node: TriumphFlatNode): void {
-    const parent = this.getParentNode(node);
-    this.treeControl2.expand(parent);
+  private expandParents(tree: FlatTreeControl<any>, node: TriumphFlatNode): void {
+    const parent = this.getParentNode(tree, node);
+    tree.expand(parent);
     if (parent && parent.level > 0) {
-      this.expandParents(parent);
+      this.expandParents(tree, parent);
     }
   }
 
-  triumphSearchChange(event: any){
+  triumphSearchChange(event: any) {
     this.triumphSearchSubject.next();
   }
 
@@ -143,33 +146,46 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.filteredTriumphs = temp;
   }
 
+  private jumpToTriumph(targetHash: number) {
+    this.triumphTreeControl.collapseAll();
+    this.triumphtabs.selectedIndex = 0;
+    for (const n of this.triumphTreeControl.dataNodes) {
+      if (n.data.hash === targetHash) {
+        this.triumphTreeControl.expand(n);
+        this.expandParents(this.triumphTreeControl, n);
+        this.selectedTreeNodeHash = ""+targetHash;
+        break;
+      }
+    }
+  }
+
   private setPlayer(x: Player): void {
     this.player = x;
     if (x != null) {
       this.sort = 'rewardsDesc';
-      this.recordDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+      this.recordDatasource = new MatTreeFlatDataSource(this.triumphTreeControl, this.treeFlattener2);
 
       this.recordDatasource.data = this.player.records;
       this.filterTriumphs();
       if (this.selectedTab === 'triumphs') {
-        if (this.initTreeNodeHash != null) {
-          for (const n of this.treeControl2.dataNodes) {
-            if (n.data.hash === +this.initTreeNodeHash) {
-              this.treeControl2.expand(n);
-              this.expandParents(n);
+        if (this.selectedTreeNodeHash != null) {
+          for (const n of this.triumphTreeControl.dataNodes) {
+            if (n.data.hash === +this.selectedTreeNodeHash) {
+              this.triumphTreeControl.expand(n);
+              this.expandParents(this.triumphTreeControl, n);
               break;
             }
           }
         }
       }
-      this.collectionDatasource = new MatTreeFlatDataSource(this.treeControl2, this.treeFlattener2);
+      this.collectionDatasource = new MatTreeFlatDataSource(this.collectionTreeControl, this.treeFlattener2);
       this.collectionDatasource.data = this.player.collections;
       if (this.selectedTab === 'collections') {
-        if (this.initTreeNodeHash != null) {
-          for (const n of this.treeControl2.dataNodes) {
-            if (n.data.hash === +this.initTreeNodeHash) {
-              this.treeControl2.expand(n);
-              this.expandParents(n);
+        if (this.selectedTreeNodeHash != null) {
+          for (const n of this.collectionTreeControl.dataNodes) {
+            if (n.data.hash === +this.selectedTreeNodeHash) {
+              this.collectionTreeControl.expand(n);
+              this.expandParents(this.collectionTreeControl, n);
               break;
             }
           }
@@ -456,12 +472,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
 
-  public showZeroPtTriumphsChange () {
+  public showZeroPtTriumphsChange() {
     localStorage.setItem('show-zero-pt-triumphs', '' + this.showZeroPtTriumphs);
     this.performSearch(true);
   }
 
-  public showInvisTriumphsChange(){
+  public showInvisTriumphsChange() {
     localStorage.setItem('show-invis-triumphs', '' + this.showInvisTriumphs);
     this.performSearch(true);
   }
@@ -471,7 +487,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
       const tab: string = params['tab'];
-      this.initTreeNodeHash = params['id'];
+      this.selectedTreeNodeHash = params['id'];
 
       // nothing changed
       if (this.currentGt === newGt && this.currentPlatform === newPlatform) {
@@ -514,7 +530,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       takeUntil(this.unsubscribe$),
       debounceTime(50))
       .subscribe(() => {
-       this.filterTriumphs();
+        this.filterTriumphs();
       });
 
   }
