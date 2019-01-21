@@ -1559,7 +1559,7 @@ export class ParseService {
 
             if (records.length > 0) {
                 let  triumphLeaves:TriumphRecordNode[] = [];
-                const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs).children;
+                const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true).children;
                 for (const ts of tempSeals){
                     const seal = this.buildSeal(ts);
                     if (seal!=null){
