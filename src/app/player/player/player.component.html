@@ -487,6 +487,7 @@
                               <th class="check-list-name">Name</th>
                               <th class="check-list-status">Status</th>
                               <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
+
                             </tr>
                           </thead>
                           <tbody>
@@ -684,7 +685,7 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
 
-                <mat-tab-group>
+                <mat-tab-group #triumphtabs>
                   <mat-tab label="Triumphs">
                     <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
                       <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">
@@ -699,7 +700,7 @@
 
                     </h3>
 
-                    <mat-tree [dataSource]="recordDatasource" [treeControl]="treeControl2">
+                    <mat-tree [dataSource]="recordDatasource" [treeControl]="triumphTreeControl">
                       <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
                         matTreeNodeToggle matTreeNodePadding>
                         <button mat-icon-button disabled></button>
@@ -728,7 +729,8 @@
                               <i *ngIf="!o.complete" class="far fa-square"></i>
                               {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                             </span>
-                            <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                            <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
+                              mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
                           </div>
                         </div>
                       </mat-tree-node>
@@ -736,7 +738,7 @@
                         matTreeNodePadding>
                         <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                           <mat-icon class="mat-icon-rtl-mirror">
-                            {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                            {{triumphTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                           </mat-icon>
                         </button>
                         <div style="text-align: left">
@@ -752,15 +754,82 @@
                           </ng-container>
                           <br>
 
-                          <ng-container *ngIf="node.data.unredeemedCount==0">
-                            <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
-                          </ng-container>
-                          <ng-container *ngIf="node.data.unredeemedCount>0">
-                            <mat-progress-bar class="pres-node-prog" color="warn" mode="determinate" [value]="(node.data.unredeemedCount+node.data.progress)*100/node.data.completionValue"></mat-progress-bar>
-                          </ng-container>
+                          <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
+                            mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                         </div>
                       </mat-tree-node>
                     </mat-tree>
+                  </mat-tab>
+                  <mat-tab label="Seals">
+                    <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">
+                        Hide Completed
+                      </mat-checkbox>
+                    </h3>
+                    <mat-accordion>
+                      <ng-container *ngFor="let s of player.seals">
+                        <mat-expansion-panel *ngIf="!hideComplete || !s.complete">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title [class.accent-text]="s.complete">
+                              {{s.title}}
+                              <ng-container *ngIf="debugmode">{{s.hash}}</ng-container>
+                            </mat-panel-title>
+                            <mat-panel-description [class.accent-text]="s.complete">
+                              {{s.progress}} / {{s.completionValue}}
+                            </mat-panel-description>
+                          </mat-expansion-panel-header>
+
+                          <div class="seal-body">
+                            <!-- <mat-progress-bar  mode="determinate" [value]="s.percent"></mat-progress-bar> -->
+
+                            <p style="margin-bottom: 20px">{{s.desc}}</p>
+
+                            <table class="checklist-table">
+                              <tbody>
+                                <ng-container *ngFor="let c of s.children">
+                                  <tr *ngIf="!hideComplete || !c.complete">
+                                    <td>
+                                      <i *ngIf="c.complete && c.redeemed" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="c.complete && !c.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="!c.complete" class="far fa-square"></i>
+
+                                      <ng-container *ngIf="c.lowLinks==null || c.lowLinks.mapLink==null">
+                                        {{c.name}} </ng-container>
+                                      <a [href]="c.lowLinks.mapLink" *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null"
+                                        target="_blank" rel="noopener">
+                                        {{c.name}}
+                                        <i class='accent-text far fa-map-marker-alt'></i>
+                                      </a>
+                                      <ng-container *ngIf="debugmode">{{c.hash}}</ng-container>
+                                      <br>
+                                      <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
+                                        redeemed.<br></span>
+                                      <span class="simple-caption">
+                                        {{c.score}} pts. {{c.desc}}
+                                      </span>
+                                      <div *ngFor="let o of c.objectives">
+                                        <span class="simple-caption">
+                                          <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                          <i *ngIf="!o.complete" class="far fa-square"></i>
+                                          {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                                        </span>
+                                        <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </ng-container>
+                              </tbody>
+                            </table>
+
+
+
+
+
+                          </div>
+
+                        </mat-expansion-panel>
+                      </ng-container>
+                    </mat-accordion>
                   </mat-tab>
                   <mat-tab label="Closest">
                     <div>
@@ -787,10 +856,12 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}} {{t.invisible}}</ng-container>
+                                <br>
                                 <span class="simple-caption">
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                                     <ng-container *ngIf="i>0">
-                                      {{p}}
+                                      <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                                      <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
                                       <ng-container *ngIf="!isLast">
                                         /
                                       </ng-container>
@@ -855,10 +926,12 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <br>
                                 <span class="simple-caption">
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                                     <ng-container *ngIf="i>0">
-                                      {{p}}
+                                      <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                                      <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
                                       <ng-container *ngIf="!isLast">
                                         /
                                       </ng-container>
@@ -907,7 +980,7 @@
                 <div class="hide-complete-collectibles">
                   <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
                 </div>
-                <mat-tree [dataSource]="collectionDatasource" [treeControl]="treeControl2">
+                <mat-tree [dataSource]="collectionDatasource" [treeControl]="collectionTreeControl">
                   <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
                     matTreeNodeToggle matTreeNodePadding>
                     <button mat-icon-button disabled></button>
@@ -926,7 +999,7 @@
                   <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
                     <button mat-icon-button matTreeNodeToggle (click)="branchNodeClick(node.data.hash)">
                       <mat-icon class="mat-icon-rtl-mirror">
-                        {{treeControl2.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+                        {{collectionTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                       </mat-icon>
                     </button>
                     <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon"
@@ -934,11 +1007,13 @@
                     <div style="text-align: left">
                       <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.complete" class="far fa-square"></i>
-                      {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
+                      {{node.data.name}}
+                      <span *ngIf="debugmode">{{node.data.hash}}</span>
                       <span class="simple-caption">
                         {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
                       </span> <br>
-                      <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+                      <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
+                        mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                     </div>
                   </mat-tree-node>
                 </mat-tree>
