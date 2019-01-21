@@ -565,18 +565,20 @@ export class Currency {
 }
 
 export class MilestoneStatus {
-    hash: string;
-    complete: boolean;
-    pct: number;
-    info: string;
-    suppInfo: string;
+    readonly hash: string;
+    readonly complete: boolean;
+    readonly pct: number;
+    readonly info: string;
+    readonly suppInfo: string;
+    readonly phases: boolean[];
 
-    constructor(hash, complete, pct, info, suppInfo?) {
+    constructor(hash, complete, pct, info, suppInfo, phases) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
         this.info = info;
         this.suppInfo = suppInfo;
+        this.phases = phases;
     }
 }
 
