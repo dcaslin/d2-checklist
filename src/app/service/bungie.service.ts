@@ -162,33 +162,33 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    public async updateRaidHistory(x: Player, ignoreErrors?: boolean): Promise<void[]> {
-        const msNames: MileStoneName[] = x.milestoneList;
-        const chars: Character[] = x.characters;
-        const self: BungieService = this;
-        const promises: Promise<void>[] = [];
-        chars.forEach(c => {
-            const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId,
-                4, 99, ignoreErrors).then((hist: Activity[]) => {
-                    self.parseService.parseRaidHistory(msNames, c, hist);
-                    x.raidChecked = true;
-                });
-            promises.push(p);
-        });
-        return Promise.all(promises);
-    }
+    // public async updateRaidHistory(x: Player, ignoreErrors?: boolean): Promise<void[]> {
+    //     const msNames: MileStoneName[] = x.milestoneList;
+    //     const chars: Character[] = x.characters;
+    //     const self: BungieService = this;
+    //     const promises: Promise<void>[] = [];
+    //     chars.forEach(c => {
+    //         const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId,
+    //             4, 99, ignoreErrors).then((hist: Activity[]) => {
+    //                 self.parseService.parseRaidHistory(msNames, c, hist);
+    //                 x.raidChecked = true;
+    //             });
+    //         promises.push(p);
+    //     });
+    //     return Promise.all(promises);
+    // }
 
-    public updateNfHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
-        const self: BungieService = this;
-        const promises: Promise<void>[] = [];
-        chars.forEach(c => {
-            const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 47, 99).then((hist: Activity[]) => {
-                self.parseService.parsePrestigeNfHistory(msNames, c, hist);
-            });
-            promises.push(p);
-        });
-        return Promise.all(promises);
-    }
+    // public updateNfHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
+    //     const self: BungieService = this;
+    //     const promises: Promise<void>[] = [];
+    //     chars.forEach(c => {
+    //         const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 47, 99).then((hist: Activity[]) => {
+    //             self.parseService.parsePrestigeNfHistory(msNames, c, hist);
+    //         });
+    //         promises.push(p);
+    //     });
+    //     return Promise.all(promises);
+    // }
 
     public async getClanInfo(clanId: string): Promise<ClanInfo> {
         try {

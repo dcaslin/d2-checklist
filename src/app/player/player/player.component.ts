@@ -364,6 +364,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       });
     } else if (this.sort === 'resetDesc') {
       this.player.milestoneList.sort((a, b) => {
+        if (a.resets==null && b.resets!=null) return 1;
+        if (a.resets!=null && b.resets==null) return -1;
+        if (a.resets==null && b.resets==null) return 0;
         if (a.resets < b.resets) { return 1; }
         if (a.resets > b.resets) { return -1; }
         if (a.name > b.name) { return 1; }
@@ -372,6 +375,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       });
     } else if (this.sort === 'resetAsc') {
       this.player.milestoneList.sort((a, b) => {
+
+        if (a.resets==null && b.resets!=null) return -1;
+        if (a.resets!=null && b.resets==null) return 1;
+        if (a.resets==null && b.resets==null) return 0;
         if (a.resets < b.resets) { return -1; }
         if (a.resets > b.resets) { return 1; }
         if (a.name > b.name) { return 1; }
@@ -453,7 +460,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
         if (x.characters != null) {
           await this.bungieService.updateAggHistory(x.characters);
-          await this.bungieService.updateRaidHistory(x);
+          // await this.bungieService.updateRaidHistory(x);
           // await this.bungieService.updateNfHistory(x.milestoneList, x.characters);
           // await this.xyzService.updateDrops(x);
         }

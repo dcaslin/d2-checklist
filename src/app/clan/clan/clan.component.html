@@ -78,10 +78,10 @@
               </mat-select>
             </mat-form-field>
             <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
-            <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
+            <!-- <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
               <i class="fas fa-book-dead" aria-hidden="true"></i> Raids
               <i [hidden]="!raidsLoading" class="far fa-spinner fa-pulse fa-fw"></i>
-            </button>
+            </button> -->
             <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
               <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
               <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
@@ -90,10 +90,10 @@
 
 
           <div class="mobile-button-row">
-            <button mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
+            <!-- <button mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
               <i class="fas fa-book-dead" aria-hidden="true"></i> Raids
               <i [hidden]="!raidsLoading" class="far fa-spinner fa-pulse fa-fw"></i>
-            </button>
+            </button> -->
             <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
               <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
               <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
