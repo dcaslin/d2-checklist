@@ -56,7 +56,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="i.type==ItemType.Bounty && includeItem(i)">
+                  <tr *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>

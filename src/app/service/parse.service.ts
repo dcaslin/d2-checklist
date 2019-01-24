@@ -709,8 +709,12 @@ export class ParseService {
         }
 
         let itemType = iDesc.itemType;
-        if (iDesc.itemType === ItemType.Mod && iDesc.itemTypeDisplayName.indexOf('Mod') > 0) {
+        if (iDesc.itemType === ItemType.Mod && iDesc.itemTypeDisplayName.indexOf('Mod') >= 0) {
             itemType = ItemType.GearMod;
+        }
+        else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel')>=0){
+            itemType = ItemType.ForgeVessel;
+
         }
 
 

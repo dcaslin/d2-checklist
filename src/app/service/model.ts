@@ -30,6 +30,7 @@ export enum ItemType {
     Ghost = 24,
     Package = 25,
     Bounty = 26,
+    ForgeVessel = 98, // custom
     GearMod = 99  // custom added
 }
 
