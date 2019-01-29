@@ -10,6 +10,7 @@ import { Const, Platform, PublicMilestone, NameDesc } from '../../service/model'
 import { StorageService } from '../../service/storage.service';
 import { BungieService } from '../../service/bungie.service';
 import { ChildComponent } from '../../shared/child.component';
+import { DestinyCacheService } from '@app/service/destiny-cache.service';
 
 @Component({
   selector: 'anms-home',
@@ -23,6 +24,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   @ViewChild(MatTabGroup) tabs: MatTabGroup;
 
   version = env.versions.app;
+  manifestVersion = "";
   platforms: Platform[];
   selectedPlatform: Platform;
   selectedTab: string;
@@ -34,11 +36,13 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   flashpoint: string = "";
   showMoreInfo = false;
 
-  constructor(storageService: StorageService, private bungieService: BungieService, private router: Router) {
+  constructor(private destinyCacheService: DestinyCacheService, storageService: StorageService, private bungieService: BungieService, private router: Router) {
     super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
-
+    if (this.destinyCacheService.cache!=null){
+      this.manifestVersion = this.destinyCacheService.cache.version;
+    }
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))

@@ -8,7 +8,10 @@
       <div class="body-text" [ngClass]="animateOnRouteEnter">
         <br />
         <div class="centerMe">
-          <div *ngIf="debugmode" style="margin-bottom: 25px; text-align: left">Version: {{version}}</div>
+          <div *ngIf="debugmode" style="margin-bottom: 25px; text-align: left">
+            Version: {{version}}<br>
+            Manifest: {{manifestVersion}}
+          </div>
           <mat-form-field class="searchField searchPlatform">
             <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
               <mat-select-trigger>
