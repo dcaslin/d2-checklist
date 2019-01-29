@@ -1217,7 +1217,7 @@ export class ParseService {
                                     name: name,
                                     allDone: false,
                                     // weird adventures that are only once per account
-                                    oncePerAccount: (hash === '844419501' || hash === '1942564430') ? true : false,
+                                    oncePerAccount: (hash === 844419501 || hash === 1942564430) ? true : false,
                                     lowLinks: this.lowlineService.buildChecklistLink(hash),
                                     checked: []
                                 };
