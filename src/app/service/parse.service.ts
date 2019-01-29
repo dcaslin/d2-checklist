@@ -36,12 +36,12 @@ export class ParseService {
         char.baseCharacterLevel = c.baseCharacterLevel;
         char.percentToNextLevel = c.percentToNextLevel / 100;
         char.title = "";
-        if (c.titleRecordHash!=null){
+        if (c.titleRecordHash != null) {
             const rDesc = this.destinyCacheService.cache.Record[c.titleRecordHash];
-            if (rDesc!=null){
+            if (rDesc != null) {
                 char.title = rDesc.titleInfo.titlesByGenderHash[c.genderHash];
             }
-        
+
         }
 
         char.gender = this.destinyCacheService.cache.Gender[c.genderHash].displayProperties.name;
@@ -218,7 +218,7 @@ export class ParseService {
 
                     c.clanMilestones = clanMilestones;
                     return;
-                } 
+                }
                 else if (milestonesByKey[key] == null) {
                     return;
                 }
@@ -279,11 +279,11 @@ export class ParseService {
                         }
 
                     }
-                    else if (act.phases!=null && act.phases.length> 0){
-                        for (const p of act.phases){
+                    else if (act.phases != null && act.phases.length > 0) {
+                        for (const p of act.phases) {
 
                             phases.push(p.complete);
-                            if (p.complete){
+                            if (p.complete) {
                                 complete++;
                             }
                             total++;
@@ -295,10 +295,10 @@ export class ParseService {
                 if (pct === 0) { pct = oPct; }
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + '% complete';
-                    if (milestonesByKey[key]!=null)
+                    if (milestonesByKey[key] != null)
                         milestonesByKey[key].hasPartial = true;
                 }
-                if (phases.length==0) phases = null;
+                if (phases.length == 0) phases = null;
                 const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases);
                 c.milestones[key] = m;
             });
@@ -712,7 +712,7 @@ export class ParseService {
         if (iDesc.itemType === ItemType.Mod && iDesc.itemTypeDisplayName.indexOf('Mod') >= 0) {
             itemType = ItemType.GearMod;
         }
-        else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel')>=0){
+        else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
             itemType = ItemType.ForgeVessel;
 
         }
@@ -835,7 +835,7 @@ export class ParseService {
                             }
                         }
                     }
-                    if (activityRewards==null && aDesc.rewards!=null && aDesc.rewards.length>0 && aDesc.rewards[0].rewardItems.length>0){
+                    if (activityRewards == null && aDesc.rewards != null && aDesc.rewards.length > 0 && aDesc.rewards[0].rewardItems.length > 0) {
                         const rewDesc: any = this.destinyCacheService.cache.InventoryItem[aDesc.rewards[0].rewardItems[0].itemHash];
                         if (rewDesc != null) {
                             activityRewards = rewDesc.displayProperties.name;
@@ -964,7 +964,7 @@ export class ParseService {
                 }
             }
 
-            if (ms.milestoneHash === 2188900244){
+            if (ms.milestoneHash === 2188900244) {
                 pl = 652;
             }
             else if (ms.milestoneHash === 3603098564) {
@@ -996,7 +996,7 @@ export class ParseService {
             } else if (ms.milestoneHash === 3312018120) {
                 pl = 520;
             }
-            if (rewards.trim().length==0 && activityRewards!=null){
+            if (rewards.trim().length == 0 && activityRewards != null) {
                 rewards = activityRewards;
             }
             returnMe.push({
@@ -1282,16 +1282,16 @@ export class ParseService {
         return checklists;
     }
 
-    private buildSeal(node: TriumphNode): Seal{
+    private buildSeal(node: TriumphNode): Seal {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
-        if (pDesc==null) return null;
+        if (pDesc == null) return null;
         const completionRecordHash = pDesc.completionRecordHash;
         const cDesc = this.destinyCacheService.cache.Record[completionRecordHash];
-        if (cDesc==null) return null;
+        if (cDesc == null) return null;
         const title = cDesc.titleInfo.titlesByGenderHash[2204441813];
         let progress = 0;
-        for (const c of node.children){
-            if (c.complete){
+        for (const c of node.children) {
+            if (c.complete) {
                 progress++;
             }
         }
@@ -1305,12 +1305,12 @@ export class ParseService {
             title: title,
             percent: percent,
             progress: progress,
-            complete: progress>=node.children.length,
+            complete: progress >= node.children.length,
             completionValue: node.children.length
         };
     }
 
-    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?:boolean, showInvisTriumphs?: boolean): Player {
+    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Player {
         if (resp.profile != null && resp.profile.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s profile.');
         }
@@ -1369,7 +1369,7 @@ export class ParseService {
                 milestonesByKey[p.hash] = ms;
             }
             //add Last wish if its missing, as it has been from public milestones for a while
-            if (milestonesByKey['3181387331']==null){
+            if (milestonesByKey['3181387331'] == null) {
                 const raidDesc = this.destinyCacheService.cache.Milestone["3181387331"];
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
@@ -1434,10 +1434,10 @@ export class ParseService {
             });
         }
 
-        let recordTree = [];     
-        let seals: Seal[] = [];   
-        let lowHangingTriumphs:TriumphRecordNode[] = [];
-        let searchableTriumphs:TriumphRecordNode[] = [];
+        let recordTree = [];
+        let seals: Seal[] = [];
+        let lowHangingTriumphs: TriumphRecordNode[] = [];
+        let searchableTriumphs: TriumphRecordNode[] = [];
 
         let colTree = [];
         let triumphScore = null;
@@ -1522,9 +1522,9 @@ export class ParseService {
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
                         if (parsed != null) {
-                            if (parsed.type==ItemType.Weapon||parsed.type==ItemType.Armor||parsed.type==ItemType.Ghost||parsed.type==ItemType.Vehicle){
+                            if (parsed.type == ItemType.Weapon || parsed.type == ItemType.Armor || parsed.type == ItemType.Ghost || parsed.type == ItemType.Vehicle) {
                                 parsed.options.pop();
-                                for (const c of chars){
+                                for (const c of chars) {
                                     parsed.options.push(c);
                                 }
 
@@ -1562,44 +1562,44 @@ export class ParseService {
             }
 
             if (records.length > 0) {
-                let  triumphLeaves:TriumphRecordNode[] = [];
+                let triumphLeaves: TriumphRecordNode[] = [];
                 const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true).children;
-                for (const ts of tempSeals){
+                for (const ts of tempSeals) {
                     const seal = this.buildSeal(ts);
-                    if (seal!=null){
+                    if (seal != null) {
                         seals.push(seal);
                     }
                 }
 
                 recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs).children;
                 const leafSet = {};
-                for (const t of triumphLeaves){
+                for (const t of triumphLeaves) {
                     leafSet[t.hash] = t;
                 }
                 triumphLeaves = [];
-                for (const key in leafSet){
+                for (const key in leafSet) {
                     triumphLeaves.push(leafSet[key]);
                 }
-                lowHangingTriumphs = triumphLeaves.filter((l) => {return !l.complete});
-                if (showZeroPtTriumphs!=true){
-                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => {return l.score>0});
+                lowHangingTriumphs = triumphLeaves.filter((l) => { return !l.complete });
+                if (showZeroPtTriumphs != true) {
+                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return l.score > 0 });
                 }
-                if (showInvisTriumphs!=true){
-                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => {return !l.invisible});
+                if (showInvisTriumphs != true) {
+                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return !l.invisible });
                 }
-                lowHangingTriumphs.sort((a,b)=>{
-                    if (a.percent>b.percent) return -1;
-                    if (a.percent<b.percent) return 1;
+                lowHangingTriumphs.sort((a, b) => {
+                    if (a.percent > b.percent) return -1;
+                    if (a.percent < b.percent) return 1;
                     return 0;
                 });
-                searchableTriumphs = triumphLeaves.sort((a,b)=>{
+                searchableTriumphs = triumphLeaves.sort((a, b) => {
                     // if (a.percent>b.percent) return -1;
                     // if (a.percent<b.percent) return 1;
-                    if (a.name<b.name) return -1;
-                    if (a.name<b.name) return 0;
+                    if (a.name < b.name) return -1;
+                    if (a.name < b.name) return 0;
                     return 0;
                 });
-                lowHangingTriumphs = lowHangingTriumphs.slice(0,10); 
+                lowHangingTriumphs = lowHangingTriumphs.slice(0, 10);
             }
 
             if (collections.length > 0) {
@@ -1608,15 +1608,15 @@ export class ParseService {
 
         }
         let title = "";
-        for (const char of chars){
-            if (char.title!=null && char.title.trim().length>0){
+        for (const char of chars) {
+            if (char.title != null && char.title.trim().length > 0) {
                 title = char.title;
                 break;
             }
         }
 
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
-            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree, 
+            rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title);
     }
 
@@ -1632,7 +1632,7 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[],  showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphPresentationNode {
+    private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) { return null; }
@@ -1646,12 +1646,12 @@ export class ParseService {
         let total = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves,  showZeroPtTriumphs, showInvisTriumphs);
+                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
-                total+=oChild.totalPts;
-                pts+=oChild.pts;
+                total += oChild.totalPts;
+                pts += oChild.pts;
             }
             for (const child of pDesc.children.records) {
                 const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
@@ -1662,13 +1662,13 @@ export class ParseService {
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
                 }
-                if (oChild.complete && oChild.redeemed){
-                    pts+=oChild.score;
+                if (oChild.complete && oChild.redeemed) {
+                    pts += oChild.score;
                 }
-                total+=oChild.score;
+                total += oChild.score;
             }
         }
-        if (children==null || children.length==0) return null;
+        if (children == null || children.length == 0) return null;
         children.sort(function (a, b) {
             if (a.index < b.index) {
                 return -1;
@@ -1708,7 +1708,7 @@ export class ParseService {
         });
 
 
-        let objs:ItemObjective[] = [];
+        let objs: ItemObjective[] = [];
         let totalProgress = 0;
         for (const o of val.objectives) {
             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
@@ -1720,13 +1720,13 @@ export class ParseService {
                 complete: o.complete,
                 percent: 0
             }
-            
+
             let max = iObj.completionValue;
-            if (iObj.completionValue==null || iObj.completionValue<=0){
+            if (iObj.completionValue == null || iObj.completionValue <= 0) {
                 max = 1;
             }
-            let objPercent = 100 * iObj.progress/max;
-            if (objPercent>100) objPercent = 100;
+            let objPercent = 100 * iObj.progress / max;
+            if (objPercent > 100) objPercent = 100;
             iObj.percent = Math.floor(objPercent);
 
             totalProgress += oDesc.completionValue;
@@ -1754,18 +1754,18 @@ export class ParseService {
         }
         if (invisible && !showInvisTriumphs) return null;
 
-        let searchText = rDesc.displayProperties.name+" "+rDesc.displayProperties.description;
+        let searchText = rDesc.displayProperties.name + " " + rDesc.displayProperties.description;
         let percent = 0;
-        if (objs.length>0){
+        if (objs.length > 0) {
             let sum = 0;
-            for (const o of objs){
-                sum+=o.percent;
-                searchText += " "+o.progressDescription;
+            for (const o of objs) {
+                sum += o.percent;
+                searchText += " " + o.progressDescription;
             }
-            percent = Math.floor(sum/objs.length);    
+            percent = Math.floor(sum / objs.length);
         }
         const pts = rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue;
-        if (!showZeroPtTriumphs &&  pts==0) return null;
+        if (!showZeroPtTriumphs && pts == 0) return null;
 
         return {
             type: 'record',
@@ -1782,7 +1782,7 @@ export class ParseService {
             path: path,
             lowLinks: this.lowlineService.buildRecordLink(key),
             score: pts,
-            percent: percent, 
+            percent: percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible
         }
@@ -1994,16 +1994,16 @@ export class ParseService {
             return null;
         }
         //from here on out we know its MW
-        if (plugDesc.investmentStats==null || plugDesc.investmentStats.length==0){
+        if (plugDesc.investmentStats == null || plugDesc.investmentStats.length == 0) {
             console.log("Missing investment stats?");
             return null;
-        }        
+        }
         const invStats = plugDesc.investmentStats[0];
         const tier = invStats.value;
         const statHash = invStats.statTypeHash;
         const statDesc: any = this.destinyCacheService.cache.Stat[statHash];
-        if (statDesc==null){
-            console.log("Missing statsDesc for "+statHash);
+        if (statDesc == null) {
+            console.log("Missing statsDesc for " + statHash);
             return null;
         }
         const name = statDesc.displayProperties.name;
@@ -2045,7 +2045,7 @@ export class ParseService {
                 }
             }
         }
-        const name = plugDesc.displayProperties.name.replace("_"," ");
+        const name = plugDesc.displayProperties.name.replace("_", " ");
         return new InventoryPlug(plugDesc.hash,
             plugDesc.displayProperties.name, desc,
             plugDesc.displayProperties.icon, true);
@@ -2071,12 +2071,17 @@ export class ParseService {
                 // return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
             }
             //anything with no type goes away too
-            if (desc.itemTypeDisplayName==null){
+            if (desc.itemTypeDisplayName == null) {
                 return null;
             }
             let type: ItemType = desc.itemType;
+            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') > 0) {
+                type = ItemType.Bounty;
+            }
             if (!detailedInv) {
-                if (desc.itemType !== ItemType.Bounty && desc.itemType !== ItemType.Quest && desc.itemType !== ItemType.QuestStep) {
+                if (type !== ItemType.Bounty
+                    && type !== ItemType.Quest
+                    && type !== ItemType.QuestStep) {
                     return null;
                 }
             }
@@ -2087,7 +2092,7 @@ export class ParseService {
                 else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
                 }
-                
+
                 else if (desc.itemType === ItemType.Ship) {
                     type = ItemType.Vehicle;
                 }
@@ -2231,9 +2236,9 @@ export class ParseService {
                     if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
                         for (const jCat of desc.sockets.socketCategories) {
                             let isMod = false;
-                            
+
                             //skip ghost mods
-                            if (jCat.socketCategoryHash == 3379164649){
+                            if (jCat.socketCategoryHash == 3379164649) {
                                 continue;
                             }
                             // armor and weapon mods
@@ -2338,7 +2343,7 @@ export class ParseService {
             if (mw != null) {
                 searchText += " " + mw.name;
             }
-            if (masterworked){
+            if (masterworked) {
                 searchText += " is:masterwork";
             }
             if (mod != null) {
@@ -2352,14 +2357,14 @@ export class ParseService {
                     }
                 }
             }
-            if (isRandomRoll==true){
-                searchText+= " random";
+            if (isRandomRoll == true) {
+                searchText += " random";
             }
-            else{
-                searchText+= " fixed";
+            else {
+                searchText += " fixed";
             }
-            if (damageType!=null && damageType!=DamageType.None){
-                searchText+= " "+this.cookDamageType(damageType);
+            if (damageType != null && damageType != DamageType.None) {
+                searchText += " " + this.cookDamageType(damageType);
             }
 
             searchText = searchText.toLowerCase();
@@ -2910,50 +2915,50 @@ export class ParseService {
 
     // }
 
-//     public parsePrestigeNfHistory(msNames: MileStoneName[], c: Character, hist: Activity[]) {
+    //     public parsePrestigeNfHistory(msNames: MileStoneName[], c: Character, hist: Activity[]) {
 
-//         hist.forEach(a => {
-//             // ignore not completed
-//             if (!a.completed) { return; }
+    //         hist.forEach(a => {
+    //             // ignore not completed
+    //             if (!a.completed) { return; }
 
-//             const desc: any = this.destinyCacheService.cache.Activity[a.referenceId];
-//             let name: string = null;
-//             let tier: number = null;
-//             if (desc) {
-//                 name = desc.displayProperties.name;
-//                 tier = desc.tier;
-//             } else {
-//                 console.log('No entry found for activity hash: ' + a.referenceId);
-//             }
-//             const d: Date = new Date(a.period);
-//             if (d.getTime() > c.startWeek.getTime()) {
-//                 c.hasPrestigeNf = true;
-//             }
-//         });
-//         const NF_HM_KEY = '1237';
-//         // add psuedo milestone for eater
-//         let foundNfHmKey = false;
+    //             const desc: any = this.destinyCacheService.cache.Activity[a.referenceId];
+    //             let name: string = null;
+    //             let tier: number = null;
+    //             if (desc) {
+    //                 name = desc.displayProperties.name;
+    //                 tier = desc.tier;
+    //             } else {
+    //                 console.log('No entry found for activity hash: ' + a.referenceId);
+    //             }
+    //             const d: Date = new Date(a.period);
+    //             if (d.getTime() > c.startWeek.getTime()) {
+    //                 c.hasPrestigeNf = true;
+    //             }
+    //         });
+    //         const NF_HM_KEY = '1237';
+    //         // add psuedo milestone for eater
+    //         let foundNfHmKey = false;
 
-//         for (const msName of msNames) {
-//             if (msName.key === NF_HM_KEY) {
-//                 foundNfHmKey = true;
-//             }
-//         }
-//         // prestige nightfall is gone
-//         // if (!foundNfHmKey) {
-//         //     msNames.unshift({
-//         //         key: NF_HM_KEY,
-//         //         type: "Weekly",
-//         //         name: "Prestige Nightfall",
-//         //         desc: "Complete the Prestige Nightfall",
-//         //         hasPartial: false
-//         //     });
-//         // }
+    //         for (const msName of msNames) {
+    //             if (msName.key === NF_HM_KEY) {
+    //                 foundNfHmKey = true;
+    //             }
+    //         }
+    //         // prestige nightfall is gone
+    //         // if (!foundNfHmKey) {
+    //         //     msNames.unshift({
+    //         //         key: NF_HM_KEY,
+    //         //         type: "Weekly",
+    //         //         name: "Prestige Nightfall",
+    //         //         desc: "Complete the Prestige Nightfall",
+    //         //         hasPartial: false
+    //         //     });
+    //         // }
 
-//         const prestigeNfPsuedoMs: MilestoneStatus = new MilestoneStatus(NF_HM_KEY, c.hasPrestigeNf, c.hasPrestigeNf ? 1 : 0, null);
-//         c.milestones[NF_HM_KEY] = prestigeNfPsuedoMs;
+    //         const prestigeNfPsuedoMs: MilestoneStatus = new MilestoneStatus(NF_HM_KEY, c.hasPrestigeNf, c.hasPrestigeNf ? 1 : 0, null);
+    //         c.milestones[NF_HM_KEY] = prestigeNfPsuedoMs;
 
-//     }
+    //     }
 
 
 }
