@@ -3,7 +3,7 @@
   <table class="responsive-table">
     <tbody>
       <tr *ngFor="let step of data.steps; index as i" >
-        <td [class.accent-bg-text]="step.current">{{i+1}}) {{step.desc}}</td>
+        <td class="desc-cell" [class.accent-bg-text]="step.current">{{i+1}}) {{step.desc}}</td>
         <td [class.accent-bg-text]="step.current">
           <div *ngFor="let obj of step.objectives">
             {{obj.progressDescription}}
