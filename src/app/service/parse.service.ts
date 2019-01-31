@@ -572,6 +572,10 @@ export class ParseService {
         if (v.saleItems == null) { return []; }
         const vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
         if (vDesc == null) { return []; }
+        if (resp.vendors.data[vendorKey]==null){
+            //vendor isn't here right now;
+            return [];
+        }
         const vendor: Vendor = {
             hash: vendorKey,
             name: vDesc.displayProperties.name,
