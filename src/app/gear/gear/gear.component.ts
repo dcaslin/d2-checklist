@@ -295,7 +295,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   filterItem(i: InventoryItem): boolean {
     if (i.searchText.indexOf(this.filterText) >= 0) return true;
-    if (i.notes != null && i.notes.indexOf(this.filterText) >= 0) return true;
+    if (i.notes != null && i.notes.toLowerCase().indexOf(this.filterText) >= 0) return true;
     return false;
   }
 

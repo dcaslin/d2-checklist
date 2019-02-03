@@ -2079,6 +2079,8 @@ export class ParseService {
                 return null;
             }
             let type: ItemType = desc.itemType;
+            let description = desc.displayProperties.description;
+
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') > 0) {
                 type = ItemType.Bounty;
             }
@@ -2092,6 +2094,15 @@ export class ParseService {
             else {
                 if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
+                    //mods we use the perk desc
+                    if (desc.perks!=null && desc.perks.length>0){
+                        const pHash = desc.perks[0].perkHash;
+
+                        const pDesc: any = this.destinyCacheService.cache.Perk[pHash];
+                        if (pDesc!=null){
+                            description = pDesc.displayProperties.description;
+                        }
+                    }
                 }
                 else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
@@ -2377,7 +2388,7 @@ export class ParseService {
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
                 power, damageType, stats, sockets, objectives,
-                desc.displayProperties.description,
+                description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), isRandomRoll
             );
