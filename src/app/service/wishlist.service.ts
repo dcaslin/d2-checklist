@@ -1,25 +1,27 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject, } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
-import * as LZString from 'lz-string';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
+import { DestinyCacheService } from './destiny-cache.service';
 
 @Injectable()
 export class WishlistService implements OnDestroy {
   private data: { [hash: string]: CuratedRoll[]; };
   static WildcardItemId = -69420 // nice
 
-  public static DEFAULT_URL = 'https://raw.githubusercontent.com/darkelement1987/godroll/master/godrolls.txt';
+  //public static DEFAULT_URL = 'https://raw.githubusercontent.com/darkelement1987/godroll/master/godrolls.txt';
+  public static DEFAULT_PVE_URL = "https://gist.githubusercontent.com/dcaslin/e614cf030f14c41e07c87f6f7f08d465/raw/panda_pve.txt";
+  public static DEFAULT_PVP_URL = "https://gist.githubusercontent.com/dcaslin/ef71ca7aac1e563653cf4a541c11baee/raw/panda_pvp.txt";
 
-  constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
+  constructor(private httpClient: HttpClient, private notificationService: NotificationService, 
+    private destinyCacheService: DestinyCacheService) {
 
   }
 
-  public async init(overrideUrl: string): Promise<void> {
+  public async init(overridePveUrl: string, overridePvpUrl: string): Promise<void> {
     if (this.data != null) { return; } else {
-      const temp = await this.load(overrideUrl);
+      const temp = await this.load(overridePveUrl, overridePvpUrl);
       const data: { [hash: string]: CuratedRoll[]; } = {};
       for (const c of temp) {
         if (data[c.itemHash] == null) {
@@ -32,20 +34,25 @@ export class WishlistService implements OnDestroy {
     }
   }
 
-  public async load(overrideUrl: string): Promise<CuratedRoll[]> {
-
-    let requestUrl = WishlistService.DEFAULT_URL;
+  public async loadSingle(type: string, url: string, defaultUrl: string) : Promise<CuratedRoll[]> {
+    if (url == null){
+      url = defaultUrl;
+    }
     try {
-      if (overrideUrl != null && overrideUrl.trim().length > 0) {
-        requestUrl = overrideUrl;
-      }
-      const bansheeText = await this.httpClient.get(requestUrl, { responseType: 'text' }).toPromise();
-      return WishlistService.toCuratedRolls(bansheeText);
+      const bansheeText = await this.httpClient.get(url, { responseType: 'text' }).toPromise();
+      return this.toCuratedRolls(type, bansheeText);
     }
     catch (e) {
-      this.notificationService.info("Error loading wishlist from " + requestUrl);
+      this.notificationService.info("Error loading "+type+" wishlist from " + url);
+      console.error(e);
       return [];
     }
+  }
+
+  public async load(overridePveUrl: string, overridePvpUrl: string): Promise<CuratedRoll[]> {
+    let pveRolls = await this.loadSingle("pve", overridePveUrl, WishlistService.DEFAULT_PVE_URL);
+    let pvpRolls = await this.loadSingle("pvp", overridePvpUrl, WishlistService.DEFAULT_PVP_URL);
+    return pveRolls.concat(pvpRolls);
   }
 
   public processItems(items: InventoryItem[]): void {
@@ -56,6 +63,8 @@ export class WishlistService implements OnDestroy {
         //for each curated roll
         for (const c of this.data[i.hash]) {
           let rollMatches = true;
+          const isPvp = c.label == "pvp";
+          const isPve = c.label == "pve";
           //is every.single.perk found in the sockets
           for (const desiredPerk of c.recommendedPerks) {
             let perkFound = false;
@@ -64,6 +73,12 @@ export class WishlistService implements OnDestroy {
                 if (+p.hash == desiredPerk) {
                   perkFound = true;
                   p.godRoll = true;
+                  if (isPvp){
+                    p.godRollPvp = true;
+                  }
+                  if (isPve){
+                    p.godRollPve = true;
+                  }
                   break;
                 }
               }
@@ -71,13 +86,20 @@ export class WishlistService implements OnDestroy {
             }
             if (!perkFound) {
               rollMatches = false;
-              //break;
             }
           }
           if (rollMatches) {
             i.godRoll = true;
             i.searchText = i.searchText + " godroll is:wishlist";
-            //break;
+            if (isPve){
+              i.searchText = i.searchText + " godrollpve is:wishlistpve";
+              i.godRollPve = true;
+
+            }
+            if (isPvp){
+              i.searchText = i.searchText + " godrollpvp is:wishlistpvp";
+              i.godRollPvp = true;
+            }
           }
         }
       }
@@ -92,7 +114,7 @@ export class WishlistService implements OnDestroy {
 
   private unsubscribe$: Subject<void> = new Subject<void>();
 
-  private static toCuratedRoll(bansheeTextLine: string): CuratedRoll | null {
+  private bansheeToCuratedRoll(bansheeTextLine: string): CuratedRoll | null {
     if (!bansheeTextLine || bansheeTextLine.length === 0) {
       return null;
     }
@@ -109,12 +131,23 @@ export class WishlistService implements OnDestroy {
     const recommendedPerks = matchResults[2]
       .split(',')
       .map(Number)
-      .filter((perkHash) => perkHash > 0);
+      .filter((perkHash) => {
+        if (perkHash <= 0) return false;
+        if (perkHash==3876796314) return false; //base radiance
+        const desc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
+        if (desc==null) return false;
+        if (desc.itemCategoryHashes==null) return false;
+        if (desc.itemCategoryHashes.includes(41)) return false; //shaders
+        if (desc.itemCategoryHashes.includes(945330047)) return false; //gameplay weapon mods
+        if (desc.itemCategoryHashes.includes(2237038328)) return false; //intrinsics
+        if (desc.plug!=null && desc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") > 0) return false; //masterwork stuff
+        return true;
+      });
 
     return {
-      itemHash,
-      recommendedPerks,
-      isExpertMode: false
+      label: '',
+      itemHash: itemHash,
+      recommendedPerks: recommendedPerks
     };
   }
 
@@ -136,17 +169,19 @@ export class WishlistService implements OnDestroy {
       .map(Number)
       .filter((perkHash) => perkHash > 0);
     return {
-      itemHash,
-      recommendedPerks,
-      isExpertMode: true
+      label: '',
+      itemHash: itemHash,
+      recommendedPerks: recommendedPerks
     };
   }
 
   /** Newline-separated banshee-44.com text -> CuratedRolls. */
-  static toCuratedRolls(bansheeText: string): CuratedRoll[] {
+  toCuratedRolls(type, bansheeText: string): CuratedRoll[] {
     const textArray = bansheeText.split('\n');
-    let temp = textArray.map(WishlistService.toCuratedRoll).concat(textArray.map(WishlistService.toDimWishListCuratedRoll));
+    let temp = textArray.map(this.bansheeToCuratedRoll, this)
+      .concat(textArray.map(WishlistService.toDimWishListCuratedRoll));
     temp = temp.filter(Boolean);
+    temp.every(v => v.label = type);
     return temp;
   }
 }
@@ -161,6 +196,7 @@ export class WishlistService implements OnDestroy {
  * get us this information.
  */
 export interface CuratedRoll {
+  label: string; //pvp vs pve
   /** Item hash for the recommended item. */
   itemHash: number;
   /**
@@ -171,12 +207,4 @@ export interface CuratedRoll {
    * perks that are thought to have marginal bearing on an item.
    */
   recommendedPerks: number[];
-  /**
-   * Is this an expert mode recommendation?
-   * With B-44 rolls, we make sure that most every perk asked for exists
-   * on the item. (It does discard masterwork and some other odds and ends).
-   * With expert rolls, you can be as vague or specific as you want, so we make
-   * sure that at least every perk asked for is there.
-   */
-  isExpertMode: boolean;
 }

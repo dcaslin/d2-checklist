@@ -290,3 +290,12 @@ a:link {
   //  height: 30px;
   //  width: 30px;
 }
+
+.gist-url-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.gist-url-container > * {
+    width: 100%;
+}

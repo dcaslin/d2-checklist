@@ -172,8 +172,10 @@
                   </div>
                 </td>
                 <td class="limited-gear-width">
-                  <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
-                    class="fas fa-star accent-text"></i>
+                  <i *ngIf="i.godRollPve" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
+                  class="fas fa-dragon accent-text"></i>
+                  <i *ngIf="i.godRollPvp" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
+                  class="fas fa-swords accent-text"></i>
 
                   <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle" class="item-name" href="javascript:void(0)" [matTooltip]="i.desc" matTooltipClass="preserve-white-space" (click)="showItem(i)">
                     {{i.name}}
@@ -247,8 +249,12 @@
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                      <i *ngIf="plug.godRoll && i.godRoll" class="fas fa-star accent-text"></i>
-                      <i *ngIf="plug.godRoll && !i.godRoll && highlightAllPerks" class="fas fa-star"></i>
+                      
+                      <i *ngIf="plug.godRollPve && i.godRollPve" class="fas fa-dragon accent-text"></i>
+                      <i *ngIf="plug.godRollPve && !i.godRollPve && highlightAllPerks" class="fas fa-dragon"></i>
+
+                      <i *ngIf="plug.godRollPvp && i.godRollPvp" class="fas fa-swords accent-text"></i>
+                      <i *ngIf="plug.godRollPvp && !i.godRollPvp && highlightAllPerks" class="fas fa-swords"></i>
 
                       <!-- <div *ngIf="plug.icon!=null" class="plug-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + plug.icon + ')'"></div> -->
                       {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
