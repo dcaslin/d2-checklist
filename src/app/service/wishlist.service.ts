@@ -102,6 +102,23 @@ export class WishlistService implements OnDestroy {
             }
           }
         }
+        //check if the right stuff is selected
+        for (const s of i.sockets) {
+          let godPerkFound = false;
+          let godPerkSelected = false;
+          for (const p of s.plugs) {
+            if (p.godRoll){
+              godPerkFound = true;
+              if (p.active){
+                godPerkSelected = true;
+                break;
+              }
+            }
+          }
+          if (godPerkFound && !godPerkSelected){
+            i.searchText = i.searchText + " fixme";
+          }
+        }
       }
     }
   }
