@@ -495,6 +495,8 @@ export class InventoryItem {
     public canReallyEquip: boolean;
     public copies: number = 1;
     public godRoll = false;
+    public godRollPve = false;
+    public godRollPvp = false;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -988,6 +990,8 @@ export class InventoryPlug {
     readonly icon: string;
     readonly active: boolean;
     public godRoll: boolean = false;
+    public godRollPve: boolean = false;
+    public godRollPvp: boolean = false;
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean) {
         this.hash = hash;

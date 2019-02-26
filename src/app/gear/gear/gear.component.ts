@@ -16,38 +16,6 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonTog
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '@app/service/notification.service';
 
-// DONE equip gear
-// DONE transfer gear
-// DONE sort (light, masterwork tier, mod, quantity)
-// DONE lock unlock gear
-// DONE is random roll
-// DONE count dupes 
-// DONE improve search text to include perks
-// DONE hard coded wishlist
-
-// DONE show class for armor
-// DONE filter UI
-
-
-// DONE compare all like items in modal
-// DONE tagging in modal
-// DONE hide junk checkbox in modal
-// DONE fix stats layout
-// DONE make work in mobile
-
-// DONE refresh filter aftre transfer
-// DONE auto process locking items
-// DONE shard mode
-
-// DONE Fix BLAH, remove "copies" from mobile, remove <code>
-// DONE shardit keepit copy paste
-// DONE option to highlight any god perks
-// DONE wish list configurability
-// DONE upgrade like names, and fix armor utilities
-// DONE update filter after shard mode
-// DONE default check non god roll perks
-// DONE sort copies by light level
-
 // TODO show type name on item details
 
 @Component({
@@ -119,8 +87,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
   private static HIGHLIGHT_ALL_PERKS_KEY = "highlightAllPerks";
-  private static WISHLIST_OVERRIDE_URL_KEY = "wishlistOverrideUrl";
-  public wishlistOverrideUrl;
+  private static WISHLIST_OVERRIDE_PVE_URL_KEY = "wishlistOverridePveUrl";
+  private static WISHLIST_OVERRIDE_PVP_URL_KEY = "wishlistOverridePvpUrl";
+  public wishlistOverridePveUrl;
+  public wishlistOverridePvpUrl;
+
+
   public highlightAllPerks = true;
 
   private filterChangedSubject: Subject<void> = new Subject<void>();
@@ -207,10 +179,17 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == "false") {
       this.highlightAllPerks = false;
     }
-    const wishlistOverrideUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
-    if (wishlistOverrideUrl != null) {
-      this.wishlistOverrideUrl = wishlistOverrideUrl;
+    
+    const wishlistOverridePveUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY);
+    if (wishlistOverridePveUrl != null) {
+      this.wishlistOverridePveUrl = wishlistOverridePveUrl;
     }
+
+    const wishlistOverridePvpUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY);
+    if (wishlistOverridePvpUrl != null) {
+      this.wishlistOverridePvpUrl = wishlistOverridePvpUrl;
+    }
+    
   }
 
   public updateHighlightAllPerks() {
@@ -224,19 +203,34 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
 
-  public async updateWishlistOverrideUrl(newVal: string) {
+  public async updateWishlistOverrideUrl(newPveVal: string, newPvpVal: string) {
     //just reload the page if this works, easier then worrying about it
-    if (newVal == null) {
-      localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY);
+    if (newPveVal == null) {
+      localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY);
+    }
+    if (newPvpVal == null){
+      localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY);
+    }
+    if (newPveVal == null && newPvpVal == null){
       location.reload();
       return;
     }
-    const tempRolls = await this.wishlistSerivce.load(newVal);
-    if (tempRolls.length > 0) {
-      //validate URL
-      localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_URL_KEY, newVal);
-      this.wishlistOverrideUrl = newVal;
-      await this.loadWishlist();
+    let reloadMe = false;
+    if (newPveVal!=this.wishlistOverridePveUrl){
+      const tempRolls = await this.wishlistSerivce.loadSingle("testPve", newPveVal, null);
+      if (tempRolls.length > 0) {
+        localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY, newPveVal);
+        reloadMe = true;
+      }
+    }
+    if (newPvpVal!=this.wishlistOverridePvpUrl){
+      const tempRolls = await this.wishlistSerivce.loadSingle("testPvp", newPvpVal, null);
+      if (tempRolls.length > 0) {
+        localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY, newPvpVal);
+        reloadMe = true;
+      }
+    }
+    if (reloadMe){
       location.reload();
     }
   }
@@ -625,7 +619,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadWishlist() {
-    await this.wishlistSerivce.init(this.wishlistOverrideUrl);
+    await this.wishlistSerivce.init(this.wishlistOverridePveUrl, this.wishlistOverridePvpUrl);
     if (this.player != null)
       this.wishlistSerivce.processItems(this.player.gear);
     this.filterChanged();
@@ -818,12 +812,15 @@ export class ArmorPerksDialogComponent {
 })
 export class GearUtilitiesDialogComponent {
   parent: GearComponent
-  tempWishlistOverrideUrl: string;
+  tempWishlistPveOverrideUrl: string;
+  tempWishlistPvpOverrideUrl: string;
   WishlistService = WishlistService;
   constructor(
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
+    this.tempWishlistPveOverrideUrl = this.parent.wishlistOverridePveUrl!=null?this.parent.wishlistOverridePveUrl:WishlistService.DEFAULT_PVE_URL;
+    this.tempWishlistPvpOverrideUrl = this.parent.wishlistOverridePvpUrl!=null?this.parent.wishlistOverridePvpUrl:WishlistService.DEFAULT_PVP_URL;
   }
 }
 

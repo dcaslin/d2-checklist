@@ -25,20 +25,23 @@
             godroll perks on non-godroll items</mat-checkbox>
     </div>
     <div>
-        <mat-form-field class="example-full-width">
-            <input matInput name="override-wishlist-url" [(ngModel)]="tempWishlistOverrideUrl" placeholder="Custom wishlist URL">
-        </mat-form-field>
-        <button [disabled]="parent.wishlistOverrideUrl==tempWishlistOverrideUrl" 
-            (click)="parent.updateWishlistOverrideUrl(tempWishlistOverrideUrl)"
+        <mat-form-field class="gist-url-container">
+            <input matInput name="override-wishlist-url" [(ngModel)]="tempWishlistPveOverrideUrl" 
+                placeholder="PvE Wishlist URL">
+        </mat-form-field><br>
+        <mat-form-field class="gist-url-container">
+            <input matInput name="override-wishlist-url" [(ngModel)]="tempWishlistPvpOverrideUrl" 
+                placeholder="PvP Wishlist URL">
+        </mat-form-field><br>
+        <button [disabled]="parent.wishlistOverridePveUrl==tempWishlistPveOverrideUrl && parent.wishlistOverridePvpUrl==tempWishlistPvpOverrideUrl" 
+            (click)="parent.updateWishlistOverrideUrl(tempWishlistPveOverrideUrl, tempWishlistPvpOverrideUrl)"
             mat-button>Apply</button>
-        <button [disabled]="parent.wishlistOverrideUrl==null" 
-            (click)="parent.updateWishlistOverrideUrl(null)"
+        <button [disabled]="parent.wishlistOverridePveUrl==null && parent.wishlistOverridePvpUrl==null" 
+            (click)="parent.updateWishlistOverrideUrl(null, null)"
             mat-button>Reset</button>
         <div class="simple-caption">
-            <div *ngIf="parent.wishlistOverrideUrl!=null">
-              Currently using {{parent.wishlistOverrideUrl}}
-            </div>
-            Default url is {{WishlistService.DEFAULT_URL}}. Page will refresh on successful change.
+            
+            Page will refresh on successful change.
         </div>
     </div>
 </mat-dialog-content>
