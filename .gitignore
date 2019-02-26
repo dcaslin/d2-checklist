@@ -41,5 +41,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+#secrets 
 src/environments/secrets.ts
 src/environments/keys.ts
