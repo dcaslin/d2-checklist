@@ -2035,6 +2035,17 @@ export class ParseService {
         }
         if (plugDesc.hash == 3786277607) //legacy MW armor slot
             return null;
+        if (plugDesc.hash == 3876796314 )  // base radiance
+            return null;
+        if (plugDesc.hash == 2667900317 )  // crucible  mw
+            return null;
+        if (plugDesc.hash == 2946649456 )  // vanguard  mw
+            return null;
+        if (plugDesc.hash == 1961001474 )  // rework weapon
+            return null;            
+        if (plugDesc.hash == 3612467353 )  // rework weapon
+            return null;            
+              
         const ch = plugDesc.plug.plugCategoryHash;
         if (ch == 2973005342 || //shader
             ch == 2947756142) //masterwork tracker
