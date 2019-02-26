@@ -1,6 +1,7 @@
 <div mat-dialog-title style="margin-bottom: 0px">
     {{items[0].name}}
-    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{items[0].typeName}}</span><br><span class="simple-caption-no-margin hide-mobile-inline">{{items[0].desc}}</span>
+    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{items[0].typeName}}</span><br><span
+        class="simple-caption-no-margin hide-mobile-inline">{{items[0].desc}}</span>
 </div>
 <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
 <mat-dialog-content>
@@ -12,8 +13,16 @@
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         {{i.power}}
-                        <i *ngIf="i.godRoll" matTooltip="God roll! Search 'godroll' in the filter to find more of these."
+                        <i *ngIf="i.godRollPve && i.godRollPvp"
+                            matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these."
                             class="fas fa-star accent-text"></i>
+                        <i *ngIf="i.godRollPve && !i.godRollPvp"
+                            matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
+                            class="fas fa-dragon accent-text"></i>
+                        <i *ngIf="i.godRollPvp && !i.godRollPve"
+                            matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
+                            class="fas fa-swords accent-text"></i>
+
                     </td>
                 </ng-container>
 
@@ -23,7 +32,8 @@
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']" [matMenuTriggerFor]="menu">
+                        <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
+                            [matMenuTriggerFor]="menu">
                             <ng-container *ngIf="i.mark==null">
                                 <i class="fas fa-tags"></i>&ensp;
                                 Unmarked
@@ -35,8 +45,7 @@
                         </button>
                         <mat-menu #menu="matMenu">
                             <ng-container *ngFor="let mc of parent.markService.markChoices">
-                                <button *ngIf="mc.value!=i.mark" mat-menu-item 
-                                (click)="parent.mark(mc.value,i)">
+                                <button *ngIf="mc.value!=i.mark" mat-menu-item (click)="parent.mark(mc.value,i)">
                                     <i [class]="mc.iconClass"></i>&ensp;
                                     {{mc.label}}
                                 </button>
@@ -55,11 +64,16 @@
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc" matTooltipClass="preserve-white-space">
+                        <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
+                            matTooltipClass="preserve-white-space">
                             {{i.masterwork.name}} {{i.masterwork.tier}}
-                            
-                            <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate" [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10"></mat-progress-bar>
-                            <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate" [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2"></mat-progress-bar>
+
+                            <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
+                                [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
+                            </mat-progress-bar>
+                            <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
+                                [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
+                            </mat-progress-bar>
                         </div>
                     </td>
                 </ng-container>
@@ -76,18 +90,23 @@
                     </td>
                 </ng-container>
             </tr>
-            <tr *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor || items[0].type==ItemType.Ghost || items[0].type==ItemType.Vehicle">
+            <tr
+                *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor || items[0].type==ItemType.Ghost || items[0].type==ItemType.Vehicle">
                 <th>Sockets</th>
 
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
-                            <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
-                                [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                                <i *ngIf="plug.godRoll && i.godRoll" class="fas fa-star accent-text"></i>
-                                <i *ngIf="plug.godRoll && !i.godRoll && parent.highlightAllPerks" class="fas fa-star"></i>
-                  
+                            <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                                [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
+                                matTooltipClass="preserve-white-space">
+                                <i *ngIf="plug.godRollPve && plug.godRollPvp && (i.godRoll || parent.highlightAllPerks)"
+                                    class="fas fa-star" [class.accent-text]="i.godRoll"></i>
+                                <i *ngIf="plug.godRollPve && !plug.godRollPvp && (i.godRollPve || parent.highlightAllPerks)"
+                                    class="fas fa-dragon" [class.accent-text]="i.godRoll"></i>
+                                <i *ngIf="plug.godRollPvp && !plug.godRollPve && (i.godRollPvp || parent.highlightAllPerks)"
+                                    class="fas fa-swords" [class.accent-text]="i.godRoll"></i>
                                 {{plug.name}}
                                 <ng-container *ngIf="!isLastPlug"><br></ng-container>
                             </span>
