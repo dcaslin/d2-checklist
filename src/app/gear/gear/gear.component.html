@@ -192,10 +192,10 @@
                     matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these."
                     class="fas fa-star accent-text"></i>
                   <i *ngIf="i.godRollPve && !i.godRollPvp"
-                    matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
+                    matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
                     class="fas fa-dragon accent-text"></i>
                   <i *ngIf="i.godRollPvp && !i.godRollPve"
-                    matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
+                    matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
                     class="fas fa-swords accent-text"></i>
 
                   <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
