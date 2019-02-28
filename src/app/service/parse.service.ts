@@ -436,12 +436,14 @@ export class ParseService {
         const jDesc = this.destinyCacheService.cache.ActivityModifier[hash];
         let name: string = null;
         let desc: string = null;
+        let icon: string = null;
         if (jDesc != null) {
             name = jDesc.displayProperties.name;
             desc = jDesc.displayProperties.description;
+            icon = jDesc.displayProperties.icon;
         }
         if (name != null && name !== '' && name !== 'Classified') {
-            return new NameDesc(name, desc);
+            return new NameDesc(name, desc, icon);
         }
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
