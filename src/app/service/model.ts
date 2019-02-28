@@ -750,10 +750,12 @@ export class AggHistory {
 export class NameDesc {
     name: string;
     desc: string;
+    icon: string;
 
-    constructor(name: string, desc: string) {
+    constructor(name: string, desc: string, icon?: string) {
         this.name = name;
         this.desc = desc;
+        this.icon = icon;
     }
 }
 
