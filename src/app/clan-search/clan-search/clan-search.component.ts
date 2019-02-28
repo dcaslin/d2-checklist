@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, ClanRow, ClanInfo } from '../../service/model';
+import { ClanInfo } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 

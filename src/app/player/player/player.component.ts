@@ -7,7 +7,7 @@ import { Observable, of as observableOf, fromEvent as observableFromEvent, combi
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode } from '../../service/model';
+import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode, NameDesc } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
@@ -67,6 +67,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
   recordDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
   collectionDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
+  burns: NameDesc[] = [];
 
   constructor(public bungieService: BungieService,
     storageService: StorageService,
@@ -205,6 +206,15 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public historyPlayer(p: Player) {
     const c: Character = p.characters[0];
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
+  }
+
+  public showBurns(){
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    //dc.width = '500px';
+    dc.data = this.burns;
+    const dialogRef = this.dialog.open(BurnDialogComponent, dc);
   }
 
   public getRaidLink(p: Player) {
@@ -449,6 +459,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             // 'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
+        this.bungieService.loadClans(x.profile.userInfo);
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
@@ -489,7 +500,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.performSearch(true);
   }
 
+  async setBurns(){
+    this.burns = await this.bungieService.getBurns();
+  }
+
   ngOnInit() {
+    this.setBurns();
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
@@ -577,4 +593,15 @@ export class QuestDialogComponent {
     public dialogRef: MatDialogRef<QuestDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
+}
+
+@Component({
+  selector: 'anms-burn-dialog',
+  templateUrl: './burn-dialog.component.html',
+  styleUrls: ['./burn-dialog.component.scss']
+})
+export class BurnDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<BurnDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 }

@@ -48,9 +48,6 @@ export class MarkService implements OnDestroy {
             });
     }
 
-    //TODO marks feed, method for marking things dirty, save call
-    // integrate this into the app
-
     private async load(platform: number, memberId: string): Promise<Marks> {
         const requestUrl = 'https://www.destinychecklist.net/api/mark/' + platform + '/' + memberId;
         return this.httpClient.get<Marks>(requestUrl).toPromise();

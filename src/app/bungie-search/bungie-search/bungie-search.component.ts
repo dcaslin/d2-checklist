@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { BungieMember, BungieMembership, BungieMemberPlatform, SearchResult, Player, ClanRow } from '../../service/model';
+import { BungieMember, BungieMemberPlatform, SearchResult, Player, ClanRow } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
@@ -16,7 +16,6 @@ import { StorageService } from '../../service/storage.service';
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
   animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-
   name: string;
   accounts: BungieMember[] = null;
 
@@ -47,14 +46,11 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   }
 
   private loadClan(member: BungieMember) {
-
     this.bungieService.getClans(member.id).then((x: ClanRow[]) => {
       if (x.length === 0) {
         member.noClan = true;
       } else {
         member.clans = x;
-        // if (x.length==1)
-        //   this.router.navigate(["clan", x[0].id]);
       }
     });
   }

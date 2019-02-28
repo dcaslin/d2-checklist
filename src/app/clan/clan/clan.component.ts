@@ -44,10 +44,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.sortData();
   }
 
-  public async navigateBnetMember(target: BungieGroupMember) {
-    const match: BungieMember = await this.bungieService.getBungieMemberById(target.bungieNetUserInfo.membershipId);
-    if (match == null) { return; }
-    this.router.navigate(['/', match.bnet.platform.type, match.bnet.name]);
+  public async navigateBnetMember(target: BungieGroupMember) {    
+    const bnetName = await this.bungieService.getFullBNetName(target.bungieNetUserInfo.membershipId);
+    if (bnetName!=null) this.router.navigate(['/', 4, bnetName]);    
     return;
   }
 

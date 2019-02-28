@@ -173,8 +173,9 @@ export class AppComponent implements OnInit, OnDestroy {
   async myProfile() {
     if (this.signedOnUser != null) {
       if (this.signedOnUser.userInfo.membershipType === 4) {
-        const match: BungieMember = await this.bungieService.getBungieMemberById(this.signedOnUser.membership.bungieId);
-        this.router.navigate(['/', match.bnet.platform.type, match.bnet.name]);
+        const bnetName = await this.bungieService.getFullBNetName(this.signedOnUser.membership.bungieId);
+        if (bnetName!=null)
+          this.router.navigate(['/', 4, bnetName]);
       } else {
         this.router.navigate([this.signedOnUser.userInfo.membershipType, this.signedOnUser.userInfo.displayName]);
       }

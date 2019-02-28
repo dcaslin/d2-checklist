@@ -41,9 +41,8 @@ export class FriendsComponent extends ChildComponent implements OnInit {
   }
 
   public async navigateBnetMember(bungieMembershipId: string) {
-    const match: BungieMember = await this.bungieService.getBungieMemberById(bungieMembershipId);
-    if (match == null) { return; }
-    this.router.navigate(['/', match.bnet.platform.type, match.bnet.name]);
+    const bnetName = await this.bungieService.getFullBNetName(bungieMembershipId);
+    if (bnetName!=null) this.router.navigate(['/', 4, bnetName]);        
     return;
   }
 

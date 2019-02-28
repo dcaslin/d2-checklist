@@ -2,12 +2,9 @@
 import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { Player, Character, Platform, ActivityMode, Const, Activity, PGCR, UserInfo,
-  PGCREntry, BungieNetUserInfo, BungieMember } from '../../service/model';
+import { Player, ActivityMode, Const, Activity, PGCR, UserInfo, PGCREntry, BungieNetUserInfo, BungieMember } from '../../service/model';
 import { MatPaginator, MatSort } from '@angular/material';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
@@ -112,7 +109,9 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
         user: e.user,
         bungieNetUserInfo: e.bungieNetUserInfo,
         instances: []
-      }
+      };
+      // async store clans
+      this.bungieService.loadClans(e.user);
       this.friends.push(this.friendsDict[e.user.membershipId]);
     }
     this.friendsDict[e.user.membershipId].instances.push(p);
@@ -132,9 +131,8 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   }
 
   public async navigateBnetMember(target: BungieNetUserInfo) {
-    const match: BungieMember = await this.bungieService.getBungieMemberById(target.membershipId);
-    if (match == null) { return; }
-    this.router.navigate(['/', match.bnet.platform.type, match.bnet.name]);
+    const bnetName = await this.bungieService.getFullBNetName(target.membershipId);
+    if (bnetName!=null) this.router.navigate(['/', 4, bnetName]);
     return;
   }
 
