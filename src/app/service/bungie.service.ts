@@ -4,18 +4,12 @@ import { takeUntil, first } from 'rxjs/operators';
  * Created by Dave on 12/21/2016.
  */
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, Subject, BehaviorSubject, ReplaySubject } from 'rxjs';
-
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import {
-    Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember,
-    BungieGroupMember, Activity, MileStoneName, Nightfall, LeaderBoardList, ClanRow, MilestoneStatus,
-    PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault
-} from './model';
-
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc } from './model';
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { BucketService, Bucket } from './bucket.service';
@@ -104,11 +98,16 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public async getBungieMemberById(id: string): Promise<BungieMember> {
+    // this is one of the only way to get a fully suffixed BNET user id
+    public async getFullBNetName(bungieId: string): Promise<string> {
         try {
             const opt = await this.buildReqOptions();
-            const resp = await this.makeReq('User/GetBungieNetUserById/' + id + '/');
-            return this.parseService.parseBungieMember(resp);
+            const resp = await this.makeReq('User/GetBungieNetUserById/' + bungieId + '/');
+            const m = this.parseService.parseBungieMember(resp);
+            if (m.bnet!=null){
+                return m.bnet.name;
+            }
+            return null;
         } catch (err) {
             this.handleError(err);
             return null;
@@ -162,33 +161,13 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    // public async updateRaidHistory(x: Player, ignoreErrors?: boolean): Promise<void[]> {
-    //     const msNames: MileStoneName[] = x.milestoneList;
-    //     const chars: Character[] = x.characters;
-    //     const self: BungieService = this;
-    //     const promises: Promise<void>[] = [];
-    //     chars.forEach(c => {
-    //         const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId,
-    //             4, 99, ignoreErrors).then((hist: Activity[]) => {
-    //                 self.parseService.parseRaidHistory(msNames, c, hist);
-    //                 x.raidChecked = true;
-    //             });
-    //         promises.push(p);
-    //     });
-    //     return Promise.all(promises);
-    // }
-
-    // public updateNfHistory(msNames: MileStoneName[], chars: Character[]): Promise<void[]> {
-    //     const self: BungieService = this;
-    //     const promises: Promise<void>[] = [];
-    //     chars.forEach(c => {
-    //         const p = this.getActivityHistory(c.membershipType, c.membershipId, c.characterId, 47, 99).then((hist: Activity[]) => {
-    //             self.parseService.parsePrestigeNfHistory(msNames, c, hist);
-    //         });
-    //         promises.push(p);
-    //     });
-    //     return Promise.all(promises);
-    // }
+    public async loadClans(userInfo: UserInfo): Promise<void> {
+        if (userInfo.bungieInfo == null) {
+            const bungieMember: BungieMembership = await this.getBungieMembershipsById(userInfo.membershipId, userInfo.membershipType);
+            await this.setClans(bungieMember);
+            userInfo.bungieInfo = bungieMember;
+        }
+    }
 
     public async getClanInfo(clanId: string): Promise<ClanInfo> {
         try {
@@ -377,7 +356,7 @@ export class BungieService implements OnDestroy {
     public async getPGCR(instanceId: string): Promise<PGCR> {
         try {
             const opt = await this.buildReqOptions();
-            const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/'+instanceId + '/';
+            const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/';
             const hResp = await this.httpClient.get<any>(url, opt).toPromise();
             const resp = this.parseBungieResponse(hResp);
             return this.parseService.parsePGCR(resp);
@@ -412,6 +391,17 @@ export class BungieService implements OnDestroy {
             this.handleError(err);
             return [];
         }
+    }
+
+    public async getBurns(): Promise<NameDesc[]> {
+        const ms = await this.getPublicMilestones();
+        
+        for (let m of ms) {
+            if ("3172444947" === m.hash) {
+                return m.aggActivities[0].activity.modifiers;
+            }
+        }
+        return null;
     }
 
     public async getActivityHistoryPage(membershipType: number, membershipId: string,
@@ -519,9 +509,11 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async getBungieMembershipsById(bungieId: string, type: number): Promise<BungieMembership> {
+    // this spans xbl 1, psn 2, bnet 4 and "regular" Bungie ids (254?) or "ALL"
+    // after testing it honestly looks like membershipType, as long as its valid, is ignored
+    public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
-            const resp = await this.makeReq('User/GetMembershipsById/' + bungieId + '/' + type + '/');
+            const resp = await this.makeReq('User/GetMembershipsById/' + membershipId + '/' + membershipType + '/');
             return this.parseService.parseBungieMembership(resp);
         } catch (err) {
             this.handleError(err);

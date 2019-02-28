@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
-import { PlayerComponent, QuestDialogComponent } from './player/player.component';
+import { PlayerComponent, QuestDialogComponent, BurnDialogComponent } from './player/player.component';
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, BurnDialogComponent],
   entryComponents: [
-    QuestDialogComponent
+    QuestDialogComponent, BurnDialogComponent
   ],
 })
 export class PlayerModule { }

@@ -71,11 +71,18 @@
                   <a *ngIf="friend.user.membershipType!=4" [routerLink]="['/'+friend.user.membershipType, friend.user.displayName]"
                     color="accent">{{friend.user.displayName}}</a>
                   <a *ngIf="friend.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(friend.bungieNetUserInfo)">
-                    {{friend.user.displayName}}
+                    {{friend.user.displayName}}                    
                   </a>
+                    
                   <a style="margin-left:0.5em" [ngClass]="favorites[storageService.getFavKey(friend.user)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(friend.user, friend.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
+                  <div *ngIf="friend.user.bungieInfo!=null && friend.user.bungieInfo.clans!=null">
+                    <div class="clans" *ngFor="let clan of friend.user.bungieInfo.clans">  
+                      Clan: <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
+                    </div>
+                    
+                  </div>
                 </td>
                 <td>{{friend.instances.length}}</td>
                 <td class="d-none d-lg-table-cell">

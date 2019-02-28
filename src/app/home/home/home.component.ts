@@ -187,10 +187,15 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     return 100;
   }
 
+  async setBurns(){
+    this.burns = await this.bungieService.getBurns();
+  }
+
   ngOnInit() {
     this.bungieService.getPublicMilestones().then(ms => {
       this.publicMilestones = ms;
       if (ms != null) {
+        this.setBurns();
         for (let m of ms) {
           //daily heroic
           if ("3082135827" === m.hash) {

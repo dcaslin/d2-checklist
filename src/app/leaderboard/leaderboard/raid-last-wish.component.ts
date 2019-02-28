@@ -72,7 +72,7 @@ export class LastWishDao {
       end: row.completedAt,
       pgcr: row.instanceId,
       membershipType: row.membershipType,
-      duration: row.duration, // TODO this is broken
+      duration: row.duration,
       fireTeam: fireTeam,
       rank: actualRank
     }

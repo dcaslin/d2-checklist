@@ -253,17 +253,47 @@ export interface SearchResult {
     displayName: string;
 }
 
-export class SelectedUser {
-    userInfo: UserInfo;
-    selectedUserCurrencies: Currency[];
-    membership: BungieMembership;
-    promptForPlatform = false;
-}
 
 export class BungieMembership {
     bungieId: string;
     clans: ClanRow[];
     destinyMemberships: UserInfo[];
+
+    public getBnetInfo(): UserInfo{
+        if (this.destinyMemberships==null) return null;
+        for (const u of this.destinyMemberships){
+            if (u.membershipType==4){
+                return u;
+            }
+        }
+        return null;
+    }
+}
+
+export class BungieMember {
+    name: string;
+    id: string;
+    noClan = false;
+    clans: ClanRow[] = null;
+    xbl: BungieMemberPlatform;
+    psn: BungieMemberPlatform;
+    bnet: BungieMemberPlatform;
+
+    constructor(name: string, id: string, xbl: BungieMemberPlatform, psn: BungieMemberPlatform, bnet: BungieMemberPlatform) {
+        this.id = id;
+        this.name = name;
+        this.xbl = xbl;
+        this.psn = psn;
+        this.bnet = bnet;
+    }
+}
+
+
+export class SelectedUser {
+    userInfo: UserInfo;
+    selectedUserCurrencies: Currency[];
+    membership: BungieMembership;
+    promptForPlatform = false;
 }
 
 export class BungieGroupMember {
@@ -299,6 +329,8 @@ export interface UserInfo {
     displayName: string;
     icon: string;
     bungieMembershipId?: string;
+    bungieInfo?: BungieMembership;
+
 }
 
 export class LeaderBoardList {
@@ -390,30 +422,30 @@ export interface CharChecklist {
 }
 
 export class Player {
-    profile: Profile;
-    superprivate: boolean;
-    hasWellRested: boolean;
-    currentActivity: CurrentActivity;
-    characters: Character[];
-    milestoneList: MileStoneName[];
-    currencies: Currency[];
-    bounties: InventoryItem[];
-    quests: InventoryItem[];
-    rankups: Rankup[];
-    checklists: Checklist[];
-    charChecklists: CharChecklist[];
-    triumphScore: number;
-    records: TriumphNode[];
-    collections: TriumphNode[];
-    lowHangingTriumphs:TriumphRecordNode[];
-    seals:Seal[];
-    searchableTriumphs: TriumphRecordNode[];
-    gear: InventoryItem[];
-    vault: Target;
-    shared: Target;
+    readonly profile: Profile;
+    readonly superprivate: boolean;
+    readonly hasWellRested: boolean;
+    readonly currentActivity: CurrentActivity;
+    readonly characters: Character[];
+    readonly milestoneList: MileStoneName[];
+    readonly currencies: Currency[];
+    readonly bounties: InventoryItem[];
+    readonly quests: InventoryItem[];
+    readonly rankups: Rankup[];
+    readonly checklists: Checklist[];
+    readonly charChecklists: CharChecklist[];
+    readonly triumphScore: number;
+    readonly records: TriumphNode[];
+    readonly collections: TriumphNode[];
+    readonly lowHangingTriumphs:TriumphRecordNode[];
+    readonly seals:Seal[];
+    readonly searchableTriumphs: TriumphRecordNode[];
+    readonly gear: InventoryItem[];
+    readonly vault: Target;
+    readonly shared: Target;
+    readonly raidChecked = false;
+    readonly title;
     maxLL = 0;
-    raidChecked = false;
-    title;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
@@ -877,24 +909,6 @@ export class ClanRow {
     constructor(name: string, id: string) {
         this.id = id;
         this.name = name;
-    }
-}
-
-export class BungieMember {
-    name: string;
-    id: string;
-    noClan = false;
-    clans: ClanRow[] = null;
-    xbl: BungieMemberPlatform;
-    psn: BungieMemberPlatform;
-    bnet: BungieMemberPlatform;
-
-    constructor(name: string, id: string, xbl: BungieMemberPlatform, psn: BungieMemberPlatform, bnet: BungieMemberPlatform) {
-        this.id = id;
-        this.name = name;
-        this.xbl = xbl;
-        this.psn = psn;
-        this.bnet = bnet;
     }
 }
 

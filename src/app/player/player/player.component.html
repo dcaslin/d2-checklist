@@ -53,6 +53,14 @@
                 class="far fa-heart"></i></a>
           </h1>
           <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
+          <ng-container *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
+            Clan: 
+            <ng-container class="clans" *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; last as isLast">  
+              <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
+              <ng-container *ngIf="!isLast">, </ng-container>
+            </ng-container>
+          </ng-container>
+          
           <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
             <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
@@ -65,16 +73,20 @@
           </div>
 
           <div class="button-row">
+            <button mat-button (click)="showBurns()">
+              <i class="menu-icon fa-icon fas fa-burn"></i>
+              <span class="d-none d-md-inline">Today's Modifiers</span>
+            </button>
             <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
-              <mat-icon>history</mat-icon>
+              <i class="menu-icon fa-icon fas fa-history"></i>
               <span class="d-none d-md-inline">Activity History</span>
             </a>
             <a mat-button [routerLink]="['/recent-players', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
-              <mat-icon>group_add</mat-icon>
+              <i class="menu-icon fa-icon fas fa-user-friends"></i>
               <span class="d-none d-md-inline">Recent Teammates</span>
             </a>
             <button mat-button [matMenuTriggerFor]="menu">
-              <mat-icon>more_vert</mat-icon>
+                <i class="menu-icon fa-icon fas fa-ellipsis-v"></i>
               <span class="d-none d-md-inline">External Links</span>
             </button>
             <mat-menu #menu="matMenu">

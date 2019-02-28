@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>Today's Modifiers</h2>
+<mat-dialog-content>
+  <dl>
+    <ng-container *ngFor="let b of data">
+      <dt>{{b.name}}</dt>
+      <dd>{{b.desc}}</dd>
+    </ng-container>
+  </dl>
+</mat-dialog-content>
