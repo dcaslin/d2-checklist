@@ -292,10 +292,15 @@ a:link {
 }
 
 .gist-url-container {
+    max-width: 500px;
     display: flex;
     flex-direction: column;
 }
 
 .gist-url-container > * {
     width: 100%;
+}
+
+.bulk-operation-notes{
+    max-width: 500px;
 }

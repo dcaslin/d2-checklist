@@ -24,14 +24,6 @@
           <span class="d-none d-md-inline"> {{o.name}}</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
-
-      <span style="margin-left: 15px" [hidden]="selectedUser==null">
-
-        <button mat-button (click)="showArmorPerks()"><i class="far fa-stars"></i>
-          <span class="hide-mobile-inline">&ensp;Armor Perks</span></button>
-        <button mat-button (click)="showUtilities()"><i class="far fa-tools"></i>
-          <span class="hide-mobile-inline">&ensp;Utilities</span></button>
-      </span>
       <ng-container *ngIf="loading==false && selectedUser==null">
         <h2>Bungie Authentication Required</h2>
         <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
@@ -94,18 +86,51 @@
           <anms-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices"
             (change)="filterChanged()">
           </anms-gear-toggle>
-
         </div>
-        <button mat-button [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i>
-          <span class="hide-mobile-inline">&ensp;Show</span></button>
-        <mat-menu #menuShow="matMenu">
-          <button mat-menu-item (click)="show(20)"><i *ngIf="size==20" class="fas fa-check"></i> 20 rows</button>
-          <button mat-menu-item (click)="show(50)"><i *ngIf="size==50" class="fas fa-check"></i> 50 rows</button>
-          <button mat-menu-item (click)="show(100)"><i *ngIf="size==100" class="fas fa-check"></i> 100 rows</button>
-          <button mat-menu-item (click)="show(-1)"><i *ngIf="size==-1" class="fas fa-check"></i> All rows</button>
+        
+        <a mat-button (click)="load()">
+          <i class="fas fa-sync-alt"></i>
+        </a>
+        <button mat-button [matMenuTriggerFor]="menuMoreOptions">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <mat-menu #menuMoreOptions="matMenu" xPosition="before">
+            <button mat-menu-item [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i>&ensp;
+              Max Rows to Show
+            </button>
+            <button mat-menu-item [matMenuTriggerFor]="menuBulk">
+              <i class="fas fa-forklift"></i>&ensp;Bulk Operations
+            </button>
+            <button mat-menu-item (click)="showUtilities()">
+                <i class="fas fa-cogs"></i>&ensp;Settings
+            </button>
+            <button mat-menu-item (click)="showArmorPerks()">
+                <i class="fas fa-helmet-battle"></i>&ensp;Show Armor Perks
+            </button>
+            <button mat-menu-item (click)="copyAllVisibleToClipboard()">
+                <i class="fas fa-copy"></i>&ensp;Copy current rows for Reddit
+            </button>
         </mat-menu>
-        <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i>
-          <span class="hide-mobile-inline">&ensp;Refresh</span></a>
+        <mat-menu #menuShow="matMenu">
+            <button mat-menu-item (click)="show(20)"><i *ngIf="size==20" class="fas fa-check"></i> 20 rows</button>
+            <button mat-menu-item (click)="show(50)"><i *ngIf="size==50" class="fas fa-check"></i> 50 rows</button>
+            <button mat-menu-item (click)="show(100)"><i *ngIf="size==100" class="fas fa-check"></i> 100 rows</button>
+            <button mat-menu-item (click)="show(-1)"><i *ngIf="size==-1" class="fas fa-check"></i> All rows</button>
+        </mat-menu>
+        <mat-menu #menuBulk="matMenu">
+            <button mat-menu-item (click)="syncLocks()">
+                <i class="fas fa-lock-alt"></i>&ensp;Sync Locks
+            </button>
+            <button mat-menu-item (click)="shardMode()">
+                <i class="fas fa-trash"></i>&ensp;Shard Mode
+            </button>
+            <button mat-menu-item (click)="upgradeMode()">
+                <i class="fas fa-level-up"></i>&ensp;Upgrade Mode
+            </button>
+            <button mat-menu-item (click)="showBulkOperationHelp()">
+                <i class="fas fa-question-circle"></i>&ensp;Help
+            </button>
+        </mat-menu>
         <a mat-button *ngIf="markService.dirty" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
         <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
           <span class="fa-stack">
@@ -113,7 +138,6 @@
             <i class="fas fa-ban fa-stack-2x warn-text"></i>
           </span>
         </a>
-
         <span class="simple-caption">{{gearToShow.length}} / {{total}}</span>
       </div>
       <ng-container *ngIf="selectedUser!=null">
@@ -189,7 +213,7 @@
                 </td>
                 <td class="limited-gear-width">
                   <i *ngIf="i.godRollPve && i.godRollPvp"
-                    matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these."
+                    matTooltip="PVP &  PVE God roll! Search 'godroll' in the filter to find more of these."
                     class="fas fa-star accent-text"></i>
                   <i *ngIf="i.godRollPve && !i.godRollPvp"
                     matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
@@ -293,9 +317,12 @@
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
 
-                      <i *ngIf="plug.godRollPve && plug.godRollPvp && (i.godRoll || highlightAllPerks)" class="fas fa-star" [class.accent-text]="i.godRoll"></i>
-                      <i *ngIf="plug.godRollPve && !plug.godRollPvp && (i.godRollPve || highlightAllPerks)" class="fas fa-dragon" [class.accent-text]="i.godRoll"></i>
-                      <i *ngIf="plug.godRollPvp && !plug.godRollPve && (i.godRollPvp || highlightAllPerks)" class="fas fa-swords" [class.accent-text]="i.godRoll"></i>
+                      <i *ngIf="plug.godRollPve && plug.godRollPvp && (i.godRoll || highlightAllPerks)"
+                        class="fas fa-star" [class.accent-text]="i.godRoll"></i>
+                      <i *ngIf="plug.godRollPve && !plug.godRollPvp && (i.godRollPve || highlightAllPerks)"
+                        class="fas fa-dragon" [class.accent-text]="i.godRoll"></i>
+                      <i *ngIf="plug.godRollPvp && !plug.godRollPve && (i.godRollPvp || highlightAllPerks)"
+                        class="fas fa-swords" [class.accent-text]="i.godRoll"></i>
                       {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>

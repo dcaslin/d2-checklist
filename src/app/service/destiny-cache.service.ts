@@ -27,7 +27,6 @@ export class DestinyCacheService {
         zip.loadAsync(data).then(function (zip2) {
           zip2.file('destiny2.json').async('string').then(function (data2) {
               self.cache = JSON.parse(data2);
-              console.log('Init cache load');
               resolve(true);
               return;
             },

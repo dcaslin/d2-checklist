@@ -177,7 +177,6 @@ export class AuthService {
         try {
             const sToken = localStorage.getItem('authorization');
             if (sToken != null) {
-                console.log('Loading token from local storage');
                 return JSON.parse(sToken);
             }
         } catch (err) {
