@@ -98,16 +98,24 @@ dl{
   z-index: 1;
 }
 
+
+.searchRow{
+  display: inline-block;
+  margin-left: 20px;
+  text-align: left;
+}
+
 .searchField{
   margin-bottom: 10px;
 }
 
 .searchPlatform{
-  min-width: 235px;
+  width: 75px;
   margin-right: 10px;
 }
 
 .searchGt{
+  width: 125px;
   margin-right: 10px;
 }
 

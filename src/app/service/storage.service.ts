@@ -69,7 +69,6 @@ export class StorageService {
   }
 
   static load() {
-    console.log('Loading local storage');
     return Object.keys(localStorage)
       .reduce((state: any, storageKey) => {
         if (storageKey.includes(APP_PREFIX)) {

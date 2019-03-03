@@ -144,28 +144,48 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   copyToClipboard(i: InventoryItem) {
-    let markup = "**" + i.name + "**\n\n";
-    for (const socket of i.sockets) {
-      markup += "\n\n* ";
-      for (const plug of socket.plugs) {
-        markup += plug.name;
-        if (plug !== socket.plugs[socket.plugs.length - 1]) {
-          markup += " / "
-        }
-      }
-    }
-    markup += "\n\n";
-    if (i.masterwork != null) {
-      markup += "\n\n* *Masterwork: " + i.masterwork.name + " " + i.masterwork.tier + "*";
-    }
-    if (i.mod != null) {
-      markup += "\n\n* *Mod: " + i.mod.name + "*";
-    }
-    console.log(markup);
-    this.clipboardService.copyFromContent(markup);
+    const markdown = this.toMarkDown(i);
+    this.clipboardService.copyFromContent(markdown);
     this.notificationService.success("Copied " + i.name + " to clipboard");
   }
 
+  copyAllVisibleToClipboard(){
+    let markdown = "";
+    let cntr = 0;
+    for (const i of this.gearToShow){
+      cntr++;
+      markdown += this.toMarkDown(i, cntr);
+      markdown += "\n\n";
+    }
+    this.clipboardService.copyFromContent(markdown);
+    this.notificationService.success("Copied " + this.gearToShow.length + " items to clipboard");
+  }
+
+  private toMarkDown(i: InventoryItem, cntr?: number): string {
+    let markdown = "";
+    if (cntr==null)
+      markdown = "**" + i.name + "**\n\n";
+    else
+    markdown = "**" +cntr+") "+ i.name + "**\n\n";
+
+    for (const socket of i.sockets) {
+      markdown += "\n\n* ";
+      for (const plug of socket.plugs) {
+        markdown += plug.name;
+        if (plug !== socket.plugs[socket.plugs.length - 1]) {
+          markdown += " / "
+        }
+      }
+    }
+    markdown += "\n\n";
+    if (i.masterwork != null) {
+      markdown += "\n\n* *Masterwork: " + i.masterwork.name + " " + i.masterwork.tier + "*";
+    }
+    if (i.mod != null) {
+      markdown += "\n\n* *Mod: " + i.mod.name + "*";
+    }
+    return markdown;
+  }
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public markService: MarkService,
@@ -527,7 +547,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.gearToShow = tempGear.slice(0);
 
     this.total = tempGear.length;
-    console.log("Gear to show current length: " + this.gearToShow.length);
   }
 
   public async shardMode() {
@@ -681,6 +700,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     const dialogRef = this.dialog.open(GearHelpDialogComponent, dc);
   }
 
+  public showBulkOperationHelp(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+    };
+    const dialogRef = this.dialog.open(BulkOperationsHelpDialogComponent, dc);
+  }
+
   ngOnInit() {
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
@@ -821,6 +848,18 @@ export class GearUtilitiesDialogComponent {
     this.parent = data.parent;
     this.tempWishlistPveOverrideUrl = this.parent.wishlistOverridePveUrl!=null?this.parent.wishlistOverridePveUrl:WishlistService.DEFAULT_PVE_URL;
     this.tempWishlistPvpOverrideUrl = this.parent.wishlistOverridePvpUrl!=null?this.parent.wishlistOverridePvpUrl:WishlistService.DEFAULT_PVP_URL;
+  }
+}
+
+@Component({
+  selector: 'anms-bulk-operations-help-dialog',
+  templateUrl: './bulk-operations-help-dialog.component.html',
+  styleUrls: ['./gear.component.scss']
+})
+export class BulkOperationsHelpDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<BulkOperationsHelpDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) {
   }
 }
 

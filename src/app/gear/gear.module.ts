@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
 import { ClipboardModule } from 'ngx-clipboard';
-import { GearComponent, GearDetailsDialogComponent, GearHelpDialogComponent, GearUtilitiesDialogComponent, ArmorPerksDialogComponent } from './gear/gear.component';
+import { GearComponent, GearDetailsDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent, ArmorPerksDialogComponent } from './gear/gear.component';
 import { GearToggleComponent} from './gear/gear-toggle.component';
 
 @NgModule({
   imports: [
     SharedModule, ClipboardModule
   ],
-  declarations: [GearComponent, GearToggleComponent, GearDetailsDialogComponent, GearHelpDialogComponent, GearUtilitiesDialogComponent, ArmorPerksDialogComponent],
+  declarations: [GearComponent, GearToggleComponent, GearDetailsDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent, ArmorPerksDialogComponent],
   entryComponents: [
-    GearDetailsDialogComponent, GearHelpDialogComponent, GearUtilitiesDialogComponent, ArmorPerksDialogComponent
+    GearDetailsDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent, ArmorPerksDialogComponent
   ],
 })
 export class GearModule  { }
