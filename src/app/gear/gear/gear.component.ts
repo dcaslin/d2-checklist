@@ -102,7 +102,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   player: Player = null;
   visibleFilterText = null;
   @ViewChild('filter') filter: ElementRef;
-  filterText: string = null;
+  filterTags: string[] = [];
   options = [
     { name: 'Weapons', type: ItemType.Weapon },
     { name: 'Armor', type: ItemType.Armor },
@@ -135,7 +135,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   resetFilters(): void {
     this.filter.nativeElement.value = "";
     this.visibleFilterText = null;
-    this.filterText = null;
+    this.filterTags = [];
     for (const toggle of this.filters) {
       toggle.selectAll(true);
     }
@@ -308,18 +308,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterItem(i: InventoryItem): boolean {
-    if (i.searchText.indexOf(this.filterText) >= 0) return true;
-    if (i.notes != null && i.notes.toLowerCase().indexOf(this.filterText) >= 0) return true;
-    return false;
-  }
-
-  private appendFilterNote(key, val) {
-    this.filterNotes.push(key + " <" + this.filterText + ">");
+    for (const f of this.filterTags){
+      if (i.searchText.indexOf(f)<0) return false;
+      if (i.notes != null && i.notes.toLowerCase().indexOf(f) < 0) return false;
+    }
+    return true;
   }
 
   private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
-    if (this.filterText != null && this.filterText.trim().length > 0) {
-      this.filterNotes.push("wildcard = " + this.filterText);
+    if (this.filterTags.length>0) {
+      for (const f of this.filterTags){
+        this.filterNotes.push("wildcard = " + f);
+      }
       return gear.filter(this.filterItem, this);
     }
     else {
@@ -328,7 +328,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   checkFilterDirty() {
-    if (this.filterText != null && this.filterText.trim().length > 0) return true;
+    if (this.filterTags.length>0) return true;
     for (const toggle of this.filters) {
       if (!toggle.isAllSelected) return true;
     }
@@ -747,9 +747,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       .subscribe(() => {
         const val: string = this.filter.nativeElement.value;
         if (val == null || val.trim().length === 0) {
-          this.filterText = null;
+          this.filterTags = [];
         } else {
-          this.filterText = val.toLowerCase();
+          const rawFilter = val.toLowerCase();
+          this.filterTags = rawFilter.split(" and ");
         }
         this.filterChanged();
       });
