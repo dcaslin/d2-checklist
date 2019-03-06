@@ -46,6 +46,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   public triumphFilterText: string = null;
   public filteredTriumphs: TriumphRecordNode[] = [];
+  public trackedTriumphs: TriumphRecordNode[] = [];
 
   public const: Const = Const;
   platforms: Platform[];
@@ -57,6 +58,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   hideComplete = false;
   showZeroPtTriumphs = false;
   showInvisTriumphs = false;
+  aTrackedTriumphIds = [];
+  dTrackedTriumphIds = {};
   selectedTreeNodeHash: string = null;
   sort = 'rewardsDesc';
 
@@ -83,8 +86,26 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
     this.hideComplete = localStorage.getItem('hide-completed') === 'true';
     this.showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
-    this.showInvisTriumphs = localStorage.getItem('show-invis-triumph') === 'true';
+    this.showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
+    this.loadTrackedTriumphIds();
+  }
 
+  private loadTrackedTriumphIds(){
+    let sTrackedIds = localStorage.getItem('tracked-triumph-ids');
+    if (sTrackedIds!=null){
+      this.aTrackedTriumphIds = JSON.parse(sTrackedIds);
+    }
+    else{
+      this.aTrackedTriumphIds = [];
+    }
+    this.dTrackedTriumphIds = {};
+    for (const t of this.aTrackedTriumphIds){
+      this.dTrackedTriumphIds[t] = true;
+    }
+  }
+
+  private saveTrackedTriumphIds(){
+    localStorage.setItem('tracked-triumph-ids', JSON.stringify(this.aTrackedTriumphIds));
   }
 
   transformer2 = (node: TriumphNode, level: number) => {
@@ -168,6 +189,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
       this.recordDatasource.data = this.player.records;
       this.filterTriumphs();
+      this.setTrackedTriumphs();
       if (this.selectedTab === 'triumphs') {
         if (this.selectedTreeNodeHash != null) {
           for (const n of this.triumphTreeControl.dataNodes) {
@@ -498,6 +520,33 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public showInvisTriumphsChange() {
     localStorage.setItem('show-invis-triumphs', '' + this.showInvisTriumphs);
     this.performSearch(true);
+  }
+
+  public trackTriumph(n: TriumphRecordNode){
+    this.aTrackedTriumphIds.push(n.hash);
+    this.saveTrackedTriumphIds();
+    this.loadTrackedTriumphIds();
+    this.setTrackedTriumphs();
+  }
+
+  public untrackTriumph(n: TriumphRecordNode){
+    const index = this.aTrackedTriumphIds.indexOf(n.hash);
+    this.aTrackedTriumphIds.splice(index, 1);
+    this.saveTrackedTriumphIds();
+    this.loadTrackedTriumphIds();
+    this.setTrackedTriumphs();
+  }
+
+  private setTrackedTriumphs(){
+    const tempTriumphs = [];
+    if (this.aTrackedTriumphIds.length>0 && this.player!=null && this.player.searchableTriumphs!=null){
+      for (const t of this.player.searchableTriumphs) {
+        if (this.dTrackedTriumphIds[t.hash]==true){
+          tempTriumphs.push(t);
+        }
+      }
+    }
+    this.trackedTriumphs = tempTriumphs;
   }
 
   async setBurns(){

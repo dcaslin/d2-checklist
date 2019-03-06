@@ -18,7 +18,8 @@
             </mat-select>
           </mat-form-field>
           <mat-form-field class="searchField searchGt">
-            <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()" (change)="onGtChange()">
+            <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
+              (change)="onGtChange()">
           </mat-form-field>
           <button mat-mini-fab color="primary searchField" (click)="routeSearch()" color="primary">
             <mat-icon>search</mat-icon>
@@ -40,29 +41,33 @@
           <br>
         </ng-container>
         <ng-container *ngIf="player!=null && player.superprivate">
-          <h4><i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
+          <h4><i style="font-weight: normal !important"
+              [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
             {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
         </ng-container>
 
         <ng-container *ngIf="player!=null && !player.superprivate">
           <h1>
-            <i style="font-weight: normal !important" [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
+            <i style="font-weight: normal !important"
+              [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
             {{player.profile.userInfo.displayName}}
             <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
-              (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i style="font-weight: normal !important"
-                class="far fa-heart"></i></a>
+              (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i
+                style="font-weight: normal !important" class="far fa-heart"></i></a>
           </h1>
           <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
-          <ng-container *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
-            Clan: 
-            <ng-container class="clans" *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; last as isLast">  
+          <ng-container
+            *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
+            Clan:
+            <ng-container class="clans" *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; last as isLast">
               <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
               <ng-container *ngIf="!isLast">, </ng-container>
             </ng-container>
           </ng-container>
-          
+
           <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
-            <ng-container *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
+            <ng-container
+              *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
               Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
             </ng-container>
             <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
@@ -77,20 +82,23 @@
               <i class="menu-icon fa-icon fas fa-burn"></i>
               <span class="d-none d-md-inline">Today's Modifiers</span>
             </button>
-            <a mat-button [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
+            <a mat-button
+              [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <i class="menu-icon fa-icon fas fa-history"></i>
               <span class="d-none d-md-inline">Activity History</span>
             </a>
-            <a mat-button [routerLink]="['/recent-players', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
+            <a mat-button
+              [routerLink]="['/recent-players', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
               <i class="menu-icon fa-icon fas fa-user-friends"></i>
               <span class="d-none d-md-inline">Recent Teammates</span>
             </a>
             <button mat-button [matMenuTriggerFor]="menu">
-                <i class="menu-icon fa-icon fas fa-ellipsis-v"></i>
+              <i class="menu-icon fa-icon fas fa-ellipsis-v"></i>
               <span class="d-none d-md-inline">External Links</span>
             </button>
             <mat-menu #menu="matMenu">
-              <a mat-menu-item *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener" [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
+              <a mat-menu-item *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener"
+                [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
                 <mat-icon>message</mat-icon>
                 <span>Message on XBL</span>
               </a>
@@ -123,9 +131,10 @@
                   <span class="mat-caption">Hide Completed</span>
                 </div>
                 <div class="mobile-button-row" style="margin-top: 5px">
-                  <button mat-button (click)="toggleHide('ALL')" [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
-                  <button *ngFor="let c of player.characters" (click)="toggleHide(c.characterId)" [color]="c.characterId==hideCompleteChars?'accent':'default'"
-                    mat-button>{{c.className}}</button>
+                  <button mat-button (click)="toggleHide('ALL')"
+                    [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
+                  <button *ngFor="let c of player.characters" (click)="toggleHide(c.characterId)"
+                    [color]="c.characterId==hideCompleteChars?'accent':'default'" mat-button>{{c.className}}</button>
                 </div>
 
 
@@ -139,17 +148,20 @@
                       <th scope="col" style="width: 25%">Activity
                         <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash"
                           matTooltip="Hide milestones where all chars are complete"></i>
-                        <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
+                        <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null"
+                          class="warn-text fal fa-eye"
                           matTooltip="Stop hiding milestones where all chars are complete"></i>
                         <a *ngIf="hiddenMilestones.length>0 || hideCompleteChars!=null" href="javascript:void(0)"
-                          matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show
+                          matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
+                          (click)="showAllMilestones()">show
                           all</a>
                       </th>
                       <th scope="col" *ngFor="let char of player.characters">
                         {{char.className}} - {{char.light}} {{char.title}}
                         <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId"
                           class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
-                        <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
+                        <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null"
+                          class="warn-text fal fa-eye"
                           matTooltip="Stop hiding milestones that this char has completed"></i>
                       </th>
                     </tr>
@@ -166,7 +178,8 @@
                             </a>
                           </span>
                           <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
-                          <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                          <a href="javascript:void(0)"
+                            matTooltip="Hide this milestone, click Show All to restore it later"
                             class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
                             <i class="fal fa-eye-slash"></i>
                           </a>
@@ -184,7 +197,8 @@
                           </span>
                           <br>
                           <span class="simple-caption">
-                            <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">{{mileStoneName.rewards}}
+                            <a href="javascript:void(0)" style="opacity: 0.75"
+                              (click)="sortByRewards()">{{mileStoneName.rewards}}
 
                               <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
                               <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
@@ -192,33 +206,41 @@
                           </span>
 
                         </td>
-                        <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
+                        <td [attr.data-label]="char.className+' - '+char.light+' '+char.title"
+                          *ngFor="let char of player.characters">
                           <span class="check">
                             <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
 
                               <div>
                                 <ng-container *ngIf="char.milestones[mileStoneName.key].phases!=null">
                                   <ng-container *ngFor="let phase of char.milestones[mileStoneName.key].phases">
-                                      <i *ngIf="phase===true" style="margin-left: 5px" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                                      <i *ngIf="phase===false"  style="margin-left: 5px" class="far fa-square"></i>
+                                    <i *ngIf="phase===true" style="margin-left: 5px"
+                                      class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                    <i *ngIf="phase===false" style="margin-left: 5px" class="far fa-square"></i>
                                   </ng-container>
                                 </ng-container>
                                 <ng-container *ngIf="char.milestones[mileStoneName.key].phases==null">
-                                    <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                                        <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-      
-                                        <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                                      </ng-container>
-                                      <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                                        <i class="far fa-square"></i>
-                                        <div *ngIf="mileStoneName.hasPartial==true" class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                                      </ng-container>
-                                      <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                                        <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
-                                        <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                                      </ng-container>  
+                                  <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                                    <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+
+                                    <div *ngIf="mileStoneName.hasPartial==true" class="percent">
+                                      {{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                                  </ng-container>
+                                  <ng-container
+                                    *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                                    <i class="far fa-square"></i>
+                                    <div *ngIf="mileStoneName.hasPartial==true" class="percent">
+                                      {{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
+                                  </ng-container>
+                                  <ng-container
+                                    *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                                    <i [matTooltip]="char.milestones[mileStoneName.key].info"
+                                      class="accent-text far fa-minus-square"></i>
+                                    <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}
+                                    </div>
+                                  </ng-container>
                                 </ng-container>
-                                
+
                               </div>
                               <div class="lifetime" *ngIf="mileStoneName.key==2171429505 && char.aggHistory!=null">
                                 <div>Lifetime</div>
@@ -301,25 +323,32 @@
 
 
                             </ng-container>
-                            <ng-container *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
-                              <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
+                            <ng-container
+                              *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
+                              <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
+                                class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                              <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
+                                matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                             </ng-container>
                           </span>
                         </td>
                       </tr>
                     </ng-container>
-                    <tr *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
+                    <tr
+                      *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
                       <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-                        <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                        <a href="javascript:void(0)"
+                          matTooltip="Hide this milestone, click Show All to restore it later"
                           class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
                       </td>
                       <td [attr.colspan]="player.characters.length">
                         <div class="clanMsRow">
                           <span style="margin-right: 0.5em" *ngFor="let clanMs of player.characters[0].clanMilestones">
                             {{clanMs.name}}
-                            <i *ngIf="clanMs.earned==true && !clanMs.redeemed==true" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
-                            <i *ngIf="clanMs.earned==true && clanMs.redeemed==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                            <i *ngIf="clanMs.earned==true && !clanMs.redeemed==true"
+                              class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                            <i *ngIf="clanMs.earned==true && clanMs.redeemed==true"
+                              class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                             <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
                           </span>
                         </div>
@@ -369,8 +398,9 @@
                     <h2>Privacy</h2>
                     <p>
                       This user hasn't enabled viewing their non-equipped inventory.<br>
-                      They'd need to <a class="underline" href="https://www.bungie.net/en/Profile/Settings?category=Privacy"
-                        target="_blank" rel="noopener">
+                      They'd need to <a class="underline"
+                        href="https://www.bungie.net/en/Profile/Settings?category=Privacy" target="_blank"
+                        rel="noopener">
                         check the "Show my non-equipped Inventory" at Bungie.net.</a>
                       <br><br>
                       [Hiding non-equipped inventory is the default privacy setting]
@@ -388,7 +418,8 @@
                               <ng-container *ngFor="let g of player.bounties">
                                 <tr *ngIf="g.owner==char">
                                   <td class="lead" data-label="">
-                                    <span *ngIf="g.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                                    <span *ngIf="g.icon!=null" class="item-icon"
+                                      [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
                                     <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.name}}
                                     </ng-container>
                                     <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
@@ -404,12 +435,14 @@
                                   </td>
                                   <td data-label="">
                                     <div class="obj-desc" *ngFor="let obj of g.objectives">
-                                      <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="obj.complete"
+                                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                       <i *ngIf="!obj.complete" class="far fa-square"></i>
                                       {{obj.progressDescription}} {{obj.aggProgress}}
                                       <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                                      <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
-                                        mode="determinate" [value]="100*obj.progress/obj.completionValue">
+                                      <mat-progress-bar class="bounty-progress"
+                                        *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                                        [value]="100*obj.progress/obj.completionValue">
                                       </mat-progress-bar>
                                     </div>
                                     <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
@@ -432,7 +465,8 @@
                                   <td class="lead" data-label="">
                                     <span *ngIf="g.icon!=null" class="item-icon transparent-icon"
                                       [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
-                                    <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.questline.name}}:
+                                    <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">
+                                      {{g.questline.name}}:
                                       {{g.name}}
                                     </ng-container>
                                     <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
@@ -449,12 +483,14 @@
                                   </td>
                                   <td data-label="">
                                     <div class="obj-desc" *ngFor="let obj of g.objectives">
-                                      <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="obj.complete"
+                                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                       <i *ngIf="!obj.complete" class="far fa-square"></i>
                                       {{obj.progressDescription}} {{obj.aggProgress}}
                                       <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                                      <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
-                                        mode="determinate" [value]="100*obj.progress/obj.completionValue">
+                                      <mat-progress-bar class="bounty-progress"
+                                        *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                                        [value]="100*obj.progress/obj.completionValue">
                                       </mat-progress-bar>
                                     </div>
                                     <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
@@ -485,9 +521,11 @@
                   <h2>Privacy</h2>
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                 </div>
-                <mat-accordion [multi]="debugmode" *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
+                <mat-accordion [multi]="debugmode"
+                  *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
                   <ng-container *ngFor="let checklist of player.checklists">
-                    <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0" [expanded]="debugmode">
+                    <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0"
+                      [expanded]="debugmode">
                       <mat-expansion-panel-header>
                         <mat-panel-title>
                           {{checklist.name}}
@@ -515,9 +553,10 @@
                             <ng-container *ngFor="let check of checklist.entries">
                               <tr *ngIf="!hideComplete || !check.checked">
                                 <td>
-                                  <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
-                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
-                                    target="_blank" rel="noopener">{{check.name}}
+                                  <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
+                                    {{check.name}}</ng-container>
+                                  <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null"
+                                    [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}}
                                     <i class='far fa-map-marker-alt'></i>
                                   </a>
 
@@ -530,7 +569,8 @@
                                 </td>
                                 <td>
                                   <span>
-                                    <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                    <i *ngIf="check.checked"
+                                      class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                     <i *ngIf="!check.checked" class="far fa-square"></i>
                                   </span>
                                 </td>
@@ -552,7 +592,8 @@
                         <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
                       </mat-panel-title>
                       <mat-panel-description>
-                        <span *ngFor="let t of checklist.totals">{{t.char.className}} {{t.complete}}/{{t.total}}&emsp;</span>
+                        <span *ngFor="let t of checklist.totals">{{t.char.className}}
+                          {{t.complete}}/{{t.total}}&emsp;</span>
                       </mat-panel-description>
                     </mat-expansion-panel-header>
                     <div class="checklist-body">
@@ -571,9 +612,10 @@
                           <ng-container *ngFor="let check of checklist.entries">
                             <tr *ngIf="!hideComplete || !check.allDone">
                               <td>
-                                <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">{{check.name}}</ng-container>
-                                <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
-                                  target="_blank" rel="noopener">{{check.name}}
+                                <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
+                                  {{check.name}}</ng-container>
+                                <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null"
+                                  [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}}
                                   <i class='far fa-map-marker-alt'></i>
                                 </a>
 
@@ -587,7 +629,8 @@
                               </td>
                               <td>
                                 <span class="space-right" *ngFor="let c of check.checked">
-                                  <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                  <i *ngIf="c.checked"
+                                    class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                   <i *ngIf="!c.checked && !check.oncePerAccount" class="far fa-square"></i>
                                   <i *ngIf="!c.checked && check.oncePerAccount" class="far fa-minus-square"></i>
                                 </span>
@@ -608,7 +651,8 @@
                   <li>Looking for all the Catalysts?
                     <a href="https://twitter.com/Aussie_Halo" target="_blank" rel="noopener">@Aussie_Halo</a> has them
                     all in a nice
-                    <a class="accent-text" href="https://docs.google.com/spreadsheets/d/1hPI1oO5izJaDASpPWdTb4sB_eAzxTI1eFMh6ixeVpMM/edit#gid=0"
+                    <a class="accent-text"
+                      href="https://docs.google.com/spreadsheets/d/1hPI1oO5izJaDASpPWdTb4sB_eAzxTI1eFMh6ixeVpMM/edit#gid=0"
                       target="_blank" rel="noopener">Google spreadsheet</a>
                   </li>
                   <li>Only 4 of Cayde's Journals are completable in game, thus the other 16 are pre-filtered.</li>
@@ -642,7 +686,8 @@
                       <tbody>
                         <tr *ngFor="let faction of char.factions">
                           <td class="lead" data-label="">
-                            <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
+                            <span [matTooltip]="faction.desc"
+                              matTooltipClass="preserve-white-space">{{faction.name}}</span>
                             <span class="light">Level {{faction.level}} </span>
                             <span class="caption">{{faction.info}}</span>
                             <div class="row dl-row simple-caption">
@@ -709,16 +754,18 @@
                 <mat-tab-group #triumphtabs>
                   <mat-tab label="Triumphs">
                     <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
+                        (ngModelChange)="hideCompleteChange()">
                         Hide Completed
                       </mat-checkbox>
-                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs" (ngModelChange)="showZeroPtTriumphsChange()">
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs"
+                        (ngModelChange)="showZeroPtTriumphsChange()">
                         Show Zero Pt
                       </mat-checkbox>
-                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs" (ngModelChange)="showInvisTriumphsChange()">
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs"
+                        (ngModelChange)="showInvisTriumphsChange()">
                         Show Invisible
                       </mat-checkbox>
-
                     </h3>
 
                     <mat-tree [dataSource]="recordDatasource" [treeControl]="triumphTreeControl">
@@ -726,18 +773,24 @@
                         matTreeNodeToggle matTreeNodePadding>
                         <button mat-icon-button disabled></button>
                         <div style="text-align: left; margin-bottom: 20px">
-                          <i *ngIf="node.data.complete && node.data.redeemed" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          <i *ngIf="node.data.complete && !node.data.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="node.data.complete && node.data.redeemed"
+                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="node.data.complete && !node.data.redeemed"
+                            class="warn-text mat-option.mat-selected fas fa-check-square"></i>
                           <i *ngIf="!node.data.complete" class="far fa-square"></i>
 
                           <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null">
                             {{node.data.name}} </ng-container>
-                          <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null"
-                            target="_blank" rel="noopener">
+                          <a [href]="node.data.lowLinks.mapLink"
+                            *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null" target="_blank"
+                            rel="noopener">
                             {{node.data.name}}
                             <i class='accent-text far fa-map-marker-alt'></i>
                           </a>
                           <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
+                          <i *ngIf="dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star" (click)="trackTriumph(node.data)"></i>
+                          <i *ngIf="dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(node.data)"></i>
+
                           <br>
                           <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
                             redeemed.<br></span>
@@ -750,8 +803,9 @@
                               <i *ngIf="!o.complete" class="far fa-square"></i>
                               {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                             </span>
-                            <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
-                              mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                            <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
+                              class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue">
+                            </mat-progress-bar>
                           </div>
                         </div>
                       </mat-tree-node>
@@ -763,7 +817,8 @@
                           </mat-icon>
                         </button>
                         <div style="text-align: left">
-                          <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="node.data.complete"
+                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           <i *ngIf="!node.data.complete" class="far fa-square"></i>
                           {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
                           <span class="simple-caption">
@@ -775,15 +830,17 @@
                           </ng-container>
                           <br>
 
-                          <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
-                            mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+                          <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
+                            class="pres-node-prog" mode="determinate"
+                            [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                         </div>
                       </mat-tree-node>
                     </mat-tree>
                   </mat-tab>
                   <mat-tab label="Seals">
                     <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">
+                      <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
+                        (ngModelChange)="hideCompleteChange()">
                         Hide Completed
                       </mat-checkbox>
                     </h3>
@@ -799,25 +856,24 @@
                               {{s.progress}} / {{s.completionValue}}
                             </mat-panel-description>
                           </mat-expansion-panel-header>
-
                           <div class="seal-body">
-                            <!-- <mat-progress-bar  mode="determinate" [value]="s.percent"></mat-progress-bar> -->
-
                             <p style="margin-bottom: 20px">{{s.desc}}</p>
-
                             <table class="checklist-table">
                               <tbody>
                                 <ng-container *ngFor="let c of s.children">
                                   <tr *ngIf="!hideComplete || !c.complete">
                                     <td>
-                                      <i *ngIf="c.complete && c.redeemed" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                                      <i *ngIf="c.complete && !c.redeemed" class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="c.complete && c.redeemed"
+                                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                      <i *ngIf="c.complete && !c.redeemed"
+                                        class="warn-text mat-option.mat-selected fas fa-check-square"></i>
                                       <i *ngIf="!c.complete" class="far fa-square"></i>
 
                                       <ng-container *ngIf="c.lowLinks==null || c.lowLinks.mapLink==null">
                                         {{c.name}} </ng-container>
-                                      <a [href]="c.lowLinks.mapLink" *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null"
-                                        target="_blank" rel="noopener">
+                                      <a [href]="c.lowLinks.mapLink"
+                                        *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null" target="_blank"
+                                        rel="noopener">
                                         {{c.name}}
                                         <i class='accent-text far fa-map-marker-alt'></i>
                                       </a>
@@ -830,24 +886,20 @@
                                       </span>
                                       <div *ngFor="let o of c.objectives">
                                         <span class="simple-caption">
-                                          <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                          <i *ngIf="o.complete"
+                                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                           <i *ngIf="!o.complete" class="far fa-square"></i>
                                           {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                                         </span>
-                                        <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                                        <mat-progress-bar class="pres-node-prog" mode="determinate"
+                                          [value]="o.progress*100/o.completionValue"></mat-progress-bar>
                                       </div>
                                     </td>
                                   </tr>
                                 </ng-container>
                               </tbody>
                             </table>
-
-
-
-
-
                           </div>
-
                         </mat-expansion-panel>
                       </ng-container>
                     </mat-accordion>
@@ -855,10 +907,12 @@
                   <mat-tab label="Closest">
                     <div>
                       <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
-                        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs" (ngModelChange)="showZeroPtTriumphsChange()">
+                        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs"
+                          (ngModelChange)="showZeroPtTriumphsChange()">
                           Show Zero Pt
                         </mat-checkbox>
-                        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs" (ngModelChange)="showInvisTriumphsChange()">
+                        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs"
+                          (ngModelChange)="showInvisTriumphsChange()">
                           Show Invisible
                         </mat-checkbox>
                       </h3>
@@ -877,6 +931,9 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}} {{t.invisible}}</ng-container>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(t)"></i>
+
                                 <br>
                                 <span class="simple-caption">
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
@@ -892,7 +949,8 @@
                               </td>
                               <td class="left" data-label="">
                                 {{t.percent}}%
-                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent"></mat-progress-bar>
+                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                                </mat-progress-bar>
                               </td>
 
                               <td class="left" data-label="">
@@ -903,11 +961,13 @@
                                 <div class="low-hanging-desc">{{t.desc}}</div>
                                 <div class="low-hanging-desc" *ngFor="let o of t.objectives">
                                   <span class="simple-caption">
-                                    <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                    <i *ngIf="o.complete"
+                                      class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                     <i *ngIf="!o.complete" class="far fa-square"></i>
                                     {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                                   </span>
-                                  <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                                  <mat-progress-bar class="pres-node-prog" mode="determinate"
+                                    [value]="o.progress*100/o.completionValue"></mat-progress-bar>
                                 </div>
                               </td>
                             </tr>
@@ -918,10 +978,10 @@
                   </mat-tab>
                   <mat-tab label="Search">
                     <div>
-
                       <div class="left" style="margin: 10px">
                         <mat-form-field class="searchField">
-                          <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText" placeholder="Wildcard Search triumphs">
+                          <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText"
+                            placeholder="Wildcard Search triumphs">
                         </mat-form-field>
                       </div>
 
@@ -947,6 +1007,9 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(t)"></i>
+
                                 <br>
                                 <span class="simple-caption">
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
@@ -962,7 +1025,8 @@
                               </td>
                               <td class="left" data-label="">
                                 {{t.percent}}%
-                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent"></mat-progress-bar>
+                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                                </mat-progress-bar>
                               </td>
 
                               <td class="left" data-label="">
@@ -973,11 +1037,74 @@
                                 <div class="low-hanging-desc">{{t.desc}}</div>
                                 <div class="low-hanging-desc" *ngFor="let o of t.objectives">
                                   <span class="simple-caption">
-                                    <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                    <i *ngIf="o.complete"
+                                      class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                                     <i *ngIf="!o.complete" class="far fa-square"></i>
                                     {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                                   </span>
-                                  <mat-progress-bar class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                                  <mat-progress-bar class="pres-node-prog" mode="determinate"
+                                    [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+                  </mat-tab>
+                  <mat-tab label="Tracked">
+                    <div>
+                      <div *ngIf="trackedTriumphs.length==0" class="left" style="margin: 10px">
+                        Click a star on a triumph on another tab to track it here
+                      </div>
+                      <table class="responsive-table">
+                        <tbody>
+                          <ng-container *ngFor="let t of trackedTriumphs">
+                            <tr>
+                              <td class="lead" data-label="">
+                                <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                                  {{t.name}} </ng-container>
+                                <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                                  target="_blank" rel="noopener">
+                                  {{t.name}}
+                                  <i class='accent-text far fa-map-marker-alt'></i>
+                                </a>
+                                <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(t)"></i>
+
+                                <br>
+                                <span class="simple-caption">
+                                  <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                                    <ng-container *ngIf="i>0">
+                                      <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                                      <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
+                                      <ng-container *ngIf="!isLast">
+                                        /
+                                      </ng-container>
+                                    </ng-container>
+                                  </ng-container>
+                                </span>
+                              </td>
+                              <td class="left" data-label="">
+                                {{t.percent}}%
+                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                                </mat-progress-bar>
+                              </td>
+                              <td class="left" data-label="">
+                                {{t.score}} pts
+                              </td>
+                              <td class="left" data-label="">
+                                <div class="low-hanging-desc">{{t.desc}}</div>
+                                <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                                  <span class="simple-caption">
+                                    <i *ngIf="o.complete"
+                                      class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                    <i *ngIf="!o.complete" class="far fa-square"></i>
+                                    {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                                  </span>
+                                  <mat-progress-bar class="pres-node-prog" mode="determinate"
+                                    [value]="o.progress*100/o.completionValue"></mat-progress-bar>
                                 </div>
                               </td>
                             </tr>
@@ -999,7 +1126,8 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <div class="hide-complete-collectibles">
-                  <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed</mat-checkbox>
+                  <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed
+                  </mat-checkbox>
                 </div>
                 <mat-tree [dataSource]="collectionDatasource" [treeControl]="collectionTreeControl">
                   <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
@@ -1008,7 +1136,8 @@
                     <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
                       [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
                     <div style="text-align: left; margin-bottom: 20px">
-                      <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="node.data.acquired "
+                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.acquired" class="far fa-square"></i>
                       {{node.data.name}} <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
                       <br>
@@ -1033,8 +1162,9 @@
                       <span class="simple-caption">
                         {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
                       </span> <br>
-                      <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
-                        mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+                      <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
+                        class="pres-node-prog" mode="determinate"
+                        [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
                     </div>
                   </mat-tree-node>
                 </mat-tree>
