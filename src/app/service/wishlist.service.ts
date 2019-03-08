@@ -11,8 +11,8 @@ export class WishlistService implements OnDestroy {
   static WildcardItemId = -69420 // nice
 
   //public static DEFAULT_URL = 'https://raw.githubusercontent.com/darkelement1987/godroll/master/godrolls.txt';
-  public static DEFAULT_PVE_URL = "https://gist.githubusercontent.com/dcaslin/e614cf030f14c41e07c87f6f7f08d465/raw/panda_pve.txt";
-  public static DEFAULT_PVP_URL = "https://gist.githubusercontent.com/dcaslin/ef71ca7aac1e563653cf4a541c11baee/raw/panda_pvp.txt";
+  public static DEFAULT_PVE_URL = "https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/7beec0c6979105b7c14e8c65fedd8667e21f6c07/panda_pve.txt";
+  public static DEFAULT_PVP_URL = "https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/7beec0c6979105b7c14e8c65fedd8667e21f6c07/panda_pvp.txt";
 
   constructor(private httpClient: HttpClient, private notificationService: NotificationService, 
     private destinyCacheService: DestinyCacheService) {
