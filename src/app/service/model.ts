@@ -1001,13 +1001,13 @@ export class InventorySocket {
 export class InventoryPlug {
     readonly hash: string;
 
-    readonly name: string;
-    readonly desc: string;
+    readonly name: string;    
     readonly icon: string;
     readonly active: boolean;
     public godRoll: boolean = false;
     public godRollPve: boolean = false;
     public godRollPvp: boolean = false;
+    public desc: string;
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean) {
         this.hash = hash;

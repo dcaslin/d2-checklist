@@ -14,7 +14,7 @@ export class WishlistService implements OnDestroy {
   public static DEFAULT_PVE_URL = "https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/7beec0c6979105b7c14e8c65fedd8667e21f6c07/panda_pve.txt";
   public static DEFAULT_PVP_URL = "https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/7beec0c6979105b7c14e8c65fedd8667e21f6c07/panda_pvp.txt";
 
-  constructor(private httpClient: HttpClient, private notificationService: NotificationService, 
+  constructor(private httpClient: HttpClient, private notificationService: NotificationService,
     private destinyCacheService: DestinyCacheService) {
 
   }
@@ -34,8 +34,8 @@ export class WishlistService implements OnDestroy {
     }
   }
 
-  public async loadSingle(type: string, url: string, defaultUrl: string) : Promise<CuratedRoll[]> {
-    if (url == null){
+  public async loadSingle(type: string, url: string, defaultUrl: string): Promise<CuratedRoll[]> {
+    if (url == null) {
       url = defaultUrl;
     }
     try {
@@ -43,7 +43,7 @@ export class WishlistService implements OnDestroy {
       return this.toCuratedRolls(type, bansheeText);
     }
     catch (e) {
-      this.notificationService.info("Error loading "+type+" wishlist from " + url);
+      this.notificationService.info("Error loading " + type + " wishlist from " + url);
       console.error(e);
       return [];
     }
@@ -56,7 +56,7 @@ export class WishlistService implements OnDestroy {
   }
 
   public processItems(items: InventoryItem[]): void {
-    if (this.data==null) return;
+    if (this.data == null) return;
     for (const i of items) {
       if (this.data[i.hash] != null) {
         //for each curated roll
@@ -72,10 +72,10 @@ export class WishlistService implements OnDestroy {
                 if (+p.hash == desiredPerk) {
                   perkFound = true;
                   p.godRoll = true;
-                  if (isPvp){
+                  if (isPvp) {
                     p.godRollPvp = true;
                   }
-                  if (isPve){
+                  if (isPve) {
                     p.godRollPve = true;
                   }
                   break;
@@ -87,34 +87,44 @@ export class WishlistService implements OnDestroy {
               rollMatches = false;
             }
           }
+          
           if (rollMatches) {
             i.godRoll = true;
             i.searchText = i.searchText + " godroll is:wishlist";
-            if (isPve){
+            if (isPve) {
               i.searchText = i.searchText + " godrollpve is:wishlistpve";
               i.godRollPve = true;
 
             }
-            if (isPvp){
+            if (isPvp) {
               i.searchText = i.searchText + " godrollpvp is:wishlistpvp";
               i.godRollPvp = true;
             }
           }
         }
-        //check if the right stuff is selected
+       
+        //check if the right stuff is selected and handle tooltips
         for (const s of i.sockets) {
           let godPerkFound = false;
           let godPerkSelected = false;
           for (const p of s.plugs) {
-            if (p.godRoll){
+            if (p.godRoll) {
               godPerkFound = true;
-              if (p.active){
+              if (p.active) {
                 godPerkSelected = true;
-                break;
+              }
+              if (p.godRollPvp && p.godRollPve) {
+                p.desc = "RECOMMENDED PVE & PVP\n" + p.desc;
+              }
+              else if (p.godRollPvp) {
+                p.desc = "RECOMMENDED PVP\n" + p.desc;
+              }
+              else if (p.godRollPve) {
+                p.desc = "RECOMMENDED PVE\n" + p.desc;
               }
             }
           }
-          if (godPerkFound && !godPerkSelected){
+          if (godPerkFound && !godPerkSelected) {
             i.searchText = i.searchText + " fixme";
           }
         }
@@ -149,14 +159,14 @@ export class WishlistService implements OnDestroy {
       .map(Number)
       .filter((perkHash) => {
         if (perkHash <= 0) return false;
-        if (perkHash==3876796314) return false; //base radiance
+        if (perkHash == 3876796314) return false; //base radiance
         const desc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
-        if (desc==null) return false;
-        if (desc.itemCategoryHashes==null) return false;
+        if (desc == null) return false;
+        if (desc.itemCategoryHashes == null) return false;
         if (desc.itemCategoryHashes.includes(41)) return false; //shaders
         if (desc.itemCategoryHashes.includes(945330047)) return false; //gameplay weapon mods
         if (desc.itemCategoryHashes.includes(2237038328)) return false; //intrinsics
-        if (desc.plug!=null && desc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") > 0) return false; //masterwork stuff
+        if (desc.plug != null && desc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") > 0) return false; //masterwork stuff
         return true;
       });
 
