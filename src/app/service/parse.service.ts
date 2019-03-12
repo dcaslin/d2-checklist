@@ -2090,6 +2090,10 @@ export class ParseService {
             if (desc.itemTypeDisplayName == null) {
                 return null;
             }
+            //ignore postmaster items
+            if (itm.bucketHash == 215593132){
+                return null;
+            }
             let type: ItemType = desc.itemType;
             let description = desc.displayProperties.description;
 
