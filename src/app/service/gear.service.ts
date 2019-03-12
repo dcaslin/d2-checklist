@@ -98,8 +98,7 @@ export class GearService {
             this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault");
         else
             this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault. " + err + " items failed to move.");
-        console.log("Done clearning inventory. " + totalErr + " errors.");
-
+        console.log("Done clearing inventory. " + totalErr + " errors.");
         return totalErr;
     }
 
@@ -126,6 +125,9 @@ export class GearService {
             }
         }
         const msg = "Moved " + moved + " items to " + target.label;
+
+        // re sync locks to work around bungie bug where things get locked
+        await this.processGearLocks(player);
 
         if (totalErr>0){
             this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
@@ -198,6 +200,10 @@ export class GearService {
             }
         }
         const msg = "Moved " + moved + " items to " + target.label;
+
+        // re sync locks to work around bungie bug where things get locked
+        await this.processGearLocks(player);
+
         if (totalErr>0){
             this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
         }
@@ -244,7 +250,7 @@ export class GearService {
                 }
             }
         }
-        this.notificationService.info('Done! Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
+        this.notificationService.info('Sync complete. Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
     }
 
     public async transfer(player: Player, itm: InventoryItem, target: Target): Promise<void> {
