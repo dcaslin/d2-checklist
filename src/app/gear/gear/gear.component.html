@@ -36,7 +36,7 @@
         <mat-form-field class="searchField">
           <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter">
           <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
-            (click)="visibleFilterText=null;filterText=null;filterChanged()">
+            (click)="visibleFilterText=null;filterTags=[];filterChanged()">
             <mat-icon>close</mat-icon>
           </button>
           <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
