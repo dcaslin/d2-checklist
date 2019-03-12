@@ -1663,8 +1663,9 @@ export class ParseService {
                 const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
+                if (oChild.invisible && !showInvisTriumphs) continue;
+                if (oChild.score==0 && !showZeroPtTriumphs) continue;
                 children.push(oChild);
-
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
                 }
@@ -1758,7 +1759,6 @@ export class ParseService {
                 title = true;
             }
         }
-        if (invisible && !showInvisTriumphs) return null;
 
         let searchText = rDesc.displayProperties.name + " " + rDesc.displayProperties.description;
         let percent = 0;
@@ -1771,8 +1771,7 @@ export class ParseService {
             percent = Math.floor(sum / objs.length);
         }
         const pts = rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue;
-        if (!showZeroPtTriumphs && pts == 0) return null;
-
+        
         return {
             type: 'record',
             hash: key,

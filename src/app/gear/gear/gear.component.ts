@@ -152,10 +152,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   copyAllVisibleToClipboard(){
     let markdown = "";
     let cntr = 0;
-    for (const i of this.gearToShow){
-      cntr++;
-      markdown += this.toMarkDown(i, cntr);
-      markdown += "\n\n";
+    if (this.gearToShow.length==1){
+      markdown += this.toMarkDown(this.gearToShow[0]);
+    }
+    else{
+      for (const i of this.gearToShow){
+        cntr++;
+        markdown += this.toMarkDown(i, cntr);
+        markdown += "\n\n";
+      }
     }
     this.clipboardService.copyFromContent(markdown);
     this.notificationService.success("Copied " + this.gearToShow.length + " items to clipboard");
@@ -166,7 +171,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (cntr==null)
       markdown = "**" + i.name + "**\n\n";
     else
-    markdown = "**" +cntr+") "+ i.name + "**\n\n";
+    markdown = "**" +cntr+". "+ i.name + "**\n\n";
 
     for (const socket of i.sockets) {
       markdown += "\n\n* ";
