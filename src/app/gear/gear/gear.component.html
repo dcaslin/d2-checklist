@@ -50,10 +50,16 @@
             [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
             [currentItemType]="option.type">
           </anms-gear-toggle>
+          
 
           <anms-gear-toggle #weaponTypeToggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
           </anms-gear-toggle>
+
+          <anms-gear-toggle #ammoTypeToggle iconClass="fas fa-rocket" title="Ammo" [choices]="ammoTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+          </anms-gear-toggle>
+
 
           <anms-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
@@ -124,8 +130,14 @@
             <button mat-menu-item (click)="shardMode()">
                 <i class="fas fa-trash"></i>&ensp;Shard Mode
             </button>
+            <button mat-menu-item (click)="shardMode(true)">
+                <i class="fas fa-trash"></i>&ensp;Shard Mode (Weapons Only)
+            </button>
             <button mat-menu-item (click)="upgradeMode()">
                 <i class="fas fa-level-up"></i>&ensp;Upgrade Mode
+            </button>
+            <button mat-menu-item (click)="upgradeMode(true)">
+                <i class="fas fa-level-up"></i>&ensp;Upgrade Mode (Weapons Only)
             </button>
             <button mat-menu-item (click)="showBulkOperationHelp()">
                 <i class="fas fa-question-circle"></i>&ensp;Help

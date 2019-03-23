@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { fromEvent as observableFromEvent, Subject } from 'rxjs';
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug } from '@app/service/model';
+import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug, DestinyAmmunitionType } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
@@ -33,6 +32,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     new Choice("infuse", "Infuse"),
     new Choice("junk", "Junk"),
     new Choice(null, "Unmarked")
+  ];
+
+  readonly ammoTypeChoices: Choice[] = [
+    new Choice(DestinyAmmunitionType.Primary+"", "Primary"),
+    new Choice(DestinyAmmunitionType.Special+"", "Special"),
+    new Choice(DestinyAmmunitionType.Heavy+"", "Heavy")
   ];
 
 
@@ -62,6 +67,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public markToggle: GearToggleComponent;
   @ViewChild('weaponTypeToggle')
   public weaponTypeToggle: GearToggleComponent;
+  @ViewChild('ammoTypeToggle')
+  public ammoTypeToggle: GearToggleComponent;
   @ViewChild('armorTypeToggle')
   public armorTypeToggle: GearToggleComponent;
   @ViewChild('vehicleTypeToggle')
@@ -269,6 +276,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async transfer(player: Player, itm: InventoryItem, target: Target) {
     try {
       await this.gearService.transfer(player, itm, target);
+      this.notificationService.success("Transferred "+itm.name+" to "+target.label);
     }
     catch (e) {
       this.notificationService.fail(e);
@@ -278,6 +286,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async equip(player: Player, itm: InventoryItem) {
     await this.gearService.equip(player, itm);
+    this.notificationService.success("Equipped "+itm.name+" on "+itm.owner.label);
     this.filterChanged();
   }
 
@@ -355,6 +364,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   private appendToggleFilterNotes() {
     this.appendToggleFilterNote(this.markToggle);
     this.appendToggleFilterNote(this.weaponTypeToggle);
+    this.appendToggleFilterNote(this.ammoTypeToggle);
     this.appendToggleFilterNote(this.armorTypeToggle);
     this.appendToggleFilterNote(this.vehicleTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
@@ -378,6 +388,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     if (!this.weaponTypeToggle.isChosen(this.option.type, i.typeName)) { 
       const key = "weaponType";
+      if (report[key]==null){
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false; 
+    }
+    if (!this.ammoTypeToggle.isChosen(this.option.type, i.ammoType)) { 
+      const key = "ammoType";
       if (report[key]==null){
         report[key] = 0;
       }
@@ -463,6 +481,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     // hit it with a hammer, owner and rarity are fine
     this.markToggle.setCurrentItemType(this.option.type);
     this.weaponTypeToggle.setCurrentItemType(this.option.type);
+    this.ammoTypeToggle.setCurrentItemType(this.option.type);
     this.armorTypeToggle.setCurrentItemType(this.option.type);
     this.vehicleTypeToggle.setCurrentItemType(this.option.type);
     this.modTypeToggle.setCurrentItemType(this.option.type);
@@ -558,15 +577,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.total = tempGear.length;
   }
 
-  public async shardMode() {
+  public async shardMode(weaponsOnly?:boolean) {
     await this.load();
-    await this.gearService.shardMode(this.player);
+    await this.gearService.shardMode(this.player, weaponsOnly);
     this.filterChanged();
   }
 
-  public async upgradeMode() {
+  public async upgradeMode(weaponsOnly?:boolean) {
     await this.load();
-    await this.gearService.upgradeMode(this.player);
+    await this.gearService.upgradeMode(this.player, weaponsOnly);
     this.filterChanged();
   }
 
@@ -657,6 +676,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ngAfterViewInit() {
     this.filters.push(this.markToggle);
     this.filters.push(this.weaponTypeToggle);
+    this.filters.push(this.ammoTypeToggle);
     this.filters.push(this.armorTypeToggle);
     this.filters.push(this.vehicleTypeToggle);
     this.filters.push(this.modTypeToggle);

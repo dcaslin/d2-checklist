@@ -375,6 +375,25 @@
       color: mat-color($foreground, secondary-text);
     }
   }
+
+
+  table.timing-table{
+    & td {
+
+      padding: .425em;
+      border: 1px solid mat-color($background, disabled-list-option);
+      border-collapse: collapse;  
+    }
+    & th {
+      padding: .425em;
+      border: 1px solid mat-color($background, disabled-list-option);
+      border-collapse: collapse;  
+    }
+    border: 1px solid mat-color($background, disabled-list-option);
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 10px;
+  }
   
   @media screen and (max-width: 600px) {
     table.checklist-table {

@@ -5,6 +5,14 @@ export enum ClassAllowed {
     Any = 3
 }
 
+export enum DestinyAmmunitionType {
+    None = 0,
+    Primary = 1,
+    Special = 2,
+    Heavy = 3,
+    Unknown = 4
+}
+
 export enum ItemType {
     None = 0,
     Currency = 1,
@@ -486,6 +494,16 @@ export class Player {
         this.seals = seals;
         this.title = title;
     }
+
+    public getWeeklyXp(): number {
+        let sum = 0;
+        if (this.characters!=null){
+            for (const char of this.characters){
+                sum+=char.getWeeklyXp();
+            }
+        }
+        return sum;
+    }
 }
 
 export class InventoryItem {
@@ -524,6 +542,7 @@ export class InventoryItem {
     public tier: string;
     public readonly options: Target[] = [];
     public readonly isRandomRoll: boolean;
+    public readonly ammoType: DestinyAmmunitionType;
     public canReallyEquip: boolean;
     public copies: number = 1;
     public godRoll = false;
@@ -547,7 +566,7 @@ export class InventoryItem {
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean,
-        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[], isRandomRoll: boolean
+        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[], isRandomRoll: boolean, ammoType: DestinyAmmunitionType
     ) {
         this.id = id;
         this.hash = hash;
@@ -583,6 +602,7 @@ export class InventoryItem {
         this.tier = tier;
         this.options = options;
         this.isRandomRoll = isRandomRoll;
+        this.ammoType = ammoType;
     }
 }
 
@@ -705,6 +725,18 @@ export class Character extends Target {
         this.className = className;
         this.light = light;
 
+    }
+
+    public getWeeklyXp(): number {
+        let sum = 0;
+        if (this.legendProgression!=null){
+            sum+=this.legendProgression.weeklyProgress;
+        }
+        if (this.levelProgression!=null){
+
+            sum+=this.levelProgression.weeklyProgress;
+        }
+        return sum;
     }
 
 }

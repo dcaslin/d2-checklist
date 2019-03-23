@@ -126,18 +126,25 @@
                     <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
+                    <i *ngIf="sort=='xpDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='xpAsc'" class="fas fa-sort-up"></i>
+                  </a>
+                </th>
+                <th matTooltip="Max LL of current chars (actual max could be higher)">
+                  <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                    <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
+                  </a>
+                </th>
                 <ng-container *ngIf="modelPlayer!=null">
                   <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" *ngFor="let mileStoneName of modelPlayer.milestoneList">
                     {{mileStoneName.name}}
                     <span *ngIf="debugmode">{{mileStoneName.key}}</span>
 
                   </th>
-                  <th matTooltip="Max LL of current chars (actual max could be higher)">
-                    <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                      <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
-                      <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
-                    </a>
-                  </th>
+                  
                 </ng-container>
               </tr>
             </thead>
@@ -174,8 +181,14 @@
                         {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
                       </ng-container>
                     </ng-container>
-
-
+                  </td>
+                  <td>
+                      <ng-container *ngIf="!member.player.superprivate">
+                        {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
+                      </ng-container>
+                    </td>
+                  <td data-label="Max Current Light Level">
+                    <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}</ng-container>
                   </td>
                   <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
                     [attr.colspan]="modelPlayer.milestoneList.length">
@@ -201,9 +214,6 @@
                           <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                         </span>
                       </ng-container>
-                    </td>
-                    <td data-label="Max Current Light Level">
-                      <ng-container *ngIf="member.player.maxLL">{{member.player.maxLL}}</ng-container>
                     </td>
                   </ng-container>
                 </ng-container>
@@ -232,15 +242,21 @@
                     <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
-                <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                    {{mileStoneName.name}}
-                  </th>
-                  <th matTooltip="Max LL of current chars (actual max could be higher)">
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
+                    <i *ngIf="sort=='xpDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='xpAsc'" class="fas fa-sort-up"></i>
+                  </a>
+                </th>
+                <th matTooltip="Max LL of current chars (actual max could be higher)">
                     <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
                       <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
                       <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
                     </a>
+                </th>
+                <ng-container *ngIf="modelPlayer!=null">
+                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    {{mileStoneName.name}}
                   </th>
                 </ng-container>
               </tr>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
 import { BucketService, Bucket } from './bucket.service';
-import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, Vault } from './model';
+import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, Vault, ItemType } from './model';
 import { WishlistService } from './wishlist.service';
 import { NotificationService } from './notification.service';
 
@@ -67,7 +67,7 @@ export class GearService {
         await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("fired"));
     }
 
-    private async clearInvForMode(target: Target, player: Player, ignoreMark: string): Promise<number> {
+    private async clearInvForMode(target: Target, player: Player, ignoreMark: string, weaponsOnly:Boolean): Promise<number> {
         console.log("Clearing inventory ahead of a mode.");
         this.notificationService.info("Clearing inventory ahead of time...");
         const buckets = this.bucketService.getBuckets(target);
@@ -77,7 +77,7 @@ export class GearService {
         for (const bucket of buckets) {
             const items = bucket.items.slice();
             for (const i of items) {
-                if (i.equipped == false && (i.mark != ignoreMark)) {
+                if (i.equipped == false && (i.mark != ignoreMark) && (i.type == ItemType.Weapon || !weaponsOnly)) {
                     try {
                         this.notificationService.info("Moving " + i.name + " to vault");
                         await this.transfer(player, i, player.vault);
@@ -102,14 +102,14 @@ export class GearService {
         return totalErr;
     }
 
-    public async shardMode(player: Player) {
+    public async shardMode(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
-        const totalErr = await this.clearInvForMode(target, player, "junk");
+        const totalErr = await this.clearInvForMode(target, player, "junk", weaponsOnly);
         let moved = 0;
         let storeErr = 0;
         for (const i of player.gear) {
             //might we move it?
-            if (i.mark == "junk" && i.owner.id != target.id) {
+            if (i.mark == "junk" && i.owner.id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
                 //is bucket full?
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if (targetBucket.items.length < 10) {
@@ -127,7 +127,7 @@ export class GearService {
         const msg = "Moved " + moved + " items to " + target.label;
 
         // re sync locks to work around bungie bug where things get locked
-        await this.processGearLocks(player);
+        // await this.processGearLocks(player);
 
         if (totalErr>0){
             this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
@@ -157,13 +157,13 @@ export class GearService {
         return copies;
     }
 
-    public async upgradeMode(player: Player) {
+    public async upgradeMode(player: Player, weaponsOnly?:boolean) {
         const target = player.characters[0];
-        let totalErr = await this.clearInvForMode(target, player, "xxx");
+        let totalErr = await this.clearInvForMode(target, player, "xxx", weaponsOnly);
         let moved = 0;
         for (const i of player.gear) {
             //is it marked for upgrade
-            if (i.mark == "upgrade") {
+            if (i.mark == "upgrade" && (i.type == ItemType.Weapon || !weaponsOnly)) {
                 let copies = this.findCopies(i, player);
                 copies = copies.filter(copy => copy.mark == "infuse");
                 copies = copies.filter(copy => copy.power > i.power);
@@ -202,7 +202,7 @@ export class GearService {
         const msg = "Moved " + moved + " items to " + target.label;
 
         // re sync locks to work around bungie bug where things get locked
-        await this.processGearLocks(player);
+        // await this.processGearLocks(player);
 
         if (totalErr>0){
             this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);

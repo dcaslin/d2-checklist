@@ -1204,6 +1204,8 @@
 
                     <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp;
                       {{char.percentToNextLevel|percent:'1.0-0'}} to next level
+
+                      <span *ngIf="debugmode">[{{char.levelProgression.progressionHash}}]</span>
                       <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
                       </mat-progress-bar>
 
@@ -1212,6 +1214,10 @@
                           <dt>Daily Progress</dt>
                           <dd>{{char.levelProgression.dailyProgress| number:0}}</dd>
                         </dl>
+                        <dl class="col-xs-4 dl-child">
+                            <dt>Weekly Progress</dt>
+                            <dd>{{char.levelProgression.weeklyProgress| number:0}}</dd>
+                          </dl>
                         <dl class="col-xs-6 dl-child">
                           <dt>XP needed to next level</dt>
                           <dd>{{(char.levelProgression.nextLevelAt - char.levelProgression.progressToNextLevel)|
@@ -1224,15 +1230,20 @@
                       <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}}
                       &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
                       to level {{char.legendProgression.level+1}}
+                      <span *ngIf="debugmode">[{{char.legendProgression.hash}}]</span>
                       <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
                       </mat-progress-bar>
 
                       <div class="row dl-row">
-                        <dl class="col-xs-6 dl-child">
+                        <dl class="col-xs-4 dl-child">
                           <dt>Daily Progress</dt>
                           <dd>{{char.legendProgression.dailyProgress| number:0}}</dd>
                         </dl>
-                        <dl class="col-xs-6 dl-child">
+                        <dl class="col-xs-4 dl-child">
+                            <dt>Weekly Progress</dt>
+                            <dd>{{char.legendProgression.weeklyProgress| number:0}}</dd>
+                          </dl>
+                        <dl class="col-xs-4 dl-child">
                           <dt>XP needed to next level</dt>
                           <dd>{{(char.legendProgression.nextLevelAt - char.legendProgression.progressToNextLevel)|
                             number:0}}</dd>

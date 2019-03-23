@@ -16,17 +16,24 @@ a:link {
 
 .kd{
   float: right;
+  margin-left: 10px;
   font-weight: bold;
 }
 
-.fireteamsize{
-  float: right;
+.pad-left{
+  margin-left: 5px;
 }
 
 .icon {
   background-size: cover;
 }
+::ng-deep .mat-card-header-text {
+  width: 100% !important;
+}
 
+.full-width {
+  width: 100%;
+}
 
 .card{
   margin-bottom: 10px;

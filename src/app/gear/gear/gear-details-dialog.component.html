@@ -10,7 +10,6 @@
             <tr>
                 <th>Light</th>
                 <ng-container *ngFor="let i of items">
-
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         {{i.power}}
                         <i *ngIf="i.godRollPve && i.godRollPvp"
@@ -22,10 +21,20 @@
                         <i *ngIf="i.godRollPvp && !i.godRollPve"
                             matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
                             class="fas fa-swords accent-text"></i>
-
+                        <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </a>
+                        <mat-menu #itemMenu="matMenu">
+                            <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(parent.player, i)">
+                                <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                            </button>
+                            <button mat-menu-item *ngFor="let target of i.options" 
+                                (click)="parent.transfer(parent.player, i, target)">
+                                <i class="fal fa-exchange"></i> Transfer to {{target.label}}
+                            </button>
+                        </mat-menu>
                     </td>
                 </ng-container>
-
             </tr>
             <tr>
                 <th>Tag</th>
