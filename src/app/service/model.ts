@@ -128,7 +128,7 @@ export interface Vendor {
     nextRefreshDate: string;
 }
 
-export interface SaleItemCost {
+export interface NameQuantity {
     hash: string;
     name: string;
     quantity: number;
@@ -147,8 +147,8 @@ export interface SaleItem {
     quantity: number;
     objectives: any;
     rolledPerks: ItemPerks[][];
-    value: any;
-    costs: SaleItemCost[];
+    value: NameQuantity[]; 
+    costs: NameQuantity[];
     searchText: string;
     lowLinks?: LowLinks;
 }
