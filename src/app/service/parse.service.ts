@@ -2096,7 +2096,7 @@ export class ParseService {
             }
             let type: ItemType = desc.itemType;
             let ammoType: DestinyAmmunitionType;
-            if (desc.equippingBlock !== null){
+            if (desc.equippingBlock != null){
                 ammoType = desc.equippingBlock.ammoType;
             }
             let description = desc.displayProperties.description;
