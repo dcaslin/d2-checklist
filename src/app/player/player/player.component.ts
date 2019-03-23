@@ -482,6 +482,14 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
         this.bungieService.loadClans(x.profile.userInfo);
+        //todo query history for Gambit Prime and the reckoning
+        //todo query spider vendor
+
+
+        if (x.bounties!=null){
+          console.log("signed in!");
+        }
+
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
