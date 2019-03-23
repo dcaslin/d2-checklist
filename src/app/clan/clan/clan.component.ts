@@ -58,6 +58,14 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     }
     this.sortData();
   }
+  public toggleXpSort() {
+    if (this.sort === 'xpAsc') {
+      this.sort = 'xpDesc';
+    } else {
+      this.sort = 'xpAsc';
+    }
+    this.sortData();
+  }
 
   public toggleLLSort() {
     if (this.sort === 'llAsc') {
@@ -76,6 +84,17 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
     if (aD < bD) { return 1; }
     if (aD > bD) { return -1; }
+    return 0;
+  }
+
+  private static compareXp(a: BungieGroupMember, b: BungieGroupMember): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.player != null) { aX = a.player.getWeeklyXp(); }
+    if (b.player != null) { bX = b.player.getWeeklyXp(); }
+
+    if (aX < bX) { return 1; }
+    if (aX > bX) { return -1; }
     return 0;
   }
 
@@ -141,6 +160,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     if (this.sort === 'memberAsc') { this.sortedMembers.sort(ClanComponent.compareName); }
     if (this.sort === 'memberDesc') { this.sortedMembers.sort(ClanComponent.compareNameReverse); }
     if (this.sort === 'dateAsc') { this.sortedMembers.sort(ClanComponent.compareDate); }
+    if (this.sort === 'xpAsc') { this.sortedMembers.sort(ClanComponent.compareXp); }
+
     if (this.sort === 'dateDesc') { this.sortedMembers.sort(ClanComponent.compareDateReverse); }
     if (this.sort === 'llAsc') { this.sortedMembers.sort(ClanComponent.compareLLs); }
     if (this.sort === 'llDesc') { this.sortedMembers.sort(ClanComponent.compareLLsReverse); }

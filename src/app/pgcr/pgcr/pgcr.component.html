@@ -1,6 +1,6 @@
 <div class="childComponent">
   <div class="childVert">
-    <div class="main">
+    <div class="main mat-typography">
 
       <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
@@ -9,16 +9,31 @@
 
         <ng-container *ngIf="data!=null">
           <h2>
-            <i *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text fas fa-times" aria-hidden="true"></i>
-            <i *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text fas fa-check" aria-hidden="true"></i>
-            PGCR: {{data.mode}} - {{data.name}}
-            <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
-            <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
+            {{data.mode}} - {{data.name}}
+            <span class="pad-left">
+              <i *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text fas fa-times" aria-hidden="true"></i>
+              <i *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text fas fa-check" aria-hidden="true"></i>
+            </span>
           </h2>
-          <p>
-            Start: {{data.period|date:'short'}} &emsp; Finish: {{data.finish|date:'short'}} &emsp; Duration: {{
-            data.activityDurationSeconds
-            | amnsTiming:'seconds' }}</p>
+          <div *ngIf="debugmode">
+              <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
+              <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
+          </div>
+          <table class="timing-table">
+            <tr>
+              <th>Date</th>
+              <th>Start</th>
+              <th>Finish</th>
+              <th>Duration</th>
+            </tr>
+            <tr>
+              <td>{{data.period|date:'shortDate'}}</td>
+              <td>{{data.period|date:'shortTime'}}</td>
+              <td>{{data.finish|date:'shortTime'}}</td>
+              <td>{{data.activityDurationSeconds | amnsTiming:'seconds' }}</td>
+            </tr>
+          </table>
+          
           <mat-card class="card" *ngIf="data.teams!=null && data.teams.length>0">
             <mat-card-content>
               <p>
@@ -31,9 +46,9 @@
 
           <mat-card class="card" *ngFor="let entry of data.entries">
 
-            <mat-card-header>
+            <mat-card-header class="full-width">
               <div *ngIf="entry.user.icon!=null" class="icon" mat-card-avatar [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
-              <mat-card-title>
+              <mat-card-title class="full-width">
 
                 <b>
                   <a *ngIf="entry.user.membershipType!=4" [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]"
@@ -46,26 +61,28 @@
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
                 </b>
-                {{entry.characterClass}} {{entry.lightLevel}}
+                
                 <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD
                   <br>
                 </span> {{entry.team}}
-                <div>
-                  <span class="warn-text" *ngIf="entry.team!=null">Team {{entry.team}}</span>
-                  <span *ngIf="entry.team==null">&nbsp;</span>
-                  <span class="fireteamsize">Fireteam Size: {{entry.fireteamSize}}</span>
-                </div>
+                
               </mat-card-title>
-              <mat-card-subtitle>
-                <span class="mat-chip stat-val" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
-                <span class="mat-chip stat-val" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
-                <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
-                <span class="mat-chip stat-val" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
-                <span class="mat-chip stat-val" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+              <mat-card-subtitle class="full-width">
+                <div>
+                  <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}}</span>
+                  <span class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</span>
+                  <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}} ({{entry.fireteamSize}} member)</span>
+                </div>
+                <div>
+                    <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
+                    <span class="pad-left" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
+                    <span class="pad-left" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
+                    <span class="pad-left" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
+                </div>
               </mat-card-subtitle>
             </mat-card-header>
-            <mat-card-content>
-              <table>
+            <mat-card-content class="full-width">
+              <table class="full-width">
                 <thead>
                   <tr>
                     <th>Name</th>

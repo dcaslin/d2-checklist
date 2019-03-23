@@ -12,7 +12,7 @@ import {
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective,
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode
+    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType
 } from './model';
 @Injectable()
 export class ParseService {
@@ -2095,6 +2095,10 @@ export class ParseService {
                 return null;
             }
             let type: ItemType = desc.itemType;
+            let ammoType: DestinyAmmunitionType;
+            if (desc.equippingBlock !== null){
+                ammoType = desc.equippingBlock.ammoType;
+            }
             let description = desc.displayProperties.description;
 
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') > 0) {
@@ -2397,6 +2401,9 @@ export class ParseService {
             if (damageType != null && damageType != DamageType.None) {
                 searchText += " " + this.cookDamageType(damageType);
             }
+            if (ammoType!=null){
+                searchText += " " + DestinyAmmunitionType[ammoType];
+            }
 
             searchText = searchText.toLowerCase();
 
@@ -2406,7 +2413,7 @@ export class ParseService {
                 power, damageType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), isRandomRoll
+                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), isRandomRoll, ammoType
             );
         } catch (exc) {
             console.dir(itemComp);
@@ -2686,6 +2693,8 @@ export class ParseService {
         if (mode === 38) { return 'Countdown'; }
         if (mode === 39) { return 'Trials'; }
         if (mode === 40) { return 'Social'; }
+        if (mode === 41) { return 'Trials Countdown'; }
+        if (mode === 42) { return 'Trials Survival'; }
         if (mode === 43) { return 'Iron Banner Control'; }
         if (mode === 44) { return 'Iron Banner Clash'; }
         if (mode === 45) { return 'Iron Banner Supremacy'; }
@@ -2709,7 +2718,18 @@ export class ParseService {
         if (mode === 63) { return 'Gambit'; }
         if (mode === 64) { return 'All PvE Competitive'; }
         if (mode === 65) { return 'Breakthrough'; }
-        return 'Unknown' + mode;
+        if (mode === 66) { return 'Black Armory Forge'; } //BlackArmoryRun
+        if (mode === 67) { return 'Salvage'; }
+        if (mode === 68) { return 'Iron Banner Salvage'; }
+        if (mode === 69) { return 'PvP Competitive'; }
+        if (mode === 70) { return 'PvP Quickplay'; }
+        if (mode === 71) { return 'Clash Competitive'; }
+        if (mode === 72) { return 'Clash Quickplay'; }
+        if (mode === 73) { return 'Control Competitive'; }
+        if (mode === 74) { return 'Control Quickplay'; }
+        if (mode === 75) { return 'Gambit Prime'; }
+        if (mode === 76) { return 'Reckoning'; }
+        return 'Unknown ' + mode;
     }
 
     public parseBungieMembership(resp: any) {
