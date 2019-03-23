@@ -705,6 +705,7 @@ export class ParseService {
                 const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
                 if (valDesc != null) {
                     values.push({
+                        hash: val.itemHash,
                         name: valDesc.displayProperties.name,
                         quantity: val.quantity
                     });
@@ -752,7 +753,7 @@ export class ParseService {
 
     private parseSaleItemStatus(s: number): string {
         if ((s & 8) > 0) {
-            return 'Not unlocked';
+            return 'Already completed';
         } else if ((s & 32) > 0) {
             return 'Not for sale right now';
         } else if ((s & 64) > 0) {
@@ -970,38 +971,37 @@ export class ParseService {
                 }
             }
 
-            if (ms.milestoneHash === 2188900244) {
+            
+            if (ms.milestoneHash === 2188900244) {// recipe for success
                 pl = 652;
             }
-            else if (ms.milestoneHash === 3603098564) {
+            else if (ms.milestoneHash === 3603098564) {// clan rewards
                 pl = 650;
-            } else if (ms.milestoneHash === 2171429505) {
+            } else if (ms.milestoneHash === 2171429505) { //weekly nightfall
                 pl = 648;
-            } else if (ms.milestoneHash === 2853331463) {
+            } else if (ms.milestoneHash === 2853331463) { //NF score
                 pl = 649;
-            } else if (ms.milestoneHash === 463010297) {
+            } else if (ms.milestoneHash === 463010297) { //flashpoint
                 pl = 520;
-            } else if (ms.milestoneHash === 536115997) {
+            } else if (ms.milestoneHash === 536115997) { //guardian of all
                 pl = 520;
-            } else if (ms.milestoneHash === 3082135827) {
+            } else if (ms.milestoneHash === 3082135827) { //heroic story
                 pl = 520;
-            } else if (ms.milestoneHash === 3448738070) {
+            } else if (ms.milestoneHash === 3448738070) { //weekly gambit
                 pl = 520;
-            } else if (ms.milestoneHash === 1437935813) {
+            } else if (ms.milestoneHash === 1437935813) { //weekly strike
                 pl = 520;
-            } else if (ms.milestoneHash === 3172444947) {
+            } else if (ms.milestoneHash === 3172444947) { //daily vanguard
                 pl = 520;
-            } else if (ms.milestoneHash === 3312018120) {
+            } else if (ms.milestoneHash === 3312018120) { //daily crucible
                 pl = 520;
-            } else if (ms.milestoneHash === 157823523) {
+            } else if (ms.milestoneHash === 157823523) { //weekly crucible
                 pl = 520;
-            } else if (ms.milestoneHash === 941217864) {
+            } else if (ms.milestoneHash === 941217864) { //daily gambit
                 pl = 520;
-            } else if (ms.milestoneHash === 1300394968) {
+            } else if (ms.milestoneHash === 1300394968) { //heroic adv
                 pl = 520;
-            } else if (ms.milestoneHash === 3312018120) {
-                pl = 520;
-            }
+            } 
             if (rewards.trim().length == 0 && activityRewards != null) {
                 rewards = activityRewards;
             }
@@ -2851,7 +2851,6 @@ export class ParseService {
     //     c.lifetimeSpire = totalSpire;
     //     c.lifetimeLwNormal = totalLwNormal;
     //     c.lifetimeSpNormal = totalSpNormal;
-
 
     //     //const EATER_KEY = '1234';
     //     //const SPIRE_KEY = '2345';

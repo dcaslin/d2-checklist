@@ -9,13 +9,15 @@ import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus } from './model';
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { BucketService, Bucket } from './bucket.service';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
-
+const SPIDER_KEY = '99999';
+// const RECKONING_KEY = '88888';
+const GAMBIT_PRIME_KEY = '77777';
 
 @Injectable()
 export class BungieService implements OnDestroy {
@@ -104,7 +106,7 @@ export class BungieService implements OnDestroy {
             const opt = await this.buildReqOptions();
             const resp = await this.makeReq('User/GetBungieNetUserById/' + bungieId + '/');
             const m = this.parseService.parseBungieMember(resp);
-            if (m.bnet!=null){
+            if (m.bnet != null) {
                 return m.bnet.name;
             }
             return null;
@@ -371,6 +373,116 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    private async loadSpiderOnChar(c: Character): Promise<void> {
+        const vendorData = await this.loadVendors(c);
+        let complete = false;
+        let held = false;
+        for (const i of vendorData) {
+            if (i.vendor.hash == "863940356" && i.value != null && i.value.length == 1 && i.value[0].hash == "4039143015") {
+                if (i.status == "Already completed") {
+                    complete = true;
+                }
+                else if (i.status == "Already held") {
+                    held = true;
+                }
+                break;
+            }
+        }
+        const spiderPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, complete, complete ? 1 : 0, held ? 'Held' : 'Not Held', null, null);
+        c.milestones[SPIDER_KEY] = spiderPsuedoMs;
+    }
+
+    private getPctString(pct: number){
+        if (pct > 0 && pct < 1) {
+            return Math.floor(100 * pct) + '% complete';
+        }
+        return null;
+    }
+
+    private async loadActivityPsuedoMsOnChar(c: Character): Promise<void> {
+        // we can do 0 later if we figure out the reckoning
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId,64, c.startWeek);
+        const gambitActivities = activities.filter(a => a.mode=="Gambit Prime" && a.success);
+        let count = gambitActivities.length;
+        if (count>4){
+            count = 4;
+        }
+        const gambitPct = count/4;
+        const gambitPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, gambitPct>=1, gambitPct, this.getPctString(gambitPct), null, null);
+        c.milestones[GAMBIT_PRIME_KEY] = gambitPsuedoMs;
+
+        // const reckoningActivities = activities.filter(a => a.mode=="Reckoning" && a.success);
+        // let progress = 0;
+        // for (const a of reckoningActivities){
+        //     console.dir(a);
+        // }
+        // const reckoningPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, complete, complete ? 1 : 0, held ? 'Held' : 'Not Held', null, null);
+        // c.milestones[RECKONING_KEY] = reckoningActivities;
+    }
+
+    public async loadActivityPsuedoMilestones(p: Player): Promise<void> {
+        //add reckoning psuedo milestones
+        // const reckMs: MileStoneName = {
+        //     key: RECKONING_KEY,
+        //     resets: p.characters[0].endWeek.toISOString(),
+        //     rewards: "Powerful Gear",
+        //     pl: 654,
+        //     name: "The Reckoning",
+        //     desc: "Earn 100% progress",
+        //     hasPartial: true
+        // };
+        const gpMs: MileStoneName = {
+            key: GAMBIT_PRIME_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: "Powerful Gear",
+            pl: 654,
+            name: "Gambit Prime",
+            desc: "Complete 4 Gambit Prime matches",
+            hasPartial: true
+        };
+        p.milestoneList.push(gpMs);
+        //p.milestoneList.push(reckMs);
+        //const emptyReck: MilestoneStatus = new MilestoneStatus(RECKONING_KEY, false, 0, null, "Loading...", null);
+        const emptyGp: MilestoneStatus = new MilestoneStatus(GAMBIT_PRIME_KEY, false, 0, null, "Loading...", null);
+        for (const c of p.characters) {
+            //c.milestones[RECKONING_KEY] = emptyReck;
+            c.milestones[GAMBIT_PRIME_KEY] = emptyGp;
+        }
+        for (const c of p.characters) {
+            this.loadActivityPsuedoMsOnChar(c);
+        }
+    }
+
+    public isSignedOn(p: Player): boolean {
+        if (this.selectedUser==null) return false;
+        return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
+    }
+
+    public async loadSpiderWeekly(p: Player): Promise<void> {
+        //is this the signed on user?
+        if (!this.isSignedOn(p)){
+            return;
+        }
+        const ms: MileStoneName = {
+            key: SPIDER_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: "Powerful Gear",
+            pl: 653,
+            name: "Spider's Weekly Bounty",
+            desc: "Spider's weekly powerful bounty, costs Ghost Fragments",
+            hasPartial: false
+        };
+        p.milestoneList.push(ms);
+        const empty: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, false, 0, null, "Loading...", null);
+        //load empty while we wait, so it doesn't show checked
+        for (const c of p.characters) {
+            c.milestones[SPIDER_KEY] = empty;
+        }
+        for (const c of p.characters) {
+            this.loadSpiderOnChar(c);
+        }
+    }
+
     public async loadVendors(c: Character): Promise<SaleItem[]> {
         try {
             const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
@@ -400,7 +512,7 @@ export class BungieService implements OnDestroy {
 
     public async getBurns(): Promise<NameDesc[]> {
         const ms = await this.getPublicMilestones();
-        
+
         for (let m of ms) {
             if ("3172444947" === m.hash) {
                 return m.aggActivities[0].activity.modifiers;
@@ -434,7 +546,35 @@ export class BungieService implements OnDestroy {
     public async getActivityHistoryAsync(membershipType: number, membershipId: string,
         characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
         return await this.getActivityHistory(membershipType, membershipId, characterId, mode, max, ignoreErrors);
+    }
 
+    public async getActivityHistoryUntilDate(membershipType: number, membershipId: string, characterId: string, mode: number, stopDate: Date): Promise<Activity[]> {        
+        let returnMe = [];
+        let page = 0;
+        //repeat until we run out of activities or we preceed the start date or we hit 10 pages
+        while (true) {
+            let activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, 100, true);
+            returnMe = returnMe.concat(activities);
+            //out of activities
+            if (activities.length<100){
+                break;
+            }
+            const lastActivity = activities[activities.length-1];
+            const d: Date = new Date(lastActivity.period);
+            //we're past the date
+            if (d.getTime() < stopDate.getTime()) {
+                break;
+            }
+            page++;
+            //too many pages
+            if (page>10){
+                throw "Too many pages of data, stopping";
+            }
+        }
+        return returnMe.filter(a=>{
+            const d: Date = new Date(a.period);
+            return d.getTime()>= stopDate.getTime();
+        });
     }
 
     public getActivityHistory(membershipType: number, membershipId: string,
@@ -442,7 +582,6 @@ export class BungieService implements OnDestroy {
         const self = this;
         const MAX_PAGE_SIZE = 100;
         let curPage = 0;
-
 
         return new Promise(function (resolve, reject) {
             const allMatches: any[] = [];

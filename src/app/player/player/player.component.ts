@@ -185,8 +185,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.player = x;
     if (x != null) {
       this.sort = 'rewardsDesc';
+      this.sortMileStones();
       this.recordDatasource = new MatTreeFlatDataSource(this.triumphTreeControl, this.treeFlattener2);
-
       this.recordDatasource.data = this.player.records;
       this.filterTriumphs();
       this.setTrackedTriumphs();
@@ -484,12 +484,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         this.bungieService.loadClans(x.profile.userInfo);
         //todo query history for Gambit Prime and the reckoning
         //todo query spider vendor
-
-
-        if (x.bounties!=null){
-          console.log("signed in!");
-        }
-
+        this.bungieService.loadSpiderWeekly(x);
+        this.bungieService.loadActivityPsuedoMilestones(x);
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
