@@ -12,7 +12,7 @@ import {
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective,
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType
+    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType, PGCRExtraData
 } from './model';
 @Injectable()
 export class ParseService {
@@ -574,7 +574,7 @@ export class ParseService {
         if (v.saleItems == null) { return []; }
         const vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
         if (vDesc == null) { return []; }
-        if (resp.vendors.data[vendorKey]==null){
+        if (resp.vendors.data[vendorKey] == null) {
             //vendor isn't here right now;
             return [];
         }
@@ -971,7 +971,7 @@ export class ParseService {
                 }
             }
 
-            
+
             if (ms.milestoneHash === 2188900244) {// recipe for success
                 pl = 652;
             }
@@ -1001,7 +1001,7 @@ export class ParseService {
                 pl = 520;
             } else if (ms.milestoneHash === 1300394968) { //heroic adv
                 pl = 520;
-            } 
+            }
             if (rewards.trim().length == 0 && activityRewards != null) {
                 rewards = activityRewards;
             }
@@ -1664,7 +1664,7 @@ export class ParseService {
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
                 if (oChild.invisible && !showInvisTriumphs) continue;
-                if (oChild.score==0 && !showZeroPtTriumphs) continue;
+                if (oChild.score == 0 && !showZeroPtTriumphs) continue;
                 children.push(oChild);
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
@@ -1771,7 +1771,7 @@ export class ParseService {
             percent = Math.floor(sum / objs.length);
         }
         const pts = rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue;
-        
+
         return {
             type: 'record',
             hash: key,
@@ -2036,17 +2036,17 @@ export class ParseService {
         }
         if (plugDesc.hash == 3786277607) //legacy MW armor slot
             return null;
-        if (plugDesc.hash == 3876796314 )  // base radiance
+        if (plugDesc.hash == 3876796314)  // base radiance
             return null;
-        if (plugDesc.hash == 2667900317 )  // crucible  mw
+        if (plugDesc.hash == 2667900317)  // crucible  mw
             return null;
-        if (plugDesc.hash == 2946649456 )  // vanguard  mw
+        if (plugDesc.hash == 2946649456)  // vanguard  mw
             return null;
-        if (plugDesc.hash == 1961001474 )  // rework weapon
-            return null;            
-        if (plugDesc.hash == 3612467353 )  // rework weapon
-            return null;            
-              
+        if (plugDesc.hash == 1961001474)  // rework weapon
+            return null;
+        if (plugDesc.hash == 3612467353)  // rework weapon
+            return null;
+
         const ch = plugDesc.plug.plugCategoryHash;
         if (ch == 2973005342 || //shader
             ch == 2947756142) //masterwork tracker
@@ -2091,12 +2091,12 @@ export class ParseService {
                 return null;
             }
             //ignore postmaster items
-            if (itm.bucketHash == 215593132){
+            if (itm.bucketHash == 215593132) {
                 return null;
             }
             let type: ItemType = desc.itemType;
             let ammoType: DestinyAmmunitionType;
-            if (desc.equippingBlock != null){
+            if (desc.equippingBlock != null) {
                 ammoType = desc.equippingBlock.ammoType;
             }
             let description = desc.displayProperties.description;
@@ -2115,11 +2115,11 @@ export class ParseService {
                 if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
                     //mods we use the perk desc
-                    if (desc.perks!=null && desc.perks.length>0){
+                    if (desc.perks != null && desc.perks.length > 0) {
                         const pHash = desc.perks[0].perkHash;
 
                         const pDesc: any = this.destinyCacheService.cache.Perk[pHash];
-                        if (pDesc!=null){
+                        if (pDesc != null) {
                             description = pDesc.displayProperties.description;
                         }
                     }
@@ -2401,7 +2401,7 @@ export class ParseService {
             if (damageType != null && damageType != DamageType.None) {
                 searchText += " " + this.cookDamageType(damageType);
             }
-            if (ammoType!=null){
+            if (ammoType != null) {
                 searchText += " " + DestinyAmmunitionType[ammoType];
             }
 
@@ -2479,6 +2479,14 @@ export class ParseService {
         return returnMe;
     }
 
+    private camelKebab(prefix: string, s: string): string {
+        if (prefix!=null){
+            s = s.replace(prefix,'');
+        }
+        s = s.replace(/([a-z])([A-Z])/g, '$1 $2');
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
     private parsePGCREntry(e: any): PGCREntry {
         const r: PGCREntry = new PGCREntry();
         r.bungieNetUserInfo = e.player.bungieNetUserInfo;
@@ -2495,49 +2503,84 @@ export class ParseService {
             } else {
                 r.kd = r.kills / r.deaths;
             }
-
-
-
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
             r.team = ParseService.getBasicDisplayValue(e.values.team);
-
             r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
             r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
             r.timePlayedSeconds = ParseService.getBasicValue(e.values.timePlayedSeconds);
             r.completionReason = ParseService.getBasicValue(e.values.completionReason);
             r.weapons = [];
-            if (e.extended != null && e.extended.weapons != null) {
-                e.extended.weapons.forEach(w => {
-                    const data = new PGCRWeaponData();
+            r.extra = [];
 
-                    data.hash = w.referenceId;
-                    data.kills = ParseService.getBasicValue(w.values.uniqueWeaponKills);
-                    data.precPct = ParseService.getBasicValue(w.values.uniqueWeaponKillsPrecisionKills);
-
-                    const desc: any = this.destinyCacheService.cache.InventoryItem[data.hash];
-                    if (desc != null) {
-                        data.type = desc.itemTypeAndTierDisplayName;
-                        data.name = desc.displayProperties.name;
-                    } else {
-                        data.type = 'Classified';
-                        data.name = 'Classified';
+            if (e.extended != null) {
+                if (e.extended.values != null) {
+                    for (const key of Object.keys(e.extended.values)) {
+                        const val = e.extended.values[key];
+                        const basicVal = ParseService.getBasicValue(val);
+                        if (key.startsWith('weaponKills')) {
+                            if (basicVal > 0) {
+                                const name = this.camelKebab('weaponKills', key);
+                                const data = new PGCRWeaponData();
+                                data.hash = "-1";
+                                data.kills = basicVal;
+                                data.name = name;
+                                data.type = name;
+                                r.weapons.push(data);
+                            }
+                        }
+                        else if (key.startsWith('medal')) {
+                            const name = this.camelKebab('medal', key);
+                            const extraEntry = new PGCRExtraData();
+                            extraEntry.name = name;
+                            extraEntry.value = basicVal;
+                            r.extra.push(extraEntry);
+                        }
+                        else {
+                            const extraEntry = new PGCRExtraData();
+                            const name = this.camelKebab(null, key);
+                            extraEntry.name = name;
+                            extraEntry.value = basicVal;
+                            r.extra.push(extraEntry);
+                        }
                     }
-                    r.weapons.push(data);
 
-                });
+                }
+                if (e.extended.weapons != null) {
+                    e.extended.weapons.forEach(w => {
+                        const data = new PGCRWeaponData();
+                        data.hash = w.referenceId;
+                        data.kills = ParseService.getBasicValue(w.values.uniqueWeaponKills);
+                        data.precPct = ParseService.getBasicValue(w.values.uniqueWeaponKillsPrecisionKills);
+                        const desc: any = this.destinyCacheService.cache.InventoryItem[data.hash];
+                        if (desc != null) {
+                            data.type = desc.itemTypeAndTierDisplayName;
+                            data.name = desc.displayProperties.name;
+                        } else {
+                            data.type = 'Classified';
+                            data.name = 'Classified';
+                        }
+                        r.weapons.push(data);
+
+                    });
+                }
             }
         }
-
         r.weapons.sort(function (a, b) {
             return b.kills - a.kills;
+        });
+        r.extra.sort(function (a, b) {
+            if (a.name < b.name)
+                return -1;
+            if (a.name > b.name)
+                return 1;
+            return 0;
         });
         r.characterClass = e.player.characterClass;
         r.characterLevel = e.player.characterLevel;
         r.lightLevel = e.player.lightLevel;
         if (!r.fireteamId) { r.fireteamId = -1; }
         if (!r.score) { r.score = 0; }
-
         r.user = this.parseUserInfo(e.player.destinyUserInfo);
         return r;
     }
@@ -2616,7 +2659,7 @@ export class ParseService {
             r.teams = [];
             p.teams.forEach(t => {
                 const team = new PGCRTeam();
-                team.name = t.teamName;
+                team.name = '18' == t.teamName ? 'Alpha' : t.teamName;
                 team.standing = ParseService.getBasicDisplayValue(t.standing);
                 team.score = ParseService.getBasicValue(t.score);
                 r.teams.push(team);
