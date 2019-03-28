@@ -909,9 +909,14 @@ export class PGCREntry {
     startSeconds: number;
     activityDurationSeconds: number;
     timePlayedSeconds: number;
-
     weapons: PGCRWeaponData[];
+    extra: PGCRExtraData[];
+}
 
+
+export class PGCRExtraData {
+    name: string;
+    value: number;
 }
 
 export class PGCRWeaponData {

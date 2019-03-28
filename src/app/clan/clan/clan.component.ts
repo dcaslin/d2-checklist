@@ -234,7 +234,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
   private downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
-    let sCsv = 'member,platform,chars,lastPlayed days ago,';
+    let sCsv = 'member,platform,chars,lastPlayed days ago,Weekly XP,max LL,';
     this.modelPlayer.milestoneList.forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
@@ -259,6 +259,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       const lastPlayed = moment(member.player.profile.dateLastPlayed);
       const diff = today.diff(lastPlayed, 'days');
       sCsv += diff + ',';
+      sCsv += member.player.getWeeklyXp() + ',';
+      sCsv += member.player.maxLL + ',';
 
       if (member.player.characters != null) {
         this.modelPlayer.milestoneList.forEach(mileStoneName => {
