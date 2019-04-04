@@ -781,13 +781,15 @@ export class AggHistory {
 
 export class NameDesc {
     name: string;
+    hash: string;
     desc: string;
     icon: string;
 
-    constructor(name: string, desc: string, icon?: string) {
+    constructor(name: string, desc: string, icon?: string, hash?: string) {
         this.name = name;
         this.desc = desc;
         this.icon = icon;
+        this.hash = hash;
     }
 }
 
@@ -917,6 +919,7 @@ export class PGCREntry {
 export class PGCRExtraData {
     name: string;
     value: number;
+    desc: any;
 }
 
 export class PGCRWeaponData {
@@ -993,6 +996,7 @@ export class Progression {
     weeklyLimit: number;
     currentProgress: number;
     percentToNextLevel: number;
+    steps: any;
 }
 
 export class Const {

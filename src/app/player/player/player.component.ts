@@ -485,7 +485,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         //todo query history for Gambit Prime and the reckoning
         //todo query spider vendor
         this.bungieService.loadSpiderWeekly(x);
-        this.bungieService.loadActivityPsuedoMilestones(x);
+        //this.bungieService.loadActivityPsuedoMilestones(x);
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set

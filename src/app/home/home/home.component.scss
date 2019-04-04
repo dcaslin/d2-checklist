@@ -15,23 +15,48 @@
  .lighter{
    opacity: .6;
  }
+
+ .activity-icon{
+  //  width: 19px;
+  //  height: 19px;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  background-size: cover;
+  display: inline-block;
+}
+
  
 .modifier-chip{
   padding: 5px;
   margin-bottom: 5px;
   display: inline-block;
 }
+::ng-deep .mat-card-header-text{
+  text-align: left;
+}
 
+::ng-deep .mat-card-subtitle {
+  margin-bottom: 0px !important;
+}
+
+::ng-deep .mat-list-item-content{
+  text-align: left;
+}
+
+::ng-deep .mat-list-item{
+  height: 36px !important;
+}
 .more-info{
   text-align: left; 
   max-width: 700px;
-  margin-right: 10px;
-  margin-left: 10px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 
 .info{
-  max-width: 700px;
+  //max-width: 700px;
   margin-right: 10px;
   margin-left: 10px;
   margin-bottom: 25px;
@@ -48,7 +73,7 @@ a.underline:link {
 
 .home-button-row{
   text-align: center; 
-  max-width: 700px;
+  // max-width: 700px;
   margin-right: 10px;
   margin-left: 10px;
   margin-bottom: 25px;
@@ -77,12 +102,16 @@ a.underline:link {
   border-radius: 0%;
 }
 
-.activity-icon{
-  height: 32px;
-  width: 32px;
-  border-radius: 25%;
+.invert{
+  filter: invert(50%);
+}
+
+.icon{
+  height: 24px;
+  width: 24px;  
+  margin-right: 10px;
   background-size: cover;
-  display: inline-block;
+  display: block;
 }
 
 dl{
@@ -117,20 +146,4 @@ dl{
 .searchGt{
   width: 125px;
   margin-right: 10px;
-}
-
-@media (max-width: map-get($grid-breakpoints, md)) {
-  .body-text {
-      width: auto;
-    }
-}
-
-@media (max-width: map-get($grid-breakpoints, sm)) {
-  .body-text {
-    width: auto;
-  }
-}
-
-.mat-chip{
-  margin-bottom: 5px;
 }
