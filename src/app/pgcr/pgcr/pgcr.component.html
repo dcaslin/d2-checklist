@@ -117,8 +117,17 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let w of entry.extra">
-                      <td>{{w.name}}</td>
+                      <td>
+                          {{w.name}}
+                        <!-- <span *ngIf="w.desc!=null" [matTooltip]="w.desc.statDescription">
+                          {{w.desc.statName}} - {{w.name}}
+                        </span>
+                        <ng-container *ngIf="w.desc==null">
+                            {{w.name}}
+                          </ng-container> -->
+                      </td>
                       <td>{{w.value|number}}</td>
+
                     </tr>
                   </tbody>
                 </table>

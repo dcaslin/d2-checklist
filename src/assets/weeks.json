@@ -1,0 +1,339 @@
+{
+  "weeks": [
+    {
+      "reset": "4/2/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "4/9/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "4/16/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "4/23/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "4/30/2019",
+      "ascendantChallenge": "Agonarch Abyss",
+      "location": "Bay of Drowned Wishes",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "5/7/2019",
+      "ascendantChallenge": "Cimmerian Garrison",
+      "location": "Chamber of Starlight",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "5/14/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "5/21/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "5/28/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "6/4/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "6/11/2019",
+      "ascendantChallenge": "Agonarch Abyss",
+      "location": "Bay of Drowned Wishes",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "6/18/2019",
+      "ascendantChallenge": "Cimmerian Garrison",
+      "location": "Chamber of Starlight",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "6/25/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "7/2/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "7/9/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "7/16/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "7/23/2019",
+      "ascendantChallenge": "Agonarch Abyss",
+      "location": "Bay of Drowned Wishes",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "7/30/2019",
+      "ascendantChallenge": "Cimmerian Garrison",
+      "location": "Chamber of Starlight",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "8/6/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "8/13/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "8/20/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "8/27/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "9/3/2019",
+      "ascendantChallenge": "Agonarch Abyss",
+      "location": "Bay of Drowned Wishes",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "9/10/2019",
+      "ascendantChallenge": "Cimmerian Garrison",
+      "location": "Chamber of Starlight",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "9/17/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "9/24/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "10/1/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "10/8/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "10/15/2019",
+      "ascendantChallenge": "Agonarch Abyss",
+      "location": "Bay of Drowned Wishes",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "10/22/2019",
+      "ascendantChallenge": "Cimmerian Garrison",
+      "location": "Chamber of Starlight",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "10/29/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "11/5/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "11/12/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "11/19/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "11/26/2019",
+      "ascendantChallenge": "Agonarch Abyss",
+      "location": "Bay of Drowned Wishes",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Kathok: Roar of Xol"
+    },
+    {
+      "reset": "12/3/2019",
+      "ascendantChallenge": "Cimmerian Garrison",
+      "location": "Chamber of Starlight",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "Sniper Rifle",
+      "escalationProtocolBoss": "Damkath: The Mask"
+    },
+    {
+      "reset": "12/10/2019",
+      "ascendantChallenge": "Ouroborea",
+      "location": "Aphelion's Rest",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Naksud: The Famine"
+    },
+    {
+      "reset": "12/17/2019",
+      "ascendantChallenge": "Forfeit Shrine",
+      "location": "Gardens of Esila",
+      "curseStrength": "Weak",
+      "escalationProtocolWeapon": "All weapons",
+      "escalationProtocolBoss": "Bok Litur: Hunger of Xol"
+    },
+    {
+      "reset": "12/24/2019",
+      "ascendantChallenge": "Shattered Ruins",
+      "location": "Spine of Keres",
+      "curseStrength": "Medium",
+      "escalationProtocolWeapon": "Shotgun",
+      "escalationProtocolBoss": "Nur Abath: Crest of Xol"
+    },
+    {
+      "reset": "12/31/2019",
+      "ascendantChallenge": "Keep of Honed Edges",
+      "location": "Harbinger's Seclude",
+      "curseStrength": "Strong",
+      "escalationProtocolWeapon": "SMG",
+      "escalationProtocolBoss": "Nathok: Roar of Xol"
+    }
+  ],
+  "videos": {
+    "Ouroborea": "https://www.youtube.com/watch?v=dUGLYlS7K7w",
+    "Forfeit Shrine": "https://www.youtube.com/watch?v=r2tKPUZQkFo",
+    "Shattered Ruins": "https://www.youtube.com/watch?v=7T7I7qbusIo",
+    "Keep of Honed Edges": "https://www.youtube.com/watch?v=vV6oWIgSsgU",
+    "Agonarch Abyss": "https://www.youtube.com/watch?v=ogcNP8CzT0g",
+    "Cimmerian Garrison": "https://www.youtube.com/watch?v=l2O9_2Vkgik"
+  },
+  "epvideos": {
+    "Damkath: The Mask": "https://www.youtube.com/watch?v=1DGzF9Z_s9w",
+    "Naksud: The Famine": "https://www.youtube.com/watch?v=7g4So51h1mk",
+    "Bok Litur: Hunger of Xol": "https://www.youtube.com/watch?v=ONRve7CUnAE",
+    "Nur Abath: Crest of Xol": "https://www.youtube.com/watch?v=0tjlwp3n0BE",
+    "Kathok: Roar of Xol": "https://www.youtube.com/watch?v=nz57z9jgrYU"
+  }
+}

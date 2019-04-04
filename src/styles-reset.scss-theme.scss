@@ -74,6 +74,8 @@
     font-weight: lighter;
     color: mat-color($foreground, secondary-text);
   }
+
+
   
   .simple-darker-caption-no-margin{
     font-size: smaller;
@@ -84,6 +86,10 @@
     font-size: smaller;
     font-weight: lighter;
     color: mat-color($foreground, secondary-text);
+  }
+  
+  .right-margin{
+    margin-right: 10px;
   }
   
   .simple-warn-caption{

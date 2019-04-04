@@ -512,7 +512,6 @@ export class BungieService implements OnDestroy {
 
     public async getBurns(): Promise<NameDesc[]> {
         const ms = await this.getPublicMilestones();
-
         for (let m of ms) {
             if ("3172444947" === m.hash) {
                 return m.aggActivities[0].activity.modifiers;
@@ -520,6 +519,17 @@ export class BungieService implements OnDestroy {
         }
         return null;
     }
+
+    public async getReckBurns(): Promise<NameDesc[]> {
+        const ms = await this.getPublicMilestones();
+        for (let m of ms) {
+            if ("601087286" === m.hash) {
+                return m.aggActivities[1].activity.modifiers;
+            }
+        }
+        return null;
+    }
+
 
     public async getActivityHistoryPage(membershipType: number, membershipId: string,
         characterId: string, mode: number, page: number, count: number, ignoreErrors?: boolean): Promise<Activity[]> {

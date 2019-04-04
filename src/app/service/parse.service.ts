@@ -169,6 +169,12 @@ export class ParseService {
             prog.nextLevelAt = p.nextLevelAt;
             prog.progressToNextLevel = p.progressToNextLevel;
 
+            if (desc.steps!=null && desc.steps.length>1){
+                if (desc.steps[0].stepName!=null && desc.steps[0].stepName.length>0){
+                    prog.steps = desc.steps;
+                }
+            }
+
             const progNeeded = p.nextLevelAt - p.progressToNextLevel;
             prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
             return prog;
@@ -443,7 +449,7 @@ export class ParseService {
             icon = jDesc.displayProperties.icon;
         }
         if (name != null && name !== '' && name !== 'Classified') {
-            return new NameDesc(name, desc, icon);
+            return new NameDesc(name, desc, icon, hash);
         }
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
@@ -974,6 +980,12 @@ export class ParseService {
 
             if (ms.milestoneHash === 2188900244) {// recipe for success
                 pl = 652;
+            }
+            else if (ms.milestoneHash === 601087286 ) {// reckoning
+                pl = 690;
+            }
+            else if (ms.milestoneHash === 2010672046  ) {// Gambit prime
+                pl = 689;
             }
             else if (ms.milestoneHash === 3603098564) {// clan rewards
                 pl = 650;
@@ -2529,20 +2541,27 @@ export class ParseService {
                                 r.weapons.push(data);
                             }
                         }
-                        else if (key.startsWith('medal')) {
-                            const name = this.camelKebab('medal', key);
-                            const extraEntry = new PGCRExtraData();
-                            extraEntry.name = name;
-                            extraEntry.value = basicVal;
-                            r.extra.push(extraEntry);
-                        }
                         else {
-                            const extraEntry = new PGCRExtraData();
-                            const name = this.camelKebab(null, key);
-                            extraEntry.name = name;
-                            extraEntry.value = basicVal;
-                            r.extra.push(extraEntry);
+                            const desc: any = this.destinyCacheService.cache.HistoricalStats[key];
+                            if (key.startsWith('medal')) {
+                                
+                                const name = this.camelKebab('medal', key);
+                                const extraEntry = new PGCRExtraData();
+                                extraEntry.name = name;
+                                extraEntry.value = basicVal;
+                                extraEntry.desc = desc;
+                                r.extra.push(extraEntry);
+                            }
+                            else {
+                                const extraEntry = new PGCRExtraData();
+                                const name = this.camelKebab(null, key);
+                                extraEntry.name = name;
+                                extraEntry.value = basicVal;
+                                extraEntry.desc = desc;
+                                r.extra.push(extraEntry);
+                            }
                         }
+                        
                     }
 
                 }
