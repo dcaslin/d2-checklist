@@ -71,6 +71,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   recordDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
   collectionDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
   burns: NameDesc[] = [];
+  reckBurns: NameDesc[] = [];
 
   constructor(public bungieService: BungieService,
     storageService: StorageService,
@@ -235,7 +236,12 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     dc.disableClose = false;
     dc.autoFocus = true;
     //dc.width = '500px';
-    dc.data = this.burns;
+    // dc.maxHeight= '80vw';
+    // dc.maxWidth= '80vw';
+    // dc.minHeight = '400px';
+    dc.data = {
+      burns: this.burns,
+      reckBurns: this.reckBurns};
     const dialogRef = this.dialog.open(BurnDialogComponent, dc);
   }
 
@@ -555,6 +561,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   async setBurns(){
     this.burns = await this.bungieService.getBurns();
+    this.reckBurns = await this.bungieService.getReckBurns();
   }
 
   ngOnInit() {
