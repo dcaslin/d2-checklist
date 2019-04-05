@@ -690,7 +690,9 @@
                               matTooltipClass="preserve-white-space">{{faction.name}}</span>
                             <span class="light">Level {{faction.level}} 
                               <ng-container *ngIf="debugmode">{{faction.hash}}</ng-container>
-                              <ng-container *ngIf="faction.steps!=null">{{faction.steps[faction.level-1].stepName}}</ng-container>
+                              <ng-container *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
+                                {{faction.steps[faction.level-1].stepName}}
+                              </ng-container>                              
                             </span>
                             <span class="caption">{{faction.info}}</span>
                             <div class="row dl-row simple-caption">

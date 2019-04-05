@@ -74,12 +74,10 @@ export class WeekService {
     let currWeek: Week;
     if (start!=null){
       const mStart = moment(start);
-      const target = mStart.format("M/D/YYYY");
-      console.log("hi");
+      const target = mStart.format("M/D/YYYY");      
       for (const week of this.weeks.weeks){
         if (week.reset==target){
           currWeek = week;
-          console.dir(currWeek);
         }
       }
       
