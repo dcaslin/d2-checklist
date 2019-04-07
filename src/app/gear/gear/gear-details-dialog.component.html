@@ -134,7 +134,10 @@
 
                     <ng-container *ngFor="let i of items">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            {{i.stats[cntr].value}}
+                            <ng-container *ngIf="i.stats!=null && i.stats[cntr]!=null">
+                                    {{i.stats[cntr].value}}
+                            </ng-container>
+                            
                         </td>
                     </ng-container>
                 </tr>
