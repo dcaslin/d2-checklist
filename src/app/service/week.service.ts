@@ -53,6 +53,7 @@ export class WeekService {
           name = name.replace("FLASHPOINT: ", "");
           name = name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
           flashpoint = name;
+          start = m.start;
         }
         else if ("2853331463"=== m.hash) {
           for (let a of m.aggActivities) {            
@@ -66,9 +67,7 @@ export class WeekService {
             });
           }
         }
-        if (m.start!=null && m.end!=null){
-          start = m.start;
-        }
+        
       }
     }
     let currWeek: Week;
