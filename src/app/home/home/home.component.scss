@@ -4,6 +4,19 @@
   
 }
 
+.grid-parent{
+  display: grid;
+  
+   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+   grid-column-gap: 10px;
+   grid-row-gap: 10px;
+  //margin:1em 0;
+  grid-auto-flow: row dense;
+}
+
+
+
+
 // .mat-select{
 //       margin-top: -7px;
 //  }
@@ -115,13 +128,8 @@ dl{
   margin-left: 20px;
 }
 
-.body-text {
-  margin: 10px auto 0 auto;
-  padding-bottom: 10px;
-  font-size: 0.9em;
-  letter-spacing: .01px;
-  overflow-wrap: break-word;
-  z-index: 1;
+.main{
+  width: 100%;
 }
 
 
