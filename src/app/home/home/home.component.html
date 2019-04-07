@@ -1,12 +1,7 @@
 <div class="childComponent mat-typography">
   <div class="childVert">
     <div class="main">
-
-      <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
-      </div>
-      <div class="body-text" [ngClass]="animateOnRouteEnter">
-        <br />
+      <div [ngClass]="animateOnRouteEnter">
         <div class="centerMe">
           <div *ngIf="debugmode" style="margin-bottom: 25px; text-align: left">
             Version: {{version}}<br>
@@ -44,16 +39,11 @@
             <i class="fas fa-video"></i> Video tutorials
           </a>
         </div>
-        <div class="row info" *ngIf="debugmode">
-          <div class="d-block d-sm-none">XS</div>
-          <div class="d-none d-sm-block d-md-none">SM</div>
-          <div class="d-none d-md-block d-lg-none">MD</div>
-          <div class="d-none d-lg-block d-xl-none">LG</div>
-          <div class="d-none d-xl-block">XL</div>
-
-        </div>
-        <div class="row info" *ngIf="today!=null">
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
+        <div class="center-spinner" *ngIf="loading===true">
+            <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+          </div>    
+        <div class="grid-parent" *ngIf="today!=null" width="100%">
+          <div>
             <mat-card>
               <mat-card-header>
                 <mat-card-title>
@@ -75,35 +65,40 @@
               </mat-card-content>
             </mat-card>
           </div>
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3" *ngIf="today.week!=null">
-              <mat-card>
-                <mat-card-header>
-                  <mat-card-title>Dreaming City</mat-card-title>
-                  <mat-card-subtitle>Powerful weekly drops from T4 Blind Well, Petra's Weekly bounties and the Ascendant
-                    Challenge</mat-card-subtitle>
-                </mat-card-header>
-                <mat-card-content>
-                  <mat-list>
-                    <mat-list-item>
-                      <span class="simple-caption-no-margin right-margin">Ascendent Challenge</span>
-                      <a [href]="today.week.ascendantVideo" target="_blank" rel="noopener">
-                          {{today.week.ascendantChallenge}} <i class="accent-text fab fa-youtube"></i>
-                      </a>
-                    </mat-list-item>
-                    <mat-list-item><span class="simple-caption-no-margin right-margin">Location</span>
-                      {{today.week.location}}</mat-list-item>
-                    <mat-list-item><span class="simple-caption-no-margin right-margin">Curse Strength</span>
-                      {{today.week.curseStrength}}</mat-list-item>
-                    <mat-list-item *ngIf="today.week.curseStrength=='Strong'">
-                      <a href="https://www.youtube.com/watch?v=_lKQBwKfnnc" target="_blank" rel="noopener">
-                        Shattered Throne Active <i class="accent-text fab fa-youtube"></i>
-                      </a>
-                    </mat-list-item>
-                  </mat-list>
-                </mat-card-content>
-              </mat-card>
-            </div>
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-2">
+          <div *ngIf="today.week!=null">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Dreaming City</mat-card-title>
+                <mat-card-subtitle>Powerful weekly drops from T4 Blind Well, Petra's Weekly bounties and the Ascendant
+                  Challenge</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list>
+                  <mat-list-item>
+                    <span class="simple-caption-no-margin right-margin">Ascendent Challenge</span>
+                    <a [href]="today.week.ascendantVideo" target="_blank" rel="noopener">
+                      {{today.week.ascendantChallenge}} <i class="accent-text fab fa-youtube"></i>
+                    </a>
+                  </mat-list-item>
+                  <mat-list-item><span class="simple-caption-no-margin right-margin">Location</span>
+                    {{today.week.location}}</mat-list-item>
+                  <mat-list-item><span class="simple-caption-no-margin right-margin">Curse Strength</span>
+                    {{today.week.curseStrength}}</mat-list-item>
+                  <mat-list-item *ngIf="today.week.curseStrength=='Strong'">
+                    <a href="https://www.youtube.com/watch?v=_lKQBwKfnnc" target="_blank" rel="noopener">
+                      Shattered Throne Active <i class="accent-text fab fa-youtube"></i>
+                    </a>
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Flashpoint: {{today.flashpoint}}</mat-card-title>
+              </mat-card-header>
+            </mat-card>
             <mat-card>
               <mat-card-header>
                 <mat-card-title>Nightfalls</mat-card-title>
@@ -120,7 +115,7 @@
               </mat-card-content>
             </mat-card>
           </div>
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-2">
+          <div>
             <mat-card>
               <mat-card-header>
                 <mat-card-title>Reckoning Modifiers</mat-card-title>
@@ -134,22 +129,24 @@
                 </mat-list>
               </mat-card-content>
             </mat-card>
+          </div>
+          <div>
             <mat-card>
-                <mat-card-header>
-                  <mat-card-title>Heroic Modifiers</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <mat-list role="list">
-                    <mat-list-item *ngFor="let b of today.burns" [matTooltip]="b.desc">
-                      <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-                      {{b.name}}
-                    </mat-list-item>
-                  </mat-list>
-                </mat-card-content>
-              </mat-card>
-          </div>          
-          
-          <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-2" *ngIf="today.week!=null">
+              <mat-card-header>
+                <mat-card-title>Heroic Modifiers</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list role="list">
+                  <mat-list-item *ngFor="let b of today.burns" [matTooltip]="b.desc">
+                    <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    {{b.name}}
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+          <div>
             <mat-card>
               <mat-card-header>
                 <mat-card-title>Escalation Protocol</mat-card-title>
@@ -167,19 +164,15 @@
                 </mat-list>
               </mat-card-content>
             </mat-card>
-            <mat-card>
-              <mat-card-header>
-                <mat-card-title>Flashpoint: {{today.flashpoint}}</mat-card-title>
-              </mat-card-header>
-            </mat-card>
           </div>
-
-
-
         </div>
-
-
-
+        <div class="row info" *ngIf="debugmode">
+          <div class="d-block d-sm-none">XS</div>
+          <div class="d-none d-sm-block d-md-none">SM</div>
+          <div class="d-none d-md-block d-lg-none">MD</div>
+          <div class="d-none d-lg-block d-xl-none">LG</div>
+          <div class="d-none d-xl-block">XL</div>
+        </div>
         <div class="home-button-row">
           <button *ngIf="!showMoreInfo" mat-raised-button (click)="showMoreInfo=true">
             <i class="fal fa-eye"></i> Show Detailed Milestones

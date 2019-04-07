@@ -89,10 +89,17 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
 
   async loadMileStones() {
-    this.today = await this.weekService.getToday();    
+    try{
+      this.today = await this.weekService.getToday(); 
+    }
+    finally{
+      this.loading = false;
+    }   
   }
 
   ngOnInit() {
+
+    this.loading = true;
     this.loadMileStones();
   }
 
