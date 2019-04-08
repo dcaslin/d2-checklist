@@ -443,6 +443,12 @@ MIT
 
 @angular/material/form-field
 
+@angular/material/core
+
+@angular/material/select
+
+@angular/material/paginator
+
 ng2-adsense
 MIT
 MIT License
@@ -478,8 +484,6 @@ MIT
 
 @angular/material/tabs
 
-@angular/material/core
-
 @angular/material/expansion
 
 @angular/material/tree
@@ -511,13 +515,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-@angular/material/select
-
 @angular/material/list
 
 @angular/material/table
-
-@angular/material/paginator
 
 @angular/material/sort
 

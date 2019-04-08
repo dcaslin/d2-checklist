@@ -11,7 +11,7 @@ import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { WishlistService } from '@app/service/wishlist.service';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonToggleGroup } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonToggleGroup, MatPaginator } from '@angular/material';
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '@app/service/notification.service';
 
@@ -59,6 +59,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   exchangeTypeChoices: Choice[] = [];
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
+
+  @ViewChild(MatPaginator) 
+  public paginator: MatPaginator;
 
   @ViewChild('optionsgroup')
   public optionsgroup: MatButtonToggleGroup;
@@ -122,6 +125,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   sortBy: string = "power";
   sortDesc: boolean = true;
   gearToShow: InventoryItem[] = [];
+  page = 0;
   size = 20;
   total: number = 0;
 
@@ -569,11 +573,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         }
       });
     }
-    if (this.size > 0)
+    let start = this.page * this.size;
+    let end = Math.min(start+this.size, tempGear.length);
+    if (start >= end){
+      this.page = 0;
       this.gearToShow = tempGear.slice(0, this.size);
-    else
-      this.gearToShow = tempGear.slice(0);
+    }
+    else{
 
+      this.gearToShow = tempGear.slice(start, end);
+    }
     this.total = tempGear.length;
   }
 
@@ -686,6 +695,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filters.push(this.equippedToggle);
     this.filters.push(this.rarityToggle);
     this.filters.push(this.classTypeToggle);
+
+    this.paginator.page.pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(x => {
+        this.page = x.pageIndex;
+        this.size = x.pageSize;
+        this.filterChanged();
+      });
   }
 
   public showArmorPerks(): void {
