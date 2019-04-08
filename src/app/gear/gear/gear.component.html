@@ -101,9 +101,6 @@
             <i class="fas fa-ellipsis-v"></i>
         </button>
         <mat-menu #menuMoreOptions="matMenu" xPosition="before">
-            <button mat-menu-item [matMenuTriggerFor]="menuShow"><i class="fas fa-plus-square"></i>&ensp;
-              Max Rows to Show
-            </button>
             <button mat-menu-item [matMenuTriggerFor]="menuBulk">
               <i class="fas fa-forklift"></i>&ensp;Bulk Operations
             </button>
@@ -116,12 +113,6 @@
             <button mat-menu-item (click)="copyAllVisibleToClipboard()">
                 <i class="fas fa-copy"></i>&ensp;Copy current rows for Reddit
             </button>
-        </mat-menu>
-        <mat-menu #menuShow="matMenu">
-            <button mat-menu-item (click)="show(20)"><i *ngIf="size==20" class="fas fa-check"></i> 20 rows</button>
-            <button mat-menu-item (click)="show(50)"><i *ngIf="size==50" class="fas fa-check"></i> 50 rows</button>
-            <button mat-menu-item (click)="show(100)"><i *ngIf="size==100" class="fas fa-check"></i> 100 rows</button>
-            <button mat-menu-item (click)="show(-1)"><i *ngIf="size==-1" class="fas fa-check"></i> All rows</button>
         </mat-menu>
         <mat-menu #menuBulk="matMenu">
             <button mat-menu-item (click)="syncLocks()">
@@ -375,7 +366,10 @@
             </ng-container>
           </tbody>
         </table>
+        <mat-paginator #paginator [length]="total" [pageIndex]="page" [pageSize]="size" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
+        </mat-paginator>
 
+        
       </ng-container>
     </div>
     <div *ngIf="disableads===false" class="adRight">
