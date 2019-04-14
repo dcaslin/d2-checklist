@@ -12,7 +12,7 @@ import {
     InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
     Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective,
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType, PGCRExtraData
+    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType, PGCRExtraData, RecordSeason
 } from './model';
 @Injectable()
 export class ParseService {
@@ -1454,8 +1454,10 @@ export class ParseService {
 
         let recordTree = [];
         let seals: Seal[] = [];
+        const seasons: RecordSeason[] = [];
         let lowHangingTriumphs: TriumphRecordNode[] = [];
         let searchableTriumphs: TriumphRecordNode[] = [];
+        const dictSearchableTriumphs: any = {};
 
         let colTree = [];
         let triumphScore = null;
@@ -1560,12 +1562,14 @@ export class ParseService {
             const nodes: any[] = [];
             const records: any[] = [];
             const collections: any[] = [];
+            if (resp.profileRecords!=null){
+                triumphScore = resp.profileRecords.data.score;
+            }
             if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
                 if (resp.profilePresentationNodes.data != null && resp.profilePresentationNodes.data.nodes != null) {
                     nodes.push(resp.profilePresentationNodes.data.nodes);
                     records.push(resp.profileRecords.data.records);
                     collections.push(resp.profileCollectibles.data.collectibles);
-                    triumphScore = resp.profileRecords.data.score;
                 }
             }
             if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
@@ -1617,7 +1621,24 @@ export class ParseService {
                     if (a.name < b.name) return 0;
                     return 0;
                 });
+                for (const r of searchableTriumphs){
+                    dictSearchableTriumphs[r.hash] = r;
+                }
                 lowHangingTriumphs = lowHangingTriumphs.slice(0, 10);
+
+                const seasonDescs: any[] = this.destinyCacheService.cache.RecordSeasons;
+                for (const seasonDesc of seasonDescs){
+
+                    const seasonRecords: TriumphRecordNode[] = [];
+                    for (const hash of seasonDesc.hashes){
+                        seasonRecords.push(dictSearchableTriumphs[hash]);
+                    }
+                    seasons.push({
+                        name: seasonDesc.name,
+                        records: seasonRecords
+                    });
+                }
+
             }
 
             if (collections.length > 0) {
@@ -1635,7 +1656,7 @@ export class ParseService {
 
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
-            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title);
+            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title, seasons);
     }
 
     private getBestPres(aNodes: any[], key: string): any {

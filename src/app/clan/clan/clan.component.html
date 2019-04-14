@@ -65,7 +65,8 @@
 
           <div class="filter-row">
             <mat-form-field *ngIf="modelPlayer!=null">
-              <mat-select [(ngModel)]="filterMode" (selectionChange)="filterPlayers()" placeholder="Filter players by activity">
+              <mat-select [(ngModel)]="filterMode" (selectionChange)="filterPlayers()"
+                placeholder="Filter players by activity">
                 <mat-option value="none">Show All Players</mat-option>
                 <mat-option value="zero">Show only zero completions</mat-option>
                 <mat-option value="all">Show completely done</mat-option>
@@ -85,7 +86,7 @@
             <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
               <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
               <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
-           
+
           </div>
 
 
@@ -110,9 +111,8 @@
             </button>
           </div>
 
-
           <table class="responsive-table clan-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
-            <thead>
+            <thead> 
               <tr>
                 <th>
                   <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
@@ -124,6 +124,12 @@
                   <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
                     <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
                     <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleTriumphSort()">Triumph Score
+                    <i *ngIf="sort=='triumphDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='triumphAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
                 <th>
@@ -139,25 +145,29 @@
                   </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
+                    *ngFor="let mileStoneName of modelPlayer.milestoneList">
                     {{mileStoneName.name}}
                     <span *ngIf="debugmode">{{mileStoneName.key}}</span>
 
                   </th>
-                  
+
                 </ng-container>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let member of sortedMembers">
                 <td class="lead">
-                  <a *ngIf="member.destinyUserInfo.membershipType!=4" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
-                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}} 
-                  </a>
-                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member)">
+                  <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                    [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
-                  <a style="margin-left:0.25em" [ngClass]="favorites[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
+                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                    (click)="navigateBnetMember(member)">
+                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                  </a>
+                  <a style="margin-left:0.25em"
+                    [ngClass]="favorites[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
                     (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
                     href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
@@ -183,18 +193,26 @@
                     </ng-container>
                   </td>
                   <td>
-                      <ng-container *ngIf="!member.player.superprivate">
-                        {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
-                      </ng-container>
-                    </td>
-                  <td data-label="Max Current Light Level">
-                    <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}</ng-container>
+                    <ng-container *ngIf="!member.player.superprivate">
+                      {{member.player.triumphScore|number : '1.0-0'}}
+                    </ng-container>
                   </td>
-                  <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
+                  <td>
+                    <ng-container *ngIf="!member.player.superprivate">
+                      {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
+                    </ng-container>
+                  </td>
+                  <td data-label="Max Current Light Level">
+                    <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}
+                    </ng-container>
+                  </td>
+                  <td
+                    *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
                     [attr.colspan]="modelPlayer.milestoneList.length">
                     Blocked by privacy settings
                   </td>
-                  <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
+                  <ng-container
+                    *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
                     <td *ngFor="let mileStoneName of modelPlayer.milestoneList" class="clan-player-ms-cell"
                       [attr.data-label]="mileStoneName.name">
                       <ng-container *ngFor="let char of member.player.characters">
@@ -202,16 +220,22 @@
                           <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
                             <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                          <ng-container
+                            *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
                             <i class="far fa-square"></i>
                           </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
+                          <ng-container
+                            *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                            <i [matTooltip]="char.milestones[mileStoneName.key].info"
+                              class="accent-text far fa-minus-square"></i>
                           </ng-container>
                         </span>
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
-                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
+                        <span class="check"
+                          *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
+                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
+                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
+                            matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                         </span>
                       </ng-container>
                     </td>
@@ -243,25 +267,33 @@
                   </a>
                 </th>
                 <th>
+                  <a href="javascript:void(0)" (click)="toggleTriumphSort()">Triumph Score
+                    <i *ngIf="sort=='triumphDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='triumphAsc'" class="fas fa-sort-up"></i>
+                  </a>
+                </th>
+                <th>
                   <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
                     <i *ngIf="sort=='xpDesc'" class="fas fa-sort-down"></i>
                     <i *ngIf="sort=='xpAsc'" class="fas fa-sort-up"></i>
                   </a>
                 </th>
                 <th matTooltip="Max LL of current chars (actual max could be higher)">
-                    <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                      <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
-                      <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
-                    </a>
+                  <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                    <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
+                    <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
+                  </a>
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
+                    *ngFor="let mileStoneName of modelPlayer.milestoneList">
                     {{mileStoneName.name}}
                   </th>
                 </ng-container>
               </tr>
             </tfoot>
           </table>
+
 
           <div class="bottom-note">
             <ul class="left">

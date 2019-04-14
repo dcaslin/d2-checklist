@@ -60,6 +60,8 @@
                   <br>
                   <span class="simple-caption-no-margin">{{member.player.maxLL}}LL.
                     {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                    <br>
+                    {{member.player.triumphScore|number : '2.0-0'}} <i class="fal fa-trophy"></i>
                   </span>
                 </ng-container>
 

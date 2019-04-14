@@ -688,11 +688,12 @@
                           <td class="lead" data-label="">
                             <span [matTooltip]="faction.desc"
                               matTooltipClass="preserve-white-space">{{faction.name}}</span>
-                            <span class="light">Level {{faction.level}} 
+                            <span class="light">Level {{faction.level}}
                               <ng-container *ngIf="debugmode">{{faction.hash}}</ng-container>
-                              <ng-container *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
+                              <ng-container
+                                *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
                                 {{faction.steps[faction.level-1].stepName}}
-                              </ng-container>                              
+                              </ng-container>
                             </span>
                             <span class="caption">{{faction.info}}</span>
                             <div class="row dl-row simple-caption">
@@ -757,8 +758,12 @@
               <ng-container *ngIf="player!=null">
 
                 <mat-tab-group #triumphtabs>
-                  <mat-tab label="Triumphs">
-                    <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="far fa-trophy"></i>
+                      <span class="d-none d-md-inline">&ensp;Triumphs</span>
+                    </ng-template>
+                    <h4 class="triumph-score">Triumphs - Score: {{player.triumphScore|number : '2.0-0'}}
                       <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
                         (ngModelChange)="hideCompleteChange()">
                         Hide Completed
@@ -771,7 +776,7 @@
                         (ngModelChange)="showInvisTriumphsChange()">
                         Show Invisible
                       </mat-checkbox>
-                    </h3>
+                    </h4>
 
                     <mat-tree [dataSource]="recordDatasource" [treeControl]="triumphTreeControl">
                       <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
@@ -793,8 +798,10 @@
                             <i class='accent-text far fa-map-marker-alt'></i>
                           </a>
                           <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
-                          <i *ngIf="dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star" (click)="trackTriumph(node.data)"></i>
-                          <i *ngIf="dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(node.data)"></i>
+                          <i *ngIf="dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star"
+                            (click)="trackTriumph(node.data)"></i>
+                          <i *ngIf="dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text"
+                            (click)="untrackTriumph(node.data)"></i>
 
                           <br>
                           <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
@@ -842,13 +849,101 @@
                       </mat-tree-node>
                     </mat-tree>
                   </mat-tab>
-                  <mat-tab label="Seals">
-                    <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="fas fa-wheat"></i>
+                      <span class="d-none d-md-inline">&ensp;Seasons</span>
+                    </ng-template>
+                    <ng-container *ngIf="player!=null">
+                      <h4 class="triumph-score">Seasons</h4>
+                      <div class="left" style="margin: 10px">
+                        <mat-form-field style="min-width: 250px">
+                          <mat-label>Season</mat-label>
+                          <mat-select [(ngModel)]="seasonIndex">
+                            <mat-option [value]="i" *ngFor="let c of player.seasons; let i = index">{{c.name}}</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <span class="simple-caption">
+                            {{player.seasons[seasonIndex].records.length}} triumphs
+                        </span>
+                        <div>
+                          <table class="responsive-table">
+                            <tbody>
+                              <ng-container *ngFor="let t of player.seasons[seasonIndex].records">
+                                <tr>
+                                  <td class="lead" data-label="">
+                                    <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                                      {{t.name}} </ng-container>
+                                    <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                                      target="_blank" rel="noopener">
+                                      {{t.name}}
+                                      <i class='accent-text far fa-map-marker-alt'></i>
+                                    </a>
+                                    <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                    <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                                      (click)="trackTriumph(t)"></i>
+                                    <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                                      (click)="untrackTriumph(t)"></i>
+
+                                    <br>
+                                    <span class="simple-caption">
+                                      <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                                        <ng-container *ngIf="i>0">
+                                          <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                                          <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
+                                          <ng-container *ngIf="!isLast">
+                                            /
+                                          </ng-container>
+                                        </ng-container>
+                                      </ng-container>
+                                    </span>
+                                  </td>
+                                  <td class="left" data-label="">
+                                    {{t.percent}}%
+                                    <mat-progress-bar class="low-hanging-node-prog" mode="determinate"
+                                      [value]="t.percent">
+                                    </mat-progress-bar>
+                                  </td>
+
+                                  <td class="left" data-label="">
+                                    {{t.score}} pts
+                                  </td>
+
+                                  <td class="left" data-label="">
+                                    <div class="low-hanging-desc">{{t.desc}}</div>
+                                    <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                                      <span class="simple-caption">
+                                        <i *ngIf="o.complete"
+                                          class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                        <i *ngIf="!o.complete" class="far fa-square"></i>
+                                        {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                                      </span>
+                                      <mat-progress-bar class="pres-node-prog" mode="determinate"
+                                        [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+
+                        </div>
+                      </div>
+
+
+                    </ng-container>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="far fa-medal"></i>
+                      <span class="d-none d-md-inline">&ensp;Seals</span>
+                    </ng-template>
+                    <h4 class="triumph-score">Seals
                       <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
                         (ngModelChange)="hideCompleteChange()">
                         Hide Completed
                       </mat-checkbox>
-                    </h3>
+                    </h4>
                     <mat-accordion>
                       <ng-container *ngFor="let s of player.seals">
                         <mat-expansion-panel *ngIf="!hideComplete || !s.complete">
@@ -909,9 +1004,13 @@
                       </ng-container>
                     </mat-accordion>
                   </mat-tab>
-                  <mat-tab label="Closest">
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="far fa-trophy"></i>
+                      <span class="d-none d-md-inline">&ensp;Closest</span>
+                    </ng-template>
                     <div>
-                      <h3 class="triumph-score">Triumph Score: {{player.triumphScore|number : '2.0-0'}}
+                      <h4 class="triumph-score">Closest 10
                         <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs"
                           (ngModelChange)="showZeroPtTriumphsChange()">
                           Show Zero Pt
@@ -920,7 +1019,7 @@
                           (ngModelChange)="showInvisTriumphsChange()">
                           Show Invisible
                         </mat-checkbox>
-                      </h3>
+                      </h4>
 
                       <table class="responsive-table">
                         <tbody>
@@ -936,8 +1035,10 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}} {{t.invisible}}</ng-container>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                                  (click)="trackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                                  (click)="untrackTriumph(t)"></i>
 
                                 <br>
                                 <span class="simple-caption">
@@ -981,7 +1082,12 @@
                       </table>
                     </div>
                   </mat-tab>
-                  <mat-tab label="Search">
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="far fa-search"></i>
+                      <span class="d-none d-md-inline">&ensp;Search</span>
+                    </ng-template>
+                    <h4 class="triumph-score">Search</h4>
                     <div>
                       <div class="left" style="margin: 10px">
                         <mat-form-field class="searchField">
@@ -1012,8 +1118,10 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                                  (click)="trackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                                  (click)="untrackTriumph(t)"></i>
 
                                 <br>
                                 <span class="simple-caption">
@@ -1057,7 +1165,12 @@
                       </table>
                     </div>
                   </mat-tab>
-                  <mat-tab label="Tracked">
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="far fa-thumbtack"></i>
+                      <span class="d-none d-md-inline">&ensp;Tracked</span>
+                    </ng-template>
+                    <h4 class="triumph-score">Tracked Triumphs</h4>
                     <div>
                       <div *ngIf="trackedTriumphs.length==0" class="left" style="margin: 10px">
                         Click a star on a triumph on another tab to track it here
@@ -1075,8 +1188,10 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text" (click)="untrackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                                  (click)="trackTriumph(t)"></i>
+                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                                  (click)="untrackTriumph(t)"></i>
 
                                 <br>
                                 <span class="simple-caption">
@@ -1220,9 +1335,9 @@
                           <dd>{{char.levelProgression.dailyProgress| number:0}}</dd>
                         </dl>
                         <dl class="col-xs-4 dl-child">
-                            <dt>Weekly Progress</dt>
-                            <dd>{{char.levelProgression.weeklyProgress| number:0}}</dd>
-                          </dl>
+                          <dt>Weekly Progress</dt>
+                          <dd>{{char.levelProgression.weeklyProgress| number:0}}</dd>
+                        </dl>
                         <dl class="col-xs-6 dl-child">
                           <dt>XP needed to next level</dt>
                           <dd>{{(char.levelProgression.nextLevelAt - char.levelProgression.progressToNextLevel)|
@@ -1245,9 +1360,9 @@
                           <dd>{{char.legendProgression.dailyProgress| number:0}}</dd>
                         </dl>
                         <dl class="col-xs-4 dl-child">
-                            <dt>Weekly Progress</dt>
-                            <dd>{{char.legendProgression.weeklyProgress| number:0}}</dd>
-                          </dl>
+                          <dt>Weekly Progress</dt>
+                          <dd>{{char.legendProgression.weeklyProgress| number:0}}</dd>
+                        </dl>
                         <dl class="col-xs-4 dl-child">
                           <dt>XP needed to next level</dt>
                           <dd>{{(char.legendProgression.nextLevelAt - char.legendProgression.progressToNextLevel)|
