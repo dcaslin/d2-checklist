@@ -543,6 +543,7 @@ export class InventoryItem {
     public readonly options: Target[] = [];
     public readonly isRandomRoll: boolean;
     public readonly ammoType: DestinyAmmunitionType;
+    public postmaster: boolean;
     public canReallyEquip: boolean;
     public copies: number = 1;
     public godRoll = false;
@@ -566,7 +567,8 @@ export class InventoryItem {
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean,
-        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[], isRandomRoll: boolean, ammoType: DestinyAmmunitionType
+        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[], 
+        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean
     ) {
         this.id = id;
         this.hash = hash;
@@ -603,6 +605,8 @@ export class InventoryItem {
         this.options = options;
         this.isRandomRoll = isRandomRoll;
         this.ammoType = ammoType;
+
+        this.postmaster = postmaster;
     }
 }
 

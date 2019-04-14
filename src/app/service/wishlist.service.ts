@@ -39,6 +39,18 @@ export class WishlistService implements OnDestroy {
       url = defaultUrl;
     }
     try {
+      const urls: string[] = url.split('|');
+      if (urls.length>1){
+        console.log("Loading multiple URLS. Total: "+urls.length);
+        let returnMe = [];
+        for(const u of urls){
+          const bansheeText = await this.httpClient.get(u, { responseType: 'text' }).toPromise();
+          const oneSet = this.toCuratedRolls(type, bansheeText);
+          returnMe = returnMe.concat(oneSet);
+          console.log("Multi urls: Loading "+oneSet.length+" items from "+u);
+        }
+        return returnMe;
+      }
       const bansheeText = await this.httpClient.get(url, { responseType: 'text' }).toPromise();
       return this.toCuratedRolls(type, bansheeText);
     }

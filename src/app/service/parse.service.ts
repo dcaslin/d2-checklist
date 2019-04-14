@@ -2102,10 +2102,11 @@ export class ParseService {
             if (desc.itemTypeDisplayName == null) {
                 return null;
             }
-            //ignore postmaster items
-            if (itm.bucketHash == 215593132) {
-                return null;
-            }
+            const postmaster = (itm.bucketHash == 215593132);
+            // ignore postmaster items
+            // if (postMaster) {
+            //     return null;
+            // }
             let type: ItemType = desc.itemType;
             let ammoType: DestinyAmmunitionType;
             if (desc.equippingBlock != null) {
@@ -2416,6 +2417,9 @@ export class ParseService {
             if (ammoType != null) {
                 searchText += " " + DestinyAmmunitionType[ammoType];
             }
+            if (postmaster){
+                searchText += " mail postmaster";
+            }
 
             searchText = searchText.toLowerCase();
 
@@ -2425,7 +2429,8 @@ export class ParseService {
                 power, damageType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), isRandomRoll, ammoType
+                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), 
+                isRandomRoll, ammoType, postmaster
             );
         } catch (exc) {
             console.dir(itemComp);

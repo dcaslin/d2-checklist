@@ -239,12 +239,18 @@
                     <i class="fas fa-ellipsis-v"></i>
                   </a>
                   <mat-menu #itemMenu="matMenu">
-                    <button mat-menu-item *ngIf="i.canReallyEquip" (click)="equip(player, i)">
-                      <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                    <button mat-menu-item *ngIf="i.postmaster" (click)="pullFromPostmaster(player, i)">
+                        <i class="fal fa-envelope-open"></i> Pull from postmaster
                     </button>
-                    <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
-                      <i class="fal fa-exchange"></i> Transfer to {{target.label}}
-                    </button>
+                    <ng-container *ngIf="!i.postmaster">
+                        <button mat-menu-item *ngIf="i.canReallyEquip" (click)="equip(player, i)">
+                            <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                          </button>
+                          <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
+                            <i class="fal fa-exchange"></i> Transfer to {{target.label}}
+                          </button>
+                    </ng-container>
+                    
                     <button mat-menu-item
                       *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
                       (click)="copyToClipboard(i)">
@@ -253,7 +259,11 @@
                   </mat-menu>
                   <span *ngIf="debugmode">[{{i.hash}}]</span>
 
-                  <div class="simple-caption">{{i.owner.label}}</div>
+                  <div class="simple-caption">{{i.owner.label}}
+                    <span *ngIf="i.postmaster" class="warn-text">
+                      <i class="fal fa-mailbox"></i>
+                    </span>
+                  </div>
 
 
 

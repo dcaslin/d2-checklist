@@ -296,16 +296,21 @@ export class GearService {
 
             }
             //if it's in the vault, we just need to pull it out to our char
-            else if (itm.owner.id == "vault") {
+            else if (itm.owner.id == "vault" || itm.postmaster) {
                 let tempTarget = target;
                 if (target == player.shared) {
                     tempTarget = player.characters[0];
                 }
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    tempTarget, itm, false, player.vault, this.bucketService);
-                itm.options.push(itm.owner);
-                itm.owner = target;
-                itm.options.splice(itm.options.indexOf(itm.owner), 1);
+                    tempTarget, itm, false, player.vault, this.bucketService, itm.postmaster);
+                if (itm.postmaster){
+                    itm.postmaster = false;
+                }
+                else{
+                    itm.options.push(itm.owner);
+                    itm.owner = target;
+                    itm.options.splice(itm.options.indexOf(itm.owner), 1);
+                }
 
             }
             //otherwise we need to put it in vault, then pull it again
