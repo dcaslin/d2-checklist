@@ -277,6 +277,17 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
+  public async pullFromPostmaster(player: Player, itm: InventoryItem) {
+    try {
+      await this.gearService.transfer(player, itm, itm.owner);
+      this.notificationService.success("Pulled "+itm.name+" from postmaster to "+itm.owner.label);
+    }
+    catch (e) {
+      this.notificationService.fail(e);
+    }
+    this.filterChanged();
+  }
+
   public async transfer(player: Player, itm: InventoryItem, target: Target) {
     try {
       await this.gearService.transfer(player, itm, target);

@@ -392,7 +392,7 @@ export class BungieService implements OnDestroy {
         c.milestones[SPIDER_KEY] = spiderPsuedoMs;
     }
 
-    private getPctString(pct: number){
+    private getPctString(pct: number) {
         if (pct > 0 && pct < 1) {
             return Math.floor(100 * pct) + '% complete';
         }
@@ -401,14 +401,14 @@ export class BungieService implements OnDestroy {
 
     private async loadActivityPsuedoMsOnChar(c: Character): Promise<void> {
         // we can do 0 later if we figure out the reckoning
-        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId,64, c.startWeek);
-        const gambitActivities = activities.filter(a => a.mode=="Gambit Prime" && a.success);
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 64, c.startWeek);
+        const gambitActivities = activities.filter(a => a.mode == "Gambit Prime" && a.success);
         let count = gambitActivities.length;
-        if (count>4){
+        if (count > 4) {
             count = 4;
         }
-        const gambitPct = count/4;
-        const gambitPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, gambitPct>=1, gambitPct, this.getPctString(gambitPct), null, null);
+        const gambitPct = count / 4;
+        const gambitPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, gambitPct >= 1, gambitPct, this.getPctString(gambitPct), null, null);
         c.milestones[GAMBIT_PRIME_KEY] = gambitPsuedoMs;
 
         // const reckoningActivities = activities.filter(a => a.mode=="Reckoning" && a.success);
@@ -454,13 +454,13 @@ export class BungieService implements OnDestroy {
     }
 
     public isSignedOn(p: Player): boolean {
-        if (this.selectedUser==null) return false;
+        if (this.selectedUser == null) return false;
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
     }
 
     public async loadSpiderWeekly(p: Player): Promise<void> {
         //is this the signed on user?
-        if (!this.isSignedOn(p)){
+        if (!this.isSignedOn(p)) {
             return;
         }
         const ms: MileStoneName = {
@@ -558,7 +558,7 @@ export class BungieService implements OnDestroy {
         return await this.getActivityHistory(membershipType, membershipId, characterId, mode, max, ignoreErrors);
     }
 
-    public async getActivityHistoryUntilDate(membershipType: number, membershipId: string, characterId: string, mode: number, stopDate: Date): Promise<Activity[]> {        
+    public async getActivityHistoryUntilDate(membershipType: number, membershipId: string, characterId: string, mode: number, stopDate: Date): Promise<Activity[]> {
         let returnMe = [];
         let page = 0;
         //repeat until we run out of activities or we preceed the start date or we hit 10 pages
@@ -566,10 +566,10 @@ export class BungieService implements OnDestroy {
             let activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, 100, true);
             returnMe = returnMe.concat(activities);
             //out of activities
-            if (activities.length<100){
+            if (activities.length < 100) {
                 break;
             }
-            const lastActivity = activities[activities.length-1];
+            const lastActivity = activities[activities.length - 1];
             const d: Date = new Date(lastActivity.period);
             //we're past the date
             if (d.getTime() < stopDate.getTime()) {
@@ -577,13 +577,13 @@ export class BungieService implements OnDestroy {
             }
             page++;
             //too many pages
-            if (page>10){
+            if (page > 10) {
                 throw "Too many pages of data, stopping";
             }
         }
-        return returnMe.filter(a=>{
+        return returnMe.filter(a => {
             const d: Date = new Date(a.period);
-            return d.getTime()>= stopDate.getTime();
+            return d.getTime() >= stopDate.getTime();
         });
     }
 
@@ -675,16 +675,27 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService): Promise<void> {
+    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService, pullFromPostmaster?: boolean): Promise<void> {
         try {
-            await this.postReq("Destiny2/Actions/Items/TransferItem/", {
-                characterId: target.id,
-                itemId: item.id,
-                itemReferenceHash: item.hash,
-                membershipType: membershipType,
-                stackSize: item.quantity,
-                transferToVault: isVault
-            });
+            if (pullFromPostmaster) {
+                await this.postReq("Destiny2/Actions/Items/PullFromPostmaster/", {
+                    characterId: target.id,
+                    itemId: item.id,
+                    itemReferenceHash: item.hash,
+                    membershipType: membershipType,
+                    stackSize: item.quantity
+                });
+            }
+            else {
+                await this.postReq("Destiny2/Actions/Items/TransferItem/", {
+                    characterId: target.id,
+                    itemId: item.id,
+                    itemReferenceHash: item.hash,
+                    membershipType: membershipType,
+                    stackSize: item.quantity,
+                    transferToVault: isVault
+                });
+            }
             let to: Target;
             let from: Target;
             if (isVault == true) {
