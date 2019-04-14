@@ -66,6 +66,11 @@ export interface MastworkInfo {
     tier: number;
 }
 
+export interface RecordSeason {
+    name: string;
+    records: TriumphRecordNode[];
+}
+
 export interface Seal {
     hash: string;
     name: string;
@@ -453,6 +458,7 @@ export class Player {
     readonly shared: Target;
     readonly raidChecked = false;
     readonly title;
+    readonly seasons: RecordSeason[];
     maxLL = 0;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
@@ -463,7 +469,9 @@ export class Player {
 
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target, lowHangingTriumphs:TriumphRecordNode[], searchableTriumphs:TriumphRecordNode[], seals:Seal[], title: string) {
+        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target, 
+        lowHangingTriumphs:TriumphRecordNode[], searchableTriumphs:TriumphRecordNode[], 
+        seals:Seal[], title: string, seasons: RecordSeason[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -493,6 +501,7 @@ export class Player {
         this.searchableTriumphs = searchableTriumphs;
         this.seals = seals;
         this.title = title;
+        this.seasons = seasons;
     }
 
     public getWeeklyXp(): number {

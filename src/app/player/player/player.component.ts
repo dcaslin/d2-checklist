@@ -7,7 +7,7 @@ import { Observable, of as observableOf, fromEvent as observableFromEvent, combi
 
 import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode, NameDesc } from '../../service/model';
+import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode, NameDesc, RecordSeason } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
@@ -42,6 +42,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   @ViewChild('triumphtabs') triumphtabs: MatTabGroup;
 
   private triumphSearchSubject: Subject<void> = new Subject<void>();
+
+  public seasonIndex: number = 0;
 
 
   public triumphFilterText: string = null;
@@ -191,6 +193,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.recordDatasource.data = this.player.records;
       this.filterTriumphs();
       this.setTrackedTriumphs();
+      this.seasonIndex = 0;
       if (this.selectedTab === 'triumphs') {
         if (this.selectedTreeNodeHash != null) {
           for (const n of this.triumphTreeControl.dataNodes) {
@@ -219,6 +222,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     } else {
       this.recordDatasource = null;
       this.collectionDatasource = null;
+      this.seasonIndex = 0;
     }
   }
 

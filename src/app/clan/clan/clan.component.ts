@@ -67,6 +67,16 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.sortData();
   }
 
+  public toggleTriumphSort() {
+    if (this.sort === 'triumphAsc') {
+      this.sort = 'triumphDesc';
+    } else {
+      this.sort = 'triumphAsc';
+    }
+    this.sortData();
+  }
+  
+
   public toggleLLSort() {
     if (this.sort === 'llAsc') {
       this.sort = 'llDesc';
@@ -97,6 +107,23 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     if (aX > bX) { return -1; }
     return 0;
   }
+
+  private static compareTriumph(a: BungieGroupMember, b: BungieGroupMember): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.player != null) { aX = a.player.triumphScore; }
+    if (b.player != null) { bX = b.player.triumphScore; }
+
+    if (aX < bX) { return 1; }
+    if (aX > bX) { return -1; }
+    return 0;
+  }
+
+  private static compareTriumphReverse(a: BungieGroupMember, b: BungieGroupMember): number {
+    return ClanComponent.compareTriumph(a, b) * -1;
+  }
+
+  
 
   private static compareDateReverse(a, b): number {
     return ClanComponent.compareDate(a, b) * -1;
@@ -161,17 +188,19 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     if (this.sort === 'memberDesc') { this.sortedMembers.sort(ClanComponent.compareNameReverse); }
     if (this.sort === 'dateAsc') { this.sortedMembers.sort(ClanComponent.compareDate); }
     if (this.sort === 'xpAsc') { this.sortedMembers.sort(ClanComponent.compareXp); }
-
+    if (this.sort === 'triumphAsc') { this.sortedMembers.sort(ClanComponent.compareTriumph); }
     if (this.sort === 'dateDesc') { this.sortedMembers.sort(ClanComponent.compareDateReverse); }
     if (this.sort === 'llAsc') { this.sortedMembers.sort(ClanComponent.compareLLs); }
     if (this.sort === 'llDesc') { this.sortedMembers.sort(ClanComponent.compareLLsReverse); }
+    if (this.sort === 'triumphDesc') { this.sortedMembers.sort(ClanComponent.compareTriumphReverse); }
   }
 
   public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {
     if (target.player != null && !reload) return;
 
     try {
-      const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType, target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions'], true);
+      const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType, 
+        target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions', 'Records'], true);
       target.player = x;
       if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
         this.modelPlayer = x;
@@ -234,7 +263,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
 
   private downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
-    let sCsv = 'member,platform,chars,lastPlayed days ago,Weekly XP,max LL,';
+    let sCsv = 'member,platform,chars,lastPlayed days ago,Triumph Score,Weekly XP,max LL,';
     this.modelPlayer.milestoneList.forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
@@ -259,6 +288,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       const lastPlayed = moment(member.player.profile.dateLastPlayed);
       const diff = today.diff(lastPlayed, 'days');
       sCsv += diff + ',';
+      sCsv += member.player.triumphScore + ',';
       sCsv += member.player.getWeeklyXp() + ',';
       sCsv += member.player.maxLL + ',';
 

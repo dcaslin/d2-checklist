@@ -48,7 +48,7 @@ export class FriendsComponent extends ChildComponent implements OnInit {
 
   private async loadPlayer(friend: FriendListEntry): Promise<void> {
     const x = await this.bungieService.getChars(friend.user.membershipType, friend.user.membershipId,
-      ['Profiles', 'Characters', 'CharacterProgressions'], true);
+      ['Profiles', 'Characters', 'CharacterProgressions', 'Records'], true);
     if (this.modelPlayer == null && x != null && x.characters != null) {
       this.modelPlayer = x;
     }
