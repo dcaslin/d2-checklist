@@ -2820,8 +2820,10 @@ export class ParseService {
         return 'Unknown ' + mode;
     }
 
-    public parseBungieMembership(resp: any) {
-
+    public parseBungieMembership(resp: any) {        
+        if (resp.bungieNetUser == null) {
+            return null;
+        }
         const returnMe: BungieMembership = new BungieMembership();
         returnMe.bungieId = resp.bungieNetUser.membershipId;
         const aUser: UserInfo[] = [];
