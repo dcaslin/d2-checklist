@@ -166,6 +166,10 @@ export class BungieService implements OnDestroy {
     public async loadClans(userInfo: UserInfo): Promise<void> {
         if (userInfo.bungieInfo == null) {
             const bungieMember: BungieMembership = await this.getBungieMembershipsById(userInfo.membershipId, userInfo.membershipType);
+            // blocked by privacy settings?
+            if (bungieMember==null){
+                return;
+            }
             await this.setClans(bungieMember);
             userInfo.bungieInfo = bungieMember;
         }

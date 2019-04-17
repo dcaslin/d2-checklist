@@ -12,7 +12,7 @@ export class WeekService {
   constructor(private bungieService: BungieService) { 
     for (const week of this.weeks.weeks){
       week.ascendantVideo = this.weeks.videos[week.ascendantChallenge];
-      week.epVideo = this.weeks.videos[week.escalationProtocolBoss];
+      week.epVideo = this.weeks.epvideos[week.escalationProtocolBoss];
     }
   }
 
