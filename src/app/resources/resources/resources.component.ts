@@ -1,76 +1,83 @@
 
 import { takeUntil, switchMap, catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { fromEvent as observableFromEvent, of as observableOf, combineLatest } from 'rxjs';
+import { fromEvent as observableFromEvent, of as observableOf, combineLatest, BehaviorSubject } from 'rxjs';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import { SelectedUser, Player, Character, SaleItem, ItemType } from '@app/service/model';
-import { LowLineService, LowLineResponse } from '@app/service/lowline.service';
+import { LowLineResponse } from '@app/service/lowline.service';
 
 @Component({
   selector: 'anms-resources',
   templateUrl: './resources.component.html',
-  styleUrls: ['./resources.component.scss']
+  styleUrls: ['./resources.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourcesComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
   @ViewChild('filter') filter: ElementRef;
   selectedUser: SelectedUser = null;
   player: Player = null;
   char: Character = null;
-  vendorData: SaleItem[] = null;
+
+  public vendorData: BehaviorSubject<SaleItem[]> = new BehaviorSubject([]);
+  public filterText: BehaviorSubject<string> = new BehaviorSubject(null);
+  
   options = ['Bounties', 'Gear', 'Exchange', 'Cosmetics'];
   option = this.options[0];
-  filterText: string = null;
-  lowLineData: LowLineResponse = null;
 
   ItemType = ItemType;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
 
-    this.loading = true;
+    this.loading.next(true);
   }
 
   public navigateStuff(val: string){
     this.router.navigate(['vendors', this.char.characterId, val]);
   }
 
-  public includeItem(itm: SaleItem): boolean {
-    if (this.filterText == null) { return true; }
-    return itm.searchText.indexOf(this.filterText) >= 0;
+  public includeItem(itm: SaleItem, filterText: string): boolean {
+    if (filterText == null) { return true; }
+    return itm.searchText.indexOf(filterText) >= 0;
   }
 
   public async setChar(c: Character, alreadyLoading: boolean) {
     if (c == null) {
       this.char = null;
-      this.vendorData = null;
-      if (!alreadyLoading) { this.loading = false; }
+      this.vendorData.next([]);
+      if (!alreadyLoading) { 
+        this.loading.next(false);
+      }
       return;
     }
-    if (!alreadyLoading) { this.loading = true; }
+    if (!alreadyLoading) { 
+      this.loading.next(true);
+    }
     try {
-      if (this.char != null && this.char.characterId === c.characterId && this.vendorData != null && this.vendorData.length > 0) {
-
+      if (this.char != null && this.char.characterId === c.characterId && this.vendorData.value.length > 0) {
+        // we're already here, nothing to load
       } else {
         this.char = c;
-        this.vendorData = await this.bungieService.loadVendors(c);
-
+        const data = await this.bungieService.loadVendors(c);
+        this.vendorData.next(data);
       }
     }
     finally {
-      if (!alreadyLoading) { this.loading = false; }
+      if (!alreadyLoading) { 
+        this.loading.next(false);
+      }
     }
   }
 
   private async load(d: LoadInfo) {
-    this.loading = true;
+    this.loading.next(true);
     try {
       if (d == null || d.user == null) {
         this.player = null;
@@ -125,7 +132,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
 
     }
     finally {
-      this.loading = false;
+      this.loading.next(false);
     }
   }
 
@@ -137,9 +144,9 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       .subscribe(() => {
         const val: string = this.filter.nativeElement.value;
         if (val == null || val.trim().length === 0) {
-          this.filterText = null;
+          this.filterText.next(null);
         } else {
-          this.filterText = val.toLowerCase();
+          this.filterText.next(val.toLowerCase());
         }
       });
 

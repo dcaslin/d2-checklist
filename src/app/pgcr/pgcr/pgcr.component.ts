@@ -1,10 +1,9 @@
 
 import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
@@ -13,26 +12,30 @@ import { BungieNetUserInfo, BungieMember, PGCR } from '@app/service/model';
 @Component({
   selector: 'anms-pgcr-history',
   templateUrl: './pgcr.component.html',
-  styleUrls: ['./pgcr.component.scss']
+  styleUrls: ['./pgcr.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
   instanceId: string;
-  data: PGCR;
+  // array for cheap asyn unwraps
+  public pgcr: BehaviorSubject<PGCR[]> = new BehaviorSubject([]);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
   }
 
   private async load() {
-    this.loading = true;
+    this.pgcr.next([]);
+    this.loading.next(true);
     try {
-      this.data = await this.bungieService.getPGCR(this.instanceId);
+      const x = await this.bungieService.getPGCR(this.instanceId);
+      this.pgcr.next([x]);
     }
     finally {
-      this.loading = false;
+      this.loading.next(false);
     }
   }
 

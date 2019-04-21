@@ -7,12 +7,12 @@
         <span>D2 Checklist</span>
       </div>
       <mat-nav-list>
-        <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.userInfo!=null">
+        <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null">
           <a mat-list-item (click)="sidenav.close();myProfile()" >
-              <mat-icon>account_circle</mat-icon>&ensp;{{this.signedOnUser.userInfo.displayName}} - {{this.signedOnUser.userInfo.platformName}}
+              <mat-icon>account_circle</mat-icon>&ensp;{{(signedOnUser|async).userInfo.displayName}} - {{(signedOnUser|async).userInfo.platformName}}
           </a>
-          <ng-container *ngIf="this.signedOnUser.membership.clans!=null">
-            <a *ngFor="let clan of this.signedOnUser.membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
+          <ng-container *ngIf="(signedOnUser|async).membership.clans!=null">
+            <a *ngFor="let clan of (signedOnUser|async).membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
                 <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
             </a>
           </ng-container>
@@ -29,7 +29,7 @@
             <mat-icon>favorite</mat-icon>&ensp;Friends
         </a>
         <a mat-list-item (click)="sidenav.close()" routerLink="vendors" routerLinkActive="active">
-          <mat-icon>payment</mat-icon>&ensp;Vendors
+          <mat-icon>store</mat-icon>&ensp;Vendors
         </a>
         <a mat-list-item [matMenuTriggerFor]="searchMobileMenu">
           <mat-icon>search</mat-icon>&ensp;Search
@@ -75,7 +75,7 @@
                 <span class="d-none d-xl-inline"> Friends</span>
             </button>
             <button mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
-              <mat-icon>payment</mat-icon>
+              <mat-icon>store</mat-icon>
               <span class="d-none d-xl-inline"> Vendors</span>
             </button>
             <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
@@ -95,19 +95,19 @@
               <span class="d-none d-xl-inline"> About</span>
             </button>
           </span>
-          <button mat-button class="sign-in-button" *ngIf="signedOnUser==null && !loggingOn" matTooltip="Grants access to private endpoints"
+          <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)" matTooltip="Grants access to private endpoints"
             matTooltipPosition="before" (click)="onLoginClick()">
             Sign in
           </button>
-          <button *ngIf="signedOnUser!=null && this.signedOnUser.userInfo!=null" matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">
+          <button *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null" matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">
             
-            <mat-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length==1">person</mat-icon>
-            <mat-icon *ngIf="this.signedOnUser.membership.destinyMemberships.length>1">supervisor_account</mat-icon>
-            &ensp;{{this.signedOnUser.userInfo.platformName}}
+            <mat-icon *ngIf="(signedOnUser|async).membership.destinyMemberships.length==1">person</mat-icon>
+            <mat-icon *ngIf="(signedOnUser|async).membership.destinyMemberships.length>1">supervisor_account</mat-icon>
+            &ensp;{{(signedOnUser|async).userInfo.platformName}}
           </button>
           <mat-menu #toolbarUserMenu="matMenu">
-            <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.destinyMemberships.length>1">
-              <button mat-menu-item *ngFor="let avail of this.signedOnUser.membership.destinyMemberships" [disabled]="avail == this.signedOnUser.userInfo"
+            <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.destinyMemberships.length>1">
+              <button mat-menu-item *ngFor="let avail of (signedOnUser|async).membership.destinyMemberships" [disabled]="avail == (signedOnUser|async).userInfo"
                 (click)="selectUser(avail)">
                 <i [ngClass]="const.PLATFORMS_DICT[avail.membershipType+''].iconClass"></i><span style="margin-left: 1em">{{avail.platformName}}</span>
               </button>
@@ -121,12 +121,12 @@
             <mat-icon>settings</mat-icon>
           </button>
         </mat-toolbar-row>
-        <mat-toolbar-row *ngIf="this.signedOnUser!=null" class="sub-row">
-          <span class="d-none d-md-inline" *ngIf="this.signedOnUser.userInfo!=null">{{this.signedOnUser.userInfo.displayName}} - {{this.signedOnUser.userInfo.platformName}}</span>
+        <mat-toolbar-row *ngIf="(signedOnUser|async)!=null" class="sub-row">
+          <span class="d-none d-md-inline" *ngIf="(signedOnUser|async).userInfo!=null">{{(signedOnUser|async).userInfo.displayName}} - {{(signedOnUser|async).userInfo.platformName}}</span>
           <span class="spacer"></span>
-          <ng-container *ngIf="this.signedOnUser.selectedUserCurrencies!=null">
+          <ng-container *ngIf="(signedOnUser|async).selectedUserCurrencies!=null">
             <span class="currency-icons">
-              <ng-container *ngFor="let c of this.signedOnUser.selectedUserCurrencies">
+              <ng-container *ngFor="let c of (signedOnUser|async).selectedUserCurrencies">
                 <span *ngIf="c.hash!='3147280338'" class="currency-chip" [matTooltip]="c.count+' '+c.name">
                   <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
                   <span> {{c.count|number}}</span>
@@ -136,22 +136,22 @@
 
           </ng-container>
 
-          <button mat-button class="d-none d-md-inline nav-button" (click)="loadClan(this.signedOnUser.membership.clans[0])" *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length==1">
+          <button mat-button class="d-none d-md-inline nav-button" (click)="loadClan(signedOnUser.value.membership.clans[0])" *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length==1">
             <mat-icon>flag</mat-icon> My Clan
           </button>
-          <ng-container *ngIf="this.signedOnUser!=null && this.signedOnUser.membership.clans!=null && this.signedOnUser.membership.clans.length>1">
+          <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length>1">
             <button mat-button [matMenuTriggerFor]="toolbarClanMenu">
               <mat-icon>flag</mat-icon> My Clans
             </button>
             <mat-menu #toolbarClanMenu="matMenu">
-              <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of this.signedOnUser.membership.clans">
+              <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of (signedOnUser|async).membership.clans">
                 <span>{{clan.name}}</span>
               </button>
             </mat-menu>
           </ng-container>
 
-          <button mat-button class="d-none d-md-inline nav-button" (click)="myProfile()" *ngIf="this.signedOnUser!=null">
-              <i [ngClass]="const.PLATFORMS_DICT[this.signedOnUser.userInfo.membershipType+''].iconClass"></i>
+          <button mat-button class="d-none d-md-inline nav-button" (click)="myProfile()" *ngIf="(signedOnUser|async)!=null">
+              <i [ngClass]="const.PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].iconClass"></i>
               My Info
           </button>
 

@@ -5,10 +5,11 @@ import { BucketService, Bucket } from './bucket.service';
 import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, Vault, ItemType } from './model';
 import { WishlistService } from './wishlist.service';
 import { NotificationService } from './notification.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class GearService {
-    loading = false;
+    public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
     constructor(private bungieService: BungieService,
         public markService: MarkService,
@@ -19,7 +20,7 @@ export class GearService {
 
     public async loadGear(selectedUser: SelectedUser): Promise<Player> {
         try {
-            this.loading = true;
+            this.loading.next(true);
             const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType,
                 selectedUser.userInfo.membershipId, ['Profiles', 'Characters',
                     'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
@@ -44,7 +45,7 @@ export class GearService {
             this.wishlistService.processItems(player.gear);
             return player;
         } finally {
-            this.loading = false;
+            this.loading.next(false);
         }
     }
 
@@ -255,7 +256,7 @@ export class GearService {
 
     public async transfer(player: Player, itm: InventoryItem, target: Target): Promise<void> {
         try {
-            this.loading = true;
+            this.loading.next(true);
 
             //equip something else from our bucket, if we can
             if (itm.equipped == true) {
@@ -331,13 +332,13 @@ export class GearService {
         }
         finally {
             this.canEquip(itm);
-            this.loading = false;
+            this.loading.next(false);
         }
     }
 
     public async setLock(player: Player, itm: InventoryItem, locked: boolean): Promise<boolean> {
         try {
-            this.loading = true;
+            this.loading.next(true);
             let owner;
             if (itm.owner == player.vault || itm.owner == player.shared) {
                 owner = player.characters[0];
@@ -353,13 +354,13 @@ export class GearService {
             return false;
         }
         finally {
-            this.loading = false;
+            this.loading.next(false);
         }
     }
 
     public async equip(player: Player, itm: InventoryItem): Promise<boolean> {
         try {
-            this.loading = true;
+            this.loading.next(true);
             const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm);
             if (success === true) {
                 const bucket: Bucket = this.bucketService.getBucket(itm.owner, itm.inventoryBucket);
@@ -376,7 +377,7 @@ export class GearService {
             return false;
         }
         finally {
-            this.loading = false;
+            this.loading.next(false);
         }
     }
 

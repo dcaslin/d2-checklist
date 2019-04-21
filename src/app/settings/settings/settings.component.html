@@ -19,7 +19,7 @@
           </mat-select>
         </mat-form-field>
         <mat-form-field class="col-md-4">
-          <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode" (selectionChange)="onDebugSelect($event)">
+          <mat-select placeholder="Debug" name="debug" [ngModel]="debugmode|async" (selectionChange)="onDebugSelect($event)">
             <mat-option *ngFor="let t of debugChoices" [value]="t.value">
               {{t.label}}
             </mat-option>
@@ -32,19 +32,19 @@
         <mat-icon>block</mat-icon> You've disabled ads. If you end up finding this site or any of the other DestinyChecklist sites helpful, please consider
         making a donation with the link below. Or, if you're on PS4, use the link to pre-order Forsaken from Amazon (or buy something else), I'll get a small commission and it will cost you nothing else.
         <br>
-        <a mat-raised-button class="space-right" color="accent" [ngClass]="animateOnRouteEnter" target="_blank" href="https://amzn.to/2tGons4">
+        <a mat-raised-button class="space-right" color="accent" target="_blank" href="https://amzn.to/2tGons4">
           <i class="fab fa-amazon"></i> Order Forsaken
         </a>
         
-        <a mat-raised-button class="space-right" color="accent" [ngClass]="animateOnRouteEnter" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
+        <a mat-raised-button class="space-right" color="accent" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
           <i class="fab fa-paypal"></i> Donate
         </a>
       </p>
-      <p class="note" *ngIf="debugmode===true">
+      <p class="note" *ngIf="(debugmode|async)===true">
         <mat-icon>bug_report</mat-icon> You've enabled debug mode. This might do nothing, or it might show extra information like hashes on certain items. 
         It will probably make your screen more cluttered and ugly, and may screw up mobile views. <mark>If you have any problems you should turn this back off.</mark>
       </p>
-      <div class="button-row" *ngIf="debugmode">
+      <div class="button-row" *ngIf="debugmode|async">
           <button mat-stroked-button (click)="onFailClick()" >Test Fail</button>
           <button mat-stroked-button (click)="onSuccessClick()" >Test Success</button>
           <button mat-stroked-button (click)="onInfoClick()" >Test Info</button>

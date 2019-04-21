@@ -1,11 +1,10 @@
 
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, Inject, ElementRef } from '@angular/core';
+import { takeUntil, debounceTime } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTabChangeEvent, MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
-import { Observable, of as observableOf, fromEvent as observableFromEvent, combineLatest, Subject } from 'rxjs';
+import { Observable, of as observableOf, Subject, BehaviorSubject } from 'rxjs';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
 import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode, NameDesc, RecordSeason } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
@@ -22,10 +21,10 @@ export class TriumphFlatNode {
 @Component({
   selector: 'anms-player',
   templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss']
+  styleUrls: ['./player.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
   currentGt: string;
   currentPlatform: string;
   readonly TAB_URI = [
@@ -47,8 +46,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
 
   public triumphFilterText: string = null;
-  public filteredTriumphs: TriumphRecordNode[] = [];
-  public trackedTriumphs: TriumphRecordNode[] = [];
+
+  public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
 
   public const: Const = Const;
   platforms: Platform[];
@@ -77,10 +77,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   constructor(public bungieService: BungieService,
     storageService: StorageService,
-    private notificationService: NotificationService,
     private route: ActivatedRoute, private router: Router,
-    public dialog: MatDialog) {
-    super(storageService);
+    public dialog: MatDialog,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
 
@@ -153,11 +153,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   private filterTriumphs() {
     if (this.triumphFilterText == null || this.triumphFilterText.trim().length == 0) {
-      this.filteredTriumphs = [];
+      this.filteredTriumphs.next([]);
       return;
     }
     if (this.player == null || this.player.searchableTriumphs == null) {
-      this.filteredTriumphs = [];
+      this.filteredTriumphs.next([]);
       return;
     }
     const temp = [];
@@ -168,7 +168,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         temp.push(t);
       }
     }
-    this.filteredTriumphs = temp;
+    this.filteredTriumphs.next(temp);
   }
 
   private jumpToTriumph(targetHash: number) {
@@ -224,6 +224,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.collectionDatasource = null;
       this.seasonIndex = 0;
     }
+    //too much trouble to make player an observable, just force change detection
+    this.ref.markForCheck();
   }
 
   public branchNodeClick(hash: string): void {
@@ -475,7 +477,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.gamerTag == null || this.gamerTag.trim().length === 0) {
       return;
     }
-    this.loading = true;
+    this.loading.next(true);
     //set player to empty unless we're refreshing in place
     if (forceRefresh !== true) {
       this.setPlayer(null);
@@ -503,7 +505,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           this.setTab();
         }, 0)
 
-        this.loading = false;
+        this.loading.next(false);
 
         if (x.characters != null) {
           await this.bungieService.updateAggHistory(x.characters);
@@ -512,11 +514,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           // await this.xyzService.updateDrops(x);
         }
       } else {
-        this.loading = false;
+        this.loading.next(false);
         this.setPlayer(null);
       }
     } catch (x) {
-      this.loading = false;
+      this.loading.next(false);
 
     }
   }
@@ -560,7 +562,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         }
       }
     }
-    this.trackedTriumphs = tempTriumphs;
+    this.trackedTriumphs.next(tempTriumphs);
   }
 
   async setBurns(){

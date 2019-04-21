@@ -1,22 +1,20 @@
 
 import { filter, takeUntil } from 'rxjs/operators';
-import { Component, HostBinding, OnDestroy, OnInit, Inject } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Component, HostBinding, OnDestroy, OnInit, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 
 
 
 import { MatSnackBar, MatDialogConfig } from '@angular/material';
-import { routerTransition } from './animations/router.transition';
 import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
 import { BungieService } from './service/bungie.service';
-import { SelectedUser, ClanRow, UserInfo, Const, BungieMember } from './service/model';
+import { SelectedUser, ClanRow, UserInfo, Const } from './service/model';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
-import { ChildComponent } from './shared/child.component';
 import { AuthGuard } from '@app/app-routing.module';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -73,35 +71,35 @@ export class SelectPlatformDialogComponent {
   selector: 'anms-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [routerTransition]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent implements OnInit, OnDestroy {
-
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   @HostBinding('class') componentCssClass;
 
-  disableads: boolean;
+  readonly version = env.versions.app;
+  readonly year = new Date().getFullYear();
+  readonly logo = require('../assets/logo.svg');
 
-  version = env.versions.app;
-  debugmode = false;
-  year = new Date().getFullYear();
+  public readonly const: Const = Const;
 
-  logo = require('../assets/logo.svg');
+  disableads: boolean; //for GA
 
   // signed on info
-  loggingOn = true;
-  signedOnUser: SelectedUser = null;
-  public const: Const = Const;
+
+  public loggingOn: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public signedOnUser: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
   constructor(
     public authGuard: AuthGuard,
     private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
     public bungieService: BungieService,
-    private destinyCacheService: DestinyCacheService, public overlayContainer: OverlayContainer,
+    public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MatSnackBar,
-    public dialog: MatDialog) {
+    public dialog: MatDialog, 
+    private ref: ChangeDetectorRef) {
 
 
     this.componentCssClass = 'default-theme';
@@ -113,14 +111,16 @@ export class AppComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$))
       .subscribe(
         x => {
+          console.log("Theme: "+x.theme);
           if (x.theme != null) {
+            this.overlayContainer.getContainerElement().classList.remove(this.componentCssClass);
             this.componentCssClass = x.theme;
             this.overlayContainer.getContainerElement().classList.add(x.theme);
-
-            // this.overlayContainer.themeClass = x.theme;
+            this.ref.markForCheck();
           }
           if (x.disableads != null) {
             this.disableads = x.disableads;
+            this.ref.markForCheck();
           }
         });
 
@@ -153,7 +153,7 @@ export class AppComponent implements OnInit, OnDestroy {
     dc.disableClose = false;
     dc.autoFocus = true;
      dc.width = '300px';
-     dc.data = this.signedOnUser.membership.destinyMemberships;
+     dc.data = this.signedOnUser.value.membership.destinyMemberships;
 
     const dialogRef = this.dialog.open(SelectPlatformDialogComponent, dc);
 
@@ -172,20 +172,20 @@ export class AppComponent implements OnInit, OnDestroy {
 
   async myProfile() {
     if (this.signedOnUser != null) {
-      if (this.signedOnUser.userInfo.membershipType === 4) {
-        const bnetName = await this.bungieService.getFullBNetName(this.signedOnUser.membership.bungieId);
+      if (this.signedOnUser.value.userInfo.membershipType === 4) {
+        const bnetName = await this.bungieService.getFullBNetName(this.signedOnUser.value.membership.bungieId);
         if (bnetName!=null)
           this.router.navigate(['/', 4, bnetName]);
       } else {
-        this.router.navigate([this.signedOnUser.userInfo.membershipType, this.signedOnUser.userInfo.displayName]);
+        this.router.navigate([this.signedOnUser.value.userInfo.membershipType, this.signedOnUser.value.userInfo.displayName]);
       }
     }
   }
 
   ngOnInit(): void {
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-      this.signedOnUser = selectedUser;
-      this.loggingOn = false;
+      this.signedOnUser.next(selectedUser);
+      this.loggingOn.next(false);
       if (selectedUser == null) { return; }
       if (selectedUser.promptForPlatform === true) {
         selectedUser.promptForPlatform = false;
@@ -222,10 +222,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logon(force: boolean) {
     this.authService.getCurrentMemberId(force);
+    this.ref.markForCheck();
   }
 
   selectUser(user) {
     this.bungieService.selectUser(user);
+    this.ref.markForCheck();
   }
 
   onLoginClick() {
@@ -235,6 +237,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onLogoutClick() {
     this.authService.signOut();
+    this.ref.markForCheck();
   }
 
 }

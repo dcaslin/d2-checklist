@@ -1,6 +1,6 @@
 
 import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { StorageService } from '../../service/storage.service';
 import { Subject } from 'rxjs';
 import { ChildComponent } from '../../shared/child.component';
@@ -10,11 +10,13 @@ import { NotificationService } from '@app/service/notification.service';
 @Component({
   selector: 'anms-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+  styleUrls: ['./settings.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SettingsComponent extends ChildComponent implements OnInit, OnDestroy {
 
   theme = 'default-theme';
+  disableads = false;
 
   themes = [
     { value: 'default-theme', label: 'Default' },
@@ -33,9 +35,10 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
   ];
 
   constructor(storageService: StorageService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private ref: ChangeDetectorRef
     ) {
-    super(storageService);
+    super(storageService, ref);
     this.theme = this.storageService.getItem('theme', 'default-theme');
 
     this.storageService.settingFeed.pipe(
@@ -44,6 +47,9 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
       x => {
         if (x.theme != null) {
           this.theme = x.theme;
+        }
+        if (x.disableads != null) {
+          this.disableads = x.disableads;
         }
       });
   }

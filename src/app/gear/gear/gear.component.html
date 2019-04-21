@@ -5,10 +5,10 @@
         <span class="warn-text">This is alpha code, still a work in progress</span>
       </p> -->
       <div class="fixed-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || gearService.loading===true">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true || gearService.loading===true">
         </mat-spinner>
         <mat-spinner class="loading" class="center-spinner"
-          *ngIf="filtering===true && !(loading===true || gearService.loading===true)"></mat-spinner>
+          *ngIf="(filtering|async)===true && !((loading|async)===true || gearService.loading===true)"></mat-spinner>
       </div>
 
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
@@ -24,7 +24,7 @@
           <span class="d-none d-md-inline"> {{o.name}}</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
-      <ng-container *ngIf="loading==false && selectedUser==null">
+      <ng-container *ngIf="(loading|async)===false && selectedUser==null">
         <h2>Bungie Authentication Required</h2>
         <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
           site to access this info
@@ -144,7 +144,7 @@
         <span class="simple-caption">{{gearToShow.length}} / {{total}}</span>
       </div>
       <ng-container *ngIf="selectedUser!=null">
-        <div *ngIf="debugmode">
+        <div *ngIf="debugmode|async">
           <h5>Filters</h5>
           <div *ngFor="let note of filterNotes">
             {{note}}
@@ -257,7 +257,7 @@
                       <i class="fal fa-copy"></i> Copy for reddit
                     </button>
                   </mat-menu>
-                  <span *ngIf="debugmode">[{{i.hash}}]</span>
+                  <span *ngIf="debugmode|async">[{{i.hash}}]</span>
 
                   <div class="simple-caption">{{i.owner.label}}
                     <span *ngIf="i.postmaster" class="warn-text">
@@ -292,7 +292,7 @@
                   <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
                   </ng-container>
-                  <ng-container *ngIf="debugmode"><br>[{{i.inventoryBucket}}]</ng-container>
+                  <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket}}]</ng-container>
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
@@ -304,7 +304,7 @@
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
                     matTooltipClass="preserve-white-space">
 
-                    {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode">[{{i.masterwork.hash}}]
+                    {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode|async">[{{i.masterwork.hash}}]
                     </ng-container>
 
                     <mat-progress-bar *ngIf="option.type == ItemType.Weapon" mode="determinate"
@@ -320,7 +320,7 @@
                   <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc" matTooltipClass="preserve-white-space">
                     <!-- <div *ngIf="i.mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + i.mod.icon + ')'"></div>
                     <br> -->
-                    {{i.mod.name}} <ng-container *ngIf="debugmode">[{{i.mod.hash}}]</ng-container>
+                    {{i.mod.name}} <ng-container *ngIf="debugmode|async">[{{i.mod.hash}}]</ng-container>
 
                   </div>
                 </td>
@@ -336,7 +336,7 @@
                         class="fas fa-dragon" [class.accent-text]="i.godRoll"></i>
                       <i *ngIf="plug.godRollPvp && !plug.godRollPve && (i.godRollPvp || highlightAllPerks)"
                         class="fas fa-swords" [class.accent-text]="i.godRoll"></i>
-                      {{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
+                      {{plug.name}} <ng-container *ngIf="debugmode|async">[{{plug.hash}}]</ng-container>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
                   </div>

@@ -15,7 +15,6 @@ import { SettingsComponent } from './settings';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanSearchComponent } from './clan-search';
 import { ClanComponent } from './clan';
-import { LeviathanComponent, LeviathanPrestigeComponent, RaidLastWishComponent } from './leaderboard';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { DestinyCacheService } from './service/destiny-cache.service';
@@ -97,42 +96,6 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: ClanComponent
-    },
-    {
-      path: 'leaderboard/last-wish/search/:query',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: RaidLastWishComponent
-    },
-    {
-      path: 'leaderboard/last-wish/:page',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: RaidLastWishComponent
-    },
-    {
-      path: 'leaderboard/leviathan/:name',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: LeviathanComponent
-    },
-    {
-      path: 'leaderboard/leviathan-prestige/:name',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: LeviathanPrestigeComponent
-    },
-    {
-      path: 'leaderboard/leviathan',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: LeviathanComponent
-    },
-    {
-      path: 'leaderboard/leviathan-prestige',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: LeviathanPrestigeComponent
     },
     {
       path: 'leaderboard/last-wish',

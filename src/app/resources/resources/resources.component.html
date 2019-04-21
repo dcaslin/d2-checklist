@@ -3,15 +3,15 @@
     <div class="main">
 
       <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
       </div>
-      <div class="body-text" [ngClass]="animateOnRouteEnter">
+      <div class="body-text">
         <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Vendors -
           <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]"
             *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.userInfo.platformName}}</a>
         </h2>
 
-        <ng-container *ngIf="loading==false && player==null">
+        <ng-container *ngIf="(loading|async)===false && player==null">
           <h2>Bungie Authentication Required</h2>
           <p>You must grant this site access to your Bungie account for the site to access this info (vendors are part
             of the private API, like what DIM uses). Click the "Sign In" button on the upper
@@ -41,7 +41,7 @@
           </mat-form-field>
         </div>
 
-        <ng-container *ngIf="vendorData!=null">
+        <ng-container>
 
           <ng-container *ngIf="option=='Bounties'">
             <table class="tidy-table itemTable" style="margin-top: 1em">
@@ -55,8 +55,8 @@
                 </tr>
               </thead>
               <tbody>
-                <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i)">
+                <ng-container *ngFor="let i of vendorData|async">
+                  <tr *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
@@ -66,7 +66,7 @@
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
-                      <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}} Tier: {{i.tierType}}</ng-container><br>
+                      <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                     </td>
 
@@ -78,7 +78,7 @@
                     <td class="d-none d-sm-table-cell">
                       <div *ngFor="let v of i.value">
                         {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
-                        <span *ngIf="debugmode">{{v.hash}}</span>
+                        <span *ngIf="debugmode|async">{{v.hash}}</span>
                       </div>
                     </td>
                     <td>
@@ -109,8 +109,8 @@
 
               </thead>
               <tbody>
-                <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(((i.type==ItemType.Armor || i.type==ItemType.Weapon ) && i.rolledPerks!=null && i.rolledPerks.length>0) || i.type==ItemType.GearMod) &&  includeItem(i)">
+                <ng-container *ngFor="let i of vendorData|async">
+                  <tr *ngIf="(((i.type==ItemType.Armor || i.type==ItemType.Weapon ) && i.rolledPerks!=null && i.rolledPerks.length>0) || i.type==ItemType.GearMod) && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
@@ -120,7 +120,7 @@
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>                      
-                      <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
+                      <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                       <div class="d-block d-md-none">{{i.vendor.name}}</div>
                     </td>
@@ -133,7 +133,7 @@
                               <span *ngIf="perk.icon!=null" class="small-item-icon transparent-icon"
                                 [style.background-image]="'url(//www.bungie.net' +perk.icon + ')'"></span>
                               {{perk.name}} 
-                              <ng-container *ngIf="debugmode">{{perk.hash}}</ng-container>
+                              <ng-container *ngIf="debugmode|async">{{perk.hash}}</ng-container>
                             </span>
                             <span style="width: 1em;" *ngIf="!isLast2"></span>
                           </ng-container>
@@ -168,8 +168,8 @@
                 </tr>
               </thead>
               <tbody>
-                <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) &&  includeItem(i)">
+                <ng-container *ngFor="let i of vendorData|async">
+                  <tr *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
@@ -179,7 +179,7 @@
                         {{i.name}}
                         <i class='accent-text far fa-map-marker-alt'></i>
                       </a>
-                      <ng-container *ngIf="debugmode">{{i.hash}} {{i.status}}</ng-container><br>
+                      <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
                       {{i.itemTypeAndTierDisplayName}}
                     </td>
                     <td>
@@ -208,8 +208,8 @@
                 </tr>
               </thead>
               <tbody>
-                <ng-container *ngFor="let i of vendorData">
-                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'  &&  includeItem(i)">
+                <ng-container *ngFor="let i of vendorData|async">
+                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'   && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>

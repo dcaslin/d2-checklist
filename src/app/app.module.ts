@@ -26,7 +26,6 @@ import { HomeModule } from './home';
 import { BungieSearchModule } from './bungie-search';
 import { ClanSearchModule } from './clan-search';
 import { ClanModule } from './clan';
-import { LeaderboardModule} from './leaderboard';
 import { PlayerModule } from './player';
 import { AuthModule } from './auth';
 import { HistoryModule } from './history';
@@ -62,7 +61,6 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
     BungieSearchModule,
     ClanSearchModule,
     ClanModule,
-    LeaderboardModule,
     PGCRModule,
     ResourcesModule,
     AuthModule,

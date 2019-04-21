@@ -3,7 +3,7 @@
     <div class="main">
 
       <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
       </div>
       <h1>Search Bungie</h1>
       <div class="note centerMe"><small>Wild-card search Bungie accounts by name. Note that sometimes these are
@@ -22,7 +22,7 @@
         </button>
       </div>
 
-      <table class="responsive-table" *ngIf="accounts!=null && accounts.length>0">
+      <table class="responsive-table" *ngIf="(accounts|async).length>0">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -33,7 +33,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let account of accounts">
+          <tr *ngFor="let account of accounts|async">
             <td class="lead" data-label="">{{account.name}}</td>
             <td data-label="Xbox">
               <ng-container *ngIf="account.xbl!=null">
