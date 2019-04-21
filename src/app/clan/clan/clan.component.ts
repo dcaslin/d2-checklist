@@ -23,7 +23,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
   public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  
+
   members: BungieGroupMember[] = [];
   modelPlayer: Player;
   sort = 'dateAsc';
@@ -45,9 +45,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.sortData();
   }
 
-  public async navigateBnetMember(target: BungieGroupMember) {    
+  public async navigateBnetMember(target: BungieGroupMember) {
     const bnetName = await this.bungieService.getFullBNetName(target.bungieNetUserInfo.membershipId);
-    if (bnetName!=null) this.router.navigate(['/', 4, bnetName]);    
+    if (bnetName != null) { this.router.navigate(['/', 4, bnetName]); }
     return;
   }
 
@@ -76,7 +76,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     }
     this.sortData();
   }
-  
+
 
   public toggleLLSort() {
     if (this.sort === 'llAsc') {
@@ -124,7 +124,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     return ClanComponent.compareTriumph(a, b) * -1;
   }
 
-  
+
 
   private static compareDateReverse(a, b): number {
     return ClanComponent.compareDate(a, b) * -1;
@@ -199,10 +199,10 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {
-    if (target.player != null && !reload) return;
+    if (target.player != null && !reload) { return; }
 
     try {
-      const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType, 
+      const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType,
         target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions', 'Records'], true);
       target.player = x;
       if (this.modelPlayer == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
@@ -217,8 +217,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       // if (reload == true) {
       //   await this.loadRaidHistory(target, true);
       // }
-    }
-    catch (err) {
+    } catch (err) {
       console.dir(err);
       console.log('Skipping error on ' + target.destinyUserInfo.displayName + ' and continuing');
       target.errorMsg = 'Unabled to load player data';
@@ -231,7 +230,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (allLoaded){
+    if (allLoaded) {
       this.allLoaded.next(true);
     }
     this.sortData();
@@ -361,8 +360,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
         for (const t of this.members) {
           if (this.modelPlayer == null) {
             await this.loadSpecificPlayer(t, false);
-          }
-          else {
+          } else {
             this.loadSpecificPlayer(t, false);
           }
         }
@@ -371,7 +369,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       }
     } catch (x) {
       this.loading.next(false);
-    };
+    }
   }
 
   ngOnInit() {

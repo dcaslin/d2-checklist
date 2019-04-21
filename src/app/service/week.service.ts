@@ -9,8 +9,8 @@ import * as moment from 'moment';
 export class WeekService {
   weeks: WeekData = require('../../assets/weeks.json');
 
-  constructor(private bungieService: BungieService) { 
-    for (const week of this.weeks.weeks){
+  constructor(private bungieService: BungieService) {
+    for (const week of this.weeks.weeks) {
       week.ascendantVideo = this.weeks.videos[week.ascendantChallenge];
       week.epVideo = this.weeks.epvideos[week.escalationProtocolBoss];
     }
@@ -21,17 +21,17 @@ export class WeekService {
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const burns = await this.bungieService.getBurns();
     const reckBurns = await this.bungieService.getReckBurns();
-    const missions:Mission[] = [];
-    const nightfalls:Mission[] = [];
+    const missions: Mission[] = [];
+    const nightfalls: Mission[] = [];
     let flashpoint: string = null;
     let start: string = null;
-    if (publicMilestones != null) {      
-      for (let m of publicMilestones) {
-        //daily heroic
-        if ("3082135827" === m.hash) {
-          for (let a of m.aggActivities) {
+    if (publicMilestones != null) {
+      for (const m of publicMilestones) {
+        // daily heroic
+        if ('3082135827' === m.hash) {
+          for (const a of m.aggActivities) {
             let name = a.activity.name;
-            name = name.replace("Daily Heroic Story Mission: ", "");
+            name = name.replace('Daily Heroic Story Mission: ', '');
             const time = this.getMissionLength(a.activity.hash);
             missions.push({
               name: name,
@@ -41,24 +41,20 @@ export class WeekService {
             });
           }
           missions.sort((a: any, b: any): number => {
-            let aV = a.time;
-            let bV = b.time;
-            if (aV < bV) return -1;
-            else if (aV > bV) return 1;
-            else return 0;
+            const aV = a.time;
+            const bV = b.time;
+            if (aV < bV) { return -1; } else if (aV > bV) { return 1; } else { return 0; }
           });
-        }
-        else if ("463010297" === m.hash) {
+        } else if ('463010297' === m.hash) {
           let name = m.summary;
-          name = name.replace("FLASHPOINT: ", "");
-          name = name.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+          name = name.replace('FLASHPOINT: ', '');
+          name = name.replace(/\w\S*/g, function(txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
           flashpoint = name;
           start = m.start;
-        }
-        else if ("2853331463"=== m.hash) {
-          for (let a of m.aggActivities) {            
+        } else if ('2853331463' === m.hash) {
+          for (const a of m.aggActivities) {
             let name = a.activity.name;
-            name = name.replace("Nightfall: ", "");            
+            name = name.replace('Nightfall: ', '');
             nightfalls.push({
               name: name,
               icon: a.activity.icon,
@@ -67,23 +63,23 @@ export class WeekService {
             });
           }
         }
-        
+
       }
     }
     let currWeek: Week;
-    if (start!=null){
+    if (start != null) {
       const mStart = moment(start);
-      const target = mStart.format("M/D/YYYY");      
-      for (const week of this.weeks.weeks){
-        if (week.reset==target){
+      const target = mStart.format('M/D/YYYY');
+      for (const week of this.weeks.weeks) {
+        if (week.reset == target) {
           currWeek = week;
         }
       }
-      
+
     }
 
     return {
-      week: currWeek,    
+      week: currWeek,
       publicMilestones: publicMilestones,
       burns: burns,
       reckBurns: reckBurns,
@@ -96,108 +92,59 @@ export class WeekService {
 
   private getMissionLength(hash: string): number {
     // Combustion 280 [3271773240], 7
-    if (hash == "3271773240") {
+    if (hash == '3271773240') {
       return 7;
-    }
-    // Hope 280[129918239], 6
-    else if (hash == "129918239") {
+    } else if (hash == '129918239') {
       return 7;
-    }
-    // Deep Storage 310[1872813880], 6
-    else if (hash == "1872813880") {
+    } else if (hash == '1872813880') {
       return 6;
-    }
-    // Ice and Shadow 360[2660895412], 5
-    else if (hash == "2660895412") {
+    } else if (hash == '2660895412') {
       return 5;
-    }
-    // Ace in the Hole 500[2962137994], 15
-    else if (hash == "2962137994") {
+    } else if (hash == '2962137994') {
       return 15;
-    }
-    // Utopia
-    else if (hash == "271962655") {
+    } else if (hash == '271962655') {
       return 6;
-    }
-    // The Gateway
-    else if (hash == "1882259272") {
+    } else if (hash == '1882259272') {
       return 5;
-    }
-    // Scorned
-    else if (hash == "1132291813") {
+    } else if (hash == '1132291813') {
       return 9;
-    }
-    // Chosen
-    else if (hash == "1906514856") {
+    } else if (hash == '1906514856') {
       return 9;
-    }  // Hijacked
-    else if (hash == "4244464899") {
+    } else if (hash == '4244464899') {
       return 6;
-    }  
-    // Pilgrimage
-    else if (hash == "3008658049") {
+    } else if (hash == '3008658049') {
       return 7;
-    }
-    // Riptide 
-    else if (hash == "3205547455") {
+    } else if (hash == '3205547455') {
       return 5;
-    }
-    // Payback
-    else if (hash == "1023966646") {
+    } else if (hash == '1023966646') {
       return 7;
-    }
-    // Beyond Infity
-    else if (hash == "1259766043") {
+    } else if (hash == '1259766043') {
       return 11;
-    }
-    // Nothing Left To Say
-    else if (hash == "2146977720") {
+    } else if (hash == '2146977720') {
       return 13;
-    }
-    // Unbroken
-    else if (hash == "1534123682") {
+    } else if (hash == '1534123682') {
       return 5;
-    }
-    // Omega
-    else if (hash == "4237009519") {
+    } else if (hash == '4237009519') {
       return 11;
-    }
-    // Last Call
-    else if (hash == "1513386090") {
+    } else if (hash == '1513386090') {
       return 15;
-    }
-    // 1AU
-    else if (hash == "589157009") {
+    } else if (hash == '589157009') {
       return 12;
-    }
-    // Looped
-    else if (hash == "1313648352") {
+    } else if (hash == '1313648352') {
       return 6;
-    }
-    // The Machinist
-    else if (hash == "4009655461") {
+    } else if (hash == '4009655461') {
       return 12;
-    }
-     // larceny
-     else if (hash == "2772894447") {
+    } else if (hash == '2772894447') {
       return 7;
-    }
-    // A Deadly Trial
-    else if (hash == "4234327344") {
+    } else if (hash == '4234327344') {
       return 5;
-    }
-    // Fury
-    else if (hash == "2000185095") {
+    } else if (hash == '2000185095') {
       return 9;
-    }
-    // Off-World Recovery
-    else if (hash == "2568845238") {
+    } else if (hash == '2568845238') {
       return 6;
-    }
-    // Six
-    else if (hash == "1602328239") {
+    } else if (hash == '1602328239') {
       return 8;
-    }    
+    }
     return 100;
   }
 }
@@ -210,7 +157,7 @@ export interface Today {
   missions: Mission[];
   nightfalls: Mission[];
   flashpoint: string;
-  
+
 }
 
 interface WeekData {
@@ -233,6 +180,6 @@ interface Week {
 interface Mission {
   name: string;
   icon: string;
-  hash: string; 
+  hash: string;
   time: number;
 }

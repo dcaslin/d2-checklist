@@ -77,7 +77,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
       this.accounts.next(x);
     }
     finally {
-      this.loading.next(false)
+      this.loading.next(false);
     }
   }
 

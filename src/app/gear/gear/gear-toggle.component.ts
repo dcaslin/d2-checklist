@@ -7,25 +7,14 @@ import { ItemType } from '@app/service/model';
   styleUrls: ['./gear.component.scss']
 })
 export class GearToggleComponent implements OnInit {
-  _currentItemType: ItemType;
-  hidden: boolean;
-  isAllSelected: boolean = true;
 
   @Input()
   set currentItemType(currentItemType: ItemType) {
     this.updateCurrentItemType(currentItemType);
   }
-
-  public setCurrentItemType(currentItemType: ItemType) {
-    this.updateCurrentItemType(currentItemType, true);
-  }
-
-  private updateCurrentItemType(currentItemType: ItemType, noEmit?:boolean){
-    if (currentItemType!==this._currentItemType){
-      this._currentItemType = currentItemType;
-      this.checkDisplay(noEmit);
-    }
-  }
+  _currentItemType: ItemType;
+  hidden: boolean;
+  isAllSelected = true;
 
   @Input()
   displayOptions: ItemType[];
@@ -40,6 +29,17 @@ export class GearToggleComponent implements OnInit {
   title: string;
 
   @Output() change = new EventEmitter<ToggleInfo>();
+
+  public setCurrentItemType(currentItemType: ItemType) {
+    this.updateCurrentItemType(currentItemType, true);
+  }
+
+  private updateCurrentItemType(currentItemType: ItemType, noEmit?: boolean) {
+    if (currentItemType !== this._currentItemType) {
+      this._currentItemType = currentItemType;
+      this.checkDisplay(noEmit);
+    }
+  }
 
 
 
@@ -56,22 +56,22 @@ export class GearToggleComponent implements OnInit {
     });
   }
 
-  private checkDisplay(noEmit?:boolean) {
+  private checkDisplay(noEmit?: boolean) {
     if (this.displayOptions != null && this.displayOptions.length > 0) {
       if (this.displayOptions.indexOf(this._currentItemType) >= 0) {
         this.hidden = false;
-      }
-      else {
+      } else {
         this.hidden = true;
       }
-      if (noEmit!=true)
+      if (noEmit != true) {
         this.emit();
+      }
     }
   }
 
   setAllSelected() {
     for (const ch of this.choices) {
-      if (!ch.value){
+      if (!ch.value) {
           this.isAllSelected = false;
          return ;
       }
@@ -81,66 +81,68 @@ export class GearToggleComponent implements OnInit {
 
   selectAll(noEmit?: boolean) {
     try {
-      console.log("selectAll");
+      console.log('selectAll');
       for (const ch of this.choices) {
         ch.value = true;
       }
-      if (!noEmit)
+      if (!noEmit) {
         this.emit();
-      else
+      } else {
         this.setAllSelected();
+      }
     } catch (e) {
-      console.log("Error selectAll: " + e);
+      console.log('Error selectAll: ' + e);
     }
   }
 
   exclusiveSelect(choice) {
     try {
-      console.log("exclusiveSelect");
+      console.log('exclusiveSelect');
       for (const ch of this.choices) {
-        if (ch !== choice)
+        if (ch !== choice) {
           ch.value = false;
+        }
       }
       choice.value = true;
       this.emit();
     } catch (e) {
-      console.log("Error exclusiveSelect: " + e);
+      console.log('Error exclusiveSelect: ' + e);
     }
   }
 
   select(event, choice) {
     try {
-      console.log("Select");
+      console.log('Select');
       choice.value = !choice.value;
       this.emit();
       event.stopPropagation();
     } catch (e) {
-      console.log("Error select: " + e);
+      console.log('Error select: ' + e);
     }
   }
 
   public isChosen(optionType: ItemType, val: any): boolean {
-    if (this.hidden == true) return true;
-    if (this.isAllSelected) return true;
-    if (optionType!=this._currentItemType){
-      console.log("OOPS");
+    if (this.hidden == true) { return true; }
+    if (this.isAllSelected) { return true; }
+    if (optionType != this._currentItemType) {
+      console.log('OOPS');
     }
 
-    if (this.choices.length == null || this.choices.length == 0) return true;
+    if (this.choices.length == null || this.choices.length == 0) { return true; }
     for (const c of this.choices) {
-      if (c.value == true && c.matchValue == val) return true;
+      if (c.value == true && c.matchValue == val) { return true; }
     }
     return false;
   }
 
   public getNotes(): string {
-    if (this.hidden == true) return null;
-    if (this.choices.length == null || this.choices.length == 0) return null;
-    if (this.isAllSelected) return null;
-    let s = this.title + ": \n";
+    if (this.hidden == true) { return null; }
+    if (this.choices.length == null || this.choices.length == 0) { return null; }
+    if (this.isAllSelected) { return null; }
+    let s = this.title + ': \n';
     for (const c of this.choices) {
       if (c.value == false) {
-        s += "    " + c.display + "\n";
+        s += '    ' + c.display + '\n';
       }
     }
     return s;
@@ -161,6 +163,6 @@ export class Choice {
   constructor(matchValue: string, display: string, value?: boolean) {
     this.matchValue = matchValue;
     this.display = display;
-    if (value != undefined) this.value = value;
+    if (value != undefined) { this.value = value; }
   }
 }

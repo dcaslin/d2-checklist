@@ -23,7 +23,7 @@ export class AuthService {
             const authInfo: AuthInfo = {
                 header: 'Bearer ' + this.token.access_token,
                 memberId: this.token.membership_id
-            }
+            };
             this.authSub.next(authInfo);
         }
     }
@@ -64,7 +64,7 @@ export class AuthService {
             if (AuthService.isValid(this.token)) {
                 if (loadedFromFile) {
                     // update all our in-memory data, things changed
-                    this.storeToken(this.token, false)
+                    this.storeToken(this.token, false);
                 }
                 return Promise.resolve(this.token);
             } else if (AuthService.isValidRefresh(this.token)) {

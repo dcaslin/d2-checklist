@@ -8,11 +8,13 @@ import { DestinyCacheService } from './destiny-cache.service';
 @Injectable()
 export class WishlistService implements OnDestroy {
   private data: { [hash: string]: CuratedRoll[]; };
-  static WildcardItemId = -69420 // nice
+  static WildcardItemId = -69420; // nice
 
-  //public static DEFAULT_URL = 'https://raw.githubusercontent.com/darkelement1987/godroll/master/godrolls.txt';
-  public static DEFAULT_PVE_URL = "https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/panda_pve.txt";
-  public static DEFAULT_PVP_URL = "https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/panda_pvp.txt";
+  // public static DEFAULT_URL = 'https://raw.githubusercontent.com/darkelement1987/godroll/master/godrolls.txt';
+  public static DEFAULT_PVE_URL = 'https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/panda_pve.txt';
+  public static DEFAULT_PVP_URL = 'https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/panda_pvp.txt';
+
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
   constructor(private httpClient: HttpClient, private notificationService: NotificationService,
     private destinyCacheService: DestinyCacheService) {
@@ -30,7 +32,7 @@ export class WishlistService implements OnDestroy {
         data[c.itemHash].push(c);
       }
       this.data = data;
-      console.log("Loaded " + temp.length + " wish list items");
+      console.log('Loaded ' + temp.length + ' wish list items');
     }
   }
 
@@ -40,43 +42,43 @@ export class WishlistService implements OnDestroy {
     }
     try {
       const urls: string[] = url.split('|');
-      if (urls.length>1){
-        console.log("Loading multiple URLS. Total: "+urls.length);
+      if (urls.length > 1) {
+        console.log('Loading multiple URLS. Total: ' + urls.length);
         let returnMe = [];
-        for(const u of urls){
+        for (const u of urls) {
           const bansheeText = await this.httpClient.get(u, { responseType: 'text' }).toPromise();
           const oneSet = this.toCuratedRolls(type, bansheeText);
           returnMe = returnMe.concat(oneSet);
-          console.log("Multi urls: Loading "+oneSet.length+" items from "+u);
+          console.log('Multi urls: Loading ' + oneSet.length + ' items from ' + u);
         }
         return returnMe;
+      } else {
+        const bansheeText = await this.httpClient.get(url, { responseType: 'text' }).toPromise();
+        return this.toCuratedRolls(type, bansheeText);
       }
-      const bansheeText = await this.httpClient.get(url, { responseType: 'text' }).toPromise();
-      return this.toCuratedRolls(type, bansheeText);
-    }
-    catch (e) {
-      this.notificationService.info("Error loading " + type + " wishlist from " + url);
+    } catch (e) {
+      this.notificationService.info('Error loading ' + type + ' wishlist from ' + url);
       console.error(e);
       return [];
     }
   }
 
   public async load(overridePveUrl: string, overridePvpUrl: string): Promise<CuratedRoll[]> {
-    let pveRolls = await this.loadSingle("pve", overridePveUrl, WishlistService.DEFAULT_PVE_URL);
-    let pvpRolls = await this.loadSingle("pvp", overridePvpUrl, WishlistService.DEFAULT_PVP_URL);
+    const pveRolls = await this.loadSingle('pve', overridePveUrl, WishlistService.DEFAULT_PVE_URL);
+    const pvpRolls = await this.loadSingle('pvp', overridePvpUrl, WishlistService.DEFAULT_PVP_URL);
     return pveRolls.concat(pvpRolls);
   }
 
   public processItems(items: InventoryItem[]): void {
-    if (this.data == null) return;
+    if (this.data == null) { return; }
     for (const i of items) {
       if (this.data[i.hash] != null) {
-        //for each curated roll
+        // for each curated roll
         for (const c of this.data[i.hash]) {
           let rollMatches = true;
-          const isPvp = c.label == "pvp";
-          const isPve = c.label == "pve";
-          //is every.single.perk found in the sockets
+          const isPvp = c.label == 'pvp';
+          const isPve = c.label == 'pve';
+          // is every.single.perk found in the sockets
           for (const desiredPerk of c.recommendedPerks) {
             let perkFound = false;
             for (const s of i.sockets) {
@@ -93,29 +95,29 @@ export class WishlistService implements OnDestroy {
                   break;
                 }
               }
-              if (perkFound == true) break;
+              if (perkFound == true) { break; }
             }
             if (!perkFound) {
               rollMatches = false;
             }
           }
-          
+
           if (rollMatches) {
             i.godRoll = true;
-            i.searchText = i.searchText + " godroll is:wishlist";
+            i.searchText = i.searchText + ' godroll is:wishlist';
             if (isPve) {
-              i.searchText = i.searchText + " godrollpve is:wishlistpve";
+              i.searchText = i.searchText + ' godrollpve is:wishlistpve';
               i.godRollPve = true;
 
             }
             if (isPvp) {
-              i.searchText = i.searchText + " godrollpvp is:wishlistpvp";
+              i.searchText = i.searchText + ' godrollpvp is:wishlistpvp';
               i.godRollPvp = true;
             }
           }
         }
-       
-        //check if the right stuff is selected and handle tooltips
+
+        // check if the right stuff is selected and handle tooltips
         for (const s of i.sockets) {
           let godPerkFound = false;
           let godPerkSelected = false;
@@ -126,18 +128,16 @@ export class WishlistService implements OnDestroy {
                 godPerkSelected = true;
               }
               if (p.godRollPvp && p.godRollPve) {
-                p.desc = "RECOMMENDED PVE & PVP\n" + p.desc;
-              }
-              else if (p.godRollPvp) {
-                p.desc = "RECOMMENDED PVP\n" + p.desc;
-              }
-              else if (p.godRollPve) {
-                p.desc = "RECOMMENDED PVE\n" + p.desc;
+                p.desc = 'RECOMMENDED PVE & PVP\n' + p.desc;
+              } else if (p.godRollPvp) {
+                p.desc = 'RECOMMENDED PVP\n' + p.desc;
+              } else if (p.godRollPve) {
+                p.desc = 'RECOMMENDED PVE\n' + p.desc;
               }
             }
           }
           if (godPerkFound && !godPerkSelected) {
-            i.searchText = i.searchText + " fixme";
+            i.searchText = i.searchText + ' fixme';
           }
         }
       }
@@ -149,8 +149,6 @@ export class WishlistService implements OnDestroy {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
   }
-
-  private unsubscribe$: Subject<void> = new Subject<void>();
 
   private bansheeToCuratedRoll(bansheeTextLine: string): CuratedRoll | null {
     if (!bansheeTextLine || bansheeTextLine.length === 0) {
@@ -170,15 +168,15 @@ export class WishlistService implements OnDestroy {
       .split(',')
       .map(Number)
       .filter((perkHash) => {
-        if (perkHash <= 0) return false;
-        if (perkHash == 3876796314) return false; //base radiance
+        if (perkHash <= 0) { return false; }
+        if (perkHash == 3876796314) { return false; } // base radiance
         const desc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
-        if (desc == null) return false;
-        if (desc.itemCategoryHashes == null) return false;
-        if (desc.itemCategoryHashes.includes(41)) return false; //shaders
-        if (desc.itemCategoryHashes.includes(945330047)) return false; //gameplay weapon mods
-        if (desc.itemCategoryHashes.includes(2237038328)) return false; //intrinsics
-        if (desc.plug != null && desc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") > 0) return false; //masterwork stuff
+        if (desc == null) { return false; }
+        if (desc.itemCategoryHashes == null) { return false; }
+        if (desc.itemCategoryHashes.includes(41)) { return false; } // shaders
+        if (desc.itemCategoryHashes.includes(945330047)) { return false; } // gameplay weapon mods
+        if (desc.itemCategoryHashes.includes(2237038328)) { return false; } // intrinsics
+        if (desc.plug != null && desc.plug.plugCategoryIdentifier.indexOf('masterworks.stat.') > 0) { return false; } // masterwork stuff
         return true;
       });
 
@@ -234,7 +232,7 @@ export class WishlistService implements OnDestroy {
  * get us this information.
  */
 export interface CuratedRoll {
-  label: string; //pvp vs pve
+  label: string; // pvp vs pve
   /** Item hash for the recommended item. */
   itemHash: number;
   /**

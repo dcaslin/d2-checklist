@@ -1,4 +1,4 @@
-import { bungieDev } from "./keys";
+import { bungieDev } from './keys';
 
 const packageJson = require('../../package.json');
 

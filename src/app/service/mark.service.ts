@@ -13,14 +13,16 @@ export class MarkService implements OnDestroy {
     private marksChanged: Subject<boolean> = new Subject<boolean>();
     public dirty = false;
     public markChoices: MarkChoice[];
-    public markDict: {[id: string] : MarkChoice};
+    public markDict: {[id: string]: MarkChoice};
     private currentMarks: Marks = null;
+
+    private unsubscribe$: Subject<void> = new Subject<void>();
 
     constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};
-        for (const mc of this.markChoices){
+        for (const mc of this.markChoices) {
             this.markDict[mc.value] = mc;
         }
         this.marksChanged.pipe(
@@ -42,7 +44,7 @@ export class MarkService implements OnDestroy {
         };
         this.httpClient.post<SaveResult>('https://www.destinychecklist.net/api/mark/', postMe)
             .toPromise().then(result => {
-                if (result.status && result.status === "success") {
+                if (result.status && result.status === 'success') {
                     this.dirty = false;
                 }
             });
@@ -56,24 +58,24 @@ export class MarkService implements OnDestroy {
     public static buildMarkChoices(): MarkChoice[] {
         const a = [];
         a.push({
-            label: "Upgrade",
-            value: "upgrade",
-            iconClass: "fas fa-level-up-alt"
+            label: 'Upgrade',
+            value: 'upgrade',
+            iconClass: 'fas fa-level-up-alt'
         });
         a.push({
-            label: "Keep",
-            value: "keep",
-            iconClass: "fas fa-save"
+            label: 'Keep',
+            value: 'keep',
+            iconClass: 'fas fa-save'
         });
         a.push({
-            label: "Infuse",
-            value: "infuse",
-            iconClass: "fas fa-code-merge"
+            label: 'Infuse',
+            value: 'infuse',
+            iconClass: 'fas fa-code-merge'
         });
         a.push({
-            label: "Junk",
-            value: "junk",
-            iconClass: "fas fa-trash-alt"
+            label: 'Junk',
+            value: 'junk',
+            iconClass: 'fas fa-trash-alt'
         });
         return a;
     }
@@ -91,34 +93,30 @@ export class MarkService implements OnDestroy {
     }
 
     private static processMarks(m: { [key: string]: string }, items: InventoryItem[]): boolean {
-        let unusedDelete: boolean = false;
-        let usedKeys: any = {};
-        let totalKeys: number = 0, missingKeys: number = 0;
+        let unusedDelete = false;
+        const usedKeys: any = {};
+        let totalKeys = 0, missingKeys = 0;
         for (const key of Object.keys(m)) {
             usedKeys[key] = false;
             totalKeys++;
         }
         for (const item of items) {
-            let mark: any = m[item.id];
+            const mark: any = m[item.id];
             if (mark != null && mark.trim().length > 0) {
-                if (mark == "upgrade") {
-                    item.markLabel = "Upgrade";
+                if (mark == 'upgrade') {
+                    item.markLabel = 'Upgrade';
                     item.mark = mark;
-                }
-                else if (mark == "keep") {
-                    item.markLabel = "Keep";
+                } else if (mark == 'keep') {
+                    item.markLabel = 'Keep';
                     item.mark = mark;
-                }
-                else if (mark == "infuse") {
-                    item.markLabel = "Infuse";
+                } else if (mark == 'infuse') {
+                    item.markLabel = 'Infuse';
                     item.mark = mark;
-                }
-                else if (mark == "junk") {
-                    item.markLabel = "Junk";
+                } else if (mark == 'junk') {
+                    item.markLabel = 'Junk';
                     item.mark = mark;
-                }
-                else {
-                    console.log("Ignoring mark: " + mark);
+                } else {
+                    console.log('Ignoring mark: ' + mark);
                     return;
                 }
                 usedKeys[item.id] = true;
@@ -126,26 +124,26 @@ export class MarkService implements OnDestroy {
         }
         for (const key of Object.keys(usedKeys)) {
             if (usedKeys[key] === false) {
-                console.log("Deleting unused key: " + key);
+                console.log('Deleting unused key: ' + key);
                 delete m[key];
                 unusedDelete = true;
                 missingKeys++;
             }
         }
-        console.log("Marks: " + missingKeys + " unused out of total " + totalKeys);
+        console.log('Marks: ' + missingKeys + ' unused out of total ' + totalKeys);
         return unusedDelete;
     }
 
     private static processNotes(m: { [key: string]: string }, items: InventoryItem[]): boolean {
-        let unusedDelete: boolean = false;
-        let usedKeys: any = {};
-        let totalKeys: number = 0, missingKeys: number = 0;
+        let unusedDelete = false;
+        const usedKeys: any = {};
+        let totalKeys = 0, missingKeys = 0;
         for (const key of Object.keys(m)) {
             usedKeys[key] = false;
             totalKeys++;
         }
         for (const item of items) {
-            let note: string = m[item.id];
+            const note: string = m[item.id];
             if (note != null && note.trim().length > 0) {
                 item.notes = note;
                 usedKeys[item.id] = true;
@@ -153,46 +151,43 @@ export class MarkService implements OnDestroy {
         }
         for (const key of Object.keys(usedKeys)) {
             if (usedKeys[key] === false) {
-                console.log("Deleting unused key: " + key);
+                console.log('Deleting unused key: ' + key);
                 delete m[key];
                 unusedDelete = true;
                 missingKeys++;
             }
         }
-        console.log("Notes: " + missingKeys + " unused out of total " + totalKeys);
+        console.log('Notes: ' + missingKeys + ' unused out of total ' + totalKeys);
         return unusedDelete;
     }
 
     public processItems(items: InventoryItem[]): void {
-        //if we don't have both, don't do anything
-        if (this.currentMarks == null || items.length == 0) return;
-        let updatedMarks: boolean = MarkService.processMarks(this.currentMarks.marked, items);
-        let updatedNotes: boolean = MarkService.processNotes(this.currentMarks.notes, items);
+        // if we don't have both, don't do anything
+        if (this.currentMarks == null || items.length == 0) { return; }
+        const updatedMarks: boolean = MarkService.processMarks(this.currentMarks.marked, items);
+        const updatedNotes: boolean = MarkService.processNotes(this.currentMarks.notes, items);
         this.dirty = this.dirty || updatedNotes || updatedMarks;
     }
 
     updateItem(item: InventoryItem): void {
-        if (item.id == null) return;
+        if (item.id == null) { return; }
         if (item.mark == null) {
             item.markLabel = null;
             delete this.currentMarks.marked[item.id];
-        }
-        else {
+        } else {
             const mc: MarkChoice = this.markDict[item.mark];
-            if (mc!=null){
-                item.markLabel = mc.label
-            }
-            else{
-                console.log("Ignoring mark: " + item.mark);
-                item.mark == null;
+            if (mc != null) {
+                item.markLabel = mc.label;
+            } else {
+                console.log('Ignoring mark: ' + item.mark);
+                item.mark = null;
                 return;
             }
             this.currentMarks.marked[item.id] = item.mark;
         }
         if (item.notes == null || item.notes.trim().length == 0) {
             delete this.currentMarks.notes[item.id];
-        }
-        else {
+        } else {
             this.currentMarks.notes[item.id] = item.notes;
         }
         this.dirty = true;
@@ -213,8 +208,6 @@ export class MarkService implements OnDestroy {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
-
-    private unsubscribe$: Subject<void> = new Subject<void>();
 
 
 }

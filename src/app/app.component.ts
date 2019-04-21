@@ -84,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public readonly const: Const = Const;
 
-  disableads: boolean; //for GA
+  disableads: boolean; // for GA
 
   // signed on info
 
@@ -98,7 +98,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public bungieService: BungieService,
     public overlayContainer: OverlayContainer,
     private router: Router, public snackBar: MatSnackBar,
-    public dialog: MatDialog, 
+    public dialog: MatDialog,
     private ref: ChangeDetectorRef) {
 
 
@@ -111,7 +111,7 @@ export class AppComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$))
       .subscribe(
         x => {
-          console.log("Theme: "+x.theme);
+          console.log('Theme: ' + x.theme);
           if (x.theme != null) {
             this.overlayContainer.getContainerElement().classList.remove(this.componentCssClass);
             this.componentCssClass = x.theme;
@@ -174,8 +174,9 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.signedOnUser != null) {
       if (this.signedOnUser.value.userInfo.membershipType === 4) {
         const bnetName = await this.bungieService.getFullBNetName(this.signedOnUser.value.membership.bungieId);
-        if (bnetName!=null)
+        if (bnetName != null) {
           this.router.navigate(['/', 4, bnetName]);
+        }
       } else {
         this.router.navigate([this.signedOnUser.value.userInfo.membershipType, this.signedOnUser.value.userInfo.displayName]);
       }

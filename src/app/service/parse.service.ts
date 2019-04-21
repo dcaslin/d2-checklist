@@ -35,7 +35,7 @@ export class ParseService {
         char.levelProgression = c.levelProgression;
         char.baseCharacterLevel = c.baseCharacterLevel;
         char.percentToNextLevel = c.percentToNextLevel / 100;
-        char.title = "";
+        char.title = '';
         if (c.titleRecordHash != null) {
             const rDesc = this.destinyCacheService.cache.Record[c.titleRecordHash];
             if (rDesc != null) {
@@ -169,8 +169,8 @@ export class ParseService {
             prog.nextLevelAt = p.nextLevelAt;
             prog.progressToNextLevel = p.progressToNextLevel;
 
-            if (desc.steps!=null && desc.steps.length>1){
-                if (desc.steps[0].stepName!=null && desc.steps[0].stepName.length>0){
+            if (desc.steps != null && desc.steps.length > 1) {
+                if (desc.steps[0].stepName != null && desc.steps[0].stepName.length > 0) {
                     prog.steps = desc.steps;
                 }
             }
@@ -224,8 +224,7 @@ export class ParseService {
 
                     c.clanMilestones = clanMilestones;
                     return;
-                }
-                else if (milestonesByKey[key] == null) {
+                } else if (milestonesByKey[key] == null) {
                     return;
                 }
 
@@ -267,7 +266,7 @@ export class ParseService {
                         }
 
 
-                    })
+                    });
                 } else if (ms.activities != null && ms.activities.length > 0) {
                     const act = ms.activities[0];
                     if (act.challenges != null && act.challenges.length > 0) {
@@ -284,8 +283,7 @@ export class ParseService {
                             }
                         }
 
-                    }
-                    else if (act.phases != null && act.phases.length > 0) {
+                    } else if (act.phases != null && act.phases.length > 0) {
                         for (const p of act.phases) {
 
                             phases.push(p.complete);
@@ -301,10 +299,11 @@ export class ParseService {
                 if (pct === 0) { pct = oPct; }
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + '% complete';
-                    if (milestonesByKey[key] != null)
+                    if (milestonesByKey[key] != null) {
                         milestonesByKey[key].hasPartial = true;
+                    }
                 }
-                if (phases.length == 0) phases = null;
+                if (phases.length == 0) { phases = null; }
                 const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases);
                 c.milestones[key] = m;
             });
@@ -516,8 +515,7 @@ export class ParseService {
                         if ((f > 0) && (returnMe.lwNmFastestMs == null || returnMe.lwNmFastestMs > f)) {
                             returnMe.lwNmFastestMs = f;
                         }
-                    }
-                    else if (name.indexOf('Scourge of the Past') === 0) {
+                    } else if (name.indexOf('Scourge of the Past') === 0) {
                         const c = ParseService.getBasicValue(act.values.activityCompletions);
                         returnMe.spNm += c;
                         const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
@@ -549,7 +547,7 @@ export class ParseService {
     }
 
     private dedupeArray(arr: number[]): number[] {
-        const unique_array = Array.from(new Set(arr))
+        const unique_array = Array.from(new Set(arr));
         return unique_array;
     }
 
@@ -581,7 +579,7 @@ export class ParseService {
         const vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
         if (vDesc == null) { return []; }
         if (resp.vendors.data[vendorKey] == null) {
-            //vendor isn't here right now;
+            // vendor isn't here right now;
             return [];
         }
         const vendor: Vendor = {
@@ -724,14 +722,13 @@ export class ParseService {
         let itemType = iDesc.itemType;
         if (iDesc.itemType === ItemType.Mod && iDesc.itemTypeDisplayName.indexOf('Mod') >= 0) {
             itemType = ItemType.GearMod;
-        }
-        else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
+        } else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
             itemType = ItemType.ForgeVessel;
 
         }
 
 
-        searchText += iDesc.displayProperties.name + ' '
+        searchText += iDesc.displayProperties.name + ' ';
         searchText += vendor.name + ' ';
         if (vendor.hash === '2190858386') {
             searchText += 'Xur ';
@@ -754,7 +751,7 @@ export class ParseService {
             value: values,
             costs: costs,
             searchText: searchText.toLowerCase()
-        }
+        };
     }
 
     private parseSaleItemStatus(s: number): string {
@@ -934,7 +931,7 @@ export class ParseService {
             const dAct = {};
 
             for (const a of activities) {
-                const key = a.name + ' ' + a.challenges.length + ' ' + a.modifiers.length + ' ' + a.loadoutReqs.length
+                const key = a.name + ' ' + a.challenges.length + ' ' + a.modifiers.length + ' ' + a.loadoutReqs.length;
                 if (dAct[key] == null) {
 
                     dAct[key] = {
@@ -980,38 +977,35 @@ export class ParseService {
 
             if (ms.milestoneHash === 2188900244) {// recipe for success
                 pl = 652;
-            }
-            else if (ms.milestoneHash === 601087286 ) {// reckoning
+            } else if (ms.milestoneHash === 601087286 ) {// reckoning
                 pl = 690;
-            }
-            else if (ms.milestoneHash === 2010672046  ) {// Gambit prime
+            } else if (ms.milestoneHash === 2010672046  ) {// Gambit prime
                 pl = 689;
-            }
-            else if (ms.milestoneHash === 3603098564) {// clan rewards
+            } else if (ms.milestoneHash === 3603098564) {// clan rewards
                 pl = 650;
-            } else if (ms.milestoneHash === 2171429505) { //weekly nightfall
+            } else if (ms.milestoneHash === 2171429505) { // weekly nightfall
                 pl = 648;
-            } else if (ms.milestoneHash === 2853331463) { //NF score
+            } else if (ms.milestoneHash === 2853331463) { // NF score
                 pl = 649;
-            } else if (ms.milestoneHash === 463010297) { //flashpoint
+            } else if (ms.milestoneHash === 463010297) { // flashpoint
                 pl = 520;
-            } else if (ms.milestoneHash === 536115997) { //guardian of all
+            } else if (ms.milestoneHash === 536115997) { // guardian of all
                 pl = 520;
-            } else if (ms.milestoneHash === 3082135827) { //heroic story
+            } else if (ms.milestoneHash === 3082135827) { // heroic story
                 pl = 520;
-            } else if (ms.milestoneHash === 3448738070) { //weekly gambit
+            } else if (ms.milestoneHash === 3448738070) { // weekly gambit
                 pl = 520;
-            } else if (ms.milestoneHash === 1437935813) { //weekly strike
+            } else if (ms.milestoneHash === 1437935813) { // weekly strike
                 pl = 520;
-            } else if (ms.milestoneHash === 3172444947) { //daily vanguard
+            } else if (ms.milestoneHash === 3172444947) { // daily vanguard
                 pl = 520;
-            } else if (ms.milestoneHash === 3312018120) { //daily crucible
+            } else if (ms.milestoneHash === 3312018120) { // daily crucible
                 pl = 520;
-            } else if (ms.milestoneHash === 157823523) { //weekly crucible
+            } else if (ms.milestoneHash === 157823523) { // weekly crucible
                 pl = 520;
-            } else if (ms.milestoneHash === 941217864) { //daily gambit
+            } else if (ms.milestoneHash === 941217864) { // daily gambit
                 pl = 520;
-            } else if (ms.milestoneHash === 1300394968) { //heroic adv
+            } else if (ms.milestoneHash === 1300394968) { // heroic adv
                 pl = 520;
             }
             if (rewards.trim().length == 0 && activityRewards != null) {
@@ -1083,7 +1077,7 @@ export class ParseService {
             if (parsed != null) {
                 returnMe.push(parsed);
             }
-        })
+        });
         return returnMe;
     }
 
@@ -1175,7 +1169,7 @@ export class ParseService {
                     total: cntr,
                     entries: checkListItems,
                     hasDescs: hasDescs
-                }
+                };
 
                 checklists.push(checklist);
             });
@@ -1213,7 +1207,7 @@ export class ParseService {
                                 name: checklistName,
                                 totals: [],
                                 entries: []
-                            }
+                            };
                             checklists.push(checklist);
                         }
 
@@ -1279,7 +1273,7 @@ export class ParseService {
                             char: char,
                             complete: cntChecked,
                             total: cntr
-                        }
+                        };
                         checklist.totals.push(charTotal);
                     });
                 }
@@ -1302,10 +1296,10 @@ export class ParseService {
 
     private buildSeal(node: TriumphNode): Seal {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
-        if (pDesc == null) return null;
+        if (pDesc == null) { return null; }
         const completionRecordHash = pDesc.completionRecordHash;
         const cDesc = this.destinyCacheService.cache.Record[completionRecordHash];
-        if (cDesc == null) return null;
+        if (cDesc == null) { return null; }
         const title = cDesc.titleInfo.titlesByGenderHash[2204441813];
         let progress = 0;
         for (const c of node.children) {
@@ -1360,8 +1354,8 @@ export class ParseService {
                     // '1342567285' === p.hash ||   // scourge
                     '4128810957' === p.hash ||   // eva return
                     '4253138191' === p.hash ||  // weekly clan engrams
-                    '3177730289' === p.hash //||   // season of giving
-                    //'2188900244' === p.hash    // recipe for success
+                    '3177730289' === p.hash // ||   // season of giving
+                    // '2188900244' === p.hash    // recipe for success
                 ) {
                     continue;
                 }
@@ -1386,13 +1380,13 @@ export class ParseService {
                 milestoneList.push(ms);
                 milestonesByKey[p.hash] = ms;
             }
-            //add Last wish if its missing, as it has been from public milestones for a while
+            // add Last wish if its missing, as it has been from public milestones for a while
             if (milestonesByKey['3181387331'] == null) {
-                const raidDesc = this.destinyCacheService.cache.Milestone["3181387331"];
+                const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
                     resets: null,
-                    rewards: "Powerful Gear",
+                    rewards: 'Powerful Gear',
                     pl: 641,
                     name: raidDesc.displayProperties.name,
                     desc: raidDesc.displayProperties.description,
@@ -1453,7 +1447,7 @@ export class ParseService {
         }
 
         let recordTree = [];
-        let seals: Seal[] = [];
+        const seals: Seal[] = [];
         const seasons: RecordSeason[] = [];
         let lowHangingTriumphs: TriumphRecordNode[] = [];
         let searchableTriumphs: TriumphRecordNode[] = [];
@@ -1498,12 +1492,10 @@ export class ParseService {
                             if (parsed.type === ItemType.Bounty) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 bounties.push(parsed);
-                            }
-                            else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
+                            } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
-                            }
-                            else {
+                            } else {
                                 gear.push(parsed);
                             }
                         }
@@ -1536,8 +1528,7 @@ export class ParseService {
                         if (itm.bucketHash != 138197802) {
                             owner = shared;
                             options = [vault];
-                        }
-                        else {
+                        } else {
                             options = [shared];
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
@@ -1562,7 +1553,7 @@ export class ParseService {
             const nodes: any[] = [];
             const records: any[] = [];
             const collections: any[] = [];
-            if (resp.profileRecords!=null){
+            if (resp.profileRecords != null) {
                 triumphScore = resp.profileRecords.data.score;
             }
             if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
@@ -1599,38 +1590,38 @@ export class ParseService {
                     leafSet[t.hash] = t;
                 }
                 triumphLeaves = [];
-                for (const key in leafSet) {
+                for (const key of Object.keys(leafSet)) {
                     triumphLeaves.push(leafSet[key]);
                 }
-                lowHangingTriumphs = triumphLeaves.filter((l) => { return !l.complete });
+                lowHangingTriumphs = triumphLeaves.filter((l) => { return !l.complete; });
                 if (showZeroPtTriumphs != true) {
-                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return l.score > 0 });
+                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return l.score > 0; });
                 }
                 if (showInvisTriumphs != true) {
-                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return !l.invisible });
+                    lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return !l.invisible; });
                 }
                 lowHangingTriumphs.sort((a, b) => {
-                    if (a.percent > b.percent) return -1;
-                    if (a.percent < b.percent) return 1;
+                    if (a.percent > b.percent) { return -1; }
+                    if (a.percent < b.percent) { return 1; }
                     return 0;
                 });
                 searchableTriumphs = triumphLeaves.sort((a, b) => {
                     // if (a.percent>b.percent) return -1;
                     // if (a.percent<b.percent) return 1;
-                    if (a.name < b.name) return -1;
-                    if (a.name < b.name) return 0;
+                    if (a.name < b.name) { return -1; }
+                    if (a.name < b.name) { return 0; }
                     return 0;
                 });
-                for (const r of searchableTriumphs){
+                for (const r of searchableTriumphs) {
                     dictSearchableTriumphs[r.hash] = r;
                 }
                 lowHangingTriumphs = lowHangingTriumphs.slice(0, 10);
 
                 const seasonDescs: any[] = this.destinyCacheService.cache.RecordSeasons;
-                for (const seasonDesc of seasonDescs){
+                for (const seasonDesc of seasonDescs) {
 
                     const seasonRecords: TriumphRecordNode[] = [];
-                    for (const hash of seasonDesc.hashes){
+                    for (const hash of seasonDesc.hashes) {
                         seasonRecords.push(dictSearchableTriumphs[hash]);
                     }
                     seasons.push({
@@ -1646,7 +1637,7 @@ export class ParseService {
             }
 
         }
-        let title = "";
+        let title = '';
         for (const char of chars) {
             if (char.title != null && char.title.trim().length > 0) {
                 title = char.title;
@@ -1696,8 +1687,8 @@ export class ParseService {
                 const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
-                if (oChild.invisible && !showInvisTriumphs) continue;
-                if (oChild.score == 0 && !showZeroPtTriumphs) continue;
+                if (oChild.invisible && !showInvisTriumphs) { continue; }
+                if (oChild.score == 0 && !showZeroPtTriumphs) { continue; }
                 children.push(oChild);
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
@@ -1708,7 +1699,7 @@ export class ParseService {
                 total += oChild.score;
             }
         }
-        if (children == null || children.length == 0) return null;
+        if (children == null || children.length == 0) { return null; }
         children.sort(function (a, b) {
             if (a.index < b.index) {
                 return -1;
@@ -1734,7 +1725,7 @@ export class ParseService {
             unredeemedCount: unredeemedCount,
             pts: pts,
             totalPts: total
-        }
+        };
     }
 
     private handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphRecordNode {
@@ -1759,14 +1750,14 @@ export class ParseService {
                 progress: o.progress == null ? 0 : o.progress,
                 complete: o.complete,
                 percent: 0
-            }
+            };
 
             let max = iObj.completionValue;
             if (iObj.completionValue == null || iObj.completionValue <= 0) {
                 max = 1;
             }
             let objPercent = 100 * iObj.progress / max;
-            if (objPercent > 100) objPercent = 100;
+            if (objPercent > 100) { objPercent = 100; }
             iObj.percent = Math.floor(objPercent);
 
             totalProgress += oDesc.completionValue;
@@ -1793,13 +1784,13 @@ export class ParseService {
             }
         }
 
-        let searchText = rDesc.displayProperties.name + " " + rDesc.displayProperties.description;
+        let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
         let percent = 0;
         if (objs.length > 0) {
             let sum = 0;
             for (const o of objs) {
                 sum += o.percent;
-                searchText += " " + o.progressDescription;
+                searchText += ' ' + o.progressDescription;
             }
             percent = Math.floor(sum / objs.length);
         }
@@ -1823,7 +1814,7 @@ export class ParseService {
             percent: percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible
-        }
+        };
     }
 
     private getBestRec(aNodes: any[], key: string): any {
@@ -1900,7 +1891,7 @@ export class ParseService {
             unredeemedCount: 0,
             pts: 0,
             totalPts: 0
-        }
+        };
     }
 
     private recAvg(rec: any): number {
@@ -1939,12 +1930,12 @@ export class ParseService {
             sourceString: cDesc.sourceString,
             children: null,
             path: path
-        }
+        };
     }
 
     private parseQuestStep(stepHash: number, currentStepHash: number): QuestlineStep {
         const desc: any = this.destinyCacheService.cache.InventoryItem[stepHash];
-        if (desc == null) return null;
+        if (desc == null) { return null; }
         const values = [];
         if (desc.value != null && desc.value.itemValue != null) {
             for (const val of desc.value.itemValue) {
@@ -1969,7 +1960,7 @@ export class ParseService {
                     progress: 0,
                     complete: false,
                     percent: 0
-                }
+                };
                 objectives.push(iObj);
             }
         }
@@ -1979,29 +1970,29 @@ export class ParseService {
             objectives: objectives,
             values: values,
             current: currentStepHash == stepHash
-        }
+        };
     }
 
     private parseQuestLine(qli: number, stepHash: number): Questline {
         const qdesc: any = this.destinyCacheService.cache.InventoryItem[qli];
-        if (qdesc == null) return null;
-        if (qdesc.setData == null) return null;
+        if (qdesc == null) { return null; }
+        if (qdesc.setData == null) { return null; }
         const qType = qdesc.setData.setType;
         if (qType != 'quest_global') {
             return null;
         }
         const steps = qdesc.setData.itemList;
         let cntr = 0;
-        let stepNum = -1;
+        const stepNum = -1;
         const oSteps = [];
-        let progress = "";
+        let progress = '';
         for (const step of steps) {
             cntr++;
             const oStep = this.parseQuestStep(step.itemHash, stepHash);
             if (oStep != null) {
                 oSteps.push(oStep);
                 if (oStep.current) {
-                    progress = cntr + "/" + steps.length;
+                    progress = cntr + '/' + steps.length;
                 }
             }
 
@@ -2011,29 +2002,24 @@ export class ParseService {
             name: qdesc.displayProperties.name,
             steps: oSteps,
             progress: progress
-        }
+        };
     }
 
     private cookDamageType(damageType: DamageType): string {
 
-        if (damageType == DamageType.None) return "None";
-        else if (damageType == DamageType.Kinetic) return "Kinetic";
-        else if (damageType == DamageType.Arc) return "Arc";
-        else if (damageType == DamageType.Thermal) return "Solar";
-        else if (damageType == DamageType.Void) return "Void";
-        else return "";
+        if (damageType == DamageType.None) { return 'None'; } else if (damageType == DamageType.Kinetic) { return 'Kinetic'; } else if (damageType == DamageType.Arc) { return 'Arc'; } else if (damageType == DamageType.Thermal) { return 'Solar'; } else if (damageType == DamageType.Void) { return 'Void'; } else { return ''; }
 
     }
 
     private parseMasterwork(plugDesc: any): MastworkInfo {
-        if (plugDesc.plug == null) return null;
-        if (plugDesc.plug.plugCategoryIdentifier == null) return null;
-        if (plugDesc.plug.plugCategoryIdentifier.indexOf("masterworks.stat.") < 0) {
+        if (plugDesc.plug == null) { return null; }
+        if (plugDesc.plug.plugCategoryIdentifier == null) { return null; }
+        if (plugDesc.plug.plugCategoryIdentifier.indexOf('masterworks.stat.') < 0) {
             return null;
         }
-        //from here on out we know its MW
+        // from here on out we know its MW
         if (plugDesc.investmentStats == null || plugDesc.investmentStats.length == 0) {
-            console.log("Missing investment stats?");
+            console.log('Missing investment stats?');
             return null;
         }
         const invStats = plugDesc.investmentStats[0];
@@ -2041,7 +2027,7 @@ export class ParseService {
         const statHash = invStats.statTypeHash;
         const statDesc: any = this.destinyCacheService.cache.Stat[statHash];
         if (statDesc == null) {
-            console.log("Missing statsDesc for " + statHash);
+            console.log('Missing statsDesc for ' + statHash);
             return null;
         }
         const name = statDesc.displayProperties.name;
@@ -2059,31 +2045,38 @@ export class ParseService {
     private parseMod(plugDesc: any): InventoryPlug {
         // if (plugDesc.inventory == null) return null;
         // if (plugDesc.inventory.bucketTypeHash != 3313201758) return null;
-        if (plugDesc.displayProperties.name == "Empty Mod Socket") return null;
-        if (plugDesc.displayProperties.name == "Default Ornament") return null;
-        if (plugDesc.itemTypeDisplayName != null && plugDesc.itemTypeDisplayName.indexOf("Ornament") >= 0) {
+        if (plugDesc.displayProperties.name == 'Empty Mod Socket') { return null; }
+        if (plugDesc.displayProperties.name == 'Default Ornament') { return null; }
+        if (plugDesc.itemTypeDisplayName != null && plugDesc.itemTypeDisplayName.indexOf('Ornament') >= 0) {
             return null;
         }
-        if (plugDesc.displayProperties.name.indexOf("Catalyst") >= 0) {
+        if (plugDesc.displayProperties.name.indexOf('Catalyst') >= 0) {
             return null;
         }
-        if (plugDesc.hash == 3786277607) //legacy MW armor slot
+        if (plugDesc.hash == 3786277607) { // legacy MW armor slot
             return null;
-        if (plugDesc.hash == 3876796314)  // base radiance
+        }
+        if (plugDesc.hash == 3876796314) {  // base radiance
             return null;
-        if (plugDesc.hash == 2667900317)  // crucible  mw
+        }
+        if (plugDesc.hash == 2667900317) {  // crucible  mw
             return null;
-        if (plugDesc.hash == 2946649456)  // vanguard  mw
+        }
+        if (plugDesc.hash == 2946649456) {  // vanguard  mw
             return null;
-        if (plugDesc.hash == 1961001474)  // rework weapon
+        }
+        if (plugDesc.hash == 1961001474) {  // rework weapon
             return null;
-        if (plugDesc.hash == 3612467353)  // rework weapon
+        }
+        if (plugDesc.hash == 3612467353) {  // rework weapon
             return null;
+        }
 
         const ch = plugDesc.plug.plugCategoryHash;
-        if (ch == 2973005342 || //shader
-            ch == 2947756142) //masterwork tracker
+        if (ch == 2973005342 || // shader
+            ch == 2947756142) { // masterwork tracker
             return null;
+        }
         let desc = plugDesc.displayProperties.description;
         if (desc == null || desc.trim().length == 0) {
             if (plugDesc.perks != null && plugDesc.perks.length >= 1) {
@@ -2094,20 +2087,21 @@ export class ParseService {
                 }
             }
         }
-        const name = plugDesc.displayProperties.name.replace("_", " ");
+        const name = plugDesc.displayProperties.name.replace('_', ' ');
         return new InventoryPlug(plugDesc.hash,
             plugDesc.displayProperties.name, desc,
             plugDesc.displayProperties.icon, true);
     }
 
     private getPlugName(plugDesc: any): string {
-        let name = plugDesc.displayProperties.name;
-        if (plugDesc.plug == null) return null;
-        if (plugDesc.plug.plugCategoryIdentifier == null) return null;
-        if (plugDesc.plug.plugCategoryHash == null) return null;
+        const name = plugDesc.displayProperties.name;
+        if (plugDesc.plug == null) { return null; }
+        if (plugDesc.plug.plugCategoryIdentifier == null) { return null; }
+        if (plugDesc.plug.plugCategoryHash == null) { return null; }
         const ch = plugDesc.plug.plugCategoryHash;
-        if (ch == 2947756142) //hide trackers
+        if (ch == 2947756142) { // hide trackers
             return null;
+        }
 
         return name;
     }
@@ -2119,7 +2113,7 @@ export class ParseService {
                 return null;
                 // return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
             }
-            //anything with no type goes away too
+            // anything with no type goes away too
             if (desc.itemTypeDisplayName == null) {
                 return null;
             }
@@ -2144,11 +2138,10 @@ export class ParseService {
                     && type !== ItemType.QuestStep) {
                     return null;
                 }
-            }
-            else {
+            } else {
                 if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
-                    //mods we use the perk desc
+                    // mods we use the perk desc
                     if (desc.perks != null && desc.perks.length > 0) {
                         const pHash = desc.perks[0].perkHash;
 
@@ -2157,15 +2150,11 @@ export class ParseService {
                             description = pDesc.displayProperties.description;
                         }
                     }
-                }
-                else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
+                } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
-                }
-
-                else if (desc.itemType === ItemType.Ship) {
+                } else if (desc.itemType === ItemType.Ship) {
                     type = ItemType.Vehicle;
-                }
-                else if (
+                } else if (
                     type != ItemType.Weapon
                     && type != ItemType.Armor
                     && type != ItemType.GearMod
@@ -2177,13 +2166,13 @@ export class ParseService {
                 }
 
                 if (type == ItemType.Consumable) {
-                    if (desc.hash == 3487922223 || //datalattice
-                        desc.hash == 2014411539 || //alkane dust
-                        desc.hash == 950899352 || //dusklight shard
-                        desc.hash == 1305274547 || //phaseglass
-                        desc.hash == 49145143 ||//simulation seeds
-                        desc.hash == 31293053 ||//seraphite
-                        desc.hash == 1177810185) { //etheric spiral
+                    if (desc.hash == 3487922223 || // datalattice
+                        desc.hash == 2014411539 || // alkane dust
+                        desc.hash == 950899352 || // dusklight shard
+                        desc.hash == 1305274547 || // phaseglass
+                        desc.hash == 49145143 || // simulation seeds
+                        desc.hash == 31293053 || // seraphite
+                        desc.hash == 1177810185) { // etheric spiral
                         type = ItemType.ExchangeMaterial;
                     }
                 }
@@ -2203,7 +2192,7 @@ export class ParseService {
                                 progress: o.progress == null ? 0 : o.progress,
                                 complete: o.complete,
                                 percent: 0
-                            }
+                            };
 
 
                             if (iObj.completionValue != null && iObj.completionValue > 0) {
@@ -2224,7 +2213,7 @@ export class ParseService {
             let damageType: DamageType = DamageType.None;
             let equipped = false;
             let canEquip = false;
-            let searchText = "";
+            let searchText = '';
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
             let mw: MastworkInfo = null;
@@ -2249,8 +2238,9 @@ export class ParseService {
                 if (itemComp.instances != null && itemComp.instances.data != null) {
                     const instanceData = itemComp.instances.data[itm.itemInstanceId];
                     if (instanceData != null) {
-                        if (instanceData.primaryStat != null)
+                        if (instanceData.primaryStat != null) {
                             power = instanceData.primaryStat.value;
+                        }
                         damageType = instanceData.damageType;
                         equipped = instanceData.isEquipped;
                         canEquip = instanceData.canEquip;
@@ -2274,15 +2264,14 @@ export class ParseService {
                                 const jDesc: any = this.destinyCacheService.cache.Stat[key];
                                 statDict[key] = new InventoryStat(jDesc.displayProperties.name,
                                     jDesc.displayProperties.description, null, baseValue);
-                            }
-                            else {
+                            } else {
                                 statDict[key].baseValue = baseValue;
                             }
                         });
                         Object.keys(statDict).forEach(key => {
                             const val = statDict[key];
                             if (val.baseValue > 0 || val.value > 0) {
-                                if (val.name != "Defense" && val.name != "Power" && val.name.length > 0) {
+                                if (val.name != 'Defense' && val.name != 'Power' && val.name.length > 0) {
                                     stats.push(val);
                                 }
                             }
@@ -2306,7 +2295,7 @@ export class ParseService {
                         for (const jCat of desc.sockets.socketCategories) {
                             let isMod = false;
 
-                            //skip ghost mods
+                            // skip ghost mods
                             if (jCat.socketCategoryHash == 3379164649) {
                                 continue;
                             }
@@ -2315,7 +2304,7 @@ export class ParseService {
                                 isMod = true;
                             }
                             const socketArray = itemSockets.sockets;
-                            if (jCat.socketIndexes == null) continue;
+                            if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
                                 const socketDesc = desc.sockets.socketEntries[index];
                                 const socketVal = socketArray[index];
@@ -2326,7 +2315,7 @@ export class ParseService {
                                 if (socketVal.reusablePlugs != null) {
                                     for (const plug of socketVal.reusablePlugs) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
-                                        if (plugDesc == null) continue;
+                                        if (plugDesc == null) { continue; }
                                         if (isMod) {
                                             const mwInfo = this.parseMasterwork(plugDesc);
                                             if (mwInfo != null) {
@@ -2341,16 +2330,15 @@ export class ParseService {
                                             continue;
                                         }
                                         const name = this.getPlugName(plugDesc);
-                                        if (name == null) continue;
+                                        if (name == null) { continue; }
                                         const oPlug = new InventoryPlug(plugDesc.hash,
                                             name, plugDesc.displayProperties.description,
                                             plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
                                         plugs.push(oPlug);
                                     }
-                                }
-                                else if (socketVal.plugHash != null) {
+                                } else if (socketVal.plugHash != null) {
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
-                                    if (plugDesc == null) continue;
+                                    if (plugDesc == null) { continue; }
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
                                         if (mwInfo != null) {
@@ -2365,7 +2353,7 @@ export class ParseService {
                                         continue;
                                     }
                                     const name = this.getPlugName(plugDesc);
-                                    if (name == null) continue;
+                                    if (name == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         name, plugDesc.displayProperties.description,
                                         plugDesc.displayProperties.icon, true);
@@ -2404,42 +2392,41 @@ export class ParseService {
                 const qli = desc.objectives.questlineItemHash;
                 if (qli != null) {
                     questline = this.parseQuestLine(qli, itm.itemHash);
-                    if (questline == null) return null;
+                    if (questline == null) { return null; }
                 }
             }
 
             searchText = desc.displayProperties.name;
             if (mw != null) {
-                searchText += " " + mw.name;
+                searchText += ' ' + mw.name;
             }
             if (masterworked) {
-                searchText += " is:masterwork";
+                searchText += ' is:masterwork';
             }
             if (mod != null) {
-                searchText += " " + mod.name;
-                searchText += " is:hasmod";
+                searchText += ' ' + mod.name;
+                searchText += ' is:hasmod';
             }
             if (sockets != null) {
                 for (const s of sockets) {
                     for (const p of s.plugs) {
-                        searchText += " " + p.name;
+                        searchText += ' ' + p.name;
                     }
                 }
             }
             if (isRandomRoll == true) {
-                searchText += " random";
-            }
-            else {
-                searchText += " fixed";
+                searchText += ' random';
+            } else {
+                searchText += ' fixed';
             }
             if (damageType != null && damageType != DamageType.None) {
-                searchText += " " + this.cookDamageType(damageType);
+                searchText += ' ' + this.cookDamageType(damageType);
             }
             if (ammoType != null) {
-                searchText += " " + DestinyAmmunitionType[ammoType];
+                searchText += ' ' + DestinyAmmunitionType[ammoType];
             }
-            if (postmaster){
-                searchText += " mail postmaster";
+            if (postmaster) {
+                searchText += ' mail postmaster';
             }
 
             searchText = searchText.toLowerCase();
@@ -2450,7 +2437,7 @@ export class ParseService {
                 power, damageType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(), 
+                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
             );
         } catch (exc) {
@@ -2504,8 +2491,8 @@ export class ParseService {
 
 
         returnMe.sort(function (a, b) {
-            if (a.isOnline && !b.isOnline) return -1;
-            if (!a.isOnline && b.isOnline) return -1;
+            if (a.isOnline && !b.isOnline) { return -1; }
+            if (!a.isOnline && b.isOnline) { return -1; }
 
             const bs: string = b.destinyUserInfo.displayName;
             const as: string = a.destinyUserInfo.displayName;
@@ -2518,8 +2505,8 @@ export class ParseService {
     }
 
     private camelKebab(prefix: string, s: string): string {
-        if (prefix!=null){
-            s = s.replace(prefix,'');
+        if (prefix != null) {
+            s = s.replace(prefix, '');
         }
         s = s.replace(/([a-z])([A-Z])/g, '$1 $2');
         return s.charAt(0).toUpperCase() + s.slice(1);
@@ -2560,25 +2547,23 @@ export class ParseService {
                             if (basicVal > 0) {
                                 const name = this.camelKebab('weaponKills', key);
                                 const data = new PGCRWeaponData();
-                                data.hash = "-1";
+                                data.hash = '-1';
                                 data.kills = basicVal;
                                 data.name = name;
                                 data.type = name;
                                 r.weapons.push(data);
                             }
-                        }
-                        else {
+                        } else {
                             const desc: any = this.destinyCacheService.cache.HistoricalStats[key];
                             if (key.startsWith('medal')) {
-                                
+
                                 const name = this.camelKebab('medal', key);
                                 const extraEntry = new PGCRExtraData();
                                 extraEntry.name = name;
                                 extraEntry.value = basicVal;
                                 extraEntry.desc = desc;
                                 r.extra.push(extraEntry);
-                            }
-                            else {
+                            } else {
                                 const extraEntry = new PGCRExtraData();
                                 const name = this.camelKebab(null, key);
                                 extraEntry.name = name;
@@ -2587,7 +2572,7 @@ export class ParseService {
                                 r.extra.push(extraEntry);
                             }
                         }
-                        
+
                     }
 
                 }
@@ -2615,10 +2600,12 @@ export class ParseService {
             return b.kills - a.kills;
         });
         r.extra.sort(function (a, b) {
-            if (a.name < b.name)
+            if (a.name < b.name) {
                 return -1;
-            if (a.name > b.name)
+            }
+            if (a.name > b.name) {
                 return 1;
+            }
             return 0;
         });
         r.characterClass = e.player.characterClass;
@@ -2806,7 +2793,7 @@ export class ParseService {
         if (mode === 63) { return 'Gambit'; }
         if (mode === 64) { return 'All PvE Competitive'; }
         if (mode === 65) { return 'Breakthrough'; }
-        if (mode === 66) { return 'Black Armory Forge'; } //BlackArmoryRun
+        if (mode === 66) { return 'Black Armory Forge'; } // BlackArmoryRun
         if (mode === 67) { return 'Salvage'; }
         if (mode === 68) { return 'Iron Banner Salvage'; }
         if (mode === 69) { return 'PvP Competitive'; }
@@ -2820,7 +2807,7 @@ export class ParseService {
         return 'Unknown ' + mode;
     }
 
-    public parseBungieMembership(resp: any) {        
+    public parseBungieMembership(resp: any) {
         if (resp.bungieNetUser == null) {
             return null;
         }
@@ -3224,7 +3211,7 @@ interface PrivInventoryItem {
     bindStatus: number;
     location: number;
     bucketHash: number;
-    transferStatus: number; //0 can transfer, 1 equipped, 2 not transferrable, 4 no room in dest
+    transferStatus: number; // 0 can transfer, 1 equipped, 2 not transferrable, 4 no room in dest
     lockable: boolean;
     state: number;
     expirationDate: string;

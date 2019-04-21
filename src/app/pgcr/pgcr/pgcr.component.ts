@@ -42,7 +42,7 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
 
   public async navigateBnetMember(target: BungieNetUserInfo) {
     const bnetName = await this.bungieService.getFullBNetName(target.membershipId);
-    if (bnetName!=null) this.router.navigate(['/', 4, bnetName]);
+    if (bnetName != null) { this.router.navigate(['/', 4, bnetName]); }
     return;
   }
 

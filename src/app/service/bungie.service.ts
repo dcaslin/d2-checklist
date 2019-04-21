@@ -182,7 +182,7 @@ export class BungieService implements OnDestroy {
             return this.parseService.parseClanInfo(resp.detail);
         } catch (err) {
             this.handleError(err);
-            throw "Error loading clan info: " + err;
+            throw new Error('Error loading clan info: ' + err);
         }
     }
 
@@ -255,25 +255,25 @@ export class BungieService implements OnDestroy {
             new ActivityMode(0, 'All', 'All'), // None
 
             new ActivityMode(64, 'All Gambit', 'All Gambit'),
-            //new ActivityMode(76, 'Reckoning', 'Reckoning'),
-            //new ActivityMode(66, 'Forge', 'Forge'),
+            // new ActivityMode(76, 'Reckoning', 'Reckoning'),
+            // new ActivityMode(66, 'Forge', 'Forge'),
 
-            //new ActivityMode(4, 'Raid', 'Raid'),
-            //new ActivityMode(18, 'All Strikes', 'All Strikes'),
+            // new ActivityMode(4, 'Raid', 'Raid'),
+            // new ActivityMode(18, 'All Strikes', 'All Strikes'),
 
-            //new ActivityMode(46, 'Scored Nightfall', 'Scored Nightfall'),
-            //new ActivityMode(47, 'Scored Heroic Nightfall', 'Scored Heroic Nightfall'),
+            // new ActivityMode(46, 'Scored Nightfall', 'Scored Nightfall'),
+            // new ActivityMode(47, 'Scored Heroic Nightfall', 'Scored Heroic Nightfall'),
 
             new ActivityMode(5, 'AllPvP', 'All PvP'),
             new ActivityMode(7, 'AllPvE', 'All PvE'),
 
-            //new ActivityMode(69, 'PvP Competitive', 'PvP Competitive'),
-            //new ActivityMode(70, 'PvP Quickplay', 'PvP Quickplay'),
-            //new ActivityMode(32, 'Private Matches', 'Private Matches'),
+            // new ActivityMode(69, 'PvP Competitive', 'PvP Competitive'),
+            // new ActivityMode(70, 'PvP Quickplay', 'PvP Quickplay'),
+            // new ActivityMode(32, 'Private Matches', 'Private Matches'),
 
-            //new ActivityMode(19, 'Iron Banner', 'Iron Banner'),
-            //new ActivityMode(39, 'Trials', 'Trials'),
-            //new ActivityMode(15, 'Crimson Doubles', 'Crimson Doubles'),
+            // new ActivityMode(19, 'Iron Banner', 'Iron Banner'),
+            // new ActivityMode(39, 'Trials', 'Trials'),
+            // new ActivityMode(15, 'Crimson Doubles', 'Crimson Doubles'),
 
             // new ActivityMode(10, 'Control', 'Control'),
             // new ActivityMode(43, 'Iron Banner Control', 'Iron Banner Control'),
@@ -288,7 +288,7 @@ export class BungieService implements OnDestroy {
 
             // new ActivityMode(16, 'Nightfall (old)', 'Nightfall (old)'),
             // new ActivityMode(17, 'Heroic Nightfall (old)', 'Heroic Nightfall (old)'),
-            //new ActivityMode(3, 'Strike', 'Strike'),
+            // new ActivityMode(3, 'Strike', 'Strike'),
 
             // new ActivityMode(37, 'Survival', 'Survival'),
             // new ActivityMode(38, 'Countdown', 'Countdown'),
@@ -382,11 +382,10 @@ export class BungieService implements OnDestroy {
         let complete = false;
         let held = false;
         for (const i of vendorData) {
-            if (i.vendor.hash == "863940356" && i.value != null && i.value.length == 1 && i.value[0].hash == "4039143015") {
-                if (i.status == "Already completed") {
+            if (i.vendor.hash == '863940356' && i.value != null && i.value.length == 1 && i.value[0].hash == '4039143015') {
+                if (i.status == 'Already completed') {
                     complete = true;
-                }
-                else if (i.status == "Already held") {
+                } else if (i.status == 'Already held') {
                     held = true;
                 }
                 break;
@@ -406,7 +405,7 @@ export class BungieService implements OnDestroy {
     private async loadActivityPsuedoMsOnChar(c: Character): Promise<void> {
         // we can do 0 later if we figure out the reckoning
         const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 64, c.startWeek);
-        const gambitActivities = activities.filter(a => a.mode == "Gambit Prime" && a.success);
+        const gambitActivities = activities.filter(a => a.mode == 'Gambit Prime' && a.success);
         let count = gambitActivities.length;
         if (count > 4) {
             count = 4;
@@ -425,7 +424,7 @@ export class BungieService implements OnDestroy {
     }
 
     public async loadActivityPsuedoMilestones(p: Player): Promise<void> {
-        //add reckoning psuedo milestones
+        // add reckoning psuedo milestones
         // const reckMs: MileStoneName = {
         //     key: RECKONING_KEY,
         //     resets: p.characters[0].endWeek.toISOString(),
@@ -438,18 +437,18 @@ export class BungieService implements OnDestroy {
         const gpMs: MileStoneName = {
             key: GAMBIT_PRIME_KEY,
             resets: p.characters[0].endWeek.toISOString(),
-            rewards: "Powerful Gear",
+            rewards: 'Powerful Gear',
             pl: 654,
-            name: "Gambit Prime",
-            desc: "Complete 4 Gambit Prime matches",
+            name: 'Gambit Prime',
+            desc: 'Complete 4 Gambit Prime matches',
             hasPartial: true
         };
         p.milestoneList.push(gpMs);
-        //p.milestoneList.push(reckMs);
-        //const emptyReck: MilestoneStatus = new MilestoneStatus(RECKONING_KEY, false, 0, null, "Loading...", null);
-        const emptyGp: MilestoneStatus = new MilestoneStatus(GAMBIT_PRIME_KEY, false, 0, null, "Loading...", null);
+        // p.milestoneList.push(reckMs);
+        // const emptyReck: MilestoneStatus = new MilestoneStatus(RECKONING_KEY, false, 0, null, "Loading...", null);
+        const emptyGp: MilestoneStatus = new MilestoneStatus(GAMBIT_PRIME_KEY, false, 0, null, 'Loading...', null);
         for (const c of p.characters) {
-            //c.milestones[RECKONING_KEY] = emptyReck;
+            // c.milestones[RECKONING_KEY] = emptyReck;
             c.milestones[GAMBIT_PRIME_KEY] = emptyGp;
         }
         for (const c of p.characters) {
@@ -458,27 +457,27 @@ export class BungieService implements OnDestroy {
     }
 
     public isSignedOn(p: Player): boolean {
-        if (this.selectedUser == null) return false;
+        if (this.selectedUser == null) { return false; }
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
     }
 
     public async loadSpiderWeekly(p: Player): Promise<void> {
-        //is this the signed on user?
+        // is this the signed on user?
         if (!this.isSignedOn(p)) {
             return;
         }
         const ms: MileStoneName = {
             key: SPIDER_KEY,
             resets: p.characters[0].endWeek.toISOString(),
-            rewards: "Powerful Gear",
+            rewards: 'Powerful Gear',
             pl: 653,
-            name: "Spider's Weekly Bounty",
-            desc: "Spider's weekly powerful bounty, costs Ghost Fragments",
+            name: 'Spider\'s Weekly Bounty',
+            desc: 'Spider\'s weekly powerful bounty, costs Ghost Fragments',
             hasPartial: false
         };
         p.milestoneList.push(ms);
-        const empty: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, false, 0, null, "Loading...", null);
-        //load empty while we wait, so it doesn't show checked
+        const empty: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, false, 0, null, 'Loading...', null);
+        // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
             c.milestones[SPIDER_KEY] = empty;
         }
@@ -516,8 +515,8 @@ export class BungieService implements OnDestroy {
 
     public async getBurns(): Promise<NameDesc[]> {
         const ms = await this.getPublicMilestones();
-        for (let m of ms) {
-            if ("3172444947" === m.hash) {
+        for (const m of ms) {
+            if ('3172444947' === m.hash) {
                 return m.aggActivities[0].activity.modifiers;
             }
         }
@@ -526,8 +525,8 @@ export class BungieService implements OnDestroy {
 
     public async getReckBurns(): Promise<NameDesc[]> {
         const ms = await this.getPublicMilestones();
-        for (let m of ms) {
-            if ("601087286" === m.hash) {
+        for (const m of ms) {
+            if ('601087286' === m.hash) {
                 return m.aggActivities[1].activity.modifiers;
             }
         }
@@ -565,24 +564,24 @@ export class BungieService implements OnDestroy {
     public async getActivityHistoryUntilDate(membershipType: number, membershipId: string, characterId: string, mode: number, stopDate: Date): Promise<Activity[]> {
         let returnMe = [];
         let page = 0;
-        //repeat until we run out of activities or we preceed the start date or we hit 10 pages
+        // repeat until we run out of activities or we preceed the start date or we hit 10 pages
         while (true) {
-            let activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, 100, true);
+            const activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, 100, true);
             returnMe = returnMe.concat(activities);
-            //out of activities
+            // out of activities
             if (activities.length < 100) {
                 break;
             }
             const lastActivity = activities[activities.length - 1];
             const d: Date = new Date(lastActivity.period);
-            //we're past the date
+            // we're past the date
             if (d.getTime() < stopDate.getTime()) {
                 break;
             }
             page++;
-            //too many pages
+            // too many pages
             if (page > 10) {
-                throw "Too many pages of data, stopping";
+                throw new Error('Too many pages of data, stopping');
             }
         }
         return returnMe.filter(a => {
@@ -609,11 +608,11 @@ export class BungieService implements OnDestroy {
             }
             curPage++;
             allMatches = allMatches.concat(matches);
-            if (matches.length<MAX_PAGE_SIZE || allMatches.length>=max){
+            if (matches.length < MAX_PAGE_SIZE || allMatches.length >= max) {
                 break;
             }
         }
-        if (allMatches.length>max){
+        if (allMatches.length > max) {
             allMatches = allMatches.slice(0, max);
         }
         return allMatches;
@@ -654,8 +653,7 @@ export class BungieService implements OnDestroy {
         } catch (err) {
             if (!ignoreErrors) {
                 this.handleError(err);
-            }
-            else {
+            } else {
                 console.log(err);
             }
             return null;
@@ -702,16 +700,15 @@ export class BungieService implements OnDestroy {
     public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService, pullFromPostmaster?: boolean): Promise<void> {
         try {
             if (pullFromPostmaster) {
-                await this.postReq("Destiny2/Actions/Items/PullFromPostmaster/", {
+                await this.postReq('Destiny2/Actions/Items/PullFromPostmaster/', {
                     characterId: target.id,
                     itemId: item.id,
                     itemReferenceHash: item.hash,
                     membershipType: membershipType,
                     stackSize: item.quantity
                 });
-            }
-            else {
-                await this.postReq("Destiny2/Actions/Items/TransferItem/", {
+            } else {
+                await this.postReq('Destiny2/Actions/Items/TransferItem/', {
                     characterId: target.id,
                     itemId: item.id,
                     itemReferenceHash: item.hash,
@@ -725,8 +722,7 @@ export class BungieService implements OnDestroy {
             if (isVault == true) {
                 to = vault;
                 from = target;
-            }
-            else {
+            } else {
                 to = target;
                 from = vault;
             }
@@ -736,14 +732,14 @@ export class BungieService implements OnDestroy {
             toBucket.items.push(item);
         } catch (err) {
             this.handleError(err);
-            throw "Failed to transfer " + item.name;
+            throw new Error('Failed to transfer ' + item.name);
         }
     }
 
 
     public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
         try {
-            await this.postReq("Destiny2/Actions/Items/EquipItem/", {
+            await this.postReq('Destiny2/Actions/Items/EquipItem/', {
                 characterId: item.owner.id,
                 itemId: item.id,
                 membershipType: membershipType
@@ -757,7 +753,7 @@ export class BungieService implements OnDestroy {
 
     public async setLock(membershipType: number, characterId: string, item: InventoryItem, locked: boolean): Promise<boolean> {
         try {
-            await this.postReq("Destiny2/Actions/Items/SetLockState/", {
+            await this.postReq('Destiny2/Actions/Items/SetLockState/', {
                 characterId: characterId,
                 itemId: item.id,
                 membershipType: membershipType,
