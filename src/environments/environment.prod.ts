@@ -1,4 +1,4 @@
-import { bungieProd } from "./keys";
+import { bungieProd } from './keys';
 
 const packageJson = require('../../package.json');
 export const environment = {

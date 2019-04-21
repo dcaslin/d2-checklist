@@ -42,7 +42,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   private triumphSearchSubject: Subject<void> = new Subject<void>();
 
-  public seasonIndex: number = 0;
+  public seasonIndex = 0;
 
 
   public triumphFilterText: string = null;
@@ -93,21 +93,20 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.loadTrackedTriumphIds();
   }
 
-  private loadTrackedTriumphIds(){
-    let sTrackedIds = localStorage.getItem('tracked-triumph-ids');
-    if (sTrackedIds!=null){
+  private loadTrackedTriumphIds() {
+    const sTrackedIds = localStorage.getItem('tracked-triumph-ids');
+    if (sTrackedIds != null) {
       this.aTrackedTriumphIds = JSON.parse(sTrackedIds);
-    }
-    else{
+    } else {
       this.aTrackedTriumphIds = [];
     }
     this.dTrackedTriumphIds = {};
-    for (const t of this.aTrackedTriumphIds){
+    for (const t of this.aTrackedTriumphIds) {
       this.dTrackedTriumphIds[t] = true;
     }
   }
 
-  private saveTrackedTriumphIds(){
+  private saveTrackedTriumphIds() {
     localStorage.setItem('tracked-triumph-ids', JSON.stringify(this.aTrackedTriumphIds));
   }
 
@@ -163,7 +162,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     const temp = [];
     const filterText = this.triumphFilterText.toLowerCase();
     for (const t of this.player.searchableTriumphs) {
-      if (temp.length > 20) break;
+      if (temp.length > 20) { break; }
       if (t.searchText.indexOf(filterText) >= 0) {
         temp.push(t);
       }
@@ -178,7 +177,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (n.data.hash === targetHash) {
         this.triumphTreeControl.expand(n);
         this.expandParents(this.triumphTreeControl, n);
-        this.selectedTreeNodeHash = ""+targetHash;
+        this.selectedTreeNodeHash = '' + targetHash;
         break;
       }
     }
@@ -224,7 +223,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.collectionDatasource = null;
       this.seasonIndex = 0;
     }
-    //too much trouble to make player an observable, just force change detection
+    // too much trouble to make player an observable, just force change detection
     this.ref.markForCheck();
   }
 
@@ -237,11 +236,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
   }
 
-  public showBurns(){
+  public showBurns() {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-    //dc.width = '500px';
+    // dc.width = '500px';
     // dc.maxHeight= '80vw';
     // dc.maxWidth= '80vw';
     // dc.minHeight = '400px';
@@ -261,7 +260,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       platformstr = 'ps';
       memberid = p.profile.userInfo.displayName;
     } else if (p.profile.userInfo.membershipType === 4) {
-      platformstr = 'pc'
+      platformstr = 'pc';
       memberid = p.profile.userInfo.membershipId;
     }
     return 'http://raid.report/' + platformstr + '/' + memberid;
@@ -408,9 +407,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       });
     } else if (this.sort === 'resetDesc') {
       this.player.milestoneList.sort((a, b) => {
-        if (a.resets==null && b.resets!=null) return 1;
-        if (a.resets!=null && b.resets==null) return -1;
-        if (a.resets==null && b.resets==null) return 0;
+        if (a.resets == null && b.resets != null) { return 1; }
+        if (a.resets != null && b.resets == null) { return -1; }
+        if (a.resets == null && b.resets == null) { return 0; }
         if (a.resets < b.resets) { return 1; }
         if (a.resets > b.resets) { return -1; }
         if (a.name > b.name) { return 1; }
@@ -420,9 +419,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     } else if (this.sort === 'resetAsc') {
       this.player.milestoneList.sort((a, b) => {
 
-        if (a.resets==null && b.resets!=null) return -1;
-        if (a.resets!=null && b.resets==null) return 1;
-        if (a.resets==null && b.resets==null) return 0;
+        if (a.resets == null && b.resets != null) { return -1; }
+        if (a.resets != null && b.resets == null) { return 1; }
+        if (a.resets == null && b.resets == null) { return 0; }
         if (a.resets < b.resets) { return -1; }
         if (a.resets > b.resets) { return 1; }
         if (a.name > b.name) { return 1; }
@@ -478,7 +477,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       return;
     }
     this.loading.next(true);
-    //set player to empty unless we're refreshing in place
+    // set player to empty unless we're refreshing in place
     if (forceRefresh !== true) {
       this.setPlayer(null);
     }
@@ -494,16 +493,16 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
         this.bungieService.loadClans(x.profile.userInfo);
-        //todo query history for Gambit Prime and the reckoning
-        //todo query spider vendor
+        // todo query history for Gambit Prime and the reckoning
+        // todo query spider vendor
         this.bungieService.loadSpiderWeekly(x);
-        //this.bungieService.loadActivityPsuedoMilestones(x);
+        // this.bungieService.loadActivityPsuedoMilestones(x);
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
         setTimeout(() => {
           this.setTab();
-        }, 0)
+        }, 0);
 
         this.loading.next(false);
 
@@ -538,14 +537,14 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.performSearch(true);
   }
 
-  public trackTriumph(n: TriumphRecordNode){
+  public trackTriumph(n: TriumphRecordNode) {
     this.aTrackedTriumphIds.push(n.hash);
     this.saveTrackedTriumphIds();
     this.loadTrackedTriumphIds();
     this.setTrackedTriumphs();
   }
 
-  public untrackTriumph(n: TriumphRecordNode){
+  public untrackTriumph(n: TriumphRecordNode) {
     const index = this.aTrackedTriumphIds.indexOf(n.hash);
     this.aTrackedTriumphIds.splice(index, 1);
     this.saveTrackedTriumphIds();
@@ -553,11 +552,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.setTrackedTriumphs();
   }
 
-  private setTrackedTriumphs(){
+  private setTrackedTriumphs() {
     const tempTriumphs = [];
-    if (this.aTrackedTriumphIds.length>0 && this.player!=null && this.player.searchableTriumphs!=null){
+    if (this.aTrackedTriumphIds.length > 0 && this.player != null && this.player.searchableTriumphs != null) {
       for (const t of this.player.searchableTriumphs) {
-        if (this.dTrackedTriumphIds[t.hash]==true){
+        if (this.dTrackedTriumphIds[t.hash] == true) {
           tempTriumphs.push(t);
         }
       }
@@ -565,7 +564,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.trackedTriumphs.next(tempTriumphs);
   }
 
-  async setBurns(){
+  async setBurns() {
     this.burns = await this.bungieService.getBurns();
     this.reckBurns = await this.bungieService.getReckBurns();
   }
@@ -636,7 +635,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-    //dc.width = '500px';
+    // dc.width = '500px';
     dc.data = quest;
     const dialogRef = this.dialog.open(QuestDialogComponent, dc);
   }

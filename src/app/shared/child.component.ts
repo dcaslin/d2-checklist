@@ -17,10 +17,10 @@ export class ChildComponent implements OnDestroy {
     public disabledAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);    
+    public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
     storageService: StorageService;
 
-    constructor(storageService: StorageService, 
+    constructor(storageService: StorageService,
         ref: ChangeDetectorRef) {
         this.storageService = storageService;
         this.disabledAds.next(this.storageService.getItem('disableads', false));

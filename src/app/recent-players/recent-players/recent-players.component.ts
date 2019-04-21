@@ -37,7 +37,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
-  constructor(storageService: StorageService, private bungieService: BungieService, 
+  constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
@@ -111,8 +111,8 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
         instances: []
       };
       // async store clans
-      this.bungieService.loadClans(e.user).then(()=>{
-        //update view if clan updates
+      this.bungieService.loadClans(e.user).then(() => {
+        // update view if clan updates
         this.ref.markForCheck();
       });
       this.friends.push(this.friendsDict[e.user.membershipId]);
@@ -136,7 +136,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
 
   public async navigateBnetMember(target: BungieNetUserInfo) {
     const bnetName = await this.bungieService.getFullBNetName(target.membershipId);
-    if (bnetName!=null) this.router.navigate(['/', 4, bnetName]);
+    if (bnetName != null) { this.router.navigate(['/', 4, bnetName]); }
     return;
   }
 

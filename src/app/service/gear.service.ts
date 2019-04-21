@@ -51,26 +51,24 @@ export class GearService {
 
 
     public canEquip(itm: InventoryItem) {
-        //ignore itm.canEquip
-        if (itm.equipped == true || (itm.owner.id == "vault") || (itm.owner.id == "shared")) {
+        // ignore itm.canEquip
+        if (itm.equipped == true || (itm.owner.id == 'vault') || (itm.owner.id == 'shared')) {
             itm.canReallyEquip = false;
-        }
-        else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner as Character).className) {
+        } else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner as Character).className) {
             itm.canReallyEquip = true;
-        }
-        else {
+        } else {
             itm.canReallyEquip = false;
         }
         // console.log("Can Really Equip " + itm.name + " on " + itm.owner.label + ": " + itm.canReallyEquip);
     }
 
     private static async delay(ms: number) {
-        await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log("fired"));
+        await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
     }
 
-    private async clearInvForMode(target: Target, player: Player, ignoreMark: string, weaponsOnly:Boolean): Promise<number> {
-        console.log("Clearing inventory ahead of a mode.");
-        this.notificationService.info("Clearing inventory ahead of time...");
+    private async clearInvForMode(target: Target, player: Player, ignoreMark: string, weaponsOnly: Boolean): Promise<number> {
+        console.log('Clearing inventory ahead of a mode.');
+        this.notificationService.info('Clearing inventory ahead of time...');
         const buckets = this.bucketService.getBuckets(target);
         let totalErr = 0;
         let moved = 0;
@@ -80,64 +78,60 @@ export class GearService {
             for (const i of items) {
                 if (i.equipped == false && (i.mark != ignoreMark) && (i.type == ItemType.Weapon || !weaponsOnly)) {
                     try {
-                        this.notificationService.info("Moving " + i.name + " to vault");
+                        this.notificationService.info('Moving ' + i.name + ' to vault');
                         await this.transfer(player, i, player.vault);
                         moved++;
-                    }
-                    catch (e) {
-                        console.log("Error moving " + i.name + " to vault: " + e);
+                    } catch (e) {
+                        console.log('Error moving ' + i.name + ' to vault: ' + e);
                         err++;
                         totalErr++;
                     }
-                }
-                else {
+                } else {
                     // console.log("Skipped "+i.name +" "+i.equipped+" "+i.mark);
                 }
             }
         }
-        if (err == 0)
-            this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault");
-        else
-            this.notificationService.info("Removed " + moved + " items from " + target.label + " to vault. " + err + " items failed to move.");
-        console.log("Done clearing inventory. " + totalErr + " errors.");
+        if (err == 0) {
+            this.notificationService.info('Removed ' + moved + ' items from ' + target.label + ' to vault');
+        } else {
+            this.notificationService.info('Removed ' + moved + ' items from ' + target.label + ' to vault. ' + err + ' items failed to move.');
+        }
+        console.log('Done clearing inventory. ' + totalErr + ' errors.');
         return totalErr;
     }
 
     public async shardMode(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
-        const totalErr = await this.clearInvForMode(target, player, "junk", weaponsOnly);
+        const totalErr = await this.clearInvForMode(target, player, 'junk', weaponsOnly);
         let moved = 0;
         let storeErr = 0;
         for (const i of player.gear) {
-            //might we move it?
-            if (i.mark == "junk" && i.owner.id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
-                //is bucket full?
+            // might we move it?
+            if (i.mark == 'junk' && i.owner.id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
+                // is bucket full?
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if (targetBucket.items.length < 10) {
-                    console.log("Move " + i.name + " to " + target.label + " " + targetBucket.name);
+                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.name);
                     try {
                         await this.transfer(player, i, target);
                         moved++;
-                    }
-                    catch (e) {
+                    } catch (e) {
                         storeErr++;
                     }
                 }
             }
         }
-        const msg = "Moved " + moved + " items to " + target.label;
+        const msg = 'Moved ' + moved + ' items to ' + target.label;
 
         // re sync locks to work around bungie bug where things get locked
         // await this.processGearLocks(player);
 
-        if (totalErr>0){
-            this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
-        }
-        else if (moved==0){
-            this.notificationService.success("Nothing left to shard!");
-        }
-        else{
-            this.notificationService.success("Done! All set to start sharding! "+msg);
+        if (totalErr > 0) {
+            this.notificationService.success('There were ' + totalErr + ' problems moving your gear. Despite that: ' + msg);
+        } else if (moved == 0) {
+            this.notificationService.success('Nothing left to shard!');
+        } else {
+            this.notificationService.success('Done! All set to start sharding! ' + msg);
         }
     }
 
@@ -149,50 +143,51 @@ export class GearService {
             }
         }
         copies.sort(function (a, b) {
-            if (a.power < b.power)
+            if (a.power < b.power) {
                 return 1;
-            if (a.power > b.power)
+            }
+            if (a.power > b.power) {
                 return -1;
+            }
             return 0;
         });
         return copies;
     }
 
-    public async upgradeMode(player: Player, weaponsOnly?:boolean) {
+    public async upgradeMode(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
-        let totalErr = await this.clearInvForMode(target, player, "xxx", weaponsOnly);
+        let totalErr = await this.clearInvForMode(target, player, 'xxx', weaponsOnly);
         let moved = 0;
         for (const i of player.gear) {
-            //is it marked for upgrade
-            if (i.mark == "upgrade" && (i.type == ItemType.Weapon || !weaponsOnly)) {
+            // is it marked for upgrade
+            if (i.mark == 'upgrade' && (i.type == ItemType.Weapon || !weaponsOnly)) {
                 let copies = this.findCopies(i, player);
-                copies = copies.filter(copy => copy.mark == "infuse");
+                copies = copies.filter(copy => copy.mark == 'infuse');
                 copies = copies.filter(copy => copy.power > i.power);
-                //nothing to infuse
+                // nothing to infuse
                 if (copies.length == 0) {
                     continue;
                 }
                 copies.push(i);
 
                 copies = copies.filter(copy => copy.owner.id != target.id);
-                //nothing to infuse
+                // nothing to infuse
                 if (copies.length == 0) {
                     continue;
                 }
 
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if ((targetBucket.items.length + copies.length) <= 10) {
-                    console.log("Move " + i.name + " to " + target.label + " " + targetBucket.name);
-                    this.notificationService.info("Prepping " + i.name + " for upgrade (" + copies.length + " total)");
+                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.name);
+                    this.notificationService.info('Prepping ' + i.name + ' for upgrade (' + copies.length + ' total)');
                     for (const moveMe of copies) {
-                        console.log("    From " + moveMe.owner.label);
+                        console.log('    From ' + moveMe.owner.label);
                         try {
                             await this.transfer(player, moveMe, target);
                             moved++;
-                        }
-                        catch (e) {
-                            console.log("Couldn't move " + moveMe.name);
-                            this.notificationService.fail("Unable to move " + moveMe.name + " from " + moveMe.owner.label + ". Nothing else to equip?");
+                        } catch (e) {
+                            console.log('Couldn\'t move ' + moveMe.name);
+                            this.notificationService.fail('Unable to move ' + moveMe.name + ' from ' + moveMe.owner.label + '. Nothing else to equip?');
                             totalErr++;
                         }
                     }
@@ -200,19 +195,17 @@ export class GearService {
                 }
             }
         }
-        const msg = "Moved " + moved + " items to " + target.label;
+        const msg = 'Moved ' + moved + ' items to ' + target.label;
 
         // re sync locks to work around bungie bug where things get locked
         // await this.processGearLocks(player);
 
-        if (totalErr>0){
-            this.notificationService.success("There were "+totalErr+" problems moving your gear. Despite that: "+msg);
-        }
-        else if (moved==0){
-            this.notificationService.success("Nothing left to cheaply upgrade!");
-        }
-        else{
-            this.notificationService.success("Done! All set to start upgrading! "+msg);
+        if (totalErr > 0) {
+            this.notificationService.success('There were ' + totalErr + ' problems moving your gear. Despite that: ' + msg);
+        } else if (moved == 0) {
+            this.notificationService.success('Nothing left to cheaply upgrade!');
+        } else {
+            this.notificationService.success('Done! All set to start upgrading! ' + msg);
         }
     }
 
@@ -223,28 +216,25 @@ export class GearService {
         let unlockedCnt = 0;
         let errCnt = 0;
         for (const i of gear) {
-            if (i.mark == null) continue;
-            if (i.mark == "upgrade" || i.mark == "keep") {
+            if (i.mark == null) { continue; }
+            if (i.mark == 'upgrade' || i.mark == 'keep') {
                 if (i.locked == false) {
                     try {
                         await this.setLock(player, i, true);
                         this.notificationService.info('Locked ' + i.name + ' on ' + i.owner.label);
                         lockCnt++;
-                    }
-                    catch (e) {
+                    } catch (e) {
                         this.notificationService.info('Failed to lock ' + i.name + ' on ' + i.owner.label);
                         errCnt++;
                     }
                 }
-            }
-            else if (i.mark == "junk" || i.mark == "infuse") {
+            } else if (i.mark == 'junk' || i.mark == 'infuse') {
                 if (i.locked == true) {
                     try {
                         await this.setLock(player, i, false);
                         this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.label);
                         unlockedCnt++;
-                    }
-                    catch (e) {
+                    } catch (e) {
                         this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.label);
                         errCnt++;
                     }
@@ -258,32 +248,32 @@ export class GearService {
         try {
             this.loading.next(true);
 
-            //equip something else from our bucket, if we can
+            // equip something else from our bucket, if we can
             if (itm.equipped == true) {
                 let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
                 if (equipMe == null) {
                     // grab something from the vault
                     const vaultItem: InventoryItem = this.bucketService.getBucket(player.vault, itm.inventoryBucket).otherItem(itm);
                     if (vaultItem == null) {
-                        throw new Error("Nothing to equip to replace " + itm.name);
+                        throw new Error('Nothing to equip to replace ' + itm.name);
                     }
                     // transfer to source player
                     await this.transfer(player, vaultItem, itm.owner);
                     // get a reference to it now that it's on that other player
                     equipMe = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
                     if (equipMe == null) {
-                        throw new Error("2) Nothing to equip to replace " + itm.name);
+                        throw new Error('2) Nothing to equip to replace ' + itm.name);
                     }
                 }
-                console.log(itm.name + " was equipped. Equipping " + equipMe.name + " in its place.");
+                console.log(itm.name + ' was equipped. Equipping ' + equipMe.name + ' in its place.');
                 const equipSuccess = await this.equip(player, equipMe);
                 if (!equipSuccess) {
-                    throw ("Could not equip " + equipMe.name + " on " + equipMe.owner.label);
+                    throw new Error(('Could not equip ' + equipMe.name + ' on ' + equipMe.owner.label));
                 }
             }
 
-            //if the target is the vault, we just need to put it there
-            if (target.id == "vault") {
+            // if the target is the vault, we just need to put it there
+            if (target.id == 'vault') {
                 let owner = itm.owner;
                 if (owner == player.shared) {
                     owner = player.characters[0];
@@ -295,27 +285,22 @@ export class GearService {
                 itm.owner = player.vault;
                 itm.options.splice(itm.options.indexOf(itm.owner), 1);
 
-            }
-            //if it's in the vault, we just need to pull it out to our char
-            else if (itm.owner.id == "vault" || itm.postmaster) {
+            } else if (itm.owner.id == 'vault' || itm.postmaster) {
                 let tempTarget = target;
                 if (target == player.shared) {
                     tempTarget = player.characters[0];
                 }
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     tempTarget, itm, false, player.vault, this.bucketService, itm.postmaster);
-                if (itm.postmaster){
+                if (itm.postmaster) {
                     itm.postmaster = false;
-                }
-                else{
+                } else {
                     itm.options.push(itm.owner);
                     itm.owner = target;
                     itm.options.splice(itm.options.indexOf(itm.owner), 1);
                 }
 
-            }
-            //otherwise we need to put it in vault, then pull it again
-            else {
+            } else {
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     itm.owner, itm, true, player.vault, this.bucketService);
                 itm.options.push(itm.owner);
@@ -342,8 +327,7 @@ export class GearService {
             let owner;
             if (itm.owner == player.vault || itm.owner == player.shared) {
                 owner = player.characters[0];
-            }
-            else {
+            } else {
                 owner = itm.owner;
             }
             const success = await this.bungieService.setLock(player.profile.userInfo.membershipType, owner.id, itm, locked);

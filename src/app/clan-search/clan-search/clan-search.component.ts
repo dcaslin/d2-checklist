@@ -17,7 +17,7 @@ export class ClanSearchComponent extends ChildComponent implements OnInit, OnDes
   name: string;
   public clan: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
 
-  constructor(storageService: StorageService, 
+  constructor(storageService: StorageService,
     private bungieService: BungieService,
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
@@ -32,8 +32,7 @@ export class ClanSearchComponent extends ChildComponent implements OnInit, OnDes
       const x = await this.bungieService.searchClans(this.name);
       this.clan.next(x);
       localStorage.setItem('last-clan-search', this.name);
-    }
-    catch (exc) {
+    } catch (exc) {
       this.clan = null;
     }
     finally {

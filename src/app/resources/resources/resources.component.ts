@@ -25,7 +25,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
 
   public vendorData: BehaviorSubject<SaleItem[]> = new BehaviorSubject([]);
   public filterText: BehaviorSubject<string> = new BehaviorSubject(null);
-  
+
   options = ['Bounties', 'Gear', 'Exchange', 'Cosmetics'];
   option = this.options[0];
 
@@ -39,7 +39,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     this.loading.next(true);
   }
 
-  public navigateStuff(val: string){
+  public navigateStuff(val: string) {
     this.router.navigate(['vendors', this.char.characterId, val]);
   }
 
@@ -52,12 +52,12 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     if (c == null) {
       this.char = null;
       this.vendorData.next([]);
-      if (!alreadyLoading) { 
+      if (!alreadyLoading) {
         this.loading.next(false);
       }
       return;
     }
-    if (!alreadyLoading) { 
+    if (!alreadyLoading) {
       this.loading.next(true);
     }
     try {
@@ -70,7 +70,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       }
     }
     finally {
-      if (!alreadyLoading) { 
+      if (!alreadyLoading) {
         this.loading.next(false);
       }
     }

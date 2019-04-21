@@ -80,9 +80,9 @@ export interface Seal {
     title: string;
 
     percent: number;
-    progress: number,
-    completionValue: number,
-    complete: boolean
+    progress: number;
+    completionValue: number;
+    complete: boolean;
 }
 
 export interface TriumphNode {
@@ -97,14 +97,14 @@ export interface TriumphNode {
     path: PathEntry[];
 }
 
-export interface PathEntry{
+export interface PathEntry {
     path: string;
     hash: string;
 }
 
 export interface TriumphPresentationNode extends TriumphNode {
-    progress: number,
-    completionValue: number,
+    progress: number;
+    completionValue: number;
     unredeemedCount: number;
     pts: number;
     totalPts: number;
@@ -152,7 +152,7 @@ export interface SaleItem {
     quantity: number;
     objectives: any;
     rolledPerks: ItemPerks[][];
-    value: NameQuantity[]; 
+    value: NameQuantity[];
     costs: NameQuantity[];
     searchText: string;
     lowLinks?: LowLinks;
@@ -182,8 +182,8 @@ export interface PublicMilestone {
 }
 
 export interface AggMilestoneActivity {
-    lls: number[],
-    activity: MilestoneActivity
+    lls: number[];
+    activity: MilestoneActivity;
 }
 
 export interface MilestoneActivity {
@@ -272,10 +272,10 @@ export class BungieMembership {
     clans: ClanRow[];
     destinyMemberships: UserInfo[];
 
-    public getBnetInfo(): UserInfo{
-        if (this.destinyMemberships==null) return null;
-        for (const u of this.destinyMemberships){
-            if (u.membershipType==4){
+    public getBnetInfo(): UserInfo {
+        if (this.destinyMemberships == null) { return null; }
+        for (const u of this.destinyMemberships) {
+            if (u.membershipType == 4) {
                 return u;
             }
         }
@@ -450,8 +450,8 @@ export class Player {
     readonly triumphScore: number;
     readonly records: TriumphNode[];
     readonly collections: TriumphNode[];
-    readonly lowHangingTriumphs:TriumphRecordNode[];
-    readonly seals:Seal[];
+    readonly lowHangingTriumphs: TriumphRecordNode[];
+    readonly seals: Seal[];
     readonly searchableTriumphs: TriumphRecordNode[];
     readonly gear: InventoryItem[];
     readonly vault: Target;
@@ -469,9 +469,9 @@ export class Player {
 
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
-        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target, 
-        lowHangingTriumphs:TriumphRecordNode[], searchableTriumphs:TriumphRecordNode[], 
-        seals:Seal[], title: string, seasons: RecordSeason[]) {
+        collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
+        lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
+        seals: Seal[], title: string, seasons: RecordSeason[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -506,9 +506,9 @@ export class Player {
 
     public getWeeklyXp(): number {
         let sum = 0;
-        if (this.characters!=null){
-            for (const char of this.characters){
-                sum+=char.getWeeklyXp();
+        if (this.characters != null) {
+            for (const char of this.characters) {
+                sum += char.getWeeklyXp();
             }
         }
         return sum;
@@ -554,7 +554,7 @@ export class InventoryItem {
     public readonly ammoType: DestinyAmmunitionType;
     public postmaster: boolean;
     public canReallyEquip: boolean;
-    public copies: number = 1;
+    public copies = 1;
     public godRoll = false;
     public godRollPve = false;
     public godRollPvp = false;
@@ -576,7 +576,7 @@ export class InventoryItem {
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean,
-        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[], 
+        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean
     ) {
         this.id = id;
@@ -673,14 +673,14 @@ export abstract class Target {
 
 export class Vault extends Target {
     constructor() {
-        super("Vault", "vault");
+        super('Vault', 'vault');
     }
 }
 
 
 export class Shared extends Target {
     constructor() {
-        super("Shared", "shared");
+        super('Shared', 'shared');
     }
 }
 
@@ -700,7 +700,7 @@ export class Character extends Target {
     baseCharacterLevel: number;
     maxLevel: number;
     percentToNextLevel: number;
-    title: string
+    title: string;
     race: string;
     gender: string;
     classType: number;
@@ -742,12 +742,12 @@ export class Character extends Target {
 
     public getWeeklyXp(): number {
         let sum = 0;
-        if (this.legendProgression!=null){
-            sum+=this.legendProgression.weeklyProgress;
+        if (this.legendProgression != null) {
+            sum += this.legendProgression.weeklyProgress;
         }
-        if (this.levelProgression!=null){
+        if (this.levelProgression != null) {
 
-            sum+=this.levelProgression.weeklyProgress;
+            sum += this.levelProgression.weeklyProgress;
         }
         return sum;
     }
@@ -1026,7 +1026,7 @@ export class Const {
         '1': Const.XBL_PLATFORM,
         '2': Const.PSN_PLATFORM,
         '4': Const.BNET_PLATFORM
-    }
+    };
 }
 
 export class InventoryStat {
@@ -1055,12 +1055,12 @@ export class InventorySocket {
 export class InventoryPlug {
     readonly hash: string;
 
-    readonly name: string;    
+    readonly name: string;
     readonly icon: string;
     readonly active: boolean;
-    public godRoll: boolean = false;
-    public godRollPve: boolean = false;
-    public godRollPvp: boolean = false;
+    public godRoll = false;
+    public godRollPve = false;
+    public godRollPvp = false;
     public desc: string;
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean) {
@@ -1094,16 +1094,16 @@ export class Perk {
 export interface Questline {
     hash: string;
     name: string;
-    steps: QuestlineStep[],
+    steps: QuestlineStep[];
     progress: string;
 }
 
 export interface QuestlineStep {
-    name: string,
-    desc: string,
-    objectives: ItemObjective[],
-    values: QuestStepReward[],
-    current: boolean
+    name: string;
+    desc: string;
+    objectives: ItemObjective[];
+    values: QuestStepReward[];
+    current: boolean;
 }
 
 export interface QuestStepReward {

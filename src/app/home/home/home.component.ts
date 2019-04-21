@@ -21,7 +21,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   @ViewChild(MatTabGroup) tabs: MatTabGroup;
 
   readonly version = env.versions.app;
-  manifestVersion = "";
+  manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
   selectedPlatform: Platform;

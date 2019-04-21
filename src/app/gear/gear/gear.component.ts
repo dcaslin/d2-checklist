@@ -24,29 +24,29 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly markChoices: Choice[] = [
-    new Choice("upgrade", "Upgrade"),
-    new Choice("keep", "Keep"),
-    new Choice("infuse", "Infuse"),
-    new Choice("junk", "Junk"),
-    new Choice(null, "Unmarked")
+    new Choice('upgrade', 'Upgrade'),
+    new Choice('keep', 'Keep'),
+    new Choice('infuse', 'Infuse'),
+    new Choice('junk', 'Junk'),
+    new Choice(null, 'Unmarked')
   ];
 
   readonly ammoTypeChoices: Choice[] = [
-    new Choice(DestinyAmmunitionType.Primary+"", "Primary"),
-    new Choice(DestinyAmmunitionType.Special+"", "Special"),
-    new Choice(DestinyAmmunitionType.Heavy+"", "Heavy")
+    new Choice(DestinyAmmunitionType.Primary + '', 'Primary'),
+    new Choice(DestinyAmmunitionType.Special + '', 'Special'),
+    new Choice(DestinyAmmunitionType.Heavy + '', 'Heavy')
   ];
 
 
   readonly classTypeChoices: Choice[] = [
-    new Choice(ClassAllowed.Titan + "", "Titan"),
-    new Choice(ClassAllowed.Warlock + "", "Warlock"),
-    new Choice(ClassAllowed.Hunter + "", "Hunter"),
-    new Choice(ClassAllowed.Any + "", "Any"),
+    new Choice(ClassAllowed.Titan + '', 'Titan'),
+    new Choice(ClassAllowed.Warlock + '', 'Warlock'),
+    new Choice(ClassAllowed.Hunter + '', 'Hunter'),
+    new Choice(ClassAllowed.Any + '', 'Any'),
   ];
   readonly equippedChoices: Choice[] = [
-    new Choice("true", "Equipped"),
-    new Choice("false", "Not Equipped")
+    new Choice('true', 'Equipped'),
+    new Choice('false', 'Not Equipped')
   ];
 
   weaponTypeChoices: Choice[] = [];
@@ -58,7 +58,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
 
-  @ViewChild(MatPaginator) 
+  @ViewChild(MatPaginator)
   public paginator: MatPaginator;
 
   @ViewChild('optionsgroup')
@@ -90,13 +90,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public rarityToggle: GearToggleComponent;
 
   filters: GearToggleComponent[] = [];
-  filtersDirty: boolean = false;
+  filtersDirty = false;
   filterNotes: string[] = [];
 
 
-  private static HIGHLIGHT_ALL_PERKS_KEY = "highlightAllPerks";
-  private static WISHLIST_OVERRIDE_PVE_URL_KEY = "wishlistOverridePveUrl";
-  private static WISHLIST_OVERRIDE_PVP_URL_KEY = "wishlistOverridePvpUrl";
+  private static HIGHLIGHT_ALL_PERKS_KEY = 'highlightAllPerks';
+  private static WISHLIST_OVERRIDE_PVE_URL_KEY = 'wishlistOverridePveUrl';
+  private static WISHLIST_OVERRIDE_PVP_URL_KEY = 'wishlistOverridePvpUrl';
   public wishlistOverridePveUrl;
   public wishlistOverridePvpUrl;
 
@@ -120,12 +120,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     { name: 'Consumable', type: ItemType.Consumable },
     { name: 'Material', type: ItemType.ExchangeMaterial }];
   option = this.options[0];
-  sortBy: string = "power";
-  sortDesc: boolean = true;
+  sortBy = 'power';
+  sortDesc = true;
   gearToShow: InventoryItem[] = [];
   page = 0;
   size = 20;
-  total: number = 0;
+  total = 0;
 
   ItemType = ItemType;
   DamageType = DamageType;
@@ -142,7 +142,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   resetFilters(): void {
-    this.filter.nativeElement.value = "";
+    this.filter.nativeElement.value = '';
     this.visibleFilterText = null;
     this.filterTags = [];
     for (const toggle of this.filters) {
@@ -155,48 +155,48 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   copyToClipboard(i: InventoryItem) {
     const markdown = this.toMarkDown(i);
     this.clipboardService.copyFromContent(markdown);
-    this.notificationService.success("Copied " + i.name + " to clipboard");
+    this.notificationService.success('Copied ' + i.name + ' to clipboard');
   }
 
-  copyAllVisibleToClipboard(){
-    let markdown = "";
+  copyAllVisibleToClipboard() {
+    let markdown = '';
     let cntr = 0;
-    if (this.gearToShow.length==1){
+    if (this.gearToShow.length == 1) {
       markdown += this.toMarkDown(this.gearToShow[0]);
-    }
-    else{
-      for (const i of this.gearToShow){
+    } else {
+      for (const i of this.gearToShow) {
         cntr++;
         markdown += this.toMarkDown(i, cntr);
-        markdown += "\n\n";
+        markdown += '\n\n';
       }
     }
     this.clipboardService.copyFromContent(markdown);
-    this.notificationService.success("Copied " + this.gearToShow.length + " items to clipboard");
+    this.notificationService.success('Copied ' + this.gearToShow.length + ' items to clipboard');
   }
 
   private toMarkDown(i: InventoryItem, cntr?: number): string {
-    let markdown = "";
-    if (cntr==null)
-      markdown = "**" + i.name + "**\n\n";
-    else
-    markdown = "**" +cntr+". "+ i.name + "**\n\n";
+    let markdown = '';
+    if (cntr == null) {
+      markdown = '**' + i.name + '**\n\n';
+    } else {
+    markdown = '**' + cntr + '. ' + i.name + '**\n\n';
+    }
 
     for (const socket of i.sockets) {
-      markdown += "\n\n* ";
+      markdown += '\n\n* ';
       for (const plug of socket.plugs) {
         markdown += plug.name;
         if (plug !== socket.plugs[socket.plugs.length - 1]) {
-          markdown += " / "
+          markdown += ' / ';
         }
       }
     }
-    markdown += "\n\n";
+    markdown += '\n\n';
     if (i.masterwork != null) {
-      markdown += "\n\n* *Masterwork: " + i.masterwork.name + " " + i.masterwork.tier + "*";
+      markdown += '\n\n* *Masterwork: ' + i.masterwork.name + ' ' + i.masterwork.tier + '*';
     }
     if (i.mod != null) {
-      markdown += "\n\n* *Mod: " + i.mod.name + "*";
+      markdown += '\n\n* *Mod: ' + i.mod.name + '*';
     }
     return markdown;
   }
@@ -211,10 +211,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
     this.loading.next(true);
-    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == "false") {
+    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == 'false') {
       this.highlightAllPerks = false;
     }
-    
+
     const wishlistOverridePveUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY);
     if (wishlistOverridePveUrl != null) {
       this.wishlistOverridePveUrl = wishlistOverridePveUrl;
@@ -224,14 +224,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (wishlistOverridePvpUrl != null) {
       this.wishlistOverridePvpUrl = wishlistOverridePvpUrl;
     }
-    
+
   }
 
   public updateHighlightAllPerks() {
     if (this.highlightAllPerks == false) {
-      localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, "false");
-    }
-    else {
+      localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, 'false');
+    } else {
       localStorage.removeItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY);
     }
   }
@@ -239,33 +238,33 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
   public async updateWishlistOverrideUrl(newPveVal: string, newPvpVal: string) {
-    //just reload the page if this works, easier then worrying about it
+    // just reload the page if this works, easier then worrying about it
     if (newPveVal == null) {
       localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY);
     }
-    if (newPvpVal == null){
+    if (newPvpVal == null) {
       localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY);
     }
-    if (newPveVal == null && newPvpVal == null){
+    if (newPveVal == null && newPvpVal == null) {
       location.reload();
       return;
     }
     let reloadMe = false;
-    if (newPveVal!=this.wishlistOverridePveUrl){
-      const tempRolls = await this.wishlistSerivce.loadSingle("testPve", newPveVal, null);
+    if (newPveVal != this.wishlistOverridePveUrl) {
+      const tempRolls = await this.wishlistSerivce.loadSingle('testPve', newPveVal, null);
       if (tempRolls.length > 0) {
         localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY, newPveVal);
         reloadMe = true;
       }
     }
-    if (newPvpVal!=this.wishlistOverridePvpUrl){
-      const tempRolls = await this.wishlistSerivce.loadSingle("testPvp", newPvpVal, null);
+    if (newPvpVal != this.wishlistOverridePvpUrl) {
+      const tempRolls = await this.wishlistSerivce.loadSingle('testPvp', newPvpVal, null);
       if (tempRolls.length > 0) {
         localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY, newPvpVal);
         reloadMe = true;
       }
     }
-    if (reloadMe){
+    if (reloadMe) {
       location.reload();
     }
   }
@@ -279,9 +278,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async pullFromPostmaster(player: Player, itm: InventoryItem) {
     try {
       await this.gearService.transfer(player, itm, itm.owner);
-      this.notificationService.success("Pulled "+itm.name+" from postmaster to "+itm.owner.label);
-    }
-    catch (e) {
+      this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + itm.owner.label);
+    } catch (e) {
       this.notificationService.fail(e);
     }
     this.filterChanged();
@@ -290,9 +288,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async transfer(player: Player, itm: InventoryItem, target: Target) {
     try {
       await this.gearService.transfer(player, itm, target);
-      this.notificationService.success("Transferred "+itm.name+" to "+target.label);
-    }
-    catch (e) {
+      this.notificationService.success('Transferred ' + itm.name + ' to ' + target.label);
+    } catch (e) {
       this.notificationService.fail(e);
     }
     this.filterChanged();
@@ -300,7 +297,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async equip(player: Player, itm: InventoryItem) {
     await this.gearService.equip(player, itm);
-    this.notificationService.success("Equipped "+itm.name+" on "+itm.owner.label);
+    this.notificationService.success('Equipped ' + itm.name + ' on ' + itm.owner.label);
     this.filterChanged();
   }
 
@@ -309,7 +306,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   mark(marking: string, item: InventoryItem) {
-    if (marking === item.mark) marking = null;
+    if (marking === item.mark) { marking = null; }
     item.mark = marking;
     this.markService.updateItem(item);
     this.filterChanged();
@@ -327,8 +324,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   sort(val: string) {
     if (val == this.sortBy) {
       this.sortDesc = !this.sortDesc;
-    }
-    else {
+    } else {
       this.sortBy = val;
       this.sortDesc = true;
     }
@@ -336,39 +332,38 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterItem(i: InventoryItem): boolean {
-    for (const f of this.filterTags){
-      //check wildcard first
-      if (i.searchText.indexOf(f)<0){
-        //then check notes
-        if (i.notes==null) return false;
-        if (i.notes.toLowerCase().indexOf(f) < 0) return false;
-      } 
+    for (const f of this.filterTags) {
+      // check wildcard first
+      if (i.searchText.indexOf(f) < 0) {
+        // then check notes
+        if (i.notes == null) { return false; }
+        if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
+      }
     }
     return true;
   }
 
   private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
-    if (this.filterTags.length>0) {
-      for (const f of this.filterTags){
-        this.filterNotes.push("wildcard = " + f);
+    if (this.filterTags.length > 0) {
+      for (const f of this.filterTags) {
+        this.filterNotes.push('wildcard = ' + f);
       }
       return gear.filter(this.filterItem, this);
-    }
-    else {
+    } else {
       return gear;
     }
   }
 
   checkFilterDirty() {
-    if (this.filterTags.length>0) return true;
+    if (this.filterTags.length > 0) { return true; }
     for (const toggle of this.filters) {
-      if (!toggle.isAllSelected) return true;
+      if (!toggle.isAllSelected) { return true; }
     }
     return false;
   }
 
   private appendToggleFilterNote(t: GearToggleComponent) {
-    if (t == null) return;
+    if (t == null) { return; }
     const note = t.getNotes();
     if (note != null) {
       this.filterNotes.push(note);
@@ -392,101 +387,101 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   private toggleFilterSingle(i: InventoryItem, report: any): boolean {
 
-    if (!this.markToggle.isChosen(this.option.type, i.mark)) { 
-      const key = "mark";
-      if (report[key]==null){
+    if (!this.markToggle.isChosen(this.option.type, i.mark)) {
+      const key = 'mark';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.weaponTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      const key = "weaponType";
-      if (report[key]==null){
+    if (!this.weaponTypeToggle.isChosen(this.option.type, i.typeName)) {
+      const key = 'weaponType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.ammoTypeToggle.isChosen(this.option.type, i.ammoType)) { 
-      const key = "ammoType";
-      if (report[key]==null){
+    if (!this.ammoTypeToggle.isChosen(this.option.type, i.ammoType)) {
+      const key = 'ammoType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      const key = "armorType";
-      if (report[key]==null){
+    if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) {
+      const key = 'armorType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.vehicleTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      const key = "vehicleType";
-      if (report[key]==null){
+    if (!this.vehicleTypeToggle.isChosen(this.option.type, i.typeName)) {
+      const key = 'vehicleType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.modTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      const key = "modType";
-      if (report[key]==null){
+    if (!this.modTypeToggle.isChosen(this.option.type, i.typeName)) {
+      const key = 'modType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.consumableTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      const key = "consumableType";
-      if (report[key]==null){
+    if (!this.consumableTypeToggle.isChosen(this.option.type, i.typeName)) {
+      const key = 'consumableType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.exchangeTypeToggle.isChosen(this.option.type, i.typeName)) { 
-      const key = "exchangeType";
-      if (report[key]==null){
+    if (!this.exchangeTypeToggle.isChosen(this.option.type, i.typeName)) {
+      const key = 'exchangeType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.ownerToggle.isChosen(this.option.type, i.owner.id)) { 
-      const key = "owner";
-      if (report[key]==null){
+    if (!this.ownerToggle.isChosen(this.option.type, i.owner.id)) {
+      const key = 'owner';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.equippedToggle.isChosen(this.option.type, ""+i.equipped)) { 
-      const key = "equipped";
-      if (report[key]==null){
+    if (!this.equippedToggle.isChosen(this.option.type, '' + i.equipped)) {
+      const key = 'equipped';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.rarityToggle.isChosen(this.option.type, i.tier)) { 
-      const key = "rarity";
-      if (report[key]==null){
+    if (!this.rarityToggle.isChosen(this.option.type, i.tier)) {
+      const key = 'rarity';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
-    if (!this.classTypeToggle.isChosen(this.option.type, i.classAllowed)) { 
-      const key = "classType";
-      if (report[key]==null){
+    if (!this.classTypeToggle.isChosen(this.option.type, i.classAllowed)) {
+      const key = 'classType';
+      if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
-      return false; 
+      return false;
     }
     return true;
   }
@@ -509,13 +504,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
     this.appendToggleFilterNotes();
     const returnMe: InventoryItem[] = [];
-    const report: any = {}
+    const report: any = {};
     for (const i of gear) {
       if (this.toggleFilterSingle(i, report)) {
         returnMe.push(i);
       }
     }
-    
+
     // console.log("Filter report: ");
     // for (const key in report){
     //   console.log("    "+key+": "+report[key]);
@@ -526,23 +521,22 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   filterGear() {
     // console.log("Filter gear: Previous length " + this.gearToShow.length)
     this.filterNotes = [];
-    if (this.player == null) return;
+    if (this.player == null) { return; }
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
     // console.log("After wildcard: " + tempGear.length);
     tempGear = this.toggleFilter(tempGear);
     // console.log("After toggle: " + tempGear.length);
-    if (this.sortBy == "masterwork" || this.sortBy == "mod") {
+    if (this.sortBy == 'masterwork' || this.sortBy == 'mod') {
       tempGear.sort((a: any, b: any): number => {
-        let aV = "";
-        let bV = "";
-        if (this.sortBy == "masterwork") {
+        let aV = '';
+        let bV = '';
+        if (this.sortBy == 'masterwork') {
           aV = a[this.sortBy] != null ? a[this.sortBy].tier : -1;
           bV = b[this.sortBy] != null ? b[this.sortBy].tier : -1;
-        }
-        else if (this.sortBy == "mod") {
-          aV = a[this.sortBy] != null ? a[this.sortBy].name : "";
-          bV = b[this.sortBy] != null ? b[this.sortBy].name : "";
+        } else if (this.sortBy == 'mod') {
+          aV = a[this.sortBy] != null ? a[this.sortBy].name : '';
+          bV = b[this.sortBy] != null ? b[this.sortBy].name : '';
         }
 
         if (aV < bV) {
@@ -550,9 +544,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         } else if (aV > bV) {
           return this.sortDesc ? -1 : 1;
         } else {
-          if (this.sortBy == "masterwork") {
-            aV = a[this.sortBy] != null ? a[this.sortBy].name : "";
-            bV = b[this.sortBy] != null ? b[this.sortBy].name : "";
+          if (this.sortBy == 'masterwork') {
+            aV = a[this.sortBy] != null ? a[this.sortBy].name : '';
+            bV = b[this.sortBy] != null ? b[this.sortBy].name : '';
             if (aV < bV) {
               return this.sortDesc ? 1 : -1;
             } else if (aV > bV) {
@@ -562,12 +556,11 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           return 0;
         }
       });
-    }
-    else {
+    } else {
       tempGear.sort((a: any, b: any): number => {
         try {
-          const aV = a[this.sortBy] != null ? a[this.sortBy] : "";
-          const bV = b[this.sortBy] != null ? b[this.sortBy] : "";
+          const aV = a[this.sortBy] != null ? a[this.sortBy] : '';
+          const bV = b[this.sortBy] != null ? b[this.sortBy] : '';
 
           if (aV < bV) {
             return this.sortDesc ? 1 : -1;
@@ -576,33 +569,31 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           } else {
             return 0;
           }
-        }
-        catch (e) {
-          console.log("Error sorting: " + e);
+        } catch (e) {
+          console.log('Error sorting: ' + e);
           return 0;
         }
       });
     }
-    let start = this.page * this.size;
-    let end = Math.min(start+this.size, tempGear.length);
-    if (start >= end){
+    const start = this.page * this.size;
+    const end = Math.min(start + this.size, tempGear.length);
+    if (start >= end) {
       this.page = 0;
       this.gearToShow = tempGear.slice(0, this.size);
-    }
-    else{
+    } else {
 
       this.gearToShow = tempGear.slice(start, end);
     }
     this.total = tempGear.length;
   }
 
-  public async shardMode(weaponsOnly?:boolean) {
+  public async shardMode(weaponsOnly?: boolean) {
     await this.load();
     await this.gearService.shardMode(this.player, weaponsOnly);
     this.filterChanged();
   }
 
-  public async upgradeMode(weaponsOnly?:boolean) {
+  public async upgradeMode(weaponsOnly?: boolean) {
     await this.load();
     await this.gearService.upgradeMode(this.player, weaponsOnly);
     this.filterChanged();
@@ -612,13 +603,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.loading.next(true);
 
     if (initialLoad != true) {
-      this.notificationService.info("Loading gear...");
+      this.notificationService.info('Loading gear...');
     }
     try {
       if (this.selectedUser == null) {
         this.player = null;
-      }
-      else {
+      } else {
         this.player = await this.gearService.loadGear(this.selectedUser);
       }
       this.generateChoices();
@@ -630,10 +620,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private generateChoices(force?: boolean) {
-    if (this.player == null) return;
-    if (this.player.gear == null) return;
-    if (this.player.gear.length == 0) return;
-    if (this.weaponTypeChoices.length > 0 && !force) return;
+    if (this.player == null) { return; }
+    if (this.player.gear == null) { return; }
+    if (this.player.gear.length == 0) { return; }
+    if (this.weaponTypeChoices.length > 0 && !force) { return; }
 
     const tempOwners = [];
     for (const char of this.player.characters) {
@@ -644,50 +634,54 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.ownerChoices = tempOwners;
 
     const temp: any = {};
-    temp["rarity"] = {};
+    temp['rarity'] = {};
     for (const i of this.player.gear) {
-      if (temp[i.type + ""] == null) {
-        temp[i.type + ""] = [];
+      if (temp[i.type + ''] == null) {
+        temp[i.type + ''] = [];
       }
-      temp[i.type + ""][i.typeName] = true;
-      temp["rarity"][i.tier] = true;
+      temp[i.type + ''][i.typeName] = true;
+      temp['rarity'][i.tier] = true;
 
     }
     const arrays: any = {};
-    for (const key in temp) {
+    for (const key of Object.keys(temp)) {
       const arr = [];
-      for (const typeName in temp[key]) {
+      for (const typeName of Object.keys(temp[key])) {
         arr.push(new Choice(typeName, typeName));
       }
       arr.sort(function (a, b) {
-        if (a.display < b.display)
+        if (a.display < b.display) {
           return -1;
-        if (a.display > b.display)
+        }
+        if (a.display > b.display) {
           return 1;
+        }
         return 0;
       });
       arrays[key] = arr;
     }
-    this.weaponTypeChoices = arrays[ItemType.Weapon + ""];
-    this.armorTypeChoices = arrays[ItemType.Armor + ""];
-    this.vehicleTypeChoices = arrays[ItemType.Vehicle + ""];
-    this.modTypeChoices = arrays[ItemType.GearMod + ""];
-    this.consumableTypeChoices = arrays[ItemType.Consumable + ""];
-    this.exchangeTypeChoices = arrays[ItemType.ExchangeMaterial + ""];
-    this.rarityChoices = arrays["rarity"];
+    this.weaponTypeChoices = arrays[ItemType.Weapon + ''];
+    this.armorTypeChoices = arrays[ItemType.Armor + ''];
+    this.vehicleTypeChoices = arrays[ItemType.Vehicle + ''];
+    this.modTypeChoices = arrays[ItemType.GearMod + ''];
+    this.consumableTypeChoices = arrays[ItemType.Consumable + ''];
+    this.exchangeTypeChoices = arrays[ItemType.ExchangeMaterial + ''];
+    this.rarityChoices = arrays['rarity'];
   }
 
   async loadMarks() {
     await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
       this.selectedUser.userInfo.membershipId);
-    if (this.player != null)
+    if (this.player != null) {
       this.markService.processItems(this.player.gear);
+    }
   }
 
   async loadWishlist() {
     await this.wishlistSerivce.init(this.wishlistOverridePveUrl, this.wishlistOverridePvpUrl);
-    if (this.player != null)
+    if (this.player != null) {
       this.wishlistSerivce.processItems(this.player.gear);
+    }
     this.filterChanged();
   }
 
@@ -736,8 +730,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public openGearDialog(items: InventoryItem[]): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
-    //dc.autoFocus = true;
-    //dc.width = '500px';
+    // dc.autoFocus = true;
+    // dc.width = '500px';
     dc.data = {
       parent: this,
       items: items
@@ -781,9 +775,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         try {
           this.option = this.optionsgroup.value;
           this.filterGear();
-        }
-        catch (e) {
-          console.log("Error filtering: " + e);
+        } catch (e) {
+          console.log('Error filtering: ' + e);
         }
         this.filtering.next(false);
         this.ref.markForCheck();
@@ -807,7 +800,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           this.filterTags = [];
         } else {
           const rawFilter = val.toLowerCase();
-          this.filterTags = rawFilter.split(" and ");
+          this.filterTags = rawFilter.split(' and ');
         }
         this.filterChanged();
       });
@@ -824,7 +817,7 @@ export class GearDetailsDialogComponent {
   ItemType = ItemType;
   hideJunk = false;
   items: InventoryItem[];
-  parent: GearComponent
+  parent: GearComponent;
   constructor(
     public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -840,7 +833,7 @@ export class GearDetailsDialogComponent {
   styleUrls: ['./gear.component.scss']
 })
 export class ArmorPerksDialogComponent {
-  parent: GearComponent
+  parent: GearComponent;
   tempWishlistOverrideUrl: string;
   WishlistService = WishlistService;
   constructor(
@@ -849,40 +842,42 @@ export class ArmorPerksDialogComponent {
     this.parent = data.parent;
   }
 
-  public getPerks(char: Character, gear: InventoryItem[]): InventoryPlug[]{
+  public getPerks(char: Character, gear: InventoryItem[]): InventoryPlug[] {
     const activePerks: InventoryPlug[] = [];
-    for(const g of gear){
-      if (g.type!=ItemType.Armor) continue;
-      if (!g.equipped) continue;
-      if (g.owner.id != char.id) continue;
-      for (const s of g.sockets){
-        for (const p of s.plugs){
-          if (!p.active) continue;
-          if (p.name.endsWith("Armor")) continue;
-          if (p.name.endsWith("Mod")) continue;
+    for (const g of gear) {
+      if (g.type != ItemType.Armor) { continue; }
+      if (!g.equipped) { continue; }
+      if (g.owner.id != char.id) { continue; }
+      for (const s of g.sockets) {
+        for (const p of s.plugs) {
+          if (!p.active) { continue; }
+          if (p.name.endsWith('Armor')) { continue; }
+          if (p.name.endsWith('Mod')) { continue; }
           activePerks.push(p);
         }
       }
     }
     const perkSet = {};
-    for (const p of activePerks){
-      if (perkSet[p.name]==null){
+    for (const p of activePerks) {
+      if (perkSet[p.name] == null) {
         perkSet[p.name] = {
           perk: p,
           count: 0
         };
       }
-      perkSet[p.name].count = perkSet[p.name].count+1;
+      perkSet[p.name].count = perkSet[p.name].count + 1;
     }
     const returnMe = [];
-    for (const key in perkSet){
+    for (const key of Object.keys(perkSet)) {
       returnMe.push(perkSet[key]);
     }
     returnMe.sort(function (a, b) {
-      if (a.perk.name < b.perk.name)
+      if (a.perk.name < b.perk.name) {
         return -1;
-      if (a.perk.name > b.perk.name)
+      }
+      if (a.perk.name > b.perk.name) {
         return 1;
+      }
       return 0;
     });
     return returnMe;
@@ -896,7 +891,7 @@ export class ArmorPerksDialogComponent {
   styleUrls: ['./gear.component.scss']
 })
 export class GearUtilitiesDialogComponent {
-  parent: GearComponent
+  parent: GearComponent;
   tempWishlistPveOverrideUrl: string;
   tempWishlistPvpOverrideUrl: string;
   WishlistService = WishlistService;
@@ -904,8 +899,8 @@ export class GearUtilitiesDialogComponent {
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
-    this.tempWishlistPveOverrideUrl = this.parent.wishlistOverridePveUrl!=null?this.parent.wishlistOverridePveUrl:WishlistService.DEFAULT_PVE_URL;
-    this.tempWishlistPvpOverrideUrl = this.parent.wishlistOverridePvpUrl!=null?this.parent.wishlistOverridePvpUrl:WishlistService.DEFAULT_PVP_URL;
+    this.tempWishlistPveOverrideUrl = this.parent.wishlistOverridePveUrl != null ? this.parent.wishlistOverridePveUrl : WishlistService.DEFAULT_PVE_URL;
+    this.tempWishlistPvpOverrideUrl = this.parent.wishlistOverridePvpUrl != null ? this.parent.wishlistOverridePvpUrl : WishlistService.DEFAULT_PVP_URL;
   }
 }
 
