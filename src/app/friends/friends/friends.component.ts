@@ -1,29 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil } from 'rxjs/operators';
 import { UserInfo, Player, FriendListEntry, BungieMember } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'anms-friends',
   templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.scss']
+  styleUrls: ['./friends.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FriendsComponent extends ChildComponent implements OnInit {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-  members: FriendListEntry[] = [];
+  public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject([]);
   modelPlayer: Player;
   playerCntr: 0;
-  allLoaded: boolean;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router) {
-    super(storageService);
-    this.favoriteFeed.pipe(
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
+    this.favoritesList.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
         (x: UserInfo[]) => {
@@ -35,7 +35,7 @@ export class FriendsComponent extends ChildComponent implements OnInit {
               errorMsg: null
             });
           }
-          this.members = members;
+          this.members.next(members);
           this.load();
         });
   }
@@ -64,20 +64,20 @@ export class FriendsComponent extends ChildComponent implements OnInit {
   }
 
   private async slowlyLoadRest(): Promise<void> {
-    if (this.playerCntr >= this.members.length) {
-      this.allLoaded = true;
+    this.ref.markForCheck();
+    if (this.playerCntr >= this.members.value.length) {
       return;
     }
 
     try {
-      await this.loadPlayer(this.members[this.playerCntr]);
+      await this.loadPlayer(this.members.value[this.playerCntr]);
       this.playerCntr++;
       this.slowlyLoadRest();
     } catch (err) {
       console.dir(err);
       // reloading mid load can break this
-      if (this.members[this.playerCntr] != null) {
-        console.log('Skipping error on ' + this.members[this.playerCntr].user.displayName + ' and continuing');
+      if (this.members.value[this.playerCntr] != null) {
+        console.log('Skipping error on ' + this.members.value[this.playerCntr].user.displayName + ' and continuing');
         this.playerCntr++;
         this.slowlyLoadRest();
       }
@@ -94,11 +94,10 @@ export class FriendsComponent extends ChildComponent implements OnInit {
 
 
   public load() {
-    this.loading = true;
+    this.loading.next(true);
     this.modelPlayer = null;
     this.playerCntr = 0;
-    this.allLoaded = false;
-    for (const m of this.members) {
+    for (const m of this.members.value) {
       m.player = null;
       m.errorMsg = null;
     }
@@ -106,7 +105,7 @@ export class FriendsComponent extends ChildComponent implements OnInit {
       this.slowlyLoadRest();
     }
     finally {
-      this.loading = false;
+      this.loading.next(false);
     }
   }
 

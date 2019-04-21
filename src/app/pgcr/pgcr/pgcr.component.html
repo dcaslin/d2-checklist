@@ -3,11 +3,11 @@
     <div class="main mat-typography">
 
       <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
       </div>
-      <div [ngClass]="animateOnRouteEnter" style="text-align:left">
+      <div style="text-align:left">
 
-        <ng-container *ngIf="data!=null">
+        <ng-container *ngFor="let data of pgcr|async">
           <h2>
             {{data.mode}} - {{data.name}}
             <span class="pad-left">
@@ -16,7 +16,7 @@
                 aria-hidden="true"></i>
             </span>
           </h2>
-          <div *ngIf="debugmode">
+          <div *ngIf="debugmode|async">
             <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </div>
@@ -61,7 +61,7 @@
                     {{entry.user.displayName}}
                   </a>
                   <a style="margin-left:0.25em"
-                    [ngClass]="favorites[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
+                    [ngClass]="(favoritesMap|async)[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
                     (click)="storageService.toggleFav(entry.user, entry.bungieNetUserInfo.membershipId)"
                     href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>

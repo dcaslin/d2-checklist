@@ -1,27 +1,24 @@
 
-import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
-import { Player, Character, Platform, ActivityMode, Const } from '../../service/model';
+import { Player, ActivityMode, Const } from '../../service/model';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { MatPaginator, MatSort } from '@angular/material';
-import { DurationPipe } from 'ngx-moment';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
 @Component({
   selector: 'anms-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+  styleUrls: ['./history.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
-  activityModes: ActivityMode[];
+  readonly activityModes: ActivityMode[];
   maxResults: number[];
   selectedMaxResults: number;
   selectedMode: ActivityMode;
@@ -38,8 +35,10 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
-  constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+  constructor(storageService: StorageService, private bungieService: BungieService,
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [100, 200, 500, 1000, 2000];
@@ -47,15 +46,16 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   }
 
   public async history() {
-    this.loading = true;
-    this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId,
-      this.selectedMode.type, this.selectedMaxResults).then((rows: any[]) => {
-
+    this.loading.next(true);
+    try {
+      const rows = await this.bungieService.getActivityHistory(this.membershipType, this.membershipId, this.characterId,
+        this.selectedMode.type, this.selectedMaxResults);
+      this.paginator.firstPage();
       this.database.setData(rows);
-      this.loading = false;
-    }).catch((x) => {
-      this.loading = false;
-    });
+    }
+    finally {
+      this.loading.next(false);
+    }
   }
 
   pgcr(instanceId: string) {

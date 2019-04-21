@@ -1,58 +1,66 @@
 
-import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
 import { BungieMember, BungieMemberPlatform, SearchResult, Player, ClanRow } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'anms-bungie-search',
   templateUrl: './bungie-search.component.html',
-  styleUrls: ['./bungie-search.component.scss']
+  styleUrls: ['./bungie-search.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
   name: string;
-  accounts: BungieMember[] = null;
+  public accounts: BehaviorSubject<BungieMember[]> = new BehaviorSubject([]);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
   }
 
-  private loadPlayer(a: BungieMemberPlatform) {
-    this.loading = true;
-    this.bungieService.searchPlayer(a.platform.type, a.name).then((p: SearchResult) => {
+  public async loadPlayer(a: BungieMemberPlatform) {
+    this.loading.next(true);
+    try {
+      const p = await this.bungieService.searchPlayer(a.platform.type, a.name);
       if (p != null) {
-
-        this.bungieService.getChars(p.membershipType, p.membershipId, ['Profiles', 'Characters']).then((x: Player) => {
-          this.loading = false;
-          if (x != null) {
-            this.router.navigate([a.platform.type, a.name]);
-          } else {
-            a.defunct = true;
-          }
-        });
-
+        const x = await this.bungieService.getChars(p.membershipType, p.membershipId, ['Profiles', 'Characters']);
+        if (x != null) {
+          this.router.navigate([a.platform.type, a.name]);
+        } else {
+          a.defunct = true;
+        }
       } else {
         a.defunct = true;
-        this.loading = false;
       }
-    });
+    }
+    finally {
+      this.loading.next(false);
+    }
+    this.ref.markForCheck();
   }
 
-  private loadClan(member: BungieMember) {
-    this.bungieService.getClans(member.id).then((x: ClanRow[]) => {
+  public async loadClan(member: BungieMember) {
+    this.loading.next(true);
+    try {
+      const x = await this.bungieService.getClans(member.id);
       if (x.length === 0) {
         member.noClan = true;
       } else {
         member.clans = x;
       }
-    });
+    }
+    finally {
+      this.loading.next(false);
+    }
+    this.ref.markForCheck();
+
   }
 
   search() {
@@ -62,16 +70,15 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
 
   }
 
-  private load() {
-    this.loading = true;
-    this.bungieService.searchBungieUsers(this.name)
-      .then((x: BungieMember[]) => {
-        this.accounts = x;
-        this.loading = false;
-      })
-      .catch((x) => {
-        this.loading = false;
-      });
+  private async load() {
+    this.loading.next(true);
+    try {
+      const x: BungieMember[] = await this.bungieService.searchBungieUsers(this.name);
+      this.accounts.next(x);
+    }
+    finally {
+      this.loading.next(false)
+    }
   }
 
   ngOnInit() {

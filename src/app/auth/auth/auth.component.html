@@ -2,7 +2,7 @@
   <div class="childVert">
     <div class="main">
         <div class="center-spinner">
-          <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+          <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
         </div>
       <h1>Authorizing...</h1>
       <p *ngIf="msg!=null">{{msg}}</p>

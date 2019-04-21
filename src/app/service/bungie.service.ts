@@ -167,7 +167,7 @@ export class BungieService implements OnDestroy {
         if (userInfo.bungieInfo == null) {
             const bungieMember: BungieMembership = await this.getBungieMembershipsById(userInfo.membershipId, userInfo.membershipType);
             // blocked by privacy settings?
-            if (bungieMember==null){
+            if (bungieMember == null) {
                 return;
             }
             await this.setClans(bungieMember);
@@ -591,34 +591,54 @@ export class BungieService implements OnDestroy {
         });
     }
 
-    public getActivityHistory(membershipType: number, membershipId: string,
+    public async getActivityHistory(membershipType: number, membershipId: string,
         characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
         const self = this;
         const MAX_PAGE_SIZE = 100;
         let curPage = 0;
 
-        return new Promise(function (resolve, reject) {
-            const allMatches: any[] = [];
-            function processMatches(results: any[]) {
-                if (results == null || results.length === 0 || results.length < MAX_PAGE_SIZE || allMatches.length >= max) {
-                    resolve(allMatches);
-                    return;
-                } else {
-                    curPage++;
-                    results.forEach(function (r) {
-                        allMatches.push(r);
-                    });
-                    if (allMatches.length > max) {
-                        resolve(allMatches);
-                        return;
-                    }
-                    return self.getActivityHistoryPage(membershipType, membershipId,
-                        characterId, mode, curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches);
-                }
+
+        let allMatches: any[] = [];
+
+
+        while (true) {
+            const matches = await this.getActivityHistoryPage(membershipType, membershipId, characterId,
+                mode, curPage, MAX_PAGE_SIZE, ignoreErrors);
+            if (matches == null) {
+                break;
             }
-            self.getActivityHistoryPage(membershipType, membershipId, characterId, mode,
-                curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches).catch((e) => { reject(e) });
-        });
+            curPage++;
+            allMatches = allMatches.concat(matches);
+            if (matches.length<MAX_PAGE_SIZE || allMatches.length>=max){
+                break;
+            }
+        }
+        if (allMatches.length>max){
+            allMatches = allMatches.slice(0, max);
+        }
+        return allMatches;
+        // return new Promise(function (resolve, reject) {
+        //     const allMatches: any[] = [];
+        //     function processMatches(results: any[]) {
+        //         if (results == null || results.length === 0 || results.length < MAX_PAGE_SIZE || allMatches.length >= max) {
+        //             resolve(allMatches);
+        //             return;
+        //         } else {
+        //             curPage++;
+        //             results.forEach(function (r) {
+        //                 allMatches.push(r);
+        //             });
+        //             if (allMatches.length > max) {
+        //                 resolve(allMatches);
+        //                 return;
+        //             }
+        //             return self.getActivityHistoryPage(membershipType, membershipId,
+        //                 characterId, mode, curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches);
+        //         }
+        //     }
+        //     self.getActivityHistoryPage(membershipType, membershipId, characterId, mode,
+        //         curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches).catch((e) => { reject(e) });
+        // });
     }
 
     public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {

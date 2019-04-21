@@ -1,9 +1,9 @@
 <div class="childComponent mat-typography">
   <div class="childVert">
     <div class="main">
-      <div [ngClass]="animateOnRouteEnter">
+      <div>
         <div class="centerMe">
-          <div *ngIf="debugmode" style="margin-bottom: 25px; text-align: left">
+          <div *ngIf="debugmode|async" style="margin-bottom: 25px; text-align: left">
             Version: {{version}}<br>
             Manifest: {{manifestVersion}}
           </div>
@@ -29,17 +29,17 @@
         </div>
 
         <div class="home-button-row">
-          <a mat-raised-button class="home-button" color="accent" [ngClass]="animateOnRouteEnter" target="_blank"
+          <a mat-raised-button class="home-button" color="accent" target="_blank"
             href="https://amzn.to/2S6jAuf">
             <i class="fab fa-amazon"></i> Order Forsaken Annual Pass
           </a>
           <div class="spacer"></div>
-          <a mat-raised-button class="home-button" color="primary" [ngClass]="animateOnRouteEnter" target="_blank"
+          <a mat-raised-button class="home-button" color="primary" target="_blank"
             href="https://imgur.com/a/dUlLzny">
             <i class="fas fa-video"></i> Video tutorials
           </a>
         </div>
-        <div class="center-spinner" *ngIf="loading===true">
+        <div class="center-spinner" *ngIf="(loading|async)===true">
             <mat-spinner class="loading" class="center-spinner"></mat-spinner>
           </div>    
         <div class="grid-parent" *ngIf="today!=null" width="100%">
@@ -59,7 +59,7 @@
                   <mat-list-item *ngFor="let m of today.missions">
                     <span *ngIf="m.time<100" class="simple-caption-no-margin right-margin">{{m.time}} mins</span>
                     {{m.name}}
-                    <ng-container *ngIf="debugmode">[{{m.hash}}]</ng-container>
+                    <ng-container *ngIf="debugmode|async">[{{m.hash}}]</ng-container>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -166,7 +166,7 @@
             </mat-card>
           </div>
         </div>
-        <div class="row info" *ngIf="debugmode">
+        <div class="row info" *ngIf="debugmode|async">
           <div class="d-block d-sm-none">XS</div>
           <div class="d-none d-sm-block d-md-none">SM</div>
           <div class="d-none d-md-block d-lg-none">MD</div>
@@ -189,7 +189,7 @@
               <div *ngIf="ms.icon!=null" mat-card-avatar class="transparent-icon"
                 [style.background-image]="'url(//www.bungie.net' +  ms.icon  + ')'"></div>
               <mat-card-title>{{ms.name}} <ng-container *ngIf="ms.summary!=null">: {{ms.summary}}</ng-container> <span
-                  class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode">
+                  class="accent-text" *ngIf="ms.rewards!=null">&emsp;{{ms.rewards}}</span><span *ngIf="debugmode|async">
                   {{ms.hash}}</span></mat-card-title>
               <mat-card-subtitle>
                 <span class="d-none d-md-inline">{{ms.desc}}</span> Resets {{ms.end|date:'short'}}</mat-card-subtitle>
@@ -203,7 +203,7 @@
                   <span *ngFor="let ll of aggAct.lls; last as isLast">{{ll}}
                     <ng-container *ngIf="!isLast"> - </ng-container>
                   </span>
-                  <span *ngIf="debugmode"> {{aggAct.activity.hash}}</span>
+                  <span *ngIf="debugmode|async"> {{aggAct.activity.hash}}</span>
                 </h3>
                 <p class="caption" *ngFor="let ch of aggAct.activity.challenges">
                   {{ch.name}} - {{ch.desc}} Requires: {{ch.completionValue}} {{ch.progressDescription}}
@@ -214,7 +214,7 @@
                     <ng-container *ngFor="let m of aggAct.activity.modifiers">
                       <dt class="lighter">{{m.name}}</dt>
                       <dd>
-                        {{m.desc}} <span *ngIf="debugmode"> {{m.hash}}</span>
+                        {{m.desc}} <span *ngIf="debugmode|async"> {{m.hash}}</span>
                       </dd>
                     </ng-container>
                   </dl>

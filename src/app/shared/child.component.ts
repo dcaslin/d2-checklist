@@ -1,6 +1,6 @@
 
 import { takeUntil } from 'rxjs/operators';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { StorageService } from '../service/storage.service';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { UserInfo } from '@app/service/model';
@@ -12,44 +12,39 @@ import { UserInfo } from '@app/service/model';
 })
 export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
-    private favoriteSub: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
-    public favoriteFeed: Observable<UserInfo[]>;
-    public hiddenMilestones: string[] = [];
-
-    disableads = false;
-    debugmode = false;
-    favorites: { [id: string]: UserInfo } = {};
-    loading = false;
-
-    ua = '';
-
+    public favoritesList: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
+    public favoritesMap: BehaviorSubject<{ [id: string]: UserInfo }> = new BehaviorSubject({});
+    public disabledAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);    
     storageService: StorageService;
 
-    constructor(storageService: StorageService) {
-        this.favoriteFeed = this.favoriteSub.asObservable() as Observable<UserInfo[]>;
+    constructor(storageService: StorageService, 
+        ref: ChangeDetectorRef) {
         this.storageService = storageService;
-        this.disableads = this.storageService.getItem('disableads', false);
-        this.debugmode = this.storageService.getItem('debugmode', false);
+        this.disabledAds.next(this.storageService.getItem('disableads', false));
+        this.debugmode.next(this.storageService.getItem('debugmode', false));
         this.storageService.settingFeed.pipe(
             takeUntil(this.unsubscribe$))
             .subscribe(
                 x => {
                     if (x.disableads != null) {
-                        this.disableads = x.disableads;
+                        this.disabledAds.next(x.disableads);
                     }
                     if (x.debugmode != null) {
-                        this.debugmode = x.debugmode;
+                        this.debugmode.next(x.debugmode);
                     }
                     if (x.friends != null) {
-                        this.favorites = x.friends;
+                        this.favoritesMap.next(x.friends);
                         const aFavs: UserInfo[] = [];
                         for (const key of Object.keys(x.friends)) {
                             aFavs.push(x.friends[key]);
                         }
-                        this.favoriteSub.next(aFavs);
+                        this.favoritesList.next(aFavs);
                     }
                     if (x.hiddenmilestones != null) {
-                        this.hiddenMilestones = x.hiddenmilestones;
+                        this.hiddenMilestones.next(x.hiddenmilestones);
                     }
                 });
     }

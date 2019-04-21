@@ -1,14 +1,11 @@
 
 import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatTabGroup } from '@angular/material';
 import { environment as env } from '@env/environment';
-
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
-import { Const, Platform, PublicMilestone, NameDesc } from '../../service/model';
+import { Const, Platform} from '../../service/model';
 import { StorageService } from '../../service/storage.service';
-import { BungieService } from '../../service/bungie.service';
 import { ChildComponent } from '../../shared/child.component';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { WeekService, Today } from '@app/service/week.service';
@@ -16,35 +13,32 @@ import { WeekService, Today } from '@app/service/week.service';
 @Component({
   selector: 'anms-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-
 
   @ViewChild(MatTabGroup) tabs: MatTabGroup;
 
-  version = env.versions.app;
+  readonly version = env.versions.app;
   manifestVersion = "";
-  platforms: Platform[];
+  readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
+
   selectedPlatform: Platform;
-  selectedTab: string;
   gamerTag: string;
-  dontSearch: boolean;
   showMoreInfo = false;
   today: Today = null;
 
-  
+
   constructor(
-    private destinyCacheService: DestinyCacheService, 
-    storageService: StorageService, 
-    private bungieService: BungieService, 
+    private destinyCacheService: DestinyCacheService,
+    storageService: StorageService,
+    private ref: ChangeDetectorRef,
     private weekService: WeekService,
     private router: Router) {
-    super(storageService);
-    this.platforms = Const.PLATFORMS_ARRAY;
+    super(storageService, ref);
     this.selectedPlatform = this.platforms[0];
-    if (this.destinyCacheService.cache!=null){
+    if (this.destinyCacheService.cache != null) {
       this.manifestVersion = this.destinyCacheService.cache.version;
     }
 
@@ -54,9 +48,13 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
         x => {
           if (x.defaultplatform != null) {
             this.setPlatform(x.defaultplatform);
+
+            this.ref.markForCheck();
           }
           if (x.defaultgt != null) {
             this.gamerTag = x.defaultgt;
+
+            this.ref.markForCheck();
           }
         });
 
@@ -89,17 +87,18 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
 
   async loadMileStones() {
-    try{
-      this.today = await this.weekService.getToday(); 
+    try {
+      this.today = await this.weekService.getToday();
+      this.ref.markForCheck();
     }
-    finally{
-      this.loading = false;
-    }   
+    finally {
+      this.loading.next(false);
+    }
   }
 
   ngOnInit() {
 
-    this.loading = true;
+    this.loading.next(true);
     this.loadMileStones();
   }
 

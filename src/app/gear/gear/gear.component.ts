@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { fromEvent as observableFromEvent, Subject } from 'rxjs';
+import { fromEvent as observableFromEvent, Subject, BehaviorSubject } from 'rxjs';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug, DestinyAmmunitionType } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
@@ -15,16 +14,14 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonTog
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '@app/service/notification.service';
 
-// TODO show type name on item details
-
 @Component({
   selector: 'anms-gear',
   templateUrl: './gear.component.html',
-  styleUrls: ['./gear.component.scss']
+  styleUrls: ['./gear.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GearComponent extends ChildComponent implements OnInit, AfterViewInit {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-  filtering = false;
+  public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly markChoices: Choice[] = [
     new Choice("upgrade", "Upgrade"),
@@ -51,6 +48,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     new Choice("true", "Equipped"),
     new Choice("false", "Not Equipped")
   ];
+
   weaponTypeChoices: Choice[] = [];
   armorTypeChoices: Choice[] = [];
   vehicleTypeChoices: Choice[] = [];
@@ -139,7 +137,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   filterChanged(): void {
-    this.filtering = true;
+    this.filtering.next(true);
     this.filterChangedSubject.next();
   }
 
@@ -209,9 +207,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private wishlistSerivce: WishlistService,
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
-    public dialog: MatDialog) {
-    super(storageService);
-    this.loading = true;
+    public dialog: MatDialog,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
+    this.loading.next(true);
     if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == "false") {
       this.highlightAllPerks = false;
     }
@@ -610,7 +609,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   public async load(initialLoad?: boolean) {
-    this.loading = true;
+    this.loading.next(true);
 
     if (initialLoad != true) {
       this.notificationService.info("Loading gear...");
@@ -626,7 +625,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.filterChanged();
     }
     finally {
-      this.loading = false;
+      this.loading.next(false);
     }
   }
 
@@ -786,7 +785,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         catch (e) {
           console.log("Error filtering: " + e);
         }
-        this.filtering = false;
+        this.filtering.next(false);
+        this.ref.markForCheck();
       });
 
 

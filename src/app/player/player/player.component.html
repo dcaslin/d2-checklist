@@ -2,9 +2,9 @@
   <div class="childVert">
     <div class="main">
       <div class="fixed-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
       </div>
-      <div class="body-text" [ngClass]="animateOnRouteEnter">
+      <div class="body-text">
         <br />
         <div class="searchRow">
           <mat-form-field class="searchField searchPlatform">
@@ -51,7 +51,7 @@
             <i style="font-weight: normal !important"
               [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
             {{player.profile.userInfo.displayName}}
-            <a [ngClass]="favorites[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
+            <a [ngClass]="(favoritesMap|async)[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
               (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i
                 style="font-weight: normal !important" class="far fa-heart"></i></a>
           </h1>
@@ -138,7 +138,7 @@
                 </div>
 
 
-                <div *ngIf="hiddenMilestones.length>0" class="mobile-button-row" style="margin-top: 5px">
+                <div *ngIf="(hiddenMilestones|async).length>0" class="mobile-button-row" style="margin-top: 5px">
                   <span class="mat-caption" (click)="showAllMilestones()">Show hidden milestones</span>
                 </div>
 
@@ -151,7 +151,7 @@
                         <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null"
                           class="warn-text fal fa-eye"
                           matTooltip="Stop hiding milestones where all chars are complete"></i>
-                        <a *ngIf="hiddenMilestones.length>0 || hideCompleteChars!=null" href="javascript:void(0)"
+                        <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null" href="javascript:void(0)"
                           matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
                           (click)="showAllMilestones()">show
                           all</a>
@@ -168,7 +168,7 @@
                   </thead>
                   <tbody>
                     <ng-container *ngFor="let mileStoneName of player.milestoneList">
-                      <tr *ngIf="hiddenMilestones.indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
+                      <tr *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
                         <td class="lead">
                           <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
                             <a href="javascript:void(0)" (click)="sortByName()">
@@ -177,7 +177,7 @@
                               <i *ngIf="sort=='nameAsc'" class="fal fa-sort-up"></i>
                             </a>
                           </span>
-                          <span *ngIf="debugmode"> {{mileStoneName.key}} </span>
+                          <span *ngIf="debugmode|async"> {{mileStoneName.key}} </span>
                           <a href="javascript:void(0)"
                             matTooltip="Hide this milestone, click Show All to restore it later"
                             class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
@@ -191,7 +191,7 @@
                               <i *ngIf="sort=='resetDesc'" class="fal fa-sort-down"></i>
                               <i *ngIf="sort=='resetAsc'" class="fal fa-sort-up"></i>
                             </a>
-                            <ng-container *ngIf="debugmode">
+                            <ng-container *ngIf="debugmode|async">
                               <br> {{mileStoneName.resets|date:'short'}}
                             </ng-container>
                           </span>
@@ -335,7 +335,7 @@
                       </tr>
                     </ng-container>
                     <tr
-                      *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && hiddenMilestones.indexOf('1')===-1">
+                      *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && (hiddenMilestones|async).indexOf('1')===-1">
                       <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
                         <a href="javascript:void(0)"
                           matTooltip="Hide this milestone, click Show All to restore it later"
@@ -478,7 +478,7 @@
                                       <i class="far fa-project-diagram"></i> Questline {{g.questline.progress}}
                                     </a>
 
-                                    <span *ngIf="debugmode">&ensp;[{{g.hash}}]</span>
+                                    <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
                                     <div class="simple-caption">{{g.desc}}</div>
                                   </td>
                                   <td data-label="">
@@ -521,15 +521,15 @@
                   <h2>Privacy</h2>
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
                 </div>
-                <mat-accordion [multi]="debugmode"
+                <mat-accordion [multi]="debugmode|async"
                   *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
                   <ng-container *ngFor="let checklist of player.checklists">
                     <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0"
-                      [expanded]="debugmode">
+                      [expanded]="debugmode|async">
                       <mat-expansion-panel-header>
                         <mat-panel-title>
                           {{checklist.name}}
-                          <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
+                          <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
                         </mat-panel-title>
                         <mat-panel-description>
                           {{checklist.complete}} / {{checklist.total}}
@@ -560,7 +560,7 @@
                                     <i class='far fa-map-marker-alt'></i>
                                   </a>
 
-                                  <span *ngIf="debugmode">
+                                  <span *ngIf="debugmode|async">
                                     &ensp;[{{check.hash}}] &ensp;
                                     <a href="javascript:void(0)" (click)="routeSearch()">
                                       <i class="fas fa-sync fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
@@ -585,11 +585,11 @@
 
                     </mat-expansion-panel>
                   </ng-container>
-                  <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode">
+                  <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode|async">
                     <mat-expansion-panel-header>
                       <mat-panel-title>
                         {{checklist.name}}
-                        <span *ngIf="debugmode">&ensp;[{{checklist.hash}}]</span>
+                        <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
                       </mat-panel-title>
                       <mat-panel-description>
                         <span *ngFor="let t of checklist.totals">{{t.char.className}}
@@ -620,7 +620,7 @@
                                 </a>
 
                                 <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
-                                <span *ngIf="debugmode">
+                                <span *ngIf="debugmode|async">
                                   &ensp;[{{check.hash}}] &ensp;
                                   <a href="javascript:void(0)" (click)="routeSearch()">
                                     <i class="fas fa-sync fa-fw" [class.fa-spin]="loading" aria-hidden="true"></i>
@@ -689,7 +689,7 @@
                             <span [matTooltip]="faction.desc"
                               matTooltipClass="preserve-white-space">{{faction.name}}</span>
                             <span class="light">Level {{faction.level}}
-                              <ng-container *ngIf="debugmode">{{faction.hash}}</ng-container>
+                              <ng-container *ngIf="debugmode|async">{{faction.hash}}</ng-container>
                               <ng-container
                                 *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
                                 {{faction.steps[faction.level-1].stepName}}
@@ -797,7 +797,7 @@
                             {{node.data.name}}
                             <i class='accent-text far fa-map-marker-alt'></i>
                           </a>
-                          <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
+                          <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
                           <i *ngIf="dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star"
                             (click)="trackTriumph(node.data)"></i>
                           <i *ngIf="dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text"
@@ -832,7 +832,7 @@
                           <i *ngIf="node.data.complete"
                             class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                           <i *ngIf="!node.data.complete" class="far fa-square"></i>
-                          {{node.data.name}} <span *ngIf="debugmode">{{node.data.hash}}</span>
+                          {{node.data.name}} <span *ngIf="debugmode|async">{{node.data.hash}}</span>
                           <span class="simple-caption">
                             {{node.data.progress}}/{{node.data.completionValue}} |
                             {{node.data.pts}}/{{node.data.totalPts}} pts
@@ -879,7 +879,7 @@
                                       {{t.name}}
                                       <i class='accent-text far fa-map-marker-alt'></i>
                                     </a>
-                                    <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                    <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
                                     <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
                                       (click)="trackTriumph(t)"></i>
                                     <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
@@ -890,7 +890,7 @@
                                       <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                                         <ng-container *ngIf="i>0">
                                           <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
-                                          <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
+                                          <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
                                           <ng-container *ngIf="!isLast">
                                             /
                                           </ng-container>
@@ -950,7 +950,7 @@
                           <mat-expansion-panel-header>
                             <mat-panel-title [class.accent-text]="s.complete">
                               {{s.title}}
-                              <ng-container *ngIf="debugmode">{{s.hash}}</ng-container>
+                              <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
                             </mat-panel-title>
                             <mat-panel-description [class.accent-text]="s.complete">
                               {{s.progress}} / {{s.completionValue}}
@@ -977,7 +977,7 @@
                                         {{c.name}}
                                         <i class='accent-text far fa-map-marker-alt'></i>
                                       </a>
-                                      <ng-container *ngIf="debugmode">{{c.hash}}</ng-container>
+                                      <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
                                       <br>
                                       <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
                                         redeemed.<br></span>
@@ -1034,7 +1034,7 @@
                                   {{t.name}}
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
-                                <ng-container *ngIf="debugmode">{{t.hash}} {{t.invisible}}</ng-container>
+                                <ng-container *ngIf="debugmode|async">{{t.hash}} {{t.invisible}}</ng-container>
                                 <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
                                   (click)="trackTriumph(t)"></i>
                                 <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
@@ -1045,7 +1045,7 @@
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                                     <ng-container *ngIf="i>0">
                                       <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
-                                      <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
+                                      <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
                                       <ng-container *ngIf="!isLast">
                                         /
                                       </ng-container>
@@ -1096,7 +1096,7 @@
                         </mat-form-field>
                       </div>
 
-                      <div *ngIf="filteredTriumphs.length==0" class="left" style="margin: 10px">
+                      <div *ngIf="(filteredTriumphs|async).length==0" class="left" style="margin: 10px">
                         <ng-container *ngIf="triumphFilterText==null || triumphFilterText.length==0">
                           Type above to search
                         </ng-container>
@@ -1107,7 +1107,7 @@
                       </div>
                       <table class="responsive-table">
                         <tbody>
-                          <ng-container *ngFor="let t of filteredTriumphs">
+                          <ng-container *ngFor="let t of filteredTriumphs|async">
                             <tr>
                               <td class="lead" data-label="">
                                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
@@ -1117,7 +1117,7 @@
                                   {{t.name}}
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
-                                <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
                                 <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
                                   (click)="trackTriumph(t)"></i>
                                 <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
@@ -1128,7 +1128,7 @@
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                                     <ng-container *ngIf="i>0">
                                       <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
-                                      <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
+                                      <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
                                       <ng-container *ngIf="!isLast">
                                         /
                                       </ng-container>
@@ -1172,12 +1172,12 @@
                     </ng-template>
                     <h4 class="triumph-score">Tracked Triumphs</h4>
                     <div>
-                      <div *ngIf="trackedTriumphs.length==0" class="left" style="margin: 10px">
+                      <div *ngIf="(trackedTriumphs|async).length==0" class="left" style="margin: 10px">
                         Click a star on a triumph on another tab to track it here
                       </div>
                       <table class="responsive-table">
                         <tbody>
-                          <ng-container *ngFor="let t of trackedTriumphs">
+                          <ng-container *ngFor="let t of trackedTriumphs|async">
                             <tr>
                               <td class="lead" data-label="">
                                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
@@ -1187,7 +1187,7 @@
                                   {{t.name}}
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
-                                <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
+                                <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
                                 <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
                                   (click)="trackTriumph(t)"></i>
                                 <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
@@ -1198,7 +1198,7 @@
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
                                     <ng-container *ngIf="i>0">
                                       <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
-                                      <ng-container *ngIf="debugmode">{{p.hash}} </ng-container>
+                                      <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
                                       <ng-container *ngIf="!isLast">
                                         /
                                       </ng-container>
@@ -1259,7 +1259,7 @@
                       <i *ngIf="node.data.acquired "
                         class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.acquired" class="far fa-square"></i>
-                      {{node.data.name}} <ng-container *ngIf="debugmode">{{node.data.hash}}</ng-container>
+                      {{node.data.name}} <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
                       <br>
                       <span class="simple-caption">
                         {{node.data.sourceString}}
@@ -1278,7 +1278,7 @@
                       <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!node.data.complete" class="far fa-square"></i>
                       {{node.data.name}}
-                      <span *ngIf="debugmode">{{node.data.hash}}</span>
+                      <span *ngIf="debugmode|async">{{node.data.hash}}</span>
                       <span class="simple-caption">
                         {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
                       </span> <br>
@@ -1325,7 +1325,7 @@
                     <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp;
                       {{char.percentToNextLevel|percent:'1.0-0'}} to next level
 
-                      <span *ngIf="debugmode">[{{char.levelProgression.progressionHash}}]</span>
+                      <span *ngIf="debugmode|async">[{{char.levelProgression.progressionHash}}]</span>
                       <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
                       </mat-progress-bar>
 
@@ -1350,7 +1350,7 @@
                       <b>Level {{char.baseCharacterLevel}}</b> &ensp; Legend Level {{char.legendProgression.level}}
                       &ensp; {{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
                       to level {{char.legendProgression.level+1}}
-                      <span *ngIf="debugmode">[{{char.legendProgression.hash}}]</span>
+                      <span *ngIf="debugmode|async">[{{char.legendProgression.hash}}]</span>
                       <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
                       </mat-progress-bar>
 

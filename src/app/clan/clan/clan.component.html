@@ -3,16 +3,16 @@
     <div class="main">
 
       <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="loading===true || modelPlayer==null"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true || modelPlayer==null"></mat-spinner>
       </div>
       <div class="body clan-body">
 
-        <ng-container *ngIf="info==null">
+        <ng-container *ngIf="(info|async)==null">
           <h2>Loading clan info. This could take a while if your clan is large...</h2>
         </ng-container>
 
-        <ng-container *ngIf="info!=null">
-          <h1>{{info.name}} </h1>
+        <ng-container *ngIf="(info|async)!=null">
+          <h1>{{(info|async).name}} </h1>
           <div class="button-row">
           </div>
 
@@ -25,27 +25,27 @@
             </span>
           </mat-card>
 
-          <ng-container *ngIf="info.progressions!=null">
+          <ng-container *ngIf="(info|async).progressions!=null">
             <mat-expansion-panel>
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   Clan Progress
-                  <ng-container *ngIf="info.primaryProgression!=null"> | Level
-                    {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
-                    XP progress this week:<b>&ensp;{{(info.primaryProgression.weeklyProgress)|number}}</b>
+                  <ng-container *ngIf="(info|async).primaryProgression!=null"> | Level
+                    {{(info|async).primaryProgression.level}}/{{(info|async).primaryProgression.levelCap}} |
+                    XP progress this week:<b>&ensp;{{((info|async).primaryProgression.weeklyProgress)|number}}</b>
                   </ng-container>
                 </mat-panel-title>
                 <mat-panel-description class="d-none d-md-block">
-                  Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
+                  Created: {{(info|async).creationDate|date:'short'}} &emsp; {{(info|async).memberCount}} members
                 </mat-panel-description>
               </mat-expansion-panel-header>
               <br>
-              <mat-card class="clan-card" *ngFor="let faction of info.progressions">
+              <mat-card class="clan-card" *ngFor="let faction of (info|async).progressions">
 
                 <mat-card-header>
 
                   <mat-card-title>
-                    <ng-container *ngIf="debugmode"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
+                    <ng-container *ngIf="debugmode|async"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
                     {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
                     <!-- - Remaining XP available this week:
                     <b>{{(faction.weeklyLimit - faction.weeklyProgress)|number}}</b> -->
@@ -78,25 +78,17 @@
                   mileStoneName.name }}</mat-option>
               </mat-select>
             </mat-form-field>
-            <span class="filter-count">{{sortedMembers.length}} / {{members.length}}</span>
-            <!-- <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
-              <i class="fas fa-book-dead" aria-hidden="true"></i> Raids
-              <i [hidden]="!raidsLoading" class="far fa-spinner fa-pulse fa-fw"></i>
-            </button> -->
-            <button class="d-none d-md-inline" mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
+            <span class="filter-count">{{(sortedMembers|async).length}} / {{members.length}}</span>
+            <button class="d-none d-md-inline" mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
               <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
 
           </div>
 
 
           <div class="mobile-button-row">
-            <!-- <button mat-button [disabled]="!allLoaded" (click)="loadRaidHistories()">
-              <i class="fas fa-book-dead" aria-hidden="true"></i> Raids
-              <i [hidden]="!raidsLoading" class="far fa-spinner fa-pulse fa-fw"></i>
-            </button> -->
-            <button mat-button [disabled]="!allLoaded" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded" class="far fa-spinner fa-pulse fa-fw"></i>
+            <button mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
               <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
@@ -111,7 +103,7 @@
             </button>
           </div>
 
-          <table class="responsive-table clan-table" *ngIf="this.sortedMembers!=null && this.modelPlayer!=null">
+          <table class="responsive-table clan-table" *ngIf="(sortedMembers|async)!=null && this.modelPlayer!=null">
             <thead> 
               <tr>
                 <th>
@@ -148,7 +140,7 @@
                   <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
                     *ngFor="let mileStoneName of modelPlayer.milestoneList">
                     {{mileStoneName.name}}
-                    <span *ngIf="debugmode">{{mileStoneName.key}}</span>
+                    <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
 
                   </th>
 
@@ -156,7 +148,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let member of sortedMembers">
+              <tr *ngFor="let member of sortedMembers|async">
                 <td class="lead">
                   <a *ngIf="member.destinyUserInfo.membershipType!=4"
                     [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
@@ -167,7 +159,7 @@
                     {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                   </a>
                   <a style="margin-left:0.25em"
-                    [ngClass]="favorites[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
+                    [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
                     (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
                     href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>

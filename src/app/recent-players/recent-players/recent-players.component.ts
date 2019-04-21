@@ -1,8 +1,7 @@
 
 import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
 import { Player, ActivityMode, Const, Activity, PGCR, UserInfo, PGCREntry, BungieNetUserInfo, BungieMember } from '../../service/model';
 import { MatPaginator, MatSort } from '@angular/material';
@@ -12,11 +11,10 @@ import { StorageService } from '../../service/storage.service';
 @Component({
   selector: 'anms-history',
   templateUrl: './recent-players.component.html',
-  styleUrls: ['./recent-players.component.scss']
+  styleUrls: ['./recent-players.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecentPlayersComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
-
   activityModes: ActivityMode[];
   maxResults: number[];
   selectedMaxResults: number;
@@ -39,8 +37,10 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
-  constructor(storageService: StorageService, private bungieService: BungieService, private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+  constructor(storageService: StorageService, private bungieService: BungieService, 
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [5, 10, 20, 50];
@@ -49,7 +49,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   }
 
   public async history() {
-    this.loading = true;
+    this.loading.next(true);
     try {
       const r = await this.bungieService.getActivityHistory(this.membershipType, this.membershipId,
         this.characterId, this.selectedMode.type, this.selectedMaxResults);
@@ -65,7 +65,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
       this.loadNextRow();
     }
     finally {
-      this.loading = false;
+      this.loading.next(false);
     }
   }
 
@@ -111,7 +111,10 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
         instances: []
       };
       // async store clans
-      this.bungieService.loadClans(e.user);
+      this.bungieService.loadClans(e.user).then(()=>{
+        //update view if clan updates
+        this.ref.markForCheck();
+      });
       this.friends.push(this.friendsDict[e.user.membershipId]);
     }
     this.friendsDict[e.user.membershipId].instances.push(p);
@@ -124,6 +127,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
       if (a.user.name < b.user.name) { return -1; }
       return 0;
     });
+    this.ref.markForCheck();
   }
 
   pgcr(instanceId: string) {

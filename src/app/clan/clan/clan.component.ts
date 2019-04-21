@@ -1,38 +1,39 @@
 
 import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ANIMATE_ON_ROUTE_ENTER } from '../../animations/router.transition';
 import { BungieService } from '../../service/bungie.service';
 import { BungieMember, Player, BungieGroupMember, ClanInfo, MileStoneName } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import * as moment from 'moment';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'anms-clan-history',
   templateUrl: './clan.component.html',
-  styleUrls: ['./clan.component.scss']
+  styleUrls: ['./clan.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
-  animateOnRouteEnter = ANIMATE_ON_ROUTE_ENTER;
 
   id: string;
-  info: ClanInfo;
+
+  public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
+  public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
+  public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  
   members: BungieGroupMember[] = [];
-  sortedMembers: BungieGroupMember[] = [];
   modelPlayer: Player;
   sort = 'dateAsc';
-  allLoaded: boolean;
-  raidsLoading: boolean;
-
   filterMode = 'none';
   filterActivity: MileStoneName = null;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router) {
-    super(storageService);
+    private route: ActivatedRoute, private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService, ref);
   }
 
   public toggleMemberSort() {
@@ -165,8 +166,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private sortData(): void {
-    const temp = this.members.slice(0);
-    this.sortedMembers = temp.filter(member => {
+    let temp = this.members.slice(0);
+
+    temp = temp.filter(member => {
       if (this.filterActivity == null) { return true; }
       if (member.player == null) { return false; }
       if (member.player.characters == null) { return false; }
@@ -184,15 +186,16 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       return false;
     });
 
-    if (this.sort === 'memberAsc') { this.sortedMembers.sort(ClanComponent.compareName); }
-    if (this.sort === 'memberDesc') { this.sortedMembers.sort(ClanComponent.compareNameReverse); }
-    if (this.sort === 'dateAsc') { this.sortedMembers.sort(ClanComponent.compareDate); }
-    if (this.sort === 'xpAsc') { this.sortedMembers.sort(ClanComponent.compareXp); }
-    if (this.sort === 'triumphAsc') { this.sortedMembers.sort(ClanComponent.compareTriumph); }
-    if (this.sort === 'dateDesc') { this.sortedMembers.sort(ClanComponent.compareDateReverse); }
-    if (this.sort === 'llAsc') { this.sortedMembers.sort(ClanComponent.compareLLs); }
-    if (this.sort === 'llDesc') { this.sortedMembers.sort(ClanComponent.compareLLsReverse); }
-    if (this.sort === 'triumphDesc') { this.sortedMembers.sort(ClanComponent.compareTriumphReverse); }
+    if (this.sort === 'memberAsc') { temp.sort(ClanComponent.compareName); }
+    if (this.sort === 'memberDesc') { temp.sort(ClanComponent.compareNameReverse); }
+    if (this.sort === 'dateAsc') { temp.sort(ClanComponent.compareDate); }
+    if (this.sort === 'xpAsc') { temp.sort(ClanComponent.compareXp); }
+    if (this.sort === 'triumphAsc') { temp.sort(ClanComponent.compareTriumph); }
+    if (this.sort === 'dateDesc') { temp.sort(ClanComponent.compareDateReverse); }
+    if (this.sort === 'llAsc') { temp.sort(ClanComponent.compareLLs); }
+    if (this.sort === 'llDesc') { temp.sort(ClanComponent.compareLLsReverse); }
+    if (this.sort === 'triumphDesc') { temp.sort(ClanComponent.compareTriumphReverse); }
+    this.sortedMembers.next(temp);
   }
 
   public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {
@@ -228,7 +231,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (allLoaded) this.allLoaded = true;
+    if (allLoaded){
+      this.allLoaded.next(true);
+    }
     this.sortData();
   }
 
@@ -340,20 +345,19 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   private async load() {
-    this.loading = true;
+    this.loading.next(true);
     this.members = [];
     this.modelPlayer = null;
-    this.allLoaded = false;
-    this.raidsLoading = false;
+    this.allLoaded.next(false);
     try {
       const i = await this.bungieService.getClanInfo(this.id);
-      this.info = i;
+      this.info.next(i);
       if (i != null) {
         // load the clan members
         const members = await this.bungieService.getClanMembers(this.id);
         this.members = members;
-        this.sortedMembers = this.members.slice(0);
-        this.loading = false;
+        this.sortedMembers.next(this.members.slice(0));
+        this.loading.next(false);
         for (const t of this.members) {
           if (this.modelPlayer == null) {
             await this.loadSpecificPlayer(t, false);
@@ -363,10 +367,10 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        this.loading = false;
+        this.loading.next(false);
       }
     } catch (x) {
-      this.loading = false;
+      this.loading.next(false);
     };
   }
 
