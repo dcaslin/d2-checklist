@@ -5,10 +5,10 @@
         <span class="warn-text">This is alpha code, still a work in progress</span>
       </p> -->
       <div class="fixed-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true || gearService.loading===true">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true || (gearService.loading|async)===true">
         </mat-spinner>
         <mat-spinner class="loading" class="center-spinner"
-          *ngIf="(filtering|async)===true && !((loading|async)===true || gearService.loading===true)"></mat-spinner>
+          *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)"></mat-spinner>
       </div>
 
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
@@ -382,13 +382,13 @@
         
       </ng-container>
     </div>
-    <div *ngIf="disableads===false" class="adRight">
+    <div *ngIf="(disableAds|async)!==true" class="adRight">
       <small class="adText">Advertisement</small>
       <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
 
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
+  <div *ngIf="(disableAds|async)!==true" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
   </div>
