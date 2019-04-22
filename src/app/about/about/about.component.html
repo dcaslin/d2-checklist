@@ -4,48 +4,50 @@
 
       <h1>Destiny 2 Checklist</h1>
       <div class="actions">
-        <a class="space-right" mat-raised-button color="accent" rel="noopener" href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
+        <a class="space-right" mat-raised-button color="accent" rel="noopener"
+          href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
           <i class="fab fa-paypal"></i> Donate
         </a>
-        <a class="space-right" mat-raised-button target="_blank" rel="noopener" href="https://twitter.com/DestinyChecklst">
+        <a class="space-right" mat-raised-button target="_blank" rel="noopener"
+          href="https://twitter.com/DestinyChecklst">
           <i class="fab fa-twitter"></i> @DestinyChecklst
         </a>
-        <a class="space-right" mat-raised-button target="_blank" rel="noopener" href="https://www.reddit.com/r/destinychecklistnet">
+        <a class="space-right" mat-raised-button target="_blank" rel="noopener"
+          href="https://www.reddit.com/r/destinychecklistnet">
           <i class="fab fa-reddit"></i> /r/destinychecklistnet
         </a>
-        <a class="space-right" mat-raised-button target="_blank" rel="noopener" href="https://github.com/dcaslin/d2-checklist/">
+        <a class="space-right" mat-raised-button target="_blank" rel="noopener"
+          href="https://github.com/dcaslin/d2-checklist/">
           <i class="fab fa-github"></i> Source Code
         </a>
       </div>
       <div class="get-started">
         <section class="body-1">
           <p>
-            This site's goal is to help people have more fun with Destiny 2. As the game changes so will its features. Focus is generally on tracking data for yourself, your friends and your clan.
+            This site's goal is to help people have more fun with Destiny 2. As the game changes so will its features.
+            Focus is generally on tracking data for yourself, your friends and your clan.
           </p>
         </section>
         <section class="body-2">
-          <p>This site is <a href="https://github.com/dcaslin/d2-checklist/" target="_blank">open sourced on GitHub</a>, 
-            and actively supported via 
-            <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">Reddit</a> and 
+          <p>This site is <a href="https://github.com/dcaslin/d2-checklist/" target="_blank">open sourced on GitHub</a>,
+            and actively supported via
+            <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">Reddit</a> and
             <a href="https://twitter.com/DestinyChecklst" target="_blank" rel="noopener">Twitter</a>.
           </p>
           <p>
-            PS: If you don't like ads, just pop over to the <a routerLink="/settings">settings page</a> and disable them. The site will remember your settings in the future. 
+            PS: If you don't like ads, just pop over to the <a routerLink="/settings">settings page</a> and disable
+            them. The site will remember your settings in the future.
             That same settings page also has options to choose a dark (or pink) theme.
           </p>
         </section>
       </div>
-
-
-
     </div>
-    <div *ngIf="disableads===false" class="adRight">
+    <div *ngIf="(disableAds|async)!==true" class="adRight">
       <small class="adText">Advertisement</small>
       <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
-
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
+  <div *ngIf="(disableAds|async)!==true" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
   </div>

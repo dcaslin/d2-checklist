@@ -14,7 +14,7 @@ export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
     public favoritesList: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
     public favoritesMap: BehaviorSubject<{ [id: string]: UserInfo }> = new BehaviorSubject({});
-    public disabledAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    public disableAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
@@ -23,14 +23,14 @@ export class ChildComponent implements OnDestroy {
     constructor(storageService: StorageService,
         ref: ChangeDetectorRef) {
         this.storageService = storageService;
-        this.disabledAds.next(this.storageService.getItem('disableads', false));
+        this.disableAds.next(this.storageService.getItem('disableads', false));
         this.debugmode.next(this.storageService.getItem('debugmode', false));
         this.storageService.settingFeed.pipe(
             takeUntil(this.unsubscribe$))
             .subscribe(
                 x => {
                     if (x.disableads != null) {
-                        this.disabledAds.next(x.disableads);
+                        this.disableAds.next(x.disableads);
                     }
                     if (x.debugmode != null) {
                         this.debugmode.next(x.debugmode);

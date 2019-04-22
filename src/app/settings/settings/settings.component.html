@@ -32,6 +32,7 @@
         <mat-icon>block</mat-icon> You've disabled ads. If you end up finding this site or any of the other DestinyChecklist sites helpful, please consider
         making a donation with the link below. Or, if you're on PS4, use the link to pre-order Forsaken from Amazon (or buy something else), I'll get a small commission and it will cost you nothing else.
         <br>
+        <br>
         <a mat-raised-button class="space-right" color="accent" target="_blank" href="https://amzn.to/2tGons4">
           <i class="fab fa-amazon"></i> Order Forsaken
         </a>
@@ -50,14 +51,13 @@
           <button mat-stroked-button (click)="onInfoClick()" >Test Info</button>
       </div>
     </div>
-
-    <div *ngIf="disableads===false" class="adRight">
+    <div *ngIf="(disableAds|async)!==true" class="adRight">
       <small class="adText">Advertisement</small>
       <ng-adsense adFormat="vertical"></ng-adsense>
     </div>
 
   </div>
-  <div *ngIf="disableads===false" class="adBottom">
+  <div *ngIf="(disableAds|async)!==true" class="adBottom">
     <small class="adText">Advertisement</small>
     <ng-adsense adSlot="7629384993" display="block"></ng-adsense>
   </div>
