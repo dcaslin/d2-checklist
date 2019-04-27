@@ -97,6 +97,9 @@
         <a mat-button (click)="load()">
           <i class="fas fa-sync-alt"></i>
         </a>
+        <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorPerks()">
+          <i class="fas fa-star"></i><span class="hide-mobile-inline">&nbsp;Target Perks</span>
+        </button>
         <button mat-button [matMenuTriggerFor]="menuMoreOptions">
             <i class="fas fa-ellipsis-v"></i>
         </button>
