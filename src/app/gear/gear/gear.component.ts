@@ -13,6 +13,7 @@ import { WishlistService } from '@app/service/wishlist.service';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonToggleGroup, MatPaginator } from '@angular/material';
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '@app/service/notification.service';
+import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 
 @Component({
   selector: 'anms-gear',
@@ -716,6 +717,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       parent: this,
     };
     const dialogRef = this.dialog.open(ArmorPerksDialogComponent, dc);
+  }
+
+  public showTargetArmorPerks(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+    };
+    const dialogRef = this.dialog.open(TargetArmorPerksDialogComponent, dc);
   }
 
   public showUtilities(): void {

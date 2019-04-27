@@ -1,0 +1,34 @@
+<h2 mat-dialog-title>Target Armor Perks
+</h2>
+<mat-dialog-content>
+  <div class="form-container">
+    <p class="simple-caption">Perks matching items below will be highlighted on the Armor list</p>
+    <mat-form-field>
+      <mat-label>Weapon 1</mat-label>
+      <mat-select>
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let c of parent.weaponTypeChoices" [value]="c.matchValue">{{c.display}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Weapon 2</mat-label>
+      <mat-select>
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let c of parent.weaponTypeChoices" [value]="c.matchValue">{{c.display}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Weapon 3</mat-label>
+      <mat-select>
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let c of parent.weaponTypeChoices" [value]="c.matchValue">{{c.display}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-checkbox>Special Ammo Finder</mat-checkbox>
+    <mat-checkbox>Heavy Ammo Finder</mat-checkbox>
+    <mat-checkbox>Traction</mat-checkbox>
+    <mat-checkbox>Fastball</mat-checkbox>
+
+  </div>
+
+</mat-dialog-content>
