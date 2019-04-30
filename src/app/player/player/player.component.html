@@ -26,7 +26,7 @@
           </button>
         </div>
 
-        <ng-container *ngIf="player==null && !loading">
+        <ng-container *ngIf="player==null && (loading|async)==false">
           <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
           <div class="button-row">
             <ng-container *ngFor="let plat of platforms">
