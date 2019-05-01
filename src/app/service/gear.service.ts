@@ -6,6 +6,7 @@ import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, V
 import { WishlistService } from './wishlist.service';
 import { NotificationService } from './notification.service';
 import { BehaviorSubject } from 'rxjs';
+import { TargetPerkService } from './target-perk.service';
 
 @Injectable()
 export class GearService {
@@ -15,7 +16,8 @@ export class GearService {
         public markService: MarkService,
         private notificationService: NotificationService,
         private bucketService: BucketService,
-        private wishlistService: WishlistService) {
+        private wishlistService: WishlistService,
+        private targetPerkService: TargetPerkService) {
     }
 
     public async loadGear(selectedUser: SelectedUser): Promise<Player> {
@@ -43,6 +45,7 @@ export class GearService {
             this.bucketService.init(player.characters, player.vault, player.shared, player.gear);
             this.markService.processItems(player.gear);
             this.wishlistService.processItems(player.gear);
+            this.targetPerkService.processGear(player);
             return player;
         } finally {
             this.loading.next(false);
@@ -59,7 +62,6 @@ export class GearService {
         } else {
             itm.canReallyEquip = false;
         }
-        // console.log("Can Really Equip " + itm.name + " on " + itm.owner.label + ": " + itm.canReallyEquip);
     }
 
     private static async delay(ms: number) {
@@ -356,6 +358,10 @@ export class GearService {
 
                 this.canEquip(itm);
                 this.canEquip(oldEquipped);
+                // any time we change equips we need to revisit current perks
+                if (itm.type === ItemType.Armor) {
+                    this.targetPerkService.processGear(player);
+                }
                 return true;
             }
             return false;

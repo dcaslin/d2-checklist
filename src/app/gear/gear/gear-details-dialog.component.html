@@ -12,15 +12,7 @@
                 <ng-container *ngFor="let i of items">
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         {{i.power}}
-                        <i *ngIf="i.godRollPve && i.godRollPvp"
-                            matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these."
-                            class="fas fa-star accent-text"></i>
-                        <i *ngIf="i.godRollPve && !i.godRollPvp"
-                            matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
-                            class="fas fa-dragon accent-text"></i>
-                        <i *ngIf="i.godRollPvp && !i.godRollPve"
-                            matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
-                            class="fas fa-swords accent-text"></i>
+                        <anms-god-roll-item [item]="i"></anms-god-roll-item>
                         <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
                             <i class="fas fa-ellipsis-v"></i>
                         </a>
@@ -110,13 +102,10 @@
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug"
                                 [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
                                 matTooltipClass="preserve-white-space">
-                                <i *ngIf="plug.godRollPve && plug.godRollPvp && (i.godRoll || parent.highlightAllPerks)"
-                                    class="fas fa-star" [class.accent-text]="i.godRoll"></i>
-                                <i *ngIf="plug.godRollPve && !plug.godRollPvp && (i.godRollPve || parent.highlightAllPerks)"
-                                    class="fas fa-dragon" [class.accent-text]="i.godRoll"></i>
-                                <i *ngIf="plug.godRollPvp && !plug.godRollPve && (i.godRollPvp || parent.highlightAllPerks)"
-                                    class="fas fa-swords" [class.accent-text]="i.godRoll"></i>
-                                {{plug.name}}
+                                <anms-god-roll-plug [plug]="plug" 
+                                [highlightAllPerks]="parent.highlightAllPerks"
+                                [debugmode]="parent.debugmode"
+                                ></anms-god-roll-plug>
                                 <ng-container *ngIf="!isLastPlug"><br></ng-container>
                             </span>
                         </div>

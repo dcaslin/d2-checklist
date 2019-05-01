@@ -236,35 +236,6 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     this.sortData();
   }
 
-  // private async loadRaidHistory(target: BungieGroupMember, reload: boolean): Promise<void> {
-  //   try {
-  //     if (target.player != null) {
-  //       if (target.player.raidChecked && !reload) return;
-  //       await this.bungieService.updateRaidHistory(target.player, true);
-  //     }
-  //   }
-  //   catch (x) {
-  //     console.log(x);
-  //   }
-  //   let allLoaded = true;
-  //   for (const t of this.members) {
-  //     if ((t.player == null && t.errorMsg == null) || (t.player != null && !t.player.raidChecked)) {
-  //       allLoaded = false;
-  //       break;
-  //     }
-  //   }
-
-  //   if (allLoaded) this.raidsLoading = false;
-  // }
-
-  // private async loadRaidHistories(): Promise<void> {
-  //   this.raidsLoading = true;
-  //   console.log("Load raid history");
-  //   for (const t of this.members) {
-  //     this.loadRaidHistory(t, false);
-  //   }
-  // }
-
   private downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
     let sCsv = 'member,platform,chars,lastPlayed days ago,Triumph Score,Weekly XP,max LL,';
