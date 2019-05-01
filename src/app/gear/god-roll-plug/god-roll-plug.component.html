@@ -1,0 +1,10 @@
+<i *ngIf="plug.godRollPve && plug.godRollPvp && (plug.godRoll || highlightAllPerks)" class="fas fa-star perk"
+  [class.accent-text]="plug.godRoll"></i>
+<i *ngIf="plug.godRollPve && !plug.godRollPvp && (plug.godRollPve || highlightAllPerks)" class="fas fa-dragon perk"
+  [class.accent-text]="plug.godRoll"></i>
+<i *ngIf="plug.godRollPvp && !plug.godRollPve && (plug.godRollPvp || highlightAllPerks)" class="fas fa-swords perk"
+  [class.accent-text]="plug.godRoll"></i>
+<i *ngIf="plug.targetArmorPerk" class="fas fa-bullseye-pointer perk" 
+[class.accent-text]="!plug.alreadyEquipped"
+[class.already-equipped]="plug.alreadyEquipped"></i>
+{{plug.name}} <ng-container *ngIf="debugmode|async">[{{plug.hash}}]</ng-container>

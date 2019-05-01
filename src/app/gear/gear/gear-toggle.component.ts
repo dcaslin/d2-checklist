@@ -81,7 +81,6 @@ export class GearToggleComponent implements OnInit {
 
   selectAll(noEmit?: boolean) {
     try {
-      console.log('selectAll');
       for (const ch of this.choices) {
         ch.value = true;
       }
@@ -97,7 +96,6 @@ export class GearToggleComponent implements OnInit {
 
   exclusiveSelect(choice) {
     try {
-      console.log('exclusiveSelect');
       for (const ch of this.choices) {
         if (ch !== choice) {
           ch.value = false;
@@ -112,7 +110,6 @@ export class GearToggleComponent implements OnInit {
 
   select(event, choice) {
     try {
-      console.log('Select');
       choice.value = !choice.value;
       this.emit();
       event.stopPropagation();

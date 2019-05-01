@@ -14,6 +14,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonTog
 import { ClipboardService } from 'ngx-clipboard';
 import { NotificationService } from '@app/service/notification.service';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
+import { TargetPerkService } from '@app/service/target-perk.service';
 
 @Component({
   selector: 'anms-gear',
@@ -209,6 +210,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
     public dialog: MatDialog,
+    private targetPerkService: TargetPerkService,
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
     this.loading.next(true);
@@ -225,6 +227,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (wishlistOverridePvpUrl != null) {
       this.wishlistOverridePvpUrl = wishlistOverridePvpUrl;
     }
+    this.targetPerkService.perks.pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(x => {
+          if (this.player != null){
+            this.targetPerkService.processGear(this.player);
+            this.ref.markForCheck();
+          }
+      });
 
   }
 
@@ -512,22 +522,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
     }
 
-    // console.log("Filter report: ");
-    // for (const key in report){
-    //   console.log("    "+key+": "+report[key]);
-    // }
     return returnMe;
   }
 
   filterGear() {
-    // console.log("Filter gear: Previous length " + this.gearToShow.length)
     this.filterNotes = [];
     if (this.player == null) { return; }
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
-    // console.log("After wildcard: " + tempGear.length);
     tempGear = this.toggleFilter(tempGear);
-    // console.log("After toggle: " + tempGear.length);
     if (this.sortBy == 'masterwork' || this.sortBy == 'mod') {
       tempGear.sort((a: any, b: any): number => {
         let aV = '';
@@ -847,50 +850,10 @@ export class ArmorPerksDialogComponent {
   tempWishlistOverrideUrl: string;
   WishlistService = WishlistService;
   constructor(
+    private targetPerkSerice: TargetPerkService,
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
-  }
-
-  public getPerks(char: Character, gear: InventoryItem[]): InventoryPlug[] {
-    const activePerks: InventoryPlug[] = [];
-    for (const g of gear) {
-      if (g.type != ItemType.Armor) { continue; }
-      if (!g.equipped) { continue; }
-      if (g.owner.id != char.id) { continue; }
-      for (const s of g.sockets) {
-        for (const p of s.plugs) {
-          if (!p.active) { continue; }
-          if (p.name.endsWith('Armor')) { continue; }
-          if (p.name.endsWith('Mod')) { continue; }
-          activePerks.push(p);
-        }
-      }
-    }
-    const perkSet = {};
-    for (const p of activePerks) {
-      if (perkSet[p.name] == null) {
-        perkSet[p.name] = {
-          perk: p,
-          count: 0
-        };
-      }
-      perkSet[p.name].count = perkSet[p.name].count + 1;
-    }
-    const returnMe = [];
-    for (const key of Object.keys(perkSet)) {
-      returnMe.push(perkSet[key]);
-    }
-    returnMe.sort(function (a, b) {
-      if (a.perk.name < b.perk.name) {
-        return -1;
-      }
-      if (a.perk.name > b.perk.name) {
-        return 1;
-      }
-      return 0;
-    });
-    return returnMe;
   }
 
 }

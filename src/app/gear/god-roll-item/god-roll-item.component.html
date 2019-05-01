@@ -1,0 +1,9 @@
+<i *ngIf="item.godRollPve && item.godRollPvp"
+  matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these."
+  class="fas fa-star accent-text"></i>
+<i *ngIf="item.godRollPve && !item.godRollPvp"
+  matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
+  class="fas fa-dragon accent-text"></i>
+<i *ngIf="item.godRollPvp && !item.godRollPve"
+  matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
+  class="fas fa-swords accent-text"></i>

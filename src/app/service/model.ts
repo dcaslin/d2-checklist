@@ -1052,6 +1052,11 @@ export class InventorySocket {
 
 }
 
+export interface PerkCount {
+    perk: InventoryPlug;
+    count: number;
+}
+
 export class InventoryPlug {
     readonly hash: string;
 
@@ -1061,6 +1066,8 @@ export class InventoryPlug {
     public godRoll = false;
     public godRollPve = false;
     public godRollPvp = false;
+    public targetArmorPerk = false;
+    public alreadyEquipped = false;
     public desc: string;
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean) {
