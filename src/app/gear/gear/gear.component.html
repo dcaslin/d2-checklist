@@ -218,7 +218,7 @@
                   </div>
                 </td>
                 <td class="limited-gear-width">
-                  <anms-god-roll-item item="i"></anms-god-roll-item>
+                  <anms-god-roll-item [item]="i"></anms-god-roll-item>
                   
                   <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
                     class="item-name" href="javascript:void(0)" [matTooltip]="i.desc"
