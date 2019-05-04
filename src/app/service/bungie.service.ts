@@ -233,7 +233,7 @@ export class BungieService implements OnDestroy {
     private setClans(membership: BungieMembership) {
         this.getClans(membership.bungieId).then(c => {
             if (c != null) {
-                membership.clansSubject.next(c);
+                membership.clans = c;
             }
         });
     }

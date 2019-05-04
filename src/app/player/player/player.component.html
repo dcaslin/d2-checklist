@@ -57,7 +57,7 @@
           </h1>
           <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
           <ng-container
-            *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && (player.profile.userInfo.bungieInfo.clansSubject|async)!=null">
+            *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && (player.profile.userInfo.bungieInfo.clans)!=null">
             Clan:
             <ng-container class="clans" *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; last as isLast">
               <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
