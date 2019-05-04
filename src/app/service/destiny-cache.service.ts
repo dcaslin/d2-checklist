@@ -22,10 +22,12 @@ export class DestinyCacheService {
   private async init() {
     console.log('Loading cache');
     try {
-      await this.load2();
+      await this.load();
     } catch (exc) {
       console.dir(exc);
       this.error.next('There was an error loading the Bungie Manifest DB, please refresh the page and try again.');
+    }
+    finally{
       this.percent.next(100);
     }
   }
@@ -39,7 +41,7 @@ export class DestinyCacheService {
     this.ready.next(true);
   }
 
-  async load2(): Promise<void> {
+  async load(): Promise<void> {
     const req = new HttpRequest<Blob>('GET', '/assets/destiny2.zip?v=' + env.versions.app, {
       reportProgress: true,
       responseType: 'blob'
@@ -48,18 +50,18 @@ export class DestinyCacheService {
     r.subscribe((event: HttpEvent<any>) => {
       switch (event.type) {
         case HttpEventType.Sent:
-          this.percent.next(2);
+          this.percent.next(5);
           break;
         case HttpEventType.ResponseHeader:
-          this.percent.next(4);
+          this.percent.next(10);
           break;
         case HttpEventType.DownloadProgress:
           // const kbLoaded = Math.round(event.loaded / 1024);
           // console.log(`Download in progress! ${kbLoaded}Kb loaded`);
-          this.percent.next(100 * event.loaded / event.total);
+          this.percent.next(15 + 80 * event.loaded / event.total);
           break;
         case HttpEventType.Response: {
-          this.percent.next(100);
+          this.percent.next(95);
         }
       }
     });
