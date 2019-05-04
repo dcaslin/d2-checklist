@@ -18,8 +18,9 @@ import { ClanComponent } from './clan';
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { DestinyCacheService } from './service/destiny-cache.service';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { BungieService } from '@app/service/bungie.service';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -28,12 +29,8 @@ export class AuthGuard implements CanActivate {
   constructor(private destinyCacheService: DestinyCacheService, private bungieService: BungieService) {
   }
 
-  canActivate(): Promise<boolean> {
-    this.loader$.next(true);
-    return this.destinyCacheService.init().then(val => {
-      this.loader$.next(false);
-      return val;
-    });
+  canActivate(): Observable<boolean> {
+    return this.destinyCacheService.ready.asObservable().pipe(filter(x => x === true));
   }
 }
 

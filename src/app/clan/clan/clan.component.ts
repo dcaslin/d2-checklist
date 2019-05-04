@@ -239,7 +239,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   private downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
     let sCsv = 'member,platform,chars,lastPlayed days ago,Triumph Score,Weekly XP,max LL,';
-    this.modelPlayer.milestoneList.forEach(m => {
+    this.modelPlayer.milestoneList.getValue().forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
       sCsv += tempName + ',';
@@ -268,7 +268,7 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       sCsv += member.player.maxLL + ',';
 
       if (member.player.characters != null) {
-        this.modelPlayer.milestoneList.forEach(mileStoneName => {
+        this.modelPlayer.milestoneList.getValue().forEach(mileStoneName => {
           let total = 0;
           let pctTotal = 0;
           let possible = 0;

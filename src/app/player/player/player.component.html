@@ -57,7 +57,7 @@
           </h1>
           <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
           <ng-container
-            *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
+            *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && (player.profile.userInfo.bungieInfo.clansSubject|async)!=null">
             Clan:
             <ng-container class="clans" *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; last as isLast">
               <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
@@ -121,7 +121,7 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
 
-                <div *ngIf="player.milestoneList.length==0">
+                <div *ngIf="(player.milestoneList|async).length==0">
                   <br>
                   <h2>Privacy</h2>
                   <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
@@ -142,7 +142,7 @@
                   <span class="mat-caption" (click)="showAllMilestones()">Show hidden milestones</span>
                 </div>
 
-                <table class="responsive-table" *ngIf="player.milestoneList.length>0">
+                <table class="responsive-table" *ngIf="(player.milestoneList|async).length>0">
                   <thead>
                     <tr>
                       <th scope="col" style="width: 25%">Activity
@@ -167,7 +167,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <ng-container *ngFor="let mileStoneName of player.milestoneList">
+                    <ng-container *ngFor="let mileStoneName of player.milestoneList|async">
                       <tr *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
                         <td class="lead">
                           <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
