@@ -384,9 +384,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   private sortMileStones() {
-    if (this.player == null || this.player.milestoneList == null) { return; }
+    if (this.player == null || this.player.milestoneList.getValue() == null) { return; }
     if (this.sort === 'rewardsDesc') {
-      this.player.milestoneList.sort((a, b) => {
+      this.player.milestoneList.getValue().sort((a, b) => {
         if (a.pl < b.pl) { return 1; }
         if (a.pl > b.pl) { return -1; }
         if (a.rewards < b.rewards) { return 1; }
@@ -396,7 +396,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         return 0;
       });
     } else if (this.sort === 'rewardsAsc') {
-      this.player.milestoneList.sort((a, b) => {
+      this.player.milestoneList.getValue().sort((a, b) => {
         if (a.pl < b.pl) { return -1; }
         if (a.pl > b.pl) { return 1; }
         if (a.rewards < b.rewards) { return -1; }
@@ -406,7 +406,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         return 0;
       });
     } else if (this.sort === 'resetDesc') {
-      this.player.milestoneList.sort((a, b) => {
+      this.player.milestoneList.getValue().sort((a, b) => {
         if (a.resets == null && b.resets != null) { return 1; }
         if (a.resets != null && b.resets == null) { return -1; }
         if (a.resets == null && b.resets == null) { return 0; }
@@ -417,7 +417,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         return 0;
       });
     } else if (this.sort === 'resetAsc') {
-      this.player.milestoneList.sort((a, b) => {
+      this.player.milestoneList.getValue().sort((a, b) => {
 
         if (a.resets == null && b.resets != null) { return -1; }
         if (a.resets != null && b.resets == null) { return 1; }
@@ -429,13 +429,13 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         return 0;
       });
     } else if (this.sort === 'nameAsc') {
-      this.player.milestoneList.sort((a, b) => {
+      this.player.milestoneList.getValue().sort((a, b) => {
         if (a.name > b.name) { return 1; }
         if (a.name < b.name) { return -1; }
         return 0;
       });
     } else if (this.sort === 'nameDesc') {
-      this.player.milestoneList.sort((a, b) => {
+      this.player.milestoneList.getValue().sort((a, b) => {
         if (a.name > b.name) { return -1; }
         if (a.name < b.name) { return 1; }
         return 0;
@@ -493,10 +493,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
         this.bungieService.loadClans(x.profile.userInfo);
-        // todo query history for Gambit Prime and the reckoning
-        // todo query spider vendor
         this.bungieService.loadSpiderWeekly(x);
-        // this.bungieService.loadActivityPsuedoMilestones(x);
         this.setPlayer(x);
 
         // need to get out of this change detection cycle to have tabs set
@@ -508,9 +505,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
         if (x.characters != null) {
           await this.bungieService.updateAggHistory(x.characters);
-          // await this.bungieService.updateRaidHistory(x);
-          // await this.bungieService.updateNfHistory(x.milestoneList, x.characters);
-          // await this.xyzService.updateDrops(x);
         }
       } else {
         this.loading.next(false);

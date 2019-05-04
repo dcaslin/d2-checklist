@@ -25,7 +25,7 @@
                 Member
               </th>
               <ng-container *ngIf="modelPlayer!=null">
-                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList|async">
                   <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space" 
                     *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">
                     {{mileStoneName.name}}
@@ -71,11 +71,11 @@
               <ng-container *ngIf="member.player!=null">
 
                 <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
-                  [attr.colspan]="modelPlayer.milestoneList.length">
+                  [attr.colspan]="(modelPlayer.milestoneList|async).length">
                   Blocked by privacy settings
                 </td>
                 <ng-container *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
-                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList|async">
 
                     <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
                       [attr.data-label]="mileStoneName.name">
@@ -108,7 +108,7 @@
                 </ng-container>
               </ng-container>
               <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
-                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList|async">
                   <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">...</td>
                 </ng-container>
               </ng-container>

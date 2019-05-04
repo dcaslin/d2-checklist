@@ -11,6 +11,15 @@ $footer-height: 160px;
   height: 100%;
 }
 
+.db-progress{
+  width: 250px;
+}
+
+.db-error{
+  text-align: center;
+  margin-top: 25px;
+}
+
 .sub-row{
    font-size: smaller;
    height: 40px;

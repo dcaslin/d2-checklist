@@ -1,5 +1,5 @@
 
-import { takeUntil, first } from 'rxjs/operators';
+import { takeUntil, first, filter } from 'rxjs/operators';
 /**
  * Created by Dave on 12/21/2016.
  */
@@ -29,25 +29,25 @@ export class BungieService implements OnDestroy {
     selectedUser: SelectedUser;
     apiDown = false;
 
+    private async updateSelectedUser(selectedUser: SelectedUser): Promise<void> {
+        if (selectedUser != null) {
+            // wait until cache is ready
+            this.destinyCacheService.ready.asObservable().pipe(filter(x => x === true), first()).subscribe(() => {
+                this.setClans(this.selectedUser.membership);
+                this.applyCurrencies(this.selectedUser);
+            });
+        }
+    }
+
     constructor(private httpClient: HttpClient,
         private notificationService: NotificationService,
         private destinyCacheService: DestinyCacheService,
         private authService: AuthService,
         private parseService: ParseService) {
-
         this.selectedUserFeed = this.selectedUserSub.asObservable() as Observable<SelectedUser>;
         this.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-            if (selectedUser != null) {
-                // //after the fact search for clan
-                this.setClans(this.selectedUser.membership);
-                // //after the fact currency set
-                this.applyCurrencies(this.selectedUser);
-            }
-
+            this.updateSelectedUser(selectedUser);
         });
-
-
-
         this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
             this.authInfo = ai;
             if (ai != null) {
@@ -221,21 +221,19 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
-        const self: BungieService = this;
         const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId, ['ProfileCurrencies'], true);
         if (tempPlayer == null) {
             console.log('No player to apply currencies to');
             return;
         }
-        s.selectedUserCurrencies = tempPlayer.currencies;
+        s.selectedUserCurrencies.next(tempPlayer.currencies);
 
     }
 
     private setClans(membership: BungieMembership) {
-        const self: BungieService = this;
         this.getClans(membership.bungieId).then(c => {
             if (c != null) {
-                membership.clans = c;
+                membership.clansSubject.next(c);
             }
         });
     }
@@ -377,7 +375,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private async loadSpiderOnChar(c: Character): Promise<void> {
+    private async loadSpiderOnChar(p: Player, c: Character): Promise<void> {
         const vendorData = await this.loadVendors(c);
         let complete = false;
         let held = false;
@@ -393,6 +391,8 @@ export class BungieService implements OnDestroy {
         }
         const spiderPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, complete, complete ? 1 : 0, held ? 'Held' : 'Not Held', null, null);
         c.milestones[SPIDER_KEY] = spiderPsuedoMs;
+        // update entry
+        p.milestoneList.next(p.milestoneList.getValue());
     }
 
     private getPctString(pct: number) {
@@ -413,48 +413,8 @@ export class BungieService implements OnDestroy {
         const gambitPct = count / 4;
         const gambitPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, gambitPct >= 1, gambitPct, this.getPctString(gambitPct), null, null);
         c.milestones[GAMBIT_PRIME_KEY] = gambitPsuedoMs;
-
-        // const reckoningActivities = activities.filter(a => a.mode=="Reckoning" && a.success);
-        // let progress = 0;
-        // for (const a of reckoningActivities){
-        //     console.dir(a);
-        // }
-        // const reckoningPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, complete, complete ? 1 : 0, held ? 'Held' : 'Not Held', null, null);
-        // c.milestones[RECKONING_KEY] = reckoningActivities;
     }
 
-    public async loadActivityPsuedoMilestones(p: Player): Promise<void> {
-        // add reckoning psuedo milestones
-        // const reckMs: MileStoneName = {
-        //     key: RECKONING_KEY,
-        //     resets: p.characters[0].endWeek.toISOString(),
-        //     rewards: "Powerful Gear",
-        //     pl: 654,
-        //     name: "The Reckoning",
-        //     desc: "Earn 100% progress",
-        //     hasPartial: true
-        // };
-        const gpMs: MileStoneName = {
-            key: GAMBIT_PRIME_KEY,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear',
-            pl: 654,
-            name: 'Gambit Prime',
-            desc: 'Complete 4 Gambit Prime matches',
-            hasPartial: true
-        };
-        p.milestoneList.push(gpMs);
-        // p.milestoneList.push(reckMs);
-        // const emptyReck: MilestoneStatus = new MilestoneStatus(RECKONING_KEY, false, 0, null, "Loading...", null);
-        const emptyGp: MilestoneStatus = new MilestoneStatus(GAMBIT_PRIME_KEY, false, 0, null, 'Loading...', null);
-        for (const c of p.characters) {
-            // c.milestones[RECKONING_KEY] = emptyReck;
-            c.milestones[GAMBIT_PRIME_KEY] = emptyGp;
-        }
-        for (const c of p.characters) {
-            this.loadActivityPsuedoMsOnChar(c);
-        }
-    }
 
     public isSignedOn(p: Player): boolean {
         if (this.selectedUser == null) { return false; }
@@ -475,14 +435,14 @@ export class BungieService implements OnDestroy {
             desc: 'Spider\'s weekly powerful bounty, costs Ghost Fragments',
             hasPartial: false
         };
-        p.milestoneList.push(ms);
+        p.milestoneList.getValue().push(ms);
         const empty: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, false, 0, null, 'Loading...', null);
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
             c.milestones[SPIDER_KEY] = empty;
         }
         for (const c of p.characters) {
-            this.loadSpiderOnChar(c);
+            this.loadSpiderOnChar(p, c);
         }
     }
 

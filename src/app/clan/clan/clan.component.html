@@ -74,7 +74,7 @@
             </mat-form-field>
             <mat-form-field *ngIf="modelPlayer!=null && filterMode!='none'">
               <mat-select [(ngModel)]="filterActivity" (selectionChange)="filterPlayers()" placeholder="Activity">
-                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{
+                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList|async" [value]="mileStoneName">{{
                   mileStoneName.name }}</mat-option>
               </mat-select>
             </mat-form-field>
@@ -138,7 +138,7 @@
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
                   <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
-                    *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    *ngFor="let mileStoneName of modelPlayer.milestoneList|async">
                     {{mileStoneName.name}}
                     <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
 
@@ -200,12 +200,12 @@
                   </td>
                   <td
                     *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
-                    [attr.colspan]="modelPlayer.milestoneList.length">
+                    [attr.colspan]="(modelPlayer.milestoneList|async).length">
                     Blocked by privacy settings
                   </td>
                   <ng-container
                     *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
-                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" class="clan-player-ms-cell"
+                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList|async" class="clan-player-ms-cell"
                       [attr.data-label]="mileStoneName.name">
                       <ng-container *ngFor="let char of member.player.characters">
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
@@ -234,11 +234,11 @@
                   </ng-container>
                 </ng-container>
                 <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
-                  <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
+                  <td *ngFor="let mileStoneName of modelPlayer.milestoneList|async">...</td>
                   <td>...</td>
                 </ng-container>
                 <ng-container *ngIf="member.errorMsg!=null && modelPlayer!=null">
-                  <td [attr.colspan]="modelPlayer.milestoneList.length+1">
+                  <td [attr.colspan]="(modelPlayer.milestoneList|async).length+1">
                     {{member.errorMsg}}
                   </td>
                 </ng-container>
@@ -278,7 +278,7 @@
                 </th>
                 <ng-container *ngIf="modelPlayer!=null">
                   <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
-                    *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    *ngFor="let mileStoneName of modelPlayer.milestoneList|async">
                     {{mileStoneName.name}}
                   </th>
                 </ng-container>

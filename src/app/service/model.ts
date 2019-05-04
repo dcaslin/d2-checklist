@@ -1,3 +1,5 @@
+import { BehaviorSubject } from "rxjs";
+
 export enum ClassAllowed {
     Titan = 0,
     Hunter = 1,
@@ -269,8 +271,12 @@ export interface SearchResult {
 
 export class BungieMembership {
     bungieId: string;
-    clans: ClanRow[];
+    clansSubject: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
     destinyMemberships: UserInfo[];
+
+    get clans(){
+        return this.clansSubject.getValue();
+    }
 
     public getBnetInfo(): UserInfo {
         if (this.destinyMemberships == null) { return null; }
@@ -304,7 +310,7 @@ export class BungieMember {
 
 export class SelectedUser {
     userInfo: UserInfo;
-    selectedUserCurrencies: Currency[];
+    selectedUserCurrencies: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
     membership: BungieMembership;
     promptForPlatform = false;
 }
@@ -440,7 +446,7 @@ export class Player {
     readonly hasWellRested: boolean;
     readonly currentActivity: CurrentActivity;
     readonly characters: Character[];
-    readonly milestoneList: MileStoneName[];
+    readonly milestoneList: BehaviorSubject<MileStoneName[]> = new BehaviorSubject([]);
     readonly currencies: Currency[];
     readonly bounties: InventoryItem[];
     readonly quests: InventoryItem[];
@@ -475,7 +481,7 @@ export class Player {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
-        this.milestoneList = milestoneList;
+        this.milestoneList.next(milestoneList);
         this.currencies = currencies;
         this.bounties = bounties;
         this.quests = quests;
