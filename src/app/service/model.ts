@@ -271,12 +271,8 @@ export interface SearchResult {
 
 export class BungieMembership {
     bungieId: string;
-    clansSubject: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
+    clans: ClanRow[] = [];
     destinyMemberships: UserInfo[];
-
-    get clans(){
-        return this.clansSubject.getValue();
-    }
 
     public getBnetInfo(): UserInfo {
         if (this.destinyMemberships == null) { return null; }
