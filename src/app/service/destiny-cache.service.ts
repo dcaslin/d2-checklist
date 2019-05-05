@@ -14,6 +14,7 @@ export class DestinyCacheService {
   public readonly ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly checkingCache: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly percent: BehaviorSubject<number> = new BehaviorSubject(0);
+  public readonly unzipping: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly error: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) {
@@ -58,15 +59,10 @@ export class DestinyCacheService {
 
   async unzip(blob: Blob): Promise<void> {
     const zip: any = new JSZip();
-    this.percent.next(96);
     const zip2 = await zip.loadAsync(blob);
-    this.percent.next(97);
     const z2f = zip2.file('destiny2.json');
-    this.percent.next(98);
     const data2 = await z2f.async('string');
-    this.percent.next(99);
     this.cache = JSON.parse(data2);
-    this.percent.next(100);
     this.ready.next(true);
   }
 
@@ -95,8 +91,15 @@ export class DestinyCacheService {
       }
     });
     const event = await r.toPromise();
-    await this.unzip((event as HttpResponse<Blob>).body);
-    set(key, this.cache);
-    return;
+    this.percent.next(100);
+    this.unzipping.next(true);
+    try {
+      await this.unzip((event as HttpResponse<Blob>).body);
+      set(key, this.cache);
+      return;
+    }
+    finally {
+      this.unzipping.next(false);
+    }
   }
 }
