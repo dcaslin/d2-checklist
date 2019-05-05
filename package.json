@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "6.10.4",
+  "version": "6.10.6",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -41,6 +41,7 @@
     "classlist.js": "^1.1",
     "core-js": "^2.6.1",
     "hammerjs": "^2.0.8",
+    "idb-keyval": "^3.2.0",
     "jszip": "^3.1.4",
     "jszip-utils": "^0.0.2",
     "lz-string": "^1.4.4",
