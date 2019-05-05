@@ -175,8 +175,15 @@
       </div>
       <div class="center-spinner db-progress" *ngIf="(destinyCacheService.percent | async) < 100">
         <br>
-        <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async"></mat-progress-bar>
-        Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}% 
+        <ng-container *ngIf="destinyCacheService.checkingCache|async">
+          <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+          Checking cache...
+        </ng-container>
+        <ng-container *ngIf="!(destinyCacheService.checkingCache|async)">
+          <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async"></mat-progress-bar>
+          Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}% 
+        </ng-container>
+        
       </div>
 
       <div class="push"></div>
