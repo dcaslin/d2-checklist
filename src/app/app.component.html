@@ -8,17 +8,19 @@
       </div>
       <mat-nav-list>
         <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null">
-          <a mat-list-item (click)="sidenav.close();myProfile()" >
-              <mat-icon>account_circle</mat-icon>&ensp;{{(signedOnUser|async).userInfo.displayName}} - {{(signedOnUser|async).userInfo.platformName}}
+          <a mat-list-item (click)="sidenav.close();myProfile()">
+            <mat-icon>account_circle</mat-icon>&ensp;{{(signedOnUser|async).userInfo.displayName}} -
+            {{(signedOnUser|async).userInfo.platformName}}
           </a>
           <ng-container *ngIf="(signedOnUser|async).membership.clans!=null">
-            <a *ngFor="let clan of (signedOnUser|async).membership.clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
-                <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
+            <a *ngFor="let clan of (signedOnUser|async).membership.clans" mat-list-item
+              (click)="sidenav.close();loadClan(clan)">
+              <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
             </a>
           </ng-container>
           <mat-divider></mat-divider>
-       </ng-container>
-        
+        </ng-container>
+
         <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
           <mat-icon>home</mat-icon>&ensp;Home
         </a>
@@ -26,7 +28,7 @@
           <i class="fas fa-bow-arrow"></i>&ensp;Gear
         </a>
         <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
-            <mat-icon>favorite</mat-icon>&ensp;Friends
+          <mat-icon>favorite</mat-icon>&ensp;Friends
         </a>
         <a mat-list-item (click)="sidenav.close()" routerLink="vendors" routerLinkActive="active">
           <mat-icon>store</mat-icon>&ensp;Vendors
@@ -35,12 +37,14 @@
           <mat-icon>search</mat-icon>&ensp;Search
         </a>
         <mat-menu #searchMobileMenu="matMenu">
-            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
-              Search Users
-            </button>
-            <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
-              Search Clans
-            </button>                
+          <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="search"
+            routerLinkActive="active">
+            Search Users
+          </button>
+          <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="searchClans"
+            routerLinkActive="active">
+            Search Clans
+          </button>
         </mat-menu>
         <a mat-list-item (click)="sidenav.close()" routerLink="about" routerLinkActive="active">
           <mat-icon>info</mat-icon>&ensp;About
@@ -63,16 +67,16 @@
             <img class="logo" [src]="logo" /> D2 Checklist</span>
           <span class="d-none d-md-inline">
             <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">
-                <mat-icon>home</mat-icon>
-                <span class="d-none d-xl-inline"> Home</span>
+              <mat-icon>home</mat-icon>
+              <span class="d-none d-xl-inline"> Home</span>
             </button>
             <button mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
-                <i class="fas fa-bow-arrow"></i>
-                <span class="d-none d-xl-inline"> Gear</span>
+              <i class="fas fa-bow-arrow"></i>
+              <span class="d-none d-xl-inline"> Gear</span>
             </button>
             <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
-                <mat-icon>favorite</mat-icon>
-                <span class="d-none d-xl-inline"> Friends</span>
+              <mat-icon>favorite</mat-icon>
+              <span class="d-none d-xl-inline"> Friends</span>
             </button>
             <button mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
               <mat-icon>store</mat-icon>
@@ -83,33 +87,36 @@
               <span class="d-none d-xl-inline"> Search</span>
             </button>
             <mat-menu #searchMenu="matMenu">
-                <button  mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
-                  Search Users
-                </button>
-                <button mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
-                  Search Clans
-                </button>                
+              <button mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
+                Search Users
+              </button>
+              <button mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
+                Search Clans
+              </button>
             </mat-menu>
             <button mat-button class="nav-button" routerLink="about" routerLinkActive="active">
               <mat-icon>info</mat-icon>
               <span class="d-none d-xl-inline"> About</span>
             </button>
           </span>
-          <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)" matTooltip="Grants access to private endpoints"
-            matTooltipPosition="before" (click)="onLoginClick()">
+          <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"
+            matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
             Sign in
           </button>
-          <button *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null" matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">
-            
+          <button *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null"
+            matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">
+
             <mat-icon *ngIf="(signedOnUser|async).membership.destinyMemberships.length==1">person</mat-icon>
             <mat-icon *ngIf="(signedOnUser|async).membership.destinyMemberships.length>1">supervisor_account</mat-icon>
             &ensp;{{(signedOnUser|async).userInfo.platformName}}
           </button>
           <mat-menu #toolbarUserMenu="matMenu">
-            <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.destinyMemberships.length>1">
-              <button mat-menu-item *ngFor="let avail of (signedOnUser|async).membership.destinyMemberships" [disabled]="avail == (signedOnUser|async).userInfo"
-                (click)="selectUser(avail)">
-                <i [ngClass]="const.PLATFORMS_DICT[avail.membershipType+''].iconClass"></i><span style="margin-left: 1em">{{avail.platformName}}</span>
+            <ng-container
+              *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.destinyMemberships.length>1">
+              <button mat-menu-item *ngFor="let avail of (signedOnUser|async).membership.destinyMemberships"
+                [disabled]="avail == (signedOnUser|async).userInfo" (click)="selectUser(avail)">
+                <i [ngClass]="const.PLATFORMS_DICT[avail.membershipType+''].iconClass"></i><span
+                  style="margin-left: 1em">{{avail.platformName}}</span>
               </button>
             </ng-container>
             <button mat-menu-item (click)="onLogoutClick()">
@@ -122,7 +129,9 @@
           </button>
         </mat-toolbar-row>
         <mat-toolbar-row *ngIf="(signedOnUser|async)!=null" class="sub-row">
-          <span class="d-none d-md-inline" *ngIf="(signedOnUser|async).userInfo!=null">{{(signedOnUser|async).userInfo.displayName}} - {{(signedOnUser|async).userInfo.platformName}}</span>
+          <span class="d-none d-md-inline"
+            *ngIf="(signedOnUser|async).userInfo!=null">{{(signedOnUser|async).userInfo.displayName}} -
+            {{(signedOnUser|async).userInfo.platformName}}</span>
           <span class="spacer"></span>
           <span class="currency-icons">
             <ng-container *ngFor="let c of (signedOnUser|async).selectedUserCurrencies|async">
@@ -132,10 +141,13 @@
               </span>
             </ng-container>
           </span>
-          <button mat-button class="d-none d-md-inline nav-button" (click)="loadClan(signedOnUser.value.membership.clans[0])" *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length==1">
+          <button mat-button class="d-none d-md-inline nav-button"
+            (click)="loadClan(signedOnUser.value.membership.clans[0])"
+            *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length==1">
             <mat-icon>flag</mat-icon> My Clan
           </button>
-          <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length>1">
+          <ng-container
+            *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length>1">
             <button mat-button [matMenuTriggerFor]="toolbarClanMenu">
               <mat-icon>flag</mat-icon> My Clans
             </button>
@@ -146,9 +158,10 @@
             </mat-menu>
           </ng-container>
 
-          <button mat-button class="d-none d-md-inline nav-button" (click)="myProfile()" *ngIf="(signedOnUser|async)!=null">
-              <i [ngClass]="const.PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].iconClass"></i>
-              My Info
+          <button mat-button class="d-none d-md-inline nav-button" (click)="myProfile()"
+            *ngIf="(signedOnUser|async)!=null">
+            <i [ngClass]="const.PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].iconClass"></i>
+            My Info
           </button>
 
 
@@ -156,12 +169,14 @@
       </mat-toolbar>
       <mat-card class='apiAlert' *ngIf="bungieService.apiDown===true">
         <mat-card-content>
-          <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new releases and lasts a few hours
+          <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new
+            releases and lasts a few hours
             past when the game is back online.
-            <a href="https://twitter.com/DestinyChecklst">Msg me on Twitter</a> if you have any problems or questions.</div>
+            <a href="https://twitter.com/DestinyChecklst">Msg me on Twitter</a> if you have any problems or questions.
+          </div>
         </mat-card-content>
       </mat-card>
-      
+
       <router-outlet #o="outlet"></router-outlet>
       <!-- <div *ngIf="(authGuard.loader$ | async)">
         <br>
@@ -169,9 +184,14 @@
           <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
       </div> -->
-      
+
       <div class="db-error" *ngIf="(destinyCacheService.error | async) != null">
         {{destinyCacheService.error | async}}
+      </div>
+      <div class="center-spinner db-progress" *ngIf="destinyCacheService.unzipping | async">
+        <br>
+        <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+        Processing manifest DB...
       </div>
       <div class="center-spinner db-progress" *ngIf="(destinyCacheService.percent | async) < 100">
         <br>
@@ -180,10 +200,11 @@
           Checking cache...
         </ng-container>
         <ng-container *ngIf="!(destinyCacheService.checkingCache|async)">
-          <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async"></mat-progress-bar>
-          Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}% 
+          <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
+          </mat-progress-bar>
+          Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
         </ng-container>
-        
+
       </div>
 
       <div class="push"></div>
@@ -211,7 +232,8 @@
             <i class="fal fa-envelope fa-2x" aria-hidden="true"></i>
             <span>Email</span>
           </a>
-          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank" rel="noopener">
+          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank"
+            rel="noopener">
             <i class="fab fa-paypal fa-2x" aria-hidden="true"></i>
             <span>Donate</span>
           </a>
