@@ -444,8 +444,8 @@ export class Player {
     readonly characters: Character[];
     readonly milestoneList: BehaviorSubject<MileStoneName[]> = new BehaviorSubject([]);
     readonly currencies: Currency[];
-    readonly bounties: InventoryItem[];
-    readonly quests: InventoryItem[];
+    readonly bounties: {[id: string]: InventoryItem[]};
+    readonly quests: {[id: string]: InventoryItem[]};
     readonly rankups: Rankup[];
     readonly checklists: Checklist[];
     readonly charChecklists: CharChecklist[];
@@ -466,8 +466,8 @@ export class Player {
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
         currencies: Currency[],
-        bounties: InventoryItem[],
-        quests: InventoryItem[],
+        bounties: {[id: string]: InventoryItem[]},
+        quests: {[id: string]: InventoryItem[]},
 
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],

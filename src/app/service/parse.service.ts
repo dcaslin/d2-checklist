@@ -1459,6 +1459,7 @@ export class ParseService {
         const rankups: Rankup[] = [];
         const bounties: InventoryItem[] = [];
         const quests: InventoryItem[] = [];
+        let privateGear = true;
         const gear: InventoryItem[] = [];
         let checklists: Checklist[] = [];
         let charChecklists: CharChecklist[] = [];
@@ -1481,6 +1482,7 @@ export class ParseService {
             shared = new Shared();
 
             if (resp.characterInventories != null && resp.characterInventories.data != null) {
+                privateGear = false;
                 Object.keys(resp.characterInventories.data).forEach((key) => {
                     const char: Character = charsDict[key];
                     const options: Target[] = chars.filter(c => c !== char);
@@ -1644,8 +1646,24 @@ export class ParseService {
                 break;
             }
         }
+        let charBounties: {[id: string]: InventoryItem[]} = null;
+        let charQuests: {[id: string]: InventoryItem[]} = null;
+        if (!privateGear) {
+            charBounties = {};
+            charQuests = {};
+            for (const c of chars){
+                charBounties[c.id] = [];
+                charQuests[c.id] = [];
+            }
+            for (const b of bounties) {
+                charBounties[b.owner.id].push(b);
+            }
+            for (const q of quests) {
+                charQuests[q.owner.id].push(q);
+            }
+        }
 
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, charBounties, charQuests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title, seasons);
     }
