@@ -13,8 +13,8 @@ import { StorageService } from '../../service/storage.service';
 @Component({
   selector: 'anms-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./history.component.scss']
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryComponent extends ChildComponent implements OnInit, OnDestroy {
 
