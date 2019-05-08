@@ -383,7 +383,7 @@
                 </span>
               </ng-template>
               <ng-container *ngIf="player!=null">
-                <ng-container *ngIf="player.bounties==null || player.bounties.length==0">
+                <ng-container *ngIf="player.bounties==null">
                   <br>
                   <ng-container *ngIf="(bungieService.selectedUserFeed | async)==null">
                     <h2>Bungie Authentication Required</h2>
@@ -407,7 +407,7 @@
                     </p>
                   </ng-container>
                 </ng-container>
-                <ng-container *ngIf="player.bounties!=null && player.bounties.length>0">
+                <ng-container *ngIf="player.bounties!=null">
                   <mat-tab-group>
                     <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
 
@@ -415,8 +415,9 @@
                         <mat-tab label="Bounties">
                           <table class="responsive-table">
                             <tbody>
-                              <ng-container *ngFor="let g of player.bounties">
-                                <tr *ngIf="g.owner==char">
+                              <tr *ngIf="player.bounties[char.id].length==0"><td class="left">No bounties held right now</td></tr>
+                              <ng-container *ngFor="let g of player.bounties[char.id]">
+                                <tr>
                                   <td class="lead" data-label="">
                                     <span *ngIf="g.icon!=null" class="item-icon"
                                       [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
@@ -460,8 +461,10 @@
                         <mat-tab label="Quests">
                           <table class="responsive-table">
                             <tbody>
-                              <ng-container *ngFor="let g of player.quests">
-                                <tr *ngIf="g.owner==char">
+
+                              <tr *ngIf="player.quests[char.id].length==0"><td class="left">No quests held right now</td></tr>
+                              <ng-container *ngFor="let g of player.quests[char.id]">
+                                <tr>
                                   <td class="lead" data-label="">
                                     <span *ngIf="g.icon!=null" class="item-icon transparent-icon"
                                       [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>

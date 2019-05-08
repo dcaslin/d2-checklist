@@ -104,7 +104,7 @@
                                 matTooltipClass="preserve-white-space">
                                 <anms-god-roll-plug [plug]="plug" 
                                 [highlightAllPerks]="parent.highlightAllPerks"
-                                [debugmode]="parent.debugmode"
+                                [debugmode]="(parent.debugmode|async)"
                                 ></anms-god-roll-plug>
                                 <ng-container *ngIf="!isLastPlug"><br></ng-container>
                             </span>
