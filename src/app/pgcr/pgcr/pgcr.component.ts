@@ -12,8 +12,8 @@ import { BungieNetUserInfo, BungieMember, PGCR } from '@app/service/model';
 @Component({
   selector: 'anms-pgcr-history',
   templateUrl: './pgcr.component.html',
-  styleUrls: ['./pgcr.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./pgcr.component.scss']
+  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
 
