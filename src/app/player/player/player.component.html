@@ -1113,6 +1113,11 @@
                           <ng-container *ngFor="let t of filteredTriumphs|async">
                             <tr>
                               <td class="lead" data-label="">
+                                <i *ngIf="t.complete && t.redeemed"
+                                  class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                <i *ngIf="t.complete && !t.redeemed"
+                                  class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                                <i *ngIf="!t.complete" class="far fa-square"></i>
                                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
                                   {{t.name}} </ng-container>
                                 <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
@@ -1183,6 +1188,11 @@
                           <ng-container *ngFor="let t of trackedTriumphs|async">
                             <tr>
                               <td class="lead" data-label="">
+                                <i *ngIf="t.complete && t.redeemed"
+                                  class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                <i *ngIf="t.complete && !t.redeemed"
+                                  class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                                <i *ngIf="!t.complete" class="far fa-square"></i>
                                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
                                   {{t.name}} </ng-container>
                                 <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
