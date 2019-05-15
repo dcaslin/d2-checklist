@@ -6,21 +6,21 @@
       <mat-label>Weapon 1</mat-label>
       <select matNativeControl [(ngModel)]="target.weapon1">
         <option value="none">None</option>
-        <option *ngFor="let c of parent.weaponTypeChoices" [value]="c.matchValue.toLowerCase()">{{c.display}}</option>
+        <option *ngFor="let c of targetChoices" [value]="c.matchValue.toLowerCase()">{{c.display}}</option>
       </select>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Weapon 2</mat-label>
       <select matNativeControl [(ngModel)]="target.weapon2">
         <option value="none">None</option>
-        <option *ngFor="let c of parent.weaponTypeChoices" [value]="c.matchValue.toLowerCase()">{{c.display}}</option>
+        <option *ngFor="let c of targetChoices" [value]="c.matchValue.toLowerCase()">{{c.display}}</option>
       </select>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Weapon 3</mat-label>
       <select matNativeControl [(ngModel)]="target.weapon3">
         <option value="none">None</option>
-        <option *ngFor="let c of parent.weaponTypeChoices" [value]="c.matchValue.toLowerCase()">{{c.display}}</option>
+        <option *ngFor="let c of targetChoices" [value]="c.matchValue.toLowerCase()">{{c.display}}</option>
       </select>
     </mat-form-field>
     <mat-checkbox [(ngModel)]="target.specialAmmoFinder">Special Ammo Finder</mat-checkbox>
