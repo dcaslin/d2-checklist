@@ -232,7 +232,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       .subscribe(x => {
           if (this.player != null){
             this.targetPerkService.processGear(this.player);
-            this.ref.markForCheck();
+            this.load();
           }
       });
 
@@ -594,12 +594,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async shardMode(weaponsOnly?: boolean) {
     await this.load();
     await this.gearService.shardMode(this.player, weaponsOnly);
+    await this.load();
+    await this.syncLocks();
     this.filterChanged();
   }
 
   public async upgradeMode(weaponsOnly?: boolean) {
     await this.load();
     await this.gearService.upgradeMode(this.player, weaponsOnly);
+    await this.load();
+    await this.syncLocks();
     this.filterChanged();
   }
 

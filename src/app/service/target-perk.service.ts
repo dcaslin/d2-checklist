@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BucketService, Bucket } from './bucket.service';
-import { Character, InventoryItem, InventoryPlug, ItemType, Player, PerkCount, Target } from './model';
+import { BucketService } from './bucket.service';
+import { Character, InventoryItem, InventoryPlug, ItemType, PerkCount, Player } from './model';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +9,36 @@ import { Character, InventoryItem, InventoryPlug, ItemType, Player, PerkCount, T
 export class TargetPerkService {
   public readonly perks: BehaviorSubject<TargetPerks>;
 
+  private readonly MAPPINGS: {[key: string]: string} = {
+    'auto rifle': 'auto rifle|^rifle|unflinching rifle|scatter projectile',
+    'combat bow': 'bow|precision weapon|oversize weapon|light arms',
+    'fusion rifle': '(?<!linear )fusion rifle|light reactor|^rifle|unflinching rifle|scatter projectile',
+    'grenade launcher': 'grenade launcher|oversize weapon|large weapon',
+    'hand cannon': 'hand cannon|precision weapon|light arms',
+    'linear fusion rifle': 'linear fusion|precision weapon',
+    'machine gun': '(?<!sub)machine gun',
+    'pulse rifle': 'pulse rifle|^rifle|unflinching rifle|scatter projectile',
+    'rocket launcher': 'rocket launcher|oversize weapon|large weapon',
+    'scout rifle': 'scout rifle|^rifle|unflinching rifle|precision weapon',
+    'shotgun': 'shotgun|pump action|oversize weapon|large weapon',
+    'sidearm': 'sidearm|scatter projectile|light arms',
+    'sniper rifle': 'sniper|remote connection|^rifle|unflinching rifle',
+    'submachine gun': 'submachine gun|scatter projectile|light arms',
+    'sword': 'sword',
+    'trace rifle': 'trace rifle|^rifle|unflinching rifle|precision weapon',
+    'super': 'ashes to assets|heavy lifting|dynamo|hands-on',
+    'melee': 'invigoration|momentum transfer|outreach',
+    'grenade': 'bomber|fastball|impact induction|innervation',
+    'ability': 'insulation|perpetuation'
+  };
+
+  private parsedMappings: {[key: string]: RegExp};
+
   private alreadyEquipped(itm: InventoryItem, p: InventoryPlug, equippedPerks: { [key: string]: string[] }): boolean {
     // this is actively equipped it doesn't count
     if (itm.equipped == true) {
       return false;
-    } 
+    }
     const currPerks = equippedPerks[itm.classAllowed];
     if (currPerks != null) {
       return currPerks.indexOf(p.hash) >= 0;
@@ -22,6 +47,16 @@ export class TargetPerkService {
   }
 
   private checkWeapon(w: string, p: string): boolean {
+    const r: RegExp = this.parsedMappings[w];
+    if (r == null) {
+      console.log('Missing mapping for: ' + w);
+      return false;
+    }
+    return r.test(p);
+  }
+
+
+  private checkWeapon3(w: string, p: string): boolean {
     if (w == null || w === 'none') {
       return false;
     }
@@ -81,10 +116,13 @@ export class TargetPerkService {
       let hasTargetPerk = false;
       let freshTargetPerk = false;
       let hasSelectedTargetPerk = false;
+      let targetPerkCnt = 0;
       for (const s of i.sockets) {
+        let hasSocketTarget = false;
         for (const p of s.plugs) {
           p.targetArmorPerk = this.isTargetPerk(p);
           if (p.targetArmorPerk) {
+            hasSocketTarget = true;
             hasTargetPerk = true;
             hasSelectedTargetPerk = hasSelectedTargetPerk || p.active;
             p.alreadyEquipped = this.alreadyEquipped(i, p, equippedPerks);
@@ -92,6 +130,9 @@ export class TargetPerkService {
               freshTargetPerk = true;
             }
           }
+        }
+        if (hasSocketTarget){
+          targetPerkCnt++;
         }
       }
       const hasFixMeText = i.searchText.indexOf('fixme') >= 0;
@@ -115,6 +156,11 @@ export class TargetPerkService {
       } else if (!freshTargetText && freshTargetPerk) {
         i.searchText += 'freshtarget';
       }
+      if (targetPerkCnt > 1) {
+        i.searchText += 'manytargetperks';
+      } else if (targetPerkCnt === 1) {
+        i.searchText += 'onetargetperk';
+      }
 
     }
     // const t1 = performance.now();
@@ -130,6 +176,10 @@ export class TargetPerkService {
   constructor(
     private bucketService: BucketService
   ) {
+    this.parsedMappings = {};
+    for (const key of Object.keys(this.MAPPINGS)) {
+      this.parsedMappings[key] = new RegExp(this.MAPPINGS[key]);
+    }
     const s = localStorage.getItem('target-perks');
     let target = TargetPerkService.buildDefault();
     try {
