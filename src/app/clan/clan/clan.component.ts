@@ -4,7 +4,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetec
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { BungieService } from '../../service/bungie.service';
-import { BungieMember, Player, BungieGroupMember, ClanInfo, MileStoneName } from '../../service/model';
+import { BungieMember, Player, BungieGroupMember, ClanInfo, MileStoneName, Platform, Const } from '../../service/model';
 import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 import * as moment from 'moment';
@@ -24,6 +24,8 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  platforms: Platform[];
+  selectedPlatform: Platform;
   members: BungieGroupMember[] = [];
   modelPlayer: Player;
   sort = 'dateAsc';
@@ -34,6 +36,9 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
+    this.platforms = Const.PLATFORMS_ARRAY.slice(0);
+    this.platforms.unshift(Const.ALL_PLATFORM);
+    this.selectedPlatform = Const.ALL_PLATFORM;
   }
 
   public toggleMemberSort() {
@@ -185,6 +190,12 @@ export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
       if (this.filterMode === 'all' && comp === total) { return true; }
       return false;
     });
+    if (this.selectedPlatform != Const.ALL_PLATFORM) {
+      temp = temp.filter(member => {
+        return member.destinyUserInfo.membershipType == this.selectedPlatform.type;
+      });
+    }
+
 
     if (this.sort === 'memberAsc') { temp.sort(ClanComponent.compareName); }
     if (this.sort === 'memberDesc') { temp.sort(ClanComponent.compareNameReverse); }

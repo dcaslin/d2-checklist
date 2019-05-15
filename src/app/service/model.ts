@@ -1015,7 +1015,8 @@ export class Progression {
 }
 
 export class Const {
-
+    //used for clan filter
+    public static ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
     public static XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
     public static PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
     public static BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fal fa-desktop');
