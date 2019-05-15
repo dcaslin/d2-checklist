@@ -3,7 +3,8 @@
     <div class="main">
 
       <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true || modelPlayer==null"></mat-spinner>
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true || modelPlayer==null">
+        </mat-spinner>
       </div>
       <div class="body clan-body">
 
@@ -64,6 +65,16 @@
           <br>
 
           <div class="filter-row">
+            <mat-form-field class="searchField searchPlatform">
+              <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="filterPlayers()">
+                <mat-select-trigger>
+                  <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+                </mat-select-trigger>
+                <mat-option *ngFor="let p of platforms" [value]="p">
+                  <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>            
             <mat-form-field *ngIf="modelPlayer!=null">
               <mat-select [(ngModel)]="filterMode" (selectionChange)="filterPlayers()"
                 placeholder="Filter players by activity">
@@ -104,7 +115,7 @@
           </div>
 
           <table class="responsive-table clan-table" *ngIf="(sortedMembers|async)!=null && this.modelPlayer!=null">
-            <thead> 
+            <thead>
               <tr>
                 <th>
                   <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
