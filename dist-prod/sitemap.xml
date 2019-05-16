@@ -6,6 +6,26 @@
     <changefreq>daily</changefreq>
 </url>
 <url>
+    <loc>https://www.d2checklist.com/gear</loc>
+    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+</url>
+<url>
+    <loc>https://www.d2checklist.com/vendors</loc>
+    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+</url>
+<url>
+    <loc>https://www.d2checklist.com/search</loc>
+    <priority>0.5</priority>
+    <changefreq>weekly</changefreq>
+</url>
+<url>
+    <loc>https://www.d2checklist.com/searchClans</loc>
+    <priority>0.5</priority>
+    <changefreq>weekly</changefreq>
+</url>
+<url>
     <loc>https://www.d2checklist.com/settings</loc>
     <priority>0.5</priority>
     <changefreq>weekly</changefreq>
@@ -19,15 +39,5 @@
     <loc>https://www.d2checklist.com/about</loc>
     <priority>0.5</priority>
     <changefreq>weekly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/leaderboard/leviathan</loc>
-    <priority>0.2</priority>
-    <changefreq>monthly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/leaderboard/leviathan-prestige</loc>
-    <priority>0.2</priority>
-    <changefreq>monthly</changefreq>
 </url>
 </urlset>

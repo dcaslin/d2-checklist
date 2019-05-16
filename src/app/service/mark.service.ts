@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, } from 'rxjs';
+import { Subject, BehaviorSubject, } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import * as LZString from 'lz-string';
@@ -11,7 +11,7 @@ export class MarkService implements OnDestroy {
 
     // have an observable for dirty that's debounced to once every second that writes updates to server
     private marksChanged: Subject<boolean> = new Subject<boolean>();
-    public dirty = false;
+    public dirty: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public markChoices: MarkChoice[];
     public markDict: {[id: string]: MarkChoice};
     private currentMarks: Marks = null;
@@ -29,7 +29,7 @@ export class MarkService implements OnDestroy {
             takeUntil(this.unsubscribe$),
             debounceTime(5000))
             .subscribe(() => {
-                if (this.dirty === true) {
+                if (this.dirty.value === true) {
                     this.saveMarks();
                 }
             });
@@ -45,7 +45,7 @@ export class MarkService implements OnDestroy {
         this.httpClient.post<SaveResult>('https://www.destinychecklist.net/api/mark/', postMe)
             .toPromise().then(result => {
                 if (result.status && result.status === 'success') {
-                    this.dirty = false;
+                    this.dirty.next(false);
                 }
             });
     }
@@ -166,7 +166,7 @@ export class MarkService implements OnDestroy {
         if (this.currentMarks == null || items.length == 0) { return; }
         const updatedMarks: boolean = MarkService.processMarks(this.currentMarks.marked, items);
         const updatedNotes: boolean = MarkService.processNotes(this.currentMarks.notes, items);
-        this.dirty = this.dirty || updatedNotes || updatedMarks;
+        this.dirty.next(this.dirty.value || updatedNotes || updatedMarks);
     }
 
     updateItem(item: InventoryItem): void {
@@ -190,7 +190,7 @@ export class MarkService implements OnDestroy {
         } else {
             this.currentMarks.notes[item.id] = item.notes;
         }
-        this.dirty = true;
+        this.dirty.next(true);
         this.marksChanged.next(true);
     }
 
