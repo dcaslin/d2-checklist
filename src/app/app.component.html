@@ -188,23 +188,24 @@
       <div class="db-error" *ngIf="(destinyCacheService.error | async) != null">
         {{destinyCacheService.error | async}}
       </div>
-      <div class="center-spinner db-progress" *ngIf="destinyCacheService.unzipping | async">
-        <br>
-        <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
-        Processing manifest DB...
-      </div>
-      <div class="center-spinner db-progress" *ngIf="(destinyCacheService.percent | async) < 100">
-        <br>
-        <ng-container *ngIf="destinyCacheService.checkingCache|async">
+      <div class="center-spinner db-progress">
+        <div *ngIf="destinyCacheService.unzipping | async">
+          <br>
           <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
-          Checking cache...
-        </ng-container>
-        <ng-container *ngIf="!(destinyCacheService.checkingCache|async)">
-          <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
-          </mat-progress-bar>
-          Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
-        </ng-container>
-
+          Processing manifest DB...
+        </div>
+        <div *ngIf="(destinyCacheService.percent | async) < 100">
+          <br>
+          <div *ngIf="destinyCacheService.checkingCache|async">
+            <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+            Checking cache...
+          </div>
+          <div *ngIf="!(destinyCacheService.checkingCache|async)">
+            <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
+            </mat-progress-bar>
+            Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
+          </div>
+        </div>
       </div>
 
       <div class="push"></div>
