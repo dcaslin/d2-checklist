@@ -12,24 +12,26 @@ export class TargetPerkService {
   private readonly MAPPINGS: {[key: string]: string} = {
     'auto rifle': 'auto rifle|^rifle|unflinching rifle|scatter projectile',
     'combat bow': 'bow|precision weapon|oversize weapon|light arms',
-    'fusion rifle': '(?<!linear )fusion rifle|light reactor|^rifle|unflinching rifle|scatter projectile',
-    'grenade launcher': 'grenade launcher|oversize weapon|large weapon',
+    // 'fusion rifle': '(?<!linear )fusion rifle|light reactor|^rifle|unflinching rifle|scatter projectile',
+    'fusion rifle': '^(?!.*linear fusion rifle.*).*fusion rifle.*$|light reactor|^rifle|unflinching rifle|scatter projectile',
+    'grenade launcher': 'grenade launcher|oversize weapon|large weapon|heavy lifting',
     'hand cannon': 'hand cannon|precision weapon|light arms',
-    'linear fusion rifle': 'linear fusion|precision weapon',
-    'machine gun': '(?<!sub)machine gun',
+    'linear fusion rifle': 'linear fusion|precision weapon|heavy lifting',
+    // 'machine gun': '(?<!sub)machine gun',
+    'machine gun': '^(?!.*submachine gun.*).*machine gun.*$|heavy lifting',
     'pulse rifle': 'pulse rifle|^rifle|unflinching rifle|scatter projectile',
-    'rocket launcher': 'rocket launcher|oversize weapon|large weapon',
+    'rocket launcher': 'rocket launcher|oversize weapon|large weapon|heavy lifting',
     'scout rifle': 'scout rifle|^rifle|unflinching rifle|precision weapon',
     'shotgun': 'shotgun|pump action|oversize weapon|large weapon',
     'sidearm': 'sidearm|scatter projectile|light arms',
     'sniper rifle': 'sniper|remote connection|^rifle|unflinching rifle',
     'submachine gun': 'submachine gun|scatter projectile|light arms',
-    'sword': 'sword',
+    'sword': 'sword|heavy lifting',
     'trace rifle': 'trace rifle|^rifle|unflinching rifle|precision weapon',
-    'super': 'ashes to assets|heavy lifting|dynamo|hands-on',
-    'melee': 'invigoration|momentum transfer|outreach',
-    'grenade': 'bomber|fastball|impact induction|innervation',
-    'ability': 'insulation|perpetuation'
+    'super': 'ashes to assets|heavy lifting|dynamo|hands-on|absolution|distribution',
+    'melee': 'invigoration|momentum transfer|outreach|absolution|distribution',
+    'grenade': 'bomber|fastball|impact induction|innervation|absolution|distribution',
+    'ability': 'insulation|perpetuation|absolution'
   };
 
   private parsedMappings: {[key: string]: RegExp};
@@ -47,6 +49,7 @@ export class TargetPerkService {
   }
 
   private checkWeapon(w: string, p: string): boolean {
+    if ('none' == w) { return false; }
     const r: RegExp = this.parsedMappings[w];
     if (r == null) {
       console.log('Missing mapping for: ' + w);
@@ -131,7 +134,7 @@ export class TargetPerkService {
             }
           }
         }
-        if (hasSocketTarget){
+        if (hasSocketTarget) {
           targetPerkCnt++;
         }
       }
@@ -178,7 +181,11 @@ export class TargetPerkService {
   ) {
     this.parsedMappings = {};
     for (const key of Object.keys(this.MAPPINGS)) {
-      this.parsedMappings[key] = new RegExp(this.MAPPINGS[key]);
+      try {
+        this.parsedMappings[key] = new RegExp(this.MAPPINGS[key]);
+      } catch (exc) {
+        console.dir(key + ': ' + exc);
+      }
     }
     const s = localStorage.getItem('target-perks');
     let target = TargetPerkService.buildDefault();
