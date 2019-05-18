@@ -92,7 +92,7 @@
             <span class="filter-count">{{(sortedMembers|async).length}} / {{members.length}}</span>
             <button class="d-none d-md-inline" mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
               <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-              <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
+              <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
 
           </div>
 
@@ -100,7 +100,7 @@
           <div class="mobile-button-row">
             <button mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
               <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-              <i class="fas fa-download" aria-hidden="true"></i> CSV</button>
+              <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
           </div>
 
           <div class="mobile-button-row">

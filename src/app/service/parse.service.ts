@@ -1616,6 +1616,9 @@ export class ParseService {
                     if (a.name < b.name) { return 0; }
                     return 0;
                 });
+                searchableTriumphs = searchableTriumphs.filter(x => {
+                    return (x.name != null) && (x.name.trim().length > 0);
+                });
                 for (const r of searchableTriumphs) {
                     dictSearchableTriumphs[r.hash] = r;
                 }
