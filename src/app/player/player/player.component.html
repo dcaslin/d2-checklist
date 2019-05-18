@@ -151,9 +151,9 @@
                         <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null"
                           class="warn-text fal fa-eye"
                           matTooltip="Stop hiding milestones where all chars are complete"></i>
-                        <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null" href="javascript:void(0)"
-                          matTooltip="Show all hidden milestones" class="milestoneVisibilityButton"
-                          (click)="showAllMilestones()">show
+                        <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null"
+                          href="javascript:void(0)" matTooltip="Show all hidden milestones"
+                          class="milestoneVisibilityButton" (click)="showAllMilestones()">show
                           all</a>
                       </th>
                       <th scope="col" *ngFor="let char of player.characters">
@@ -415,7 +415,9 @@
                         <mat-tab label="Bounties">
                           <table class="responsive-table">
                             <tbody>
-                              <tr *ngIf="player.bounties[char.id].length==0"><td class="left">No bounties held right now</td></tr>
+                              <tr *ngIf="player.bounties[char.id].length==0">
+                                <td class="left">No bounties held right now</td>
+                              </tr>
                               <ng-container *ngFor="let g of player.bounties[char.id]">
                                 <tr>
                                   <td class="lead" data-label="">
@@ -462,7 +464,9 @@
                           <table class="responsive-table">
                             <tbody>
 
-                              <tr *ngIf="player.quests[char.id].length==0"><td class="left">No quests held right now</td></tr>
+                              <tr *ngIf="player.quests[char.id].length==0">
+                                <td class="left">No quests held right now</td>
+                              </tr>
                               <ng-container *ngFor="let g of player.quests[char.id]">
                                 <tr>
                                   <td class="lead" data-label="">
@@ -863,11 +867,12 @@
                         <mat-form-field style="min-width: 250px">
                           <mat-label>Season</mat-label>
                           <mat-select [(ngModel)]="seasonIndex">
-                            <mat-option [value]="i" *ngFor="let c of player.seasons; let i = index">{{c.name}}</mat-option>
+                            <mat-option [value]="i" *ngFor="let c of player.seasons; let i = index">{{c.name}}
+                            </mat-option>
                           </mat-select>
                         </mat-form-field>
                         <span class="simple-caption">
-                            {{player.seasons[seasonIndex].records.length}} triumphs
+                          {{player.seasons[seasonIndex].records.length}} triumphs
                         </span>
                         <div>
                           <table class="responsive-table">
@@ -1013,7 +1018,9 @@
                       <span class="d-none d-md-inline">&ensp;Closest</span>
                     </ng-template>
                     <div>
-                      <h4 class="triumph-score">Closest 10
+                      <h4 class="triumph-score">
+                        Closest 10
+
                         <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs"
                           (ngModelChange)="showZeroPtTriumphsChange()">
                           Show Zero Pt
@@ -1022,9 +1029,15 @@
                           (ngModelChange)="showInvisTriumphsChange()">
                           Show Invisible
                         </mat-checkbox>
+                        <ng-container *ngIf="player.hasHiddenClosest==true">
+                            <button mat-button class="hide-complete-triumphs"  color="warn" (click)="restoreHiddenClosestTriumphs()"><i
+                                class="fas fa-eye"></i>&emsp;Restore hidden
+                            </button>
+                          </ng-container>
+
                       </h4>
 
-                      <table class="responsive-table">
+                      <table class=" responsive-table">
                         <tbody>
                           <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
                             <tr>
@@ -1038,11 +1051,18 @@
                                   <i class='accent-text far fa-map-marker-alt'></i>
                                 </a>
                                 <ng-container *ngIf="debugmode|async">{{t.hash}} {{t.invisible}}</ng-container>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
-                                  (click)="trackTriumph(t)"></i>
-                                <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
-                                  (click)="untrackTriumph(t)"></i>
-
+                                <button mat-icon-button *ngIf="dTrackedTriumphIds[t.hash]!=true"
+                                  (click)="trackTriumph(t)">
+                                  <i class="far fa-star"></i>
+                                </button>
+                                <button mat-icon-button *ngIf="dTrackedTriumphIds[t.hash]==true"
+                                  (click)="untrackTriumph(t)">
+                                  <i class="fas fa-star accent-text"></i>
+                                </button>
+                                <button mat-icon-button (click)="hideClosestTriumph(t)"
+                                  matTooltip="Hide this triumph from list">
+                                  <i class="fas fa-eye-slash"></i>
+                                </button>
                                 <br>
                                 <span class="simple-caption">
                                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">
@@ -1254,7 +1274,7 @@
             </mat-tab>
             <mat-tab>
               <ng-template mat-tab-label>
-                <i class="fas fa-database"></i>
+                <i class="icon-collections"></i>
                 <span class="d-none d-md-inline">&ensp;Collections</span>
               </ng-template>
               <ng-container *ngIf="player!=null">

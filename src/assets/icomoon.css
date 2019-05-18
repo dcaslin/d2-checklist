@@ -1,0 +1,76 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('fonts/icomoon.eot?raa1eu');
+  src:  url('fonts/icomoon.eot?raa1eu#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?raa1eu') format('truetype'),
+    url('fonts/icomoon.woff?raa1eu') format('woff'),
+    url('fonts/icomoon.svg?raa1eu#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-flashpoint:before {
+  content: "\e90f";
+}
+.icon-ammo_x:before {
+  content: "\e90e";
+}
+.icon-strike:before {
+  content: "\e90d";
+}
+.icon-faction_vanguard:before {
+  content: "\e900";
+}
+.icon-faction_crucible:before {
+  content: "\e901";
+}
+.icon-faction_crucible_valor:before {
+  content: "\e902";
+}
+.icon-platform_blizzard:before {
+  content: "\e903";
+}
+.icon-ammo_special2:before {
+  content: "\e904";
+  color: #84f186;
+}
+.icon-ammo_primary2:before {
+  content: "\e905";
+}
+.icon-ammo_heavy2:before {
+  content: "\e906";
+  color: #a981fc;
+}
+.icon-consumables:before {
+  content: "\e907";
+}
+.icon-collections:before {
+  content: "\e908";
+}
+.icon-modifications:before {
+  content: "\e909";
+}
+.icon-ghost:before {
+  content: "\e90a";
+}
+.icon-infuse:before {
+  content: "\e90b";
+}
+.icon-clan:before {
+  content: "\e90c";
+}

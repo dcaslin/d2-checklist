@@ -461,6 +461,7 @@ export class Player {
     readonly raidChecked = false;
     readonly title;
     readonly seasons: RecordSeason[];
+    readonly hasHiddenClosest: boolean;
     maxLL = 0;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
@@ -473,7 +474,7 @@ export class Player {
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
         collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
-        seals: Seal[], title: string, seasons: RecordSeason[]) {
+        seals: Seal[], title: string, seasons: RecordSeason[], hasHiddenClosest: boolean) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -504,6 +505,7 @@ export class Player {
         this.seals = seals;
         this.title = title;
         this.seasons = seasons;
+        this.hasHiddenClosest = hasHiddenClosest;
     }
 
     public getWeeklyXp(): number {
@@ -1019,7 +1021,7 @@ export class Const {
     public static ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
     public static XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
     public static PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
-    public static BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fal fa-desktop');
+    public static BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fab fa-windows');
 
     public static PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM

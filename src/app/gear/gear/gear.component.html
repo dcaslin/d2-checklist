@@ -16,10 +16,10 @@
         <mat-button-toggle *ngFor="let o of options" [value]="o">
           <i *ngIf="o.name=='Weapons'" class="far fa-axe-battle"></i>
           <i *ngIf="o.name=='Armor'" class="far fa-helmet-battle"></i>
-          <i *ngIf="o.name=='Ghosts'" class="far fa-ghost"></i>
+          <i *ngIf="o.name=='Ghosts'" class="icon-ghost"></i>
           <i *ngIf="o.name=='Vehicles'" class="fas fa-plane-alt"></i>
-          <i *ngIf="o.name=='Mods'" class="far fa-book-spells"></i>
-          <i *ngIf="o.name=='Consumable'" class="far fa-flask-potion"></i>
+          <i *ngIf="o.name=='Mods'" class="icon-modifications"></i>
+          <i *ngIf="o.name=='Consumable'" class="icon-consumables"></i>
           <i *ngIf="o.name=='Material'" class="far fa-gem"></i>
           <span class="d-none d-md-inline"> {{o.name}}</span>
         </mat-button-toggle>
@@ -56,7 +56,7 @@
             (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
           </anms-gear-toggle>
 
-          <anms-gear-toggle #ammoTypeToggle iconClass="fas fa-rocket" title="Ammo" [choices]="ammoTypeChoices"
+          <anms-gear-toggle #ammoTypeToggle iconClass="fas icon-ammo_x" title="Ammo" [choices]="ammoTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
           </anms-gear-toggle>
 
