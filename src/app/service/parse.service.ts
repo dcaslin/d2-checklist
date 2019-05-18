@@ -1950,6 +1950,9 @@ export class ParseService {
         const cDesc = this.destinyCacheService.cache.Collectible[key];
         if (cDesc == null) { return null; }
         const val = this.getBestCol(collectibles, key);
+        if (val != null && val.state != null && (val.state & 4) > 0) {
+            return null;
+        }
         path.push({
             path: cDesc.displayProperties.name,
             hash: key
