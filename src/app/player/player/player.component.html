@@ -771,6 +771,9 @@
                       <span class="d-none d-md-inline">&ensp;Triumphs</span>
                     </ng-template>
                     <h4 class="triumph-score">Triumphs - Score: {{player.triumphScore|number : '2.0-0'}}
+                      <button class="hide-complete-triumphs" mat-button (click)="downloadCsvTriumphs()">
+                        <i class="fal fa-download"></i> CSV
+                      </button>
                       <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
                         (ngModelChange)="hideCompleteChange()">
                         Hide Completed
@@ -1030,10 +1033,10 @@
                           Show Invisible
                         </mat-checkbox>
                         <ng-container *ngIf="player.hasHiddenClosest==true">
-                            <button mat-button class="hide-complete-triumphs"  color="warn" (click)="restoreHiddenClosestTriumphs()"><i
-                                class="fas fa-eye"></i>&emsp;Restore hidden
-                            </button>
-                          </ng-container>
+                          <button mat-button class="hide-complete-triumphs" color="warn"
+                            (click)="restoreHiddenClosestTriumphs()"><i class="fas fa-eye"></i>&emsp;Restore hidden
+                          </button>
+                        </ng-container>
 
                       </h4>
 

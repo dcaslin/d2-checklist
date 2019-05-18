@@ -546,7 +546,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.setTrackedTriumphs();
   }
 
-  public restoreHiddenClosestTriumphs(){
+  public restoreHiddenClosestTriumphs() {
     localStorage.removeItem('hidden-closest-triumphs');
     this.performSearch(true);
   }
@@ -564,6 +564,63 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     hidden.push(n.hash);
     localStorage.setItem('hidden-closest-triumphs', JSON.stringify(hidden));
     this.performSearch(true);
+  }
+
+  private static replaceAll(src: string, find: string, replace: string): string {
+    while (true) {
+      const newS = src.replace(find, replace);
+      if (newS == src) {
+        break;
+      }
+      src = newS;
+    }
+    return src;
+  }
+
+  private static escape(s: string) {
+    if (s == null) { return s; }
+    s = PlayerComponent.replaceAll(s, ',', ' ');
+    s = PlayerComponent.replaceAll(s, '"', '');
+    s = PlayerComponent.replaceAll(s, '\r\n', 'y');
+    s = PlayerComponent.replaceAll(s, '\n', 'x');
+    return s;
+  }
+
+  public downloadCsvTriumphs() {
+    const header = 'Name,Path,Score,Percent,Complete,Redeemed,Description';
+    let rows = [];
+    for (const t of this.player.searchableTriumphs) {
+      let sCsv = PlayerComponent.escape(t.name) + ',';
+      let sPath = '';
+      for (const e of t.path) {
+        sPath = sPath + e.path + ' / ';
+      }
+      sCsv += PlayerComponent.escape(sPath) + ',';
+      sCsv += t.score + ',';
+      sCsv += t.percent + ',';
+      sCsv += t.complete + ',';
+      sCsv += t.redeemed + ',';
+      sCsv += PlayerComponent.escape(t.desc);
+      rows.push(sCsv);
+    }
+    rows = rows.sort();
+    let sReport = header;
+    sReport += '\n';
+    for (const r of rows) {
+      sReport += r;
+      sReport += '\n';
+    }
+    const sDate = new Date().toISOString().slice(0, 10);
+    this.downloadCsv('player-triumphs-' + sDate + '.csv', sReport);
+  }
+
+  private downloadCsv(filename: string, csv: string) {
+    const anch: HTMLAnchorElement = document.createElement('a');
+    anch.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+    anch.setAttribute('download', filename);
+    anch.setAttribute('visibility', 'hidden');
+    document.body.appendChild(anch);
+    anch.click();
   }
 
   private setTrackedTriumphs() {
