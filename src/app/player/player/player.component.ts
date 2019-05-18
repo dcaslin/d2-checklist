@@ -546,6 +546,26 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.setTrackedTriumphs();
   }
 
+  public restoreHiddenClosestTriumphs(){
+    localStorage.removeItem('hidden-closest-triumphs');
+    this.performSearch(true);
+  }
+
+  public hideClosestTriumph(n: TriumphRecordNode) {
+    const sHideMe = localStorage.getItem('hidden-closest-triumphs');
+    let hidden = [];
+    if (sHideMe != null) {
+      try {
+        hidden = JSON.parse(sHideMe);
+      } catch (exc) {
+        console.dir(exc);
+      }
+    }
+    hidden.push(n.hash);
+    localStorage.setItem('hidden-closest-triumphs', JSON.stringify(hidden));
+    this.performSearch(true);
+  }
+
   private setTrackedTriumphs() {
     const tempTriumphs = [];
     if (this.aTrackedTriumphIds.length > 0 && this.player != null && this.player.searchableTriumphs != null) {

@@ -1465,6 +1465,8 @@ export class ParseService {
         let charChecklists: CharChecklist[] = [];
         let vault: Vault = null;
         let shared: Shared = null;
+        let hasHiddenClosest = false;
+
         if (!superprivate) {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
@@ -1617,6 +1619,24 @@ export class ParseService {
                 for (const r of searchableTriumphs) {
                     dictSearchableTriumphs[r.hash] = r;
                 }
+
+                // filter any hidden
+                try {
+                    const sHideMe = localStorage.getItem('hidden-closest-triumphs');
+                    if (sHideMe != null) {
+                        const hideMe: string[] = JSON.parse(sHideMe);
+
+                        lowHangingTriumphs = lowHangingTriumphs.filter((l) => {
+                            return hideMe.indexOf(l.hash) < 0;
+                        });
+                        hasHiddenClosest = true;
+                    }
+
+                } catch (exc) {
+                    console.dir(exc);
+                }
+
+
                 lowHangingTriumphs = lowHangingTriumphs.slice(0, 10);
 
                 const seasonDescs: any[] = this.destinyCacheService.cache.RecordSeasons;
@@ -1651,7 +1671,7 @@ export class ParseService {
         if (!privateGear) {
             charBounties = {};
             charQuests = {};
-            for (const c of chars){
+            for (const c of chars) {
                 charBounties[c.id] = [];
                 charQuests[c.id] = [];
             }
@@ -1665,7 +1685,7 @@ export class ParseService {
 
         return new Player(profile, chars, currentActivity, milestoneList, currencies, charBounties, charQuests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
-            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title, seasons);
+            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title, seasons, hasHiddenClosest);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -1829,7 +1849,7 @@ export class ParseService {
             path: path,
             lowLinks: this.lowlineService.buildRecordLink(key),
             score: pts,
-            percent: percent,
+            percent: complete ? 100 : percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible
         };

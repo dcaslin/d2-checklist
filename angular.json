@@ -27,7 +27,8 @@
               { "glob": "**/*", "input": "src/root-assets/", "output": "/" }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/icomoon.css"
             ],
             "scripts": [
               "node_modules/jszip/dist/jszip.min.js",
