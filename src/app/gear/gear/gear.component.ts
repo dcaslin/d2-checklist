@@ -230,7 +230,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.targetPerkService.perks.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
-          if (this.player != null){
+          if (this.player != null) {
             this.targetPerkService.processGear(this.player);
             this.load();
           }
@@ -344,12 +344,20 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   filterItem(i: InventoryItem): boolean {
     for (const f of this.filterTags) {
-      // check wildcard first
-      if (i.searchText.indexOf(f) < 0) {
-        // then check notes
-        if (i.notes == null) { return false; }
-        if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
+      // not argument
+      if (f.startsWith('!')) {
+        const actual = f.substr(1);
+        if (i.searchText.indexOf(actual) >= 0) { return false; }
+        if (i.notes != null && i.notes.toLowerCase().indexOf(actual) >= 0) { return false; }
+      } else {
+        // check wildcard first
+        if (i.searchText.indexOf(f) < 0) {
+          // then check notes
+          if (i.notes == null) { return false; }
+          if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
+        }
       }
+      
     }
     return true;
   }
