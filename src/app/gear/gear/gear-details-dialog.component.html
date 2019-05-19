@@ -17,13 +17,18 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </a>
                         <mat-menu #itemMenu="matMenu">
-                            <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(parent.player, i)">
-                                <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                            <button mat-menu-item *ngIf="i.postmaster" (click)="parent.pullFromPostmaster(parent.player, i)">
+                                <i class="fal fa-envelope-open"></i> Pull from postmaster
                             </button>
-                            <button mat-menu-item *ngFor="let target of i.options" 
-                                (click)="parent.transfer(parent.player, i, target)">
-                                <i class="fal fa-exchange"></i> Transfer to {{target.label}}
-                            </button>
+                            <ng-container *ngIf="!i.postmaster">
+                                <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(parent.player, i)">
+                                    <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                                </button>
+                                <button mat-menu-item *ngFor="let target of i.options"
+                                    (click)="parent.transfer(parent.player, i, target)">
+                                    <i class="fal fa-exchange"></i> Transfer to {{target.label}}
+                                </button>
+                            </ng-container>
                         </mat-menu>
                     </td>
                 </ng-container>
@@ -102,10 +107,8 @@
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug"
                                 [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
                                 matTooltipClass="preserve-white-space">
-                                <anms-god-roll-plug [plug]="plug" 
-                                [highlightAllPerks]="parent.highlightAllPerks"
-                                [debugmode]="(parent.debugmode|async)"
-                                ></anms-god-roll-plug>
+                                <anms-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
+                                    [debugmode]="(parent.debugmode|async)"></anms-god-roll-plug>
                                 <ng-container *ngIf="!isLastPlug"><br></ng-container>
                             </span>
                         </div>
@@ -124,9 +127,9 @@
                     <ng-container *ngFor="let i of items">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             <ng-container *ngIf="i.stats!=null && i.stats[cntr]!=null">
-                                    {{i.stats[cntr].value}}
+                                {{i.stats[cntr].value}}
                             </ng-container>
-                            
+
                         </td>
                     </ng-container>
                 </tr>

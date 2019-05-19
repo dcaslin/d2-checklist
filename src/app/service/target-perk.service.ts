@@ -80,6 +80,9 @@ export class TargetPerkService {
     if (t.traction && n.indexOf('traction') >= 0) {
       return true;
     }
+    if (t.fastball && n.indexOf('fastball') >= 0) {
+      return true;
+    }
     if (t.specialAmmoFinder && n.indexOf('special ammo finder') >= 0) {
       return true;
     }
