@@ -1,0 +1,49 @@
+
+  <div class="hide-complete-collectibles">
+    <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed
+    </mat-checkbox>
+  </div>
+  <mat-tree [dataSource]="collectionDatasource" [treeControl]="collectionTreeControl">
+    <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
+      matTreeNodeToggle matTreeNodePadding>
+      <button mat-icon-button disabled></button>
+      <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
+        [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+      <div style="text-align: left; margin-bottom: 20px">
+        <i *ngIf="node.data.acquired "
+          class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+        <i *ngIf="!node.data.acquired" class="far fa-square"></i>
+        {{node.data.name}} <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+        <br>
+        <span class="simple-caption">
+          {{node.data.sourceString}}
+        </span>
+      </div>
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
+      <button mat-icon-button matTreeNodeToggle (click)="nodeClicked.emit(node.data.hash)">
+        <mat-icon class="mat-icon-rtl-mirror">
+          {{collectionTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+      <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon"
+        [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+      <div style="text-align: left">
+        <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+        <i *ngIf="!node.data.complete" class="far fa-square"></i>
+        {{node.data.name}}
+        <span *ngIf="debugmode|async">{{node.data.hash}}</span>
+        <span class="simple-caption">
+          {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
+        </span> <br>
+        <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
+          class="pres-node-prog" mode="determinate"
+          [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+      </div>
+    </mat-tree-node>
+  </mat-tree>
+<div>
+  <br>
+  <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at
+    DestinySets</a>
+</div>
