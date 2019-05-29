@@ -1,0 +1,506 @@
+<mat-tab-group #triumphtabs>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="far fa-trophy"></i>
+        <span class="d-none d-md-inline">&ensp;Triumphs</span>
+      </ng-template>
+      <h4 class="triumph-score">Triumphs - Score: {{player.triumphScore|number : '2.0-0'}}
+        <button class="hide-complete-triumphs" mat-button (click)="downloadCsvTriumphs()">
+          <i class="fal fa-download"></i> CSV
+        </button>
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
+          (ngModelChange)="hideCompleteChange()">
+          Hide Completed
+        </mat-checkbox>
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs"
+          (ngModelChange)="showZeroPtTriumphsChange()">
+          Show Zero Pt
+        </mat-checkbox>
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs"
+          (ngModelChange)="showInvisTriumphsChange()">
+          Show Invisible
+        </mat-checkbox>
+      </h4>
+
+      <mat-tree [dataSource]="recordDatasource" [treeControl]="triumphTreeControl">
+        <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
+          matTreeNodeToggle matTreeNodePadding>
+          <button mat-icon-button disabled></button>
+          <div style="text-align: left; margin-bottom: 20px">
+            <i *ngIf="node.data.complete && node.data.redeemed"
+              class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+            <i *ngIf="node.data.complete && !node.data.redeemed"
+              class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+            <i *ngIf="!node.data.complete" class="far fa-square"></i>
+
+            <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null">
+              {{node.data.name}} </ng-container>
+            <a [href]="node.data.lowLinks.mapLink"
+              *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null" target="_blank"
+              rel="noopener">
+              {{node.data.name}}
+              <i class='accent-text far fa-map-marker-alt'></i>
+            </a>
+            <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+            <i *ngIf="dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star"
+              (click)="trackTriumph(node.data)"></i>
+            <i *ngIf="dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text"
+              (click)="untrackTriumph(node.data)"></i>
+
+            <br>
+            <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
+              redeemed.<br></span>
+            <span class="simple-caption">
+              {{node.data.score}} pts. {{node.data.desc}}
+            </span>
+            <div *ngFor="let o of node.data.objectives">
+              <span class="simple-caption">
+                <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                <i *ngIf="!o.complete" class="far fa-square"></i>
+                {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+              </span>
+              <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
+                class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue">
+              </mat-progress-bar>
+            </div>
+          </div>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)"
+          matTreeNodePadding>
+          <button mat-icon-button matTreeNodeToggle (click)="nodeClicked.emit(node.data.hash)">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{triumphTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <div style="text-align: left">
+            <i *ngIf="node.data.complete"
+              class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+            <i *ngIf="!node.data.complete" class="far fa-square"></i>
+            {{node.data.name}} <span *ngIf="debugmode|async">{{node.data.hash}}</span>
+            <span class="simple-caption">
+              {{node.data.progress}}/{{node.data.completionValue}} |
+              {{node.data.pts}}/{{node.data.totalPts}} pts
+            </span>
+            <ng-container *ngIf="node.data.unredeemedCount>0">
+              <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
+            </ng-container>
+            <br>
+
+            <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
+              class="pres-node-prog" mode="determinate"
+              [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+          </div>
+        </mat-tree-node>
+      </mat-tree>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="fas fa-wheat"></i>
+        <span class="d-none d-md-inline">&ensp;Seasons</span>
+      </ng-template>
+      <ng-container *ngIf="player!=null">
+        <h4 class="triumph-score">Seasons</h4>
+        <div class="left" style="margin: 10px">
+          <mat-form-field style="min-width: 250px">
+            <mat-label>Season</mat-label>
+            <mat-select [(ngModel)]="seasonIndex">
+              <mat-option [value]="i" *ngFor="let c of player.seasons; let i = index">{{c.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span class="simple-caption">
+            {{player.seasons[seasonIndex].records.length}} triumphs
+          </span>
+          <div>
+            <table class="responsive-table">
+              <tbody>
+                <ng-container *ngFor="let t of player.seasons[seasonIndex].records">
+                  <tr>
+                    <td class="lead" data-label="">
+                      <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                        {{t.name}} </ng-container>
+                      <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                        target="_blank" rel="noopener">
+                        {{t.name}}
+                        <i class='accent-text far fa-map-marker-alt'></i>
+                      </a>
+                      <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
+                      <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                        (click)="trackTriumph(t)"></i>
+                      <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                        (click)="untrackTriumph(t)"></i>
+
+                      <br>
+                      <span class="simple-caption">
+                        <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                          <ng-container *ngIf="i>0">
+                            <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                            <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                            <ng-container *ngIf="!isLast">
+                              /
+                            </ng-container>
+                          </ng-container>
+                        </ng-container>
+                      </span>
+                    </td>
+                    <td class="left" data-label="">
+                      {{t.percent}}%
+                      <mat-progress-bar class="low-hanging-node-prog" mode="determinate"
+                        [value]="t.percent">
+                      </mat-progress-bar>
+                    </td>
+
+                    <td class="left" data-label="">
+                      {{t.score}} pts
+                    </td>
+
+                    <td class="left" data-label="">
+                      <div class="low-hanging-desc">{{t.desc}}</div>
+                      <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                        <span class="simple-caption">
+                          <i *ngIf="o.complete"
+                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                          <i *ngIf="!o.complete" class="far fa-square"></i>
+                          {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                        </span>
+                        <mat-progress-bar class="pres-node-prog" mode="determinate"
+                          [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+
+      </ng-container>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="far fa-medal"></i>
+        <span class="d-none d-md-inline">&ensp;Seals</span>
+      </ng-template>
+      <h4 class="triumph-score">Seals
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="hideComplete"
+          (ngModelChange)="hideCompleteChange()">
+          Hide Completed
+        </mat-checkbox>
+      </h4>
+      <mat-accordion>
+        <ng-container *ngFor="let s of player.seals">
+          <mat-expansion-panel *ngIf="!hideComplete || !s.complete">
+            <mat-expansion-panel-header>
+              <mat-panel-title [class.accent-text]="s.complete">
+                {{s.title}}
+                <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
+              </mat-panel-title>
+              <mat-panel-description [class.accent-text]="s.complete">
+                {{s.progress}} / {{s.completionValue}}
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="seal-body">
+              <p style="margin-bottom: 20px">{{s.desc}}</p>
+              <table class="checklist-table">
+                <tbody>
+                  <ng-container *ngFor="let c of s.children">
+                    <tr *ngIf="!hideComplete || !c.complete">
+                      <td>
+                        <i *ngIf="c.complete && c.redeemed"
+                          class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                        <i *ngIf="c.complete && !c.redeemed"
+                          class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                        <i *ngIf="!c.complete" class="far fa-square"></i>
+
+                        <ng-container *ngIf="c.lowLinks==null || c.lowLinks.mapLink==null">
+                          {{c.name}} </ng-container>
+                        <a [href]="c.lowLinks.mapLink"
+                          *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null" target="_blank"
+                          rel="noopener">
+                          {{c.name}}
+                          <i class='accent-text far fa-map-marker-alt'></i>
+                        </a>
+                        <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
+                        <br>
+                        <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
+                          redeemed.<br></span>
+                        <span class="simple-caption">
+                          {{c.score}} pts. {{c.desc}}
+                        </span>
+                        <div *ngFor="let o of c.objectives">
+                          <span class="simple-caption">
+                            <i *ngIf="o.complete"
+                              class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                            <i *ngIf="!o.complete" class="far fa-square"></i>
+                            {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                          </span>
+                          <mat-progress-bar class="pres-node-prog" mode="determinate"
+                            [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+          </mat-expansion-panel>
+        </ng-container>
+      </mat-accordion>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="far fa-trophy"></i>
+        <span class="d-none d-md-inline">&ensp;Closest</span>
+      </ng-template>
+      <div>
+        <h4 class="triumph-score">
+          Closest 10
+
+          <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showZeroPtTriumphs"
+            (ngModelChange)="showZeroPtTriumphsChange()">
+            Show Zero Pt
+          </mat-checkbox>
+          <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="showInvisTriumphs"
+            (ngModelChange)="showInvisTriumphsChange()">
+            Show Invisible
+          </mat-checkbox>
+          <ng-container *ngIf="player.hasHiddenClosest==true">
+            <button mat-button class="hide-complete-triumphs" color="warn"
+              (click)="restoreHiddenClosestTriumphs()"><i class="fas fa-eye"></i>&emsp;Restore hidden
+            </button>
+          </ng-container>
+
+        </h4>
+
+        <table class=" responsive-table">
+          <tbody>
+            <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
+              <tr>
+                <td class="lead" data-label="">
+                  {{cntr+1}}.&ensp;
+                  <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                    {{t.name}} </ng-container>
+                  <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                    target="_blank" rel="noopener">
+                    {{t.name}}
+                    <i class='accent-text far fa-map-marker-alt'></i>
+                  </a>
+                  <ng-container *ngIf="debugmode|async">{{t.hash}} {{t.invisible}}</ng-container>
+                  <button mat-icon-button *ngIf="dTrackedTriumphIds[t.hash]!=true"
+                    (click)="trackTriumph(t)">
+                    <i class="far fa-star"></i>
+                  </button>
+                  <button mat-icon-button *ngIf="dTrackedTriumphIds[t.hash]==true"
+                    (click)="untrackTriumph(t)">
+                    <i class="fas fa-star accent-text"></i>
+                  </button>
+                  <button mat-icon-button (click)="hideClosestTriumph(t)"
+                    matTooltip="Hide this triumph from list">
+                    <i class="fas fa-eye-slash"></i>
+                  </button>
+                  <br>
+                  <span class="simple-caption">
+                    <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                      <ng-container *ngIf="i>0">
+                        <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                        <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                        <ng-container *ngIf="!isLast">
+                          /
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="left" data-label="">
+                  {{t.percent}}%
+                  <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                  </mat-progress-bar>
+                </td>
+
+                <td class="left" data-label="">
+                  {{t.score}} pts
+                </td>
+
+                <td class="left" data-label="">
+                  <div class="low-hanging-desc">{{t.desc}}</div>
+                  <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                    <span class="simple-caption">
+                      <i *ngIf="o.complete"
+                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!o.complete" class="far fa-square"></i>
+                      {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                    </span>
+                    <mat-progress-bar class="pres-node-prog" mode="determinate"
+                      [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="far fa-search"></i>
+        <span class="d-none d-md-inline">&ensp;Search</span>
+      </ng-template>
+      <h4 class="triumph-score">Search</h4>
+      <div>
+        <div class="left" style="margin: 10px">
+          <mat-form-field class="searchField">
+            <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText"
+              placeholder="Wildcard Search triumphs">
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="(filteredTriumphs|async).length==0" class="left" style="margin: 10px">
+          <ng-container *ngIf="triumphFilterText==null || triumphFilterText.length==0">
+            Type above to search
+          </ng-container>
+          <ng-container *ngIf="triumphFilterText!=null && triumphFilterText.length>0">
+            No results, change your search
+          </ng-container>
+
+        </div>
+        <table class="responsive-table">
+          <tbody>
+            <ng-container *ngFor="let t of filteredTriumphs|async">
+              <tr>
+                <td class="lead" data-label="">
+                  <i *ngIf="t.complete && t.redeemed"
+                    class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="t.complete && !t.redeemed"
+                    class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="!t.complete" class="far fa-square"></i>
+                  <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                    {{t.name}} </ng-container>
+                  <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                    target="_blank" rel="noopener">
+                    {{t.name}}
+                    <i class='accent-text far fa-map-marker-alt'></i>
+                  </a>
+                  <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
+                  <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                    (click)="trackTriumph(t)"></i>
+                  <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                    (click)="untrackTriumph(t)"></i>
+
+                  <br>
+                  <span class="simple-caption">
+                    <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                      <ng-container *ngIf="i>0">
+                        <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                        <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                        <ng-container *ngIf="!isLast">
+                          /
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="left" data-label="">
+                  {{t.percent}}%
+                  <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                  </mat-progress-bar>
+                </td>
+
+                <td class="left" data-label="">
+                  {{t.score}} pts
+                </td>
+
+                <td class="left" data-label="">
+                  <div class="low-hanging-desc">{{t.desc}}</div>
+                  <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                    <span class="simple-caption">
+                      <i *ngIf="o.complete"
+                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!o.complete" class="far fa-square"></i>
+                      {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                    </span>
+                    <mat-progress-bar class="pres-node-prog" mode="determinate"
+                      [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <i class="far fa-thumbtack"></i>
+        <span class="d-none d-md-inline">&ensp;Tracked</span>
+      </ng-template>
+      <h4 class="triumph-score">Tracked Triumphs</h4>
+      <div>
+        <div *ngIf="(trackedTriumphs|async).length==0" class="left" style="margin: 10px">
+          Click a star on a triumph on another tab to track it here
+        </div>
+        <table class="responsive-table">
+          <tbody>
+            <ng-container *ngFor="let t of trackedTriumphs|async">
+              <tr>
+                <td class="lead" data-label="">
+                  <i *ngIf="t.complete && t.redeemed"
+                    class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="t.complete && !t.redeemed"
+                    class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="!t.complete" class="far fa-square"></i>
+                  <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                    {{t.name}} </ng-container>
+                  <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                    target="_blank" rel="noopener">
+                    {{t.name}}
+                    <i class='accent-text far fa-map-marker-alt'></i>
+                  </a>
+                  <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
+                  <i *ngIf="dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                    (click)="trackTriumph(t)"></i>
+                  <i *ngIf="dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                    (click)="untrackTriumph(t)"></i>
+
+                  <br>
+                  <span class="simple-caption">
+                    <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                      <ng-container *ngIf="i>0">
+                        <a href="javascript:void(0)" (click)="jumpToTriumph(p.hash)">{{p.path}}</a>
+                        <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                        <ng-container *ngIf="!isLast">
+                          /
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="left" data-label="">
+                  {{t.percent}}%
+                  <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                  </mat-progress-bar>
+                </td>
+                <td class="left" data-label="">
+                  {{t.score}} pts
+                </td>
+                <td class="left" data-label="">
+                  <div class="low-hanging-desc">{{t.desc}}</div>
+                  <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                    <span class="simple-caption">
+                      <i *ngIf="o.complete"
+                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!o.complete" class="far fa-square"></i>
+                      {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                    </span>
+                    <mat-progress-bar class="pres-node-prog" mode="determinate"
+                      [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>

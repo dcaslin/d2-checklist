@@ -1,0 +1,26 @@
+.checklist-body {
+    // max-width: 750px;
+    text-align: left;
+    margin: 5px;
+  }
+
+  .hide-complete{
+    margin: 5px;
+    font-size: smaller;
+    font-weight: lighter;
+  }
+  
+  .check-list-name{
+    width: 200px
+  }
+  
+  .check-list-status{
+    width: 50px;
+  }
+  
+
+  .mat-expansion-panel-header-title, 
+  .mat-expansion-panel-header-description {
+    flex-basis: 0;
+  }
+    
