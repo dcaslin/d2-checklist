@@ -10,12 +10,6 @@
   
 }
 
-.expire-caption{
-  margin-left: 1em;
-  opacity: 0.7;
-  // font-size: smaller;
-  // font-weight: lighter;
-}
 
 .dl-row{
   margin-left: 0px;
@@ -158,39 +152,9 @@ a.underline:link {
   opacity: 0.5;
 }
 
-.obj-desc{
-  text-align: left;
-}
-
-
 .underline {
   text-decoration: underline;
 }
-
-.bounty-progress{
-  max-width: 250px;
-}
-
-
-
-.item-icon{
-  float: left;
-  width: 48px;
-  height: 48px;
-  margin-right: 5px;
-  background-size: cover;
-  //display: inline-block;
-}
-
-
-.char-icon{
-  width: 32px;
-  height: 32px;
-  // border-radius: 50%;
-  background-size: cover;
-  display: inline-block;
-}
-
 
 .help-button-row {
   & a{  

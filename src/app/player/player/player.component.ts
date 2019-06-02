@@ -425,34 +425,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.storageService.setItem('defaultgt', this.gamerTag);
   }
 
-
-  public openQuestDialog(quest: any): void {
-    const dc = new MatDialogConfig();
-    dc.disableClose = false;
-    dc.autoFocus = true;
-    // dc.width = '500px';
-    dc.data = quest;
-    const dialogRef = this.dialog.open(QuestDialogComponent, dc);
-  }
-
-
   ngOnDestroy(): void {
     super.ngOnDestroy();
   }
-}
-
-
-@Component({
-  selector: 'anms-quest-dialog',
-  templateUrl: './quest-dialog.component.html',
-  styleUrls: ['./quest-dialog.component.scss']
-})
-export class QuestDialogComponent {
-  public const: Const = Const;
-  constructor(
-    public dialogRef: MatDialogRef<QuestDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
-
 }
 
 @Component({

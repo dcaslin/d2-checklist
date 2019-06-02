@@ -1,3 +1,132 @@
-<p>
-  bounties works!
-</p>
+<ng-container *ngIf="player.bounties==null">
+  <br>
+  <ng-container *ngIf="(bungieService.selectedUserFeed | async)==null">
+    <h2>Bungie Authentication Required</h2>
+    <p>You must grant this site access to your private Bungie API's for the site to
+      access this info on your account
+      (like what you might be doing with Destiny Item Manager today). <b>Click the "Sign In" button
+        on the upper
+        right if you want to continue.</b></p>
+  </ng-container>
+
+  <ng-container *ngIf="(bungieService.selectedUserFeed | async)!=null">
+    <h2>Privacy</h2>
+    <p>
+      This user hasn't enabled viewing their non-equipped inventory.<br>
+      They'd need to <a class="underline"
+        href="https://www.bungie.net/en/Profile/Settings?category=Privacy" target="_blank"
+        rel="noopener">
+        check the "Show my non-equipped Inventory" at Bungie.net.</a>
+      <br><br>
+      [Hiding non-equipped inventory is the default privacy setting]
+    </p>
+  </ng-container>
+</ng-container>
+<ng-container *ngIf="player.bounties!=null">
+  <mat-tab-group>
+    <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+
+      <mat-tab-group>
+        <mat-tab label="Bounties">
+          <table class="responsive-table">
+            <tbody>
+              <tr *ngIf="player.bounties[char.id].length==0">
+                <td class="left">No bounties held right now</td>
+              </tr>
+              <ng-container *ngFor="let g of player.bounties[char.id]">
+                <tr>
+                  <td class="lead" data-label="">
+                    <span *ngIf="g.icon!=null" class="item-icon"
+                      [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                    <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.name}}
+                    </ng-container>
+                    <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
+                      target="_blank" rel="noopener">
+                      {{g.name}}
+                      <i class='accent-text far fa-map-marker-alt'></i>
+                    </a>
+                    <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
+                      <i class="fas fa-clock"></i>
+                      {{ g.expirationDate | amDifference: today |
+                      amDuration:'ms'}} </span>
+                    <div class="simple-caption">{{g.desc}}</div>
+                  </td>
+                  <td data-label="">
+                    <div class="obj-desc" *ngFor="let obj of g.objectives">
+                      <i *ngIf="obj.complete"
+                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!obj.complete" class="far fa-square"></i>
+                      {{obj.progressDescription}} {{obj.aggProgress}}
+                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                      <mat-progress-bar class="bounty-progress"
+                        *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                        [value]="100*obj.progress/obj.completionValue">
+                      </mat-progress-bar>
+                    </div>
+                    <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+                      <div *ngFor="let v of g.values">
+                        {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+
+        </mat-tab>
+        <mat-tab label="Quests">
+          <table class="responsive-table">
+            <tbody>
+
+              <tr *ngIf="player.quests[char.id].length==0">
+                <td class="left">No quests held right now</td>
+              </tr>
+              <ng-container *ngFor="let g of player.quests[char.id]">
+                <tr>
+                  <td class="lead" data-label="">
+                    <span *ngIf="g.icon!=null" class="item-icon transparent-icon"
+                      [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                    <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">
+                      {{g.questline.name}}:
+                      {{g.name}}
+                    </ng-container>
+                    <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null"
+                      target="_blank" rel="noopener">
+                      {{g.questline.name}}: {{g.name}}
+                      <i class='accent-text far fa-map-marker-alt'></i>
+                    </a>
+                    <a mat-button (click)="openQuestDialog(g.questline)">
+                      <i class="far fa-project-diagram"></i> Questline {{g.questline.progress}}
+                    </a>
+
+                    <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
+                    <div class="simple-caption">{{g.desc}}</div>
+                  </td>
+                  <td data-label="">
+                    <div class="obj-desc" *ngFor="let obj of g.objectives">
+                      <i *ngIf="obj.complete"
+                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!obj.complete" class="far fa-square"></i>
+                      {{obj.progressDescription}} {{obj.aggProgress}}
+                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                      <mat-progress-bar class="bounty-progress"
+                        *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                        [value]="100*obj.progress/obj.completionValue">
+                      </mat-progress-bar>
+                    </div>
+                    <div class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+                      <div *ngFor="let v of g.values">
+                        {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>
