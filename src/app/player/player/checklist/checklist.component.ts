@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { Player } from '@app/service/model';
@@ -7,10 +7,10 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
   selector: 'anms-checklist',
   templateUrl: './checklist.component.html',
-  styleUrls: ['./checklist.component.scss']
+  styleUrls: ['./checklist.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChecklistComponent extends ChildComponent implements OnInit {
-
   @Input() player: Player;
   @Input() parentLoading: BehaviorSubject<boolean>;
   @Input() selectedTab: string;

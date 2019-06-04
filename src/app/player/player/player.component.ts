@@ -1,18 +1,12 @@
 
-import { takeUntil, debounceTime } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatTabChangeEvent, MatTabGroup, MAT_DIALOG_DATA } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatTabChangeEvent, MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource, MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog } from '@angular/material';
-import { Observable, of as observableOf, Subject, BehaviorSubject } from 'rxjs';
-
+import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
-import { Player, Character, Platform, Const, TriumphNode, MileStoneName, TriumphRecordNode, NameDesc, RecordSeason } from '../../service/model';
+import { Character, Const, NameDesc, Platform, Player } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
-import { NotificationService } from '../../service/notification.service';
 import { ChildComponent } from '../../shared/child.component';
-import { FlatTreeControl } from '@angular/cdk/tree';
-
-
 
 @Component({
   selector: 'anms-player',
@@ -43,11 +37,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   gamerTag: string;
   player: Player;
   selectedTreeNodeHash: string = null;
-  sort = 'rewardsDesc';
-
-
-
-  hideCompleteChars: string = null;
 
   burns: NameDesc[] = [];
   reckBurns: NameDesc[] = [];
@@ -64,11 +53,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 
   private setPlayer(x: Player): void {
     this.player = x;
-    if (x != null) {
-      this.sort = 'rewardsDesc';
-      this.sortMileStones();
-
-    } 
     // too much trouble to make player an observable, just force change detection
     this.ref.markForCheck();
   }
@@ -77,22 +61,14 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, { id: hash }]);
   }
 
-  public historyPlayer(p: Player) {
-    const c: Character = p.characters[0];
-    this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
-  }
-
   public showBurns() {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-    // dc.width = '500px';
-    // dc.maxHeight= '80vw';
-    // dc.maxWidth= '80vw';
-    // dc.minHeight = '400px';
     dc.data = {
       burns: this.burns,
-      reckBurns: this.reckBurns};
+      reckBurns: this.reckBurns
+    };
     const dialogRef = this.dialog.open(BurnDialogComponent, dc);
   }
 
@@ -110,16 +86,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       memberid = p.profile.userInfo.membershipId;
     }
     return 'http://raid.report/' + platformstr + '/' + memberid;
-  }
-
-  public getCharacterById(p: Player, id: string) {
-    if (p.characters == null) { return null; }
-    for (const c of p.characters) {
-      if (c.characterId === id) {
-        return c;
-      }
-    }
-    return null;
   }
 
   public getTrialsLink(p: Player) {
@@ -155,36 +121,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
   }
 
-  public toggleHide(hideMe: string) {
-    if (this.hideCompleteChars === hideMe) {
-      this.hideCompleteChars = null;
-    } else {
-      this.hideCompleteChars = hideMe;
-    }
-  }
-
-  public hideRow(mileStoneName: MileStoneName): boolean {
-    if (this.hideCompleteChars == null) { return false; }
-    let allDone = true;
-    for (const char of this.player.characters) {
-      let doneChar = false;
-      if (char.milestones[mileStoneName.key] != null) {
-        if (char.milestones[mileStoneName.key].complete === true) {
-          if (this.hideCompleteChars === char.characterId) { return true; }
-          doneChar = true;
-        }
-      } else if (char.baseCharacterLevel >= char.maxLevel) {
-        if (char.milestones[mileStoneName.key] == null && !mileStoneName.neverDisappears) {
-          if (this.hideCompleteChars === char.characterId) { return true; }
-          doneChar = true;
-        }
-      }
-      allDone = allDone && doneChar;
-    }
-    if (this.hideCompleteChars === 'ALL' && allDone) { return true; }
-    return false;
-  }
-
   public changeTab(event: MatTabChangeEvent) {
     const tabName: string = this.getTabLabel(event.index);
 
@@ -197,99 +133,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
   }
 
-
-  public sortByName(): void {
-    if (this.sort === 'nameAsc') {
-      this.sort = 'nameDesc';
-    } else {
-      this.sort = 'nameAsc';
-    }
-    this.sortMileStones();
-  }
-  public sortByReset(): void {
-    if (this.sort === 'resetDesc') {
-      this.sort = 'resetAsc';
-    } else {
-      this.sort = 'resetDesc';
-    }
-    this.sortMileStones();
-  }
-
-  public sortByRewards(): void {
-    if (this.sort === 'rewardsDesc') {
-      this.sort = 'rewardsAsc';
-    } else {
-      this.sort = 'rewardsDesc';
-    }
-    this.sortMileStones();
-  }
-
   private getTabLabel(index: number): string {
     if (index >= this.TAB_URI.length) { return null; }
     return this.TAB_URI[index];
   }
-
-  private sortMileStones() {
-    if (this.player == null || this.player.milestoneList.getValue() == null) { return; }
-    if (this.sort === 'rewardsDesc') {
-      this.player.milestoneList.getValue().sort((a, b) => {
-        if (a.pl < b.pl) { return 1; }
-        if (a.pl > b.pl) { return -1; }
-        if (a.rewards < b.rewards) { return 1; }
-        if (a.rewards > b.rewards) { return -1; }
-        if (a.name > b.name) { return 1; }
-        if (a.name < b.name) { return -1; }
-        return 0;
-      });
-    } else if (this.sort === 'rewardsAsc') {
-      this.player.milestoneList.getValue().sort((a, b) => {
-        if (a.pl < b.pl) { return -1; }
-        if (a.pl > b.pl) { return 1; }
-        if (a.rewards < b.rewards) { return -1; }
-        if (a.rewards > b.rewards) { return 1; }
-        if (a.name > b.name) { return 1; }
-        if (a.name < b.name) { return -1; }
-        return 0;
-      });
-    } else if (this.sort === 'resetDesc') {
-      this.player.milestoneList.getValue().sort((a, b) => {
-        if (a.resets == null && b.resets != null) { return 1; }
-        if (a.resets != null && b.resets == null) { return -1; }
-        if (a.resets == null && b.resets == null) { return 0; }
-        if (a.resets < b.resets) { return 1; }
-        if (a.resets > b.resets) { return -1; }
-        if (a.name > b.name) { return 1; }
-        if (a.name < b.name) { return -1; }
-        return 0;
-      });
-    } else if (this.sort === 'resetAsc') {
-      this.player.milestoneList.getValue().sort((a, b) => {
-
-        if (a.resets == null && b.resets != null) { return -1; }
-        if (a.resets != null && b.resets == null) { return 1; }
-        if (a.resets == null && b.resets == null) { return 0; }
-        if (a.resets < b.resets) { return -1; }
-        if (a.resets > b.resets) { return 1; }
-        if (a.name > b.name) { return 1; }
-        if (a.name < b.name) { return -1; }
-        return 0;
-      });
-    } else if (this.sort === 'nameAsc') {
-      this.player.milestoneList.getValue().sort((a, b) => {
-        if (a.name > b.name) { return 1; }
-        if (a.name < b.name) { return -1; }
-        return 0;
-      });
-    } else if (this.sort === 'nameDesc') {
-      this.player.milestoneList.getValue().sort((a, b) => {
-        if (a.name > b.name) { return -1; }
-        if (a.name < b.name) { return 1; }
-        return 0;
-      });
-    }
-
-  }
-
 
   private setTab(): void {
     if (this.tabs == null) {
@@ -309,13 +156,14 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
   }
 
-  public showAllMilestones(): void {
-    this.storageService.showAllMilestones();
-    this.hideCompleteChars = null;
+  async loadSpider() {
+    await this.bungieService.loadSpiderWeekly(this.player);
+    this.ref.markForCheck();
   }
 
-  public hideMilestone(ms: string): void {
-    this.storageService.hideMilestone(ms);
+  async loadClan() {
+    await this.bungieService.loadClans(this.player.profile.userInfo);
+    this.ref.markForCheck();
   }
 
   public async performSearch(forceRefresh?: boolean): Promise<void> {
@@ -340,9 +188,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             // 'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, showZeroPtTriumphs, showInvisTriumphs);
-        this.bungieService.loadClans(x.profile.userInfo);
-        this.bungieService.loadSpiderWeekly(x);
         this.setPlayer(x);
+        this.loadSpider();
+        this.loadClan();
 
         // need to get out of this change detection cycle to have tabs set
         setTimeout(() => {
@@ -350,10 +198,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         }, 0);
 
         this.loading.next(false);
-
-        if (x.characters != null) {
-          await this.bungieService.updateAggHistory(x.characters);
-        }
       } else {
         this.loading.next(false);
         this.setPlayer(null);
@@ -414,7 +258,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.performSearch();
     });
 
-    
+
 
   }
 

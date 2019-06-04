@@ -1,84 +1,15 @@
-@import 'styles-variables';
-
-:host {
-}
-
-.clanMs{
-  margin-bottom: 5px;
-  margin-right: 10px;
-  margin-left: 10px;
-  
-}
-
-
-.dl-row{
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-top: 10px;
-}
-
-.dl-child{
-  margin-right: 10px;
-  margin-bottom: 0px;
-}
-
-.light{
-  font-weight: lighter;
-  margin-left: 10px;
-}
+@import "styles-variables";
 
 a.underline:link {
   text-decoration: underline;
 }
 
-.check{
-  font-size: large;
+.mat-select {
+  margin-top: -7px;
 }
-
-.clanMsRow{
-  text-align: left;
-}
-
-.lifetime{
-  font-size: small;
-  font-weight: lighter;
-  text-align: left;
-  display: inline-block;
-  max-width: 125px;
-}
-
-.trophy{
-  opacity: 0.7;
-  padding-left: 0.25em;
-}
-
-.percent{
-  font-size: smaller;
-  font-weight: lighter;
-}
-
-.milestoneVisibilityButton{
-  font-size: smaller;
-  font-weight: lighter;
-  margin-left: 0.5em;
-}
-
-.mat-select{
-      margin-top: -7px;
- }
-  
- .ll{
-   float: right;
- }
-
-.coming-soon-note{
-  font-size: smaller;
-  font-weight: lighter;
-}
-
 
 .button-row {
-  & button{  
+  & button {
     margin-bottom: 10px;
   }
 }
@@ -87,89 +18,42 @@ a.underline:link {
   margin: 10px auto 0 auto;
   padding-bottom: 10px;
   font-size: 0.9em;
-  letter-spacing: .01px;
+  letter-spacing: 0.01px;
   overflow-wrap: break-word;
   z-index: 1;
 }
 
-
-.searchRow{
+.searchRow {
   display: inline-block;
   margin-left: 20px;
   text-align: left;
 }
 
-.searchField{
+.searchField {
   margin-bottom: 10px;
 }
 
-.searchPlatform{
+.searchPlatform {
   width: 75px;
   margin-right: 10px;
 }
 
-.searchGt{
+.searchGt {
   width: 125px;
   margin-right: 10px;
 }
 
-
 @media (max-width: map-get($grid-breakpoints, md)) {
-  .body-text {
-      width: auto;
-    }
-}
-
-@media (max-width: map-get($grid-breakpoints, sm)) {
-
-
   .body-text {
     width: auto;
   }
 }
 
-.mat-chip{
-  margin-bottom: 5px;
-}
-
-.notes{
-  text-align: left; 
-  max-width: 500px;
-}
-
-
-.mat-expansion-panel-header-title, 
-.mat-expansion-panel-header-description {
-  flex-basis: 0;
-}
-
-.bottom-note{
-  margin-left: 1.0em;
-  text-align: left;
-}
-
-.external-link{
-  opacity: 0.5;
-}
-
-.underline {
-  text-decoration: underline;
-}
-
-.help-button-row {
-  & a{  
-    margin-top: 10px;
-    margin-bottom: 10px;
-    margin-left: 5px;
-    margin-right: 5px;
+@media (max-width: map-get($grid-breakpoints, sm)) {
+  .body-text {
+    width: auto;
   }
 }
-
-.button-margin{
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
 
 .menu-icon {
   padding-right: 5px;
