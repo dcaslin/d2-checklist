@@ -1451,6 +1451,7 @@ export class ParseService {
         const seasons: RecordSeason[] = [];
         let lowHangingTriumphs: TriumphRecordNode[] = [];
         let searchableTriumphs: TriumphRecordNode[] = [];
+        let searchableCollection: TriumphCollectibleNode[] = [];
         const dictSearchableTriumphs: any = {};
 
         let colTree = [];
@@ -1658,7 +1659,19 @@ export class ParseService {
             }
 
             if (collections.length > 0) {
-                colTree = this.handleColPresNode([], '3790247699', nodes, collections).children;
+
+                const collLeaves: TriumphCollectibleNode[] = [];
+                colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
+                searchableCollection = collLeaves.sort((a, b) => {
+                    // if (a.percent>b.percent) return -1;
+                    // if (a.percent<b.percent) return 1;
+                    if (a.name < b.name) { return -1; }
+                    if (a.name < b.name) { return 0; }
+                    return 0;
+                });
+                searchableCollection = searchableCollection.filter(x => {
+                    return (x.name != null) && (x.name.trim().length > 0);
+                });
             }
 
         }
@@ -1688,7 +1701,8 @@ export class ParseService {
 
         return new Player(profile, chars, currentActivity, milestoneList, currencies, charBounties, charQuests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
-            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, seals, title, seasons, hasHiddenClosest);
+            gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
+            seals, title, seasons, hasHiddenClosest);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -1827,7 +1841,7 @@ export class ParseService {
 
         let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
         let percent = 0;
-        if (objs.length > 0) {
+         if (objs.length > 0) {
             let sum = 0;
             for (const o of objs) {
                 sum += o.percent;
@@ -1882,7 +1896,7 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleColPresNode(path: PathEntry[], key: string, pres: any[], collectibles: any[]): TriumphPresentationNode {
+    private handleColPresNode(path: PathEntry[], key: string, pres: any[], collectibles: any[], collLeaves: TriumphCollectibleNode[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         if (val == null) {
             return null;
@@ -1896,7 +1910,8 @@ export class ParseService {
         const children = [];
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleColPresNode(path.slice(0), child.presentationNodeHash, pres, collectibles);
+                const oChild = this.handleColPresNode(path.slice(0),
+                    child.presentationNodeHash, pres, collectibles, collLeaves);
                 if (oChild == null) { continue; }
                 children.push(oChild);
             }
@@ -1904,6 +1919,7 @@ export class ParseService {
                 const oChild = this.handleCollectibleNode(path.slice(0), child.collectibleHash, collectibles);
                 if (oChild != null) {
                     children.push(oChild);
+                    collLeaves.push(oChild);
                 }
             }
         }
@@ -1972,6 +1988,7 @@ export class ParseService {
             acquired: acquired,
             complete: acquired,
             sourceString: cDesc.sourceString,
+            searchText: cDesc.displayProperties.name.toLowerCase(),
             children: null,
             path: path
         };

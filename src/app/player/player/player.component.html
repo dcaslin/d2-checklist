@@ -170,7 +170,7 @@
               </ng-template>
               <ng-container *ngIf="player!=null">
                 <anms-collections [selectedTab]="selectedTab" [selectedTreeNodeHash]="selectedTreeNodeHash"
-                  [collections]="player.collections" (nodeClicked)="branchNodeClick($event)">
+                  [currPlayer]="player" (nodeClicked)="branchNodeClick($event)">
                 </anms-collections>
               </ng-container>
             </mat-tab>

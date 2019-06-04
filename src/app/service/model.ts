@@ -126,6 +126,7 @@ export interface TriumphRecordNode extends TriumphNode {
 export interface TriumphCollectibleNode extends TriumphNode {
     acquired: boolean;
     sourceString: string;
+    searchText: string;
 }
 export interface Vendor {
     hash: string;
@@ -455,6 +456,7 @@ export class Player {
     readonly lowHangingTriumphs: TriumphRecordNode[];
     readonly seals: Seal[];
     readonly searchableTriumphs: TriumphRecordNode[];
+    readonly searchableCollection: TriumphCollectibleNode[];
     readonly gear: InventoryItem[];
     readonly vault: Target;
     readonly shared: Target;
@@ -474,6 +476,7 @@ export class Player {
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
         collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
+        searchableCollection: TriumphCollectibleNode[],
         seals: Seal[], title: string, seasons: RecordSeason[], hasHiddenClosest: boolean) {
         this.profile = profile;
         this.characters = characters;
@@ -502,6 +505,7 @@ export class Player {
         this.shared = shared;
         this.lowHangingTriumphs = lowHangingTriumphs;
         this.searchableTriumphs = searchableTriumphs;
+        this.searchableCollection = searchableCollection;
         this.seals = seals;
         this.title = title;
         this.seasons = seasons;
