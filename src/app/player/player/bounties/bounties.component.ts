@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, Input, Inject } from '@angular/core';
-import { StorageService } from '@app/service/storage.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Router } from '@angular/router';
-import { ChildComponent } from '@app/shared/child.component';
-import { MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA, MatDialog } from '@angular/material';
+import { BungieService } from '@app/service/bungie.service';
 import { Const, Player } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
   selector: 'anms-bounties',
@@ -17,6 +18,7 @@ export class BountiesComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
+    private bungieService: BungieService,
     private ref: ChangeDetectorRef,
     public dialog: MatDialog,
     private router: Router) {

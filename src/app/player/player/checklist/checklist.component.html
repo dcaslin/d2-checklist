@@ -1,38 +1,97 @@
-<div *ngIf="player.checklists==null || player.checklists.length==0">
-  <br>
-  <h2>Privacy</h2>
-  <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
-</div>
-<mat-accordion [multi]="debugmode|async"
-  *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
-  <ng-container *ngFor="let checklist of player.checklists">
-    <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0" [expanded]="debugmode|async">
+<ng-container *ngIf="player!=null">
+  <div *ngIf="player.checklists==null || player.checklists.length==0">
+    <br>
+    <h2>Privacy</h2>
+    <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
+  </div>
+  <mat-accordion [multi]="debugmode|async"
+    *ngIf="player.checklists!=null && player.checklists.length>0 && selectedTab=='checklist'">
+    <ng-container *ngFor="let checklist of player.checklists">
+      <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0" [expanded]="debugmode|async">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{checklist.name}}
+            <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
+          </mat-panel-title>
+          <mat-panel-description>
+            {{checklist.complete}} / {{checklist.total}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="checklist-body">
+          <div class="hide-complete">
+            <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide
+              Completed</mat-checkbox>
+          </div>
+          <table class="checklist-table">
+            <thead>
+              <tr>
+                <th class="check-list-name">Name</th>
+                <th class="check-list-status">Status</th>
+                <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let check of checklist.entries">
+                <tr *ngIf="!hideComplete || !check.checked">
+                  <td>
+                    <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
+                      {{check.name}}</ng-container>
+                    <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
+                      target="_blank" rel="noopener">{{check.name}}
+                      <i class='far fa-map-marker-alt'></i>
+                    </a>
+
+                    <span *ngIf="debugmode|async">
+                      &ensp;[{{check.hash}}] &ensp;
+                      <a href="javascript:void(0)" (click)="refreshPlayer.emit()">
+                        <i class="fas fa-sync fa-fw" [class.fa-spin]="parentLoading|async" aria-hidden="true"></i>
+                      </a>
+                    </span>
+                  </td>
+                  <td>
+                    <span>
+                      <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                      <i *ngIf="!check.checked" class="far fa-square"></i>
+                    </span>
+                  </td>
+                  <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
+                    {{check.desc}}
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </div>
+
+      </mat-expansion-panel>
+    </ng-container>
+    <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode|async">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{checklist.name}}
           <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
         </mat-panel-title>
         <mat-panel-description>
-          {{checklist.complete}} / {{checklist.total}}
+          <span *ngFor="let t of checklist.totals">{{t.char.className}}
+            {{t.complete}}/{{t.total}}&emsp;</span>
         </mat-panel-description>
       </mat-expansion-panel-header>
       <div class="checklist-body">
         <div class="hide-complete">
-          <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide
+          <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide All
             Completed</mat-checkbox>
         </div>
         <table class="checklist-table">
           <thead>
             <tr>
-              <th class="check-list-name">Name</th>
-              <th class="check-list-status">Status</th>
-              <th class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">Desc</th>
-
+              <th style="width: 200px">Name</th>
+              <th style="width: 50px">Status</th>
             </tr>
           </thead>
           <tbody>
             <ng-container *ngFor="let check of checklist.entries">
-              <tr *ngIf="!hideComplete || !check.checked">
+              <tr *ngIf="!hideComplete || !check.allDone">
                 <td>
                   <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
                     {{check.name}}</ng-container>
@@ -41,6 +100,7 @@
                     <i class='far fa-map-marker-alt'></i>
                   </a>
 
+                  <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                   <span *ngIf="debugmode|async">
                     &ensp;[{{check.hash}}] &ensp;
                     <a href="javascript:void(0)" (click)="refreshPlayer.emit()">
@@ -49,77 +109,32 @@
                   </span>
                 </td>
                 <td>
-                  <span>
-                    <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                    <i *ngIf="!check.checked" class="far fa-square"></i>
+                  <span class="space-right" *ngFor="let c of check.checked">
+                    <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                    <i *ngIf="!c.checked && !check.oncePerAccount" class="far fa-square"></i>
+                    <i *ngIf="!c.checked && check.oncePerAccount" class="far fa-minus-square"></i>
                   </span>
                 </td>
-                <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
-                  {{check.desc}}
-                </td>
+
               </tr>
             </ng-container>
           </tbody>
         </table>
       </div>
-
     </mat-expansion-panel>
-  </ng-container>
-  <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode|async">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{checklist.name}}
-        <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
-      </mat-panel-title>
-      <mat-panel-description>
-        <span *ngFor="let t of checklist.totals">{{t.char.className}}
-          {{t.complete}}/{{t.total}}&emsp;</span>
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <div class="checklist-body">
-      <div class="hide-complete">
-        <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide All
-          Completed</mat-checkbox>
-      </div>
-      <table class="checklist-table">
-        <thead>
-          <tr>
-            <th style="width: 200px">Name</th>
-            <th style="width: 50px">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let check of checklist.entries">
-            <tr *ngIf="!hideComplete || !check.allDone">
-              <td>
-                <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
-                  {{check.name}}</ng-container>
-                <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
-                  target="_blank" rel="noopener">{{check.name}}
-                  <i class='far fa-map-marker-alt'></i>
-                </a>
-
-                <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
-                <span *ngIf="debugmode|async">
-                  &ensp;[{{check.hash}}] &ensp;
-                  <a href="javascript:void(0)" (click)="refreshPlayer.emit()">
-                    <i class="fas fa-sync fa-fw" [class.fa-spin]="parentLoading|async" aria-hidden="true"></i>
-                  </a>
-                </span>
-              </td>
-              <td>
-                <span class="space-right" *ngFor="let c of check.checked">
-                  <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                  <i *ngIf="!c.checked && !check.oncePerAccount" class="far fa-square"></i>
-                  <i *ngIf="!c.checked && check.oncePerAccount" class="far fa-minus-square"></i>
-                </span>
-              </td>
-
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
-    </div>
-
-  </mat-expansion-panel>
-</mat-accordion>
+  </mat-accordion>
+</ng-container>
+<div class="bottom-note">
+  <br>
+  <ul>
+    <li>Looking for all the Catalysts?
+      <a href="https://twitter.com/Aussie_Halo" target="_blank" rel="noopener">@Aussie_Halo</a> has them
+      all in a nice
+      <a class="accent-text"
+        href="https://docs.google.com/spreadsheets/d/1hPI1oO5izJaDASpPWdTb4sB_eAzxTI1eFMh6ixeVpMM/edit#gid=0"
+        target="_blank" rel="noopener">Google spreadsheet</a>
+    </li>
+    <li>Only 4 of Cayde's Journals are completable in game, thus the other 16 are pre-filtered.</li>
+    <li>2 Adventures are account only</li>
+  </ul>
+</div>

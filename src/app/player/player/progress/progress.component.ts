@@ -1,6 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, Input } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
+import { Player } from '@app/service/model';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'anms-progress',
@@ -9,6 +11,8 @@ import { StorageService } from '@app/service/storage.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProgressComponent extends ChildComponent implements OnInit {
+  @Input() player: Player;
+
 
   constructor(
     storageService: StorageService,

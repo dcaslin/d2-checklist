@@ -1,26 +1,29 @@
 .checklist-body {
-    // max-width: 750px;
-    text-align: left;
-    margin: 5px;
-  }
+  // max-width: 750px;
+  text-align: left;
+  margin: 5px;
+}
 
-  .hide-complete{
-    margin: 5px;
-    font-size: smaller;
-    font-weight: lighter;
-  }
-  
-  .check-list-name{
-    width: 200px
-  }
-  
-  .check-list-status{
-    width: 50px;
-  }
-  
+.hide-complete {
+  margin: 5px;
+  font-size: smaller;
+  font-weight: lighter;
+}
 
-  .mat-expansion-panel-header-title, 
-  .mat-expansion-panel-header-description {
-    flex-basis: 0;
-  }
-    
+.check-list-name {
+  width: 200px;
+}
+
+.check-list-status {
+  width: 50px;
+}
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.bottom-note {
+  margin-left: 1em;
+  text-align: left;
+}
