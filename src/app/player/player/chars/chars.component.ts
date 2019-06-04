@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef, Input, ChangeDetectionStrategy } from '@angular/core';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { Player, Character } from '@app/service/model';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Player } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
   selector: 'anms-chars',
@@ -15,16 +15,11 @@ export class CharsComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
-    private ref: ChangeDetectorRef, 
-    private router: Router) { 
+    private ref: ChangeDetectorRef,
+    private router: Router) {
       super(storageService, ref);
 
     }
-
-    public history(c: Character) {
-      this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
-    }
-  
 
   ngOnInit() {
   }

@@ -1,49 +1,128 @@
+<mat-tab-group #collectiontabs>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="icon-collections"></i>
+      <span class="d-none d-md-inline">&ensp;Collections</span>
+    </ng-template>
+    <div class="hide-complete-collectibles">
+      <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed
+      </mat-checkbox>
+    </div>
+    <mat-tree [dataSource]="collectionDatasource" [treeControl]="collectionTreeControl">
+      <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)" matTreeNodeToggle
+        matTreeNodePadding>
+        <button mat-icon-button disabled></button>
+        <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
+          [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+        <div style="text-align: left; margin-bottom: 20px">
+          <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+          <i *ngIf="!node.data.acquired" class="far fa-square"></i>
+          {{node.data.name}} <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+          <br>
+          <span class="simple-caption">
+            {{node.data.sourceString}}
+          </span>
+        </div>
+      </mat-tree-node>
+      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
+        <button mat-icon-button matTreeNodeToggle (click)="nodeClicked.emit(node.data.hash)">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{collectionTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon"
+          [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
+        <div style="text-align: left">
+          <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+          <i *ngIf="!node.data.complete" class="far fa-square"></i>
+          {{node.data.name}}
+          <span *ngIf="debugmode|async">{{node.data.hash}}</span>
+          <span class="simple-caption">
+            {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
+          </span> <br>
+          <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
+            mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+        </div>
+      </mat-tree-node>
+    </mat-tree>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="far fa-search"></i>
+      <span class="d-none d-md-inline">&ensp;Search</span>
+    </ng-template>
+    <h4 class="collection-header">Search</h4>
+    <div>
+      <div class="left" style="margin: 10px">
+        <mat-form-field class="searchField">
+          <input matInput (keyup)="searchSubject.next()" [(ngModel)]="filterText"
+            placeholder="Wildcard Search collections">
+        </mat-form-field>
+      </div>
+      <div *ngIf="(filteredCollection|async).length==0" class="left" style="margin: 10px">
+          <ng-container *ngIf="filterText==null || filterText.length==0">
+            Type above to search
+          </ng-container>
+          <ng-container *ngIf="filterText!=null && filterText.length>0">
+            No results, change your search
+          </ng-container>
 
-  <div class="hide-complete-collectibles">
-    <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide Completed
-    </mat-checkbox>
+        </div>
+        <table class="tidy-table">
+          <thead>
+            <tr>
+              <th class="left" >Name</th>
+              <th class="d-none d-md-table-cell left" >Desc</th>
+              <th class="d-none d-md-table-cell left"  >Acquisition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let t of filteredCollection|async">
+              <tr>
+                
+                <td class="lead">
+                    <div *ngIf="t.icon!=null" class="transparent-icon transparent-leaf-icon"
+                    [style.background-image]="'url(//www.bungie.net' + t.icon + ')'"></div>
+                  {{t.name}}
+                  <i *ngIf="t.acquired"
+                    class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="!t.acquired" class="far fa-square"></i>
+                  <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
+                  <br>
+                  <span class="simple-caption">
+                    <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                      <ng-container *ngIf="i>0">
+                        <a href="javascript:void(0)" (click)="jumpToCollectible(p.hash)">{{p.path}}</a>
+                        <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                        <ng-container *ngIf="!isLast">
+                          /
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="d-none d-md-table-cell left">
+                  <div class="low-hanging-desc">{{t.desc}}</div>
+                </td>
+                <td class="d-none d-md-table-cell left">
+                    <div class="low-hanging-desc">{{t.sourceString}}</div>
+                  </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+    </div>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="far fa-badge-check"></i>
+      <span class="d-none d-md-inline">&ensp;Badges</span>
+    </ng-template>
+    <h4 class="collection-header">Badges - Coming Soon!</h4>
+  </mat-tab>
+
+  <div>
+    <br>
+    <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at
+      DestinySets</a>
   </div>
-  <mat-tree [dataSource]="collectionDatasource" [treeControl]="collectionTreeControl">
-    <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)"
-      matTreeNodeToggle matTreeNodePadding>
-      <button mat-icon-button disabled></button>
-      <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
-        [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
-      <div style="text-align: left; margin-bottom: 20px">
-        <i *ngIf="node.data.acquired "
-          class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-        <i *ngIf="!node.data.acquired" class="far fa-square"></i>
-        {{node.data.name}} <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
-        <br>
-        <span class="simple-caption">
-          {{node.data.sourceString}}
-        </span>
-      </div>
-    </mat-tree-node>
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
-      <button mat-icon-button matTreeNodeToggle (click)="nodeClicked.emit(node.data.hash)">
-        <mat-icon class="mat-icon-rtl-mirror">
-          {{collectionTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-        </mat-icon>
-      </button>
-      <div *ngIf="node.data.icon!=null" class="transparent-icon  transparent-branch-icon"
-        [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
-      <div style="text-align: left">
-        <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-        <i *ngIf="!node.data.complete" class="far fa-square"></i>
-        {{node.data.name}}
-        <span *ngIf="debugmode|async">{{node.data.hash}}</span>
-        <span class="simple-caption">
-          {{node.data.progress}}/{{node.data.completionValue}} {{node.data.progressDescription}}
-        </span> <br>
-        <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'"
-          class="pres-node-prog" mode="determinate"
-          [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
-      </div>
-    </mat-tree-node>
-  </mat-tree>
-<div>
-  <br>
-  <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at
-    DestinySets</a>
-</div>

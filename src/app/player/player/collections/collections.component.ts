@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ChangeDetectorRef, EventEmitter, Output } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
-import { TriumphNode } from '@app/service/model';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ChangeDetectorRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { MatTreeFlatDataSource, MatTreeFlattener, MatTabGroup } from '@angular/material';
+import { TriumphNode, TriumphCollectibleNode, Player } from '@app/service/model';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Observable, of as observableOf, Subject, BehaviorSubject } from 'rxjs';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { TriumphFlatNode } from '../triumphs/triumphs.component';
+import { takeUntil, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'anms-collections',
@@ -15,14 +16,23 @@ import { TriumphFlatNode } from '../triumphs/triumphs.component';
 })
 export class CollectionsComponent extends ChildComponent implements OnInit {
 
-  @Input() selectedTab: string;
+  @ViewChild('collectiontabs') collectiontabs: MatTabGroup;
 
+  @Input() selectedTab: string;
   @Input() selectedTreeNodeHash: string;
 
+  public searchSubject: Subject<void> = new Subject<void>();
+  public filteredCollection: BehaviorSubject<TriumphCollectibleNode[]> = new BehaviorSubject([]);
+
+  public filterText = '';
+  public player: Player;
+
   @Input()
-  set collections(arg: TriumphNode[]) {
-    this._collections = arg;
-    this.init();
+  set currPlayer(arg: Player) {
+    this.player = arg;
+    if (arg != null) {
+      this.init(arg.collections);
+    }
   }
 
   @Output() nodeClicked = new EventEmitter<string>();
@@ -32,7 +42,6 @@ export class CollectionsComponent extends ChildComponent implements OnInit {
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
   hideComplete = false;
 
-  private _collections: TriumphNode[] = [];
 
   constructor(
     storageService: StorageService,
@@ -44,9 +53,9 @@ export class CollectionsComponent extends ChildComponent implements OnInit {
 
   }
 
-  private init() {
+  private init(collections: TriumphNode[]) {
     this.collectionDatasource = new MatTreeFlatDataSource(this.collectionTreeControl, this.treeFlattener2);
-    this.collectionDatasource.data = this._collections;
+    this.collectionDatasource.data = collections;
     if (this.selectedTab === 'collections') {
       if (this.selectedTreeNodeHash != null) {
         for (const n of this.collectionTreeControl.dataNodes) {
@@ -59,6 +68,7 @@ export class CollectionsComponent extends ChildComponent implements OnInit {
       }
     }
   }
+
   public hideCompleteChange() {
     localStorage.setItem('hide-completed-collections', '' + this.hideComplete);
   }
@@ -101,6 +111,47 @@ export class CollectionsComponent extends ChildComponent implements OnInit {
   hideNode = (_nodeData: TriumphFlatNode) => this.hideComplete && _nodeData.data.complete;
 
   ngOnInit() {
+    this.searchSubject.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(100))
+      .subscribe(() => {
+        this.filterCollections();
+      });
   }
+
+
+  private filterCollections() {
+    if (this.filterText == null || this.filterText.trim().length == 0) {
+      this.filteredCollection.next([]);
+      return;
+    }
+    if (this.player.searchableCollection == null) {
+      this.filteredCollection.next([]);
+      return;
+    }
+    const temp = [];
+    const filterText = this.filterText.toLowerCase();
+    for (const t of this.player.searchableCollection) {
+      if (temp.length > 20) { break; }
+      if (t.searchText.indexOf(filterText) >= 0) {
+        temp.push(t);
+      }
+    }
+    this.filteredCollection.next(temp);
+  }
+
+  public jumpToCollectible(targetHash: number) {
+    this.collectionTreeControl.collapseAll();
+    this.collectiontabs.selectedIndex = 0;
+    for (const n of this.collectionTreeControl.dataNodes) {
+      if (n.data.hash === targetHash) {
+        this.collectionTreeControl.expand(n);
+        this.expandParents(this.collectionTreeControl, n);
+        this.selectedTreeNodeHash = '' + targetHash;
+        break;
+      }
+    }
+  }
+
 
 }
