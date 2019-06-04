@@ -1354,8 +1354,11 @@ export class ParseService {
                     // '1342567285' === p.hash ||   // scourge
                     '4128810957' === p.hash ||   // eva return
                     '4253138191' === p.hash ||  // weekly clan engrams
-                    '3177730289' === p.hash // ||   // season of giving
+                    '3177730289' === p.hash || // ||   // season of giving
                     // '2188900244' === p.hash    // recipe for success
+                    '291994631' === p.hash ||   // spring comes to eververse
+                    '2958665367' === p.hash ||   // lost cryptarch
+                    '3915793660' === p.hash    // reverly begins
                 ) {
                     continue;
                 }
@@ -1381,20 +1384,20 @@ export class ParseService {
                 milestonesByKey[p.hash] = ms;
             }
             // add Last wish if its missing, as it has been from public milestones for a while
-            if (milestonesByKey['3181387331'] == null) {
-                const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
-                const ms: MileStoneName = {
-                    key: raidDesc.hash,
-                    resets: null,
-                    rewards: 'Powerful Gear',
-                    pl: 641,
-                    name: raidDesc.displayProperties.name,
-                    desc: raidDesc.displayProperties.description,
-                    hasPartial: false
-                };
-                milestoneList.push(ms);
-                milestonesByKey[raidDesc.hash] = ms;
-            }
+            // if (milestonesByKey['3181387331'] == null) {
+            //     const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
+            //     const ms: MileStoneName = {
+            //         key: raidDesc.hash,
+            //         resets: null,
+            //         rewards: 'Powerful Gear',
+            //         pl: 641,
+            //         name: raidDesc.displayProperties.name,
+            //         desc: raidDesc.displayProperties.description,
+            //         hasPartial: false
+            //     };
+            //     milestoneList.push(ms);
+            //     milestonesByKey[raidDesc.hash] = ms;
+            // }
 
         }
 
