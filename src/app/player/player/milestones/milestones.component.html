@@ -10,8 +10,7 @@
     <span class="mat-caption">Hide Completed</span>
   </div>
   <div class="mobile-button-row" style="margin-top: 5px">
-    <button mat-button (click)="toggleHide('ALL')"
-      [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
+    <button mat-button (click)="toggleHide('ALL')" [color]="'ALL'==hideCompleteChars?'accent':'default'">All</button>
     <button *ngFor="let c of player.characters" (click)="toggleHide(c.characterId)"
       [color]="c.characterId==hideCompleteChars?'accent':'default'" mat-button>{{c.className}}</button>
   </div>
@@ -27,20 +26,17 @@
         <th scope="col" style="width: 25%">Activity
           <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash"
             matTooltip="Hide milestones where all chars are complete"></i>
-          <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null"
-            class="warn-text fal fa-eye"
+          <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
             matTooltip="Stop hiding milestones where all chars are complete"></i>
-          <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null"
-            href="javascript:void(0)" matTooltip="Show all hidden milestones"
-            class="milestoneVisibilityButton" (click)="showAllMilestones()">show
+          <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null" href="javascript:void(0)"
+            matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show
             all</a>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           {{char.className}} - {{char.light}} {{char.title}}
           <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId"
             class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
-          <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null"
-            class="warn-text fal fa-eye"
+          <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
             matTooltip="Stop hiding milestones that this char has completed"></i>
         </th>
       </tr>
@@ -57,8 +53,7 @@
               </a>
             </span>
             <span *ngIf="debugmode|async"> {{mileStoneName.key}} </span>
-            <a href="javascript:void(0)"
-              matTooltip="Hide this milestone, click Show All to restore it later"
+            <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
               class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
               <i class="fal fa-eye-slash"></i>
             </a>
@@ -76,8 +71,7 @@
             </span>
             <br>
             <span class="simple-caption">
-              <a href="javascript:void(0)" style="opacity: 0.75"
-                (click)="sortByRewards()">{{mileStoneName.rewards}}
+              <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">{{mileStoneName.rewards}}
 
                 <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
                 <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
@@ -85,8 +79,7 @@
             </span>
 
           </td>
-          <td [attr.data-label]="char.className+' - '+char.light+' '+char.title"
-            *ngFor="let char of player.characters">
+          <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
             <span class="check">
               <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
 
@@ -150,6 +143,15 @@
                     </ng-container>
                   </div>
                 </div>
+                <div class="lifetime" *ngIf="mileStoneName.key==2590427074 && char.aggHistory!=null">
+                  <div>Lifetime</div>
+                  <div>
+                    <b>{{char.aggHistory.crownNm|number : '2.0-0'}}</b>
+                    <ng-container *ngIf="char.aggHistory.crownNmFastestMs!=null">
+                      | {{char.aggHistory.crownNmFastestMs| amnsTiming:'ms'}}
+                    </ng-container>
+                  </div>
+                </div>
 
                 <div class="lifetime" *ngIf="mileStoneName.key==1235 && char.aggHistory!=null">
                   <div>Lifetime</div>
@@ -202,8 +204,7 @@
 
 
               </ng-container>
-              <ng-container
-                *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
+              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
                 <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
                   class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                 <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
@@ -216,8 +217,7 @@
       <tr
         *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && (hiddenMilestones|async).indexOf('1')===-1">
         <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-          <a href="javascript:void(0)"
-            matTooltip="Hide this milestone, click Show All to restore it later"
+          <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
             class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
         </td>
         <td [attr.colspan]="player.characters.length">

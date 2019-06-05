@@ -772,6 +772,8 @@ export class Nightfall {
 }
 
 export class AggHistory {
+    crownNm = 0;
+    crownNmFastestMs: number;
     nf = 0;
     nfFastestMs: number;
 

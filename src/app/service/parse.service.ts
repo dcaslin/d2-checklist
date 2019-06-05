@@ -183,7 +183,7 @@ export class ParseService {
         }
     }
 
-    private populateProgressions(c: Character, _prog: any, milestonesByKey: any): void {
+    private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[] ): void {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
@@ -225,7 +225,24 @@ export class ParseService {
                     c.clanMilestones = clanMilestones;
                     return;
                 } else if (milestonesByKey[key] == null) {
-                    return;
+                    const skipDesc = this.destinyCacheService.cache.Milestone[key];
+                    if (skipDesc != null) {
+                        console.log('Skipping: ' + key + '. ' + skipDesc.displayProperties.name);
+                        const ms: MileStoneName = {
+                            key: skipDesc.hash,
+                            resets: null,
+                            rewards: 'Powerful Gear',
+                            pl: 641,
+                            name: skipDesc.displayProperties.name,
+                            desc: skipDesc.displayProperties.description,
+                            hasPartial: false
+                        };
+                        milestoneList.push(ms);
+                        milestonesByKey[skipDesc.hash] = ms;
+                    } else {
+                        console.log('Skipping: ' + key);
+                        return;
+                    }
                 }
 
                 let total = 0;
@@ -522,7 +539,15 @@ export class ParseService {
                         if ((f > 0) && (returnMe.spNmFastestMs == null || returnMe.spNmFastestMs > f)) {
                             returnMe.spNmFastestMs = f;
                         }
+                    } else if (name.indexOf('Crown of Sorrow') === 0) {
+                        const c = ParseService.getBasicValue(act.values.activityCompletions);
+                        returnMe.crownNm += c;
+                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
+                        if ((f > 0) && (returnMe.spNmFastestMs == null || returnMe.crownNmFastestMs > f)) {
+                            returnMe.crownNmFastestMs = f;
+                        }
                     }
+                    
                 } else if (vDesc.activityTypeHash === 575572995) {
                     // heroic nightfall - scored
                     if (vDesc.directActivityModeHash === 532484583) {
@@ -977,9 +1002,9 @@ export class ParseService {
 
             if (ms.milestoneHash === 2188900244) {// recipe for success
                 pl = 652;
-            } else if (ms.milestoneHash === 601087286 ) {// reckoning
+            } else if (ms.milestoneHash === 601087286) {// reckoning
                 pl = 690;
-            } else if (ms.milestoneHash === 2010672046  ) {// Gambit prime
+            } else if (ms.milestoneHash === 2010672046) {// Gambit prime
                 pl = 689;
             } else if (ms.milestoneHash === 3603098564) {// clan rewards
                 pl = 650;
@@ -1384,21 +1409,20 @@ export class ParseService {
                 milestonesByKey[p.hash] = ms;
             }
             // add Last wish if its missing, as it has been from public milestones for a while
-            // if (milestonesByKey['3181387331'] == null) {
-            //     const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
-            //     const ms: MileStoneName = {
-            //         key: raidDesc.hash,
-            //         resets: null,
-            //         rewards: 'Powerful Gear',
-            //         pl: 641,
-            //         name: raidDesc.displayProperties.name,
-            //         desc: raidDesc.displayProperties.description,
-            //         hasPartial: false
-            //     };
-            //     milestoneList.push(ms);
-            //     milestonesByKey[raidDesc.hash] = ms;
-            // }
-
+            if (milestonesByKey['3181387331'] == null) {
+                const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
+                const ms: MileStoneName = {
+                    key: raidDesc.hash,
+                    resets: null,
+                    rewards: 'Powerful Gear',
+                    pl: 641,
+                    name: raidDesc.displayProperties.name,
+                    desc: raidDesc.displayProperties.description,
+                    hasPartial: false
+                };
+                milestoneList.push(ms);
+                milestonesByKey[raidDesc.hash] = ms;
+            }
         }
 
         if (resp.characters != null) {
@@ -1411,7 +1435,7 @@ export class ParseService {
                     const oProgs: any = resp.characterProgressions.data;
                     Object.keys(oProgs).forEach((key) => {
                         const curChar: Character = charsDict[key];
-                        this.populateProgressions(curChar, oProgs[key], milestonesByKey);
+                        this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList);
                         hasWellRested = curChar.wellRested || hasWellRested;
                     });
                 } else {
@@ -1685,8 +1709,8 @@ export class ParseService {
                 break;
             }
         }
-        let charBounties: {[id: string]: InventoryItem[]} = null;
-        let charQuests: {[id: string]: InventoryItem[]} = null;
+        let charBounties: { [id: string]: InventoryItem[] } = null;
+        let charQuests: { [id: string]: InventoryItem[] } = null;
         if (!privateGear) {
             charBounties = {};
             charQuests = {};
@@ -1844,7 +1868,7 @@ export class ParseService {
 
         let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
         let percent = 0;
-         if (objs.length > 0) {
+        if (objs.length > 0) {
             let sum = 0;
             for (const o of objs) {
                 sum += o.percent;
