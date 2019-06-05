@@ -240,6 +240,9 @@
                           <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
                             matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                         </span>
+                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.neverDisappears">
+                          <i class="far fa-minus-square" matTooltip="Not unlocked?"></i>
+                        </span>
                       </ng-container>
                     </td>
                   </ng-container>

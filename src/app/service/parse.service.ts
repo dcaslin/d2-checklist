@@ -226,7 +226,7 @@ export class ParseService {
                     return;
                 } else if (milestonesByKey[key] == null) {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
-                    if (skipDesc != null) {
+                    if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         console.log('Skipping: ' + key + '. ' + skipDesc.displayProperties.name);
                         const ms: MileStoneName = {
                             key: skipDesc.hash,
@@ -1408,6 +1408,23 @@ export class ParseService {
                 milestoneList.push(ms);
                 milestonesByKey[p.hash] = ms;
             }
+
+            // add crown of sorrows manually
+            if (milestonesByKey['2590427074'] == null) {
+                const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
+                const ms: MileStoneName = {
+                    key: raidDesc.hash,
+                    resets: null,
+                    rewards: 'Powerful Gear',
+                    pl: 725,
+                    name: raidDesc.displayProperties.name,
+                    neverDisappears: true,
+                    desc: raidDesc.displayProperties.description,
+                    hasPartial: false
+                };
+                milestoneList.push(ms);
+                milestonesByKey[raidDesc.hash] = ms;
+            }
             // add Last wish if its missing, as it has been from public milestones for a while
             if (milestonesByKey['3181387331'] == null) {
                 const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
@@ -1424,7 +1441,6 @@ export class ParseService {
                 milestonesByKey[raidDesc.hash] = ms;
             }
         }
-
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
             Object.keys(oChars).forEach((key) => {
