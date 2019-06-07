@@ -14,6 +14,9 @@ import {
     PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
     LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType, PGCRExtraData, RecordSeason
 } from './model';
+
+
+
 @Injectable()
 export class ParseService {
     MAX_LEVEL = 50;
@@ -183,7 +186,7 @@ export class ParseService {
         }
     }
 
-    private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[] ): void {
+    private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[]): void {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
@@ -227,7 +230,6 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null) {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                        console.log('Skipping: ' + key + '. ' + skipDesc.displayProperties.name);
                         const ms: MileStoneName = {
                             key: skipDesc.hash,
                             resets: null,
@@ -239,8 +241,11 @@ export class ParseService {
                         };
                         milestoneList.push(ms);
                         milestonesByKey[skipDesc.hash] = ms;
+                    } else if (skipDesc != null) {
+                        console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
+                        return;
                     } else {
-                        console.log('Skipping: ' + key);
+                        console.log('Skipping unknown milestone: ' + key);
                         return;
                     }
                 }
@@ -547,7 +552,7 @@ export class ParseService {
                             returnMe.crownNmFastestMs = f;
                         }
                     }
-                    
+
                 } else if (vDesc.activityTypeHash === 575572995) {
                     // heroic nightfall - scored
                     if (vDesc.directActivityModeHash === 532484583) {
@@ -1347,6 +1352,39 @@ export class ParseService {
         };
     }
 
+
+
+    private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: any) {
+
+        let imperials: number;
+        let powerfulDropsRemaining: number;
+        for (const obj of chalice.objectives){
+            if (obj.progressDescription.indexOf("rewards")>0){
+                powerfulDropsRemaining = obj.progress;
+            }
+            if (obj.progressDescription === 'Imperials'){
+                imperials = obj.progress;
+            }
+        }
+        if (milestonesByKey[Const.CHALICE_KEY] == null) {
+            const ms: MileStoneName = {
+                key: Const.CHALICE_KEY,
+                resets: char.endWeek.toISOString(),
+                rewards: 'Powerful Gear',
+                pl: 750,
+                name: 'Menagerie',
+                desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
+                hasPartial: false,
+                suppInfo: imperials + ' Imperials'
+            };
+            milestoneList.push(ms);
+            milestonesByKey[Const.CHALICE_KEY] = ms;
+        }
+        // constructor(hash, complete, pct, info, suppInfo, phases) {
+        const complete = powerfulDropsRemaining === 0;
+        char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining +" Powerful drop left", null);
+    }
+
     public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Player {
         if (resp.profile != null && resp.profile.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s profile.');
@@ -1364,7 +1402,7 @@ export class ParseService {
 
         const charsDict: { [key: string]: Character } = {};
         const milestoneList: MileStoneName[] = [];
-        const milestonesByKey: any = {};
+        const milestonesByKey: { [id: string]: MileStoneName } = {};
         let currentActivity: CurrentActivity = null;
         const chars: Character[] = [];
         let hasWellRested = false;
@@ -1543,6 +1581,8 @@ export class ParseService {
                             } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
+                            } else if (parsed.type === ItemType.Chalice) {
+                                this.handleChalice(char, parsed, milestoneList, milestonesByKey);
                             } else {
                                 gear.push(parsed);
                             }
@@ -2236,10 +2276,14 @@ export class ParseService {
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') > 0) {
                 type = ItemType.Bounty;
             }
+            if (itm.itemHash === 1115550924) {
+                type = ItemType.Chalice;
+            }
             if (!detailedInv) {
                 if (type !== ItemType.Bounty
                     && type !== ItemType.Quest
-                    && type !== ItemType.QuestStep) {
+                    && type !== ItemType.QuestStep
+                    && type !== ItemType.Chalice) {
                     return null;
                 }
             } else {
@@ -2327,6 +2371,7 @@ export class ParseService {
             let tier = null;
             let isRandomRoll = false;
 
+            // || type === ItemType.Chalice for the future?
             if (detailedInv) {
 
                 if (desc.inventory != null) {
@@ -2776,7 +2821,6 @@ export class ParseService {
 
             if (entry.activityDurationSeconds != null) {
                 r.activityDurationSeconds = entry.activityDurationSeconds;
-                // TODO fix this, period is start, not finish
                 r.finish = new Date(Date.parse(r.period) + r.activityDurationSeconds * 1000).toISOString();
             }
             if (fireTeamCounts[entry.fireteamId] == null) {
@@ -2958,240 +3002,6 @@ export class ParseService {
         });
         return returnMe;
     }
-
-    // public parseRaidHistory(msNames: MileStoneName[], c: Character, hist: Activity[]) {
-    //     let totalRaid = 0;
-    //     let totalNormal = 0;
-    //     let totalPrestige = 0;
-    //     let totalEater = 0;
-    //     let totalSpire = 0;
-    //     let totalLwNormal = 0;
-    //     let totalSpNormal = 0;
-    //     hist.forEach(a => {
-    //         // ignore not completed
-    //         if (!a.completed) { return; }
-
-    //         const desc: any = this.destinyCacheService.cache.Activity[a.referenceId];
-    //         let name: string = null;
-    //         let tier: number = null;
-    //         if (desc) {
-    //             name = desc.displayProperties.name;
-    //             tier = desc.tier;
-    //         } else {
-    //             console.log('No entry found for activity hash: ' + a.referenceId);
-    //         }
-
-    //         const d: Date = new Date(a.period);
-
-    //         if (name === 'Leviathan') {
-    //             if (tier < 2) {
-    //                 totalNormal++;
-    //                 // if after reset?
-    //                 if (d.getTime() > c.startWeek.getTime()) {
-    //                     c.hasLevNm = true;
-    //                 }
-    //             } else {
-    //                 totalPrestige++;
-    //                 // if after reset?
-    //                 if (d.getTime() > c.startWeek.getTime()) {
-    //                     c.hasLevHm = true;
-    //                 }
-    //             }
-    //         } else if (name === 'Leviathan, Eater of Worlds') {
-    //             totalEater++;
-    //             // if after reset?
-    //             if (d.getTime() > c.startWeek.getTime()) {
-    //                 c.hasEater = true;
-    //             }
-    //         } else if (name === 'Leviathan, Spire of Stars') {
-    //             totalSpire++;
-    //             // if after reset?
-    //             if (d.getTime() > c.startWeek.getTime()) {
-    //                 c.hasSpire = true;
-    //             }
-    //         } else if (name.indexOf('Last Wish') === 0) {
-    //             totalLwNormal++;
-    //             // if after reset?
-    //             if (d.getTime() > c.startWeek.getTime()) {
-    //                 c.hasLwNm = true;
-    //             }
-    //         } else if (name.indexOf('Scourge of the Past') === 0) {
-    //             totalSpNormal++;
-    //             // if after reset?
-    //             if (d.getTime() > c.startWeek.getTime()) {
-    //                 c.hasSpNm = true;
-    //             }
-    //         }
-
-    //         totalRaid++;
-    //     });
-    //     c.lifetimeRaid = totalRaid;
-    //     c.lifetimeRaidNormal = totalNormal;
-    //     c.lifetimeRaidPrestige = totalPrestige;
-    //     c.lifetimeEater = totalEater;
-    //     c.lifetimeSpire = totalSpire;
-    //     c.lifetimeLwNormal = totalLwNormal;
-    //     c.lifetimeSpNormal = totalSpNormal;
-
-    //     //const EATER_KEY = '1234';
-    //     //const SPIRE_KEY = '2345';
-    //     //const LEV_NM_KEY = '1235';
-    //     //const LEV_HM_KEY = '1236';
-    //     const LW_NM_KEY = '3456';
-    //     const SP_NM_KEY = '4567';
-    //     // add psuedo milestone for eater
-    //     let foundEater = false;
-    //     let foundSpire = false;
-    //     let foundNm = false;
-    //     let foundHm = false;
-    //     let foundLwNm = false;
-    //     let foundSpNm = false;
-    //     for (const msName of msNames) {
-    //         if (msName.key === EATER_KEY) {
-    //             foundEater = true;
-    //         } else if (msName.key === SPIRE_KEY) {
-    //             foundSpire = true;
-    //         } else if (msName.key === LEV_NM_KEY) {
-    //             foundNm = true;
-    //         } else if (msName.key === LEV_HM_KEY) {
-    //             foundHm = true;
-    //         } else if (msName.key === LW_NM_KEY) {
-    //             foundLwNm = true;
-    //         } else if (msName.key === SP_NM_KEY) {
-    //             foundSpNm = true;
-    //         }
-    //     }
-    //     if (!foundLwNm) {
-    //         msNames.push({
-    //             key: LW_NM_KEY,
-    //             resets: c.endWeek.toISOString(),
-    //             rewards: 'Raid Gear',
-    //             name: 'Last Wish',
-    //             pl: 641,
-    //             desc: 'Forsaken DLC Raid',
-    //             hasPartial: false,
-    //             neverDisappears: true
-    //         });
-    //     }
-    //     if (!foundSpNm) {
-    //         msNames.push({
-    //             key: SP_NM_KEY,
-    //             resets: c.endWeek.toISOString(),
-    //             rewards: 'Raid Gear',
-    //             pl: 642,
-    //             name: 'Scourge of the Past',
-    //             desc: 'Newest Raid Lair',
-    //             hasPartial: false,
-    //             neverDisappears: true
-    //         });
-    //     }
-
-    //     // if (!foundEater) {
-    //     //     msNames.push({
-    //     //         key: EATER_KEY,
-    //     //         resets: c.endWeek.toISOString(),
-    //     //         rewards: "Raid Gear",
-    //     //         name: "Leviathan, Eater of Worlds",
-    //     //         desc: "Complete the Leviathan Raid Lair from CoO",
-    //     //         hasPartial: false,
-    //     //        neverDisappears: true
-    //     //     });
-    //     // }
-    //     // if (!foundSpire) {
-    //     //     msNames.push({
-    //     //         key: SPIRE_KEY,
-    //     //         resets: c.endWeek.toISOString(),
-    //     //         rewards: "Raid Gear",
-    //     //         name: "Leviathan, Spire of Stars",
-    //     //         desc: "Complete the Leviathan Raid Lair from Warmind",
-    //     //         hasPartial: false,
-    //     //        neverDisappears: true
-    //     //     });
-    //     // }
-    //     // if (!foundNm) {
-    //     //     msNames.push({
-    //     //         key: LEV_NM_KEY,
-    //     //         resets: c.endWeek.toISOString(),
-    //     //         rewards: "Raid Gear",
-    //     //         name: "Leviathan, Raid",
-    //     //         desc: "Normal mode raid",
-    //     //         hasPartial: false,
-    //     //        neverDisappears: true
-    //     //     });
-    //     // }
-    //     // if (!foundHm) {
-    //     //     msNames.push({
-    //     //         key: LEV_HM_KEY,
-    //     //         resets: c.endWeek.toISOString(),
-    //     //         rewards: "Raid Gear",
-    //     //         name: "Leviathan, Prestige",
-    //     //         desc: "Prestige mode raid",
-    //     //         hasPartial: false,
-    //     //            neverDisappears: true
-    //     //     });
-    //     // }
-
-    //     const eaterPsuedoMs: MilestoneStatus = new MilestoneStatus(EATER_KEY, c.hasEater, c.hasEater ? 1 : 0, null);
-    //     c.milestones[EATER_KEY] = eaterPsuedoMs;
-    //     const spirePsuedoMs: MilestoneStatus = new MilestoneStatus(SPIRE_KEY, c.hasSpire, c.hasSpire ? 1 : 0, null);
-    //     c.milestones[SPIRE_KEY] = spirePsuedoMs;
-    //     const levNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_NM_KEY, c.hasLevNm, c.hasLevNm ? 1 : 0, null);
-    //     c.milestones[LEV_NM_KEY] = levNmPsuedoMs;
-    //     const levHmPsuedoMs: MilestoneStatus = new MilestoneStatus(LEV_HM_KEY, c.hasLevHm, c.hasLevHm ? 1 : 0, null);
-    //     c.milestones[LEV_HM_KEY] = levHmPsuedoMs;
-    //     const lwNmPsuedoMs: MilestoneStatus = new MilestoneStatus(LW_NM_KEY, c.hasLwNm, c.hasLwNm ? 1 : 0, null);
-    //     c.milestones[LW_NM_KEY] = lwNmPsuedoMs;
-    //     const spNmPsuedoMs: MilestoneStatus = new MilestoneStatus(SP_NM_KEY, c.hasSpNm, c.hasSpNm ? 1 : 0, null);
-    //     c.milestones[SP_NM_KEY] = spNmPsuedoMs;
-
-    // }
-
-    //     public parsePrestigeNfHistory(msNames: MileStoneName[], c: Character, hist: Activity[]) {
-
-    //         hist.forEach(a => {
-    //             // ignore not completed
-    //             if (!a.completed) { return; }
-
-    //             const desc: any = this.destinyCacheService.cache.Activity[a.referenceId];
-    //             let name: string = null;
-    //             let tier: number = null;
-    //             if (desc) {
-    //                 name = desc.displayProperties.name;
-    //                 tier = desc.tier;
-    //             } else {
-    //                 console.log('No entry found for activity hash: ' + a.referenceId);
-    //             }
-    //             const d: Date = new Date(a.period);
-    //             if (d.getTime() > c.startWeek.getTime()) {
-    //                 c.hasPrestigeNf = true;
-    //             }
-    //         });
-    //         const NF_HM_KEY = '1237';
-    //         // add psuedo milestone for eater
-    //         let foundNfHmKey = false;
-
-    //         for (const msName of msNames) {
-    //             if (msName.key === NF_HM_KEY) {
-    //                 foundNfHmKey = true;
-    //             }
-    //         }
-    //         // prestige nightfall is gone
-    //         // if (!foundNfHmKey) {
-    //         //     msNames.unshift({
-    //         //         key: NF_HM_KEY,
-    //         //         type: "Weekly",
-    //         //         name: "Prestige Nightfall",
-    //         //         desc: "Complete the Prestige Nightfall",
-    //         //         hasPartial: false
-    //         //     });
-    //         // }
-
-    //         const prestigeNfPsuedoMs: MilestoneStatus = new MilestoneStatus(NF_HM_KEY, c.hasPrestigeNf, c.hasPrestigeNf ? 1 : 0, null);
-    //         c.milestones[NF_HM_KEY] = prestigeNfPsuedoMs;
-
-    //     }
-
-
 }
 
 

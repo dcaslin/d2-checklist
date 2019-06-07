@@ -9,15 +9,12 @@ import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus, Const } from './model';
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { BucketService, Bucket } from './bucket.service';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
-const SPIDER_KEY = '99999';
-// const RECKONING_KEY = '88888';
-const GAMBIT_PRIME_KEY = '77777';
 
 @Injectable()
 export class BungieService implements OnDestroy {
@@ -389,9 +386,8 @@ export class BungieService implements OnDestroy {
                 break;
             }
         }
-        const spiderPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, complete, complete ? 1 : 0, held ? 'Held' : 'Not Held', null, null);
-        c.milestones[SPIDER_KEY] = spiderPsuedoMs;
-        // update entry
+        const spiderPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, complete, complete ? 1 : 0, null, complete ? null : held ? 'Held' : 'Not Held', null);
+        c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
         p.milestoneList.next(p.milestoneList.getValue());
     }
 
@@ -401,20 +397,6 @@ export class BungieService implements OnDestroy {
         }
         return null;
     }
-
-    private async loadActivityPsuedoMsOnChar(c: Character): Promise<void> {
-        // we can do 0 later if we figure out the reckoning
-        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 64, c.startWeek);
-        const gambitActivities = activities.filter(a => a.mode == 'Gambit Prime' && a.success);
-        let count = gambitActivities.length;
-        if (count > 4) {
-            count = 4;
-        }
-        const gambitPct = count / 4;
-        const gambitPsuedoMs: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, gambitPct >= 1, gambitPct, this.getPctString(gambitPct), null, null);
-        c.milestones[GAMBIT_PRIME_KEY] = gambitPsuedoMs;
-    }
-
 
     public isSignedOn(p: Player): boolean {
         if (this.selectedUser == null) { return false; }
@@ -427,7 +409,7 @@ export class BungieService implements OnDestroy {
             return;
         }
         const ms: MileStoneName = {
-            key: SPIDER_KEY,
+            key: Const.SPIDER_KEY,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Powerful Gear',
             pl: 653,
@@ -436,10 +418,10 @@ export class BungieService implements OnDestroy {
             hasPartial: false
         };
         p.milestoneList.getValue().push(ms);
-        const empty: MilestoneStatus = new MilestoneStatus(SPIDER_KEY, false, 0, null, 'Loading...', null);
+        const empty: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, false, 0, null, 'Loading...', null);
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
-            c.milestones[SPIDER_KEY] = empty;
+            c.milestones[Const.SPIDER_KEY] = empty;
         }
         for (const c of p.characters) {
             this.loadSpiderOnChar(p, c);

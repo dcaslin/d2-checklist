@@ -185,8 +185,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
             'CharacterEquipment', 'CharacterInventories',
             'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles'
-            // 'ItemInstances','ItemPerks','ItemStats','ItemSockets','ItemPlugStates',
-            // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
+            // 'ItemSockets', 'ItemPlugStates',
+            //  'ItemInstances'
+             //'ItemPerks','ItemStats',
+             //'ItemTalentGrids','ItemCommonData'
+            // ,'ProfileInventories'
           ], false, false, showZeroPtTriumphs, showInvisTriumphs);
         this.setPlayer(x);
         this.loadSpider();

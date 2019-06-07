@@ -68,6 +68,7 @@
               <ng-container *ngIf="debugmode|async">
                 <br> {{mileStoneName.resets|date:'short'}}
               </ng-container>
+              <div class="accent-text ms-supp-info" *ngIf="mileStoneName.suppInfo!=null">{{mileStoneName.suppInfo}}</div>
             </span>
             <br>
             <span class="simple-caption">
