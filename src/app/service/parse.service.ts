@@ -744,7 +744,8 @@ export class ParseService {
             itemType = ItemType.GearMod;
         } else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
             itemType = ItemType.ForgeVessel;
-
+        } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
+            itemType = ItemType.Bounty;
         }
 
 
@@ -1373,7 +1374,7 @@ export class ParseService {
             }
             // constructor(hash, complete, pct, info, suppInfo, phases) {
             const complete = powerfulDropsRemaining === 0;
-            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + " Powerful drop left", null);
+            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null);
         } else {
             const currDesc: any = this.destinyCacheService.cache.InventoryItem['1642918584'];
             let impAdded = false;

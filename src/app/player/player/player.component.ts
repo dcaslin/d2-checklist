@@ -156,8 +156,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
   }
 
-  async loadSpider() {
-    await this.bungieService.loadSpiderWeekly(this.player);
+  async loadWeeklyPowerfulBounties() {
+    await this.bungieService.loadWeeklyPowerfulBounties(this.player);
     this.ref.markForCheck();
   }
 
@@ -192,7 +192,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
             // ,'ProfileInventories'
           ], false, false, showZeroPtTriumphs, showInvisTriumphs);
         this.setPlayer(x);
-        this.loadSpider();
+        this.loadWeeklyPowerfulBounties();
         this.loadClan();
 
         // need to get out of this change detection cycle to have tabs set

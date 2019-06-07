@@ -1041,7 +1041,10 @@ export class Const {
     };
 
     public static readonly CHALICE_KEY = '88888';
+
     public static readonly SPIDER_KEY =  '99999';
+    public static readonly DRIFTER_KEY = '77777';
+    public static readonly WERNER_KEY =   '66666';
 }
 
 export class InventoryStat {

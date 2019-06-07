@@ -372,22 +372,38 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private async loadSpiderOnChar(p: Player, c: Character): Promise<void> {
-        const vendorData = await this.loadVendors(c);
-        let complete = false;
-        let held = false;
+    private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[]) {
+        const powerfulBounties: SaleItem[] = [];
         for (const i of vendorData) {
-            if (i.vendor.hash == '863940356' && i.value != null && i.value.length == 1 && i.value[0].hash == '4039143015') {
-                if (i.status == 'Already completed') {
-                    complete = true;
-                } else if (i.status == 'Already held') {
-                    held = true;
+            if (i.vendor.hash == targetVendorHash) {
+                if (i.value != null) {
+                    for (const v of i.value) {
+                        // is powerful gear
+                        if (v.hash == '4039143015') {
+                            powerfulBounties.push(i);
+                        }
+                    }
                 }
-                break;
             }
         }
-        const spiderPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, complete, complete ? 1 : 0, null, complete ? null : held ? 'Held' : 'Not Held', null);
+        if (powerfulBounties.length == 1) {
+            const i = powerfulBounties[0];
+            const complete = i.status == 'Already completed';
+            const held = i.status == 'Already held';
+            const psuedoMs = new MilestoneStatus(key, complete, complete ? 1 : 0, null, complete ? null : held ? 'Held' : 'Not Held', null);
+            return psuedoMs;
+        }
+    }
+
+    private async loadWeeklyPowerfulBountiesOnChar(p: Player, c: Character): Promise<void> {
+        // 880202832 Werner
+        // 248695599 Drifter
+        // 863940356 Spider
+        const vendorData = await this.loadVendors(c);
+        const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData);
         c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
+        const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData);
+        c.milestones[Const.DRIFTER_KEY] = drifterPsuedoMs;
         p.milestoneList.next(p.milestoneList.getValue());
     }
 
@@ -403,12 +419,12 @@ export class BungieService implements OnDestroy {
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
     }
 
-    public async loadSpiderWeekly(p: Player): Promise<void> {
+    public async loadWeeklyPowerfulBounties(p: Player): Promise<void> {
         // is this the signed on user?
         if (!this.isSignedOn(p)) {
             return;
         }
-        const ms: MileStoneName = {
+        const ms1: MileStoneName = {
             key: Const.SPIDER_KEY,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Powerful Gear',
@@ -417,14 +433,38 @@ export class BungieService implements OnDestroy {
             desc: 'Spider\'s weekly powerful bounty, costs Ghost Fragments',
             hasPartial: false
         };
-        p.milestoneList.getValue().push(ms);
-        const empty: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, false, 0, null, 'Loading...', null);
+        p.milestoneList.getValue().push(ms1);
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, false, 0, null, 'Loading...', null);
+        const ms2: MileStoneName = {
+            key: Const.DRIFTER_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear',
+            pl: 653,
+            name: 'Gambit Weekly Bounty',
+            desc: 'The Drifter\'s weekly powerful bounty',
+            hasPartial: false
+        };
+        p.milestoneList.getValue().push(ms2);
+        const empty2: MilestoneStatus = new MilestoneStatus(Const.DRIFTER_KEY, false, 0, null, 'Loading...', null);
+        const ms3: MileStoneName = {
+            key: Const.DRIFTER_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear',
+            pl: 745,
+            name: 'Werner\'s Weekly Bounties',
+            desc: '4 powerful bounties, plus a 5th powerful drop if you finish all 4',
+            hasPartial: false
+        };
+        p.milestoneList.getValue().push(ms3);
+        const empty3: MilestoneStatus = new MilestoneStatus(Const.WERNER_KEY, false, 0, null, 'Loading...', null);
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
-            c.milestones[Const.SPIDER_KEY] = empty;
+            c.milestones[Const.SPIDER_KEY] = empty1;
+            c.milestones[Const.DRIFTER_KEY] = empty2;
+            c.milestones[Const.WERNER_KEY] = empty3;
         }
         for (const c of p.characters) {
-            this.loadSpiderOnChar(p, c);
+            this.loadWeeklyPowerfulBountiesOnChar(p, c);
         }
     }
 
