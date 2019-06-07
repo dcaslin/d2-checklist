@@ -1,19 +1,9 @@
 
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
-
 import { LowLineService } from './lowline.service';
-import {
-    Character, CurrentActivity, Progression, Activity,
-    Profile, Player, MilestoneStatus, MileStoneName, PGCR, PGCREntry, UserInfo, LevelProgression,
-    Const, BungieMembership, BungieMember, BungieMemberPlatform,
-    BungieGroupMember, ClanInfo, PGCRWeaponData, ClanMilestoneResult,
-    CharacterStat, Currency, LeaderboardEntry, LeaderBoardList, PGCRTeam, NameDesc,
-    InventoryItem, ItemType, DamageType, Perk, InventoryStat, InventorySocket, Rankup, AggHistory,
-    Checklist, ChecklistItem, CharChecklist, CharChecklistItem, ItemObjective,
-    PrivLoadoutRequirement, PrivPublicMilestone, PublicMilestone, MilestoneActivity, MilestoneChallenge,
-    LoadoutRequirement, Vendor, SaleItem, TriumphCollectibleNode, TriumphRecordNode, TriumphPresentationNode, ItemState, InventoryPlug, MastworkInfo, QuestlineStep, Questline, Vault, Shared, Target, PathEntry, Seal, TriumphNode, DestinyAmmunitionType, PGCRExtraData, RecordSeason
-} from './model';
+import { Activity, AggHistory, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+
 
 
 
@@ -1354,35 +1344,49 @@ export class ParseService {
 
 
 
-    private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: any) {
+    private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, currencies: Currency[]) {
 
         let imperials: number;
         let powerfulDropsRemaining: number;
-        for (const obj of chalice.objectives){
-            if (obj.progressDescription.indexOf("rewards")>0){
+        for (const obj of chalice.objectives) {
+            if (obj.progressDescription.indexOf("rewards") > 0) {
                 powerfulDropsRemaining = obj.progress;
             }
-            if (obj.progressDescription === 'Imperials'){
+            if (obj.progressDescription === 'Imperials') {
                 imperials = obj.progress;
             }
         }
-        if (milestonesByKey[Const.CHALICE_KEY] == null) {
-            const ms: MileStoneName = {
-                key: Const.CHALICE_KEY,
-                resets: char.endWeek.toISOString(),
-                rewards: 'Powerful Gear',
-                pl: 750,
-                name: 'Menagerie',
-                desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
-                hasPartial: false,
-                suppInfo: imperials + ' Imperials'
-            };
-            milestoneList.push(ms);
-            milestonesByKey[Const.CHALICE_KEY] = ms;
+        if (char != null) {
+            if (milestonesByKey[Const.CHALICE_KEY] == null) {
+                const ms: MileStoneName = {
+                    key: Const.CHALICE_KEY,
+                    resets: char.endWeek.toISOString(),
+                    rewards: 'Powerful Gear',
+                    pl: 750,
+                    name: 'Menagerie',
+                    desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
+                    hasPartial: false,
+                    suppInfo: imperials + ' Imperials'
+                };
+                milestoneList.push(ms);
+                milestonesByKey[Const.CHALICE_KEY] = ms;
+            }
+            // constructor(hash, complete, pct, info, suppInfo, phases) {
+            const complete = powerfulDropsRemaining === 0;
+            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + " Powerful drop left", null);
+        } else {
+            const currDesc: any = this.destinyCacheService.cache.InventoryItem['1642918584'];
+            let impAdded = false;
+            for (const c of currencies) {
+                if (c.hash == '1642918584') {
+                    impAdded = true;
+                }
+            }
+            if (!impAdded) {
+                currencies.push(new Currency(currDesc.hash, currDesc.displayProperties.name, currDesc.displayProperties.icon, imperials));
+            }
         }
-        // constructor(hash, complete, pct, info, suppInfo, phases) {
-        const complete = powerfulDropsRemaining === 0;
-        char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining +" Powerful drop left", null);
+
     }
 
     public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Player {
@@ -1582,7 +1586,7 @@ export class ParseService {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
                             } else if (parsed.type === ItemType.Chalice) {
-                                this.handleChalice(char, parsed, milestoneList, milestonesByKey);
+                                this.handleChalice(char, parsed, milestoneList, milestonesByKey, currencies);
                             } else {
                                 gear.push(parsed);
                             }
@@ -1767,7 +1771,7 @@ export class ParseService {
         }
         let charBounties: { [id: string]: InventoryItem[] } = null;
         let charQuests: { [id: string]: InventoryItem[] } = null;
-        if (!privateGear) {
+        if (!privateGear && chars.length > 0 ) {
             charBounties = {};
             charQuests = {};
             for (const c of chars) {
