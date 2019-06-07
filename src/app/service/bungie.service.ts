@@ -9,7 +9,7 @@ import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus, Const } from './model';
+import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus, Const, ItemType } from './model';
 import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { BucketService, Bucket } from './bucket.service';
@@ -376,7 +376,7 @@ export class BungieService implements OnDestroy {
         const powerfulBounties: SaleItem[] = [];
         for (const i of vendorData) {
             if (i.vendor.hash == targetVendorHash) {
-                if (i.value != null) {
+                if (i.value != null && i.type == ItemType.Bounty) {
                     for (const v of i.value) {
                         // is powerful gear
                         if (v.hash == '4039143015') {
@@ -390,7 +390,27 @@ export class BungieService implements OnDestroy {
             const i = powerfulBounties[0];
             const complete = i.status == 'Already completed';
             const held = i.status == 'Already held';
-            const psuedoMs = new MilestoneStatus(key, complete, complete ? 1 : 0, null, complete ? null : held ? 'Held' : 'Not Held', null);
+            const psuedoMs = new MilestoneStatus(key, complete, complete ? 1 : 0, null,
+                complete ? null : held ? 'Held' : 'Not Held', null);
+            return psuedoMs;
+        } else {
+            let complete = 0;
+            let held = 0;
+            for (const b of powerfulBounties) {
+                if (b.status == 'Already completed') {
+                    complete++;
+                }
+                if (b.status == 'Already held') {
+                    held++;
+                }
+            }
+            let info = complete + '/' + powerfulBounties.length;
+            if (held > 0) {
+                info += ', ' + held + ' held';
+            }
+            const allDone = complete === powerfulBounties.length;
+            const psuedoMs = new MilestoneStatus(key, allDone,
+                complete / powerfulBounties.length, null, allDone ? null : info, null);
             return psuedoMs;
         }
     }
@@ -404,6 +424,8 @@ export class BungieService implements OnDestroy {
         c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
         const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData);
         c.milestones[Const.DRIFTER_KEY] = drifterPsuedoMs;
+        const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData);
+        c.milestones[Const.WERNER_KEY] = wernerPsuedoMs;
         p.milestoneList.next(p.milestoneList.getValue());
     }
 
@@ -447,13 +469,13 @@ export class BungieService implements OnDestroy {
         p.milestoneList.getValue().push(ms2);
         const empty2: MilestoneStatus = new MilestoneStatus(Const.DRIFTER_KEY, false, 0, null, 'Loading...', null);
         const ms3: MileStoneName = {
-            key: Const.DRIFTER_KEY,
+            key: Const.WERNER_KEY,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Powerful Gear',
             pl: 745,
             name: 'Werner\'s Weekly Bounties',
             desc: '4 powerful bounties, plus a 5th powerful drop if you finish all 4',
-            hasPartial: false
+            hasPartial: true
         };
         p.milestoneList.getValue().push(ms3);
         const empty3: MilestoneStatus = new MilestoneStatus(Const.WERNER_KEY, false, 0, null, 'Loading...', null);
