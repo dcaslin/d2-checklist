@@ -40,6 +40,7 @@ export enum ItemType {
     Ghost = 24,
     Package = 25,
     Bounty = 26,
+    Chalice = 97, // custom
     ForgeVessel = 98, // custom
     GearMod = 99  // custom added
 }
@@ -471,7 +472,6 @@ export class Player {
         currencies: Currency[],
         bounties: {[id: string]: InventoryItem[]},
         quests: {[id: string]: InventoryItem[]},
-
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
         collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
@@ -667,6 +667,7 @@ export interface MileStoneName {
     desc: string;
     hasPartial: boolean;
     neverDisappears?: boolean;
+    suppInfo?: string;
 }
 
 export abstract class Target {
@@ -1024,20 +1025,23 @@ export class Progression {
 
 export class Const {
     //used for clan filter
-    public static ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
-    public static XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
-    public static PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
-    public static BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fab fa-windows');
+    public static readonly ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
+    public static readonly XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
+    public static readonly PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
+    public static readonly BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fab fa-windows');
 
-    public static PLATFORMS_ARRAY = [
+    public static readonly PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM
     ];
 
-    public static PLATFORMS_DICT = {
+    public static readonly PLATFORMS_DICT = {
         '1': Const.XBL_PLATFORM,
         '2': Const.PSN_PLATFORM,
         '4': Const.BNET_PLATFORM
     };
+
+    public static readonly CHALICE_KEY = '88888';
+    public static readonly SPIDER_KEY =  '99999';
 }
 
 export class InventoryStat {
