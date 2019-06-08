@@ -372,7 +372,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[]) {
+    private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
         const powerfulBounties: SaleItem[] = [];
         for (const i of vendorData) {
             if (i.vendor.hash == targetVendorHash) {
@@ -390,7 +390,20 @@ export class BungieService implements OnDestroy {
             const i = powerfulBounties[0];
             const complete = i.status == 'Already completed';
             const held = i.status == 'Already held';
-            const psuedoMs = new MilestoneStatus(key, complete, complete ? 1 : 0, null,
+            let progress = complete ? 1 : 0;
+            if (held) {
+                const bounties: InventoryItem[] = p.bounties[c.characterId];
+                let bounty: InventoryItem = null;
+                for (const b of bounties) {
+                    if (b.hash == i.hash) {
+                        bounty = b;
+                    }
+                }
+                if (bounty != null) {
+                    progress = bounty.aggProgress / 100;
+                }
+            }
+            const psuedoMs = new MilestoneStatus(key, complete, progress, null,
                 complete ? null : held ? 'Held' : 'Not Held', null);
             return psuedoMs;
         } else {
@@ -420,11 +433,11 @@ export class BungieService implements OnDestroy {
         // 248695599 Drifter
         // 863940356 Spider
         const vendorData = await this.loadVendors(c);
-        const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData);
+        const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData, p, c);
         c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
-        const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData);
+        const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData, p, c);
         c.milestones[Const.DRIFTER_KEY] = drifterPsuedoMs;
-        const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData);
+        const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData, p, c);
         c.milestones[Const.WERNER_KEY] = wernerPsuedoMs;
         p.milestoneList.next(p.milestoneList.getValue());
     }
@@ -464,7 +477,7 @@ export class BungieService implements OnDestroy {
             pl: 653,
             name: 'Gambit Weekly Bounty',
             desc: 'The Drifter\'s weekly powerful bounty',
-            hasPartial: false
+            hasPartial: true
         };
         p.milestoneList.getValue().push(ms2);
         const empty2: MilestoneStatus = new MilestoneStatus(Const.DRIFTER_KEY, false, 0, null, 'Loading...', null);

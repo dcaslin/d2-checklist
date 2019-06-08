@@ -1642,6 +1642,9 @@ export class ParseService {
             bounties.sort(function (a, b) {
                 return b.aggProgress - a.aggProgress;
             });
+            quests.sort(function (a, b) {
+                return b.aggProgress - a.aggProgress;
+            });
 
             const nodes: any[] = [];
             const records: any[] = [];

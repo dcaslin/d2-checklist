@@ -50,13 +50,18 @@
                       {{ g.expirationDate | amDifference: today |
                       amDuration:'ms'}} </span>
                     <div class="simple-caption">{{g.desc}}</div>
+                    <div>
+                        <mat-progress-bar class="bounty-progress"
+                        mode="determinate" [value]="g.aggProgress">
+                      </mat-progress-bar> {{g.aggProgress|number : '1.0-0'}}%
+                    </div>
                   </td>
                   <td data-label="">
                     <div class="obj-desc" *ngFor="let obj of g.objectives">
                       <i *ngIf="obj.complete"
                         class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!obj.complete" class="far fa-square"></i>
-                      {{obj.progressDescription}} {{obj.aggProgress}}
+                      {{obj.progressDescription}}
                       <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
                       <mat-progress-bar class="bounty-progress"
                         *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
@@ -102,13 +107,18 @@
 
                     <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
                     <div class="simple-caption">{{g.desc}}</div>
+                    <div>
+                        <mat-progress-bar class="bounty-progress"
+                        mode="determinate" [value]="g.aggProgress">
+                      </mat-progress-bar> {{g.aggProgress|number : '1.0-0'}}%
+                    </div>
                   </td>
                   <td data-label="">
                     <div class="obj-desc" *ngFor="let obj of g.objectives">
                       <i *ngIf="obj.complete"
                         class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                       <i *ngIf="!obj.complete" class="far fa-square"></i>
-                      {{obj.progressDescription}} {{obj.aggProgress}}
+                      {{obj.progressDescription}}
                       <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
                       <mat-progress-bar class="bounty-progress"
                         *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"

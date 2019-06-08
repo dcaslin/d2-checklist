@@ -154,7 +154,7 @@ export interface SaleItem {
     itemTypeAndTierDisplayName: string;
     itemTypeDisplayName: string;
     quantity: number;
-    objectives: any;
+    objectives: ItemObjective[];
     rolledPerks: ItemPerks[][];
     value: NameQuantity[];
     costs: NameQuantity[];
