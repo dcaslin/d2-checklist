@@ -9,7 +9,10 @@
   .underline {
     text-decoration: underline;
   }
-  
+
+  .header-cell{
+    min-width: 200px;
+  }
 
   .item-icon{
     float: left;
@@ -29,6 +32,8 @@
 
   .bounty-progress{
     max-width: 250px;
+    display: inline-block;
+    margin-left: 5px;
   }
   
   
