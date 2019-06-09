@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistory, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, NameQuantity } from './model';
 
 
 
@@ -746,6 +746,8 @@ export class ParseService {
             itemType = ItemType.ForgeVessel;
         } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
             itemType = ItemType.Bounty;
+        } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName == 'Invitation of the Nine') {
+            itemType = ItemType.Bounty;
         }
 
 
@@ -1350,7 +1352,7 @@ export class ParseService {
         let imperials: number;
         let powerfulDropsRemaining: number;
         for (const obj of chalice.objectives) {
-            if (obj.progressDescription.indexOf("rewards") > 0) {
+            if (obj.progressDescription.indexOf('rewards') > 0) {
                 powerfulDropsRemaining = obj.progress;
             }
             if (obj.progressDescription === 'Imperials') {
@@ -2270,10 +2272,6 @@ export class ParseService {
                 return null;
             }
             const postmaster = (itm.bucketHash == 215593132);
-            // ignore postmaster items
-            // if (postMaster) {
-            //     return null;
-            // }
             let type: ItemType = desc.itemType;
             let ammoType: DestinyAmmunitionType;
             if (desc.equippingBlock != null) {
@@ -2286,7 +2284,10 @@ export class ParseService {
             }
             if (itm.itemHash === 1115550924) {
                 type = ItemType.Chalice;
+            } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName == 'Invitation of the Nine') {
+                type = ItemType.Bounty;
             }
+
             if (!detailedInv) {
                 if (type !== ItemType.Bounty
                     && type !== ItemType.Quest
@@ -2524,13 +2525,14 @@ export class ParseService {
                     }
                 }
             }
-            const values = [];
+            const values: NameQuantity[] = [];
             if (desc.value != null && desc.value.itemValue != null) {
                 for (const val of desc.value.itemValue) {
                     if (val.itemHash === 0) { continue; }
                     const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
                     if (valDesc != null) {
                         values.push({
+                            hash: val.itemHash,
                             name: valDesc.displayProperties.name,
                             quantity: val.quantity
                         });
@@ -2584,6 +2586,30 @@ export class ParseService {
             }
             if (postmaster) {
                 searchText += ' mail postmaster';
+            }
+            if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep) {
+                searchText = desc.displayProperties.name  + ' '; ;
+                searchText += desc.displayProperties.description + ' ';
+                // values
+                for (const v of values) {
+                    searchText += v.name + ' ';
+                }
+                // vendor, fix xur
+                if (desc.sourceData != null && desc.sourceData.vendorSources != null) {
+                    for (const vs of desc.sourceData.vendorSources) {
+                        if (vs.vendorHash != null) {
+                            const vDesc: any = this.destinyCacheService.cache.Vendor[vs.vendorHash];
+                            if (vDesc != null) {
+                                searchText += vDesc.displayProperties.name + ' ';
+                            }
+                            if (vs.vendorHash == '2190858386') {
+                                searchText += 'Xur ';
+                            }
+                        }
+                    }
+                }
+                searchText += desc.itemTypeDisplayName + ' ';
+                searchText += desc.displaySource + ' ';
             }
 
             searchText = searchText.toLowerCase();
