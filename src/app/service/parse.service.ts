@@ -217,7 +217,7 @@ export class ParseService {
 
                     c.clanMilestones = clanMilestones;
                     return;
-                } else if (milestonesByKey[key] == null) {
+                } else if (milestonesByKey[key] == null && key!='534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         const ms: MileStoneName = {
