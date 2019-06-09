@@ -1580,7 +1580,7 @@ export class ParseService {
                     options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     items.forEach(itm => {
-                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options);
+                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
                             if (parsed.type === ItemType.Bounty) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
@@ -1605,7 +1605,7 @@ export class ParseService {
                         options.push(vault);
                         const items: PrivInventoryItem[] = resp.characterEquipment.data[key].items;
                         items.forEach(itm => {
-                            const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options);
+                            const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, null);
                             if (parsed != null) {
                                 gear.push(parsed);
                             }
@@ -1626,7 +1626,7 @@ export class ParseService {
                         } else {
                             options = [shared];
                         }
-                        const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options);
+                        const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options, null);
                         if (parsed != null) {
                             if (parsed.type == ItemType.Weapon || parsed.type == ItemType.Armor || parsed.type == ItemType.Ghost || parsed.type == ItemType.Vehicle) {
                                 parsed.options.pop();
@@ -2260,7 +2260,7 @@ export class ParseService {
         return name;
     }
 
-    private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv?: boolean, options?: Target[]): InventoryItem {
+    private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
@@ -2339,9 +2339,17 @@ export class ParseService {
             let progTotal = 0, progCnt = 0;
             if (itemComp != null) {
                 if (itemComp.objectives != null && itemComp.objectives.data != null) {
-                    const objs: any = itemComp.objectives.data[itm.itemInstanceId];
+                    const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
+                    let objs: any[] = null;
+                    if (parentObj!=null){
+                        objs = parentObj.objectives;
+                    }
+                    if (objs == null && characterProgressions!=null && characterProgressions.data!= null &&
+                        owner!=null && characterProgressions.data[owner.id]!=null) {
+                        objs = characterProgressions.data[owner.id].uninstancedItemObjectives[itm.itemHash];
+                    }
                     if (objs != null) {
-                        for (const o of objs.objectives) {
+                        for (const o of objs) {
                             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                             const iObj: ItemObjective = {
                                 completionValue: oDesc.completionValue,
@@ -2360,6 +2368,7 @@ export class ParseService {
                             objectives.push(iObj);
                         }
                     }
+
                 }
             }
             let aggProgress = 0;
