@@ -32,6 +32,7 @@ export class BountiesComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
+    private bungieService: BungieService,
     private ref: ChangeDetectorRef,
     public dialog: MatDialog) {
     super(storageService, ref);
