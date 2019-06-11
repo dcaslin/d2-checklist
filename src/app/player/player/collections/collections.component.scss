@@ -44,3 +44,23 @@
     max-width: 300px;
   }
 }
+
+.badge-body {
+  text-align: left;
+  margin: 5px;
+}
+
+.badge-class-header{
+  margin-right: 5px;
+}
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.badge-icon{
+  height: 126px;
+  width: 208px;
+  background-size: cover;
+}

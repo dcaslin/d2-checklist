@@ -2,7 +2,8 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, NameQuantity } from './model';
+import { Activity, AggHistory, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, NameQuantity, Badge, BadgeClass } from './model';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 
 
@@ -217,7 +218,7 @@ export class ParseService {
 
                     c.clanMilestones = clanMilestones;
                     return;
-                } else if (milestonesByKey[key] == null && key!='534869653') {
+                } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         const ms: MileStoneName = {
@@ -1317,6 +1318,57 @@ export class ParseService {
         return checklists;
     }
 
+    private buildBadge(node: TriumphNode): Badge {
+        const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
+        if (pDesc == null) { return null; }
+        // handle each char
+        console.dir(node);
+        const badgeClasses: BadgeClass[] = [];
+        let badgeComplete = true;
+        for (const c of node.children) {
+            let complete = 0;
+            for (const coll of c.children) {
+                const co = coll as TriumphCollectibleNode;
+                if (co.acquired) {
+                    complete++;
+                }
+            }
+            badgeClasses.push({
+                hash: c.hash,
+                name: c.name,
+                complete: complete,
+                total: c.children.length,
+                children: c.children as TriumphCollectibleNode[]
+            });
+            badgeComplete = badgeComplete && complete === c.children.length;
+        }
+        return {
+            hash: node.hash,
+            name: node.name,
+            desc: node.desc,
+            icon: node.icon,
+            complete: badgeComplete,
+            classes: badgeClasses
+        }
+
+        // go 2 leves deep on children, first level if chars, second level is items for badge for char
+        // find linked triumph and seals if any
+        return null;
+        // const percent = Math.floor((100 * progress) / node.children.length);
+        // return {
+        //     hash: node.hash,
+        //     name: node.name,
+        //     desc: node.desc,
+        //     icon: node.icon,
+        //     children: node.children,
+        //     title: title,
+        //     percent: percent,
+        //     progress: progress,
+        //     complete: progress >= node.children.length,
+        //     completionValue: node.children.length
+        // };
+    }
+
     private buildSeal(node: TriumphNode): Seal {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
         if (pDesc == null) { return null; }
@@ -1536,6 +1588,7 @@ export class ParseService {
 
         let recordTree = [];
         const seals: Seal[] = [];
+        const badges: Badge[] = [];
         const seasons: RecordSeason[] = [];
         let lowHangingTriumphs: TriumphRecordNode[] = [];
         let searchableTriumphs: TriumphRecordNode[] = [];
@@ -1752,12 +1805,17 @@ export class ParseService {
             }
 
             if (collections.length > 0) {
+                const tempBadges = this.handleColPresNode([], '498211331', nodes, collections, []).children;
+                for (const ts of tempBadges) {
+                    const badge = this.buildBadge(ts);
+                    if (badge != null) {
+                        badges.push(badge);
+                    }
+                }
 
                 const collLeaves: TriumphCollectibleNode[] = [];
                 colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
                 searchableCollection = collLeaves.sort((a, b) => {
-                    // if (a.percent>b.percent) return -1;
-                    // if (a.percent<b.percent) return 1;
                     if (a.name < b.name) { return -1; }
                     if (a.name < b.name) { return 0; }
                     return 0;
@@ -1777,7 +1835,7 @@ export class ParseService {
         }
         let charBounties: { [id: string]: InventoryItem[] } = null;
         let charQuests: { [id: string]: InventoryItem[] } = null;
-        if (!privateGear && chars.length > 0 ) {
+        if (!privateGear && chars.length > 0) {
             charBounties = {};
             charQuests = {};
             for (const c of chars) {
@@ -1795,7 +1853,7 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList, currencies, charBounties, charQuests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
-            seals, title, seasons, hasHiddenClosest);
+            seals, badges, title, seasons, hasHiddenClosest);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -2341,11 +2399,11 @@ export class ParseService {
                 if (itemComp.objectives != null && itemComp.objectives.data != null) {
                     const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
                     let objs: any[] = null;
-                    if (parentObj!=null){
+                    if (parentObj != null) {
                         objs = parentObj.objectives;
                     }
-                    if (objs == null && characterProgressions!=null && characterProgressions.data!= null &&
-                        owner!=null && characterProgressions.data[owner.id]!=null) {
+                    if (objs == null && characterProgressions != null && characterProgressions.data != null &&
+                        owner != null && characterProgressions.data[owner.id] != null) {
                         objs = characterProgressions.data[owner.id].uninstancedItemObjectives[itm.itemHash];
                     }
                     if (objs != null) {
@@ -2597,7 +2655,7 @@ export class ParseService {
                 searchText += ' mail postmaster';
             }
             if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep) {
-                searchText = desc.displayProperties.name  + ' '; ;
+                searchText = desc.displayProperties.name + ' ';;
                 searchText += desc.displayProperties.description + ' ';
                 // values
                 for (const v of values) {

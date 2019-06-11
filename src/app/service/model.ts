@@ -74,6 +74,24 @@ export interface RecordSeason {
     records: TriumphRecordNode[];
 }
 
+export interface Badge {
+    hash: string;
+    name: string;
+    desc: string;
+    icon: string;
+    complete: boolean;
+    classes: BadgeClass[];
+}
+
+export interface BadgeClass {
+    hash: string;
+    name: string;
+    complete: number;
+    total: number;
+    children: TriumphCollectibleNode[];
+}
+
+
 export interface Seal {
     hash: string;
     name: string;
@@ -456,6 +474,7 @@ export class Player {
     readonly collections: TriumphNode[];
     readonly lowHangingTriumphs: TriumphRecordNode[];
     readonly seals: Seal[];
+    readonly badges: Badge[];
     readonly searchableTriumphs: TriumphRecordNode[];
     readonly searchableCollection: TriumphCollectibleNode[];
     readonly gear: InventoryItem[];
@@ -477,7 +496,8 @@ export class Player {
         collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
         searchableCollection: TriumphCollectibleNode[],
-        seals: Seal[], title: string, seasons: RecordSeason[], hasHiddenClosest: boolean) {
+        seals: Seal[], badges: Badge[],
+        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -507,6 +527,7 @@ export class Player {
         this.searchableTriumphs = searchableTriumphs;
         this.searchableCollection = searchableCollection;
         this.seals = seals;
+        this.badges = badges;
         this.title = title;
         this.seasons = seasons;
         this.hasHiddenClosest = hasHiddenClosest;
