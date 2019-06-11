@@ -127,25 +127,43 @@
         <mat-expansion-panel *ngIf="!hideComplete || !b.complete">
           <mat-expansion-panel-header>
             <mat-panel-title [class.accent-text]="b.complete">
-              {{b.name}}
+              <div *ngIf="b.icon!=null" class="badge-icon"
+                [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></div> {{b.name}}
               <ng-container *ngIf="debugmode|async">{{b.hash}}</ng-container>
             </mat-panel-title>
-            <mat-panel-description [class.accent-text]="b.complete">
+            <mat-panel-description [class.accent-text]="b.complete" class="d-none d-xl-inline">
               <span *ngFor="let t of b.classes" class="badge-class-header">{{t.name}}
                 {{t.complete}}/{{t.total}}</span>
             </mat-panel-description>
           </mat-expansion-panel-header>
           <div class="badge-body">
-              <div *ngIf="b.icon!=null" class="badge-icon"
-              [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></div>
+            <mat-tab-group>
+              <mat-tab *ngFor="let t of b.classes" [label]="t.name">
+                <div class="badge-char-body">
+                  <h5>{{t.name}}: {{t.complete}}/{{t.total}}</h5>
+                  <ng-container *ngFor="let c of t.children">
+                    <div class="badge-row" *ngIf="!(hideComplete && c.acquired)">
+                      <div *ngIf="c.icon!=null" class="badge-leaf-icon"
+                        [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></div>
+                      <div style="text-align: left; margin-bottom: 20px">
+                        <i *ngIf="c.acquired " class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                        <i *ngIf="!c.acquired" class="far fa-square"></i>
+                        {{c.name}} <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
+                        <br>
+                        <span class="simple-caption">
+                          {{c.sourceString}}
+                        </span>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
           </div>
-
         </mat-expansion-panel>
       </ng-container>
     </mat-accordion>
-
   </mat-tab>
-
   <div>
     <br>
     <a mat-stroked-button href="https://destinysets.com/" target="_blank" rel="noopener">Dive deeper at

@@ -28,8 +28,6 @@ export class TargetArmorPerksDialogComponent implements OnInit {
     for (const c of choices){
       d[c.matchValue.toLowerCase()] = '';
     }
-    console.dir(d);
-
     this.targetChoices = choices;
     this.target = this.targetPerkService.perks.value;
     dialogRef.afterClosed().subscribe(result => {

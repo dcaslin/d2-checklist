@@ -47,7 +47,6 @@ export class BountiesComponent extends ChildComponent implements OnInit {
       takeUntil(this.unsubscribe$),
       debounceTime(50))
       .subscribe(() => {
-        console.log('change');
         if (this.displayFilterText != null) {
           localStorage.setItem('bounty-filter', this.displayFilterText);
         } else {

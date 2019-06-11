@@ -1320,9 +1320,7 @@ export class ParseService {
 
     private buildBadge(node: TriumphNode): Badge {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
-        if (pDesc == null) { return null; }
-        // handle each char
-        console.dir(node);
+        if (pDesc == null) { return null; }        
         const badgeClasses: BadgeClass[] = [];
         let badgeComplete = true;
         for (const c of node.children) {

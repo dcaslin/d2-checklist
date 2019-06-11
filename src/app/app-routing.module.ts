@@ -147,12 +147,6 @@ export class AuthGuard implements CanActivate {
       component: PlayerComponent
     },
     {
-      path: ':platform/:gt/:tab',
-      pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: PlayerComponent
-    },
-    {
       path: ':platform/:gt',
       pathMatch: 'full',
       canActivate: [AuthGuard],
