@@ -1,3 +1,84 @@
-<p>
-  triumph-closest works!
-</p>
+<ng-container *ngIf="state.player|async as player">
+    <h4 class="triumph-score">
+        Closest 10
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.showZeroPtTriumphs">
+            Show Zero Pt
+        </mat-checkbox>
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.showInvisTriumphs">
+            Show Invisible
+        </mat-checkbox>
+        <ng-container *ngIf="player.hasHiddenClosest==true">
+            <button mat-button class="hide-complete-triumphs" color="warn" (click)="state.restoreHiddenClosestTriumphs()"><i
+                    class="fas fa-eye"></i>&emsp;Restore hidden
+            </button>
+        </ng-container>
+
+    </h4>
+
+    <table class="responsive-table">
+        <tbody>
+            <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
+                <tr>
+                    <td class="lead" data-label="">
+                        {{cntr+1}}.&ensp;
+                        <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
+                            {{t.name}} </ng-container>
+                        <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
+                            target="_blank" rel="noopener">
+                            {{t.name}}
+                            <i class='accent-text far fa-map-marker-alt'></i>
+                        </a>
+                        <ng-container *ngIf="debugmode|async">{{t.hash}} {{t.invisible}}</ng-container>
+                        <button mat-icon-button *ngIf="state.dTrackedTriumphIds[t.hash]!=true"
+                            (click)="state.trackTriumph(t)">
+                            <i class="far fa-star"></i>
+                        </button>
+                        <button mat-icon-button *ngIf="state.dTrackedTriumphIds[t.hash]==true"
+                            (click)="state.untrackTriumph(t)">
+                            <i class="fas fa-star accent-text"></i>
+                        </button>
+                        <button mat-icon-button (click)="state.hideClosestTriumph(t)"
+                            matTooltip="Hide this triumph from list">
+                            <i class="fas fa-eye-slash"></i>
+                        </button>
+                        <br>
+                        <span class="simple-caption">
+                            <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                                <ng-container *ngIf="i>0">
+                                    <a href="javascript:void(0)" [routerLink]="['..','tree', p.hash]">{{p.path}}</a>
+                                    <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                                    <ng-container *ngIf="!isLast">
+                                        /
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </span>
+                    </td>
+                    <td class="left" data-label="">
+                        {{t.percent}}%
+                        <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                        </mat-progress-bar>
+                    </td>
+
+                    <td class="left" data-label="">
+                        {{t.score}} pts
+                    </td>
+
+                    <td class="left" data-label="">
+                        <div class="low-hanging-desc">{{t.desc}}</div>
+                        <div class="low-hanging-desc" *ngFor="let o of t.objectives">
+                            <span class="simple-caption">
+                                <i *ngIf="o.complete"
+                                    class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                                <i *ngIf="!o.complete" class="far fa-square"></i>
+                                {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+                            </span>
+                            <mat-progress-bar class="pres-node-prog" mode="determinate"
+                                [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+                        </div>
+                    </td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+</ng-container>

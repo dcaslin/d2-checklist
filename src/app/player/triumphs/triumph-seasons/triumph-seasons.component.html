@@ -25,9 +25,9 @@
                   <i class='accent-text far fa-map-marker-alt'></i>
                 </a>
                 <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="trackTriumph(t)"></i>
+                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star" (click)="state.trackTriumph(t)"></i>
                 <i *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
-                  (click)="untrackTriumph(t)"></i>
+                  (click)="state.untrackTriumph(t)"></i>
 
                 <br>
                 <span class="simple-caption">

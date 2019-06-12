@@ -36,15 +36,13 @@ export class PlayerStateService {
   public _isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public isSignedOn: Observable<boolean> = this._loading.asObservable();
 
-  private _refresh: Subject<void> = new Subject<void>();
-  public refresh: Observable<void> = this._refresh.asObservable();
-
   public currPlayer(): Player {
     return this._player.getValue();
   }
 
   public requestRefresh() {
-    this._refresh.next();
+    const p = this.currPlayer();
+    this.performSearch(p.profile.userInfo.membershipType, p.profile.userInfo.displayName, true);
   }
 
   private _showZeroPtTriumphs = false;
@@ -279,6 +277,26 @@ export class PlayerStateService {
       }
     }
     this.trackedTriumphs.next(tempTriumphs);
+  }
+
+  public restoreHiddenClosestTriumphs() {
+    localStorage.removeItem('hidden-closest-triumphs');
+    this.requestRefresh();
+  }
+
+  public hideClosestTriumph(n: TriumphRecordNode) {
+    const sHideMe = localStorage.getItem('hidden-closest-triumphs');
+    let hidden = [];
+    if (sHideMe != null) {
+      try {
+        hidden = JSON.parse(sHideMe);
+      } catch (exc) {
+        console.dir(exc);
+      }
+    }
+    hidden.push(n.hash);
+    localStorage.setItem('hidden-closest-triumphs', JSON.stringify(hidden));
+    this.requestRefresh();
   }
 
 
