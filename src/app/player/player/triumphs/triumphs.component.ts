@@ -13,7 +13,7 @@ export class TriumphFlatNode {
 }
 
 @Component({
-  selector: 'anms-triumphs',
+  selector: 'd2c-triumphs',
   templateUrl: './triumphs.component.html',
   styleUrls: ['./triumphs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

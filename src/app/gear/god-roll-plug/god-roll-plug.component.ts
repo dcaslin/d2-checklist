@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { InventoryPlug } from '@app/service/model';
 
 @Component({
-  selector: 'anms-god-roll-plug',
+  selector: 'd2c-god-roll-plug',
   templateUrl: './god-roll-plug.component.html',
   styleUrls: ['./god-roll-plug.component.scss']
 })

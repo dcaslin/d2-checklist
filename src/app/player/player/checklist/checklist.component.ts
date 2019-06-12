@@ -3,23 +3,20 @@ import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { Player } from '@app/service/model';
 import { BehaviorSubject } from 'rxjs';
+import { PlayerStateService } from '../player-state.service';
 
 @Component({
-  selector: 'anms-checklist',
+  selector: 'd2c-checklist',
   templateUrl: './checklist.component.html',
   styleUrls: ['./checklist.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChecklistComponent extends ChildComponent implements OnInit {
-  @Input() player: Player;
-  @Input() parentLoading: BehaviorSubject<boolean>;
-  @Input() selectedTab: string;
-  @Output() refreshPlayer = new EventEmitter<void>();
-
   hideComplete: boolean;
 
   constructor(
     storageService: StorageService,
+    public state: PlayerStateService,
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
     this.hideComplete = localStorage.getItem('hide-completed-checklists') === 'true';

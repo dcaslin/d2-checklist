@@ -9,7 +9,7 @@ import { AuthService } from '../../service/auth.service';
 import {ChildComponent} from '../../shared/child.component';
 
 @Component({
-  selector: 'anms-auth',
+  selector: 'd2c-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -72,8 +72,8 @@ export class DestinyCacheService {
       responseType: 'blob'
     });
     const r = this.http.request(req);
-    r.subscribe((event: HttpEvent<any>) => {
-      switch (event.type) {
+    r.subscribe((evt: HttpEvent<any>) => {
+      switch (evt.type) {
         case HttpEventType.Sent:
           this.percent.next(5);
           break;
@@ -81,9 +81,9 @@ export class DestinyCacheService {
           this.percent.next(10);
           break;
         case HttpEventType.DownloadProgress:
-          const kbLoaded = Math.round(event.loaded / 1024);
+          const kbLoaded = Math.round(evt.loaded / 1024);
           console.log(`Download in progress! ${kbLoaded}Kb loaded`);
-          this.percent.next(15 + 80 * event.loaded / event.total);
+          this.percent.next(15 + 80 * evt.loaded / evt.total);
           break;
         case HttpEventType.Response: {
           this.percent.next(95);

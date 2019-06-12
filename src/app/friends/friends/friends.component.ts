@@ -9,7 +9,7 @@ import { BungieService } from '@app/service/bungie.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'anms-friends',
+  selector: 'd2c-friends',
   templateUrl: './friends.component.html',
   styleUrls: ['./friends.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

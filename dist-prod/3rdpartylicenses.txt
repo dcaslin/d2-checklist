@@ -527,8 +527,6 @@ THE SOFTWARE.
 
 @angular/material/expansion
 
-@angular/material/tree
-
 @angular/material/card
 
 @angular/material/list

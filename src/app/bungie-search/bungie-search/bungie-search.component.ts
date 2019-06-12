@@ -10,7 +10,7 @@ import { StorageService } from '../../service/storage.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'anms-bungie-search',
+  selector: 'd2c-bungie-search',
   templateUrl: './bungie-search.component.html',
   styleUrls: ['./bungie-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

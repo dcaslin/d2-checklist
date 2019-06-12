@@ -11,7 +11,7 @@ import { SelectedUser, Player, Character, SaleItem, ItemType } from '@app/servic
 import { LowLineResponse } from '@app/service/lowline.service';
 
 @Component({
-  selector: 'anms-resources',
+  selector: 'd2c-resources',
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

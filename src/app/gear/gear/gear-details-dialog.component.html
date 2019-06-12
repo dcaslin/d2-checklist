@@ -12,7 +12,7 @@
                 <ng-container *ngFor="let i of items">
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                         {{i.power}}
-                        <anms-god-roll-item [item]="i"></anms-god-roll-item>
+                        <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                         <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
                             <i class="fas fa-ellipsis-v"></i>
                         </a>
@@ -107,8 +107,8 @@
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug"
                                 [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
                                 matTooltipClass="preserve-white-space">
-                                <anms-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
-                                    [debugmode]="(parent.debugmode|async)"></anms-god-roll-plug>
+                                <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
+                                    [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                                 <ng-container *ngIf="!isLastPlug"><br></ng-container>
                             </span>
                         </div>

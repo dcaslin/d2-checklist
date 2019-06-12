@@ -17,7 +17,7 @@ import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/ta
 import { TargetPerkService } from '@app/service/target-perk.service';
 
 @Component({
-  selector: 'anms-gear',
+  selector: 'd2c-gear',
   templateUrl: './gear.component.html',
   styleUrls: ['./gear.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -357,7 +357,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
         }
       }
-      
+
     }
     return true;
   }
@@ -834,7 +834,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
 @Component({
-  selector: 'anms-gear-details-dialog',
+  selector: 'd2c-gear-details-dialog',
   templateUrl: './gear-details-dialog.component.html',
   styleUrls: ['./gear.component.scss']
 })
@@ -853,7 +853,7 @@ export class GearDetailsDialogComponent {
 }
 
 @Component({
-  selector: 'anms-armor-perks-dialog',
+  selector: 'd2c-armor-perks-dialog',
   templateUrl: './armor-perks-dialog.component.html',
   styleUrls: ['./gear.component.scss']
 })
@@ -871,7 +871,7 @@ export class ArmorPerksDialogComponent {
 }
 
 @Component({
-  selector: 'anms-gear-utilities-dialog',
+  selector: 'd2c-gear-utilities-dialog',
   templateUrl: './gear-utilities-dialog.component.html',
   styleUrls: ['./gear.component.scss']
 })
@@ -890,7 +890,7 @@ export class GearUtilitiesDialogComponent {
 }
 
 @Component({
-  selector: 'anms-bulk-operations-help-dialog',
+  selector: 'd2c-bulk-operations-help-dialog',
   templateUrl: './bulk-operations-help-dialog.component.html',
   styleUrls: ['./gear.component.scss']
 })
@@ -903,7 +903,7 @@ export class BulkOperationsHelpDialogComponent {
 
 
 @Component({
-  selector: 'anms-gear-help-dialog',
+  selector: 'd2c-gear-help-dialog',
   templateUrl: './gear-help-dialog.component.html',
   styleUrls: ['./gear.component.scss']
 })

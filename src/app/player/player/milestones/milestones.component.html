@@ -1,6 +1,6 @@
-<ng-container *ngIf="player!=null">
+<ng-container *ngIf="state.player|async as player">
 
-  <div *ngIf="(player.milestoneList|async).length==0">
+  <div *ngIf="(player.milestoneList).length==0">
     <br>
     <h2>Privacy</h2>
     <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
@@ -20,7 +20,7 @@
     <span class="mat-caption" (click)="showAllMilestones()">Show hidden milestones</span>
   </div>
 
-  <table class="responsive-table" *ngIf="(player.milestoneList|async).length>0">
+  <table class="responsive-table" *ngIf="(player.milestoneList).length>0">
     <thead>
       <tr>
         <th scope="col" style="width: 25%">Activity
@@ -42,7 +42,7 @@
       </tr>
     </thead>
     <tbody>
-      <ng-container *ngFor="let mileStoneName of player.milestoneList|async">
+      <ng-container *ngFor="let mileStoneName of player.milestoneList">
         <tr *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
           <td class="lead">
             <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">

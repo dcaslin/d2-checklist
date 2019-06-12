@@ -8,7 +8,7 @@ import {MatSelectModule} from '@angular/material';
 import { NotificationService } from '@app/service/notification.service';
 
 @Component({
-  selector: 'anms-settings',
+  selector: 'd2c-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -20,7 +20,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 
 @Component({
-  selector: 'anms-success-snack',
+  selector: 'd2c-success-snack',
   templateUrl: 'snackbars/success.html',
   styleUrls: ['snackbars/success.css'],
 })
@@ -30,7 +30,7 @@ export class SuccessSnackbarComponent {
 }
 
 @Component({
-  selector: 'anms-info-snack',
+  selector: 'd2c-info-snack',
   templateUrl: 'snackbars/info.html',
   styleUrls: ['snackbars/info.css'],
 })
@@ -40,7 +40,7 @@ export class InfoSnackbarComponent {
 }
 
 @Component({
-  selector: 'anms-warn-snack',
+  selector: 'd2c-warn-snack',
   templateUrl: 'snackbars/warn.html',
   styleUrls: ['snackbars/warn.css'],
 })
@@ -50,7 +50,7 @@ export class WarnSnackbarComponent {
 }
 
 @Component({
-  selector: 'anms-select-platform-dialog',
+  selector: 'd2c-select-platform-dialog',
   templateUrl: './select-platform-dialog.component.html',
 })
 export class SelectPlatformDialogComponent {
@@ -68,7 +68,7 @@ export class SelectPlatformDialogComponent {
 
 
 @Component({
-  selector: 'anms-root',
+  selector: 'd2c-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

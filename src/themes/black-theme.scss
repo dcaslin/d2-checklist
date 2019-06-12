@@ -1,11 +1,11 @@
-$anms-black-primary: mat-palette($mat-grey, 900, 500, 900);
-$anms-black-accent: mat-palette($mat-green, A200);
-$anms-black-warn: mat-palette($mat-red, A200);
+$d2c-black-primary: mat-palette($mat-grey, 900, 500, 900);
+$d2c-black-accent: mat-palette($mat-green, A200);
+$d2c-black-warn: mat-palette($mat-red, A200);
 
-$anms-black-theme: mat-dark-theme(
-    $anms-black-primary,
-    $anms-black-accent,
-    $anms-black-warn
+$d2c-black-theme: mat-dark-theme(
+    $d2c-black-primary,
+    $d2c-black-accent,
+    $d2c-black-warn
 );
 
 @mixin black-gear-tags {

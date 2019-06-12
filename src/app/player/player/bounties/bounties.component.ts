@@ -7,9 +7,10 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { takeUntil, debounceTime } from 'rxjs/operators';
+import { PlayerStateService } from '../player-state.service';
 
 @Component({
-  selector: 'anms-bounties',
+  selector: 'd2c-bounties',
   templateUrl: './bounties.component.html',
   styleUrls: ['./bounties.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -32,7 +33,7 @@ export class BountiesComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
-    private bungieService: BungieService,
+    public state: PlayerStateService,
     private ref: ChangeDetectorRef,
     public dialog: MatDialog) {
     super(storageService, ref);
@@ -74,7 +75,7 @@ export class BountiesComponent extends ChildComponent implements OnInit {
 }
 
 @Component({
-  selector: 'anms-quest-dialog',
+  selector: 'd2c-quest-dialog',
   templateUrl: './quest-dialog.component.html',
   styleUrls: ['./quest-dialog.component.scss']
 })

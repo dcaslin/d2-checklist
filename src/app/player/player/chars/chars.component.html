@@ -1,86 +1,88 @@
-<mat-card class="char-card" *ngFor="let char of player.characters">
-  <mat-card-header>
-    <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image"
-      [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
-    <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
-      <span style="white-space:nowrap;">Light {{char.light}}</span>
-      <span *ngIf="char.wellRested && char.baseCharacterLevel>=char.maxLevel" style="margin-left: 10px"
-        matTooltip="Well Rested. Increaed XP gains.">
-        <i class="fas fa-bed accent-text" matToolTip="Well Rested!"></i>
-      </span>
-
-    </mat-card-title>
-    <mat-card-subtitle *ngIf="!player.superprivate">
-      Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for
-      {{char.minutesPlayedThisSession}} mins
-      <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} |
-      {{char.minutesPlayedTotal/60|
-        number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
-      <br>
-    </mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-
-    <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp;
-      {{char.percentToNextLevel|percent:'1.0-0'}} to next level
-
-      <span *ngIf="debugmode|async">[{{char.levelProgression.progressionHash}}]</span>
-      <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
-      </mat-progress-bar>
-
-      <div class="row dl-row">
-        <dl class="col-xs-6 dl-child">
-          <dt>Daily Progress</dt>
-          <dd>{{char.levelProgression.dailyProgress| number:0}}</dd>
-        </dl>
-        <dl class="col-xs-4 dl-child">
-          <dt>Weekly Progress</dt>
-          <dd>{{char.levelProgression.weeklyProgress| number:0}}</dd>
-        </dl>
-        <dl class="col-xs-6 dl-child">
-          <dt>XP needed to next level</dt>
-          <dd>{{(char.levelProgression.nextLevelAt - char.levelProgression.progressToNextLevel)|
-              number:0}}</dd>
-        </dl>
-      </div>
-    </div>
-
-    <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=char.maxLevel">
-      <div><b>Level {{char.baseCharacterLevel}}</b>
-        <span style="margin-left: 5px; margin-right: 5px"> | Legend Level {{char.legendProgression.level}} | 
-          <span class="simple-caption">{{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
-            to level {{char.legendProgression.level+1}}</span>
+<ng-container *ngIf="state.player|async as player">
+  <mat-card class="char-card" *ngFor="let char of player.characters">
+    <mat-card-header>
+      <div mat-card-avatar *ngIf="char.emblemPath!=null" class="player-header-image"
+        [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></div>
+      <mat-card-title>{{char.className}} - {{char.race}} {{char.gender}} &ensp;
+        <span style="white-space:nowrap;">Light {{char.light}}</span>
+        <span *ngIf="char.wellRested && char.baseCharacterLevel>=char.maxLevel" style="margin-left: 10px"
+          matTooltip="Well Rested. Increaed XP gains.">
+          <i class="fas fa-bed accent-text" matToolTip="Well Rested!"></i>
         </span>
 
-      </div>
+      </mat-card-title>
+      <mat-card-subtitle *ngIf="!player.superprivate">
+        Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for
+        {{char.minutesPlayedThisSession}} mins
+        <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} |
+        {{char.minutesPlayedTotal/60|
+        number : '1.0-0'}} hours | {{char.minutesPlayedTotal}} mins
+        <br>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
 
-      <div *ngIf="debugmode|async">[{{char.legendProgression.hash}}]</div>
-      <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
-      </mat-progress-bar>
+      <div *ngIf="char.baseCharacterLevel<char.maxLevel">Level {{char.baseCharacterLevel}} &ensp;
+        {{char.percentToNextLevel|percent:'1.0-0'}} to next level
 
-      <div class="row dl-row">
-        <dl class="col-xs-4 dl-child">
-          <dt>Daily Progress</dt>
-          <dd>{{char.legendProgression.dailyProgress| number:0}}</dd>
-        </dl>
-        <dl class="col-xs-4 dl-child">
-          <dt>Weekly Progress</dt>
-          <dd>{{char.legendProgression.weeklyProgress| number:0}}</dd>
-        </dl>
-        <dl class="col-xs-4 dl-child">
-          <dt>XP needed to next level</dt>
-          <dd>{{(char.legendProgression.nextLevelAt - char.legendProgression.progressToNextLevel)|
+        <span *ngIf="debugmode|async">[{{char.levelProgression.progressionHash}}]</span>
+        <mat-progress-bar mode="determinate" [value]="char.percentToNextLevel*100">
+        </mat-progress-bar>
+
+        <div class="row dl-row">
+          <dl class="col-xs-6 dl-child">
+            <dt>Daily Progress</dt>
+            <dd>{{char.levelProgression.dailyProgress| number:0}}</dd>
+          </dl>
+          <dl class="col-xs-4 dl-child">
+            <dt>Weekly Progress</dt>
+            <dd>{{char.levelProgression.weeklyProgress| number:0}}</dd>
+          </dl>
+          <dl class="col-xs-6 dl-child">
+            <dt>XP needed to next level</dt>
+            <dd>{{(char.levelProgression.nextLevelAt - char.levelProgression.progressToNextLevel)|
               number:0}}</dd>
-        </dl>
+          </dl>
+        </div>
       </div>
-    </div>
 
-    <div class="stat-chip-list">
-      <ng-container *ngFor="let stat of char.stats; let i=index">
-        <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc"
-          matTooltipClass="preserve-white-space">{{stat.name}}:
-          {{stat.value}}</span>
-      </ng-container>
-    </div>
-  </mat-card-content>
-</mat-card>
+      <div *ngIf="char.legendProgression!=null && char.baseCharacterLevel>=char.maxLevel">
+        <div><b>Level {{char.baseCharacterLevel}}</b>
+          <span style="margin-left: 5px; margin-right: 5px"> | Legend Level {{char.legendProgression.level}} |
+            <span class="simple-caption">{{char.legendProgression.percentToNextLevel|percent:'1.0-0'}}
+              to level {{char.legendProgression.level+1}}</span>
+          </span>
+
+        </div>
+
+        <div *ngIf="debugmode|async">[{{char.legendProgression.hash}}]</div>
+        <mat-progress-bar mode="determinate" [value]="char.legendProgression.percentToNextLevel*100">
+        </mat-progress-bar>
+
+        <div class="row dl-row">
+          <dl class="col-xs-4 dl-child">
+            <dt>Daily Progress</dt>
+            <dd>{{char.legendProgression.dailyProgress| number:0}}</dd>
+          </dl>
+          <dl class="col-xs-4 dl-child">
+            <dt>Weekly Progress</dt>
+            <dd>{{char.legendProgression.weeklyProgress| number:0}}</dd>
+          </dl>
+          <dl class="col-xs-4 dl-child">
+            <dt>XP needed to next level</dt>
+            <dd>{{(char.legendProgression.nextLevelAt - char.legendProgression.progressToNextLevel)|
+              number:0}}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="stat-chip-list">
+        <ng-container *ngFor="let stat of char.stats; let i=index">
+          <span class="mat-chip stat-chip" *ngIf="stat.name!=null" [matTooltip]="stat.desc"
+            matTooltipClass="preserve-white-space">{{stat.name}}:
+            {{stat.value}}</span>
+        </ng-container>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</ng-container>
