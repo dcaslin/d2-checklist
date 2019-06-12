@@ -98,4 +98,61 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit  {
     return new TriumphFlatNode(!!node.children, level, node, true);
   }
 
+  private static replaceAll(src: string, find: string, replace: string): string {
+    while (true) {
+      const newS = src.replace(find, replace);
+      if (newS == src) {
+        break;
+      }
+      src = newS;
+    }
+    return src;
+  }
+
+  private static escape(s: string) {
+    if (s == null) { return s; }
+    s = TriumphTreeComponent.replaceAll(s, ',', ' ');
+    s = TriumphTreeComponent.replaceAll(s, '"', '');
+    s = TriumphTreeComponent.replaceAll(s, '\r\n', 'y');
+    s = TriumphTreeComponent.replaceAll(s, '\n', 'x');
+    return s;
+  }
+
+  public downloadCsvTriumphs() {
+    const header = 'Name,Path,Score,Percent,Complete,Redeemed,Description';
+    let rows = [];
+    for (const t of this.state.currPlayer().searchableTriumphs) {
+      let sCsv = TriumphTreeComponent.escape(t.name) + ',';
+      let sPath = '';
+      for (const e of t.path) {
+        sPath = sPath + e.path + ' / ';
+      }
+      sCsv += TriumphTreeComponent.escape(sPath) + ',';
+      sCsv += t.score + ',';
+      sCsv += t.percent + ',';
+      sCsv += t.complete + ',';
+      sCsv += t.redeemed + ',';
+      sCsv += TriumphTreeComponent.escape(t.desc);
+      rows.push(sCsv);
+    }
+    rows = rows.sort();
+    let sReport = header;
+    sReport += '\n';
+    for (const r of rows) {
+      sReport += r;
+      sReport += '\n';
+    }
+    const sDate = new Date().toISOString().slice(0, 10);
+    this.downloadCsv('player-triumphs-' + sDate + '.csv', sReport);
+  }
+
+  private downloadCsv(filename: string, csv: string) {
+    const anch: HTMLAnchorElement = document.createElement('a');
+    anch.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+    anch.setAttribute('download', filename);
+    anch.setAttribute('visibility', 'hidden');
+    document.body.appendChild(anch);
+    anch.click();
+  }
+
 }

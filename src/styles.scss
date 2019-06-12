@@ -275,3 +275,9 @@ mat-form-field.full-width .mat-form-field-infix{
 .low-hanging-node-prog {
   max-width: 200px;
 }
+
+@media screen and (max-width: 600px) {
+  .low-hanging-desc {
+    max-width: 300px;
+  }
+}
