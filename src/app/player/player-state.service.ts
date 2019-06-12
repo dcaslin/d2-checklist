@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { Player, SelectedUser } from '@app/service/model';
+import { Player, SelectedUser, TriumphRecordNode } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { map } from 'rxjs/operators';
 
@@ -18,6 +18,8 @@ export class PlayerStateService {
     this._sort = val;
     this._player.next(this._player.getValue());
   }
+
+  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
 
   private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
   public player: Observable<Player>;
@@ -37,10 +39,6 @@ export class PlayerStateService {
   private _refresh: Subject<void> = new Subject<void>();
   public refresh: Observable<void> = this._refresh.asObservable();
 
-  public setPlayer(p: Player) {
-    this._player.next(p);
-  }
-
   public currPlayer(): Player {
     return this._player.getValue();
   }
@@ -48,6 +46,52 @@ export class PlayerStateService {
   public requestRefresh() {
     this._refresh.next();
   }
+
+  private _showZeroPtTriumphs = false;
+  private _showInvisTriumphs = false;
+  private _hideCompleteTriumphs = false;
+
+  aTrackedTriumphIds = [];
+  public dTrackedTriumphIds = {};
+  
+
+
+  public getPlayerRoute(params: any[]): string[] {
+    const p = this._player.getValue();
+    const baseRoute = ['' + p.profile.userInfo.membershipType, p.profile.userInfo.displayName];
+    return baseRoute.concat(params);
+  }
+
+  
+  public get showZeroPtTriumphs() {
+    return this._showZeroPtTriumphs;
+  }
+
+  public set showZeroPtTriumphs(b: boolean){
+    this._showZeroPtTriumphs = b;
+    localStorage.setItem('show-zero-pt-triumphs', '' + this._showZeroPtTriumphs);
+    this.requestRefresh();
+  }
+
+  public set showInvisTriumphs(b: boolean){
+    this._showInvisTriumphs = b;
+    localStorage.setItem('show-invis-triumphs', '' + this._showInvisTriumphs);
+    this.requestRefresh();
+  }
+
+  public get showInvisTriumphs() {
+    return this._showInvisTriumphs;
+  }
+
+  public get hideCompleteTriumphs() {
+    return this._hideCompleteTriumphs;
+  }
+
+  public set hideCompleteTriumphs(b: boolean){
+    this._hideCompleteTriumphs = b;
+    localStorage.setItem('hide-completed-triumphs', '' + this._hideCompleteTriumphs);
+  }
+
 
   constructor(
     private bungieService: BungieService) {
@@ -59,6 +103,10 @@ export class PlayerStateService {
       this._isSignedOn.next(selectedUser != null);
       this.checkSignedOnCurrent();
     });
+    this._showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
+    this._showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
+    this._hideCompleteTriumphs = localStorage.getItem('hide-completed-triumphs') === 'true';
+    this.loadTrackedTriumphIds();
   }
 
   private checkSignedOnCurrent() {
@@ -88,19 +136,18 @@ export class PlayerStateService {
     try {
       if (p != null) {
         this.checkSignedOnCurrent();
-        const showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
-        const showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
         const x = await this.bungieService.getChars(p.membershipType, p.membershipId,
           ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
             'CharacterEquipment', 'CharacterInventories',
             'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles'
             // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
-          ], false, false, showZeroPtTriumphs, showInvisTriumphs);
+          ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
         if (x == null || x.characters == null) {
           this.handleMissingPlayer(false);
           return;
         }
+        this.setTrackedTriumphs(x);
         this._player.next(x);
         this.bungieService.loadWeeklyPowerfulBounties(this._player);
         this.bungieService.loadClans(this._player);
@@ -189,5 +236,50 @@ export class PlayerStateService {
     }
     return player;
   }
+
+  private loadTrackedTriumphIds() {
+    const sTrackedIds = localStorage.getItem('tracked-triumph-ids');
+    if (sTrackedIds != null) {
+      this.aTrackedTriumphIds = JSON.parse(sTrackedIds);
+    } else {
+      this.aTrackedTriumphIds = [];
+    }
+    this.dTrackedTriumphIds = {};
+    for (const t of this.aTrackedTriumphIds) {
+      this.dTrackedTriumphIds[t] = true;
+    }
+  }
+
+  public trackTriumph(n: TriumphRecordNode) {
+    this.aTrackedTriumphIds.push(n.hash);
+    this.saveTrackedTriumphIds();
+    this.loadTrackedTriumphIds();
+    this.setTrackedTriumphs(this.currPlayer());
+  }
+
+  public untrackTriumph(n: TriumphRecordNode) {
+    const index = this.aTrackedTriumphIds.indexOf(n.hash);
+    this.aTrackedTriumphIds.splice(index, 1);
+    this.saveTrackedTriumphIds();
+    this.loadTrackedTriumphIds();
+    this.setTrackedTriumphs(this.currPlayer());
+  }
+
+  private saveTrackedTriumphIds() {
+    localStorage.setItem('tracked-triumph-ids', JSON.stringify(this.aTrackedTriumphIds));
+  }
+
+  private setTrackedTriumphs(player: Player) {
+    const tempTriumphs = [];
+    if (this.aTrackedTriumphIds.length > 0 && player.searchableTriumphs != null) {
+      for (const t of player.searchableTriumphs) {
+        if (this.dTrackedTriumphIds[t.hash] == true) {
+          tempTriumphs.push(t);
+        }
+      }
+    }
+    this.trackedTriumphs.next(tempTriumphs);
+  }
+
 
 }

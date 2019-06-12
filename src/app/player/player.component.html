@@ -1,0 +1,224 @@
+<div class="childComponent">
+  <div class="childVert">
+    <div class="main">
+      <div class="fixed-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true"></mat-spinner>
+      </div>
+      <div class="body-text">
+        <br />
+        <div class="searchRow">
+          <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
+              <mat-select-trigger>
+                <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+              </mat-select-trigger>
+              <mat-option *ngFor="let p of platforms" [value]="p">
+                <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="searchField searchGt">
+            <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
+              (change)="onGtChange()">
+          </mat-form-field>
+          <button mat-mini-fab color="primary searchField" (click)="routeSearch()" color="primary">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+
+        <ng-container *ngIf="state.playerNotFound|async">
+          <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
+          <div class="button-row">
+            <ng-container *ngFor="let plat of platforms">
+              <button class="space-right" *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent"
+                (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
+            </ng-container>
+            <button mat-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie
+              Names</button>
+          </div>
+          <br>
+          <br>
+          <br>
+        </ng-container>
+        <ng-container *ngIf="state.player|async as player">
+          <ng-container *ngIf="player!=null && player.superprivate">
+            <h4><i style="font-weight: normal !important"
+                [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
+              {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
+          </ng-container>
+
+          <ng-container *ngIf="player!=null && !player.superprivate">
+            <h1>
+              <i style="font-weight: normal !important"
+                [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
+              {{player.profile.userInfo.displayName}}
+              <a [ngClass]="(favoritesMap|async)[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
+                (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i
+                  style="font-weight: normal !important" class="far fa-heart"></i></a>
+            </h1>
+            <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
+            <ng-container
+              *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
+
+              <ng-container class="clans"
+                *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; first as isFirst; last as isLast">
+                <ng-container *ngIf="isFirst">Clan: </ng-container>
+                <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
+                <ng-container *ngIf="!isLast">, </ng-container>
+              </ng-container>
+            </ng-container>
+
+            <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
+              <ng-container
+                *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
+                Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+              </ng-container>
+              <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
+                Playing now! {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
+                    amDifference:player.currentActivity.dateActivityStarted|
+                    amDuration:'ms'}} ago
+              </span>
+            </div>
+
+            <div class="button-row">
+              <button mat-button (click)="showBurns()">
+                <i class="menu-icon fa-icon fas fa-burn"></i>
+                <span class="d-none d-md-inline">Today's Modifiers</span>
+              </button>
+              <a mat-button
+                [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
+                <i class="menu-icon fa-icon fas fa-history"></i>
+                <span class="d-none d-md-inline">Activity History</span>
+              </a>
+              <a mat-button
+                [routerLink]="['/recent-players', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
+                <i class="menu-icon fa-icon fas fa-user-friends"></i>
+                <span class="d-none d-md-inline">Recent Teammates</span>
+              </a>
+              <button mat-button [matMenuTriggerFor]="menu">
+                <i class="menu-icon fa-icon fas fa-ellipsis-v"></i>
+                <span class="d-none d-md-inline">External Links</span>
+              </button>
+              <mat-menu #menu="matMenu">
+                <a mat-menu-item *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener"
+                  [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
+                  <mat-icon>message</mat-icon>
+                  <span>Message on XBL</span>
+                </a>
+                <a mat-menu-item [href]="getRaidLink(player)" rel="warn-text" target="_blank" rel="noopener">
+                  <mat-icon>flag</mat-icon>
+                  <span>Raid.Report</span>
+                </a>
+                <a mat-menu-item [href]="getTrialsLink(player)" rel="noopener" target="_blank" rel="noopener">
+                  <mat-icon>remove_red_eye</mat-icon>
+                  <span>Trials.Report</span>
+                </a>
+              </mat-menu>
+            </div>
+
+            <nav mat-tab-nav-bar>
+              <a mat-tab-link routerLink="milestones" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="fas fa-flag"></i><span class="d-none d-md-inline">&ensp;Milestones</span>
+              </a>
+              <a mat-tab-link routerLink="pursuits" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="fas fa-gift"></i><span class="d-none d-md-inline">&ensp;Pursuits</span>
+              </a>
+              <a mat-tab-link routerLink="checklist" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="fas fa-check-square"></i><span class="d-none d-md-inline">&ensp;Checklist</span>
+              </a>
+              <a mat-tab-link routerLink="progress" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Progress</span>
+              </a>
+              <a mat-tab-link routerLink="triumphs" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="fas fa-trophy"></i><span class="d-none d-md-inline">&ensp;Triumphs</span>
+              </a>
+              <a mat-tab-link routerLink="collections" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="icon-collections"></i><span class="d-none d-md-inline">&ensp;Collections</span>
+              </a>
+              <a mat-tab-link routerLink="chars" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                  <i class="fas fa-users"></i><span class="d-none d-md-inline">&ensp;Chars</span>
+              </a>
+            </nav>
+
+            <router-outlet></router-outlet>
+<!-- 
+            <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <i class="fas fa-flag"></i>
+                  <span class="d-none d-md-inline">&ensp;Milestones</span>
+                </ng-template>
+                <d2c-milestones></d2c-milestones>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <i class="fas fa-gift"></i>
+                  <span class="d-none d-md-inline">&ensp;Bounties
+                    <span class="d-none d-lg-inline">/Quests</span>
+                  </span>
+                </ng-template>
+                <ng-container *ngIf="player!=null">
+                  <d2c-bounties></d2c-bounties>
+                </ng-container>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <i class="fas fa-check-square"></i>
+                  <span class="d-none d-md-inline">&ensp;Checklist</span>
+                </ng-template>
+                <d2c-checklist></d2c-checklist>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <i class="fas fa-chart-line"></i>
+                  <span class="d-none d-md-inline">&ensp;Progress</span>
+                </ng-template>
+                <ng-container *ngIf="player!=null">
+                  <d2c-progress></d2c-progress>
+                </ng-container>
+              </mat-tab>
+              <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="fas fa-trophy"></i>
+                      <span class="d-none d-md-inline">&ensp;Triumphs</span>
+                    </ng-template>
+                    <ng-container *ngIf="player!=null">
+                      <d2c-triumphs [selectedTab]="selectedTab" [selectedTreeNodeHash]="selectedTreeNodeHash"
+                        (refreshPlayer)="performSearch(true)" [currPlayer]="player" (nodeClicked)="branchNodeClick($event)">
+                      </d2c-triumphs>
+                    </ng-container>
+                  </mat-tab>
+                  <mat-tab>
+                    <ng-template mat-tab-label>
+                      <i class="icon-collections"></i>
+                      <span class="d-none d-md-inline">&ensp;Collections</span>
+                    </ng-template>
+                    <ng-container *ngIf="player!=null">
+                      <d2c-collections [selectedTab]="selectedTab" [selectedTreeNodeHash]="selectedTreeNodeHash"
+                        [currPlayer]="player" (nodeClicked)="branchNodeClick($event)">
+                      </d2c-collections>
+                    </ng-container>
+                  </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <i class="fas fa-users"></i>
+                  <span class="d-none d-md-inline">&ensp;Chars</span>
+                </ng-template>
+                <d2c-chars></d2c-chars>
+              </mat-tab>
+            </mat-tab-group> -->
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <div *ngIf="(disableAds|async)!==true" class="adRight">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
+  </div>
+  <div *ngIf="(disableAds|async)!==true" class="adBottom">
+    <small class="adText">Advertisement</small>
+    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  </div>
+</div>

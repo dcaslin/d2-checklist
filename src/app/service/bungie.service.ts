@@ -450,7 +450,6 @@ export class BungieService implements OnDestroy {
         const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.WERNER_KEY] = wernerPsuedoMs;
         p.next(p.getValue());
-        console.log('loaded ' + c.className);
     }
 
     private getPctString(pct: number) {

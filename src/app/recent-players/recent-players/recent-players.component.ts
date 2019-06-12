@@ -77,6 +77,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     try {
       const data: PGCR = await this.bungieService.getPGCR(row.instanceId);
       this.processPGCR(data);
+      this.ref.markForCheck();
     }
     finally {
       this.rowCntr++;
@@ -126,8 +127,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
       if (a.user.name > b.user.name) { return 1; }
       if (a.user.name < b.user.name) { return -1; }
       return 0;
-    });
-    this.ref.markForCheck();
+    });    
   }
 
   pgcr(instanceId: string) {

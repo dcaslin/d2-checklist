@@ -5,8 +5,9 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { Observable, of as observableOf, Subject, BehaviorSubject } from 'rxjs';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
-import { TriumphFlatNode } from '../triumphs/triumphs.component';
+
 import { takeUntil, debounceTime } from 'rxjs/operators';
+import { TriumphFlatNode } from '../triumphs/triumph-tree/triumph-tree.component';
 
 @Component({
   selector: 'd2c-collections',

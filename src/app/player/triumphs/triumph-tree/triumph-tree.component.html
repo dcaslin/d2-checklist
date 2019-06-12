@@ -1,0 +1,82 @@
+<ng-container *ngIf="state.player|async as player">
+  <h4 class="triumph-score">Triumphs - Score: {{player.triumphScore|number : '2.0-0'}}
+    <button class="hide-complete-triumphs" mat-button (click)="downloadCsvTriumphs()">
+      <i class="fal fa-download"></i> CSV
+    </button>
+    <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
+      Hide Completed
+    </mat-checkbox>
+    <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.showZeroPtTriumphs">
+      Show Zero Pt
+    </mat-checkbox>
+    <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.showInvisTriumphs">
+      Show Invisible
+    </mat-checkbox>
+  </h4>
+
+  <mat-tree [dataSource]="recordDatasource" [treeControl]="triumphTreeControl">
+    <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)" matTreeNodeToggle
+      matTreeNodePadding>
+      <button mat-icon-button disabled></button>
+      <div style="text-align: left; margin-bottom: 20px">
+        <i *ngIf="node.data.complete && node.data.redeemed"
+          class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+        <i *ngIf="node.data.complete && !node.data.redeemed"
+          class="warn-text mat-option.mat-selected fas fa-check-square"></i>
+        <i *ngIf="!node.data.complete" class="far fa-square"></i>
+
+        <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null">
+          {{node.data.name}} </ng-container>
+        <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null"
+          target="_blank" rel="noopener">
+          {{node.data.name}}
+          <i class='accent-text far fa-map-marker-alt'></i>
+        </a>
+        <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+        <i *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star" (click)="state.trackTriumph(node.data)"></i>
+        <i *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text"
+          (click)="state.untrackTriumph(node.data)"></i>
+
+        <br>
+        <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
+          redeemed.<br></span>
+        <span class="simple-caption">
+          {{node.data.score}} pts. {{node.data.desc}}
+        </span>
+        <div *ngFor="let o of node.data.objectives">
+          <span class="simple-caption">
+            <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+            <i *ngIf="!o.complete" class="far fa-square"></i>
+            {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+          </span>
+          <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
+            mode="determinate" [value]="o.progress*100/o.completionValue">
+          </mat-progress-bar>
+        </div>
+      </div>
+    </mat-tree-node>
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
+      <button mat-icon-button matTreeNodeToggle (click)="router.navigate(state.getPlayerRoute(['triumphs', 'tree',node.data.hash]))">
+        <mat-icon class="mat-icon-rtl-mirror">
+          {{triumphTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+        </mat-icon>
+      </button>
+      <div style="text-align: left">
+        <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+        <i *ngIf="!node.data.complete" class="far fa-square"></i>
+        {{node.data.name}} <span *ngIf="debugmode|async">{{node.data.hash}}</span>
+        <span class="simple-caption">
+          {{node.data.progress}}/{{node.data.completionValue}} |
+          {{node.data.pts}}/{{node.data.totalPts}} pts
+        </span>
+        <ng-container *ngIf="node.data.unredeemedCount>0">
+          <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
+        </ng-container>
+        <br>
+
+        <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
+          mode="determinate" [value]="node.data.progress*100/node.data.completionValue"></mat-progress-bar>
+      </div>
+    </mat-tree-node>
+  </mat-tree>
+</ng-container>
