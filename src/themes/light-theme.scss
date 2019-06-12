@@ -1,10 +1,10 @@
-$anms-light-primary: mat-palette($mat-pink, 500);
-$anms-light-accent: mat-palette($mat-deep-purple, 200);
-$anms-light-warn: mat-palette($mat-deep-orange, 200);
+$d2c-light-primary: mat-palette($mat-pink, 500);
+$d2c-light-accent: mat-palette($mat-deep-purple, 200);
+$d2c-light-warn: mat-palette($mat-deep-orange, 200);
 
-$anms-light-theme: mat-light-theme(
-    $anms-light-primary,
-    $anms-light-accent,
-    $anms-light-warn
+$d2c-light-theme: mat-light-theme(
+    $d2c-light-primary,
+    $d2c-light-accent,
+    $d2c-light-warn
 );
 

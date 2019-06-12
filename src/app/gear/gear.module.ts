@@ -11,7 +11,7 @@ import { GodRollItemComponent } from './god-roll-item/god-roll-item.component';
   imports: [
     SharedModule, ClipboardModule
   ],
-  declarations: [GearComponent, GearToggleComponent, GearDetailsDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent, 
+  declarations: [GearComponent, GearToggleComponent, GearDetailsDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
     ArmorPerksDialogComponent, TargetArmorPerksDialogComponent, GodRollPlugComponent, GodRollItemComponent],
   entryComponents: [
     GearDetailsDialogComponent, GearHelpDialogComponent,

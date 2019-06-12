@@ -7,7 +7,7 @@ import { UserInfo } from '@app/service/model';
 
 
 @Component({
-    selector: 'anms-child',
+    selector: 'd2c-child',
     template: `<div>Abstract</div>`
 })
 export class ChildComponent implements OnDestroy {
@@ -52,6 +52,7 @@ export class ChildComponent implements OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        this.loading.complete();
     }
 
 

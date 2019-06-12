@@ -1,6 +1,6 @@
 @import '~@angular/material/theming';
 
-@mixin anms-styles-reset-theme($theme) {
+@mixin d2c-styles-reset-theme($theme) {
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);

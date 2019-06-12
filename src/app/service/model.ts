@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs";
+import { BehaviorSubject } from 'rxjs';
 
 export enum ClassAllowed {
     Titan = 0,
@@ -462,7 +462,7 @@ export class Player {
     readonly hasWellRested: boolean;
     readonly currentActivity: CurrentActivity;
     readonly characters: Character[];
-    readonly milestoneList: BehaviorSubject<MileStoneName[]> = new BehaviorSubject([]);
+    milestoneList: MileStoneName[] = [];
     readonly currencies: Currency[];
     readonly bounties: {[id: string]: InventoryItem[]};
     readonly quests: {[id: string]: InventoryItem[]};
@@ -501,7 +501,7 @@ export class Player {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
-        this.milestoneList.next(milestoneList);
+        this.milestoneList = milestoneList;
         this.currencies = currencies;
         this.bounties = bounties;
         this.quests = quests;
@@ -1045,7 +1045,7 @@ export class Progression {
 }
 
 export class Const {
-    //used for clan filter
+    // used for clan filter
     public static readonly ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
     public static readonly XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
     public static readonly PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');

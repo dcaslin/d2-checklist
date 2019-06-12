@@ -11,7 +11,7 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { WeekService, Today } from '@app/service/week.service';
 
 @Component({
-  selector: 'anms-home',
+  selector: 'd2c-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

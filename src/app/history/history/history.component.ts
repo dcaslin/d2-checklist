@@ -11,7 +11,7 @@ import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
 @Component({
-  selector: 'anms-history',
+  selector: 'd2c-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss']
   // changeDetection: ChangeDetectionStrategy.OnPush

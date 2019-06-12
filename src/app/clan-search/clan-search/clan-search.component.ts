@@ -8,7 +8,7 @@ import { StorageService } from '../../service/storage.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: 'anms-clan-search',
+  selector: 'd2c-clan-search',
   templateUrl: './clan-search.component.html',
   styleUrls: ['./clan-search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

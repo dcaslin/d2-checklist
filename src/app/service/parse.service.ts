@@ -2,8 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, NameQuantity, Badge, BadgeClass } from './model';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { Activity, AggHistory, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -221,7 +220,7 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                        const ms: MileStoneName = {
+                        const ms2: MileStoneName = {
                             key: skipDesc.hash,
                             resets: null,
                             rewards: 'Powerful Gear',
@@ -230,8 +229,8 @@ export class ParseService {
                             desc: skipDesc.displayProperties.description,
                             hasPartial: false
                         };
-                        milestoneList.push(ms);
-                        milestonesByKey[skipDesc.hash] = ms;
+                        milestoneList.push(ms2);
+                        milestonesByKey[skipDesc.hash] = ms2;
                     } else if (skipDesc != null) {
                         console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
                         return;
@@ -1320,7 +1319,7 @@ export class ParseService {
 
     private buildBadge(node: TriumphNode): Badge {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
-        if (pDesc == null) { return null; }        
+        if (pDesc == null) { return null; }
         const badgeClasses: BadgeClass[] = [];
         let badgeComplete = true;
         for (const c of node.children) {
@@ -1347,24 +1346,7 @@ export class ParseService {
             icon: node.icon,
             complete: badgeComplete,
             classes: badgeClasses
-        }
-
-        // go 2 leves deep on children, first level if chars, second level is items for badge for char
-        // find linked triumph and seals if any
-        return null;
-        // const percent = Math.floor((100 * progress) / node.children.length);
-        // return {
-        //     hash: node.hash,
-        //     name: node.name,
-        //     desc: node.desc,
-        //     icon: node.icon,
-        //     children: node.children,
-        //     title: title,
-        //     percent: percent,
-        //     progress: progress,
-        //     complete: progress >= node.children.length,
-        //     completionValue: node.children.length
-        // };
+        };
     }
 
     private buildSeal(node: TriumphNode): Seal {
@@ -2653,7 +2635,7 @@ export class ParseService {
                 searchText += ' mail postmaster';
             }
             if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep) {
-                searchText = desc.displayProperties.name + ' ';;
+                searchText = desc.displayProperties.name + ' ';
                 searchText += desc.displayProperties.description + ' ';
                 // values
                 for (const v of values) {

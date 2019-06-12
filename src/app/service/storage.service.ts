@@ -56,7 +56,6 @@ export class StorageService {
     if (favorites[key] !== undefined) {
       delete favorites[key];
     } else {
-      const newUserInfo = 
       favorites[key] = userInfo;
       favorites[key].bungieMembershipId = bungieMembershipId;
     }

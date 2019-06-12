@@ -5,7 +5,7 @@ import { TargetPerkService, TargetPerks } from '@app/service/target-perk.service
 import { Choice } from '../gear/gear-toggle.component';
 
 @Component({
-  selector: 'anms-target-armor-perks-dialog',
+  selector: 'd2c-target-armor-perks-dialog',
   templateUrl: './target-armor-perks-dialog.component.html',
   styleUrls: ['./target-armor-perks-dialog.component.scss']
 })
@@ -25,7 +25,7 @@ export class TargetArmorPerksDialogComponent implements OnInit {
     choices.push(new Choice('Grenade', 'Grenade', true));
     choices.push(new Choice('Ability', 'Ability', true));
     const d = {};
-    for (const c of choices){
+    for (const c of choices) {
       d[c.matchValue.toLowerCase()] = '';
     }
     this.targetChoices = choices;

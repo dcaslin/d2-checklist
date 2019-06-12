@@ -10,7 +10,7 @@ import { StorageService } from '../../service/storage.service';
 import { BungieNetUserInfo, BungieMember, PGCR } from '@app/service/model';
 
 @Component({
-  selector: 'anms-pgcr-history',
+  selector: 'd2c-pgcr-history',
   templateUrl: './pgcr.component.html',
   styleUrls: ['./pgcr.component.scss']
   // changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,9 +1,9 @@
-$anms-primary: mat-palette($mat-blue-grey, 900);
-$anms-accent: mat-palette($mat-amber, A400);
+$d2c-primary: mat-palette($mat-blue-grey, 900);
+$d2c-accent: mat-palette($mat-amber, A400);
 
-$anms-theme: mat-light-theme(
-    $anms-primary,
-    $anms-accent
+$d2c-theme: mat-light-theme(
+    $d2c-primary,
+    $d2c-accent
 );
 
 

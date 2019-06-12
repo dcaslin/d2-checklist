@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter }
 import { ItemType } from '@app/service/model';
 
 @Component({
-  selector: 'anms-gear-toggle',
+  selector: 'd2c-gear-toggle',
   templateUrl: './gear-toggle.component.html',
   styleUrls: ['./gear.component.scss']
 })

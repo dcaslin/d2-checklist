@@ -9,7 +9,7 @@ import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
 
 @Component({
-  selector: 'anms-history',
+  selector: 'd2c-history',
   templateUrl: './recent-players.component.html',
   styleUrls: ['./recent-players.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -111,7 +111,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
         instances: []
       };
       // async store clans
-      this.bungieService.loadClans(e.user).then(() => {
+      this.bungieService.loadClansForUser(e.user).then(() => {
         // update view if clan updates
         this.ref.markForCheck();
       });

@@ -5,7 +5,7 @@ import { takeUntil, first, filter } from 'rxjs/operators';
  */
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subject, ReplaySubject } from 'rxjs';
+import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
 import { NotificationService } from './notification.service';
 import { AuthInfo, AuthService } from './auth.service';
 import { ParseService } from './parse.service';
@@ -160,7 +160,13 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
-    public async loadClans(userInfo: UserInfo): Promise<void> {
+    public async observeUpdateAggHistory(player: BehaviorSubject<Player>) {
+        const p = player.getValue();
+        await this.updateAggHistory(p.characters);
+        player.next(p);
+    }
+
+    public async loadClansForUser(userInfo: UserInfo) {
         if (userInfo.bungieInfo == null) {
             const bungieMember: BungieMembership = await this.getBungieMembershipsById(userInfo.membershipId, userInfo.membershipType);
             // blocked by privacy settings?
@@ -170,6 +176,13 @@ export class BungieService implements OnDestroy {
             await this.setClans(bungieMember);
             userInfo.bungieInfo = bungieMember;
         }
+    }
+
+    public async loadClans(player: BehaviorSubject<Player>): Promise<void> {
+        const p  = player.getValue();
+        const userInfo = p.profile.userInfo;
+        await this.loadClansForUser(userInfo);
+        player.next(p);
     }
 
     public async getClanInfo(clanId: string): Promise<ClanInfo> {
@@ -428,18 +441,16 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private async loadWeeklyPowerfulBountiesOnChar(p: Player, c: Character): Promise<void> {
-        // 880202832 Werner
-        // 248695599 Drifter
-        // 863940356 Spider
+    private async loadWeeklyPowerfulBountiesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
         const vendorData = await this.loadVendors(c);
-        const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData, p, c);
+        const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
-        const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData, p, c);
+        const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.DRIFTER_KEY] = drifterPsuedoMs;
-        const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData, p, c);
+        const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.WERNER_KEY] = wernerPsuedoMs;
-        p.milestoneList.next(p.milestoneList.getValue());
+        p.next(p.getValue());
+        console.log('loaded ' + c.className);
     }
 
     private getPctString(pct: number) {
@@ -454,7 +465,9 @@ export class BungieService implements OnDestroy {
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
     }
 
-    public async loadWeeklyPowerfulBounties(p: Player): Promise<void> {
+
+    public loadWeeklyPowerfulBounties(playerSubject: BehaviorSubject<Player>) {
+        const p = playerSubject.getValue();
         // is this the signed on user?
         if (!this.isSignedOn(p)) {
             return;
@@ -468,7 +481,7 @@ export class BungieService implements OnDestroy {
             desc: 'Spider\'s weekly powerful bounty, costs Ghost Fragments',
             hasPartial: false
         };
-        p.milestoneList.getValue().push(ms1);
+        p.milestoneList.push(ms1);
         const empty1: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, false, 0, null, 'Loading...', null);
         const ms2: MileStoneName = {
             key: Const.DRIFTER_KEY,
@@ -479,7 +492,7 @@ export class BungieService implements OnDestroy {
             desc: 'The Drifter\'s weekly powerful bounty',
             hasPartial: true
         };
-        p.milestoneList.getValue().push(ms2);
+        p.milestoneList.push(ms2);
         const empty2: MilestoneStatus = new MilestoneStatus(Const.DRIFTER_KEY, false, 0, null, 'Loading...', null);
         const ms3: MileStoneName = {
             key: Const.WERNER_KEY,
@@ -490,7 +503,7 @@ export class BungieService implements OnDestroy {
             desc: '4 powerful bounties, plus a 5th powerful drop if you finish all 4',
             hasPartial: true
         };
-        p.milestoneList.getValue().push(ms3);
+        p.milestoneList.push(ms3);
         const empty3: MilestoneStatus = new MilestoneStatus(Const.WERNER_KEY, false, 0, null, 'Loading...', null);
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
@@ -498,9 +511,11 @@ export class BungieService implements OnDestroy {
             c.milestones[Const.DRIFTER_KEY] = empty2;
             c.milestones[Const.WERNER_KEY] = empty3;
         }
+        playerSubject.next(p);
         for (const c of p.characters) {
-            this.loadWeeklyPowerfulBountiesOnChar(p, c);
+            this.loadWeeklyPowerfulBountiesOnChar(playerSubject, c);
         }
+        return playerSubject;
     }
 
     public async loadVendors(c: Character): Promise<SaleItem[]> {
@@ -612,11 +627,7 @@ export class BungieService implements OnDestroy {
         const self = this;
         const MAX_PAGE_SIZE = 100;
         let curPage = 0;
-
-
         let allMatches: any[] = [];
-
-
         while (true) {
             const matches = await this.getActivityHistoryPage(membershipType, membershipId, characterId,
                 mode, curPage, MAX_PAGE_SIZE, ignoreErrors);
@@ -633,28 +644,6 @@ export class BungieService implements OnDestroy {
             allMatches = allMatches.slice(0, max);
         }
         return allMatches;
-        // return new Promise(function (resolve, reject) {
-        //     const allMatches: any[] = [];
-        //     function processMatches(results: any[]) {
-        //         if (results == null || results.length === 0 || results.length < MAX_PAGE_SIZE || allMatches.length >= max) {
-        //             resolve(allMatches);
-        //             return;
-        //         } else {
-        //             curPage++;
-        //             results.forEach(function (r) {
-        //                 allMatches.push(r);
-        //             });
-        //             if (allMatches.length > max) {
-        //                 resolve(allMatches);
-        //                 return;
-        //             }
-        //             return self.getActivityHistoryPage(membershipType, membershipId,
-        //                 characterId, mode, curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches);
-        //         }
-        //     }
-        //     self.getActivityHistoryPage(membershipType, membershipId, characterId, mode,
-        //         curPage, MAX_PAGE_SIZE, ignoreErrors).then(processMatches).catch((e) => { reject(e) });
-        // });
     }
 
     public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
@@ -668,6 +657,9 @@ export class BungieService implements OnDestroy {
             }
             return this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
         } catch (err) {
+            if (err.error != null && err.error.ErrorStatus == 'DestinyAccountNotFound') {
+                return null;
+            }
             if (!ignoreErrors) {
                 this.handleError(err);
             } else {

@@ -45,53 +45,53 @@
         </mat-form-field>
         <div class="filter-buttons">
 
-          <anms-gear-toggle #markToggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices"
+          <d2c-gear-toggle #markToggle iconClass="fas fa-tags" title="Tags" [choices]="markChoices"
             (change)="filterChanged()"
             [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
             [currentItemType]="option.type">
-          </anms-gear-toggle>
+          </d2c-gear-toggle>
           
 
-          <anms-gear-toggle #weaponTypeToggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices"
+          <d2c-gear-toggle #weaponTypeToggle iconClass="fas fa-swords" title="Type" [choices]="weaponTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </anms-gear-toggle>
+          </d2c-gear-toggle>
 
-          <anms-gear-toggle #ammoTypeToggle iconClass="fas icon-ammo_x" title="Ammo" [choices]="ammoTypeChoices"
+          <d2c-gear-toggle #ammoTypeToggle iconClass="fas icon-ammo_x" title="Ammo" [choices]="ammoTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </anms-gear-toggle>
+          </d2c-gear-toggle>
 
 
-          <anms-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices"
+          <d2c-gear-toggle #armorTypeToggle iconClass="fas fa-helmet-battle" title="Type" [choices]="armorTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </anms-gear-toggle>
-          <anms-gear-toggle #vehicleTypeToggle iconClass="fas fa-plane-alt" title="Type" [choices]="vehicleTypeChoices"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #vehicleTypeToggle iconClass="fas fa-plane-alt" title="Type" [choices]="vehicleTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]" [currentItemType]="option.type">
-          </anms-gear-toggle>
+          </d2c-gear-toggle>
 
-          <anms-gear-toggle #modTypeToggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices"
+          <d2c-gear-toggle #modTypeToggle iconClass="fas fa-book-spells" title="Type" [choices]="modTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
-          </anms-gear-toggle>
-          <anms-gear-toggle #consumableTypeToggle iconClass="fas fa-flask-potion" title="Type"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #consumableTypeToggle iconClass="fas fa-flask-potion" title="Type"
             [choices]="consumableTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]"
             [currentItemType]="option.type">
-          </anms-gear-toggle>
-          <anms-gear-toggle #exchangeTypeToggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #exchangeTypeToggle iconClass="fas fa-gem" title="Type" [choices]="exchangeTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
-          </anms-gear-toggle>
-          <anms-gear-toggle #classTypeToggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #classTypeToggle iconClass="fas fa-hood-cloak" title="Class" [choices]="classTypeChoices"
             (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </anms-gear-toggle>
-          <anms-gear-toggle #ownerToggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #ownerToggle iconClass="fas fa-users" title="Owner" [choices]="ownerChoices"
             (change)="filterChanged()">
-          </anms-gear-toggle>
-          <anms-gear-toggle #equippedToggle iconClass="fas fa-tshirt" title="Equipped" [choices]="equippedChoices"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #equippedToggle iconClass="fas fa-tshirt" title="Equipped" [choices]="equippedChoices"
             (change)="filterChanged()"
             [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
             [currentItemType]="option.type">
-          </anms-gear-toggle>
-          <anms-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices"
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #rarityToggle iconClass="fas fa-balance-scale" title="Rarity" [choices]="rarityChoices"
             (change)="filterChanged()">
-          </anms-gear-toggle>
+          </d2c-gear-toggle>
         </div>
         
         <a mat-button (click)="load()">
@@ -217,7 +217,7 @@
                 </div>
               </td>
               <td class="limited-gear-width">
-                <anms-god-roll-item [item]="i"></anms-god-roll-item>
+                <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                 
                 <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
                   class="item-name" href="javascript:void(0)" [matTooltip]="i.desc"
@@ -323,9 +323,9 @@
                 <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
                   <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                     [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                    <anms-god-roll-plug [plug]="plug" 
+                    <d2c-god-roll-plug [plug]="plug" 
                     [highlightAllPerks]="highlightAllPerks"
-                    [debugmode]="debugmode|async"></anms-god-roll-plug>
+                    [debugmode]="debugmode|async"></d2c-god-roll-plug>
                     <ng-container *ngIf="!isLastPlug">|</ng-container>
                   </span>
                 </div>

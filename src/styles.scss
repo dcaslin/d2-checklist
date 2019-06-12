@@ -20,26 +20,26 @@
 @import 'app/app.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
-  @include anms-styles-reset-theme($theme);
-  @include anms-app-component-theme($theme);
+  @include d2c-styles-reset-theme($theme);
+  @include d2c-app-component-theme($theme);
 }
 
 .default-theme {
-  @include angular-material-theme($anms-theme);
-  @include custom-components-theme($anms-theme);
+  @include angular-material-theme($d2c-theme);
+  @include custom-components-theme($d2c-theme);
   @include default-gear-tags;
  
 }
 
 .light-theme {
-  @include angular-material-theme($anms-light-theme);
-  @include custom-components-theme($anms-light-theme);
+  @include angular-material-theme($d2c-light-theme);
+  @include custom-components-theme($d2c-light-theme);
   @include default-gear-tags;
 }
 
 .black-theme {
-  @include angular-material-theme($anms-black-theme);
-  @include custom-components-theme($anms-black-theme);
+  @include angular-material-theme($d2c-black-theme);
+  @include custom-components-theme($d2c-black-theme);
   @include black-gear-tags;
 
 }

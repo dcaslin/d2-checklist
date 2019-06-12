@@ -7,9 +7,10 @@ import { BungieService } from '../../service/bungie.service';
 import { Character, Const, NameDesc, Platform, Player } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { PlayerStateService } from './player-state.service';
 
 @Component({
-  selector: 'anms-player',
+  selector: 'd2c-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,6 +18,11 @@ import { ChildComponent } from '../../shared/child.component';
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
   currentGt: string;
   currentPlatform: string;
+  platforms: Platform[];
+  selectedPlatform: Platform;
+  gamerTag: string;
+
+
   readonly TAB_URI = [
     'milestones',
     'bounties',
@@ -30,12 +36,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   @ViewChild('maintabs') tabs: MatTabGroup;
 
   public const: Const = Const;
-  platforms: Platform[];
-  selectedPlatform: Platform;
   msg: string;
   selectedTab: string;
-  gamerTag: string;
-  player: Player;
   selectedTreeNodeHash: string = null;
 
   burns: NameDesc[] = [];
@@ -45,6 +47,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     storageService: StorageService,
     private route: ActivatedRoute, private router: Router,
     public dialog: MatDialog,
+    public state: PlayerStateService,
     private ref: ChangeDetectorRef) {
     super(storageService, ref);
     this.platforms = Const.PLATFORMS_ARRAY;
@@ -52,9 +55,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   private setPlayer(x: Player): void {
-    this.player = x;
-    // too much trouble to make player an observable, just force change detection
-    this.ref.markForCheck();
+    this.state.setPlayer(x);
   }
 
   public branchNodeClick(hash: string): void {
@@ -156,59 +157,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     }
   }
 
-  async loadWeeklyPowerfulBounties() {
-    await this.bungieService.loadWeeklyPowerfulBounties(this.player);
-    this.ref.markForCheck();
-  }
-
-  async loadClan() {
-    await this.bungieService.loadClans(this.player.profile.userInfo);
-    this.ref.markForCheck();
-  }
-
   public async performSearch(forceRefresh?: boolean): Promise<void> {
-    if (this.gamerTag == null || this.gamerTag.trim().length === 0) {
-      return;
-    }
-    this.loading.next(true);
-    // set player to empty unless we're refreshing in place
-    if (forceRefresh !== true) {
-      this.setPlayer(null);
-    }
-    const p = await this.bungieService.searchPlayer(this.selectedPlatform.type, this.gamerTag);
-
-    try {
-      if (p != null) {
-        const showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
-        const showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
-        const x = await this.bungieService.getChars(p.membershipType, p.membershipId,
-          ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
-            'CharacterEquipment', 'CharacterInventories',
-            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles'
-            // 'ItemSockets', 'ItemPlugStates',
-            //  'ItemInstances'
-             //'ItemPerks','ItemStats',
-             //'ItemTalentGrids','ItemCommonData'
-            // ,'ProfileInventories'
-          ], false, false, showZeroPtTriumphs, showInvisTriumphs);
-        this.setPlayer(x);
-        this.loadWeeklyPowerfulBounties();
-        this.loadClan();
-
-        // need to get out of this change detection cycle to have tabs set
-        setTimeout(() => {
-          this.setTab();
-        }, 0);
-
-        this.loading.next(false);
-      } else {
-        this.loading.next(false);
-        this.setPlayer(null);
-      }
-    } catch (x) {
-      this.loading.next(false);
-
-    }
+    this.state.performSearch(this.selectedPlatform.type, this.gamerTag, forceRefresh);
   }
 
   async setBurns() {
@@ -278,7 +228,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
 }
 
 @Component({
-  selector: 'anms-burn-dialog',
+  selector: 'd2c-burn-dialog',
   templateUrl: './burn-dialog.component.html',
   styleUrls: ['./burn-dialog.component.scss']
 })

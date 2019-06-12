@@ -9,7 +9,7 @@ import { TriumphFlatNode } from '../triumphs/triumphs.component';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
 @Component({
-  selector: 'anms-collections',
+  selector: 'd2c-collections',
   templateUrl: './collections.component.html',
   styleUrls: ['./collections.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
