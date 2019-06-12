@@ -2,8 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import {RouterModule, RouteReuseStrategy} from '@angular/router';
-import {StickyReuseStrategy} from './sticky-reuse-strategy';
+import { RouterModule, RouteReuseStrategy } from '@angular/router';
+import { StickyReuseStrategy } from './sticky-reuse-strategy';
 
 
 import { AuthService } from './service/auth.service';
@@ -21,7 +21,7 @@ import { ParseService } from './service/parse.service';
 
 import { SharedModule } from '@app/shared';
 
-import {ChildComponent} from './shared/child.component';
+import { ChildComponent } from './shared/child.component';
 import { HomeModule } from './home';
 import { BungieSearchModule } from './bungie-search';
 import { ClanSearchModule } from './clan-search';
@@ -38,8 +38,10 @@ import { FriendsModule } from './friends';
 import { GearModule } from './gear';
 
 import { AppRoutingModule, AuthGuard } from './app-routing.module';
-import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
-  SelectPlatformDialogComponent } from './app.component';
+import {
+  AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
+  SelectPlatformDialogComponent
+} from './app.component';
 
 @NgModule({
   imports: [
@@ -79,8 +81,13 @@ import { AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnac
   providers: [
     LowLineService, MarkService, WishlistService, BucketService, GearService,
     BungieService, AuthService, StorageService, NotificationService,
-    DestinyCacheService, ParseService,
-    {provide: RouteReuseStrategy, useClass: StickyReuseStrategy}],
+    DestinyCacheService, ParseService
+    // ,
+    // {
+    //   provide: RouteReuseStrategy,
+    //   useClass: StickyReuseStrategy
+    // }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

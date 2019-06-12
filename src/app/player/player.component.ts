@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestro
 import { MatDialog, MatDialogConfig, MatDialogRef, MatTabChangeEvent, MatTabGroup, MAT_DIALOG_DATA } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { BungieService } from '../../service/bungie.service';
-import { Character, Const, NameDesc, Platform, Player } from '../../service/model';
-import { StorageService } from '../../service/storage.service';
-import { ChildComponent } from '../../shared/child.component';
+import { BungieService } from '../service/bungie.service';
+import { Character, Const, NameDesc, Platform, Player } from '../service/model';
+import { StorageService } from '../service/storage.service';
+import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
 
 @Component({
@@ -22,23 +22,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   selectedPlatform: Platform;
   gamerTag: string;
 
-
-  readonly TAB_URI = [
-    'milestones',
-    'bounties',
-    'checklist',
-    'progress',
-    'triumphs',
-    'collections',
-    'chars'
-  ];
-
-  @ViewChild('maintabs') tabs: MatTabGroup;
-
   public const: Const = Const;
   msg: string;
-  selectedTab: string;
-  selectedTreeNodeHash: string = null;
 
   burns: NameDesc[] = [];
   reckBurns: NameDesc[] = [];
@@ -54,13 +39,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.selectedPlatform = this.platforms[0];
   }
 
-  private setPlayer(x: Player): void {
-    this.state.setPlayer(x);
-  }
-
-  public branchNodeClick(hash: string): void {
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, { id: hash }]);
-  }
+  // public branchNodeClick(hash: string): void {
+  //   this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, { id: hash }]);
+  // }
 
   public showBurns() {
     const dc = new MatDialogConfig();
@@ -119,42 +100,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
       return;
     }
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
-  }
-
-  public changeTab(event: MatTabChangeEvent) {
-    const tabName: string = this.getTabLabel(event.index);
-
-    if (this.selectedTab !== tabName) {
-
-      if (this.debugmode) {
-      }
-      this.selectedTab = tabName;
-      this.router.navigate([this.selectedPlatform.type, this.gamerTag, tabName]);
-    }
-  }
-
-  private getTabLabel(index: number): string {
-    if (index >= this.TAB_URI.length) { return null; }
-    return this.TAB_URI[index];
-  }
-
-  private setTab(): void {
-    if (this.tabs == null) {
-      return;
-    }
-    const tab: string = this.selectedTab;
-    if (tab == null) {
-      return;
-    }
-    let cntr = 0;
-    for (const label of this.TAB_URI) {
-      if (tab === label) {
-        this.tabs.selectedIndex = cntr;
-        break;
-      }
-      cntr++;
-    }
+    //this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
+    this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
   }
 
   public async performSearch(forceRefresh?: boolean): Promise<void> {
@@ -169,10 +116,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   ngOnInit() {
     this.setBurns();
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      console.dir(params);
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
       const tab: string = params['tab'];
-      this.selectedTreeNodeHash = params['id'];
+      // this.selectedTreeNodeHash = params['id'];
 
       // nothing changed
       if (this.currentGt === newGt && this.currentPlatform === newPlatform) {
@@ -206,7 +154,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       this.selectedPlatform = oNewPlatform;
 
       this.gamerTag = newGt;
-      this.selectedTab = tab.trim().toLowerCase();
+      // this.selectedTab = tab.trim().toLowerCase();
 
       this.performSearch();
     });

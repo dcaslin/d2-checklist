@@ -368,26 +368,6 @@ export interface UserInfo {
 
 }
 
-export class LeaderBoardList {
-    name: string;
-    entries: LeaderboardEntry[];
-
-    constructor(name: string, entries: LeaderboardEntry[]) {
-        this.name = name;
-        this.entries = entries;
-    }
-}
-
-export class LeaderboardEntry {
-    destinyUserInfo: UserInfo;
-    characterId: string;
-    characterClass: string;
-    light: number;
-    rank: number;
-    value: number;
-}
-
-
 export interface Profile {
     userInfo: UserInfo;
     dateLastPlayed: string;

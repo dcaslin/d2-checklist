@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LeaderboardEntry, LeaderBoardList, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistory, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -49,34 +49,6 @@ export class ParseService {
             char.stats.push(new CharacterStat(name, sDesc, val));
         });
         return char;
-    }
-
-    public parseLeaderBoard(resp: any): LeaderBoardList[] {
-        // should only be one value
-        let mainKey: any = null;
-        Object.keys(resp).forEach(key => {
-            mainKey = resp[key];
-        });
-        const returnMe: LeaderBoardList[] = [];
-        if (mainKey != null) {
-            Object.keys(mainKey).forEach(key => {
-                let title: string = key.substring(2);
-                title = title.replace(/([A-Z])/g, ' $1');
-                const entries: LeaderboardEntry[] = [];
-                mainKey[key].entries.forEach(x => {
-                    const l: LeaderboardEntry = new LeaderboardEntry();
-                    l.characterClass = x.player.characterClass;
-                    l.light = x.player.lightLevel;
-                    l.characterId = x.characterId;
-                    l.destinyUserInfo = x.player.destinyUserInfo;
-                    l.rank = x.rank;
-                    l.value = x.value.basic.value;
-                    entries.push(l);
-                });
-                returnMe.push(new LeaderBoardList(title, entries));
-            });
-        }
-        return returnMe;
     }
 
     private populateActivities(c: Character, _act: any): void {
@@ -232,7 +204,7 @@ export class ParseService {
                         milestoneList.push(ms2);
                         milestonesByKey[skipDesc.hash] = ms2;
                     } else if (skipDesc != null) {
-                        console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
+                        // console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
                         return;
                     } else {
                         console.log('Skipping unknown milestone: ' + key);
