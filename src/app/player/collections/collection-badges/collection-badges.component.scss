@@ -1,0 +1,46 @@
+.badge-leaf-icon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 5px;
+    margin: 5px;
+    background-size: cover;
+}
+
+
+.badge-body {
+    text-align: left;
+    margin: 5px;
+}
+
+.mat-expansion-panel-header-title,
+.mat-expansion-panel-header-description {
+    flex-basis: 0;
+    align-items: center;
+}
+
+
+.badge-icon {
+    height: 31.5px;
+    width: 52px;
+    margin: 5px 15px 5px 5px;
+    background-size: cover;
+}
+
+.badge-char-body {
+    margin-left: 5px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.badge-class-header {
+    margin-right: 5px;
+}

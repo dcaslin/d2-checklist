@@ -1,410 +1,454 @@
 @import '~@angular/material/theming';
 
 @mixin d2c-styles-reset-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-  $foreground: map-get($theme, foreground);
-  $background: map-get($theme, background);
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    $warn: map-get($theme, warn);
+    $foreground: map-get($theme, foreground);
+    $background: map-get($theme, background);
 
-  a {
-    color: mat-color($foreground, text);
+    a {
+        color: mat-color($foreground, text);
 
-    &:hover {
-      color: mat-color($accent);
+        &:hover {
+            color: mat-color($accent);
+        }
     }
-  }
 
-  .divider {
-    border-color: mat-color($foreground, divider);
-    border-top-style: solid;
-    border-bottom-style: none;
-  }
-
-  code {
-    color: mat-color($accent, lighter-contrast);
-    background-color: mat-color($accent, lighter);
-  }
-
-  .primary-bg-text{
-    color: mat-color($primary, default-contrast);
-    background-color: mat-color($primary);
-  }
-  
-  .transparent-icon {
-    background-size: cover;
-    background-color: mat-color($primary);
-    opacity: 0.90;
-  }
-
-  .accent-bg-text{
-    color: mat-color($accent, default-contrast);
-    background-color: mat-color($accent);
-  }
-
-  .warn-bg-text{
-    color: mat-color($warn, default-contrast);
-    background-color: mat-color($warn);
-  }
-
-  .accent-text{
-    color: mat-color($accent, 700);
-  }
-  
-  .masterworked{
-    box-shadow:0 0 10px mat-color($accent, 700);
-  }
-  
-
-  .warn-text{
-    color: mat-color($warn);
-  }
-  
-  .primary-text{
-    color: mat-color($primary);
-  }
-
-  .secondary-text{
-    color: mat-color($foreground, secondary-text);
-  }
-
-  .simple-caption{
-    margin: .5em 0 .75em;
-    font-size: smaller;
-    font-weight: lighter;
-    color: mat-color($foreground, secondary-text);
-  }
-
-
-  
-  .simple-darker-caption-no-margin{
-    font-size: smaller;
-    color: mat-color($foreground, secondary-text);
-  }
-
-  .simple-caption-no-margin{
-    font-size: smaller;
-    font-weight: lighter;
-    color: mat-color($foreground, secondary-text);
-  }
-  
-  .right-margin{
-    margin-right: 10px;
-  }
-  
-  .simple-warn-caption{
-    margin: .5em 0 .75em;
-    font-size: smaller;
-    font-weight: lighter;
-    opacity: 0.8;
-    color: mat-color($warn);
-  }
-
-  .type-caption{
-    font-size: smaller;
-    color: mat-color($foreground, secondary-text);
-  }
-
-  table.responsive-table {
-    border: 1px solid mat-color($background, disabled-list-option);
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-width: 1250px;
-    table-layout: auto;
-    & caption {
-      font-size: 1.5em;
-      margin: .5em 0 .75em;
+    .divider {
+        border-color: mat-color($foreground, divider);
+        border-top-style: solid;
+        border-bottom-style: none;
     }
-    & tr {
-      background:  mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
-      
-      padding: .35em;
-    }
-    & td {
-      padding: .625em;
-      text-align: center;
-    }
-    & td.lead {
-      padding: .625em;
-      text-align: left;
-      font-weight: bold;
 
-      & .caption {
-        float: right;
+    code {
+        color: mat-color($accent, lighter-contrast);
+        background-color: mat-color($accent, lighter);
+    }
+
+    .primary-bg-text {
+        color: mat-color($primary, default-contrast);
+        background-color: mat-color($primary);
+    }
+
+    .transparent-icon {
+        background-size: cover;
+        background-color: mat-color($primary);
+        opacity: 0.90;
+    }
+
+    .accent-bg-text {
+        color: mat-color($accent, default-contrast);
+        background-color: mat-color($accent);
+    }
+
+    .warn-bg-text {
+        color: mat-color($warn, default-contrast);
+        background-color: mat-color($warn);
+    }
+
+    .accent-text {
+        color: mat-color($accent, 700);
+    }
+
+    .masterworked {
+        box-shadow: 0 0 10px mat-color($accent, 700);
+    }
+
+
+    .warn-text {
+        color: mat-color($warn);
+    }
+
+    .primary-text {
+        color: mat-color($primary);
+    }
+
+    .secondary-text {
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .simple-caption {
+        margin: .5em 0 .75em;
         font-size: smaller;
         font-weight: lighter;
         color: mat-color($foreground, secondary-text);
-      }
     }
-    & th {
-      padding: .625em;
-      text-align: center;
-      font-size: .85em;
-      letter-spacing: .1em;
-      color: mat-color($foreground, secondary-text);
-      //text-transform: uppercase;
-    }
-  }
-  
-  
-  @media screen and (max-width: 1000px) {
-    .mat-tab-label{
-        min-width:120px
-    }
-  }
 
-  @media screen and (max-width: 800px) {
-    .mat-tab-label{
-        min-width:100px
-    }
-  }
-  
-  @media screen and (max-width: 650px) {
-    .mat-tab-label{
-        min-width:50px
-    }
-  }
-  
-  .responsive-table-inline-mobile-only{
-    display: none;
-  }
 
-  @media screen and (max-width: 600px) {
 
-    .responsive-table-inline-mobile-only{
-      display: inline;
+    .simple-darker-caption-no-margin {
+        font-size: smaller;
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .simple-caption-no-margin {
+        font-size: smaller;
+        font-weight: lighter;
+        color: mat-color($foreground, secondary-text);
+    }
+
+    .right-margin {
+        margin-right: 10px;
+    }
+
+    .simple-warn-caption {
+        margin: .5em 0 .75em;
+        font-size: smaller;
+        font-weight: lighter;
+        opacity: 0.8;
+        color: mat-color($warn);
+    }
+
+    .type-caption {
+        font-size: smaller;
+        color: mat-color($foreground, secondary-text);
     }
 
     table.responsive-table {
-      border: 0;
-      & caption {
-        font-size: 1.3em;
-      }
-      & thead {
-        border: none;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
+        border: 1px solid mat-color($background, disabled-list-option);
+        border-collapse: collapse;
+        margin: 0;
         padding: 0;
-        position: absolute;
-        width: 1px;
-      }
-      & tfoot {
-        border: none;
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
+        width: 100%;
+        max-width: 1250px;
+        table-layout: auto;
+
+        & caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
+
+        & tr {
+            background: mat-color($background, card);
+            border: 1px solid mat-color($background, unselected-chip);
+
+            padding: .35em;
+        }
+
+        & td {
+            padding: .625em;
+            text-align: center;
+        }
+
+        & td.lead {
+            padding: .625em;
+            text-align: left;
+            font-weight: bold;
+
+            & .caption {
+                float: right;
+                font-size: smaller;
+                font-weight: lighter;
+                color: mat-color($foreground, secondary-text);
+            }
+        }
+
+        & th {
+            padding: .625em;
+            text-align: center;
+            font-size: .85em;
+            letter-spacing: .1em;
+            color: mat-color($foreground, secondary-text);
+            //text-transform: uppercase;
+        }
+    }
+
+
+    @media screen and (max-width: 1000px) {
+        .mat-tab-label {
+            min-width: 120px
+        }
+
+        .mat-tab-link {
+            min-width: 120px
+        }
+    }
+
+    @media screen and (max-width: 800px) {
+        .mat-tab-label {
+            min-width: 100px
+        }
+
+        .mat-tab-link {
+            min-width: 100px
+        }
+    }
+
+    @media screen and (max-width: 650px) {
+        .mat-tab-label {
+            min-width: 50px
+        }
+
+        .mat-tab-link {
+            min-width: 50px
+        }
+    }
+
+    .responsive-table-inline-mobile-only {
+        display: none;
+    }
+
+    @media screen and (max-width: 600px) {
+
+        .responsive-table-inline-mobile-only {
+            display: inline;
+        }
+
+        table.responsive-table {
+            border: 0;
+
+            & caption {
+                font-size: 1.3em;
+            }
+
+            & thead {
+                border: none;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+
+            & tfoot {
+                border: none;
+                clip: rect(0 0 0 0);
+                height: 1px;
+                margin: -1px;
+                overflow: hidden;
+                padding: 0;
+                position: absolute;
+                width: 1px;
+            }
+
+            & tr {
+                border-bottom: 3px solid mat-color($background, status-bar);
+                display: block;
+                margin-bottom: .625em;
+            }
+
+            & td {
+                border-bottom: 1px solid mat-color($background, status-bar);
+                display: block;
+                font-size: .8em;
+                text-align: right;
+            }
+
+            & td.lead {
+                font-weight: bold;
+                border-bottom: 1px solid mat-color($background, status-bar);
+                display: block;
+                font-size: .8em;
+                text-align: left;
+            }
+
+            & td:before {
+                content: attr(data-label);
+                float: left;
+            }
+
+            & td:last-child {
+                border-bottom: 0;
+            }
+        }
+    }
+
+    table.tidy-table {
+        border: 1px solid mat-color($background, disabled-list-option);
+        border-collapse: collapse;
+        margin: 0;
         padding: 0;
-        position: absolute;
-        width: 1px;
-      }
-      & tr {
-        border-bottom: 3px solid mat-color($background, status-bar);
-        display: block;
-        margin-bottom: .625em;
-      }
-      & td {
-        border-bottom: 1px solid mat-color($background, status-bar);
-        display: block;
-        font-size: .8em;
-        text-align: right;
-      }
-      & td.lead {
-        font-weight: bold;
-        border-bottom: 1px solid mat-color($background, status-bar);
-        display: block;
-        font-size: .8em;
-        text-align: left;
-      }
-      & td:before {
-        content: attr(data-label);
-        float: left;
-      }
-      & td:last-child {
-        border-bottom: 0;
-      }
-    } 
-  }
-  
-  table.tidy-table {
-    border: 1px solid mat-color($background, disabled-list-option);
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-width: 1250px;
-    table-layout: fixed;
-    & caption {
-      font-size: 1.5em;
-      margin: .5em 0 .75em;
-    }
-    & tr {
-      background:  mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
-      
-      padding: .35em;
-    }
-    & td {
-      padding: .625em;
-      text-align: left;
-      vertical-align: top;
-    }
-    & td.lead {
-      padding: .625em;
-      text-align: left;
-      font-weight: bold;
+        width: 100%;
+        max-width: 1250px;
+        table-layout: fixed;
 
-      & .caption {
-        float: right;
-        font-size: smaller;
-        font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
-      }
-    }
-    & th {
-      padding: .625em;
-      text-align: left;
-      font-size: .85em;
-      letter-spacing: .1em;
-      color: mat-color($foreground, secondary-text);
-    }
-  }
+        & caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
 
-  table.gear-table {
-    border: 1px solid mat-color($background, disabled-list-option);
-    & tr {
-      background:  mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
-    }
-    & td.lead {
-      & .caption {
-        color: mat-color($foreground, secondary-text);
-      }
-    }
-    & th {
-      color: mat-color($foreground, secondary-text);
-    }
-  }
+        & tr {
+            background: mat-color($background, card);
+            border: 1px solid mat-color($background, unselected-chip);
 
+            padding: .35em;
+        }
 
-  table.recent-players-table{
-    border: 1px solid mat-color($background, disabled-list-option);
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    min-width: 300px;
-    max-width: 800px;
+        & td {
+            padding: .625em;
+            text-align: left;
+            vertical-align: top;
+        }
 
-    table-layout: auto;
-    & caption {
-      font-size: 1.5em;
-      margin: .5em 0 .75em;
-    }
-    & tr {
-      background:  mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
-      
-      padding: .35em;
-    }
-    & td {
-      padding: .625em;
-      text-align: left;
-      vertical-align: top;
-    }
-    & td.lead {
-      padding: .625em;
-      text-align: left;
-      font-weight: bold;
+        & td.lead {
+            padding: .625em;
+            text-align: left;
+            font-weight: bold;
 
-      & .caption {
-        float: right;
-        font-size: smaller;
-        font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
-      }
+            & .caption {
+                float: right;
+                font-size: smaller;
+                font-weight: lighter;
+                color: mat-color($foreground, secondary-text);
+            }
+        }
+
+        & th {
+            padding: .625em;
+            text-align: left;
+            font-size: .85em;
+            letter-spacing: .1em;
+            color: mat-color($foreground, secondary-text);
+        }
     }
-    & th {
-      padding: .625em;
-      text-align: left;
-      font-size: .85em;
-      letter-spacing: .1em;
-      color: mat-color($foreground, secondary-text);
+
+    table.gear-table {
+        border: 1px solid mat-color($background, disabled-list-option);
+
+        & tr {
+            background: mat-color($background, card);
+            border: 1px solid mat-color($background, unselected-chip);
+        }
+
+        & td.lead {
+            & .caption {
+                color: mat-color($foreground, secondary-text);
+            }
+        }
+
+        & th {
+            color: mat-color($foreground, secondary-text);
+        }
     }
 
 
-  }
+    table.recent-players-table {
+        border: 1px solid mat-color($background, disabled-list-option);
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        min-width: 300px;
+        max-width: 800px;
 
-  table.checklist-table {
-    border: 1px solid mat-color($background, disabled-list-option);
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    // width: 100%;
-    max-width: 750px;
-    table-layout: fixed;
-    & caption {
-      font-size: 1.5em;
-      margin: .5em 0 .75em;
-    }
-    & tr {
-      background:  mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
-      
-      padding: .35em;
-    }
-    & td {
-      padding: .625em;
-      text-align: left;
-    }
-    & td.lead {
-      padding: .625em;
-      text-align: left;
-      font-weight: bold;
+        table-layout: auto;
 
-      & .caption {
-        float: right;
-        font-size: smaller;
-        font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
-      }
-    }
-    & th {
-      padding: .625em;
-      text-align: left;
-      font-size: .85em;
-      letter-spacing: .1em;
-      color: mat-color($foreground, secondary-text);
-    }
-  }
+        & caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
+
+        & tr {
+            background: mat-color($background, card);
+            border: 1px solid mat-color($background, unselected-chip);
+
+            padding: .35em;
+        }
+
+        & td {
+            padding: .625em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        & td.lead {
+            padding: .625em;
+            text-align: left;
+            font-weight: bold;
+
+            & .caption {
+                float: right;
+                font-size: smaller;
+                font-weight: lighter;
+                color: mat-color($foreground, secondary-text);
+            }
+        }
+
+        & th {
+            padding: .625em;
+            text-align: left;
+            font-size: .85em;
+            letter-spacing: .1em;
+            color: mat-color($foreground, secondary-text);
+        }
 
 
-  table.timing-table{
-    & td {
+    }
 
-      padding: .425em;
-      border: 1px solid mat-color($background, disabled-list-option);
-      border-collapse: collapse;  
-    }
-    & th {
-      padding: .425em;
-      border: 1px solid mat-color($background, disabled-list-option);
-      border-collapse: collapse;  
-    }
-    border: 1px solid mat-color($background, disabled-list-option);
-    border-collapse: collapse;
-    width: 100%;
-    margin-bottom: 10px;
-  }
-  
-  @media screen and (max-width: 600px) {
     table.checklist-table {
-      width: 100%;
-    }
-  }
-}
+        border: 1px solid mat-color($background, disabled-list-option);
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        // width: 100%;
+        max-width: 750px;
+        table-layout: fixed;
 
+        & caption {
+            font-size: 1.5em;
+            margin: .5em 0 .75em;
+        }
+
+        & tr {
+            background: mat-color($background, card);
+            border: 1px solid mat-color($background, unselected-chip);
+
+            padding: .35em;
+        }
+
+        & td {
+            padding: .625em;
+            text-align: left;
+        }
+
+        & td.lead {
+            padding: .625em;
+            text-align: left;
+            font-weight: bold;
+
+            & .caption {
+                float: right;
+                font-size: smaller;
+                font-weight: lighter;
+                color: mat-color($foreground, secondary-text);
+            }
+        }
+
+        & th {
+            padding: .625em;
+            text-align: left;
+            font-size: .85em;
+            letter-spacing: .1em;
+            color: mat-color($foreground, secondary-text);
+        }
+    }
+
+
+    table.timing-table {
+        & td {
+
+            padding: .425em;
+            border: 1px solid mat-color($background, disabled-list-option);
+            border-collapse: collapse;
+        }
+
+        & th {
+            padding: .425em;
+            border: 1px solid mat-color($background, disabled-list-option);
+            border-collapse: collapse;
+        }
+
+        border: 1px solid mat-color($background, disabled-list-option);
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    @media screen and (max-width: 600px) {
+        table.checklist-table {
+            width: 100%;
+        }
+    }
+}

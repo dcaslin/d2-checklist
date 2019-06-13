@@ -98,6 +98,12 @@
   padding-right: 10px  !important;
 }
 
+.mat-tab-link{
+  padding-left: 10px !important;
+  padding-right: 10px  !important;
+}
+
+
 .left{
   text-align: left !important;
 }
@@ -280,4 +286,48 @@ mat-form-field.full-width .mat-form-field-infix{
   .low-hanging-desc {
     max-width: 300px;
   }
+}
+
+
+.transparent-leaf-icon {
+  float: left;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 5px;
+  margin: 5px;
+  background-size: cover;
+}
+
+
+.transparent-branch-icon {
+  float: left;
+  width: 32px;
+  height: 32px;
+  border-radius: 5px;
+  margin: 5px;
+  background-size: cover;
+}
+
+.badge-leaf-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 5px;
+  margin: 5px;
+  background-size: cover;
+}
+
+.hide-complete-collectibles {
+  text-align: left;
+  margin: 5px;
+  margin-top: 10px;
+  margin-left: 1em;
+  font-size: small;
+  font-weight: lighter;
+}
+
+.collection-header {
+  margin: 10px;
+  text-align: left;
 }

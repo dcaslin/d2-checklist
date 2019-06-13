@@ -14,12 +14,15 @@ import { TriumphSealsComponent } from './triumphs/triumph-seals/triumph-seals.co
 import { TriumphClosestComponent } from './triumphs/triumph-closest/triumph-closest.component';
 import { TriumphSearchComponent } from './triumphs/triumph-search/triumph-search.component';
 import { TriumphTrackedComponent } from './triumphs/triumph-tracked/triumph-tracked.component';
+import { CollectionTreeComponent } from './collections/collection-tree/collection-tree.component';
+import { CollectionSearchComponent } from './collections/collection-search/collection-search.component';
+import { CollectionBadgesComponent } from './collections/collection-badges/collection-badges.component';
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent],
   entryComponents: [
     QuestDialogComponent, BurnDialogComponent
   ],
