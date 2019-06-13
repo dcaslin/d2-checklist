@@ -33,6 +33,10 @@ import { TriumphSealsComponent } from './player/triumphs/triumph-seals/triumph-s
 import { TriumphClosestComponent } from './player/triumphs/triumph-closest/triumph-closest.component';
 import { TriumphSearchComponent } from './player/triumphs/triumph-search/triumph-search.component';
 import { TriumphTrackedComponent } from './player/triumphs/triumph-tracked/triumph-tracked.component';
+import { CollectionBadgesComponent } from './player/collections/collection-badges/collection-badges.component';
+import { CollectionSearchComponent } from './player/collections/collection-search/collection-search.component';
+import { CollectionTreeComponent } from './player/collections/collection-tree/collection-tree.component';
+import { CollectionsComponent } from './player/collections/collections.component';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -208,17 +212,42 @@ export class AuthGuard implements CanActivate {
           ]
         },
         {
+          path: 'collections',
+          component: CollectionsComponent,
+          children: [
+            {
+              path: '',
+              redirectTo: 'tree',
+              pathMatch: 'full'
+            },
+            {
+              path: 'tree/:node',
+              component: CollectionTreeComponent,
+            },
+            {
+              path: 'tree',
+              component: CollectionTreeComponent,
+            },
+            {
+              path: 'search',
+              component: CollectionSearchComponent,
+            },
+            {
+              path: 'badges/:node',
+              component: CollectionBadgesComponent,
+            },
+            {
+              path: 'badges',
+              component: CollectionBadgesComponent,
+            }
+          ]
+        },
+        {
           path: 'chars',
           component: CharsComponent,
         },
       ]
     },
-    // {
-    //   path: ':platform/:gt',
-    //   pathMatch: 'full',
-    //   canActivate: [AuthGuard],
-    //   redirectTo: ':platform/:gt/milestones'
-    // },
     {
       path: '**',
       redirectTo: 'home'

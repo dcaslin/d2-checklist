@@ -241,7 +241,7 @@
                             matTooltip="Not max level: possibly complete / possibly ineligible"></i>
                         </span>
                         <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.neverDisappears">
-                          <i class="far fa-minus-square" matTooltip="Not unlocked?"></i>
+                          <i class="far fa-minus-square" matTooltip="Milestone missing. May not be unlocked, or there may have been an error loading data."></i>
                         </span>
                       </ng-container>
                     </td>

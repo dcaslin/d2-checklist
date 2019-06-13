@@ -16,9 +16,9 @@
 
   <mat-tree [dataSource]="recordDatasource" [treeControl]="triumphTreeControl">
     <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)" matTreeNodeToggle
-      matTreeNodePadding>
+      matTreeNodePadding (click)="selectedTreeNodeHash=node.data.hash; location.go(state.getPlayerRouteString(['triumphs','tree',node.data.hash]))">
       <button mat-icon-button disabled></button>
-      <div style="text-align: left; margin-bottom: 20px">
+      <div style="text-align: left; margin-bottom: 20px" [class.warn-text]="node.data.hash == selectedTreeNodeHash" [id]="'tree-node-'+node.data.hash">
         <i *ngIf="node.data.complete && node.data.redeemed"
           class="accent-text mat-option.mat-selected fas fa-check-square"></i>
         <i *ngIf="node.data.complete && !node.data.redeemed"
@@ -55,8 +55,8 @@
         </div>
       </div>
     </mat-tree-node>
-    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding>
-      <button mat-icon-button matTreeNodeToggle (click)="router.navigate(state.getPlayerRoute(['triumphs', 'tree',node.data.hash]))">
+    <mat-tree-node *matTreeNodeDef="let node;when: hasChild" [hidden]="hideNode(node)" matTreeNodePadding [id]="'tree-node-'+node.data.hash">
+      <button mat-icon-button matTreeNodeToggle (click)="selectedTreeNodeHash=node.data.hash; location.go(state.getPlayerRouteString(['triumphs','tree',node.data.hash]))">
         <mat-icon class="mat-icon-rtl-mirror">
           {{triumphTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>

@@ -100,113 +100,51 @@
                 <span class="d-none d-md-inline">External Links</span>
               </button>
               <mat-menu #menu="matMenu">
-                <a mat-menu-item *ngIf="player.profile.userInfo.membershipType==1" target="_blank" rel="noopener"
-                  [href]="'https://account.xbox.com/Messages?gamerTag='+player.profile.userInfo.displayName">
-                  <mat-icon>message</mat-icon>
-                  <span>Message on XBL</span>
+                <a mat-menu-item href="https://app.destinyitemmanager.com/" rel="warn-text" target="_blank"
+                  rel="noopener">
+                  <mat-icon>bookmark</mat-icon>
+                  <span>DIM</span>
                 </a>
                 <a mat-menu-item [href]="getRaidLink(player)" rel="warn-text" target="_blank" rel="noopener">
                   <mat-icon>flag</mat-icon>
                   <span>Raid.Report</span>
                 </a>
-                <a mat-menu-item [href]="getTrialsLink(player)" rel="noopener" target="_blank" rel="noopener">
+
+                <!-- <a mat-menu-item [href]="getTrialsLink(player)" rel="noopener" target="_blank" rel="noopener">
                   <mat-icon>remove_red_eye</mat-icon>
                   <span>Trials.Report</span>
-                </a>
+                </a> -->
               </mat-menu>
             </div>
 
             <nav mat-tab-nav-bar>
-              <a mat-tab-link routerLink="milestones" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="fas fa-flag"></i><span class="d-none d-md-inline">&ensp;Milestones</span>
+              <a mat-tab-link routerLink="milestones" routerLinkActive #rla1="routerLinkActive"
+                [active]="rla1.isActive">
+                <i class="fas fa-flag"></i><span class="d-none d-md-inline">&ensp;Milestones</span>
               </a>
-              <a mat-tab-link routerLink="pursuits" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="fas fa-gift"></i><span class="d-none d-md-inline">&ensp;Pursuits</span>
+              <a mat-tab-link routerLink="pursuits" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
+                <i class="fas fa-gift"></i><span class="d-none d-md-inline">&ensp;Pursuits</span>
               </a>
-              <a mat-tab-link routerLink="checklist" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="fas fa-check-square"></i><span class="d-none d-md-inline">&ensp;Checklist</span>
+              <a mat-tab-link routerLink="triumphs" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
+                <i class="fas fa-trophy"></i><span class="d-none d-md-inline">&ensp;Triumphs</span>
               </a>
-              <a mat-tab-link routerLink="progress" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Progress</span>
+              <a mat-tab-link routerLink="collections" routerLinkActive #rla6="routerLinkActive"
+                [active]="rla6.isActive">
+                <i class="icon-collections"></i><span class="d-none d-md-inline">&ensp;Collections</span>
               </a>
-              <a mat-tab-link routerLink="triumphs" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="fas fa-trophy"></i><span class="d-none d-md-inline">&ensp;Triumphs</span>
+              <a mat-tab-link routerLink="checklist" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+                <i class="fas fa-check-square"></i><span class="d-none d-md-inline">&ensp;Checklist</span>
               </a>
-              <a mat-tab-link routerLink="collections" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="icon-collections"></i><span class="d-none d-md-inline">&ensp;Collections</span>
+              <a mat-tab-link routerLink="progress" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
+                <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Progress</span>
               </a>
-              <a mat-tab-link routerLink="chars" routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
-                  <i class="fas fa-users"></i><span class="d-none d-md-inline">&ensp;Chars</span>
+
+              <a mat-tab-link routerLink="chars" routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive">
+                <i class="fas fa-users"></i><span class="d-none d-md-inline">&ensp;Chars</span>
               </a>
             </nav>
 
             <router-outlet></router-outlet>
-<!-- 
-            <mat-tab-group #maintabs (selectedTabChange)='changeTab($event)'>
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <i class="fas fa-flag"></i>
-                  <span class="d-none d-md-inline">&ensp;Milestones</span>
-                </ng-template>
-                <d2c-milestones></d2c-milestones>
-              </mat-tab>
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <i class="fas fa-gift"></i>
-                  <span class="d-none d-md-inline">&ensp;Bounties
-                    <span class="d-none d-lg-inline">/Quests</span>
-                  </span>
-                </ng-template>
-                <ng-container *ngIf="player!=null">
-                  <d2c-bounties></d2c-bounties>
-                </ng-container>
-              </mat-tab>
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <i class="fas fa-check-square"></i>
-                  <span class="d-none d-md-inline">&ensp;Checklist</span>
-                </ng-template>
-                <d2c-checklist></d2c-checklist>
-              </mat-tab>
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <i class="fas fa-chart-line"></i>
-                  <span class="d-none d-md-inline">&ensp;Progress</span>
-                </ng-template>
-                <ng-container *ngIf="player!=null">
-                  <d2c-progress></d2c-progress>
-                </ng-container>
-              </mat-tab>
-              <mat-tab>
-                    <ng-template mat-tab-label>
-                      <i class="fas fa-trophy"></i>
-                      <span class="d-none d-md-inline">&ensp;Triumphs</span>
-                    </ng-template>
-                    <ng-container *ngIf="player!=null">
-                      <d2c-triumphs [selectedTab]="selectedTab" [selectedTreeNodeHash]="selectedTreeNodeHash"
-                        (refreshPlayer)="performSearch(true)" [currPlayer]="player" (nodeClicked)="branchNodeClick($event)">
-                      </d2c-triumphs>
-                    </ng-container>
-                  </mat-tab>
-                  <mat-tab>
-                    <ng-template mat-tab-label>
-                      <i class="icon-collections"></i>
-                      <span class="d-none d-md-inline">&ensp;Collections</span>
-                    </ng-template>
-                    <ng-container *ngIf="player!=null">
-                      <d2c-collections [selectedTab]="selectedTab" [selectedTreeNodeHash]="selectedTreeNodeHash"
-                        [currPlayer]="player" (nodeClicked)="branchNodeClick($event)">
-                      </d2c-collections>
-                    </ng-container>
-                  </mat-tab>
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <i class="fas fa-users"></i>
-                  <span class="d-none d-md-inline">&ensp;Chars</span>
-                </ng-template>
-                <d2c-chars></d2c-chars>
-              </mat-tab>
-            </mat-tab-group> -->
           </ng-container>
         </ng-container>
       </div>

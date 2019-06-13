@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { Player, SelectedUser, TriumphRecordNode } from '@app/service/model';
+import { Player, SelectedUser, TriumphRecordNode, SearchResult } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { map } from 'rxjs/operators';
 
@@ -18,6 +18,8 @@ export class PlayerStateService {
     this._sort = val;
     this._player.next(this._player.getValue());
   }
+
+  private searchResult: SearchResult = null;
 
   public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
 
@@ -48,30 +50,40 @@ export class PlayerStateService {
   private _showZeroPtTriumphs = false;
   private _showInvisTriumphs = false;
   private _hideCompleteTriumphs = false;
+  private _hideCompleteCollectibles = false;
 
   aTrackedTriumphIds = [];
   public dTrackedTriumphIds = {};
-  
+
 
 
   public getPlayerRoute(params: any[]): string[] {
     const p = this._player.getValue();
-    const baseRoute = ['' + p.profile.userInfo.membershipType, p.profile.userInfo.displayName];
+    const baseRoute = ['' + p.profile.userInfo.membershipType, encodeURIComponent(this.searchResult.displayName)];
     return baseRoute.concat(params);
   }
 
-  
+  public getPlayerRouteString(params: any[]): string {
+    const entries = this.getPlayerRoute(params);
+    let s = entries[0];
+    for (let i = 1; i < entries.length; i++) {
+      s += '/' + entries[i];
+    }
+    return s;
+  }
+
+
   public get showZeroPtTriumphs() {
     return this._showZeroPtTriumphs;
   }
 
-  public set showZeroPtTriumphs(b: boolean){
+  public set showZeroPtTriumphs(b: boolean) {
     this._showZeroPtTriumphs = b;
     localStorage.setItem('show-zero-pt-triumphs', '' + this._showZeroPtTriumphs);
     this.requestRefresh();
   }
 
-  public set showInvisTriumphs(b: boolean){
+  public set showInvisTriumphs(b: boolean) {
     this._showInvisTriumphs = b;
     localStorage.setItem('show-invis-triumphs', '' + this._showInvisTriumphs);
     this.requestRefresh();
@@ -81,11 +93,21 @@ export class PlayerStateService {
     return this._showInvisTriumphs;
   }
 
+  public get hideCompleteCollectibles() {
+    return this._hideCompleteCollectibles;
+  }
+
+  public set hideCompleteCollectibles(b: boolean) {
+    this._hideCompleteCollectibles = b;
+    localStorage.setItem('hide-completed-collectibles', '' + this._hideCompleteCollectibles);
+  }
+
+
   public get hideCompleteTriumphs() {
     return this._hideCompleteTriumphs;
   }
 
-  public set hideCompleteTriumphs(b: boolean){
+  public set hideCompleteTriumphs(b: boolean) {
     this._hideCompleteTriumphs = b;
     localStorage.setItem('hide-completed-triumphs', '' + this._hideCompleteTriumphs);
   }
@@ -104,6 +126,7 @@ export class PlayerStateService {
     this._showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
     this._showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
     this._hideCompleteTriumphs = localStorage.getItem('hide-completed-triumphs') === 'true';
+    this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';
     this.loadTrackedTriumphIds();
   }
 
@@ -130,7 +153,7 @@ export class PlayerStateService {
       this._player.next(null);
     }
     const p = await this.bungieService.searchPlayer(platform, gamerTag);
-
+    this.searchResult = p;
     try {
       if (p != null) {
         this.checkSignedOnCurrent();

@@ -387,8 +387,10 @@ export class BungieService implements OnDestroy {
 
     private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
         const powerfulBounties: SaleItem[] = [];
+        let vendorFound = false;
         for (const i of vendorData) {
             if (i.vendor.hash == targetVendorHash) {
+                vendorFound = true;
                 if (i.value != null && i.type == ItemType.Bounty) {
                     for (const v of i.value) {
                         // is powerful gear
@@ -420,6 +422,11 @@ export class BungieService implements OnDestroy {
                 complete ? null : held ? 'Held' : 'Not Held', null);
             return psuedoMs;
         } else {
+            if (!vendorFound){
+                // const psuedoMs = new MilestoneStatus(key, false, 0, null,
+                //     'Vendor not found', null);
+                return null;
+            }
             let complete = 0;
             let held = 0;
             for (const b of powerfulBounties) {
@@ -478,7 +485,8 @@ export class BungieService implements OnDestroy {
             pl: 653,
             name: 'Spider\'s Weekly Bounty',
             desc: 'Spider\'s weekly powerful bounty, costs Ghost Fragments',
-            hasPartial: false
+            hasPartial: false,
+            neverDisappears: true
         };
         p.milestoneList.push(ms1);
         const empty1: MilestoneStatus = new MilestoneStatus(Const.SPIDER_KEY, false, 0, null, 'Loading...', null);
@@ -489,7 +497,8 @@ export class BungieService implements OnDestroy {
             pl: 653,
             name: 'Gambit Weekly Bounty',
             desc: 'The Drifter\'s weekly powerful bounty',
-            hasPartial: true
+            hasPartial: true,
+            neverDisappears: true
         };
         p.milestoneList.push(ms2);
         const empty2: MilestoneStatus = new MilestoneStatus(Const.DRIFTER_KEY, false, 0, null, 'Loading...', null);
@@ -500,7 +509,8 @@ export class BungieService implements OnDestroy {
             pl: 745,
             name: 'Werner\'s Weekly Bounties',
             desc: '4 powerful bounties, plus a 5th powerful drop if you finish all 4',
-            hasPartial: true
+            hasPartial: true,
+            neverDisappears: true
         };
         p.milestoneList.push(ms3);
         const empty3: MilestoneStatus = new MilestoneStatus(Const.WERNER_KEY, false, 0, null, 'Loading...', null);

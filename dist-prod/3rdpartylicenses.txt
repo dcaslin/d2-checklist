@@ -525,17 +525,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
-@angular/material/expansion
-
-@angular/material/tree
+@angular/material/list
 
 @angular/material/card
 
-@angular/material/list
+@angular/material/expansion
 
 @angular/material/sort
 
 @angular/material/table
+
+@angular/material/tree
 
 @angular/material/divider
 

@@ -7,7 +7,7 @@ import { Subject, BehaviorSubject } from 'rxjs';
 
 
 
-import { MatSnackBar, MatDialogConfig } from '@angular/material';
+import { MatSnackBar, MatDialogConfig, MAT_SNACK_BAR_DATA } from '@angular/material';
 import { environment as env } from '@env/environment';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
@@ -22,11 +22,13 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 @Component({
   selector: 'd2c-success-snack',
   templateUrl: 'snackbars/success.html',
-  styleUrls: ['snackbars/success.css'],
+  styleUrls: ['snackbars/success.css']
 })
 export class SuccessSnackbarComponent {
   message: string;
-
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) {
+    this.message = data.message;
+  }
 }
 
 @Component({
@@ -36,17 +38,21 @@ export class SuccessSnackbarComponent {
 })
 export class InfoSnackbarComponent {
   message: string;
-
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) {
+    this.message = data.message;
+  }
 }
 
 @Component({
   selector: 'd2c-warn-snack',
   templateUrl: 'snackbars/warn.html',
-  styleUrls: ['snackbars/warn.css'],
+  styleUrls: ['snackbars/warn.css']
 })
 export class WarnSnackbarComponent {
   message: string;
-
+  constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any) {
+    this.message = data.message;
+  }
 }
 
 @Component({
@@ -131,19 +137,25 @@ export class AppComponent implements OnInit, OnDestroy {
         x => {
           if (x.mode === 'success') {
             const snackRef = this.snackBar.openFromComponent(SuccessSnackbarComponent, {
-              duration: 2000
+              duration: 2000,
+              data: {
+                message: x.message
+              }
             });
-            snackRef.instance.message = x.message;
           } else if (x.mode === 'info') {
             const snackRef = this.snackBar.openFromComponent(InfoSnackbarComponent, {
-              duration: 2000
+              duration: 2000,
+              data: {
+                message: x.message
+              }
             });
-            snackRef.instance.message = x.message;
           } else if (x.mode === 'error') {
             const snackRef = this.snackBar.openFromComponent(WarnSnackbarComponent, {
-              duration: 5000
+              duration: 5000,
+              data: {
+                message: x.message
+              }
             });
-            snackRef.instance.message = x.message;
           }
         });
   }
@@ -153,8 +165,8 @@ export class AppComponent implements OnInit, OnDestroy {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-     dc.width = '300px';
-     dc.data = this.signedOnUser.value.membership.destinyMemberships;
+    dc.width = '300px';
+    dc.data = this.signedOnUser.value.membership.destinyMemberships;
 
     const dialogRef = this.dialog.open(SelectPlatformDialogComponent, dc);
 

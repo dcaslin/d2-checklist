@@ -1,0 +1,66 @@
+<ng-container *ngIf="state.player|async as player">
+  <ng-container *ngIf="filteredCollection|async as fc">
+
+
+    <h4 class="collection-header">Search</h4>
+    <div>
+      <div class="left" style="margin: 10px">
+        <mat-form-field class="collection-search-field">
+          <input matInput (keyup)="searchSubject.next()" [(ngModel)]="filterText"
+            placeholder="Wildcard Search collections">
+        </mat-form-field>
+      </div>
+      <div *ngIf="fc.length==0" class="left" style="margin: 10px">
+        <ng-container *ngIf="filterText==null || filterText.length==0">
+          Type above to search
+        </ng-container>
+        <ng-container *ngIf="filterText!=null && filterText.length>0">
+          No results, change your search
+        </ng-container>
+
+      </div>
+      <table class="tidy-table">
+        <thead>
+          <tr>
+            <th class="left">Name</th>
+            <th class="d-none d-md-table-cell left">Desc</th>
+            <th class="d-none d-md-table-cell left">Acquisition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let t of fc">
+            <tr>
+
+              <td class="lead">
+                <div *ngIf="t.icon!=null" class="transparent-icon transparent-leaf-icon"
+                  [style.background-image]="'url(//www.bungie.net' + t.icon + ')'"></div>
+                {{t.name}}
+                <i *ngIf="t.acquired" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                <i *ngIf="!t.acquired" class="far fa-square"></i>
+                <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
+                <br>
+                <span class="simple-caption">
+                  <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                    <ng-container *ngIf="i>0">
+                      <a [routerLink]="['..','tree', p.hash]">{{p.path}}</a>
+                      <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
+                      <ng-container *ngIf="!isLast">
+                        /
+                      </ng-container>
+                    </ng-container>
+                  </ng-container>
+                </span>
+              </td>
+              <td class="d-none d-md-table-cell left">
+                <div class="low-hanging-desc">{{t.desc}}</div>
+              </td>
+              <td class="d-none d-md-table-cell left">
+                <div class="low-hanging-desc">{{t.sourceString}}</div>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+</ng-container>
