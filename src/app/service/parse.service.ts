@@ -192,7 +192,7 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                        milestonesByKey['3603098564'].resets
+                        milestonesByKey['3603098564'].resets;
                         const ms2: MileStoneName = {
                             key: skipDesc.hash,
                             resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
@@ -1331,7 +1331,7 @@ export class ParseService {
         };
     }
 
-    private buildSeal(node: TriumphNode): Seal {
+    private buildSeal(node: TriumphNode, badges: Badge[]): Seal {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
         if (pDesc == null) { return null; }
         const completionRecordHash = pDesc.completionRecordHash;
@@ -1342,6 +1342,16 @@ export class ParseService {
         for (const c of node.children) {
             if (c.complete) {
                 progress++;
+            }
+            const trn = c as TriumphRecordNode;
+            if (trn.pointsToBadge === true){
+                for (const b of badges){
+                    if (b.name === trn.name){
+                        trn.badge = b;
+                    } else if (trn.hash == '52802522' && b.hash == "2759158924"){
+                        trn.badge = b;
+                    }
+                }
             }
         }
         const percent = Math.floor((100 * progress) / node.children.length);
@@ -1691,11 +1701,33 @@ export class ParseService {
                 }
             }
 
+            if (collections.length > 0) {
+                const tempBadges = this.handleColPresNode([], '498211331', nodes, collections, []).children;
+                for (const ts of tempBadges) {
+                    const badge = this.buildBadge(ts);
+                    if (badge != null) {
+                        badges.push(badge);
+                    }
+                }
+
+                const collLeaves: TriumphCollectibleNode[] = [];
+                colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
+                searchableCollection = collLeaves.sort((a, b) => {
+                    if (a.name < b.name) { return -1; }
+                    if (a.name < b.name) { return 0; }
+                    return 0;
+                });
+                searchableCollection = searchableCollection.filter(x => {
+                    return (x.name != null) && (x.name.trim().length > 0);
+                });
+            }
+
+
             if (records.length > 0) {
                 let triumphLeaves: TriumphRecordNode[] = [];
                 const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true).children;
                 for (const ts of tempSeals) {
-                    const seal = this.buildSeal(ts);
+                    const seal = this.buildSeal(ts, badges);
                     if (seal != null) {
                         seals.push(seal);
                     }
@@ -1769,28 +1801,6 @@ export class ParseService {
                 }
 
             }
-
-            if (collections.length > 0) {
-                const tempBadges = this.handleColPresNode([], '498211331', nodes, collections, []).children;
-                for (const ts of tempBadges) {
-                    const badge = this.buildBadge(ts);
-                    if (badge != null) {
-                        badges.push(badge);
-                    }
-                }
-
-                const collLeaves: TriumphCollectibleNode[] = [];
-                colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
-                searchableCollection = collLeaves.sort((a, b) => {
-                    if (a.name < b.name) { return -1; }
-                    if (a.name < b.name) { return 0; }
-                    return 0;
-                });
-                searchableCollection = searchableCollection.filter(x => {
-                    return (x.name != null) && (x.name.trim().length > 0);
-                });
-            }
-
         }
         let title = '';
         for (const char of chars) {
@@ -1903,11 +1913,16 @@ export class ParseService {
     private handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphRecordNode {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
-        // if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
-        //     if (rDesc.) {
-        //     console.log('Found: '+ rDesc.displayProperties.name);
-        //     }
-        // }
+        let pointsToBadge = false;
+        if (rDesc.displayProperties != null && rDesc.displayProperties.description != null) {
+            if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
+                pointsToBadge = true;
+            }
+        }
+        if (key=="52802522"){ 
+            pointsToBadge = true;
+        }
+
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
         path.push({
@@ -1990,7 +2005,8 @@ export class ParseService {
             score: pts,
             percent: complete ? 100 : percent,
             searchText: searchText.toLowerCase(),
-            invisible: invisible
+            invisible: invisible,
+            pointsToBadge: pointsToBadge
         };
     }
 
