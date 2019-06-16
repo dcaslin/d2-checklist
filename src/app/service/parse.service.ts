@@ -192,11 +192,12 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
+                        milestonesByKey['3603098564'].resets
                         const ms2: MileStoneName = {
                             key: skipDesc.hash,
-                            resets: null,
-                            rewards: 'Powerful Gear',
-                            pl: 641,
+                            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+                            rewards: 'Gear',
+                            pl: Const.NO_BOOST,
                             name: skipDesc.displayProperties.name,
                             desc: skipDesc.displayProperties.description,
                             hasPartial: false
@@ -716,7 +717,7 @@ export class ParseService {
             itemType = ItemType.GearMod;
         } else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
             itemType = ItemType.ForgeVessel;
-        } else if (iDesc.itemType === ItemType.None &&  iDesc.itemTypeDisplayName != null && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
+        } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName != null && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
             itemType = ItemType.Bounty;
         } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName == 'Invitation of the Nine') {
             itemType = ItemType.Bounty;
@@ -968,40 +969,41 @@ export class ParseService {
                     // }
                 }
             }
-
-
             if (ms.milestoneHash === 2188900244) {// recipe for success
-                pl = 652;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 601087286) {// reckoning
-                pl = 690;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 2010672046) {// Gambit prime
-                pl = 689;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3603098564) {// clan rewards
-                pl = 650;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 2171429505) { // weekly nightfall
-                pl = 648;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 2853331463) { // NF score
-                pl = 649;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 463010297) { // flashpoint
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 536115997) { // guardian of all
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3082135827) { // heroic story
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3448738070) { // weekly gambit
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 1437935813) { // weekly strike
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3172444947) { // daily vanguard
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3312018120) { // daily crucible
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 157823523) { // weekly crucible
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 941217864) { // daily gambit
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 1300394968) { // heroic adv
-                pl = 520;
+                pl = Const.MID_BOOST;
+            } else if (ms.milestoneHash === 1342567285) { // Scourge of the Past
+                pl = Const.MID_BOOST;
+                rewards = 'Powerful Gear';
             }
             if (rewards.trim().length == 0 && activityRewards != null) {
                 rewards = activityRewards;
@@ -1377,7 +1379,7 @@ export class ParseService {
                     key: Const.CHALICE_KEY,
                     resets: char.endWeek.toISOString(),
                     rewards: 'Powerful Gear',
-                    pl: 750,
+                    pl: Const.HIGH_BOOST,
                     name: 'Menagerie',
                     desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
                     hasPartial: false,
@@ -1425,6 +1427,7 @@ export class ParseService {
         let currentActivity: CurrentActivity = null;
         const chars: Character[] = [];
         let hasWellRested = false;
+        let weekEnd: string = null;
 
         if (publicMilestones != null) {
             for (const p of publicMilestones) {
@@ -1442,6 +1445,10 @@ export class ParseService {
                     '2958665367' === p.hash ||   // lost cryptarch
                     '3915793660' === p.hash    // reverly begins
                 ) {
+                    if ('4253138191' === p.hash) {
+                        weekEnd = p.end;
+                    }
+
                     continue;
                 }
                 try {
@@ -1465,15 +1472,14 @@ export class ParseService {
                 milestoneList.push(ms);
                 milestonesByKey[p.hash] = ms;
             }
-
             // add crown of sorrows manually
             if (milestonesByKey['2590427074'] == null) {
                 const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
-                    resets: null,
+                    resets: weekEnd,
                     rewards: 'Powerful Gear',
-                    pl: 725,
+                    pl: Const.HIGHEST_BOOST,
                     name: raidDesc.displayProperties.name,
                     neverDisappears: true,
                     desc: raidDesc.displayProperties.description,
@@ -1487,9 +1493,9 @@ export class ParseService {
                 const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
-                    resets: null,
-                    rewards: 'Powerful Gear',
-                    pl: 641,
+                    resets: weekEnd,
+                    rewards: 'Gear',
+                    pl: Const.NO_BOOST,
                     name: raidDesc.displayProperties.name,
                     desc: raidDesc.displayProperties.description,
                     hasPartial: false
