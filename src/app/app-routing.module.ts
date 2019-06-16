@@ -37,6 +37,7 @@ import { CollectionBadgesComponent } from './player/collections/collection-badge
 import { CollectionSearchComponent } from './player/collections/collection-search/collection-search.component';
 import { CollectionTreeComponent } from './player/collections/collection-tree/collection-tree.component';
 import { CollectionsComponent } from './player/collections/collections.component';
+import { CollectionBadgeComponent } from './player/collections/collection-badge/collection-badge.component';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -233,13 +234,13 @@ export class AuthGuard implements CanActivate {
               component: CollectionSearchComponent,
             },
             {
-              path: 'badges/:node',
+              path: 'badges',
               component: CollectionBadgesComponent,
             },
             {
-              path: 'badges',
-              component: CollectionBadgesComponent,
-            }
+              path: 'badges/:node',
+              component: CollectionBadgeComponent,
+            },
           ]
         },
         {

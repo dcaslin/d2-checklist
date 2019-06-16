@@ -716,7 +716,7 @@ export class ParseService {
             itemType = ItemType.GearMod;
         } else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
             itemType = ItemType.ForgeVessel;
-        } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
+        } else if (iDesc.itemType === ItemType.None &&  iDesc.itemTypeDisplayName != null && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
             itemType = ItemType.Bounty;
         } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName == 'Invitation of the Nine') {
             itemType = ItemType.Bounty;
@@ -1294,6 +1294,8 @@ export class ParseService {
         if (pDesc == null) { return null; }
         const badgeClasses: BadgeClass[] = [];
         let badgeComplete = true;
+        let bestProgress = 0;
+        let total = 0;
         for (const c of node.children) {
             let complete = 0;
             for (const coll of c.children) {
@@ -1301,6 +1303,10 @@ export class ParseService {
                 if (co.acquired) {
                     complete++;
                 }
+            }
+            if (complete > bestProgress) {
+                bestProgress = complete;
+                total = c.children.length;
             }
             badgeClasses.push({
                 hash: c.hash,
@@ -1317,6 +1323,8 @@ export class ParseService {
             desc: node.desc,
             icon: node.icon,
             complete: badgeComplete,
+            bestProgress: bestProgress,
+            total: total,
             classes: badgeClasses
         };
     }
@@ -1889,6 +1897,11 @@ export class ParseService {
     private handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphRecordNode {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
+        // if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
+        //     if (rDesc.) {
+        //     console.log('Found: '+ rDesc.displayProperties.name);
+        //     }
+        // }
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
         path.push({
