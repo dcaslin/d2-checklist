@@ -17,12 +17,13 @@ import { TriumphTrackedComponent } from './triumphs/triumph-tracked/triumph-trac
 import { CollectionTreeComponent } from './collections/collection-tree/collection-tree.component';
 import { CollectionSearchComponent } from './collections/collection-search/collection-search.component';
 import { CollectionBadgesComponent } from './collections/collection-badges/collection-badges.component';
+import { CollectionBadgeComponent } from './collections/collection-badge/collection-badge.component';
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent],
   entryComponents: [
     QuestDialogComponent, BurnDialogComponent
   ],
