@@ -6,7 +6,7 @@
   </h4>
   <mat-accordion>
     <ng-container *ngFor="let s of player.seals">
-      <mat-expansion-panel *ngIf="!hideCompleteTriumphs || !s.complete">
+      <mat-expansion-panel *ngIf="!state.hideCompleteTriumphs || !s.complete">
         <mat-expansion-panel-header>
           <mat-panel-title [class.accent-text]="s.complete">
             <div *ngIf="s.icon!=null" class="seal-icon"
@@ -23,7 +23,7 @@
           <table class="checklist-table">
             <tbody>
               <ng-container *ngFor="let c of s.children">
-                <tr *ngIf="!hideCompleteTriumphs || !c.complete">
+                <tr *ngIf="!state.hideCompleteTriumphs || !c.complete">
                   <td>
                     <i *ngIf="c.complete && c.redeemed"
                       class="accent-text mat-option.mat-selected fas fa-check-square"></i>
@@ -42,9 +42,17 @@
                     <br>
                     <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
                       redeemed.<br></span>
+
                     <span class="simple-caption">
                       {{c.score}} pts. {{c.desc}}
                     </span>
+                    <div *ngIf="c.badge!=null" class="badge-margin">
+                      <div>Badge | {{c.badge.name}}: {{c.badge.bestProgress}} / {{c.badge.total}}</div>
+                      <a mat-raised-button class="badge-margin" [routerLink]="state.getPlayerRoute(['collections', 'badges', c.badge.hash])"
+                        color="accent">
+                        View Badge
+                      </a>
+                    </div>
                     <div *ngFor="let o of c.objectives">
                       <span class="simple-caption">
                         <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>

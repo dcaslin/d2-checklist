@@ -142,6 +142,8 @@ export interface TriumphRecordNode extends TriumphNode {
     percent: number;
     searchText: string;
     invisible: boolean;
+    pointsToBadge: boolean;
+    badge?: Badge;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
