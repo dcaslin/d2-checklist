@@ -737,7 +737,7 @@ export class ParseService {
             name: iDesc.displayProperties.name,
             icon: iDesc.displayProperties.icon,
             type: itemType,
-            tierType: iDesc.tierType != null ? iDesc.tierType : -1,
+            tierType: iDesc.customTierType != null ? iDesc.customTierType : -1,
             status: this.parseSaleItemStatus(i.saleStatus),
             itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
             itemTypeDisplayName: iDesc.itemTypeDisplayName,
@@ -1344,11 +1344,11 @@ export class ParseService {
                 progress++;
             }
             const trn = c as TriumphRecordNode;
-            if (trn.pointsToBadge === true){
-                for (const b of badges){
-                    if (b.name === trn.name){
+            if (trn.pointsToBadge === true) {
+                for (const b of badges) {
+                    if (b.name === trn.name) {
                         trn.badge = b;
-                    } else if (trn.hash == '52802522' && b.hash == "2759158924"){
+                    } else if (trn.hash == '52802522' && b.hash == '2759158924') {
                         trn.badge = b;
                     }
                 }
@@ -1919,7 +1919,7 @@ export class ParseService {
                 pointsToBadge = true;
             }
         }
-        if (key=="52802522"){ 
+        if (key == '52802522') {
             pointsToBadge = true;
         }
 
@@ -2648,17 +2648,18 @@ export class ParseService {
                 for (const v of values) {
                     searchText += v.name + ' ';
                 }
+                if (questline != null) {
+                    searchText += questline.name + ' ';
+                }
                 // vendor, fix xur
-                if (desc.sourceData != null && desc.sourceData.vendorSources != null) {
-                    for (const vs of desc.sourceData.vendorSources) {
-                        if (vs.vendorHash != null) {
-                            const vDesc: any = this.destinyCacheService.cache.Vendor[vs.vendorHash];
-                            if (vDesc != null) {
-                                searchText += vDesc.displayProperties.name + ' ';
-                            }
-                            if (vs.vendorHash == '2190858386') {
-                                searchText += 'Xur ';
-                            }
+                if (desc.customVendorSourceHashes != null) {
+                    for (const vendorHash of desc.customVendorSourceHashes) {
+                        const vDesc: any = this.destinyCacheService.cache.Vendor[vendorHash];
+                        if (vDesc != null) {
+                            searchText += vDesc.displayProperties.name + ' ';
+                        }
+                        if (vendorHash == '2190858386') {
+                            searchText += 'Xur ';
                         }
                     }
                 }

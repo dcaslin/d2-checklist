@@ -1,0 +1,37 @@
+<ng-container *ngIf="state.player|async as player">
+  <ng-container *ngIf="player.bounties==null">
+    <br>
+    <ng-container *ngIf="!(state.isSignedOn|async)">
+      <h2>Bungie Authentication Required</h2>
+      <p>You must grant this site access to your private Bungie API's for the site to
+        access this info on your account
+        (like what you might be doing with Destiny Item Manager today). <b>Click the "Sign In" button
+          on the upper
+          right if you want to continue.</b></p>
+    </ng-container>
+
+    <ng-container *ngIf="!(state.signedOnUserIsCurrent|async)">
+      <h2>Privacy</h2>
+      <p>
+        This user hasn't enabled viewing their non-equipped inventory.<br>
+        They'd need to <a class="underline" href="https://www.bungie.net/en/Profile/Settings?category=Privacy"
+          target="_blank" rel="noopener">
+          check the "Show my non-equipped Inventory" at Bungie.net.</a>
+        <br><br>
+        [Hiding non-equipped inventory is the default privacy setting]
+      </p>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="player.bounties!=null">
+
+    <nav mat-tab-nav-bar>
+      <a mat-tab-link routerLink="bounties" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
+        Bounties
+      </a>
+      <a mat-tab-link routerLink="quests" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
+        Quests
+      </a>
+    </nav>
+    <router-outlet></router-outlet>
+  </ng-container>
+</ng-container>
