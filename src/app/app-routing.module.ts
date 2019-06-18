@@ -22,7 +22,6 @@ import { Subject, Observable } from 'rxjs';
 import { BungieService } from '@app/service/bungie.service';
 import { filter } from 'rxjs/operators';
 import { MilestonesComponent } from './player/milestones/milestones.component';
-import { BountiesComponent } from './player/bounties/bounties.component';
 import { ChecklistComponent } from './player/checklist/checklist.component';
 import { ProgressComponent } from './player/progress/progress.component';
 import { CharsComponent } from './player/chars/chars.component';
@@ -37,6 +36,10 @@ import { CollectionBadgesComponent } from './player/collections/collection-badge
 import { CollectionSearchComponent } from './player/collections/collection-search/collection-search.component';
 import { CollectionTreeComponent } from './player/collections/collection-tree/collection-tree.component';
 import { CollectionsComponent } from './player/collections/collections.component';
+import { CollectionBadgeComponent } from './player/collections/collection-badge/collection-badge.component';
+import { PursuitsComponent } from './player/pursuits/pursuits.component';
+import { QuestsComponent } from './player/pursuits/quests/quests.component';
+import { BountiesComponent } from './player/pursuits/bounties/bounties.component';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -162,7 +165,22 @@ export class AuthGuard implements CanActivate {
         },
         {
           path: 'pursuits',
-          component: BountiesComponent,
+          component: PursuitsComponent,
+          children: [
+            {
+              path: '',
+              redirectTo: 'bounties',
+              pathMatch: 'full'
+            },
+            {
+              path: 'bounties',
+              component: BountiesComponent,
+            },
+            {
+              path: 'quests',
+              component: QuestsComponent,
+            }
+          ]
         },
         {
           path: 'checklist',
@@ -233,13 +251,13 @@ export class AuthGuard implements CanActivate {
               component: CollectionSearchComponent,
             },
             {
-              path: 'badges/:node',
+              path: 'badges',
               component: CollectionBadgesComponent,
             },
             {
-              path: 'badges',
-              component: CollectionBadgesComponent,
-            }
+              path: 'badges/:node',
+              component: CollectionBadgeComponent,
+            },
           ]
         },
         {

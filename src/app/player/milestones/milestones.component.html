@@ -47,7 +47,7 @@
           <td class="lead">
             <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
               <a href="javascript:void(0)" (click)="sortByName()">
-                {{mileStoneName.name}}
+                {{mileStoneName.name}} <span *ngIf="debugmode|async">PL({{mileStoneName.pl}})</span>
                 <i *ngIf="sort=='nameDesc'" class="fal fa-sort-down"></i>
                 <i *ngIf="sort=='nameAsc'" class="fal fa-sort-up"></i>
               </a>
@@ -68,16 +68,18 @@
               <ng-container *ngIf="debugmode|async">
                 <br> {{mileStoneName.resets|date:'short'}}
               </ng-container>
-              <div class="accent-text ms-supp-info" *ngIf="mileStoneName.suppInfo!=null">{{mileStoneName.suppInfo}}</div>
+              <div class="accent-text ms-supp-info" *ngIf="mileStoneName.suppInfo!=null">{{mileStoneName.suppInfo}}
+              </div>
             </span>
-            <br>
+            <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="sort" (sortClick)="sortByRewards()"></d2c-reward-desc>
+            <!-- <br>
             <span class="simple-caption">
-              <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">{{mileStoneName.rewards}}
-
+              <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByRewards()">
+                <d2c-reward-desc [pl]="mileStoneName.rewards"></d2c-reward-desc>
                 <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
                 <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
               </a>
-            </span>
+            </span> -->
 
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
@@ -223,6 +225,7 @@
         <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
             class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
+            <d2c-reward-desc pl="1" rewards="Powerful Gear" [sort]="sort" (sortClick)="sortByRewards()"></d2c-reward-desc>
         </td>
         <td [attr.colspan]="player.characters.length">
           <div class="clanMsRow">

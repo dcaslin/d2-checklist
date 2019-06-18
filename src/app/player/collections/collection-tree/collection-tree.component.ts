@@ -66,8 +66,8 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit, A
             const el = document.getElementById(id);
             if (el != null) {
               el.scrollIntoView();
-            } else { 
-              console.log('Tree node id='+id+' not found, cannot scroll to it');
+            } else {
+              console.log('Tree node id=' + id + ' not found, cannot scroll to it');
             }
           }, 100);
 
