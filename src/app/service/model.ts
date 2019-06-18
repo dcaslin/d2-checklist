@@ -80,6 +80,8 @@ export interface Badge {
     desc: string;
     icon: string;
     complete: boolean;
+    bestProgress: number;
+    total: number;
     classes: BadgeClass[];
 }
 
@@ -140,6 +142,8 @@ export interface TriumphRecordNode extends TriumphNode {
     percent: number;
     searchText: string;
     invisible: boolean;
+    pointsToBadge: boolean;
+    badge?: Badge;
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
@@ -1046,6 +1050,53 @@ export class Const {
     public static readonly SPIDER_KEY =  '99999';
     public static readonly DRIFTER_KEY = '77777';
     public static readonly WERNER_KEY =   '66666';
+
+
+    public static readonly NO_BOOST = 0; // 0, 0
+    public static readonly LOW_BOOST = 1; // 2-3, 740
+    public static readonly MID_BOOST = 2; // 2-5, 740
+    public static readonly HIGH_BOOST = 3; // 4-6, 750
+    public static readonly HIGHEST_BOOST = 4; //8-12, 750 cap
+
+    public static readonly BOOSTS: DropInfo[] = [
+        {
+            level: Const.NO_BOOST,
+            min: 0,
+            max: 0,
+            softCap: 0
+        },
+        {
+            level: Const.LOW_BOOST,
+            min: 2,
+            max: 3,
+            softCap: 740
+        },
+        {
+            level: Const.MID_BOOST,
+            min: 2,
+            max: 5,
+            softCap: 740
+        },
+        {
+            level: Const.HIGH_BOOST,
+            min: 4,
+            max: 6,
+            softCap: 750
+        },
+        {
+            level: Const.HIGHEST_BOOST,
+            min: 8,
+            max: 12,
+            softCap: 750
+        }
+    ];
+}
+
+export interface DropInfo {
+    level: number;
+    min: number;
+    max: number;
+    softCap: number;
 }
 
 export class InventoryStat {

@@ -24,7 +24,9 @@ export class MilestonesComponent extends ChildComponent implements OnInit {
 
   ngOnInit() {
     this.state.player.pipe(takeUntil(this.unsubscribe$)).subscribe((p: Player) => {
-      console.log('new player');
+      if (this.debugmode.getValue()) {
+        console.log('new player');
+      }
     });
   }
 

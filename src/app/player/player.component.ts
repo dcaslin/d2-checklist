@@ -116,7 +116,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   ngOnInit() {
     this.setBurns();
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
-      console.dir(params);
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
       const tab: string = params['tab'];

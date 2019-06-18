@@ -1,0 +1,80 @@
+<ng-container *ngIf="state.player|async as player">
+  <mat-tab-group>
+    <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
+      <div class="left" style="margin: 10px">
+        <mat-form-field class="searchField">
+          <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText"
+            placeholder="Filter bounties">
+          <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async).length>0" matSuffix
+            mat-icon-button aria-label="Clear" (click)="displayFilterText=null;searchSubject.next()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <table class="responsive-table">
+        <thead>
+          <tr>
+            <th class="header-cell">Bounty</th>
+            <th class="header-cell">Progress</th>
+            <th class="header-cell">Rewards</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="player.bounties[char.id].length==0">
+            <td colspan="3" class="left">No bounties held right now</td>
+          </tr>
+          <ng-container *ngFor="let g of player.bounties[char.id]">
+            <tr *ngIf="shouldShow(g)">
+              <td class="lead" data-label="">
+                <span class="name">
+                  <span *ngIf="g.icon!=null" class="item-icon"
+                    [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+                  <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null">{{g.name}}
+                  </ng-container>
+                  <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null" target="_blank"
+                    rel="noopener">
+                    {{g.name}}
+                    <i class='accent-text far fa-map-marker-alt'></i>
+                  </a>
+                </span>
+
+                <span *ngIf="g.expirationDate!=null" class="expire-caption warn-text">
+                  <i class="fas fa-clock"></i>
+                  {{ g.expirationDate | amDifference: today |
+                        amDuration:'ms'}} </span>
+                        <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
+                <div class="simple-caption">{{g.desc}}
+                </div>
+                <div>
+                  {{g.aggProgress|number : '1.0-0'}}%
+                  <mat-progress-bar class="bounty-progress" mode="determinate" [value]="g.aggProgress">
+                  </mat-progress-bar>
+                </div>
+              </td>
+              <td data-label="">
+                <div class="obj-desc" *ngFor="let obj of g.objectives">
+                  <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="!obj.complete" class="far fa-square"></i>
+                  {{obj.progressDescription}}
+                  <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                  <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
+                    mode="determinate" [value]="100*obj.progress/obj.completionValue">
+                  </mat-progress-bar>
+                </div>
+
+              </td>
+
+              <td data-label="">
+                <ul class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+                  <li *ngFor="let v of g.values">
+                    {{v.name}} <code *ngIf="v.quantity>0">{{v.quantity}}</code>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </mat-tab>
+  </mat-tab-group>
+</ng-container>

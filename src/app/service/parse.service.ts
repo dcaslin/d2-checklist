@@ -192,11 +192,12 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
+                        milestonesByKey['3603098564'].resets;
                         const ms2: MileStoneName = {
                             key: skipDesc.hash,
-                            resets: null,
-                            rewards: 'Powerful Gear',
-                            pl: 641,
+                            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+                            rewards: 'Gear',
+                            pl: Const.NO_BOOST,
                             name: skipDesc.displayProperties.name,
                             desc: skipDesc.displayProperties.description,
                             hasPartial: false
@@ -716,7 +717,7 @@ export class ParseService {
             itemType = ItemType.GearMod;
         } else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
             itemType = ItemType.ForgeVessel;
-        } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
+        } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName != null && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
             itemType = ItemType.Bounty;
         } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName == 'Invitation of the Nine') {
             itemType = ItemType.Bounty;
@@ -736,7 +737,7 @@ export class ParseService {
             name: iDesc.displayProperties.name,
             icon: iDesc.displayProperties.icon,
             type: itemType,
-            tierType: iDesc.tierType != null ? iDesc.tierType : -1,
+            tierType: iDesc.customTierType != null ? iDesc.customTierType : -1,
             status: this.parseSaleItemStatus(i.saleStatus),
             itemTypeAndTierDisplayName: iDesc.itemTypeAndTierDisplayName,
             itemTypeDisplayName: iDesc.itemTypeDisplayName,
@@ -968,40 +969,41 @@ export class ParseService {
                     // }
                 }
             }
-
-
             if (ms.milestoneHash === 2188900244) {// recipe for success
-                pl = 652;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 601087286) {// reckoning
-                pl = 690;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 2010672046) {// Gambit prime
-                pl = 689;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3603098564) {// clan rewards
-                pl = 650;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 2171429505) { // weekly nightfall
-                pl = 648;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 2853331463) { // NF score
-                pl = 649;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 463010297) { // flashpoint
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 536115997) { // guardian of all
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3082135827) { // heroic story
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3448738070) { // weekly gambit
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 1437935813) { // weekly strike
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3172444947) { // daily vanguard
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 3312018120) { // daily crucible
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 157823523) { // weekly crucible
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 941217864) { // daily gambit
-                pl = 520;
+                pl = Const.MID_BOOST;
             } else if (ms.milestoneHash === 1300394968) { // heroic adv
-                pl = 520;
+                pl = Const.MID_BOOST;
+            } else if (ms.milestoneHash === 1342567285) { // Scourge of the Past
+                pl = Const.MID_BOOST;
+                rewards = 'Powerful Gear';
             }
             if (rewards.trim().length == 0 && activityRewards != null) {
                 rewards = activityRewards;
@@ -1294,6 +1296,8 @@ export class ParseService {
         if (pDesc == null) { return null; }
         const badgeClasses: BadgeClass[] = [];
         let badgeComplete = true;
+        let bestProgress = 0;
+        let total = 0;
         for (const c of node.children) {
             let complete = 0;
             for (const coll of c.children) {
@@ -1301,6 +1305,10 @@ export class ParseService {
                 if (co.acquired) {
                     complete++;
                 }
+            }
+            if (complete > bestProgress) {
+                bestProgress = complete;
+                total = c.children.length;
             }
             badgeClasses.push({
                 hash: c.hash,
@@ -1317,11 +1325,13 @@ export class ParseService {
             desc: node.desc,
             icon: node.icon,
             complete: badgeComplete,
+            bestProgress: bestProgress,
+            total: total,
             classes: badgeClasses
         };
     }
 
-    private buildSeal(node: TriumphNode): Seal {
+    private buildSeal(node: TriumphNode, badges: Badge[]): Seal {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
         if (pDesc == null) { return null; }
         const completionRecordHash = pDesc.completionRecordHash;
@@ -1332,6 +1342,16 @@ export class ParseService {
         for (const c of node.children) {
             if (c.complete) {
                 progress++;
+            }
+            const trn = c as TriumphRecordNode;
+            if (trn.pointsToBadge === true) {
+                for (const b of badges) {
+                    if (b.name === trn.name) {
+                        trn.badge = b;
+                    } else if (trn.hash == '52802522' && b.hash == '2759158924') {
+                        trn.badge = b;
+                    }
+                }
             }
         }
         const percent = Math.floor((100 * progress) / node.children.length);
@@ -1369,7 +1389,7 @@ export class ParseService {
                     key: Const.CHALICE_KEY,
                     resets: char.endWeek.toISOString(),
                     rewards: 'Powerful Gear',
-                    pl: 750,
+                    pl: Const.HIGH_BOOST,
                     name: 'Menagerie',
                     desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
                     hasPartial: false,
@@ -1417,6 +1437,7 @@ export class ParseService {
         let currentActivity: CurrentActivity = null;
         const chars: Character[] = [];
         let hasWellRested = false;
+        let weekEnd: string = null;
 
         if (publicMilestones != null) {
             for (const p of publicMilestones) {
@@ -1434,6 +1455,10 @@ export class ParseService {
                     '2958665367' === p.hash ||   // lost cryptarch
                     '3915793660' === p.hash    // reverly begins
                 ) {
+                    if ('4253138191' === p.hash) {
+                        weekEnd = p.end;
+                    }
+
                     continue;
                 }
                 try {
@@ -1457,15 +1482,14 @@ export class ParseService {
                 milestoneList.push(ms);
                 milestonesByKey[p.hash] = ms;
             }
-
             // add crown of sorrows manually
             if (milestonesByKey['2590427074'] == null) {
                 const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
-                    resets: null,
+                    resets: weekEnd,
                     rewards: 'Powerful Gear',
-                    pl: 725,
+                    pl: Const.HIGHEST_BOOST,
                     name: raidDesc.displayProperties.name,
                     neverDisappears: true,
                     desc: raidDesc.displayProperties.description,
@@ -1479,9 +1503,9 @@ export class ParseService {
                 const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
-                    resets: null,
-                    rewards: 'Powerful Gear',
-                    pl: 641,
+                    resets: weekEnd,
+                    rewards: 'Gear',
+                    pl: Const.NO_BOOST,
                     name: raidDesc.displayProperties.name,
                     desc: raidDesc.displayProperties.description,
                     hasPartial: false
@@ -1677,11 +1701,33 @@ export class ParseService {
                 }
             }
 
+            if (collections.length > 0) {
+                const tempBadges = this.handleColPresNode([], '498211331', nodes, collections, []).children;
+                for (const ts of tempBadges) {
+                    const badge = this.buildBadge(ts);
+                    if (badge != null) {
+                        badges.push(badge);
+                    }
+                }
+
+                const collLeaves: TriumphCollectibleNode[] = [];
+                colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
+                searchableCollection = collLeaves.sort((a, b) => {
+                    if (a.name < b.name) { return -1; }
+                    if (a.name < b.name) { return 0; }
+                    return 0;
+                });
+                searchableCollection = searchableCollection.filter(x => {
+                    return (x.name != null) && (x.name.trim().length > 0);
+                });
+            }
+
+
             if (records.length > 0) {
                 let triumphLeaves: TriumphRecordNode[] = [];
                 const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true).children;
                 for (const ts of tempSeals) {
-                    const seal = this.buildSeal(ts);
+                    const seal = this.buildSeal(ts, badges);
                     if (seal != null) {
                         seals.push(seal);
                     }
@@ -1755,28 +1801,6 @@ export class ParseService {
                 }
 
             }
-
-            if (collections.length > 0) {
-                const tempBadges = this.handleColPresNode([], '498211331', nodes, collections, []).children;
-                for (const ts of tempBadges) {
-                    const badge = this.buildBadge(ts);
-                    if (badge != null) {
-                        badges.push(badge);
-                    }
-                }
-
-                const collLeaves: TriumphCollectibleNode[] = [];
-                colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
-                searchableCollection = collLeaves.sort((a, b) => {
-                    if (a.name < b.name) { return -1; }
-                    if (a.name < b.name) { return 0; }
-                    return 0;
-                });
-                searchableCollection = searchableCollection.filter(x => {
-                    return (x.name != null) && (x.name.trim().length > 0);
-                });
-            }
-
         }
         let title = '';
         for (const char of chars) {
@@ -1889,6 +1913,16 @@ export class ParseService {
     private handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphRecordNode {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
+        let pointsToBadge = false;
+        if (rDesc.displayProperties != null && rDesc.displayProperties.description != null) {
+            if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
+                pointsToBadge = true;
+            }
+        }
+        if (key == '52802522') {
+            pointsToBadge = true;
+        }
+
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
         path.push({
@@ -1971,7 +2005,8 @@ export class ParseService {
             score: pts,
             percent: complete ? 100 : percent,
             searchText: searchText.toLowerCase(),
-            invisible: invisible
+            invisible: invisible,
+            pointsToBadge: pointsToBadge
         };
     }
 
@@ -2613,17 +2648,18 @@ export class ParseService {
                 for (const v of values) {
                     searchText += v.name + ' ';
                 }
+                if (questline != null) {
+                    searchText += questline.name + ' ';
+                }
                 // vendor, fix xur
-                if (desc.sourceData != null && desc.sourceData.vendorSources != null) {
-                    for (const vs of desc.sourceData.vendorSources) {
-                        if (vs.vendorHash != null) {
-                            const vDesc: any = this.destinyCacheService.cache.Vendor[vs.vendorHash];
-                            if (vDesc != null) {
-                                searchText += vDesc.displayProperties.name + ' ';
-                            }
-                            if (vs.vendorHash == '2190858386') {
-                                searchText += 'Xur ';
-                            }
+                if (desc.customVendorSourceHashes != null) {
+                    for (const vendorHash of desc.customVendorSourceHashes) {
+                        const vDesc: any = this.destinyCacheService.cache.Vendor[vendorHash];
+                        if (vDesc != null) {
+                            searchText += vDesc.displayProperties.name + ' ';
+                        }
+                        if (vendorHash == '2190858386') {
+                            searchText += 'Xur ';
                         }
                     }
                 }

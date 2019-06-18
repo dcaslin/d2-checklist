@@ -1,0 +1,76 @@
+<div class="badge-body" *ngIf="_badge|async as b">
+  <div class="badge-header">
+    <h2>
+      <button routerLink=".." mat-button><i class="fas fa-arrow-left"></i></button>
+
+      <span id="badge-name" style="margin-left: 5px; margin-right: 5px">{{b.name}}</span>
+      <ng-container *ngIf="debugmode|async"> {{b.hash}}</ng-container>
+      <i *ngIf="b.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+      <i *ngIf="!b.complete" class="far fa-square"></i>
+    </h2>
+    <div class="badge-row" *ngIf="!state.hideCompleteCollectibles || !b.complete">
+      <div *ngIf="b.icon!=null" class="badge-icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'">
+      </div>
+      <div class="badge-info">
+        <div class="simple-darker-larger-caption">
+          {{b.bestProgress}} / {{b.total}}
+        </div>
+        <div class="simple-caption">
+          {{b.desc}}
+        </div>
+      </div>
+    </div>
+    <div class="hide-complete-collectibles">
+      <mat-checkbox [(ngModel)]="state.hideCompleteCollectibles">Hide Completed</mat-checkbox>
+    </div>
+  </div>
+  <mat-tab-group>
+    <mat-tab *ngFor="let t of b.classes" [label]="t.name">
+      <div class="badge-char-body">
+        <h5>{{t.name}}: {{t.complete}}/{{t.total}}</h5>
+
+        <table class="tidy-table">
+          <thead>
+            <tr>
+              <th class="left">Name</th>
+              <th class="d-none d-md-table-cell left">Desc</th>
+              <th class="d-none d-md-table-cell left">Acquisition</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let t of t.children">
+              <tr *ngIf="!(state.hideCompleteCollectibles && t.acquired)">
+                <td class="lead">
+                  <div *ngIf="t.icon!=null" class="transparent-icon transparent-leaf-icon"
+                    [style.background-image]="'url(//www.bungie.net' + t.icon + ')'"></div>
+                  {{t.name}}
+                  <i *ngIf="t.acquired" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                  <i *ngIf="!t.acquired" class="far fa-square"></i>
+                  <ng-container *ngIf="debugmode|async"> {{t.hash}}</ng-container>
+                  <br>
+                  <span class="simple-caption">
+                    <ng-container *ngFor="let p of t.path; index as i; last as isLast">
+                      <ng-container *ngIf="i>0">
+                        <a [routerLink]="['..','..','tree', p.hash]">{{p.path}}</a>
+                        <ng-container *ngIf="debugmode|async"> {{p.hash}} </ng-container>
+                        <ng-container *ngIf="!isLast">
+                          /
+                        </ng-container>
+                      </ng-container>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="d-none d-md-table-cell left">
+                  <div class="low-hanging-desc">{{t.desc}}</div>
+                </td>
+                <td class="d-none d-md-table-cell left">
+                  <div class="low-hanging-desc">{{t.sourceString}}</div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

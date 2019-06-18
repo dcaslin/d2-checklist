@@ -59,12 +59,14 @@ export class PlayerStateService {
 
   public getPlayerRoute(params: any[]): string[] {
     const p = this._player.getValue();
-    const baseRoute = ['' + p.profile.userInfo.membershipType, encodeURIComponent(this.searchResult.displayName)];
+    const baseRoute = ['/',''+p.profile.userInfo.membershipType, this.searchResult.displayName];
     return baseRoute.concat(params);
   }
 
   public getPlayerRouteString(params: any[]): string {
-    const entries = this.getPlayerRoute(params);
+    const p = this._player.getValue();
+    const baseRoute = ['' + p.profile.userInfo.membershipType, encodeURIComponent(this.searchResult.displayName)];
+    const entries = baseRoute.concat(params);
     let s = entries[0];
     for (let i = 1; i < entries.length; i++) {
       s += '/' + entries[i];
