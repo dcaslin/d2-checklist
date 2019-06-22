@@ -3041,6 +3041,7 @@ export class ParseService {
         if (mode === 74) { return 'Control Quickplay'; }
         if (mode === 75) { return 'Gambit Prime'; }
         if (mode === 76) { return 'Reckoning'; }
+        if (mode === 77) { return 'Menagerie'; }
         return 'Unknown ' + mode;
     }
 

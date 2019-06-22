@@ -261,25 +261,28 @@ export class BungieService implements OnDestroy {
     public getActivityModes(): ActivityMode[] {
         return [
             new ActivityMode(0, 'All', 'All'), // None
+            new ActivityMode(7, 'All - PvE', 'All PvE'),
+            new ActivityMode(5, 'All - PvP', 'All PvP'),
+            new ActivityMode(66, 'Forge', 'Forge'),
+            new ActivityMode(64, 'Gambit', 'All Gambit'),
+            new ActivityMode(19, 'Iron Banner', 'Iron Banner'),
+            new ActivityMode(77, 'Menagerie', 'Menagerie'),
+            new ActivityMode(46, 'Nightfall', 'Scored Nightfall'),
+            new ActivityMode(6, 'Patrol', 'Patrol'),
+            new ActivityMode(4, 'Raid', 'Raid'),
+            new ActivityMode(76, 'Reckoning', 'Reckoning'),
+            new ActivityMode(2, 'Story', 'Story'),
 
-            new ActivityMode(64, 'All Gambit', 'All Gambit'),
-            // new ActivityMode(76, 'Reckoning', 'Reckoning'),
-            // new ActivityMode(66, 'Forge', 'Forge'),
-
-            // new ActivityMode(4, 'Raid', 'Raid'),
             // new ActivityMode(18, 'All Strikes', 'All Strikes'),
 
-            // new ActivityMode(46, 'Scored Nightfall', 'Scored Nightfall'),
-            // new ActivityMode(47, 'Scored Heroic Nightfall', 'Scored Heroic Nightfall'),
 
-            new ActivityMode(5, 'AllPvP', 'All PvP'),
-            new ActivityMode(7, 'AllPvE', 'All PvE'),
 
             // new ActivityMode(69, 'PvP Competitive', 'PvP Competitive'),
             // new ActivityMode(70, 'PvP Quickplay', 'PvP Quickplay'),
             // new ActivityMode(32, 'Private Matches', 'Private Matches'),
 
-            // new ActivityMode(19, 'Iron Banner', 'Iron Banner'),
+
+            
             // new ActivityMode(39, 'Trials', 'Trials'),
             // new ActivityMode(15, 'Crimson Doubles', 'Crimson Doubles'),
 
@@ -291,8 +294,8 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(45, 'Iron Banner Supremacy', 'Iron Banner Supremacy'),
             // new ActivityMode(25, 'All Mayhem', 'All Mayhem'),
 
-            new ActivityMode(6, 'Patrol', 'Patrol'),
-            new ActivityMode(2, 'Story', 'Story'),
+            
+            
 
             // new ActivityMode(16, 'Nightfall (old)', 'Nightfall (old)'),
             // new ActivityMode(17, 'Heroic Nightfall (old)', 'Heroic Nightfall (old)'),
@@ -422,7 +425,7 @@ export class BungieService implements OnDestroy {
                 complete ? null : held ? 'Held' : 'Not Held', null);
             return psuedoMs;
         } else {
-            if (!vendorFound){
+            if (!vendorFound) {
                 // const psuedoMs = new MilestoneStatus(key, false, 0, null,
                 //     'Vendor not found', null);
                 return null;
