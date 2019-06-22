@@ -83,6 +83,9 @@ export class TargetPerkService {
     if (t.fastball && n.indexOf('fastball') >= 0) {
       return true;
     }
+    if (t.distribution && n.indexOf('distribution') >= 0) {
+      return true;
+    }
     if (t.specialAmmoFinder && n.indexOf('special ammo finder') >= 0) {
       return true;
     }
@@ -210,7 +213,8 @@ export class TargetPerkService {
       specialAmmoFinder: true,
       heavyAmmoFinder: true,
       traction: true,
-      fastball: true
+      fastball: true,
+      distribution: true
     };
   }
 
@@ -266,4 +270,5 @@ export interface TargetPerks {
   heavyAmmoFinder: boolean; // 2867719094
   traction: boolean; // 1818103563
   fastball: boolean; // 3030206832
+  distribution: boolean; //2610215900 
 }
