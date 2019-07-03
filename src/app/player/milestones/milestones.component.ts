@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, Input } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
-import { Player, MileStoneName } from '@app/service/model';
+import { Player, MileStoneName, Const } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { PlayerStateService } from '../player-state.service';
 import { takeUntil } from 'rxjs/operators';
@@ -14,6 +14,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {
   hideCompleteChars: string = null;
+  Const = Const;
 
   constructor(
     storageService: StorageService,
