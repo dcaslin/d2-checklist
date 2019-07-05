@@ -121,6 +121,12 @@
             <button mat-menu-item (click)="syncLocks()">
                 <i class="fas fa-lock-alt"></i>&ensp;Sync Locks
             </button>
+            <button mat-menu-item (click)="clearInv()">
+              <i class="fas fa-trash"></i>&ensp;Clear Inv
+          </button>
+          <button mat-menu-item (click)="clearInv(true)">
+              <i class="fas fa-trash"></i>&ensp;Clear Inv (Weapons Only)
+          </button>
             <button mat-menu-item (click)="shardMode()">
                 <i class="fas fa-trash"></i>&ensp;Shard Mode
             </button>

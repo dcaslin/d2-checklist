@@ -600,25 +600,28 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   public async shardMode(weaponsOnly?: boolean) {
-    await this.load();
+    await this.load(true);
     await this.gearService.shardMode(this.player, weaponsOnly);
-    await this.load();
+    await this.load(true);
     await this.syncLocks();
-    this.filterChanged();
+  }
+
+  public async clearInv(weaponsOnly?: boolean){
+    await this.load(true);
+    await this.gearService.clearInv(this.player, weaponsOnly);
   }
 
   public async upgradeMode(weaponsOnly?: boolean) {
-    await this.load();
+    await this.load(true);
     await this.gearService.upgradeMode(this.player, weaponsOnly);
-    await this.load();
+    await this.load(true);
     await this.syncLocks();
-    this.filterChanged();
   }
 
-  public async load(initialLoad?: boolean) {
+  public async load(quiet?: boolean) {
     this.loading.next(true);
 
-    if (initialLoad != true) {
+    if (quiet != true) {
       this.notificationService.info('Loading gear...');
     }
     try {
