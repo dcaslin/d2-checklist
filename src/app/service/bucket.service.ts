@@ -39,10 +39,15 @@ export class BucketService {
     }
 
     getBucket(target: Target, bucketName: string): Bucket {
-        const returnMe = this.buckets[target.id][bucketName];
+        let returnMe = this.buckets[target.id][bucketName];
         if (returnMe == null) {
             console.log('No bucket found for ' + target.label + '|' + bucketName + ', using shared');
-            return this.buckets['shared'][bucketName];
+            returnMe = this.buckets['shared'][bucketName];
+        }
+        // if our bucket is truly empty b/c we hvae a classified weapon equipped, we need to make it on the fly
+        if (returnMe == null) {
+            this.buckets[target.id][bucketName] = new Bucket(bucketName);
+            returnMe = this.buckets[target.id][bucketName];
         }
         return returnMe;
     }

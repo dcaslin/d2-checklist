@@ -7,6 +7,7 @@ import { WishlistService } from './wishlist.service';
 import { NotificationService } from './notification.service';
 import { BehaviorSubject } from 'rxjs';
 import { TargetPerkService } from './target-perk.service';
+import { isObject } from 'util';
 
 @Injectable()
 export class GearService {
@@ -68,7 +69,7 @@ export class GearService {
         await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
     }
 
-    private async clearInvForMode(target: Target, player: Player, ignoreMark: string, weaponsOnly: Boolean): Promise<number> {
+    private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], weaponsOnly: Boolean): Promise<number> {
         console.log('Clearing inventory ahead of a mode.');
         this.notificationService.info('Clearing inventory ahead of time...');
         const buckets = this.bucketService.getBuckets(target);
@@ -78,18 +79,24 @@ export class GearService {
         for (const bucket of buckets) {
             const items = bucket.items.slice();
             for (const i of items) {
-                if (i.equipped == false && (i.mark != ignoreMark) && (i.type == ItemType.Weapon || !weaponsOnly)) {
-                    try {
-                        this.notificationService.info('Moving ' + i.name + ' to vault');
-                        await this.transfer(player, i, player.vault);
-                        moved++;
-                    } catch (e) {
-                        console.log('Error moving ' + i.name + ' to vault: ' + e);
-                        err++;
-                        totalErr++;
+                if (i.equipped == false && (ignoreMark.indexOf(i.mark) === -1)) {
+                    if (i.type == ItemType.Weapon || !weaponsOnly) {
+                        if (i.type == ItemType.Weapon
+                            || i.type == ItemType.Armor
+                            || i.type == ItemType.Ghost
+                            || i.type == ItemType.Vehicle) {
+                            try {
+                                this.notificationService.info('Moving ' + i.name + ' to vault');
+                                await this.transfer(player, i, player.vault);
+                                moved++;
+                            } catch (e) {
+                                console.log('Error moving ' + i.name + ' to vault: ' + e);
+                                err++;
+                                totalErr++;
+                            }
+                        }
+
                     }
-                } else {
-                    // console.log("Skipped "+i.name +" "+i.equipped+" "+i.mark);
                 }
             }
         }
@@ -104,7 +111,7 @@ export class GearService {
 
     public async shardMode(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
-        const totalErr = await this.clearInvForMode(target, player, 'junk', weaponsOnly);
+        const totalErr = await this.clearInvForMode(target, player, ['junk'], weaponsOnly);
         let moved = 0;
         let storeErr = 0;
         for (const i of player.gear) {
@@ -115,6 +122,13 @@ export class GearService {
                 if (targetBucket.items.length < 10) {
                     console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.name);
                     try {
+                        if (i.postmaster) {
+                            await this.transfer(player, i, i.owner);
+                            if (i.owner.id === target.characterId) {
+                                moved++;
+                                continue;
+                            }
+                        }
                         await this.transfer(player, i, target);
                         moved++;
                     } catch (e) {
@@ -156,9 +170,22 @@ export class GearService {
         return copies;
     }
 
+    public async clearInv(player: Player, weaponsOnly?: boolean) {
+        const target = player.characters[0];
+        let totalErr = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], weaponsOnly);
+        if (totalErr > 0) {
+            this.notificationService.info('Inventory was cleared of all junk/infuse except for ' + totalErr + ' items that failed and were skipped.');
+        }
+        else {
+            this.notificationService.success('Inventory was cleared of all junk/infuse');
+        }
+
+    }
+
+
     public async upgradeMode(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
-        let totalErr = await this.clearInvForMode(target, player, 'xxx', weaponsOnly);
+        let totalErr = await this.clearInvForMode(target, player, [], weaponsOnly);
         let moved = 0;
         for (const i of player.gear) {
             // is it marked for upgrade
