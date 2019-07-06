@@ -708,6 +708,8 @@ export class BungieService implements OnDestroy {
 
     // this spans xbl 1, psn 2, bnet 4 and "regular" Bungie ids (254?) or "ALL"
     // after testing it honestly looks like membershipType, as long as its valid, is ignored
+
+    // TODO swap to GetLinkedProfiles https://github.com/Bungie-net/api/wiki/FAQ:-Cross-Save-pre-launch-testing,-and-how-it-may-affect-you
     public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
             const resp = await this.makeReq('User/GetMembershipsById/' + membershipId + '/' + membershipType + '/');
