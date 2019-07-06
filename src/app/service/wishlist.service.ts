@@ -10,8 +10,8 @@ export class WishlistService implements OnDestroy {
   private data: { [hash: string]: CuratedRoll[]; };
   static WildcardItemId = -69420; // nice
 
-  public static DEFAULT_PVE_URL = 'https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/panda_pve.txt';
-  public static DEFAULT_PVP_URL = 'https://gist.githubusercontent.com/darkelement1987/0b3f3cd1db17a766d5dae2e257f7fc07/raw/panda_pvp.txt';
+  public static DEFAULT_PVE_URL = 'https://gist.githubusercontent.com/dcaslin/e614cf030f14c41e07c87f6f7f08d465/raw/panda_pve.txt';
+  public static DEFAULT_PVP_URL = 'https://gist.githubusercontent.com/dcaslin/ef71ca7aac1e563653cf4a541c11baee/raw/panda_pvp.txt';
 
   private unsubscribe$: Subject<void> = new Subject<void>();
 

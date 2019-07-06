@@ -3035,10 +3035,10 @@ export class ParseService {
         if (mode === 68) { return 'Iron Banner Salvage'; }
         if (mode === 69) { return 'PvP Competitive'; }
         if (mode === 70) { return 'PvP Quickplay'; }
-        if (mode === 71) { return 'Clash Competitive'; }
-        if (mode === 72) { return 'Clash Quickplay'; }
-        if (mode === 73) { return 'Control Competitive'; }
-        if (mode === 74) { return 'Control Quickplay'; }
+        if (mode === 71) { return 'Clash Quickplay'; }
+        if (mode === 72) { return 'Clash Competitive'; }
+        if (mode === 73) { return 'Control Quickplay'; }
+        if (mode === 74) { return 'Control Competitive'; }
         if (mode === 75) { return 'Gambit Prime'; }
         if (mode === 76) { return 'Reckoning'; }
         if (mode === 77) { return 'Menagerie'; }
