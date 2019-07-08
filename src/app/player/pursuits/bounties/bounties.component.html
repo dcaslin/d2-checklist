@@ -43,7 +43,7 @@
                   {{ g.expirationDate | amDifference: today |
                         amDuration:'ms'}} </span>
                         <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
-                <div class="simple-caption">{{g.desc}} {{g.searchText}}
+                <div class="simple-caption">{{g.desc}}
                 </div>
                 <div>
                   {{g.aggProgress|number : '1.0-0'}}%
