@@ -179,7 +179,7 @@ export class BungieService implements OnDestroy {
     }
 
     public async loadClans(player: BehaviorSubject<Player>): Promise<void> {
-        const p  = player.getValue();
+        const p = player.getValue();
         const userInfo = p.profile.userInfo;
         await this.loadClansForUser(userInfo);
         player.next(p);
@@ -282,7 +282,7 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(32, 'Private Matches', 'Private Matches'),
 
 
-            
+
             // new ActivityMode(39, 'Trials', 'Trials'),
             // new ActivityMode(15, 'Crimson Doubles', 'Crimson Doubles'),
 
@@ -294,8 +294,8 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(45, 'Iron Banner Supremacy', 'Iron Banner Supremacy'),
             // new ActivityMode(25, 'All Mayhem', 'All Mayhem'),
 
-            
-            
+
+
 
             // new ActivityMode(16, 'Nightfall (old)', 'Nightfall (old)'),
             // new ActivityMode(17, 'Heroic Nightfall (old)', 'Heroic Nightfall (old)'),
@@ -342,6 +342,21 @@ export class BungieService implements OnDestroy {
     }
 
     private handleError(err) {
+        if (err.error != null) {
+            const j = err.error;
+            if (j.ErrorCode && j.ErrorCode !== 1) {
+                if (j.ErrorCode === 1665) {
+                    return {
+                        privacy: true
+                    };
+                }
+                if (j.ErrorCode === 5) {
+                    this.apiDown = true;
+                }
+                this.notificationService.fail(j.Message);
+                return;
+            }
+        }        
         console.dir(err);
         if (err.status === 0) {
             this.notificationService.fail('Connection refused? Is your internet connected? ' +
