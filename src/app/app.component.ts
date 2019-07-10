@@ -1,7 +1,7 @@
 
 import { filter, takeUntil } from 'rxjs/operators';
 import { Component, HostBinding, OnDestroy, OnInit, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Subject, BehaviorSubject } from 'rxjs';
 
@@ -105,6 +105,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public overlayContainer: OverlayContainer,
     public destinyCacheService: DestinyCacheService,
     private router: Router, public snackBar: MatSnackBar,
+    private route: ActivatedRoute,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef) {
 
@@ -196,6 +197,21 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  private static getFinalComponent(r: ActivatedRoute): string {
+    // grab platform while we're here
+    if (r.snapshot.params.platform != null) {
+      (window as any).ga('set', 'platform', r.snapshot.params.platform);
+    }
+    if (r.children != null && r.children.length > 0) {
+      if (r.routeConfig != null) {
+        return r.routeConfig.path + '/' + AppComponent.getFinalComponent(r.children[0]);
+      }
+      return AppComponent.getFinalComponent(r.children[0]);
+
+    }
+    return r.routeConfig.path;
+  }
+
   ngOnInit(): void {
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser.next(selectedUser);
@@ -213,15 +229,14 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(
         (navEnd: NavigationEnd) => {
           try {
-            const parts = navEnd.urlAfterRedirects.split('/');
-            let logMe = '';
-            if (parts.length === 4) {
-              logMe = parts[parts.length - 1];
-            } else if (parts.length > 1) {
-              logMe = parts[1];
-            }
-            logMe += '-' + (this.disableads ? 'disabledAds' : 'enabledAds');
-            (window as any).ga('send', 'pageview', logMe);
+
+            const rs = this.router.routerState;
+            const route = this.route;
+            const path = AppComponent.getFinalComponent(route);
+            (window as any).ga('set', 'disabled-ads', this.disableads);
+            (window as any).ga('send', 'pageview', path);
+            // const platform = (window as any).ga('get', 'platform');
+            // console.log(path + ': ' + this.disableads + ': ' + platform);
           } catch (err) {
             console.dir(err);
           }
