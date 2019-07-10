@@ -1504,8 +1504,8 @@ export class ParseService {
                 const ms: MileStoneName = {
                     key: raidDesc.hash,
                     resets: weekEnd,
-                    rewards: 'Gear',
-                    pl: Const.NO_BOOST,
+                    rewards: 'Powerful Gear',
+                    pl: Const.LOW_BOOST,
                     name: raidDesc.displayProperties.name,
                     desc: raidDesc.displayProperties.description,
                     hasPartial: false
@@ -1754,15 +1754,18 @@ export class ParseService {
                     if (a.percent < b.percent) { return 1; }
                     return 0;
                 });
-                searchableTriumphs = triumphLeaves.sort((a, b) => {
-                    // if (a.percent>b.percent) return -1;
-                    // if (a.percent<b.percent) return 1;
+                searchableTriumphs = triumphLeaves.filter(x => {
+                    return (x.name != null) && (x.name.trim().length > 0);
+                });
+                // hack to add 2 missing moments of triumph
+                const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs);
+                const highScore = this.handleRecordNode([], '2884099200', records, showZeroPtTriumphs, showInvisTriumphs);
+                searchableTriumphs.push(mmxix);
+                searchableTriumphs.push(highScore);
+                searchableTriumphs = searchableTriumphs.sort((a, b) => {
                     if (a.name < b.name) { return -1; }
                     if (a.name < b.name) { return 0; }
                     return 0;
-                });
-                searchableTriumphs = searchableTriumphs.filter(x => {
-                    return (x.name != null) && (x.name.trim().length > 0);
                 });
                 for (const r of searchableTriumphs) {
                     dictSearchableTriumphs[r.hash] = r;
@@ -1792,6 +1795,9 @@ export class ParseService {
 
                     const seasonRecords: TriumphRecordNode[] = [];
                     for (const hash of seasonDesc.hashes) {
+                        if (dictSearchableTriumphs[hash] == null) {
+                            console.log('wtf? '+ hash);
+                        }
                         seasonRecords.push(dictSearchableTriumphs[hash]);
                     }
                     seasons.push({

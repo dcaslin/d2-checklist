@@ -15,7 +15,10 @@
       <table class="responsive-table">
         <tbody>
           <ng-container *ngFor="let t of player.seasons[seasonIndex].records">
-            <tr>
+            <tr *ngIf="t==null">
+              <td>Triumph missing for now</td>
+            </tr>
+            <tr *ngIf="t!=null">
               <td class="lead" data-label="">
                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
                   {{t.name}} </ng-container>
