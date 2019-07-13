@@ -8,6 +8,7 @@
   dependencies:
     "@angular-devkit/core" "7.1.4"
     rxjs "6.3.3"
+    typescript "3.1.6"
 
 "@angular-devkit/build-angular@^0.11.4":
   version "0.11.4"
@@ -144,6 +145,7 @@
     shelljs "^0.8.1"
     source-map "^0.6.1"
     tslib "^1.9.0"
+    typescript "3.1.6"
     yargs "9.0.1"
 
 "@angular/compiler@^7.1.4":
@@ -999,6 +1001,9 @@ bonjour@^3.5.0:
 bootstrap@4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.1.1.tgz#3aec85000fa619085da8d2e4983dfd67cf2114cb"
+  dependencies:
+    jquery "1.9.1"
+    popper.js "1.14.3"
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -3849,6 +3854,8 @@ karma-coverage-istanbul-reporter@^2.0.5:
 karma-jasmine-html-reporter@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/karma-jasmine-html-reporter/-/karma-jasmine-html-reporter-1.4.0.tgz#1abbd30d4509a8c82b96707ae7d2fa4da459ca19"
+  dependencies:
+    jasmine-core "^3.3"
 
 karma-jasmine@^2.0.1:
   version "2.0.1"
@@ -6780,12 +6787,14 @@ tslint@^5.12.0:
     semver "^5.3.0"
     tslib "^1.8.0"
     tsutils "^2.27.2"
+    typescript "3.1.6"
 
 tsutils@^2.27.2:
   version "2.29.0"
   resolved "https://registry.yarnpkg.com/tsutils/-/tsutils-2.29.0.tgz#32b488501467acbedd4b85498673a0812aca0b99"
   dependencies:
     tslib "^1.8.1"
+    typescript "3.1.6"
 
 tty-browserify@0.0.0:
   version "0.0.0"
