@@ -2277,11 +2277,14 @@ export class ParseService {
             return null;
         }
 
-        const ch = plugDesc.plug.plugCategoryHash;
-        if (ch == 2973005342 || // shader
-            ch == 2947756142) { // masterwork tracker
-            return null;
+        if (plugDesc.plug != null){
+            const ch = plugDesc.plug.plugCategoryHash;
+            if (ch == 2973005342 || // shader
+                ch == 2947756142) { // masterwork tracker
+                return null;
+            }
         }
+        
         let desc = plugDesc.displayProperties.description;
         if (desc == null || desc.trim().length == 0) {
             if (plugDesc.perks != null && plugDesc.perks.length >= 1) {
