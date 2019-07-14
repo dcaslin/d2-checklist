@@ -1,10 +1,11 @@
 {
   "name": "d2-checklist",
-  "version": "7.7.9",
+  "version": "7.8.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
+    "docker-start": "ng serve --host 0.0.0.0 --ssl",
     "build": "ng build",
     "test": "npm run lint && ng test --single-run",
     "lint": "ng lint",
