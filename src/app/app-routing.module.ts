@@ -40,6 +40,7 @@ import { CollectionBadgeComponent } from './player/collections/collection-badge/
 import { PursuitsComponent } from './player/pursuits/pursuits.component';
 import { QuestsComponent } from './player/pursuits/quests/quests.component';
 import { BountiesComponent } from './player/pursuits/bounties/bounties.component';
+import { TriumphMotComponent } from './player/triumphs/triumph-mot/triumph-mot.component';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -194,10 +195,19 @@ export class AuthGuard implements CanActivate {
           path: 'triumphs',
           component: TriumphsComponent,
           children: [
+            // {
+            //   path: '',
+            //   redirectTo: 'tree',
+            //   pathMatch: 'full'
+            // },
             {
               path: '',
-              redirectTo: 'tree',
+              redirectTo: 'mot',
               pathMatch: 'full'
+            },
+            {
+              path: 'mot',
+              component: TriumphMotComponent,
             },
             {
               path: 'tree/:node',

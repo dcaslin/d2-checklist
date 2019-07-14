@@ -1,24 +1,15 @@
 <ng-container *ngIf="state.player|async as player">
-  <h4 class="triumph-score">Seasons
+  <h4 class="triumph-score">Moments of Triumph 2019 (MMXIX)
     <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
       Hide Completed
     </mat-checkbox>
   </h4>
-  <div class="left" style="margin: 10px">
-    <mat-form-field style="min-width: 250px">
-      <mat-label>Season</mat-label>
-      <mat-select [(ngModel)]="seasonIndex">
-        <mat-option [value]="i" *ngFor="let c of player.seasons; let i = index">{{c.name}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <span class="simple-caption">
-      {{player.seasons[seasonIndex].records.length}} triumphs
-    </span>
-    <div>
+  <ng-container *ngFor="let s of player.seals">
+    <div *ngIf="s.hash == '1002334440'">
+      <div class="left secondary-text mot-progress">{{s.progress}} / {{s.completionValue}} Triumphs Complete</div>
       <table class="responsive-table">
         <tbody>
-          <ng-container *ngFor="let t of player.seasons[seasonIndex].records">
+          <ng-container *ngFor="let t of s.children">
 
             <tr *ngIf="t==null">
               <td>Triumph missing for now</td>
@@ -27,16 +18,18 @@
               <td class="lead" data-label="">
                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
                   {{t.name}} </ng-container>
-                <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null" target="_blank"
+                <a class="mot-link" [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null" target="_blank"
                   rel="noopener">
                   {{t.name}}
                   <i class='accent-text far fa-map-marker-alt'></i>
                 </a>
-                <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
+                <span class="mot-link" *ngIf="debugmode|async">{{t.hash}}</span>
+                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star mot-link"
                   (click)="state.trackTriumph(t)"></i>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
+                <i *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text mot-link"
                   (click)="state.untrackTriumph(t)"></i>
+                <span class="simple-warn-caption mot-link" *ngIf="t.complete && !t.redeemed">Not yet
+                    redeemed.<br></span>
 
                 <br>
                 <span class="simple-caption">
@@ -79,5 +72,6 @@
       </table>
 
     </div>
-  </div>
+  </ng-container>
+
 </ng-container>
