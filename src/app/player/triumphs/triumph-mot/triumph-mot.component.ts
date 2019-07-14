@@ -4,12 +4,11 @@ import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
 
 @Component({
-  selector: 'd2c-triumph-seals',
-  templateUrl: './triumph-seals.component.html',
-  styleUrls: ['./triumph-seals.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'd2c-triumph-mot',
+  templateUrl: './triumph-mot.component.html',
+  styleUrls: ['./triumph-mot.component.scss']
 })
-export class TriumphSealsComponent extends ChildComponent implements OnInit {
+export class TriumphMotComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
     public state: PlayerStateService,

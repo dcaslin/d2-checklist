@@ -1,6 +1,9 @@
 <ng-container *ngIf="state.player|async as player">
 
   <nav mat-tab-nav-bar>
+    <a mat-tab-link routerLink="mot" routerLinkActive #rlaMot="routerLinkActive" [active]="rlaMot.isActive">
+      <i class="fas fa-award"></i><span class="d-none d-md-inline">&ensp;Moments of Triumph</span>
+    </a>
     <a mat-tab-link routerLink="tree" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
       <i class="far fa-trophy"></i><span class="d-none d-md-inline">&ensp;Triumphs</span>
     </a>
