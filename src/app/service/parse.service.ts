@@ -1537,13 +1537,29 @@ export class ParseService {
                     superprivate = true;
                 } else if (resp.characterActivities.data) {
                     const oActs: any = resp.characterActivities.data;
-                    Object.keys(oActs).forEach((key) => {
-                        const curChar: Character = charsDict[key];
-                        this.populateActivities(curChar, oActs[key]);
-                        if (curChar.currentActivity != null) {
-                            currentActivity = curChar.currentActivity;
+                    let lastActKey = null;
+                    for (const key  of Object.keys(oActs)) {
+                        const val = oActs[key];
+                        if (lastActKey == null) {
+                            lastActKey = key;
+                        } else if (val.dateActivityStarted > oActs[lastActKey].dateActivityStarted) {
+                            lastActKey = key;
                         }
-                    });
+                    }
+                    if (lastActKey != null) {
+                        const curChar: Character = charsDict[lastActKey];
+                        this.populateActivities(curChar, oActs[lastActKey]);
+                        currentActivity = curChar.currentActivity;
+                    }
+
+
+                    // Object.keys(oActs).forEach((key) => {
+                    //     const curChar: Character = charsDict[key];
+                    //     this.populateActivities(curChar, oActs[key]);
+                    //     if (curChar.currentActivity != null) {
+                    //         currentActivity = curChar.currentActivity;
+                    //     }
+                    // });
                 }
             }
 
@@ -1611,7 +1627,7 @@ export class ParseService {
                     items.forEach(itm => {
                         const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
-                            if (parsed.type === ItemType.Bounty) {
+                            if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 bounties.push(parsed);
                             } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
@@ -1796,7 +1812,7 @@ export class ParseService {
                     const seasonRecords: TriumphRecordNode[] = [];
                     for (const hash of seasonDesc.hashes) {
                         if (dictSearchableTriumphs[hash] == null) {
-                            console.log('wtf? '+ hash);
+                            console.log('wtf? ' + hash);
                         }
                         seasonRecords.push(dictSearchableTriumphs[hash]);
                     }
@@ -2277,14 +2293,14 @@ export class ParseService {
             return null;
         }
 
-        if (plugDesc.plug != null){
+        if (plugDesc.plug != null) {
             const ch = plugDesc.plug.plugCategoryHash;
             if (ch == 2973005342 || // shader
                 ch == 2947756142) { // masterwork tracker
                 return null;
             }
         }
-        
+
         let desc = plugDesc.displayProperties.description;
         if (desc == null || desc.trim().length == 0) {
             if (plugDesc.perks != null && plugDesc.perks.length >= 1) {
@@ -2333,8 +2349,11 @@ export class ParseService {
             }
             let description = desc.displayProperties.description;
 
-            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') > 0) {
+            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') >= 0) {
                 type = ItemType.Bounty;
+            }
+            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
+                type = ItemType.ForgeVessel;
             }
             if (itm.itemHash === 1115550924) {
                 type = ItemType.Chalice;
@@ -2344,6 +2363,7 @@ export class ParseService {
 
             if (!detailedInv) {
                 if (type !== ItemType.Bounty
+                    && type !== ItemType.ForgeVessel
                     && type !== ItemType.Quest
                     && type !== ItemType.QuestStep
                     && type !== ItemType.Chalice) {
@@ -2650,7 +2670,7 @@ export class ParseService {
             if (postmaster) {
                 searchText += ' mail postmaster';
             }
-            if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep) {
+            if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep || type === ItemType.ForgeVessel) {
                 searchText = desc.displayProperties.name + ' ';
                 searchText += desc.displayProperties.description + ' ';
                 // values
