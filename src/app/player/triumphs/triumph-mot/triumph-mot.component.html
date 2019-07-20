@@ -18,17 +18,17 @@
               <td class="lead" data-label="">
                 <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
                   {{t.name}} </ng-container>
-                <a class="mot-link" [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null" target="_blank"
+                <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null" target="_blank"
                   rel="noopener">
                   {{t.name}}
                   <i class='accent-text far fa-map-marker-alt'></i>
                 </a>
-                <span class="mot-link" *ngIf="debugmode|async">{{t.hash}}</span>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star mot-link"
+                <span class="mot-pad" *ngIf="debugmode|async">{{t.hash}}</span>
+                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star mot-pad"
                   (click)="state.trackTriumph(t)"></i>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text mot-link"
+                <i *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text mot-pad"
                   (click)="state.untrackTriumph(t)"></i>
-                <span class="simple-warn-caption mot-link" *ngIf="t.complete && !t.redeemed">Not yet
+                <span class="simple-warn-caption mot-pad" *ngIf="t.complete && !t.redeemed">Not yet
                     redeemed.<br></span>
 
                 <br>
