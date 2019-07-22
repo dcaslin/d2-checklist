@@ -2263,7 +2263,7 @@ export class ParseService {
         };
     }
 
-    private parseMod(plugDesc: any): InventoryPlug {
+    private parseMod(plugDesc: any, objs: any, id: string): InventoryPlug {
         // if (plugDesc.inventory == null) return null;
         // if (plugDesc.inventory.bucketTypeHash != 3313201758) return null;
         if (plugDesc.displayProperties.name == 'Empty Mod Socket') { return null; }
@@ -2272,7 +2272,30 @@ export class ParseService {
             return null;
         }
         if (plugDesc.displayProperties.name.indexOf('Catalyst') >= 0) {
+            if (plugDesc.perks.length > 0) {
+                let catName = 'Catalyst complete';
+                let catDesc = plugDesc.displayProperties.description;
+                for (const p of plugDesc.perks) {
+                    if (p.perkVisibility == 1) {
+                        const perkDesc: any = this.destinyCacheService.cache.Perk[p.perkHash];
+                        if (perkDesc != null) {
+                            catName = 'Catalyst: ' + perkDesc.displayProperties.name;
+                            catDesc = perkDesc.displayProperties.description;
+                        }
+                    }
+                }
+                return new InventoryPlug(plugDesc.hash,
+                    catName, catDesc,
+                    plugDesc.displayProperties.icon, true);
+            }
+
             return null;
+        }
+        if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0) {
+            return new InventoryPlug(plugDesc.hash,
+                'Catalyst in-progress', plugDesc.displayProperties.description,
+                plugDesc.displayProperties.icon, true);
+
         }
         if (plugDesc.hash == 3786277607) { // legacy MW armor slot
             return null;
@@ -2563,7 +2586,7 @@ export class ParseService {
                                                 mw = mwInfo;
                                                 continue;
                                             }
-                                            const modInfo = this.parseMod(plugDesc);
+                                            const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId);
                                             if (modInfo != null) {
                                                 mod = modInfo;
                                                 continue;
@@ -2586,7 +2609,7 @@ export class ParseService {
                                             mw = mwInfo;
                                             continue;
                                         }
-                                        const modInfo = this.parseMod(plugDesc);
+                                        const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId);
                                         if (modInfo != null) {
                                             mod = modInfo;
                                             continue;
