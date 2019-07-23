@@ -103,7 +103,7 @@
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!last">
+                        <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
                             <span *ngFor="let plug of socket.plugs; last as isLastPlug"
                                 [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
                                 matTooltipClass="preserve-white-space">
@@ -126,10 +126,10 @@
 
                     <ng-container *ngFor="let i of items">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <ng-container *ngIf="i.stats!=null && i.stats[cntr]!=null">
+                            <ng-container *ngIf="i.stats!=null && i.stats[cntr]!=null; else noState">
                                 {{i.stats[cntr].value}}
                             </ng-container>
-
+                            <ng-template #noState>0</ng-template>
                         </td>
                     </ng-container>
                 </tr>
