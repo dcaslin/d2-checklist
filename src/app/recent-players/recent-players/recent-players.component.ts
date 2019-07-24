@@ -32,9 +32,6 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   friends = [];
 
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
   constructor(storageService: StorageService, private bungieService: BungieService,

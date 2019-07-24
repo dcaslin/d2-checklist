@@ -17,9 +17,6 @@ import { WeekService, Today } from '@app/service/week.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
-
-  @ViewChild(MatTabGroup) tabs: MatTabGroup;
-
   readonly version = env.versions.app;
   manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;

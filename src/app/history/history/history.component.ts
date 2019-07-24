@@ -30,8 +30,8 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
 
   database = new SortFilterDatabase([]);
   dataSource: SortFilterDataSource | null;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('paginator', {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 

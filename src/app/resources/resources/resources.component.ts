@@ -18,7 +18,7 @@ import { LowLineResponse } from '@app/service/lowline.service';
 })
 export class ResourcesComponent extends ChildComponent implements OnInit, OnDestroy {
 
-  @ViewChild('filter') filter: ElementRef;
+  @ViewChild('filter', {static: true}) filter: ElementRef;
   selectedUser: SelectedUser = null;
   player: Player = null;
   char: Character = null;

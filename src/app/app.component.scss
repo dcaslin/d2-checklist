@@ -1,6 +1,6 @@
 @import 'styles-variables';
 
-$footer-height: 160px;
+$footer-height: 140px;
 
 .logo{
   height: 38px;
@@ -134,7 +134,7 @@ mat-sidenav {
   z-index: 1;
 
   .row {
-    padding: 10px 0;
+    padding: 0px 0;
 
     .links {
       a {
