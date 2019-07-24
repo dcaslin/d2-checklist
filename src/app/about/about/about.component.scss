@@ -1,8 +1,5 @@
 @import 'styles-variables';
 
-:host {
-}
-
 .link-row {
   text-align: center;
 }
@@ -59,9 +56,6 @@ h1 {
 }
 
 @media (max-width: map-get($grid-breakpoints, sm)) {
-  .container-fluid {
-    padding: 40px 0;
-  }
   h1 {
     line-height: 1em;
   }

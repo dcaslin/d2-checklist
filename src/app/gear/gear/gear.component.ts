@@ -60,35 +60,35 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
 
-  @ViewChild(MatPaginator)
+  @ViewChild('paginator', {static: false})
   public paginator: MatPaginator;
 
-  @ViewChild('optionsgroup')
+  @ViewChild('optionsgroup', {static: false})
   public optionsgroup: MatButtonToggleGroup;
 
-  @ViewChild('markToggle')
+  @ViewChild('markToggle', {static: false})
   public markToggle: GearToggleComponent;
-  @ViewChild('weaponTypeToggle')
+  @ViewChild('weaponTypeToggle', {static: false})
   public weaponTypeToggle: GearToggleComponent;
-  @ViewChild('ammoTypeToggle')
+  @ViewChild('ammoTypeToggle', {static: false})
   public ammoTypeToggle: GearToggleComponent;
-  @ViewChild('armorTypeToggle')
+  @ViewChild('armorTypeToggle', {static: false})
   public armorTypeToggle: GearToggleComponent;
-  @ViewChild('vehicleTypeToggle')
+  @ViewChild('vehicleTypeToggle', {static: false})
   public vehicleTypeToggle: GearToggleComponent;
-  @ViewChild('modTypeToggle')
+  @ViewChild('modTypeToggle', {static: false})
   public modTypeToggle: GearToggleComponent;
-  @ViewChild('consumableTypeToggle')
+  @ViewChild('consumableTypeToggle', {static: false})
   public consumableTypeToggle: GearToggleComponent;
-  @ViewChild('exchangeTypeToggle')
+  @ViewChild('exchangeTypeToggle', {static: false})
   public exchangeTypeToggle: GearToggleComponent;
-  @ViewChild('classTypeToggle')
+  @ViewChild('classTypeToggle', {static: false})
   public classTypeToggle: GearToggleComponent;
-  @ViewChild('ownerToggle')
+  @ViewChild('ownerToggle', {static: false})
   public ownerToggle: GearToggleComponent;
-  @ViewChild('equippedToggle')
+  @ViewChild('equippedToggle', {static: false})
   public equippedToggle: GearToggleComponent;
-  @ViewChild('rarityToggle')
+  @ViewChild('rarityToggle', {static: false})
   public rarityToggle: GearToggleComponent;
 
   filters: GearToggleComponent[] = [];
@@ -111,7 +111,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   selectedUser: SelectedUser = null;
   player: Player = null;
   visibleFilterText = null;
-  @ViewChild('filter') filter: ElementRef;
+
+  @ViewChild('filter', {static: false})
+  filter: ElementRef;
+
   filterTags: string[] = [];
   options = [
     { name: 'Weapons', type: ItemType.Weapon },
@@ -137,6 +140,11 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.size = count;
     this.filterChanged();
   }
+
+  trackGearItem(index, item) {
+    return item ? item.id : undefined;
+
+}
 
   filterChanged(): void {
     this.filtering.next(true);
@@ -706,6 +714,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
   ngAfterViewInit() {
+
     this.filters.push(this.markToggle);
     this.filters.push(this.weaponTypeToggle);
     this.filters.push(this.ammoTypeToggle);
@@ -724,6 +733,45 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       .subscribe(x => {
         this.page = x.pageIndex;
         this.size = x.pageSize;
+        this.filterChanged();
+      });
+
+
+    this.filterChangedSubject.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(50))
+      .subscribe(() => {
+        this.filtersDirty = this.checkFilterDirty();
+        try {
+          this.option = this.optionsgroup.value;
+          this.filterGear();
+        } catch (e) {
+          console.log('Error filtering: ' + e);
+        }
+        this.filtering.next(false);
+        this.ref.markForCheck();
+      });
+
+
+    this.noteChanged.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(100))
+      .subscribe(itm => {
+        this.markService.updateItem(itm);
+      });
+
+    observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(150),
+      distinctUntilChanged())
+      .subscribe(() => {
+        const val: string = this.filter.nativeElement.value;
+        if (val == null || val.trim().length === 0) {
+          this.filterTags = [];
+        } else {
+          const rawFilter = val.toLowerCase();
+          this.filterTags = rawFilter.split(' and ');
+        }
         this.filterChanged();
       });
   }
@@ -795,43 +843,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     });
     this.loadWishlist();
 
-    this.filterChangedSubject.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(50))
-      .subscribe(() => {
-        this.filtersDirty = this.checkFilterDirty();
-        try {
-          this.option = this.optionsgroup.value;
-          this.filterGear();
-        } catch (e) {
-          console.log('Error filtering: ' + e);
-        }
-        this.filtering.next(false);
-        this.ref.markForCheck();
-      });
-
-
-    this.noteChanged.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(100))
-      .subscribe(itm => {
-        this.markService.updateItem(itm);
-      });
-
-    observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(150),
-      distinctUntilChanged())
-      .subscribe(() => {
-        const val: string = this.filter.nativeElement.value;
-        if (val == null || val.trim().length === 0) {
-          this.filterTags = [];
-        } else {
-          const rawFilter = val.toLowerCase();
-          this.filterTags = rawFilter.split(' and ');
-        }
-        this.filterChanged();
-      });
   }
 }
 

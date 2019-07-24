@@ -119,7 +119,6 @@ export class AppComponent implements OnInit, OnDestroy {
       takeUntil(this.unsubscribe$))
       .subscribe(
         x => {
-          console.log('Theme: ' + x.theme);
           if (x.theme != null) {
             this.overlayContainer.getContainerElement().classList.remove(this.componentCssClass);
             this.componentCssClass = x.theme;

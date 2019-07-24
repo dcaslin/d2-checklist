@@ -198,7 +198,7 @@
           </tr>
         </thead>
         <tbody>
-          <ng-container *ngFor="let i of gearToShow">
+          <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
             <tr [ngClass]="i.mark">
               <td class="limited-gear-width">
                 <div *ngIf="i.icon!=null" class="item-image"
