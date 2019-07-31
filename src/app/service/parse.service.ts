@@ -1375,6 +1375,15 @@ export class ParseService {
 
         let imperials: number;
         let powerfulDropsRemaining: number;
+        let perfected = false;
+        if (chalice.sockets != null && chalice.sockets.length > 0) {
+            const lastSocket = chalice.sockets[chalice.sockets.length - 1];
+            if (lastSocket.plugs != null && lastSocket.plugs.length == 1) {
+                perfected = lastSocket.plugs[0].enabled;
+            }
+        }
+
+
         for (const obj of chalice.objectives) {
             if (obj.progressDescription.indexOf('rewards') > 0) {
                 powerfulDropsRemaining = obj.progress;
@@ -1383,6 +1392,7 @@ export class ParseService {
                 imperials = obj.progress;
             }
         }
+        console.log("Perfected: "+perfected);
         if (char != null) {
             if (milestonesByKey[Const.CHALICE_KEY] == null) {
                 const ms: MileStoneName = {
@@ -1393,7 +1403,7 @@ export class ParseService {
                     name: 'Menagerie',
                     desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
                     hasPartial: false,
-                    suppInfo: imperials + ' Imperials'
+                    suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
                 };
                 milestoneList.push(ms);
                 milestonesByKey[Const.CHALICE_KEY] = ms;
@@ -1401,7 +1411,7 @@ export class ParseService {
             // constructor(hash, complete, pct, info, suppInfo, phases) {
             const complete = powerfulDropsRemaining === 0;
             char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null);
-        } else {
+        } else if (!perfected) {
             const currDesc: any = this.destinyCacheService.cache.InventoryItem['1642918584'];
             let impAdded = false;
             for (const c of currencies) {
@@ -2487,7 +2497,7 @@ export class ParseService {
             let isRandomRoll = false;
 
             // || type === ItemType.Chalice for the future?
-            if (detailedInv) {
+            if (detailedInv || type === ItemType.Chalice) {
 
                 if (desc.inventory != null) {
                     tier = desc.inventory.tierTypeName;
@@ -2620,7 +2630,7 @@ export class ParseService {
                                     if (name == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         name, plugDesc.displayProperties.description,
-                                        plugDesc.displayProperties.icon, true);
+                                        plugDesc.displayProperties.icon, true, socketVal.isEnabled);
                                     plugs.push(oPlug);
                                 }
                                 if (plugs.length > 0) {

@@ -162,7 +162,7 @@ export class PlayerStateService {
         const x = await this.bungieService.getChars(p.membershipType, p.membershipId,
           ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
             'CharacterEquipment', 'CharacterInventories',
-            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles'
+            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles','ItemSockets'
             // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);

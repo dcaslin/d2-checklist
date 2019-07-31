@@ -4,7 +4,7 @@ import { StorageService } from '../../service/storage.service';
 import { fromEvent as observableFromEvent, Subject, BehaviorSubject } from 'rxjs';
 
 import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug, DestinyAmmunitionType } from '@app/service/model';
+import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug, DestinyAmmunitionType, InventoryStat } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
 import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
@@ -862,7 +862,45 @@ export class GearDetailsDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.items = data.items;
     this.parent = data.parent;
+  }
 
+  getAllStats(): InventoryStat[] {
+    const names = {};
+    const stats = this.items[0].stats.slice(0);
+    for (const s of stats){
+      names[s.name] = true;
+    }
+    if (this.items.length > 1) {
+      for (const i of this.items.slice(1)) {
+        for (const s of i.stats) {
+          if (!names[s.name]){
+            names[s.name] = true;
+            stats.push(s);
+          }
+        }
+      }
+    }
+    stats.sort(function (a, b) {
+      const bs: string = b.name;
+      const as: string = a.name;
+      if (bs < as) { return 1; }
+      if (bs > as) { return -1; }
+      return 0;
+  });
+
+    return stats;
+  }
+
+  getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
+    if (i.stats == null){
+      return null;
+    }
+    for (const s of i.stats) {
+      if (s.name == originalStat.name) {
+        return s;
+      }
+    }
+    return null;
   }
 }
 
