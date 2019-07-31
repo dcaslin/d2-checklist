@@ -117,7 +117,7 @@
             </tr>
 
             <ng-container *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
-                <tr *ngFor="let stat of items[0].stats; let cntr = index">
+                <tr *ngFor="let stat of getAllStats(); let cntr = index">
                     <td>{{stat.name}}
                         <span class="caption" *ngIf="stat.baseValue!=null">
                             {{stat.baseValue}}
@@ -126,8 +126,8 @@
 
                     <ng-container *ngFor="let i of items">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <ng-container *ngIf="i.stats!=null && i.stats[cntr]!=null; else noState">
-                                {{i.stats[cntr].value}}
+                            <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
+                                {{targetStat.value}}
                             </ng-container>
                             <ng-template #noState>0</ng-template>
                         </td>
