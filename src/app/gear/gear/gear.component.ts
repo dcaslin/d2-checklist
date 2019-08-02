@@ -60,35 +60,35 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
 
-  @ViewChild('paginator', {static: false})
+  @ViewChild('paginator', { static: false })
   public paginator: MatPaginator;
 
-  @ViewChild('optionsgroup', {static: false})
+  @ViewChild('optionsgroup', { static: false })
   public optionsgroup: MatButtonToggleGroup;
 
-  @ViewChild('markToggle', {static: false})
+  @ViewChild('markToggle', { static: false })
   public markToggle: GearToggleComponent;
-  @ViewChild('weaponTypeToggle', {static: false})
+  @ViewChild('weaponTypeToggle', { static: false })
   public weaponTypeToggle: GearToggleComponent;
-  @ViewChild('ammoTypeToggle', {static: false})
+  @ViewChild('ammoTypeToggle', { static: false })
   public ammoTypeToggle: GearToggleComponent;
-  @ViewChild('armorTypeToggle', {static: false})
+  @ViewChild('armorTypeToggle', { static: false })
   public armorTypeToggle: GearToggleComponent;
-  @ViewChild('vehicleTypeToggle', {static: false})
+  @ViewChild('vehicleTypeToggle', { static: false })
   public vehicleTypeToggle: GearToggleComponent;
-  @ViewChild('modTypeToggle', {static: false})
+  @ViewChild('modTypeToggle', { static: false })
   public modTypeToggle: GearToggleComponent;
-  @ViewChild('consumableTypeToggle', {static: false})
+  @ViewChild('consumableTypeToggle', { static: false })
   public consumableTypeToggle: GearToggleComponent;
-  @ViewChild('exchangeTypeToggle', {static: false})
+  @ViewChild('exchangeTypeToggle', { static: false })
   public exchangeTypeToggle: GearToggleComponent;
-  @ViewChild('classTypeToggle', {static: false})
+  @ViewChild('classTypeToggle', { static: false })
   public classTypeToggle: GearToggleComponent;
-  @ViewChild('ownerToggle', {static: false})
+  @ViewChild('ownerToggle', { static: false })
   public ownerToggle: GearToggleComponent;
-  @ViewChild('equippedToggle', {static: false})
+  @ViewChild('equippedToggle', { static: false })
   public equippedToggle: GearToggleComponent;
-  @ViewChild('rarityToggle', {static: false})
+  @ViewChild('rarityToggle', { static: false })
   public rarityToggle: GearToggleComponent;
 
   filters: GearToggleComponent[] = [];
@@ -112,7 +112,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   player: Player = null;
   visibleFilterText = null;
 
-  @ViewChild('filter', {static: false})
+  @ViewChild('filter', { static: false })
   filter: ElementRef;
 
   filterTags: string[] = [];
@@ -144,7 +144,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   trackGearItem(index, item) {
     return item ? item.id : undefined;
 
-}
+  }
 
   filterChanged(): void {
     this.filtering.next(true);
@@ -189,7 +189,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (cntr == null) {
       markdown = '**' + i.name + '**\n\n';
     } else {
-    markdown = '**' + cntr + '. ' + i.name + '**\n\n';
+      markdown = '**' + cntr + '. ' + i.name + '**\n\n';
     }
 
     for (const socket of i.sockets) {
@@ -205,8 +205,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (i.masterwork != null) {
       markdown += '\n\n* *Masterwork: ' + i.masterwork.name + ' ' + i.masterwork.tier + '*';
     }
-    if (i.mod != null) {
-      markdown += '\n\n* *Mod: ' + i.mod.name + '*';
+    for (const mod of i.mods) {
+      markdown += '\n\n* *Mod: ' + mod.name + '*';
     }
     return markdown;
   }
@@ -238,10 +238,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.targetPerkService.perks.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
-          if (this.player != null) {
-            this.targetPerkService.processGear(this.player);
-            this.load();
-          }
+        if (this.player != null) {
+          this.targetPerkService.processGear(this.player);
+          this.load();
+        }
       });
 
   }
@@ -547,16 +547,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     let tempGear = this.player.gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
     tempGear = this.toggleFilter(tempGear);
-    if (this.sortBy == 'masterwork' || this.sortBy == 'mod') {
-      tempGear.sort((a: any, b: any): number => {
-        let aV = '';
-        let bV = '';
+    if (this.sortBy == 'masterwork' || this.sortBy == 'mods') {
+      tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
+        let aV: any = '';
+        let bV: any = '';
         if (this.sortBy == 'masterwork') {
-          aV = a[this.sortBy] != null ? a[this.sortBy].tier : -1;
-          bV = b[this.sortBy] != null ? b[this.sortBy].tier : -1;
-        } else if (this.sortBy == 'mod') {
-          aV = a[this.sortBy] != null ? a[this.sortBy].name : '';
-          bV = b[this.sortBy] != null ? b[this.sortBy].name : '';
+          aV = a[this.sortBy] != null ? a[this.sortBy].name : -1;
+          bV = b[this.sortBy] != null ? b[this.sortBy].name : -1;
+        } else if (this.sortBy == 'mods') {
+          aV = a[this.sortBy] != null && a[this.sortBy].length > 0 ? a[this.sortBy][0].name : '';
+          bV = b[this.sortBy] != null && b[this.sortBy].length > 0 ? b[this.sortBy][0].name : '';
         }
 
         if (aV < bV) {
@@ -565,8 +565,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           return this.sortDesc ? -1 : 1;
         } else {
           if (this.sortBy == 'masterwork') {
-            aV = a[this.sortBy] != null ? a[this.sortBy].name : '';
-            bV = b[this.sortBy] != null ? b[this.sortBy].name : '';
+            aV = a[this.sortBy] != null ? a[this.sortBy].tier : '';
+            bV = b[this.sortBy] != null ? b[this.sortBy].tier : '';
             if (aV < bV) {
               return this.sortDesc ? 1 : -1;
             } else if (aV > bV) {
@@ -614,7 +614,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     await this.syncLocks();
   }
 
-  public async clearInv(weaponsOnly?: boolean){
+  public async clearInv(weaponsOnly?: boolean) {
     await this.load(true);
     await this.gearService.clearInv(this.player, weaponsOnly);
   }
@@ -712,6 +712,22 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
+  parseWildcardFilter() {
+    const val: string = this.visibleFilterText;
+    if (val == null || val.trim().length == 0) {
+      localStorage.removeItem('gear-filter');
+    } else {
+      localStorage.setItem('gear-filter', val);
+    }
+    if (val == null || val.trim().length === 0) {
+      this.filterTags = [];
+    } else {
+      const rawFilter = val.toLowerCase();
+      this.filterTags = rawFilter.split(' and ');
+    }
+    this.filterChanged();
+
+  }
 
   ngAfterViewInit() {
 
@@ -760,19 +776,18 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         this.markService.updateItem(itm);
       });
 
+
+    const gFilter = localStorage.getItem('gear-filter');
+    if (gFilter != null) {
+      this.visibleFilterText = gFilter;
+    }
+    this.parseWildcardFilter();
     observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(150),
       distinctUntilChanged())
       .subscribe(() => {
-        const val: string = this.filter.nativeElement.value;
-        if (val == null || val.trim().length === 0) {
-          this.filterTags = [];
-        } else {
-          const rawFilter = val.toLowerCase();
-          this.filterTags = rawFilter.split(' and ');
-        }
-        this.filterChanged();
+        this.parseWildcardFilter();
       });
   }
 
@@ -867,13 +882,13 @@ export class GearDetailsDialogComponent {
   getAllStats(): InventoryStat[] {
     const names = {};
     const stats = this.items[0].stats.slice(0);
-    for (const s of stats){
+    for (const s of stats) {
       names[s.name] = true;
     }
     if (this.items.length > 1) {
       for (const i of this.items.slice(1)) {
         for (const s of i.stats) {
-          if (!names[s.name]){
+          if (!names[s.name]) {
             names[s.name] = true;
             stats.push(s);
           }
@@ -886,13 +901,13 @@ export class GearDetailsDialogComponent {
       if (bs < as) { return 1; }
       if (bs > as) { return -1; }
       return 0;
-  });
+    });
 
     return stats;
   }
 
   getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
-    if (i.stats == null){
+    if (i.stats == null) {
       return null;
     }
     for (const s of i.stats) {

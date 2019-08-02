@@ -1392,7 +1392,6 @@ export class ParseService {
                 imperials = obj.progress;
             }
         }
-        console.log("Perfected: "+perfected);
         if (char != null) {
             if (milestonesByKey[Const.CHALICE_KEY] == null) {
                 const ms: MileStoneName = {
@@ -1548,7 +1547,7 @@ export class ParseService {
                 } else if (resp.characterActivities.data) {
                     const oActs: any = resp.characterActivities.data;
                     let lastActKey = null;
-                    for (const key  of Object.keys(oActs)) {
+                    for (const key of Object.keys(oActs)) {
                         const val = oActs[key];
                         if (lastActKey == null) {
                             lastActKey = key;
@@ -2273,7 +2272,8 @@ export class ParseService {
         };
     }
 
-    private parseMod(plugDesc: any, objs: any, id: string): InventoryPlug {
+    private parseMod(plugDesc: any, objs: any, id: string, plug: any): InventoryPlug {
+        // plug will only be non-null for reusableable plugs which may be catalysts
         // if (plugDesc.inventory == null) return null;
         // if (plugDesc.inventory.bucketTypeHash != 3313201758) return null;
         if (plugDesc.displayProperties.name == 'Empty Mod Socket') { return null; }
@@ -2289,6 +2289,7 @@ export class ParseService {
                     if (p.perkVisibility == 1) {
                         const perkDesc: any = this.destinyCacheService.cache.Perk[p.perkHash];
                         if (perkDesc != null) {
+                            console.log("bleh");
                             catName = 'Catalyst: ' + perkDesc.displayProperties.name;
                             catDesc = perkDesc.displayProperties.description;
                         }
@@ -2301,10 +2302,23 @@ export class ParseService {
 
             return null;
         }
-        if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0) {
+        if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0 && plug) {
+            const objs: ItemObjective[] = [];
+            for (const o of plug.plugObjectives) {
+                const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                if (oDesc == null) { continue; }
+                const iObj: ItemObjective = {
+                    completionValue: oDesc.completionValue,
+                    progressDescription: oDesc.progressDescription,
+                    progress: o.progress == null ? 0 : o.progress,
+                    complete: o.complete,
+                    percent: 0
+                };
+                objs.push(iObj);
+            }
             return new InventoryPlug(plugDesc.hash,
                 'Catalyst in-progress', plugDesc.displayProperties.description,
-                plugDesc.displayProperties.icon, true);
+                plugDesc.displayProperties.icon, true, false, objs);
 
         }
         if (plugDesc.hash == 3786277607) { // legacy MW armor slot
@@ -2490,7 +2504,7 @@ export class ParseService {
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
             let mw: MastworkInfo = null;
-            let mod: InventoryPlug = null;
+            const mods: InventoryPlug[] = [];
 
             let invBucket = null;
             let tier = null;
@@ -2585,7 +2599,6 @@ export class ParseService {
                                 const plugs: InventoryPlug[] = [];
 
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugItems != null && socketDesc.randomizedPlugItems.length > 0;
-
                                 if (socketVal.reusablePlugs != null) {
                                     for (const plug of socketVal.reusablePlugs) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
@@ -2596,9 +2609,9 @@ export class ParseService {
                                                 mw = mwInfo;
                                                 continue;
                                             }
-                                            const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId);
+                                            const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId, plug);
                                             if (modInfo != null) {
-                                                mod = modInfo;
+                                                mods.push(modInfo);
                                                 continue;
                                             }
                                             continue;
@@ -2611,7 +2624,8 @@ export class ParseService {
                                         plugs.push(oPlug);
                                     }
                                 } else if (socketVal.plugHash != null) {
-                                    const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                                    const plug = socketVal;
+                                    const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
@@ -2619,9 +2633,9 @@ export class ParseService {
                                             mw = mwInfo;
                                             continue;
                                         }
-                                        const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId);
+                                        const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId, plug);
                                         if (modInfo != null) {
-                                            mod = modInfo;
+                                            mods.push(modInfo);
                                             continue;
                                         }
                                         continue;
@@ -2630,7 +2644,7 @@ export class ParseService {
                                     if (name == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         name, plugDesc.displayProperties.description,
-                                        plugDesc.displayProperties.icon, true, socketVal.isEnabled);
+                                        plugDesc.displayProperties.icon, true, plug.isEnabled);
                                     plugs.push(oPlug);
                                 }
                                 if (plugs.length > 0) {
@@ -2678,8 +2692,10 @@ export class ParseService {
             if (masterworked) {
                 searchText += ' is:masterwork';
             }
-            if (mod != null) {
+            for (const mod of mods) {
                 searchText += ' ' + mod.name;
+            }
+            if (mods.length > 0) {
                 searchText += ' is:hasmod';
             }
             if (sockets != null) {
@@ -2737,7 +2753,7 @@ export class ParseService {
                 power, damageType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mod, tracked, questline, searchText, invBucket, tier, options.slice(),
+                locked, masterworked, mw, mods, tracked, questline, searchText, invBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
             );
         } catch (exc) {
