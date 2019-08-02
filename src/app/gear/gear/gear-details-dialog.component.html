@@ -17,7 +17,8 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </a>
                         <mat-menu #itemMenu="matMenu">
-                            <button mat-menu-item *ngIf="i.postmaster" (click)="parent.pullFromPostmaster(parent.player, i)">
+                            <button mat-menu-item *ngIf="i.postmaster"
+                                (click)="parent.pullFromPostmaster(parent.player, i)">
                                 <i class="fal fa-envelope-open"></i> Pull from postmaster
                             </button>
                             <ng-container *ngIf="!i.postmaster">
@@ -90,9 +91,11 @@
                 <ng-container *ngFor="let i of items">
 
                     <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngIf="i.mod!=null" [matTooltip]="i.mod.desc" matTooltipClass="preserve-white-space">
-                            {{i.mod.name}}
-                        </div>
+                        <ng-container *ngFor="let mod of i.mods">
+                            <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
+                                {{mod.name}}
+                            </div>
+                        </ng-container>
                     </td>
                 </ng-container>
             </tr>

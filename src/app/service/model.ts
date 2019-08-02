@@ -553,7 +553,7 @@ export class InventoryItem {
     public locked: boolean;
     readonly masterworked: boolean;
     readonly masterwork: MastworkInfo;
-    readonly mod: InventoryPlug;
+    readonly mods: InventoryPlug[];
     readonly tracked: boolean;
     readonly questline: Questline;
     public searchText: string;
@@ -588,7 +588,7 @@ export class InventoryItem {
         power: number, damageType: DamageType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
-        locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mod: InventoryPlug, tracked: boolean,
+        locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean
     ) {
@@ -617,7 +617,7 @@ export class InventoryItem {
         this.locked = locked;
         this.masterworked = masterworked;
         this.masterwork = masterwork;
-        this.mod = mod;
+        this.mods = mods;
         this.tracked = tracked;
         this.questline = questline;
         this.searchText = searchText;
@@ -1056,7 +1056,7 @@ export class Const {
     public static readonly LOW_BOOST = 1; // 2-3, 740
     public static readonly MID_BOOST = 2; // 2-5, 740
     public static readonly HIGH_BOOST = 3; // 4-6, 750
-    public static readonly HIGHEST_BOOST = 4; //8-12, 750 cap
+    public static readonly HIGHEST_BOOST = 4; // 8-12, 750 cap
 
     public static readonly BOOSTS: DropInfo[] = [
         {
@@ -1134,6 +1134,7 @@ export class InventoryPlug {
     readonly icon: string;
     readonly active: boolean;
     readonly enabled: boolean;
+    readonly objectives: ItemObjective[];
     public godRoll = false;
     public godRollPve = false;
     public godRollPvp = false;
@@ -1141,13 +1142,18 @@ export class InventoryPlug {
     public alreadyEquipped = false;
     public desc: string;
 
-    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, enabled?: boolean) {
+    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, enabled?: boolean, objectives?: ItemObjective[]) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.icon = icon;
         this.active = active;
         this.enabled = enabled;
+        if (objectives) {
+            this.objectives = objectives;
+        } else {
+            this.objectives = [];
+        }
     }
 }
 
