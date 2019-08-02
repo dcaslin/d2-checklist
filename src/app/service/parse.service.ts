@@ -2289,7 +2289,6 @@ export class ParseService {
                     if (p.perkVisibility == 1) {
                         const perkDesc: any = this.destinyCacheService.cache.Perk[p.perkHash];
                         if (perkDesc != null) {
-                            console.log("bleh");
                             catName = 'Catalyst: ' + perkDesc.displayProperties.name;
                             catDesc = perkDesc.displayProperties.description;
                         }
