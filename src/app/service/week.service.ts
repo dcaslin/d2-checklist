@@ -94,6 +94,8 @@ export class WeekService {
     // Combustion 280 [3271773240], 7
     if (hash == '3271773240') {
       return 7;
+    } else if (hash == '2776154899') {
+      return 7;
     } else if (hash == '129918239') {
       return 7;
     } else if (hash == '1872813880') {
