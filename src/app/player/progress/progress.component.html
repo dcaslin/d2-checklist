@@ -1,5 +1,66 @@
 <ng-container *ngIf="state.player|async as player">
 
+  <table class="responsive-table" *ngIf="player.accountProgressions!=null && player.accountProgressions.length>0">
+    <thead>
+      <tr>
+        <th scope="col">Faction</th>
+        <th scope="col">Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let faction of player.accountProgressions">
+        <td class="lead" data-label="">
+          <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
+          <span class="light">Level {{faction.level}}
+            <ng-container *ngIf="debugmode|async">{{faction.hash}}</ng-container>
+            <ng-container *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
+              {{faction.steps[faction.level-1].stepName}}
+            </ng-container>
+          </span>
+          <span class="caption">{{faction.info}}</span>
+          <div class="row dl-row simple-caption">
+            <dl class="col-xs-3 dl-child">
+              <dt>Daily</dt>
+              <dd>{{faction.dailyProgress| number:0}}</dd>
+            </dl>
+            <dl class="col-xs-3 dl-child">
+              <dt>Weekly</dt>
+              <dd>{{faction.weeklyProgress| number:0}}</dd>
+            </dl>
+            <dl class="col-xs-3 dl-child">
+              <dt>To Next Level</dt>
+              <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
+              number:0}}</dd>
+            </dl>
+            <dl class="col-xs-3 dl-child">
+              <dt>Level Cap</dt>
+              <dd>
+                <ng-container *ngIf="faction.levelCap>0">
+                  {{faction.levelCap| number:0}}
+                </ng-container>
+                <ng-container *ngIf="faction.levelCap<=0">
+                  None
+                </ng-container>
+              </dd>
+            </dl>
+            <dl class="col-xs-3 dl-child">
+              <dt>Total Earned</dt>
+              <dd>
+                {{faction.currentProgress|number:0}}
+              </dd>
+            </dl>
+          </div>
+        </td>
+        <td data-label="">
+          {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+          <div>
+            <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
+            </mat-progress-bar>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
   <mat-tab-group>
     <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">

@@ -468,6 +468,7 @@ export class Player {
     readonly title;
     readonly seasons: RecordSeason[];
     readonly hasHiddenClosest: boolean;
+    readonly accountProgressions: Progression[];
     maxLL = 0;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
@@ -481,7 +482,7 @@ export class Player {
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
         searchableCollection: TriumphCollectibleNode[],
         seals: Seal[], badges: Badge[],
-        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean) {
+        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean, accountProgressions: Progression[]) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -515,6 +516,7 @@ export class Player {
         this.title = title;
         this.seasons = seasons;
         this.hasHiddenClosest = hasHiddenClosest;
+        this.accountProgressions = accountProgressions;
     }
 
     public getWeeklyXp(): number {

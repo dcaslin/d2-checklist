@@ -148,7 +148,7 @@ export class ParseService {
         }
     }
 
-    private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[]): void {
+    private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
@@ -310,23 +310,25 @@ export class ParseService {
         // only progression we care about right now is Legend
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
-                // infamy
+                // legend
                 if (key === '2030054750') {
                     const p: PrivProgression = _prog.progressions[key];
                     const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     c.legendProgression = prog;
                     c.wellRested = prog.nextLevelAt * 3 > prog.weeklyProgress;
-                } else if (key === '3882308435' || key === '2679551909' || key === '2772425241') {
+                } else if (key === '2626549951' || key === '2000925172' || key === '2772425241') {
                     const p: PrivProgression = _prog.progressions[key];
                     const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     if (prog != null) {
-                        factions.push(prog);
-                    }
-                } else if (key === '2679551909') {
-                    const p: PrivProgression = _prog.progressions[key];
-                    const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
-                    if (prog != null) {
-                        factions.push(prog);
+                        let found = false;
+                        for (const a of accountProgressions) {
+                            if (a.hash == prog.hash) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            accountProgressions.push(prog);
+                        }
                     }
                 } else if (key === '540048094') {
                     const p: PrivProgression = _prog.progressions[key];
@@ -346,11 +348,6 @@ export class ParseService {
             return b.percentToNextLevel - a.percentToNextLevel;
         });
         c.factions = factions;
-
-        // progressions we'll ignore for now, factions has it all
-        // quests? are empty for now, check back later
-        // uninstancedItemObjectives
-
     }
 
 
@@ -1441,6 +1438,7 @@ export class ParseService {
         let superprivate = false;
 
         const charsDict: { [key: string]: Character } = {};
+        const accountProgressions: Progression[] = [];
         const milestoneList: MileStoneName[] = [];
         const milestonesByKey: { [id: string]: MileStoneName } = {};
         let currentActivity: CurrentActivity = null;
@@ -1533,7 +1531,7 @@ export class ParseService {
                     const oProgs: any = resp.characterProgressions.data;
                     Object.keys(oProgs).forEach((key) => {
                         const curChar: Character = charsDict[key];
-                        this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList);
+                        this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList, accountProgressions);
                         hasWellRested = curChar.wellRested || hasWellRested;
                     });
                 } else {
@@ -1560,15 +1558,6 @@ export class ParseService {
                         this.populateActivities(curChar, oActs[lastActKey]);
                         currentActivity = curChar.currentActivity;
                     }
-
-
-                    // Object.keys(oActs).forEach((key) => {
-                    //     const curChar: Character = charsDict[key];
-                    //     this.populateActivities(curChar, oActs[key]);
-                    //     if (curChar.currentActivity != null) {
-                    //         currentActivity = curChar.currentActivity;
-                    //     }
-                    // });
                 }
             }
 
@@ -1860,7 +1849,7 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList, currencies, charBounties, charQuests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
-            seals, badges, title, seasons, hasHiddenClosest);
+            seals, badges, title, seasons, hasHiddenClosest, accountProgressions);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
