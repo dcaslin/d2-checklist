@@ -23,14 +23,15 @@ import { QuestsComponent } from './pursuits/quests/quests.component';
 import { BountiesComponent } from './pursuits/bounties/bounties.component';
 import { QuestDialogComponent } from './pursuits/quests/quest-dialog/quest-dialog.component';
 import { TriumphMotComponent } from './triumphs/triumph-mot/triumph-mot.component';
+import { ProgressStepDialogComponent } from './progress/progress-step-dialog/progress-step-dialog.component';
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, QuestsComponent, TriumphMotComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, QuestsComponent, TriumphMotComponent, ProgressStepDialogComponent],
   entryComponents: [
-    QuestDialogComponent, BurnDialogComponent
+    QuestDialogComponent, BurnDialogComponent, ProgressStepDialogComponent
   ],
 })
 export class PlayerModule { }

@@ -3,7 +3,7 @@
   <table class="responsive-table" *ngIf="player.accountProgressions!=null && player.accountProgressions.length>0">
     <thead>
       <tr>
-        <th scope="col">Faction</th>
+        <th scope="col">Account-wide Progressions</th>
         <th scope="col">Progress</th>
       </tr>
     </thead>
@@ -11,10 +11,13 @@
       <tr *ngFor="let faction of player.accountProgressions">
         <td class="lead" data-label="">
           <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
-          <span class="light">Level {{faction.level}}
+          <span class="light">
             <ng-container *ngIf="debugmode|async">{{faction.hash}}</ng-container>
             <ng-container *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
-              {{faction.steps[faction.level-1].stepName}}
+
+              <button mat-raised-button color="accent" (click)="openStepDialog(faction)">
+                {{faction.steps[faction.level-1].stepName}}
+              </button>
             </ng-container>
           </span>
           <span class="caption">{{faction.info}}</span>
@@ -33,26 +36,15 @@
               number:0}}</dd>
             </dl>
             <dl class="col-xs-3 dl-child">
-              <dt>Level Cap</dt>
-              <dd>
-                <ng-container *ngIf="faction.levelCap>0">
-                  {{faction.levelCap| number:0}}
-                </ng-container>
-                <ng-container *ngIf="faction.levelCap<=0">
-                  None
-                </ng-container>
-              </dd>
-            </dl>
-            <dl class="col-xs-3 dl-child">
               <dt>Total Earned</dt>
               <dd>
-                {{faction.currentProgress|number:0}}
+                {{faction.currentProgress|number:0}} / {{faction.totalProgress|number:0}}
               </dd>
             </dl>
           </div>
         </td>
         <td data-label="">
-          {{faction.percentToNextLevel|percent:'1.0-0'}} to level {{faction.level+1}}
+          {{faction.percentToNextLevel|percent:'1.0-0'}} to {{faction.steps[faction.level].stepName}}
           <div>
             <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
             </mat-progress-bar>
@@ -61,7 +53,7 @@
       </tr>
     </tbody>
   </table>
-
+  <br>
   <mat-tab-group>
     <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
       <div *ngIf="char.factions==null || char.factions.length==0">
@@ -72,7 +64,7 @@
       <table class="responsive-table" *ngIf="char.factions!=null && char.factions.length>0">
         <thead>
           <tr>
-            <th scope="col">Faction</th>
+            <th scope="col">Character Faction</th>
             <th scope="col">Progress</th>
           </tr>
         </thead>

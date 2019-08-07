@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>{{data.name}}</h2>
+<mat-dialog-content>
+    <table class="tidy-table">
+        <thead>
+            <tr>
+                <th>Step</th>
+                <th>XP</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let step of data.steps; index as i">
+                <td class="desc-cell" [attr.id]="'stepRow'+i" [class.accent-bg-text]="(data.level-1)==i">
+                    {{step.stepName}}
+                </td>
+                <td [class.accent-bg-text]="(data.level-1)==i">
+                    <ng-container *ngIf="i==0">0</ng-container>
+                    <ng-container *ngIf="i>0">
+                        {{data.steps[i-1].cumulativeTotal| number:0}}
+                    </ng-container>
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+</mat-dialog-content>
