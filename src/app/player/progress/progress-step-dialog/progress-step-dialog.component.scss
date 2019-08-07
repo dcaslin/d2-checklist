@@ -1,0 +1,12 @@
+@import 'styles-variables';
+
+table.responsive-table{
+  & td {
+    text-align: left;
+    vertical-align: top;
+  }
+}
+
+.desc-cell{
+  max-width: 400px;
+}

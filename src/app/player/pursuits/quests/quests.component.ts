@@ -55,7 +55,7 @@ export class QuestsComponent  extends ChildComponent implements OnInit {
     this.searchSubject.next();
   }
 
-  
+
   public openQuestDialog(quest: any): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;

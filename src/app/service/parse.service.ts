@@ -136,7 +136,23 @@ export class ParseService {
 
             if (desc.steps != null && desc.steps.length > 1) {
                 if (desc.steps[0].stepName != null && desc.steps[0].stepName.length > 0) {
-                    prog.steps = desc.steps;
+                    prog.steps = [];
+                    let total = 0;
+                    for (const s of desc.steps) {
+                        total += s.progressTotal;
+                        const as = s.stepName.split(' ');
+                        let stepName = as[0].charAt(0) + as[0].slice(1).toLowerCase();
+                        if (as.length > 1) {
+                            stepName += ' ' + as[1];
+                        }
+
+                        prog.steps.push({
+                            stepName,
+                            progressTotal: s.progressTotal,
+                            cumulativeTotal: total
+                        });
+                    }
+                    prog.totalProgress = total;
                 }
             }
 
@@ -624,43 +640,14 @@ export class ParseService {
                 }
                 const socketTemplate = iDesc.sockets.socketEntries[cntr];
 
-                // 2846385770
-                if (socketTemplate.reusablePlugItems != null && socketTemplate.reusablePlugItems.length > 0) {
-                    const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
-                    if (perkDesc != null && perkDesc.itemTypeAndTierDisplayName === 'Exotic Intrinsic'
-                        && (iDesc.itemTypeAndTierDisplayName.indexOf('Exotic') >= 0)) {
-                        const perkSet = [];
-                        perkSet.push({
-                            hash: socketVal.plugHash,
-                            icon: perkDesc.displayProperties.icon,
-                            name: perkDesc.displayProperties.name,
-                            desc: perkDesc.displayProperties.description,
-                        });
-                        searchText += perkDesc.displayProperties.name + ' ';
-                        rolledPerks.push(perkSet);
-                    }
-                }
+                if (socketTemplate != null) {
 
-                if (socketTemplate.randomizedPlugItems != null && socketTemplate.randomizedPlugItems.length > 0) {
-                    const perkSet = [];
-                    if (socketVal.reusablePlugs != null) {
-
-                        for (const perkHash of socketVal.reusablePlugHashes) {
-                            const perkDesc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
-                            if (perkDesc != null) {
-                                perkSet.push({
-                                    hash: perkHash,
-                                    icon: perkDesc.displayProperties.icon,
-                                    name: perkDesc.displayProperties.name,
-                                    desc: perkDesc.displayProperties.description,
-                                });
-                                searchText += perkDesc.displayProperties.name + ' ';
-                            }
-                        }
-
-                    } else if (socketVal.reusablePlugHashes == null) {
+                    // 2846385770
+                    if (socketTemplate.reusablePlugItems != null && socketTemplate.reusablePlugItems.length > 0) {
                         const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
-                        if (perkDesc != null) {
+                        if (perkDesc != null && perkDesc.itemTypeAndTierDisplayName === 'Exotic Intrinsic'
+                            && (iDesc.itemTypeAndTierDisplayName.indexOf('Exotic') >= 0)) {
+                            const perkSet = [];
                             perkSet.push({
                                 hash: socketVal.plugHash,
                                 icon: perkDesc.displayProperties.icon,
@@ -668,10 +655,42 @@ export class ParseService {
                                 desc: perkDesc.displayProperties.description,
                             });
                             searchText += perkDesc.displayProperties.name + ' ';
+                            rolledPerks.push(perkSet);
                         }
                     }
-                    if (perkSet.length > 0) {
-                        rolledPerks.push(perkSet);
+
+                    if (socketTemplate.randomizedPlugItems != null && socketTemplate.randomizedPlugItems.length > 0) {
+                        const perkSet = [];
+                        if (socketVal.reusablePlugs != null) {
+
+                            for (const perkHash of socketVal.reusablePlugHashes) {
+                                const perkDesc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
+                                if (perkDesc != null) {
+                                    perkSet.push({
+                                        hash: perkHash,
+                                        icon: perkDesc.displayProperties.icon,
+                                        name: perkDesc.displayProperties.name,
+                                        desc: perkDesc.displayProperties.description,
+                                    });
+                                    searchText += perkDesc.displayProperties.name + ' ';
+                                }
+                            }
+
+                        } else if (socketVal.reusablePlugHashes == null) {
+                            const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                            if (perkDesc != null) {
+                                perkSet.push({
+                                    hash: socketVal.plugHash,
+                                    icon: perkDesc.displayProperties.icon,
+                                    name: perkDesc.displayProperties.name,
+                                    desc: perkDesc.displayProperties.description,
+                                });
+                                searchText += perkDesc.displayProperties.name + ' ';
+                            }
+                        }
+                        if (perkSet.length > 0) {
+                            rolledPerks.push(perkSet);
+                        }
                     }
                 }
             }

@@ -1009,6 +1009,11 @@ export class ClanInfo {
     about: string;
 }
 
+export interface ProgressStep {
+    stepName: string;
+    progressTotal: number;
+    cumulativeTotal: number;
+}
 
 export class Progression {
     icon: string;
@@ -1027,7 +1032,8 @@ export class Progression {
     weeklyLimit: number;
     currentProgress: number;
     percentToNextLevel: number;
-    steps: any;
+    steps: ProgressStep[];
+    totalProgress: number;
 }
 
 export class Const {
