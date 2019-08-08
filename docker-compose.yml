@@ -2,6 +2,7 @@ version: '3.7'
 services:
   web:
     container_name: d2-checklist
+    image: node:latest
     build: .
     ports:
       - '4200:4200'

@@ -1,6 +1,6 @@
 # base image
-FROM node:9.6.1
-#FROM node:latest
+#FROM node:9.6.1
+FROM node:latest
 
 # set working directory (also creates two folders needed for cypress)
 RUN mkdir /usr/src/app
