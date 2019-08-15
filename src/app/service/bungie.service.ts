@@ -1,18 +1,18 @@
 
-import { takeUntil, first, filter } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 /**
  * Created by Dave on 12/21/2016.
  */
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { NotificationService } from './notification.service';
-import { AuthInfo, AuthService } from './auth.service';
-import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus, Const, ItemType } from './model';
-import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
-import { BucketService, Bucket } from './bucket.service';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, first, takeUntil } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { AuthInfo, AuthService } from './auth.service';
+import { Bucket, BucketService } from './bucket.service';
+import { Activity, ActivityMode, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { NotificationService } from './notification.service';
+import { ParseService } from './parse.service';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
 
@@ -231,7 +231,7 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
-        const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId, 
+        const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
             ['ProfileCurrencies', 'CharacterInventories', 'ItemObjectives', 'ItemSockets'], true);
         if (tempPlayer == null) {
             console.log('No player to apply currencies to');
@@ -358,7 +358,7 @@ export class BungieService implements OnDestroy {
                 this.notificationService.fail(j.Message);
                 return;
             }
-        }        
+        }
         console.dir(err);
         if (err.status === 0) {
             this.notificationService.fail('Connection refused? Is your internet connected? ' +
@@ -723,14 +723,10 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    // this spans xbl 1, psn 2, bnet 4 and "regular" Bungie ids (254?) or "ALL"
-    // after testing it honestly looks like membershipType, as long as its valid, is ignored
-
-    // TODO swap to GetLinkedProfiles https://github.com/Bungie-net/api/wiki/FAQ:-Cross-Save-pre-launch-testing,-and-how-it-may-affect-you
     public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
-            const resp = await this.makeReq('User/GetMembershipsById/' + membershipId + '/' + membershipType + '/');
-            return this.parseService.parseBungieMembership(resp);
+            const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' + membershipId + '/LinkedProfiles/');
+            return this.parseService.parseLinkedProfiles(resp);
         } catch (err) {
             this.handleError(err);
             return null;
