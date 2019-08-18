@@ -175,6 +175,7 @@ export class PlayerStateService {
         this.bungieService.loadWeeklyPowerfulBounties(this._player);
         this.bungieService.loadClans(this._player);
         this.bungieService.observeUpdateAggHistory(this._player);
+        this.bungieService.observeUpdatePvpStreak(this._player);
 
         // need to get out of this change detection cycle to have tabs set
         // setTimeout(() => {

@@ -16,6 +16,10 @@ export class WeekService {
     }
   }
 
+  public getReckCalendar(reckBurns: NameDesc[]): void {
+    console.dir(reckBurns);
+  }
+
   public async  getToday(): Promise<Today> {
 
     const publicMilestones = await this.bungieService.getPublicMilestones();
@@ -85,7 +89,8 @@ export class WeekService {
       reckBurns: reckBurns,
       missions: missions,
       nightfalls: nightfalls,
-      flashpoint: flashpoint
+      flashpoint: flashpoint,
+      reckCal: []
     };
   }
 
@@ -159,7 +164,14 @@ export interface Today {
   missions: Mission[];
   nightfalls: Mission[];
   flashpoint: string;
+  reckCal: ReckDay[];
+}
 
+export interface ReckDay {
+  day: Date;
+  singe: NameDesc;
+  good: NameDesc;
+  bad: NameDesc;
 }
 
 interface WeekData {

@@ -12,11 +12,328 @@
           <h2>Loading clan info. This could take a while if your clan is large...</h2>
         </ng-container>
 
+
         <ng-container *ngIf="(info|async)!=null">
           <h1>{{(info|async).name}} </h1>
-          <div class="button-row">
+
+          <div class="filter-row">
+
+            <mat-form-field class="searchField searchPlatform">
+              <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="filterPlayers()">
+                <mat-select-trigger>
+                  <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+                </mat-select-trigger>
+                <mat-option *ngFor="let p of platforms" [value]="p">
+                  <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="modelPlayer!=null">
+              <mat-select [(ngModel)]="filterMode" (selectionChange)="filterPlayers()"
+                placeholder="Filter players by activity">
+                <mat-option value="none">Show All Players</mat-option>
+                <mat-option value="zero">Show only zero completions</mat-option>
+                <mat-option value="all">Show completely done</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngIf="modelPlayer!=null && filterMode!='none'">
+              <mat-select [(ngModel)]="filterActivity" (selectionChange)="filterPlayers()" placeholder="Activity">
+                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{
+                  mileStoneName.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <span class="filter-count">{{(sortedMembers|async).length}} / {{members.length}}</span>
+            <button class="d-none d-md-inline" mat-raised-button [disabled]="!(allLoaded|async)"
+              (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
+              <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
+            <button class="d-none d-md-inline" mat-raised-button (click)="showAllClanMilestones()" color="accent"
+              *ngIf="(hiddenClanMilestones|async).length>0">
+              <i class="fal fa-eye"></i> All
+            </button>
+            <button class="d-none d-md-inline" mat-raised-button (click)="showDefaultClanMilestones()" color="accent"
+              *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
+              <i class="fal fa-eye"></i> Default
+            </button>
+
           </div>
 
+          <div class="mobile-button-row">
+            <button mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
+              <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
+              <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
+
+            <button mat-raised-button (click)="showAllClanMilestones()" color="accent"
+              *ngIf="(hiddenClanMilestones|async).length>0">
+              <i class="fal fa-eye"></i> All
+            </button>
+            <button mat-raised-button (click)="showDefaultClanMilestones()" color="accent"
+              *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
+              <i class="fal fa-eye"></i> Default
+            </button>
+          </div>
+
+          <div class="mobile-button-row">
+            <button mat-button (click)="toggleMemberSort()">Sort Name
+              <i *ngIf="sort=='memberDesc'" class="fas fa-sort-up"></i>
+              <i *ngIf="sort=='memberAsc'" class="fas fa-sort-down"></i>
+            </button>
+            <button mat-button (click)="toggleDateSort()">Sort Last Played
+              <i *ngIf="sort=='dateDesc'" class="fas fa-sort-up"></i>
+              <i *ngIf="sort=='dateAsc'" class="fas fa-sort-down"></i>
+            </button>
+          </div>
+
+          <table class="responsive-table clan-table" *ngIf="(sortedMembers|async)!=null && this.modelPlayer!=null">
+            <thead>
+              <tr>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
+                    <i *ngIf="sort=='memberDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='memberAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
+                    <i *ngIf="sort=='dateDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='dateAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleTriumphSort()">Triumph Score
+                    <i *ngIf="sort=='triumphDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='triumphAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleGlorySort()">Glory
+                    <i *ngIf="sort=='gloryDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='gloryAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleInfamySort()">Infamy
+                    <i *ngIf="sort=='infamyDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='infamyAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleValorSort()">Valor
+                    <i *ngIf="sort=='valorDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='valorAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
+                    <i *ngIf="sort=='xpDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='xpAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th matTooltip="Max LL of current chars (actual max could be higher)">
+                  <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                    <i *ngIf="sort=='llDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='llAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <ng-container *ngIf="modelPlayer!=null">
+                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    <th *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">
+                      <span [matTooltip]="mileStoneName.desc"
+                        matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
+                      <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
+                      <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                        class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
+                        <i class="fal fa-eye-slash"></i>
+                      </a>
+                    </th>
+                  </ng-container>
+
+
+                </ng-container>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let member of sortedMembers|async">
+                <td class="lead">
+                  <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                    [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                  </a>
+                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                    (click)="navigateBnetMember(member)">
+                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                  </a>
+                  <a style="margin-left:0.25em"
+                    [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
+                    (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
+                    href="javascript:void(0)">
+                    <i style="font-weight: normal !important" class="far fa-heart"></i>
+                  </a>
+                  <a style="margin-left:0.25em" href="javascript:void(0)" (click)="loadSpecificPlayer(member, true)">
+                    &ensp;<i class="fas fa-sync"></i>
+                  </a>
+                  <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
+                    {{member.player.title}}
+                  </span>
+                </td>
+                <td *ngIf="member.player==null">N/A</td>
+
+                <ng-container *ngIf="member.player!=null">
+                  <td>
+                    <ng-container *ngIf="!member.player.superprivate">
+                      <span *ngIf="member.isOnline" matTooltip="Playing right now!">
+                        <i class="fal fa-gamepad fa-2x accent-text"></i>
+                        <div *ngIf="member.player && member.player.currentActivity">
+                          {{member.player.currentActivity.type}}</div>
+                      </span>
+                      <ng-container *ngIf="!member.isOnline">
+                        {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="!member.player.superprivate">
+                      {{member.player.triumphScore|number : '1.0-0'}}
+                    </ng-container>
+                  </td>
+                  <td data-label="Glory">
+                    <ng-container *ngIf="!member.player.superprivate && member.player.glory">
+                      {{member.player.glory.currentProgress|number}}
+                      <div class="simple-caption">
+                        {{member.player.glory.steps[member.player.glory.level].stepName}}
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td data-label="Infamy">
+                    <ng-container *ngIf="!member.player.superprivate && member.player.infamy">
+                      {{member.player.infamy.currentProgress|number}}
+                      <div class="simple-caption" *ngIf="member.player.infamy.currentResetCount">{{member.player.infamy.currentResetCount}} resets</div>
+                    </ng-container>
+                  </td>
+                  <td data-label="Valor">
+                    <ng-container *ngIf="!member.player.superprivate && member.player.valor">
+                      {{member.player.valor.currentProgress|number}}
+                      <div class="simple-caption" *ngIf="member.player.valor.currentResetCount">{{member.player.valor.currentResetCount}} resets</div>
+                    </ng-container>
+                  </td>
+                  <td>
+                    <ng-container *ngIf="!member.player.superprivate">
+                      {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
+                    </ng-container>
+                  </td>
+
+                  <td data-label="Max Current Light Level">
+                    <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}
+                    </ng-container>
+                  </td>
+                  <td
+                    *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
+                    [attr.colspan]="modelPlayer.milestoneList.length">
+                    Blocked by privacy settings
+                  </td>
+                  <ng-container
+                    *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
+
+                    <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+
+                      <td *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1"
+                        class="clan-player-ms-cell" [attr.data-label]="mileStoneName.name">
+                        <ng-container *ngFor="let char of member.player.characters">
+                          <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
+                            <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
+                              <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                            </ng-container>
+                            <ng-container
+                              *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
+                              <i class="far fa-square"></i>
+                            </ng-container>
+                            <ng-container
+                              *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
+                              <i [matTooltip]="char.milestones[mileStoneName.key].info"
+                                class="accent-text far fa-minus-square"></i>
+                            </ng-container>
+                          </span>
+                          <span class="check"
+                            *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
+                            <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
+                              class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                            <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
+                              matTooltip="Not max level: possibly complete / possibly ineligible"></i>
+                          </span>
+                          <span class="check"
+                            *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.neverDisappears">
+                            <i class="far fa-minus-square"
+                              matTooltip="Milestone missing. May not be unlocked, or there may have been an error loading data."></i>
+                          </span>
+                        </ng-container>
+                      </td>
+                    </ng-container>
+
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
+                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    <td *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">...</td>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="member.errorMsg!=null && modelPlayer!=null">
+                  <td [attr.colspan]="(modelPlayer.milestoneList).length+3">
+                    {{member.errorMsg}}
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
+                    <i *ngIf="sort=='memberDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='memberAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
+                    <i *ngIf="sort=='dateDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='dateAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleTriumphSort()">Triumph Score
+                    <i *ngIf="sort=='triumphDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='triumphAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th>
+                  <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
+                    <i *ngIf="sort=='xpDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='xpAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <th matTooltip="Max LL of current chars (actual max could be higher)">
+                  <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
+                    <i *ngIf="sort=='llDesc'" class="fas fa-sort-up"></i>
+                    <i *ngIf="sort=='llAsc'" class="fas fa-sort-down"></i>
+                  </a>
+                </th>
+                <ng-container *ngIf="modelPlayer!=null">
+                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+                    <th *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">
+                      <span [matTooltip]="mileStoneName.desc"
+                        matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
+                      <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
+                      <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+                        class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
+                        <i class="fal fa-eye-slash"></i>
+                      </a>
+                    </th>
+                  </ng-container>
+
+
+                </ng-container>
+              </tr>
+            </tfoot>
+          </table>
+          <br>
           <mat-card *ngIf="modelPlayer!=null" class="clanMsRow clan-card">
             <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
             <span style="margin-right: 0.5em" *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
@@ -62,243 +379,6 @@
             </mat-expansion-panel>
           </ng-container>
 
-          <br>
-
-          <div class="filter-row">
-            <mat-form-field class="searchField searchPlatform">
-              <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="filterPlayers()">
-                <mat-select-trigger>
-                  <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
-                </mat-select-trigger>
-                <mat-option *ngFor="let p of platforms" [value]="p">
-                  <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>            
-            <mat-form-field *ngIf="modelPlayer!=null">
-              <mat-select [(ngModel)]="filterMode" (selectionChange)="filterPlayers()"
-                placeholder="Filter players by activity">
-                <mat-option value="none">Show All Players</mat-option>
-                <mat-option value="zero">Show only zero completions</mat-option>
-                <mat-option value="all">Show completely done</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field *ngIf="modelPlayer!=null && filterMode!='none'">
-              <mat-select [(ngModel)]="filterActivity" (selectionChange)="filterPlayers()" placeholder="Activity">
-                <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{
-                  mileStoneName.name }}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <span class="filter-count">{{(sortedMembers|async).length}} / {{members.length}}</span>
-            <button class="d-none d-md-inline" mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-              <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
-
-          </div>
-
-
-          <div class="mobile-button-row">
-            <button mat-button [disabled]="!(allLoaded|async)" (click)="downloadCsvReport()">
-              <i [hidden]="allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-              <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
-          </div>
-
-          <div class="mobile-button-row">
-            <button mat-button (click)="toggleMemberSort()">Sort Name
-              <i *ngIf="sort=='memberDesc'" class="fas fa-sort-down"></i>
-              <i *ngIf="sort=='memberAsc'" class="fas fa-sort-up"></i>
-            </button>
-            <button mat-button (click)="toggleDateSort()">Sort Last Played
-              <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
-              <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
-            </button>
-          </div>
-
-          <table class="responsive-table clan-table" *ngIf="(sortedMembers|async)!=null && this.modelPlayer!=null">
-            <thead>
-              <tr>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
-                    <i *ngIf="sort=='memberDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='memberAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
-                    <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleTriumphSort()">Triumph Score
-                    <i *ngIf="sort=='triumphDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='triumphAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
-                    <i *ngIf="sort=='xpDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='xpAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th matTooltip="Max LL of current chars (actual max could be higher)">
-                  <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                    <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
-                    *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                    {{mileStoneName.name}}
-                    <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
-
-                  </th>
-
-                </ng-container>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let member of sortedMembers|async">
-                <td class="lead">
-                  <a *ngIf="member.destinyUserInfo.membershipType!=4"
-                    [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
-                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                  </a>
-                  <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
-                    (click)="navigateBnetMember(member)">
-                    {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                  </a>
-                  <a style="margin-left:0.25em"
-                    [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
-                    (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
-                    href="javascript:void(0)">
-                    <i style="font-weight: normal !important" class="far fa-heart"></i>
-                  </a>
-                  <a style="margin-left:0.25em" href="javascript:void(0)" (click)="loadSpecificPlayer(member, true)">
-                    &ensp;<i class="fas fa-sync"></i>
-                  </a>
-                  <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
-                    {{member.player.title}}
-                  </span>
-                </td>
-                <td *ngIf="member.player==null">N/A</td>
-
-                <ng-container *ngIf="member.player!=null">
-                  <td>
-                    <ng-container *ngIf="!member.player.superprivate">
-                      <span *ngIf="member.isOnline" class="accent-text" matTooltip="Playing right now!">
-                        <i class="fal fa-gamepad fa-2x"></i>
-                      </span>
-                      <ng-container *ngIf="!member.isOnline">
-                        {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
-                      </ng-container>
-                    </ng-container>
-                  </td>
-                  <td>
-                    <ng-container *ngIf="!member.player.superprivate">
-                      {{member.player.triumphScore|number : '1.0-0'}}
-                    </ng-container>
-                  </td>
-                  <td>
-                    <ng-container *ngIf="!member.player.superprivate">
-                      {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
-                    </ng-container>
-                  </td>
-                  <td data-label="Max Current Light Level">
-                    <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}
-                    </ng-container>
-                  </td>
-                  <td
-                    *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
-                    [attr.colspan]="modelPlayer.milestoneList.length">
-                    Blocked by privacy settings
-                  </td>
-                  <ng-container
-                    *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
-                    <td *ngFor="let mileStoneName of modelPlayer.milestoneList" class="clan-player-ms-cell"
-                      [attr.data-label]="mileStoneName.name">
-                      <ng-container *ngFor="let char of member.player.characters">
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          </ng-container>
-                          <ng-container
-                            *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                            <i class="far fa-square"></i>
-                          </ng-container>
-                          <ng-container
-                            *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [matTooltip]="char.milestones[mileStoneName.key].info"
-                              class="accent-text far fa-minus-square"></i>
-                          </ng-container>
-                        </span>
-                        <span class="check"
-                          *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
-                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
-                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
-                            matTooltip="Not max level: possibly complete / possibly ineligible"></i>
-                        </span>
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.neverDisappears">
-                          <i class="far fa-minus-square" matTooltip="Milestone missing. May not be unlocked, or there may have been an error loading data."></i>
-                        </span>
-                      </ng-container>
-                    </td>
-                  </ng-container>
-                </ng-container>
-                <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
-                  <td *ngFor="let mileStoneName of modelPlayer.milestoneList">...</td>
-                  <td>...</td>
-                </ng-container>
-                <ng-container *ngIf="member.errorMsg!=null && modelPlayer!=null">
-                  <td [attr.colspan]="(modelPlayer.milestoneList).length+1">
-                    {{member.errorMsg}}
-                  </td>
-                </ng-container>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleMemberSort()">Member
-                    <i *ngIf="sort=='memberDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='memberAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleDateSort()">Last Played
-                    <i *ngIf="sort=='dateDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='dateAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleTriumphSort()">Triumph Score
-                    <i *ngIf="sort=='triumphDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='triumphAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th>
-                  <a href="javascript:void(0)" (click)="toggleXpSort()">Weekly XP
-                    <i *ngIf="sort=='xpDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='xpAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <th matTooltip="Max LL of current chars (actual max could be higher)">
-                  <a href="javascript:void(0)" (click)="toggleLLSort()">Max LL
-                    <i *ngIf="sort=='llDesc'" class="fas fa-sort-down"></i>
-                    <i *ngIf="sort=='llAsc'" class="fas fa-sort-up"></i>
-                  </a>
-                </th>
-                <ng-container *ngIf="modelPlayer!=null">
-                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
-                    *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                    {{mileStoneName.name}}
-                  </th>
-                </ng-container>
-              </tr>
-            </tfoot>
-          </table>
 
 
           <div class="bottom-note">

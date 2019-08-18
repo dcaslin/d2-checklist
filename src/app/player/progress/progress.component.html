@@ -12,39 +12,56 @@
         <td class="lead" data-label="">
           <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
           <span class="light">
-            <ng-container *ngIf="debugmode|async">{{faction.hash}}</ng-container>
-            <ng-container *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
+            <ng-container *ngIf="debugmode|async">{{faction.hash}} </ng-container>
+            <ng-container *ngIf="faction.steps!=null && (faction.steps[faction.level]!=null)">
 
               <button mat-raised-button color="accent" (click)="openStepDialog(faction)">
-                {{faction.steps[faction.level-1].stepName}}
+                {{faction.steps[faction.level].stepName}}
               </button>
+
+              <span style="margin-left: 5px" *ngIf="player.pvpStreak && faction.hash == '2000925172'">
+                <span class="accent-text" *ngIf="player.pvpStreak.win">Streak: {{player.pvpStreak.count}} W</span>
+                <span class="warn-text" *ngIf="!player.pvpStreak.win">Streak: {{player.pvpStreak.count}} L</span>
+              </span>
             </ng-container>
           </span>
           <span class="caption">{{faction.info}}</span>
           <div class="row dl-row simple-caption">
-            <dl class="col-xs-3 dl-child">
+            <dl class="col-xs-2 dl-child">
               <dt>Daily</dt>
               <dd>{{faction.dailyProgress| number:0}}</dd>
             </dl>
-            <dl class="col-xs-3 dl-child">
+            <dl class="col-xs-2 dl-child">
               <dt>Weekly</dt>
               <dd>{{faction.weeklyProgress| number:0}}</dd>
             </dl>
-            <dl class="col-xs-3 dl-child">
+            <dl class="col-xs-2 dl-child">
               <dt>To Next Level</dt>
               <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
               number:0}}</dd>
             </dl>
-            <dl class="col-xs-3 dl-child">
+            <dl class="col-xs-2 dl-child">
               <dt>Total Earned</dt>
               <dd>
                 {{faction.currentProgress|number:0}} / {{faction.totalProgress|number:0}}
               </dd>
             </dl>
+            <dl class="col-xs-2 dl-child" *ngIf="faction.currentResetCount != null">
+              <dt>Season Resets</dt>
+              <dd>
+                {{faction.currentResetCount}}
+              </dd>
+            </dl>
+            <dl class="col-xs-2 dl-child"  *ngIf="faction.lifetimeResetCount != null">
+              <dt>Lifetime Resets</dt>
+              <dd>
+                  {{faction.lifetimeResetCount}}
+              </dd>
+            </dl>
           </div>
         </td>
         <td data-label="">
-          {{faction.percentToNextLevel|percent:'1.0-0'}} to {{faction.steps[faction.level].stepName}}
+          {{faction.percentToNextLevel|percent:'1.0-0'}} to {{faction.steps[faction.level+1].stepName}}
           <div>
             <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
             </mat-progress-bar>
@@ -74,8 +91,8 @@
               <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
               <span class="light">Level {{faction.level}}
                 <ng-container *ngIf="debugmode|async">{{faction.hash}}</ng-container>
-                <ng-container *ngIf="faction.steps!=null && faction.level>0 && (faction.steps[faction.level-1]!=null)">
-                  {{faction.steps[faction.level-1].stepName}}
+                <ng-container *ngIf="faction.steps!=null && (faction.steps[faction.level]!=null)">
+                  {{faction.steps[faction.level].stepName}}
                 </ng-container>
               </span>
               <span class="caption">{{faction.info}}</span>

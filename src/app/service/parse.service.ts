@@ -77,13 +77,13 @@ export class ParseService {
             }
         }
     }
-    // factionHash
-    private parseProgression(p: PrivProgression, desc: any): Progression {
-        if (desc != null) {
 
+    // Valor and glory have progressions working together
+    private parseProgression(p: PrivProgression, desc: any, suppProg?: PrivProgression): Progression {
+        if (desc != null) {
             const prog: Progression = new Progression();
             prog.icon = desc.displayProperties.icon;
-            prog.hash = p.progressionHash;
+            prog.hash = p.progressionHash + '';
             let name = desc.displayProperties.name;
             let info = '';
             if (name === 'Exodus Black AI') {
@@ -121,8 +121,6 @@ export class ParseService {
             prog.name = name;
             prog.info = info;
 
-
-
             prog.desc = desc.displayProperties.description;
             prog.currentProgress = p.currentProgress;
             prog.dailyLimit = p.dailyLimit;
@@ -155,9 +153,23 @@ export class ParseService {
                     prog.totalProgress = total;
                 }
             }
-
-            const progNeeded = p.nextLevelAt - p.progressToNextLevel;
+            
             prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
+            if (suppProg != null) {
+                if (prog.dailyProgress == 0) {
+                    prog.dailyProgress = suppProg.dailyProgress;
+                }
+                if (prog.weeklyProgress == 0) {
+                    prog.weeklyProgress = suppProg.weeklyProgress;
+                }
+                prog.currentResetCount = suppProg.currentResetCount;
+                if (suppProg.seasonResets != null) {
+                    prog.lifetimeResetCount = 0;
+                    for (const sr of suppProg.seasonResets) {
+                        prog.lifetimeResetCount += sr.resets;
+                    }
+                }
+            }
             return prog;
         } else {
             return null;
@@ -210,7 +222,7 @@ export class ParseService {
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         milestonesByKey['3603098564'].resets;
                         const ms2: MileStoneName = {
-                            key: skipDesc.hash,
+                            key: skipDesc.hash + '',
                             resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
                             rewards: 'Gear',
                             pl: Const.NO_BOOST,
@@ -219,7 +231,7 @@ export class ParseService {
                             hasPartial: false
                         };
                         milestoneList.push(ms2);
-                        milestonesByKey[skipDesc.hash] = ms2;
+                        milestonesByKey[ms2.key] = ms2;
                     } else if (skipDesc != null) {
                         // console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
                         return;
@@ -334,7 +346,15 @@ export class ParseService {
                     c.wellRested = prog.nextLevelAt * 3 > prog.weeklyProgress;
                 } else if (key === '2626549951' || key === '2000925172' || key === '2772425241') {
                     const p: PrivProgression = _prog.progressions[key];
-                    const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
+                    let suppProg: PrivProgression = null;
+                    if (key === '2626549951') { // VALOR
+                        suppProg = _prog.progressions['3882308435'];
+                    } else if (key === '2772425241') { // INFAMY is itself
+                        suppProg = p;
+                    } else if (key === '2000925172') { // GLORY
+                        suppProg = _prog.progressions['2679551909'];
+                    }
+                    const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash], suppProg);
                     if (prog != null) {
                         let found = false;
                         for (const a of accountProgressions) {
@@ -1459,12 +1479,12 @@ export class ParseService {
         const charsDict: { [key: string]: Character } = {};
         const accountProgressions: Progression[] = [];
         const milestoneList: MileStoneName[] = [];
-        const milestonesByKey: { [id: string]: MileStoneName } = {};
         let currentActivity: CurrentActivity = null;
         const chars: Character[] = [];
         let hasWellRested = false;
         let weekEnd: string = null;
 
+        const milestonesByKey: { [id: string]: MileStoneName } = {};
         if (publicMilestones != null) {
             for (const p of publicMilestones) {
                 if (
@@ -1493,7 +1513,7 @@ export class ParseService {
                     p.end = null;
                 }
                 const ms: MileStoneName = {
-                    key: p.hash,
+                    key: p.hash + '',
                     resets: p.end,
                     rewards: p.rewards,
                     pl: p.pl,
@@ -1506,13 +1526,13 @@ export class ParseService {
                     ms.resets = null;
                 }
                 milestoneList.push(ms);
-                milestonesByKey[p.hash] = ms;
             }
+
             // add crown of sorrows manually
             if (milestonesByKey['2590427074'] == null) {
                 const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
                 const ms: MileStoneName = {
-                    key: raidDesc.hash,
+                    key: raidDesc.hash + '',
                     resets: weekEnd,
                     rewards: 'Powerful Gear',
                     pl: Const.HIGHEST_BOOST,
@@ -1522,13 +1542,13 @@ export class ParseService {
                     hasPartial: false
                 };
                 milestoneList.push(ms);
-                milestonesByKey[raidDesc.hash] = ms;
+                milestonesByKey[ms.key] = ms;
             }
             // add Last wish if its missing, as it has been from public milestones for a while
             if (milestonesByKey['3181387331'] == null) {
                 const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
                 const ms: MileStoneName = {
-                    key: raidDesc.hash,
+                    key: raidDesc.hash + '',
                     resets: weekEnd,
                     rewards: 'Powerful Gear',
                     pl: Const.LOW_BOOST,
@@ -1537,9 +1557,14 @@ export class ParseService {
                     hasPartial: false
                 };
                 milestoneList.push(ms);
-                milestonesByKey[raidDesc.hash] = ms;
+                milestonesByKey[ms.key] = ms;
+            }
+            for (const milestone of milestoneList) {
+                milestonesByKey[milestone.key] = milestone;
             }
         }
+
+
         if (resp.characters != null) {
             const oChars: any = resp.characters.data;
             Object.keys(oChars).forEach((key) => {
@@ -3264,6 +3289,13 @@ interface PrivProgression {
     stepIndex: number;
     progressToNextLevel: number;
     nextLevelAt: number;
+    currentResetCount?: number;
+    seasonResets?: SeasonResets[];
+}
+
+interface SeasonResets {
+    season: number;
+    resets: number;
 }
 
 

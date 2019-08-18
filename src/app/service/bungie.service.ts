@@ -1,18 +1,18 @@
 
-import { takeUntil, first, filter } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 /**
  * Created by Dave on 12/21/2016.
  */
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subject, ReplaySubject, BehaviorSubject } from 'rxjs';
-import { NotificationService } from './notification.service';
-import { AuthInfo, AuthService } from './auth.service';
-import { ParseService } from './parse.service';
-import { Player, Character, UserInfo, SelectedUser, ActivityMode, SearchResult, BungieMembership, BungieMember, BungieGroupMember, Activity, ClanRow, PublicMilestone, SaleItem, Currency, ClanInfo, PGCR, InventoryItem, Target, Vault, NameDesc, MileStoneName, MilestoneStatus, Const, ItemType } from './model';
-import { environment } from '../../environments/environment';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
-import { BucketService, Bucket } from './bucket.service';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, first, takeUntil } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+import { AuthInfo, AuthService } from './auth.service';
+import { Bucket, BucketService } from './bucket.service';
+import { Activity, ActivityMode, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { NotificationService } from './notification.service';
+import { ParseService } from './parse.service';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
 
@@ -136,9 +136,18 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    public async getPvpStreakMatches(char: Character): Promise<Activity[]> {
+        try {
+            return await this.getActivityHistory(char.membershipType, char.membershipId, char.characterId,
+                69, 50);
+        } catch (err) {
+            console.log('Error getting aggregate history for char');
+            return [];
+        }
+    }
+
     public async getAggHistory(char: Character): Promise<void> {
         try {
-            const opt = await this.buildReqOptions();
             const resp = await this.makeReq(
                 'Destiny2/' + char.membershipType + '/Account/' +
                 char.membershipId + '/Character/' + char.characterId +
@@ -149,6 +158,47 @@ export class BungieService implements OnDestroy {
             console.log('Error getting aggregate history for char');
             return;
         }
+    }
+
+    private async updatePvpStreak(p: Player): Promise<PvpStreak> {
+        const promises: Promise<Activity[]>[] = [];
+        p.characters.forEach(c => {
+            const p = this.getPvpStreakMatches(c);
+            promises.push(p);
+        });
+        const charCompAct = await Promise.all(promises);
+        let allAct: Activity[] = [];
+        for (const ca of charCompAct) {
+            allAct = allAct.concat(ca);
+        }
+        if (allAct.length == 0) {
+            return {
+                count: 0,
+                win: true
+            };
+        }
+        allAct.sort(function (a, b) {
+            if (a.period < b.period) {
+                return 1;
+            }
+            if (a.period > b.period) {
+                return -1;
+            }
+            return 0;
+        });
+        const win = allAct[0].success;
+        let count = 0;
+        for (const a of allAct) {
+            if (a.success == win) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        return {
+            count,
+            win
+        };
     }
 
     public updateAggHistory(chars: Character[]): Promise<void[]> {
@@ -165,6 +215,12 @@ export class BungieService implements OnDestroy {
         await this.updateAggHistory(p.characters);
         player.next(p);
     }
+    public async observeUpdatePvpStreak(player: BehaviorSubject<Player>) {
+        const p = player.getValue();
+        p.pvpStreak = await this.updatePvpStreak(p);
+        player.next(p);
+    }
+
 
     public async loadClansForUser(userInfo: UserInfo) {
         if (userInfo.bungieInfo == null) {
@@ -231,7 +287,7 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
-        const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId, 
+        const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
             ['ProfileCurrencies', 'CharacterInventories', 'ItemObjectives', 'ItemSockets'], true);
         if (tempPlayer == null) {
             console.log('No player to apply currencies to');
@@ -358,7 +414,7 @@ export class BungieService implements OnDestroy {
                 this.notificationService.fail(j.Message);
                 return;
             }
-        }        
+        }
         console.dir(err);
         if (err.status === 0) {
             this.notificationService.fail('Connection refused? Is your internet connected? ' +

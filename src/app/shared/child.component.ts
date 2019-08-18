@@ -18,6 +18,7 @@ export class ChildComponent implements OnDestroy {
     public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public hiddenMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
+    public hiddenClanMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
     storageService: StorageService;
 
     constructor(storageService: StorageService,
@@ -45,6 +46,9 @@ export class ChildComponent implements OnDestroy {
                     }
                     if (x.hiddenmilestones != null) {
                         this.hiddenMilestones.next(x.hiddenmilestones);
+                    }
+                    if (x.hiddenClanMilestones != null) {
+                        this.hiddenClanMilestones.next(x.hiddenClanMilestones);
                     }
                 });
     }

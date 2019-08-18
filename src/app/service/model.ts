@@ -469,7 +469,11 @@ export class Player {
     readonly seasons: RecordSeason[];
     readonly hasHiddenClosest: boolean;
     readonly accountProgressions: Progression[];
+    readonly glory: Progression;
+    readonly valor: Progression;
+    readonly infamy: Progression;
     maxLL = 0;
+    pvpStreak: PvpStreak;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
@@ -517,6 +521,22 @@ export class Player {
         this.seasons = seasons;
         this.hasHiddenClosest = hasHiddenClosest;
         this.accountProgressions = accountProgressions;
+        if (accountProgressions!=null){
+            for (const ap of accountProgressions){
+
+                //valor
+                if (ap.hash == '2626549951') {
+                    this.valor = ap;
+                }
+                else if (ap.hash == '2772425241') {
+                    this.infamy = ap;
+                }
+                else if (ap.hash == '2000925172') {
+                    this.glory = ap;
+                }
+            }
+        }
+
     }
 
     public getWeeklyXp(): number {
@@ -1020,7 +1040,7 @@ export class Progression {
     name: string;
     info: string;
     desc: string;
-    hash: number;
+    hash: string;
     nextLevelAt: number;
     progressToNextLevel: number;
     progressionHash: number;
@@ -1034,6 +1054,13 @@ export class Progression {
     percentToNextLevel: number;
     steps: ProgressStep[];
     totalProgress: number;
+    currentResetCount: number;
+    lifetimeResetCount: number;
+}
+
+export interface PvpStreak {
+    count: number;
+    win: boolean;
 }
 
 export class Const {
