@@ -2965,6 +2965,24 @@ export class ParseService {
         return r;
     }
 
+    public parseUserProfile(i: any, iconPath: string): UserInfo {
+        let platformName = '';
+        if (i.membershipType === 1) {
+            platformName = 'XBL';
+        } else if (i.membershipType === 2) {
+            platformName = 'PSN';
+        } else if (i.membershipType === 4) {
+            platformName = 'BNET';
+        }
+        return {
+            'membershipType': i.membershipType,
+            'membershipId': i.membershipId,
+            'displayName': i.displayName,
+            'icon': iconPath,
+            'platformName': platformName
+        };
+    }
+
     public parseUserInfo(i: any): UserInfo {
         let platformName = '';
         if (i.membershipType === 1) {
@@ -3155,20 +3173,22 @@ export class ParseService {
         return 'Unknown ' + mode;
     }
 
-    public parseBungieMembership(resp: any) {
-        if (resp.bungieNetUser == null) {
+
+    public parseLinkedProfiles(resp: any) {
+        if (resp.bnetMembership == null) {
             return null;
         }
         const returnMe: BungieMembership = new BungieMembership();
-        returnMe.bungieId = resp.bungieNetUser.membershipId;
+        returnMe.bungieId = resp.bnetMembership.membershipId;
         const aUser: UserInfo[] = [];
-        resp.destinyMemberships.forEach(u => {
-            aUser.push(this.parseUserInfo(u));
-        });
+        for (const u of resp.profiles) {
+            aUser.push(this.parseUserProfile(u, resp.bnetMembership.iconPath));
+        }
         returnMe.destinyMemberships = aUser;
         return returnMe;
 
     }
+
 
     public parseBungieMember(r: PrivBungieMember): BungieMember {
         if (r.isDeleted === true) { return; }
