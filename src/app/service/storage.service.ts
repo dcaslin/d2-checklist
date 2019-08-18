@@ -11,6 +11,7 @@ export interface Action {
 
 
 const APP_PREFIX = 'D2STATE-';
+const CLAN_MS_KEY = 'hiddenClanMilestones';
 
 @Injectable()
 export class StorageService {
@@ -21,7 +22,11 @@ export class StorageService {
   constructor(
     private bungieService: BungieService,
   ) {
-    this.settingSub = new BehaviorSubject(StorageService.load());
+    const state = StorageService.load();
+    if (!state.hiddenClanMilestones) {
+      state.hiddenClanMilestones = this.getDefaultClanMs();
+    }
+    this.settingSub = new BehaviorSubject(state);
     this.settingFeed = this.settingSub.asObservable() as Observable<Notification>;
   }
 
@@ -40,6 +45,32 @@ export class StorageService {
 
   public showAllMilestones(): void {
     this.setItem('hiddenmilestones', []);
+  }
+
+  public hideClanMilestone(ms: string): void {
+    const clone = this.getItem(CLAN_MS_KEY, []);
+    clone.push(ms);
+    this.setItem(CLAN_MS_KEY, clone);
+  }
+  public showDefaultClanMilestones(): void {
+    this.setItem(CLAN_MS_KEY, this.getDefaultClanMs());
+  }
+
+  public getDefaultClanMs(): string[] {
+    return ['3312018120',
+    '941217864',
+    '3172444947',
+    '536115997',
+    '1300394968',
+    '3082135827',
+    '2188900244',
+    '2683538554',
+    '2986584050',
+    '3660836525'];
+  }
+
+  public showAllClanMilestones(): void {
+    this.setItem(CLAN_MS_KEY, []);
   }
 
   getFavKey(userInfo: UserInfo) {
@@ -68,7 +99,7 @@ export class StorageService {
     return val;
   }
 
-  static load() {
+  static load(): any {
     return Object.keys(localStorage)
       .reduce((state: any, storageKey) => {
         if (storageKey.includes(APP_PREFIX)) {

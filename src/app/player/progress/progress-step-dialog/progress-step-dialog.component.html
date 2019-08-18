@@ -9,10 +9,10 @@
         </thead>
         <tbody>
             <tr *ngFor="let step of data.steps; index as i">
-                <td class="desc-cell" [attr.id]="'stepRow'+i" [class.accent-bg-text]="(data.level-1)==i">
+                <td class="desc-cell" [attr.id]="'stepRow'+i" [class.accent-bg-text]="(data.level)==i">
                     {{step.stepName}}
                 </td>
-                <td [class.accent-bg-text]="(data.level-1)==i">
+                <td [class.accent-bg-text]="(data.level)==i">
                     <ng-container *ngIf="i==0">0</ng-container>
                     <ng-container *ngIf="i>0">
                         {{data.steps[i-1].cumulativeTotal| number:0}}

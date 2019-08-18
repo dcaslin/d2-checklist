@@ -156,7 +156,8 @@
     }
   }
 
-  @media screen and (max-width: 1000px) {
+
+  @media screen and (max-width: map-get($grid-breakpoints, lg)) {
     .mat-tab-label {
       min-width: 120px;
     }
@@ -166,7 +167,7 @@
     }
   }
 
-  @media screen and (max-width: 800px) {
+  @media screen and (max-width: map-get($grid-breakpoints, md)) {
     .mat-tab-label {
       min-width: 100px;
     }
@@ -190,7 +191,8 @@
     display: none;
   }
 
-  @media screen and (max-width: 600px) {
+
+  @media screen and (max-width: map-get($grid-breakpoints, sm)) {
     .responsive-table-inline-mobile-only {
       display: inline;
     }
@@ -446,7 +448,8 @@
     margin-bottom: 10px;
   }
 
-  @media screen and (max-width: 600px) {
+
+  @media (max-width: map-get($grid-breakpoints, sm)) {
     table.checklist-table {
       width: 100%;
     }
