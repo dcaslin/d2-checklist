@@ -2879,6 +2879,9 @@ export class ParseService {
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
             r.team = ParseService.getBasicDisplayValue(e.values.team);
+            if (r.team == '18'){
+                r.team = 'Alpha';
+            }
             r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
             r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
             r.timePlayedSeconds = ParseService.getBasicValue(e.values.timePlayedSeconds);
