@@ -10,6 +10,19 @@ a:link {
   text-decoration: underline;
 }
 
+table.weapon-table {
+  margin-bottom: 15px;
+  width: 100%;
+  & th {
+    
+    padding-right: 0.325em;
+  }
+  & td {
+
+    padding-right: 0.325em;
+  }
+}
+
 .kd{
   float: right;
   margin-left: 10px;

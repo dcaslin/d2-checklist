@@ -51,7 +51,6 @@
               <div *ngIf="entry.user.icon!=null" class="icon" mat-card-avatar
                 [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
               <mat-card-title class="full-width">
-
                 <b>
                   <a *ngIf="entry.user.membershipType!=4"
                     [routerLink]="['/'+entry.user.membershipType, entry.user.displayName]"
@@ -67,16 +66,14 @@
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>
                 </b>
-
                 <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD
                   <br>
-                </span> {{entry.team}}
-
+                </span>
               </mat-card-title>
               <mat-card-subtitle class="full-width">
+                <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
                 <div>
-                  <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}}</span>
-                  <span class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</span>
+                  <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}}LL</span>
                   <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}
                     ({{entry.fireteamSize}} member)</span>
                 </div>
@@ -89,49 +86,54 @@
               </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content class="full-width">
-              <div class="row" style="padding: 15px">
-                <table class="col-md-6" style="margin-bottom: 15px">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <!-- <th>Type</th> -->
-                      <th>Kills</th>
-                      <!-- <th>Prec %</th> -->
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let w of entry.weapons">
-                      <td>{{w.name}}</td>
-                      <!-- <td>{{w.type}}</td> -->
-                      <td>{{w.kills}}</td>
-                      <!-- <td>{{w.precPct|percent:'1.0-0'}}</td> -->
-                    </tr>
-                  </tbody>
-                </table>
-                <table class="col-md-6">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let w of entry.extra">
-                      <td>
-                          {{w.name}}
-                        <!-- <span *ngIf="w.desc!=null" [matTooltip]="w.desc.statDescription">
-                          {{w.desc.statName}} - {{w.name}}
-                        </span>
-                        <ng-container *ngIf="w.desc==null">
+              <table class="weapon-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Kills</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let w of entry.weapons">
+                    <td>{{w.name}}
+                      <span class="simple-caption-no-margin">{{w.type}}</span></td>
+                    <td>{{w.kills}} <span class="simple-caption">{{w.precPct|percent:'1.0-0'}}</span></td>
+                  </tr>
+                </tbody>
+              </table>
+              <mat-accordion>
+                <mat-expansion-panel>
+                  <mat-expansion-panel-header>
+                      <i class="fas fa-info-square"></i>&nbsp;Medals etc.
+                  </mat-expansion-panel-header>
+                  <table class="weapon-table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let w of entry.extra">
+                        <td>
+                          <span *ngIf="w.desc!=null">
+                            {{w.desc.statName}}
+                            <div class="simple-caption" style="max-width: 200px">
+                              {{w.desc.statDescription}}
+                            </div>
+                          </span>
+                          <ng-container *ngIf="w.desc==null">
                             {{w.name}}
-                          </ng-container> -->
-                      </td>
-                      <td>{{w.value|number}}</td>
+                          </ng-container>
+                        </td>
+                        <td>{{w.value|number}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </mat-expansion-panel>
+              </mat-accordion>
 
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+
             </mat-card-content>
           </mat-card>
         </ng-container>
