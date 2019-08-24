@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { TriumphRecordNode } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -19,11 +18,8 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
   public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
 
   constructor(storageService: StorageService,
-    public state: PlayerStateService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
     this.triumphFilterText = localStorage.getItem('triumph-filter');
   }
 

@@ -1,0 +1,46 @@
+<mat-card class="clanMsRow clan-card">
+    <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
+    <div *ngIf="state.modelPlayer|async as modelPlayer ; else loadingModel">
+        <span style="margin-right: 0.5em" *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
+            {{clanMs.name}}
+            <i *ngIf="clanMs.earned==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+            <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
+        </span>
+    </div>
+</mat-card>
+
+<ng-container *ngIf="state.info|async as info">
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Clan Progress
+                <ng-container *ngIf="info.primaryProgression!=null"> | Level
+                    {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
+                    XP progress this week:<b>&ensp;{{(info.primaryProgression.weeklyProgress)|number}}</b>
+                </ng-container>
+            </mat-panel-title>
+            <mat-panel-description class="d-none d-md-block">
+                Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+        <br>
+        <mat-card class="clan-card" *ngFor="let faction of info.progressions">
+            <mat-card-header>
+                <mat-card-title>
+                    <ng-container *ngIf="debugmode|async"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
+                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to next level
+                </mat-card-title>
+                <mat-card-subtitle>{{faction.desc}}
+                </mat-card-subtitle>
+            </mat-card-header>
+            <div>
+                <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
+                </mat-progress-bar>
+            </div>
+        </mat-card>
+    </mat-expansion-panel>
+</ng-container>
+
+<ng-template #loadingModel>
+    <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+</ng-template>

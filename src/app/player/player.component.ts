@@ -1,6 +1,6 @@
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MatTabChangeEvent, MatTabGroup, MAT_DIALOG_DATA } from '@angular/material';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
@@ -32,9 +32,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     storageService: StorageService,
     private route: ActivatedRoute, private router: Router,
     public dialog: MatDialog,
-    public state: PlayerStateService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
     this.platforms = Const.PLATFORMS_ARRAY;
     this.selectedPlatform = this.platforms[0];
   }
@@ -100,7 +99,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
       return;
     }
-    //this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
+    // this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
     this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
   }
 
@@ -119,13 +118,10 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       const newPlatform: string = params['platform'];
       const newGt: string = params['gt'];
       const tab: string = params['tab'];
-      // this.selectedTreeNodeHash = params['id'];
-
       // nothing changed
       if (this.currentGt === newGt && this.currentPlatform === newPlatform) {
         return;
       }
-
       let oNewPlatform: Platform = null;
       let redirected = false;
       this.platforms.forEach((p: Platform) => {

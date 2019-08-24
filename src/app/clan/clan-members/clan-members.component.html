@@ -1,0 +1,218 @@
+<ng-container *ngIf="state.modelPlayer|async as modelPlayer; else loadingModel">
+    <div class="filter-row">
+        <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="state.selectedPlatform" placeholder="Platform"
+                (selectionChange)="state.sortData()">
+                <mat-select-trigger>
+                    <i [ngClass]="state.selectedPlatform.iconClass"></i>&ensp;{{state.selectedPlatform.name }}
+                </mat-select-trigger>
+                <mat-option *ngFor="let p of state.platforms" [value]="p">
+                    <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <span class="filter-count">{{(state.sortedMembers|async).length}} / {{state.members.length}}</span>
+        <button class="d-none d-md-inline" mat-raised-button [disabled]="!(state.allLoaded|async)"
+            (click)="state.downloadCsvReport()">
+            <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
+            <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
+        <span class="simple-caption d-none d-md-inline" *ngIf="state.oldCount>0">{{state.oldCount}} inactive
+            hidden.</span>
+    </div>
+    <div class="mobile-button-row">
+        <button mat-button [disabled]="!(state.allLoaded|async)" (click)="state.downloadCsvReport()">
+            <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
+            <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
+        <span class="simple-caption" *ngIf="state.oldCount>0">{{state.oldCount}} inactive hidden.</span>
+
+    </div>
+
+    <table class="tidy-auto-table clan-table">
+        <thead>
+            <tr>
+                <ng-container *ngTemplateOutlet="sortHeader"></ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let member of state.sortedMembers|async">
+                <td class="lead">
+                    <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                        {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                    </a>
+                    <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                        (click)="state.navigateBnetMember(member)">
+                        {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                    </a>
+                    <a style="margin-left:0.25em"
+                        [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
+                        (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
+                        href="javascript:void(0)">
+                        <i style="font-weight: normal !important" class="far fa-heart"></i>
+                    </a>
+                    <a style="margin-left:0.25em" href="javascript:void(0)"
+                        (click)="state.loadSpecificPlayer(member, true)">
+                        &ensp;<i class="fas fa-sync"></i>
+                    </a>
+                    <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
+                        {{member.player.title}}
+                    </span>
+                </td>
+                <td>
+                    <ng-container *ngIf="member.player!=null">
+                        <ng-container *ngIf="!member.player.superprivate">
+                            <span
+                                *ngIf="member.isOnline && member.player && member.player.currentActivity; else lastPlayed "
+                                matTooltip="Playing right now!">
+                                <i class="fal fa-gamepad fa-2x accent-text"></i>
+                                <div *ngIf="member.player && member.player.currentActivity">
+                                    {{member.player.currentActivity.type}}</div>
+                            </span>
+                            <ng-template #lastPlayed>
+                                <ng-container *ngIf="member.player">
+                                    {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                                </ng-container>
+                                <ng-container *ngIf="!member.player">
+                                    {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}}
+                                    ago
+                                </ng-container>
+                            </ng-template>
+                        </ng-container>
+                    </ng-container>
+
+                    <ng-container *ngIf="member.player==null">
+                        {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
+                    </ng-container>
+
+                </td>
+                <ng-container *ngIf="member.player!=null; else noPlayer">
+                    <td>
+                        <ng-container *ngIf="!member.player.superprivate">
+                            {{member.player.triumphScore|number : '1.0-0'}}
+                        </ng-container>
+                    </td>
+                    <td data-label="Glory">
+                        <ng-container *ngIf="!member.player.superprivate && member.player.glory">
+                            {{member.player.glory.currentProgress|number}}
+                            <div class="simple-caption">
+                                {{member.player.glory.steps[member.player.glory.level].stepName}}
+                            </div>
+                        </ng-container>
+                    </td>
+                    <td data-label="Infamy">
+                        <ng-container *ngIf="!member.player.superprivate && member.player.infamy">
+                            {{member.player.infamy.currentProgress|number}}
+                            <div class="simple-caption" *ngIf="member.player.infamy.currentResetCount">
+                                {{member.player.infamy.currentResetCount}} resets</div>
+                        </ng-container>
+                    </td>
+                    <td data-label="Valor">
+                        <ng-container *ngIf="!member.player.superprivate && member.player.valor">
+                            {{member.player.valor.currentProgress|number}}
+                            <div class="simple-caption" *ngIf="member.player.valor.currentResetCount">
+                                {{member.player.valor.currentResetCount}} resets</div>
+                        </ng-container>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="!member.player.superprivate">
+                            {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
+                        </ng-container>
+                    </td>
+
+                    <td data-label="Max Current Light Level">
+                        <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}
+                        </ng-container>
+                    </td>
+                </ng-container>
+                <ng-template #noPlayer>
+                    <td colspan="6">
+                        <i *ngIf="!member.errorMsg" class="far fa-spinner fa-pulse fa-fw"></i>
+                        <span class="simple-caption" *ngIf="member.errorMsg">{{member.errorMsg}}</span>
+                    </td>
+                </ng-template>
+               
+                
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <ng-container *ngTemplateOutlet="sortHeader"></ng-container>
+
+            </tr>
+        </tfoot>
+    </table>
+
+</ng-container>
+
+<ng-template #loadingModel>
+    <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+</ng-template>
+<br>
+
+<ng-template #sortHeader>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('member')">Member
+            <ng-container *ngIf="state.sort && state.sort.name=='member'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('date')">Last Played
+            <ng-container *ngIf="state.sort && state.sort.name=='date'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('triumph')">Triumph Score
+            <ng-container *ngIf="state.sort && state.sort.name=='triumph'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('glory')">Glory
+            <ng-container *ngIf="state.sort && state.sort.name=='glory'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('infamy')">Infamy
+            <ng-container *ngIf="state.sort && state.sort.name=='infamy'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('valor')">Valor
+            <ng-container *ngIf="state.sort && state.sort.name=='valor'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('xp')">Weekly XP
+            <ng-container *ngIf="state.sort && state.sort.name=='xp'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th matTooltip="Max LL of current chars (actual max could be higher)">
+        <a href="javascript:void(0)" (click)="state.toggleSort('ll')">Max LL
+            <ng-container *ngIf="state.sort && state.sort.name=='ll'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+
+</ng-template>

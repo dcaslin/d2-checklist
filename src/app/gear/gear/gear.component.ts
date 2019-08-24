@@ -1,20 +1,20 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ChildComponent } from '../../shared/child.component';
-import { StorageService } from '../../service/storage.service';
-import { fromEvent as observableFromEvent, Subject, BehaviorSubject } from 'rxjs';
-
-import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Player, InventoryItem, SelectedUser, ItemType, DamageType, ClassAllowed, Target, Character, InventoryPlug, DestinyAmmunitionType, InventoryStat } from '@app/service/model';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA } from '@angular/material';
 import { BungieService } from '@app/service/bungie.service';
-import { MarkService, Marks } from '@app/service/mark.service';
 import { GearService } from '@app/service/gear.service';
-import { Choice, GearToggleComponent } from './gear-toggle.component';
-import { WishlistService } from '@app/service/wishlist.service';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogConfig, MatDialog, MatButtonToggleGroup, MatPaginator } from '@angular/material';
-import { ClipboardService } from 'ngx-clipboard';
+import { MarkService } from '@app/service/mark.service';
+import { ClassAllowed, DamageType, DestinyAmmunitionType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { TargetPerkService } from '@app/service/target-perk.service';
+import { WishlistService } from '@app/service/wishlist.service';
+import { ClipboardService } from 'ngx-clipboard';
+import { BehaviorSubject, fromEvent as observableFromEvent, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
+import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
+import { Choice, GearToggleComponent } from './gear-toggle.component';
+
 
 @Component({
   selector: 'd2c-gear',
@@ -220,7 +220,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public dialog: MatDialog,
     private targetPerkService: TargetPerkService,
     private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    super(storageService);
     this.loading.next(true);
     if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == 'false') {
       this.highlightAllPerks = false;

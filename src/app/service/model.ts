@@ -338,6 +338,7 @@ export class SelectedUser {
 export class BungieGroupMember {
     memberType: number;
     isOnline: boolean;
+    lastOnlineStatusChange: number;
     groupId: string;
     destinyUserInfo: UserInfo;
     bungieNetUserInfo: BungieNetUserInfo;

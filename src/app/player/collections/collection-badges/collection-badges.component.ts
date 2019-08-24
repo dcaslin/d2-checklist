@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
@@ -13,11 +12,8 @@ import { PlayerStateService } from '../../player-state.service';
 export class CollectionBadgesComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
-    public state: PlayerStateService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
   }
 
   ngOnInit() {

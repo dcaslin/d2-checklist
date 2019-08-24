@@ -1,9 +1,9 @@
 
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { StorageService } from '../service/storage.service';
-import { Subject, Observable, BehaviorSubject } from 'rxjs';
+import { Component, OnDestroy } from '@angular/core';
 import { UserInfo } from '@app/service/model';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { StorageService } from '../service/storage.service';
 
 
 @Component({
@@ -21,8 +21,7 @@ export class ChildComponent implements OnDestroy {
     public hiddenClanMilestones: BehaviorSubject<string[]> = new BehaviorSubject([]);
     storageService: StorageService;
 
-    constructor(storageService: StorageService,
-        ref: ChangeDetectorRef) {
+    constructor(storageService: StorageService) {
         this.storageService = storageService;
         this.disableAds.next(this.storageService.getItem('disableads', false));
         this.debugmode.next(this.storageService.getItem('debugmode', false));

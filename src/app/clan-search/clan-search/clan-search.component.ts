@@ -1,11 +1,11 @@
 
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { BungieService } from '../../service/bungie.service';
 import { ClanInfo } from '../../service/model';
-import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { BehaviorSubject } from 'rxjs';
+import { ChildComponent } from '../../shared/child.component';
+
 
 @Component({
   selector: 'd2c-clan-search',
@@ -18,9 +18,8 @@ export class ClanSearchComponent extends ChildComponent implements OnInit, OnDes
   public clan: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
 
   constructor(storageService: StorageService,
-    private bungieService: BungieService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    private bungieService: BungieService) {
+    super(storageService);
   }
   search() {
     this.load();

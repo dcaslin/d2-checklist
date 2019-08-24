@@ -1,14 +1,13 @@
 
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatTabGroup } from '@angular/material';
+import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { Today, WeekService } from '@app/service/week.service';
 import { environment as env } from '@env/environment';
-import { Const, Platform} from '../../service/model';
+import { takeUntil } from 'rxjs/operators';
+import { Const, Platform } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
-import { WeekService, Today } from '@app/service/week.service';
 
 @Component({
   selector: 'd2c-home',
@@ -30,10 +29,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   constructor(
     private destinyCacheService: DestinyCacheService,
     storageService: StorageService,
-    private ref: ChangeDetectorRef,
     private weekService: WeekService,
-    private router: Router) {
-    super(storageService, ref);
+    private router: Router,
+    private ref: ChangeDetectorRef) {
+    super(storageService);
     this.selectedPlatform = this.platforms[0];
     if (this.destinyCacheService.cache != null) {
       this.manifestVersion = this.destinyCacheService.cache.version;

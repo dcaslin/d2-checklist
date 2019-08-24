@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { Player, SelectedUser, TriumphRecordNode, SearchResult } from '@app/service/model';
 import { BungieService } from '@app/service/bungie.service';
+import { Player, SearchResult, SelectedUser, TriumphRecordNode } from '@app/service/model';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PlayerStateService {
-  private _sort = 'rewardsDesc';
 
   public get sort() {
     return this._sort;
@@ -17,61 +16,6 @@ export class PlayerStateService {
   public set sort(val: string) {
     this._sort = val;
     this._player.next(this._player.getValue());
-  }
-
-  private searchResult: SearchResult = null;
-
-  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
-
-  private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
-  public player: Observable<Player>;
-
-  private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public loading: Observable<boolean> = this._loading.asObservable();
-
-  private _playerNotFound: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public playerNotFound: Observable<boolean> = this._playerNotFound.asObservable();
-
-  public _signedOnUserIsCurrent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public signedOnUserIsCurrent: Observable<boolean> = this._loading.asObservable();
-
-  public _isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public isSignedOn: Observable<boolean> = this._loading.asObservable();
-
-  public currPlayer(): Player {
-    return this._player.getValue();
-  }
-
-  public requestRefresh() {
-    const p = this.currPlayer();
-    this.performSearch(p.profile.userInfo.membershipType, p.profile.userInfo.displayName, true);
-  }
-
-  private _showZeroPtTriumphs = false;
-  private _showInvisTriumphs = false;
-  private _hideCompleteTriumphs = false;
-  private _hideCompleteCollectibles = false;
-
-  aTrackedTriumphIds = [];
-  public dTrackedTriumphIds = {};
-
-
-
-  public getPlayerRoute(params: any[]): string[] {
-    const p = this._player.getValue();
-    const baseRoute = ['/',''+p.profile.userInfo.membershipType, this.searchResult.displayName];
-    return baseRoute.concat(params);
-  }
-
-  public getPlayerRouteString(params: any[]): string {
-    const p = this._player.getValue();
-    const baseRoute = ['' + p.profile.userInfo.membershipType, encodeURIComponent(this.searchResult.displayName)];
-    const entries = baseRoute.concat(params);
-    let s = entries[0];
-    for (let i = 1; i < entries.length; i++) {
-      s += '/' + entries[i];
-    }
-    return s;
   }
 
 
@@ -104,7 +48,6 @@ export class PlayerStateService {
     localStorage.setItem('hide-completed-collectibles', '' + this._hideCompleteCollectibles);
   }
 
-
   public get hideCompleteTriumphs() {
     return this._hideCompleteTriumphs;
   }
@@ -112,6 +55,60 @@ export class PlayerStateService {
   public set hideCompleteTriumphs(b: boolean) {
     this._hideCompleteTriumphs = b;
     localStorage.setItem('hide-completed-triumphs', '' + this._hideCompleteTriumphs);
+  }
+  private _sort = 'rewardsDesc';
+
+  private searchResult: SearchResult = null;
+
+  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+
+  private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
+  public player: Observable<Player>;
+
+  private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public loading: Observable<boolean> = this._loading.asObservable();
+
+  private _playerNotFound: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public playerNotFound: Observable<boolean> = this._playerNotFound.asObservable();
+
+  public _signedOnUserIsCurrent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public signedOnUserIsCurrent: Observable<boolean> = this._loading.asObservable();
+
+  public _isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isSignedOn: Observable<boolean> = this._loading.asObservable();
+
+  private _showZeroPtTriumphs = false;
+  private _showInvisTriumphs = false;
+  private _hideCompleteTriumphs = false;
+  private _hideCompleteCollectibles = false;
+
+  aTrackedTriumphIds = [];
+  public dTrackedTriumphIds = {};
+
+  public currPlayer(): Player {
+    return this._player.getValue();
+  }
+
+  public requestRefresh() {
+    const p = this.currPlayer();
+    this.performSearch(p.profile.userInfo.membershipType, p.profile.userInfo.displayName, true);
+  }
+
+  public getPlayerRoute(params: any[]): string[] {
+    const p = this._player.getValue();
+    const baseRoute = ['/', '' + p.profile.userInfo.membershipType, this.searchResult.displayName];
+    return baseRoute.concat(params);
+  }
+
+  public getPlayerRouteString(params: any[]): string {
+    const p = this._player.getValue();
+    const baseRoute = ['' + p.profile.userInfo.membershipType, encodeURIComponent(this.searchResult.displayName)];
+    const entries = baseRoute.concat(params);
+    let s = entries[0];
+    for (let i = 1; i < entries.length; i++) {
+      s += '/' + entries[i];
+    }
+    return s;
   }
 
 
@@ -162,7 +159,7 @@ export class PlayerStateService {
         const x = await this.bungieService.getChars(p.membershipType, p.membershipId,
           ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
             'CharacterEquipment', 'CharacterInventories',
-            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles','ItemSockets'
+            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles' , 'ItemSockets'
             // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
             // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
           ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);

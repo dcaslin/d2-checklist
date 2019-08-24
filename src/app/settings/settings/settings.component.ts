@@ -1,11 +1,9 @@
 
-import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { StorageService } from '../../service/storage.service';
-import { Subject } from 'rxjs';
-import { ChildComponent } from '../../shared/child.component';
-import {MatSelectModule} from '@angular/material';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { NotificationService } from '@app/service/notification.service';
+import { takeUntil } from 'rxjs/operators';
+import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
 
 @Component({
   selector: 'd2c-settings',
@@ -35,10 +33,9 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
   ];
 
   constructor(storageService: StorageService,
-    private notificationService: NotificationService,
-    private ref: ChangeDetectorRef
+    private notificationService: NotificationService
     ) {
-    super(storageService, ref);
+    super(storageService);
     this.theme = this.storageService.getItem('theme', 'default-theme');
 
     this.storageService.settingFeed.pipe(

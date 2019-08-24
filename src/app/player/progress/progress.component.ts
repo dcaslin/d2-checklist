@@ -1,10 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { Player, Progression } from '@app/service/model';
-import { BehaviorSubject } from 'rxjs';
-import { PlayerStateService } from '../player-state.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
+import { Progression } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { PlayerStateService } from '../player-state.service';
 import { ProgressStepDialogComponent } from './progress-step-dialog/progress-step-dialog.component';
 
 @Component({
@@ -17,9 +16,8 @@ export class ProgressComponent extends ChildComponent implements OnInit {
   constructor(
     storageService: StorageService,
     public state: PlayerStateService,
-    private ref: ChangeDetectorRef,
     public dialog: MatDialog) {
-      super(storageService, ref);
+      super(storageService);
     }
 
   ngOnInit() {

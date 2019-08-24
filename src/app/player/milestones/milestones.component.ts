@@ -1,10 +1,9 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ChildComponent } from '@app/shared/child.component';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Const, MileStoneName, Player } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
-import { Player, MileStoneName, Const } from '@app/service/model';
-import { BungieService } from '@app/service/bungie.service';
-import { PlayerStateService } from '../player-state.service';
+import { ChildComponent } from '@app/shared/child.component';
 import { takeUntil } from 'rxjs/operators';
+import { PlayerStateService } from '../player-state.service';
 
 @Component({
   selector: 'd2c-milestones',
@@ -18,9 +17,8 @@ export class MilestonesComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
-    public state: PlayerStateService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
   }
 
   ngOnInit() {

@@ -153,8 +153,12 @@ export class ParseService {
                     prog.totalProgress = total;
                 }
             }
-            
-            prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
+
+            if (p.nextLevelAt > 0) {
+                prog.percentToNextLevel = p.progressToNextLevel / p.nextLevelAt;
+            } else {
+                prog.percentToNextLevel = 1;
+            }
             if (suppProg != null) {
                 if (prog.dailyProgress == 0) {
                     prog.dailyProgress = suppProg.dailyProgress;
@@ -1743,19 +1747,32 @@ export class ParseService {
             }
             if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
                 if (resp.profilePresentationNodes.data != null && resp.profilePresentationNodes.data.nodes != null) {
-                    nodes.push(resp.profilePresentationNodes.data.nodes);
-                    records.push(resp.profileRecords.data.records);
-                    collections.push(resp.profileCollectibles.data.collectibles);
+                    if (resp.profilePresentationNodes && resp.profilePresentationNodes.data) {
+                        nodes.push(resp.profilePresentationNodes.data.nodes);
+                    }
+                    if (resp.profileRecords && resp.profileRecords.data) {
+                        records.push(resp.profileRecords.data.records);
+                    }
+                    if (resp.profileCollectibles && resp.profileCollectibles.data) {
+                        collections.push(resp.profileCollectibles.data.collectibles);
+                    }
                 }
             }
             if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
                 for (const char of chars) {
-                    const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
-                    const _records = resp.characterRecords.data[char.characterId].records;
-                    const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
-                    nodes.push(presentationNodes);
-                    records.push(_records);
-                    collections.push(_coll);
+                    if (resp.characterPresentationNodes && resp.characterPresentationNodes.data) {
+                        const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
+                        nodes.push(presentationNodes);
+                    }
+                    if (resp.characterRecords && resp.characterRecords.data) {
+                        const _records = resp.characterRecords.data[char.characterId].records;
+                        records.push(_records);
+                    }
+                    if (resp.characterCollectibles && resp.characterCollectibles.data) {
+                        const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
+                        collections.push(_coll);
+                    }
+
                 }
             }
 
@@ -1854,7 +1871,7 @@ export class ParseService {
                     const seasonRecords: TriumphRecordNode[] = [];
                     for (const hash of seasonDesc.hashes) {
                         if (dictSearchableTriumphs[hash] == null) {
-                            console.log('wtf? ' + hash);
+                            // ignore
                         }
                         seasonRecords.push(dictSearchableTriumphs[hash]);
                     }
@@ -1911,7 +1928,9 @@ export class ParseService {
     private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
-        if (pDesc == null) { return null; }
+        if (pDesc == null) {
+            return null;
+        }
         path.push({
             path: pDesc.displayProperties.name,
             hash: key
@@ -1945,7 +1964,9 @@ export class ParseService {
                 total += oChild.score;
             }
         }
-        if (children == null || children.length == 0) { return null; }
+        if (children == null || children.length == 0) {
+            return null;
+        }
         children.sort(function (a, b) {
             if (a.index < b.index) {
                 return -1;
@@ -2830,6 +2851,7 @@ export class ParseService {
         members.forEach(x => {
             const b: BungieGroupMember = new BungieGroupMember();
             b.groupId = x.groupId;
+            b.lastOnlineStatusChange = x.lastOnlineStatusChange;
             b.isOnline = x.isOnline;
             b.memberType = x.memberType;
             b.destinyUserInfo = this.parseUserInfo(x.destinyUserInfo);
@@ -2837,18 +2859,14 @@ export class ParseService {
             returnMe.push(b);
         });
 
-
-        returnMe.sort(function (a, b) {
-            if (a.isOnline && !b.isOnline) { return -1; }
-            if (!a.isOnline && b.isOnline) { return -1; }
-
-            const bs: string = b.destinyUserInfo.displayName;
-            const as: string = a.destinyUserInfo.displayName;
-            if (bs < as) { return 1; }
-            if (bs > as) { return -1; }
+        returnMe.sort((a, b) => {
+            if (a.lastOnlineStatusChange < b.lastOnlineStatusChange) {
+                return 1;
+            } else if (a.lastOnlineStatusChange > b.lastOnlineStatusChange) {
+                return -1;
+            }
             return 0;
         });
-
         return returnMe;
     }
 
@@ -2879,7 +2897,7 @@ export class ParseService {
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
             r.team = ParseService.getBasicDisplayValue(e.values.team);
-            if (r.team == '18'){
+            if (r.team == '18') {
                 r.team = 'Alpha';
             }
             r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);

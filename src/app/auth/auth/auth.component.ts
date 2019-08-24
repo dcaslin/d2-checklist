@@ -1,12 +1,12 @@
 
-import {takeUntil} from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
-
-import { BungieService} from '../../service/bungie.service';
-import { StorageService } from '../../service/storage.service';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../service/auth.service';
-import {ChildComponent} from '../../shared/child.component';
+import { BungieService } from '../../service/bungie.service';
+import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
+
 
 @Component({
   selector: 'd2c-auth',
@@ -21,7 +21,7 @@ export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy 
     storageService: StorageService, private authService: AuthService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    super(storageService);
   }
 
 

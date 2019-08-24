@@ -37,7 +37,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    super(storageService);
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [5, 10, 20, 50];

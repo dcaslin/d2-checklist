@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { InventoryItem } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
@@ -28,9 +28,8 @@ export class BountiesComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
-    public state: PlayerStateService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
 
   }
 

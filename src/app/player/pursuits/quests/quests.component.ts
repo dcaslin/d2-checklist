@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { InventoryItem } from '@app/service/model';
@@ -29,9 +29,8 @@ export class QuestsComponent  extends ChildComponent implements OnInit {
   constructor(
     storageService: StorageService,
     public state: PlayerStateService,
-    private ref: ChangeDetectorRef,
     public dialog: MatDialog) {
-    super(storageService, ref);
+    super(storageService);
 
   }
 

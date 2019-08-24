@@ -1,0 +1,35 @@
+<ng-container *ngIf="state.seals|async as seals">
+    <mat-accordion>
+        <ng-container *ngFor="let s of seals">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <div *ngIf="s.data.icon!=null" class="seal-icon"
+                            [style.background-image]="'url(//www.bungie.net' + s.data.icon + ')'"></div>
+                        {{s.data.title}}
+                        <ng-container *ngIf="debugmode|async">{{s.data.hash}}</ng-container>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        {{s.complete}} / {{s.total}}
+
+                        <button mat-icon-button (click)="details($event)">
+                                <i class="fal fa-plus-square"></i>
+                            </button>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="seal-body">
+                    <p style="margin-bottom: 20px">{{s.data.desc}}</p>
+                    <table class="checklist-table">
+                        <tbody>
+                            <tr *ngFor="let child of s.children">
+                                <td>
+                                    <d2c-clan-triumph-item [triumph]="child"></d2c-clan-triumph-item>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </mat-expansion-panel>
+        </ng-container>
+    </mat-accordion>
+</ng-container>

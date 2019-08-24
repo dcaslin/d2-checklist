@@ -1,0 +1,26 @@
+<div *ngIf="filteredTriumphs|async as t" class="clan-triumph-search">
+    <div class="left" class="medium-margin">
+        <mat-form-field class="searchField">
+            <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText"
+                placeholder="Wildcard Search triumphs">
+        </mat-form-field>
+    </div>
+    <div *ngIf="t.length==0" class="left" class="medium-margin">
+        <ng-container *ngIf="triumphFilterText==null || triumphFilterText.length==0">
+            Type above to search
+        </ng-container>
+        <ng-container *ngIf="triumphFilterText!=null && triumphFilterText.length>0">
+            No results found, try a different search
+        </ng-container>
+    </div>
+    <div *ngIf="t.length>=100">More than 100 results, refine your search</div>
+    <table *ngIf="t.length>0 && t.length<100" class="checklist-table">
+        <tbody>
+            <tr *ngFor="let triumph of t">
+                <td>
+                    <d2c-clan-triumph-item [triumph]="triumph"></d2c-clan-triumph-item>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

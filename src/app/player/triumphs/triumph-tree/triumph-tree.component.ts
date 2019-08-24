@@ -1,15 +1,15 @@
-import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { takeUntil, debounceTime, first } from 'rxjs/operators';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { TriumphNode, TriumphRecordNode, Player } from '@app/service/model';
-import { Subject, of as observableOf, BehaviorSubject, Observable } from 'rxjs';
-import { MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { PlayerStateService } from '../../player-state.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 import { CollectionTreeComponent, TriumphFlatNode } from '@app/player/collections/collection-tree/collection-tree.component';
+import { TriumphNode } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { Observable, of as observableOf } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { PlayerStateService } from '../../player-state.service';
 
 @Component({
   selector: 'd2c-triumph-tree',
@@ -26,10 +26,8 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
   constructor(storageService: StorageService,
     public state: PlayerStateService,
     public location: Location,
-    private route: ActivatedRoute,
-    private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    private route: ActivatedRoute) {
+    super(storageService);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer, this._getLevel, this._isExpandable, this._getChildren);
     this.triumphTreeControl = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
   }

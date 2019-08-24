@@ -1,0 +1,41 @@
+
+.bottom-note {
+    margin-left: 1.0em;
+    text-align: left;
+    max-width: 500px;
+}
+
+
+.clan-table {
+    max-width: 2000px !important;
+}
+
+.clan-player-ms-cell {
+    min-width: 60px;
+}
+
+span.check {
+    margin-right: 0.15em;
+}
+
+.filter-row {
+    margin-bottom: 5px;
+    & .mat-form-field {
+        margin-bottom: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    & button {
+        margin-bottom: 5px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+}
+
+.filter-count {
+    font-weight: bold;
+    white-space: nowrap;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+}

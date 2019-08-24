@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
@@ -11,9 +11,8 @@ import { PlayerStateService } from '../../player-state.service';
 export class TriumphMotComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
-    public state: PlayerStateService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
   }
 
   ngOnInit() {

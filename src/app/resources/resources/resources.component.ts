@@ -1,14 +1,13 @@
 
-import { takeUntil, switchMap, catchError, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
-import { fromEvent as observableFromEvent, of as observableOf, combineLatest, BehaviorSubject } from 'rxjs';
-
+import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Character, ItemType, Player, SaleItem, SelectedUser } from '@app/service/model';
+import { BehaviorSubject, combineLatest, fromEvent as observableFromEvent, of as observableOf } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
-import { ChildComponent } from '../../shared/child.component';
 import { StorageService } from '../../service/storage.service';
-import { SelectedUser, Player, Character, SaleItem, ItemType } from '@app/service/model';
-import { LowLineResponse } from '@app/service/lowline.service';
+import { ChildComponent } from '../../shared/child.component';
+
 
 @Component({
   selector: 'd2c-resources',
@@ -32,9 +31,8 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   ItemType = ItemType;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    private route: ActivatedRoute, private router: Router) {
+    super(storageService);
 
     this.loading.next(true);
   }

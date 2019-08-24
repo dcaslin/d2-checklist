@@ -1,12 +1,12 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ChildComponent } from '../../shared/child.component';
-import { StorageService } from '../../service/storage.service';
-import { Router, ActivatedRoute } from '@angular/router';
-
-import { takeUntil } from 'rxjs/operators';
-import { UserInfo, Player, FriendListEntry, BungieMember } from '@app/service/model';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
+import { FriendListEntry, Player, UserInfo } from '@app/service/model';
 import { BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
+
 
 @Component({
   selector: 'd2c-friends',
@@ -20,9 +20,9 @@ export class FriendsComponent extends ChildComponent implements OnInit {
   playerCntr: 0;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router,
+    private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    super(storageService);
     this.favoritesList.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
