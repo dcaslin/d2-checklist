@@ -16,9 +16,8 @@ export class ChecklistComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
-    public state: PlayerStateService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    public state: PlayerStateService) {
+    super(storageService);
     this.hideComplete = localStorage.getItem('hide-completed-checklists') === 'true';
 
   }

@@ -242,26 +242,14 @@ export class BungieService implements OnDestroy {
     }
 
     public async getClanInfo(clanId: string): Promise<ClanInfo> {
-        try {
-            const opt = await this.buildReqOptions();
-            const resp = await this.makeReq('GroupV2/' + clanId + '/');
-            return this.parseService.parseClanInfo(resp.detail);
-        } catch (err) {
-            this.handleError(err);
-            throw new Error('Error loading clan info: ' + err);
-        }
+        const resp = await this.makeReq('GroupV2/' + clanId + '/');
+        return this.parseService.parseClanInfo(resp.detail);
     }
 
     // clans never > 100
     public async getClanMembers(clanId: string): Promise<BungieGroupMember[]> {
-        try {
-            const opt = await this.buildReqOptions();
-            const resp = await this.makeReq('GroupV2/' + clanId + '/Members/?currentPage=1&memberType=0');
-            return this.parseService.parseClanMembers(resp.results);
-        } catch (err) {
-            this.handleError(err);
-            return [];
-        }
+        const resp = await this.makeReq('GroupV2/' + clanId + '/Members/?currentPage=1&memberType=0');
+        return this.parseService.parseClanMembers(resp.results);
     }
 
     public async getClans(bungieId: string): Promise<ClanRow[]> {

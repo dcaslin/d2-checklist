@@ -1,13 +1,13 @@
 
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { BungieService } from '../../service/bungie.service';
-import { BungieMember, BungieMemberPlatform, SearchResult, Player, ClanRow } from '../../service/model';
-import { ChildComponent } from '../../shared/child.component';
-import { StorageService } from '../../service/storage.service';
 import { BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { BungieService } from '../../service/bungie.service';
+import { BungieMember, BungieMemberPlatform } from '../../service/model';
+import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
+
 
 @Component({
   selector: 'd2c-bungie-search',
@@ -22,7 +22,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    super(storageService);
   }
 
   public async loadPlayer(a: BungieMemberPlatform) {

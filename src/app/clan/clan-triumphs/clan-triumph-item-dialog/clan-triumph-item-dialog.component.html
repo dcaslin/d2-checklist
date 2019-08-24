@@ -1,0 +1,53 @@
+<mat-dialog-content>
+    <h3>{{triumph.data.name}}</h3>
+    <p>{{triumph.complete}}/{{triumph.total}} members</p>
+    <div class="simple-caption">{{triumph.data.desc}}</div>
+    <div>TODO Graph of objectives</div>
+    <mat-tab-group>
+        <mat-tab label="Incomplete">
+            <div class="tab-body">
+                <ng-container *ngTemplateOutlet="playerTable; context: {triumphs: triumph.notDone}">
+                </ng-container>
+            </div>
+        </mat-tab>
+        <mat-tab label="Complete">
+            <div class="tab-body">
+                <ng-container *ngTemplateOutlet="playerTable; context: {triumphs: triumph.done}">
+                </ng-container>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</mat-dialog-content>
+
+<ng-template #playerTable let-triumphs='triumphs'>
+    <div class="simple-caption" *ngIf="triumphs.length==0">None</div>
+
+    <table class="checklist-table" *ngIf="triumphs.length>0">
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Progress</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let pt of triumphs">
+                <td *ngIf="pt.member as member">
+                    <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                        {{member.destinyUserInfo.displayName}}
+                    </a>
+                    <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                        (click)="state.navigateBnetMember(member)">
+                        {{member.destinyUserInfo.displayName}}
+                    </a>
+                    <span class="simple-caption" *ngIf="member.player.title.trim().length>0">
+                        {{member.player.title}}
+                    </span>
+                </td>
+                <td>
+                    {{pt.triumph.percent|number : '0.0-0'}}%
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>

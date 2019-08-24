@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Badge } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { PlayerStateService } from '../../player-state.service';
-import { takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { Badge } from '@app/service/model';
+import { takeUntil } from 'rxjs/operators';
+import { PlayerStateService } from '../../player-state.service';
 
 @Component({
   selector: 'd2c-collection-badge',
@@ -18,10 +18,8 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
     public state: PlayerStateService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    private route: ActivatedRoute) {
+    super(storageService);
   }
 
   ngOnInit() {

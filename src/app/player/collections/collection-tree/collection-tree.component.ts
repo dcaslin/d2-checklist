@@ -1,14 +1,14 @@
-import { Component, OnInit, Input, ChangeDetectorRef, Output, EventEmitter, ViewChild, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
-import { takeUntil, debounceTime, first } from 'rxjs/operators';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { TriumphNode, TriumphRecordNode, Player } from '@app/service/model';
-import { Subject, of as observableOf, BehaviorSubject, Observable } from 'rxjs';
-import { MatTabGroup, MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { PlayerStateService } from '../../player-state.service';
-import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { TriumphNode } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { Observable, of as observableOf } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
+import { PlayerStateService } from '../../player-state.service';
 
 
 export class TriumphFlatNode {
@@ -31,10 +31,8 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit, A
   constructor(storageService: StorageService,
     public state: PlayerStateService,
     public location: Location,
-    private route: ActivatedRoute,
-    private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    private route: ActivatedRoute) {
+    super(storageService);
     this.collectionTreeControl = new FlatTreeControl<TriumphFlatNode>(this._getLevel, this._isExpandable);
     this.treeFlattener2 = new MatTreeFlattener(this.transformer2, this._getLevel, this._isExpandable, this._getChildren);
   }

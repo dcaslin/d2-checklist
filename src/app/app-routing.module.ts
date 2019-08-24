@@ -1,46 +1,52 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
-import { HomeComponent } from './home';
-import { PlayerComponent } from './player';
-import { AuthComponent } from './auth';
-import { HistoryComponent } from './history';
-import { RecentPlayersComponent } from './recent-players';
-import { PGCRComponent } from './pgcr';
-import { ResourcesComponent } from './resources';
+import { Injectable, NgModule } from '@angular/core';
+import { CanActivate, RouterModule } from '@angular/router';
+import { BungieService } from '@app/service/bungie.service';
+import { Observable, Subject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { AboutComponent } from './about';
+import { AuthComponent } from './auth';
+import { BungieSearchComponent } from './bungie-search';
+import { ClanComponent } from './clan';
+import { ClanSearchComponent } from './clan-search';
+import { ClanInfoComponent } from './clan/clan-info/clan-info.component';
+import { ClanLifetimeComponent } from './clan/clan-lifetime/clan-lifetime.component';
+import { ClanMembersComponent } from './clan/clan-members/clan-members.component';
+import { ClanMilestonesComponent } from './clan/clan-milestones/clan-milestones.component';
+import { ClanSealsComponent } from './clan/clan-triumphs/clan-seals/clan-seals.component';
+import { ClanTriumphsComponent } from './clan/clan-triumphs/clan-triumphs.component';
 import { FriendsComponent } from './friends';
 import { GearComponent } from './gear';
-import { SettingsComponent } from './settings';
-import { BungieSearchComponent } from './bungie-search';
-import { ClanSearchComponent } from './clan-search';
-import { ClanComponent } from './clan';
-import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
-import { DestinyCacheService } from './service/destiny-cache.service';
-import { Subject, Observable } from 'rxjs';
-import { BungieService } from '@app/service/bungie.service';
-import { filter } from 'rxjs/operators';
-import { MilestonesComponent } from './player/milestones/milestones.component';
-import { ChecklistComponent } from './player/checklist/checklist.component';
-import { ProgressComponent } from './player/progress/progress.component';
+import { HistoryComponent } from './history';
+import { HomeComponent } from './home';
+import { PGCRComponent } from './pgcr';
+import { PlayerComponent } from './player';
 import { CharsComponent } from './player/chars/chars.component';
-import { TriumphsComponent } from './player/triumphs/triumphs.component';
-import { TriumphTreeComponent } from './player/triumphs/triumph-tree/triumph-tree.component';
-import { TriumphSeasonsComponent } from './player/triumphs/triumph-seasons/triumph-seasons.component';
-import { TriumphSealsComponent } from './player/triumphs/triumph-seals/triumph-seals.component';
-import { TriumphClosestComponent } from './player/triumphs/triumph-closest/triumph-closest.component';
-import { TriumphSearchComponent } from './player/triumphs/triumph-search/triumph-search.component';
-import { TriumphTrackedComponent } from './player/triumphs/triumph-tracked/triumph-tracked.component';
+import { ChecklistComponent } from './player/checklist/checklist.component';
+import { CollectionBadgeComponent } from './player/collections/collection-badge/collection-badge.component';
 import { CollectionBadgesComponent } from './player/collections/collection-badges/collection-badges.component';
 import { CollectionSearchComponent } from './player/collections/collection-search/collection-search.component';
 import { CollectionTreeComponent } from './player/collections/collection-tree/collection-tree.component';
 import { CollectionsComponent } from './player/collections/collections.component';
-import { CollectionBadgeComponent } from './player/collections/collection-badge/collection-badge.component';
+import { MilestonesComponent } from './player/milestones/milestones.component';
+import { ProgressComponent } from './player/progress/progress.component';
+import { BountiesComponent } from './player/pursuits/bounties/bounties.component';
 import { PursuitsComponent } from './player/pursuits/pursuits.component';
 import { QuestsComponent } from './player/pursuits/quests/quests.component';
-import { BountiesComponent } from './player/pursuits/bounties/bounties.component';
+import { TriumphClosestComponent } from './player/triumphs/triumph-closest/triumph-closest.component';
 import { TriumphMotComponent } from './player/triumphs/triumph-mot/triumph-mot.component';
+import { TriumphSealsComponent } from './player/triumphs/triumph-seals/triumph-seals.component';
+import { TriumphSearchComponent } from './player/triumphs/triumph-search/triumph-search.component';
+import { TriumphSeasonsComponent } from './player/triumphs/triumph-seasons/triumph-seasons.component';
+import { TriumphTrackedComponent } from './player/triumphs/triumph-tracked/triumph-tracked.component';
+import { TriumphTreeComponent } from './player/triumphs/triumph-tree/triumph-tree.component';
+import { TriumphsComponent } from './player/triumphs/triumphs.component';
+import { RecentPlayersComponent } from './recent-players';
+import { ResourcesComponent } from './resources';
+import { DestinyCacheService } from './service/destiny-cache.service';
+import { SettingsComponent } from './settings';
+import { ClanTriumphSearchComponent } from './clan/clan-triumphs/clan-triumph-search/clan-triumph-search.component';
+import { ClanTriumphTrackedComponent } from './clan/clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
+
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -110,9 +116,55 @@ export class AuthGuard implements CanActivate {
       component: BungieSearchComponent
     }, {
       path: 'clan/:id',
-      pathMatch: 'full',
+      pathMatch: 'prefix',
       canActivate: [AuthGuard],
-      component: ClanComponent
+      component: ClanComponent,
+      children: [
+        {
+          path: '',
+          redirectTo: 'members',
+          pathMatch: 'full'
+        },
+        {
+          path: 'members',
+          component: ClanMembersComponent,
+        },
+        {
+          path: 'info',
+          component: ClanInfoComponent,
+        },
+        {
+          path: 'milestones',
+          component: ClanMilestonesComponent,
+        },
+
+        {
+          path: 'lifetime',
+          component: ClanLifetimeComponent,
+        },
+        {
+          path: 'triumphs',
+          pathMatch: 'prefix',
+          component: ClanTriumphsComponent,
+          children: [
+            {
+              path: '',
+              redirectTo: 'seals',
+              pathMatch: 'full'
+            },
+            {
+              path: 'seals',
+              component: ClanSealsComponent
+            }, {
+              path: 'search',
+              component: ClanTriumphSearchComponent
+            }, {
+              path: 'tracked',
+              component: ClanTriumphTrackedComponent
+            }
+          ]
+        }
+      ]
     },
     {
       path: 'pgcr/:instanceId',

@@ -1,14 +1,14 @@
 
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { BungieService } from '../../service/bungie.service';
-import { Player, ActivityMode, Const } from '../../service/model';
-import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
-import { ChildComponent } from '../../shared/child.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
+import { BungieService } from '../../service/bungie.service';
+import { ActivityMode, Const, Player } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
+import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
+
 
 @Component({
   selector: 'd2c-history',
@@ -36,9 +36,8 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+    private route: ActivatedRoute, private router: Router) {
+    super(storageService);
     this.activityModes = bungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [100, 200, 500, 1000, 2000];

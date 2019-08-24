@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { ChildComponent } from '../../shared/child.component';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
 
 @Component({
   selector: 'd2c-about',
@@ -9,9 +9,8 @@ import { StorageService } from '../../service/storage.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutComponent extends ChildComponent  implements OnInit {
-  constructor(storageService: StorageService,
-    private ref: ChangeDetectorRef) {
-    super(storageService, ref);
+  constructor(storageService: StorageService) {
+    super(storageService);
   }
 
   ngOnInit() {}

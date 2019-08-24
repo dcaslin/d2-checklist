@@ -1,0 +1,22 @@
+.triumph-item{
+    max-width: 500px;
+}
+
+.small-margin {
+  margin: 5px;
+}
+
+.clan-child-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.clan-child-name {
+  margin: 10px;
+  font-weight: bold;
+}
+
+.clan-child-spacer {
+  margin: 10px;
+  flex-grow: 1;
+}
