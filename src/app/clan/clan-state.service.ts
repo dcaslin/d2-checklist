@@ -5,7 +5,7 @@ import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { BungieGroupMember, ClanInfo, Const, MileStoneName, Platform, Player, Seal, TriumphRecordNode } from '../service/model';
 
-interface Sort {
+export interface Sort {
   name: string;
   ascending: boolean;
 }
@@ -26,7 +26,7 @@ interface PlayerSeal {
 }
 
 
-interface ClanSeal extends ClanAggregate {
+export interface ClanSeal extends ClanAggregate {
   data: Seal;
   children: ClanSearchableTriumph[];
   all: PlayerSeal[];
@@ -70,6 +70,67 @@ export class ClanStateService {
   };
   filterMode = 'none';
   filterActivity: MileStoneName = null;
+
+  public static sortSeals(pushMe: ClanSeal, sort: Sort) {
+    const modifier = sort.ascending ? 1 : -1;
+    pushMe.all.sort((a, b) => {
+      if (sort.name === 'pct') {
+        if (a.seal.percent < b.seal.percent) {
+
+          return modifier * -1;
+        } else if (a.seal.percent > b.seal.percent) {
+          return modifier * 1;
+        }
+      }
+      const aN = a.member.destinyUserInfo.displayName;
+      const bN = b.member.destinyUserInfo.displayName;
+      if ( aN < bN) {
+        return modifier * -1;
+      } else if (aN > bN) {
+        return modifier * 1;
+      }
+      return 0;
+    });
+    pushMe.done = [];
+    pushMe.notDone = [];
+    for (const x of pushMe.all) {
+      if (x.seal.complete) {
+        pushMe.done.push(x);
+      } else {
+        pushMe.notDone.push(x);
+      }
+    }
+  }
+
+  public static sortTriumphs(pushMe: ClanSearchableTriumph, sort: Sort) {
+    const modifier = sort.ascending ? 1 : -1;
+    pushMe.all.sort((a, b) => {
+      if (sort.name === 'pct') {
+        if (a.triumph.percent < b.triumph.percent) {
+          return modifier * -1;
+        } else if (a.triumph.percent > b.triumph.percent) {
+          return modifier * 1;
+        }
+      }
+      const aN = a.member.destinyUserInfo.displayName;
+      const bN = b.member.destinyUserInfo.displayName;
+      if ( aN < bN) {
+        return modifier * -1;
+      } else if (aN > bN) {
+        return modifier * 1;
+      }
+      return 0;
+    });
+    pushMe.done = [];
+    pushMe.notDone = [];
+    for (const x of pushMe.all) {
+      if (x.triumph.complete) {
+        pushMe.done.push(x);
+      } else {
+        pushMe.notDone.push(x);
+      }
+    }
+  }
 
   private handleTriumphs(): void {
     const clanSealsDict: any = {};
@@ -137,23 +198,7 @@ export class ClanStateService {
     const clanSearchableTriumphs: ClanSearchableTriumph[] = [];
     for (const key of Object.keys(clanSearchableTriumphsDict)) {
       const pushMe: ClanSearchableTriumph = clanSearchableTriumphsDict[key];
-      pushMe.all.sort((a, b) => {
-        const aN = a.member.destinyUserInfo.displayName;
-        const bN = b.member.destinyUserInfo.displayName;
-        if ( aN < bN) {
-          return -1;
-        } else if (aN > bN) {
-          return 1;
-        }
-        return 0;
-      });
-      for (const x of pushMe.all){
-        if (x.triumph.complete){
-          pushMe.done.push(x);
-        } else {
-          pushMe.notDone.push(x);
-        }
-      }
+      ClanStateService.sortTriumphs(pushMe, {name: 'pct', ascending: false});
       clanSearchableTriumphs.push(pushMe);
     }
     for (const key of Object.keys(clanSealsDict)) {
@@ -166,23 +211,7 @@ export class ClanStateService {
         }
         seal.children.push(triumph);
       }
-      seal.all.sort((a, b) => {
-        const aN = a.member.destinyUserInfo.displayName;
-        const bN = b.member.destinyUserInfo.displayName;
-        if ( aN < bN) {
-          return -1;
-        } else if (aN > bN) {
-          return 1;
-        }
-        return 0;
-      });
-      for (const x of seal.all){
-        if (x.seal.complete){
-          seal.done.push(x);
-        } else {
-          seal.notDone.push(x);
-        }
-      }
+      ClanStateService.sortSeals(seal, {name: 'pct', ascending: false});
 
       clanSeals.push(seal);
     }

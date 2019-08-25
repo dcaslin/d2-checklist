@@ -1,27 +1,26 @@
 <mat-dialog-content>
-    <h3>{{triumph.data.name}}</h3>
-    <p>{{triumph.complete}} / {{triumph.total}} members</p>
-    <div class="simple-caption">{{triumph.data.desc}}</div>
+    <h3>{{seal.data.name}}</h3>
+    <p>{{seal.complete}} / {{seal.total}} members</p>
+    <div class="simple-caption">{{seal.data.desc}}</div>
     <mat-tab-group>
         <mat-tab label="Incomplete">
             <div class="tab-body">
-                <ng-container *ngTemplateOutlet="playerTable; context: {triumphs: triumph.notDone}">
+                <ng-container *ngTemplateOutlet="playerTable; context: {seal: seal, playerSeals: seal.notDone}">
                 </ng-container>
             </div>
         </mat-tab>
         <mat-tab label="Complete">
             <div class="tab-body">
-                <ng-container *ngTemplateOutlet="playerTable; context: {triumphs: triumph.done}">
+                <ng-container *ngTemplateOutlet="playerTable; context: {seal: seal, playerSeals: seal.done}">
                 </ng-container>
             </div>
         </mat-tab>
     </mat-tab-group>
 </mat-dialog-content>
 
-<ng-template #playerTable let-triumphs='triumphs'>
-    <div class="simple-caption" *ngIf="triumphs.length==0">None</div>
-
-    <table class="checklist-table" *ngIf="triumphs.length>0">
+<ng-template #playerTable let-seal="seal" let-playerSeals='playerSeals'>
+    <div class="simple-caption" *ngIf="playerSeals.length==0">None</div>
+    <table class="checklist-table" *ngIf="playerSeals.length>0">
         <thead>
             <tr>
                 <th>
@@ -43,8 +42,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let pt of triumphs">
-                <td *ngIf="pt.member as member">
+            <tr *ngFor="let s of playerSeals">
+                <td *ngIf="s.member as member">
                     <a *ngIf="member.destinyUserInfo.membershipType!=4"
                         [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
                         {{member.destinyUserInfo.displayName}}
@@ -58,7 +57,7 @@
                     </span>
                 </td>
                 <td>
-                    {{pt.triumph.percent|number : '0.0-0'}}%
+                    {{s.seal.percent|number : '0.0-0'}}%
                 </td>
             </tr>
         </tbody>

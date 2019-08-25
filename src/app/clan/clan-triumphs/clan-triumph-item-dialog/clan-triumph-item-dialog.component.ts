@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClanSearchableTriumph } from '@app/clan/clan-state.service';
+import { ClanSearchableTriumph, Sort, ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
@@ -11,6 +11,20 @@ import { ChildComponent } from '@app/shared/child.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClanTriumphItemDialogComponent extends ChildComponent implements OnInit {
+  sort: Sort = {
+    name: 'pct',
+    ascending: false
+  };
+
+  sortData(field: string){
+    if (field === this.sort.name) {
+      this.sort.ascending = !this.sort.ascending;
+    } else {
+      this.sort.ascending = true;
+      this.sort.name = field;
+    }
+    ClanStateService.sortTriumphs(this.triumph, this.sort);
+  }
 
   constructor(
     storageService: StorageService,
