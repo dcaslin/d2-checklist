@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ClanStateService } from '@app/clan/clan-state.service';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { ClanTriumphSealDialogComponent } from '../clan-triumph-seal-dialog/clan-triumph-seal-dialog.component';
 
 @Component({
   selector: 'd2c-clan-seals',
@@ -11,15 +13,22 @@ import { ChildComponent } from '@app/shared/child.component';
 })
 export class ClanSealsComponent extends ChildComponent implements OnInit {
 
-  constructor(storageService: StorageService, public state: ClanStateService) {
+  constructor(storageService: StorageService,
+    public state: ClanStateService,
+    public dialog: MatDialog) {
     super(storageService);
   }
 
   ngOnInit() {
   }
 
-  details(event: MouseEvent){
+  public openSealDialog(triumph: ClanSeal, event: MouseEvent): void {
     event.stopPropagation();
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    dc.data = triumph;
+    const dialogRef = this.dialog.open(ClanTriumphSealDialogComponent, dc);
   }
 
 }

@@ -11,13 +11,14 @@ import { ClanTriumphSearchComponent } from './clan-triumphs/clan-triumph-search/
 import { ClanTriumphTrackedComponent } from './clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
 import { ClanTriumphItemComponent } from './clan-triumphs/clan-triumph-item/clan-triumph-item.component';
 import { ClanTriumphItemDialogComponent } from './clan-triumphs/clan-triumph-item-dialog/clan-triumph-item-dialog.component';
+import { ClanTriumphSealDialogComponent } from './clan-triumphs/clan-triumph-seal-dialog/clan-triumph-seal-dialog.component';
 
 @NgModule({
   imports: [
     SharedModule
   ],
   declarations: [ClanComponent, ClanMilestonesComponent, ClanInfoComponent,
-    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent],
-  entryComponents: [ClanTriumphItemDialogComponent]
+    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent],
+  entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent]
 })
 export class ClanModule { }
