@@ -1,15 +1,29 @@
 <mat-dialog-content>
-    <h3>{{triumph.data.name}}</h3>
-    <p>{{triumph.complete}} / {{triumph.total}} members</p>
+    <h4>{{triumph.data.name}} - {{triumph.complete}} / {{triumph.total}} members</h4>
     <div class="simple-caption">{{triumph.data.desc}}</div>
+
     <mat-tab-group>
-        <mat-tab label="Incomplete">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Chart</span>
+            </ng-template>
+            <div class="tab-body">
+                <d2c-clan-triumph-graph [data]="triumph.all"></d2c-clan-triumph-graph>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="far fa-square"></i><span class="d-none d-md-inline">&ensp;Incomplete</span>
+            </ng-template>
             <div class="tab-body">
                 <ng-container *ngTemplateOutlet="playerTable; context: {triumphs: triumph.notDone}">
                 </ng-container>
             </div>
         </mat-tab>
         <mat-tab label="Complete">
+            <ng-template mat-tab-label>
+                <i class="far fa-check-square"></i><span class="d-none d-md-inline">&ensp;Complete</span>
+            </ng-template>
             <div class="tab-body">
                 <ng-container *ngTemplateOutlet="playerTable; context: {triumphs: triumph.done}">
                 </ng-container>
@@ -58,7 +72,7 @@
                     </span>
                 </td>
                 <td>
-                    {{pt.triumph.percent|number : '0.0-0'}}%
+                    {{pt.data.percent|number : '0.0-0'}}%
                 </td>
             </tr>
         </tbody>

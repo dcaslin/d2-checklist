@@ -1,15 +1,29 @@
 <mat-dialog-content>
-    <h3>{{seal.data.name}}</h3>
-    <p>{{seal.complete}} / {{seal.total}} members</p>
+    <h4>{{seal.data.name}} - {{seal.complete}} / {{seal.total}} members</h4>
     <div class="simple-caption">{{seal.data.desc}}</div>
     <mat-tab-group>
-        <mat-tab label="Incomplete">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Chart</span>
+            </ng-template>
             <div class="tab-body">
+                <d2c-clan-triumph-graph [data]="seal.all"></d2c-clan-triumph-graph>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="far fa-square"></i><span class="d-none d-md-inline">&ensp;Incomplete</span>
+            </ng-template>
+            <div class="tab-body">
+
                 <ng-container *ngTemplateOutlet="playerTable; context: {seal: seal, playerSeals: seal.notDone}">
                 </ng-container>
             </div>
         </mat-tab>
         <mat-tab label="Complete">
+            <ng-template mat-tab-label>
+                <i class="far fa-check-square"></i><span class="d-none d-md-inline">&ensp;Complete</span>
+            </ng-template>
             <div class="tab-body">
                 <ng-container *ngTemplateOutlet="playerTable; context: {seal: seal, playerSeals: seal.done}">
                 </ng-container>
@@ -57,7 +71,7 @@
                     </span>
                 </td>
                 <td>
-                    {{s.seal.percent|number : '0.0-0'}}%
+                    {{s.data.percent|number : '0.0-0'}}%
                 </td>
             </tr>
         </tbody>

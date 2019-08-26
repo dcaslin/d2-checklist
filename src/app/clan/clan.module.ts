@@ -12,13 +12,16 @@ import { ClanTriumphTrackedComponent } from './clan-triumphs/clan-triumph-tracke
 import { ClanTriumphItemComponent } from './clan-triumphs/clan-triumph-item/clan-triumph-item.component';
 import { ClanTriumphItemDialogComponent } from './clan-triumphs/clan-triumph-item-dialog/clan-triumph-item-dialog.component';
 import { ClanTriumphSealDialogComponent } from './clan-triumphs/clan-triumph-seal-dialog/clan-triumph-seal-dialog.component';
+import { ChartsModule } from 'ng2-charts';
+import { ClanTriumphGraphComponent } from './clan-triumphs/clan-triumph-graph/clan-triumph-graph.component';
 
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    ChartsModule
   ],
   declarations: [ClanComponent, ClanMilestonesComponent, ClanInfoComponent,
-    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent],
+    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent],
   entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent]
 })
 export class ClanModule { }
