@@ -17,12 +17,12 @@ interface ClanAggregate {
 
 interface PlayerTriumph {
   member: BungieGroupMember;
-  triumph: TriumphRecordNode;
+  data: TriumphRecordNode;
 }
 
 interface PlayerSeal {
   member: BungieGroupMember;
-  seal: Seal;
+  data: Seal;
 }
 
 
@@ -75,10 +75,10 @@ export class ClanStateService {
     const modifier = sort.ascending ? 1 : -1;
     pushMe.all.sort((a, b) => {
       if (sort.name === 'pct') {
-        if (a.seal.percent < b.seal.percent) {
+        if (a.data.percent < b.data.percent) {
 
           return modifier * -1;
-        } else if (a.seal.percent > b.seal.percent) {
+        } else if (a.data.percent > b.data.percent) {
           return modifier * 1;
         }
       }
@@ -94,7 +94,7 @@ export class ClanStateService {
     pushMe.done = [];
     pushMe.notDone = [];
     for (const x of pushMe.all) {
-      if (x.seal.complete) {
+      if (x.data.complete) {
         pushMe.done.push(x);
       } else {
         pushMe.notDone.push(x);
@@ -106,9 +106,9 @@ export class ClanStateService {
     const modifier = sort.ascending ? 1 : -1;
     pushMe.all.sort((a, b) => {
       if (sort.name === 'pct') {
-        if (a.triumph.percent < b.triumph.percent) {
+        if (a.data.percent < b.data.percent) {
           return modifier * -1;
-        } else if (a.triumph.percent > b.triumph.percent) {
+        } else if (a.data.percent > b.data.percent) {
           return modifier * 1;
         }
       }
@@ -124,7 +124,7 @@ export class ClanStateService {
     pushMe.done = [];
     pushMe.notDone = [];
     for (const x of pushMe.all) {
-      if (x.triumph.complete) {
+      if (x.data.complete) {
         pushMe.done.push(x);
       } else {
         pushMe.notDone.push(x);
@@ -155,9 +155,9 @@ export class ClanStateService {
             };
             clanSealsDict[s.hash] = seal;
           }
-          const playerSeal = {
+          const playerSeal: PlayerSeal = {
             member: m,
-            seal: s
+            data: s
           };
           seal.all.push(playerSeal);
           if (s.complete) {
@@ -181,9 +181,9 @@ export class ClanStateService {
             };
             clanSearchableTriumphsDict[s.hash] = triumph;
           }
-          const playerTriumph = {
+          const playerTriumph: PlayerTriumph = {
             member: m,
-            triumph: s
+            data: s
           };
           triumph.all.push(playerTriumph);
           if (s.complete) {
