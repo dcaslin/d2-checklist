@@ -24,12 +24,14 @@ import { BountiesComponent } from './pursuits/bounties/bounties.component';
 import { QuestDialogComponent } from './pursuits/quests/quest-dialog/quest-dialog.component';
 import { TriumphMotComponent } from './triumphs/triumph-mot/triumph-mot.component';
 import { ProgressStepDialogComponent } from './progress/progress-step-dialog/progress-step-dialog.component';
+import { LifetimeComponent } from './lifetime/lifetime.component';
+import { MoreComponent } from './more/more.component';
 
 @NgModule({
   imports: [
     SharedModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, QuestsComponent, TriumphMotComponent, ProgressStepDialogComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, QuestsComponent, TriumphMotComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent],
   entryComponents: [
     QuestDialogComponent, BurnDialogComponent, ProgressStepDialogComponent
   ],

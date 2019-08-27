@@ -1,26 +1,39 @@
-<div class="filter-row">
-    <mat-form-field class="searchField searchPlatform">
-        <mat-select [(ngModel)]="state.selectedPlatform" placeholder="Platform" (selectionChange)="state.sortData()">
-            <mat-select-trigger>
-                <i [ngClass]="state.selectedPlatform.iconClass"></i>&ensp;{{state.selectedPlatform.name }}
-            </mat-select-trigger>
-            <mat-option *ngFor="let p of state.platforms" [value]="p">
-                <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <span class="filter-count">{{(state.sortedMembers|async).length}} / {{state.members.length}}</span>
-    <button class="d-none d-md-inline" mat-raised-button [disabled]="!(state.allLoaded|async)"
-        (click)="state.downloadCsvReport()">
-        <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-        <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
-    <span class="simple-caption d-none d-md-inline" *ngIf="state.oldCount>0">{{state.oldCount}} inactive
-        hidden.</span>
-</div>
-<div class="mobile-button-row">
-    <button mat-button [disabled]="!(state.allLoaded|async)" (click)="state.downloadCsvReport()">
-        <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-        <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
-    <span class="simple-caption" *ngIf="state.oldCount>0">{{state.oldCount}} inactive hidden.</span>
+<div class="settings-body">
+
+    <div class="filter-row">
+        <span>{{state.defunctMembers.length}} members overridden by cross save ignored.</span>
+        <button mat-icon-button (click)="openUserDialog('Overridden Cross-Save Members', 'These accounts were overridden by cross-save from another platform, you should probably remove them from your clan.', state.defunctMembers)">
+            <i class="fal fa-plus-square"></i>
+        </button>
+    </div>
+    <div class="filter-row">
+        <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="state.inactivityMonthThreshold" placeholder="Inactivity cutoff"
+                (selectionChange)="state.inactivityThresholdChange()">
+                <mat-option *ngFor="let i of state.inactivityMonthOptions" [value]="i">
+                    {{i}} months
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <span>{{state.inactiveMembers.length}} inactive hidden.</span>
+        <button mat-icon-button (click)="openUserDialog('Inactive Members', 'These accounts are valid but haven\'t logged on in '+state.inactivityMonthThreshold+' months.', state.inactiveMembers)">
+            <i class="fal fa-plus-square"></i>
+        </button>
+    </div>
+    <div class="filter-row">
+        <mat-form-field class="searchField searchPlatform">
+            <mat-select [(ngModel)]="state.selectedPlatform" placeholder="Platform"
+                (selectionChange)="state.selectedPlatformChange()">
+                <mat-select-trigger>
+                    <i [ngClass]="state.selectedPlatform.iconClass"></i>&ensp;{{state.selectedPlatform.name }}
+                </mat-select-trigger>
+                <mat-option *ngFor="let p of state.platforms" [value]="p">
+                    <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <span class="filter-count">{{(state.sortedMembers|async).length}} / {{state.members.length}}</span>
+
+    </div>
 
 </div>

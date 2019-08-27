@@ -135,13 +135,20 @@
               <a mat-tab-link routerLink="checklist" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
                 <i class="fas fa-check-square"></i><span class="d-none d-md-inline">&ensp;Checklist</span>
               </a>
-              <a mat-tab-link routerLink="progress" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
+              <a mat-tab-link routerLink="lifetime" routerLinkActive #rlaLifetime="routerLinkActive"
+                [active]="rlaLifetime.isActive">
+                <i class="fas fa-sigma"></i><span class="d-none d-md-inline">&ensp;Lifetime</span>
+              </a>
+              <!-- <a mat-tab-link routerLink="progress" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
                 <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Progress</span>
+              </a> -->
+              <a mat-tab-link routerLink="more" routerLinkActive #rlaMore="routerLinkActive"
+                [active]="rlaMore.isActive">
+                <i class="fas fa-ellipsis-v"></i><span class="d-none d-md-inline">&ensp;More</span>
               </a>
-
-              <a mat-tab-link routerLink="chars" routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive">
+              <!-- <a mat-tab-link routerLink="chars" routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive">
                 <i class="fas fa-users"></i><span class="d-none d-md-inline">&ensp;Chars</span>
-              </a>
+              </a> -->
             </nav>
 
             <router-outlet></router-outlet>

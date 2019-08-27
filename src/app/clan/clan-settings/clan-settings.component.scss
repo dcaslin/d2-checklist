@@ -1,5 +1,11 @@
+.settings-body {
+
+    max-width: 500px;    
+    margin: auto;
+    text-align: left;
+}
 .filter-row {
-    margin-bottom: 5px;
+    margin: 10px;
 
     & .mat-form-field {
         margin-bottom: 5px;
