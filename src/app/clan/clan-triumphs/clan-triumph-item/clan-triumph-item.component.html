@@ -1,6 +1,15 @@
 <div class="triumph-item">
     <div class="clan-child-header">
-        <div class="clan-child-name">{{triumph.data.name}}</div>
+        <div class="clan-child-name">
+            {{triumph.data.name}}
+
+            <button mat-icon-button *ngIf="state.dTrackedTriumphIds[triumph.data.hash]!=true" (click)="state.trackTriumph(triumph.data)">
+                <i class="far fa-star"></i>
+            </button>
+            <button mat-icon-button *ngIf="state.dTrackedTriumphIds[triumph.data.hash]==true" (click)="state.untrackTriumph(triumph.data)">
+                <i class="fas fa-star accent-text"></i>
+            </button>
+        </div>
         <div class="clan-child-spacer">{{triumph.complete}} / {{triumph.total}} members</div>
         <div class="clan-child-details">
             <button mat-icon-button (click)="openTriumphDialog(triumph)">
@@ -9,7 +18,6 @@
         </div>
     </div>
     <div class="small-margin">
-
         <mat-progress-bar mode="determinate" [value]="triumph.complete*100/triumph.total">
         </mat-progress-bar>
         <div class="small-margin simple-caption">

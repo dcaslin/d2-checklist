@@ -1,16 +1,5 @@
 <ng-container *ngIf="state.modelPlayer|async as modelPlayer; else loadingModel">
-    <div class="filter-row">
-        <mat-form-field class="searchField searchPlatform">
-            <mat-select [(ngModel)]="state.selectedPlatform" placeholder="Platform"
-                (selectionChange)="state.sortData()">
-                <mat-select-trigger>
-                    <i [ngClass]="state.selectedPlatform.iconClass"></i>&ensp;{{state.selectedPlatform.name }}
-                </mat-select-trigger>
-                <mat-option *ngFor="let p of state.platforms" [value]="p">
-                    <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
+    <div class="filter-row">        
         <mat-form-field>
             <mat-select [(ngModel)]="state.filterMode" (selectionChange)="state.filterPlayers()"
                 placeholder="Filter players by activity">
@@ -26,11 +15,7 @@
                   mileStoneName.name }}</mat-option>
             </mat-select>
         </mat-form-field>
-        <span class="filter-count">{{(state.sortedMembers|async).length}} / {{state.members.length}}</span>
-        <button class="d-none d-md-inline" mat-raised-button [disabled]="!(state.allLoaded|async)"
-            (click)="downloadCsvReport()">
-            <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-            <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
+        <span class="filter-count">{{(state.sortedMembers|async).length}} / {{state.members.length}}</span>        
         <button class="d-none d-md-inline" mat-raised-button (click)="showAllClanMilestones()" color="accent"
             *ngIf="(hiddenClanMilestones|async).length>0">
             <i class="fal fa-eye"></i> All
@@ -40,10 +25,7 @@
             <i class="fal fa-eye"></i> Default
         </button>
     </div>
-    <div class="mobile-button-row">
-        <button mat-button [disabled]="!(state.allLoaded|async)" (click)="downloadCsvReport()">
-            <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-            <i class="fal fa-download" aria-hidden="true"></i> CSV</button>
+    <div class="mobile-button-row">       
         <button mat-raised-button (click)="showAllClanMilestones()" color="accent"
             *ngIf="(hiddenClanMilestones|async).length>0">
             <i class="fal fa-eye"></i> All

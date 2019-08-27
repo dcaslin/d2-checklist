@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
 import { Player, SearchResult, SelectedUser, TriumphRecordNode } from '@app/service/model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { StorageService } from '@app/service/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +83,7 @@ export class PlayerStateService {
   private _hideCompleteTriumphs = false;
   private _hideCompleteCollectibles = false;
 
-  aTrackedTriumphIds = [];
+
   public dTrackedTriumphIds = {};
 
   public currPlayer(): Player {
@@ -113,6 +114,7 @@ export class PlayerStateService {
 
 
   constructor(
+    private storageService: StorageService,
     private bungieService: BungieService) {
     this.player = this._player.pipe(map(val => {
       PlayerStateService.sortMileStones(val, this.sort);
@@ -126,7 +128,17 @@ export class PlayerStateService {
     this._showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
     this._hideCompleteTriumphs = localStorage.getItem('hide-completed-triumphs') === 'true';
     this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';
-    this.loadTrackedTriumphIds();
+
+    this.storageService.settingFeed.pipe().subscribe(
+        x => {
+          if (x.trackedtriumphs != null) {
+            this.dTrackedTriumphIds = x.trackedtriumphs;
+          } else {
+            this.dTrackedTriumphIds = {};
+          }
+          this.applyTrackedTriumphs(this._player.getValue());
+
+        });
   }
 
   private checkSignedOnCurrent() {
@@ -167,7 +179,7 @@ export class PlayerStateService {
           this.handleMissingPlayer(false);
           return;
         }
-        this.setTrackedTriumphs(x);
+        this.applyTrackedTriumphs(x);
         this._player.next(x);
         this.bungieService.loadWeeklyPowerfulBounties(this._player);
         this.bungieService.loadClans(this._player);
@@ -258,41 +270,22 @@ export class PlayerStateService {
     return player;
   }
 
-  private loadTrackedTriumphIds() {
-    const sTrackedIds = localStorage.getItem('tracked-triumph-ids');
-    if (sTrackedIds != null) {
-      this.aTrackedTriumphIds = JSON.parse(sTrackedIds);
-    } else {
-      this.aTrackedTriumphIds = [];
-    }
-    this.dTrackedTriumphIds = {};
-    for (const t of this.aTrackedTriumphIds) {
-      this.dTrackedTriumphIds[t] = true;
-    }
-  }
-
   public trackTriumph(n: TriumphRecordNode) {
-    this.aTrackedTriumphIds.push(n.hash);
-    this.saveTrackedTriumphIds();
-    this.loadTrackedTriumphIds();
-    this.setTrackedTriumphs(this.currPlayer());
+    this.storageService.trackHashList('trackedtriumphs', n.hash);
   }
 
   public untrackTriumph(n: TriumphRecordNode) {
-    const index = this.aTrackedTriumphIds.indexOf(n.hash);
-    this.aTrackedTriumphIds.splice(index, 1);
-    this.saveTrackedTriumphIds();
-    this.loadTrackedTriumphIds();
-    this.setTrackedTriumphs(this.currPlayer());
+    this.storageService.untrackHashList('trackedtriumphs', n.hash);
   }
 
-  private saveTrackedTriumphIds() {
-    localStorage.setItem('tracked-triumph-ids', JSON.stringify(this.aTrackedTriumphIds));
-  }
 
-  private setTrackedTriumphs(player: Player) {
+  private applyTrackedTriumphs(player: Player) {
+    if (player == null) {
+       return;
+    }
+    console.log("apply");
     const tempTriumphs = [];
-    if (this.aTrackedTriumphIds.length > 0 && player.searchableTriumphs != null) {
+    if (Object.keys(this.dTrackedTriumphIds).length > 0) {
       for (const t of player.searchableTriumphs) {
         if (this.dTrackedTriumphIds[t.hash] == true) {
           tempTriumphs.push(t);

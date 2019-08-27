@@ -120,6 +120,9 @@
           </button>
         </mat-menu>
         <mat-menu #menuBulk="matMenu">
+          <button mat-menu-item (click)="showBulkOperationHelp()">
+            <span class="warn-text"><i class="fas fa-question-circle"></i>&ensp;Help</span>
+          </button>
           <button mat-menu-item (click)="syncLocks()">
             <i class="fas fa-lock-alt"></i>&ensp;Sync Locks
           </button>
@@ -141,9 +144,7 @@
           <button mat-menu-item (click)="upgradeMode(true)">
             <i class="fas fa-level-up"></i>&ensp;Upgrade Mode (Weapons Only)
           </button>
-          <button mat-menu-item (click)="showBulkOperationHelp()">
-            <i class="fas fa-question-circle"></i>&ensp;Help
-          </button>
+
         </mat-menu>
         <a mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()"><i class="fas fa-save"></i></a>
         <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
@@ -280,7 +281,7 @@
                       [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
                     </mat-progress-bar>
                   </div>
-                  
+
                   <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
                     {{mod.name}}
                     <div *ngIf="mod && mod.objectives && mod.objectives.length" class="mod-obj">

@@ -1,3 +1,5 @@
+
+
 <mat-card class="clanMsRow clan-card">
     <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
     <div *ngIf="state.modelPlayer|async as modelPlayer ; else loadingModel">
@@ -39,6 +41,12 @@
             </div>
         </mat-card>
     </mat-expansion-panel>
+
+    <div class="download-csv" >
+            <button mat-button [disabled]="!(state.allLoaded|async)" (click)="state.downloadCsvReport()">
+                <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
+                <i class="fal fa-download" aria-hidden="true"></i> Download CSV Report</button>
+        </div>
 </ng-container>
 
 <ng-template #loadingModel>
