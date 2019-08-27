@@ -11,7 +11,7 @@ import { ClanStateService } from '../clan-state.service';
 })
 export class ClanInfoComponent extends ChildComponent implements OnInit {
 
-  constructor(storageService: StorageService, 
+  constructor(storageService: StorageService,
     public state: ClanStateService) {
     super(storageService);
   }

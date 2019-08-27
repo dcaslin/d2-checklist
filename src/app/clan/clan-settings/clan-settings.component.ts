@@ -4,12 +4,11 @@ import { StorageService } from '@app/service/storage.service';
 import { ClanStateService } from '../clan-state.service';
 
 @Component({
-  selector: 'd2c-clan-lifetime',
-  templateUrl: './clan-lifetime.component.html',
-  styleUrls: ['./clan-lifetime.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'd2c-clan-settings',
+  templateUrl: './clan-settings.component.html',
+  styleUrls: ['./clan-settings.component.scss']
 })
-export class ClanLifetimeComponent extends ChildComponent implements OnInit {
+export class ClanSettingsComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
     public state: ClanStateService) {

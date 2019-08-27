@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { UserInfo } from './model';
+import { UserInfo, TriumphRecordNode } from './model';
 import { BungieService } from './bungie.service';
 
 
@@ -15,8 +15,8 @@ const CLAN_MS_KEY = 'hiddenClanMilestones';
 
 @Injectable()
 export class StorageService {
-  private settingSub: BehaviorSubject<any>;
-  public settingFeed: Observable<any>;
+  private settingSub: BehaviorSubject<any> = new BehaviorSubject({});;
+  public settingFeed: Observable<any> = this.settingSub.asObservable();;
 
 
   constructor(
@@ -26,8 +26,7 @@ export class StorageService {
     if (!state.hiddenClanMilestones) {
       state.hiddenClanMilestones = this.getDefaultClanMs();
     }
-    this.settingSub = new BehaviorSubject(state);
-    this.settingFeed = this.settingSub.asObservable() as Observable<Notification>;
+    this.settingSub.next(state);
   }
 
   setItem(key: string, value: any) {
@@ -35,6 +34,19 @@ export class StorageService {
     const emitMe = {};
     emitMe[key] = value;
     this.settingSub.next(emitMe);
+  }
+
+  public trackHashList(key: string, hash: string) {
+    // trackedtriumphs
+    const trackedDict: any = this.getItem(key, {});
+    trackedDict[hash] = true;
+    this.setItem(key, trackedDict);
+  }
+
+  public untrackHashList(key: string, hash: string) {
+    const trackedDict: any = this.getItem(key, {});
+    delete trackedDict[hash];
+    this.setItem(key, trackedDict);
   }
 
   public hideMilestone(ms: string): void {

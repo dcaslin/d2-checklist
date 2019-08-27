@@ -46,6 +46,7 @@ import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
 import { ClanTriumphSearchComponent } from './clan/clan-triumphs/clan-triumph-search/clan-triumph-search.component';
 import { ClanTriumphTrackedComponent } from './clan/clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
+import { ClanSettingsComponent } from './clan/clan-settings/clan-settings.component';
 
 
 @Injectable()
@@ -141,6 +142,10 @@ export class AuthGuard implements CanActivate {
         {
           path: 'lifetime',
           component: ClanLifetimeComponent,
+        },
+        {
+          path: 'settings',
+          component: ClanSettingsComponent,
         },
         {
           path: 'triumphs',

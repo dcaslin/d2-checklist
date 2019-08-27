@@ -39,6 +39,10 @@
                       <i class='accent-text far fa-map-marker-alt'></i>
                     </a>
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
+                    <i *ngIf="state.dTrackedTriumphIds[c.hash]!=true" class="far fa-star"
+                      (click)="state.trackTriumph(c)"></i>
+                    <i *ngIf="state.dTrackedTriumphIds[c.hash]==true" class="fas fa-star accent-text"
+                      (click)="state.untrackTriumph(c)"></i>
                     <br>
                     <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
                       redeemed.<br></span>
@@ -48,8 +52,8 @@
                     </span>
                     <div *ngIf="c.badge!=null" class="badge-margin">
                       <div>Badge | {{c.badge.name}}: {{c.badge.bestProgress}} / {{c.badge.total}}</div>
-                      <a mat-raised-button class="badge-margin" [routerLink]="state.getPlayerRoute(['collections', 'badges', c.badge.hash])"
-                        color="accent">
+                      <a mat-raised-button class="badge-margin"
+                        [routerLink]="state.getPlayerRoute(['collections', 'badges', c.badge.hash])" color="accent">
                         View Badge
                       </a>
                     </div>

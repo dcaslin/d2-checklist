@@ -1,1 +1,16 @@
-<p>clan-triumph-tracked works!</p>
+<div *ngIf="state.trackedTriumphs|async as t" class="clan-triumph-search">
+    
+    <div *ngIf="t.length==0" class="left" class="medium-margin">        
+            Click a star on a triumph on another tab to track it here
+    </div>
+    <div *ngIf="t.length>=100">More than 100 results, refine your search</div>
+    <table *ngIf="t.length>0 && t.length<100" class="checklist-table">
+        <tbody>
+            <tr *ngFor="let triumph of t">
+                <td>
+                    <d2c-clan-triumph-item [triumph]="triumph"></d2c-clan-triumph-item>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

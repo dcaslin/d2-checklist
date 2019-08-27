@@ -4,6 +4,7 @@ import { BungieService } from '@app/service/bungie.service';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { BungieGroupMember, ClanInfo, Const, MileStoneName, Platform, Player, Seal, TriumphRecordNode } from '../service/model';
+import { StorageService } from '@app/service/storage.service';
 
 export interface Sort {
   name: string;
@@ -56,10 +57,14 @@ export class ClanStateService {
   public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
   public seals: BehaviorSubject<ClanSeal[]> = new BehaviorSubject([]);
   public searchableTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
+  public trackedTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
+
   public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public profilesLoaded: BehaviorSubject<number> = new BehaviorSubject(0);
   public modelPlayer: BehaviorSubject<Player> = new BehaviorSubject(null);
+
+  public dTrackedTriumphIds = {};
 
   platforms: Platform[];
   selectedPlatform: Platform;
@@ -217,16 +222,52 @@ export class ClanStateService {
     }
     this.seals.next(clanSeals);
     this.searchableTriumphs.next(clanSearchableTriumphs);
+    this.applyTrackedTriumphs();
   }
 
 
   constructor(
     private router: Router,
+    private storageService: StorageService,
     private bungieService: BungieService) {
     this.platforms = Const.PLATFORMS_ARRAY.slice(0);
     this.platforms.unshift(Const.ALL_PLATFORM);
     this.selectedPlatform = Const.ALL_PLATFORM;
+
+    this.storageService.settingFeed.pipe().subscribe(
+      x => {
+        if (x.trackedtriumphs != null) {
+          this.dTrackedTriumphIds = x.trackedtriumphs;
+        } else {
+          this.dTrackedTriumphIds = {};
+        }
+        this.applyTrackedTriumphs();
+
+      });
   }
+
+  public trackTriumph(n: TriumphRecordNode) {
+    this.storageService.trackHashList('trackedtriumphs', n.hash);
+  }
+
+  public untrackTriumph(n: TriumphRecordNode) {
+    this.storageService.untrackHashList('trackedtriumphs', n.hash);
+  }
+
+  private applyTrackedTriumphs() {
+    const triumphs = this.searchableTriumphs.getValue();
+    const tempTriumphs: ClanSearchableTriumph[] = [];
+    if (Object.keys(this.dTrackedTriumphIds).length > 0) {
+      for (const t of triumphs) {
+        if (this.dTrackedTriumphIds[t.data.hash] == true) {
+          tempTriumphs.push(t);
+        }
+      }
+    }
+    this.trackedTriumphs.next(tempTriumphs);
+  }
+
+
 
   public async navigateBnetMember(target: BungieGroupMember) {
     const bnetName = await this.bungieService.getFullBNetName(target.bungieNetUserInfo.membershipId);
