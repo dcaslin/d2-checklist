@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistory, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -13,6 +13,11 @@ export class ParseService {
 
     constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {
         this.lowlineService.init();
+    }
+
+    private static dedupeArray(arr: any[]): number[] {
+        const unique_array = Array.from(new Set(arr));
+        return unique_array;
     }
 
     private parseCharacter(c: PrivCharacter): Character {
@@ -151,7 +156,19 @@ export class ParseService {
                         });
                     }
                     prog.totalProgress = total;
+                    if (prog.level >= prog.steps.length) {
+                        prog.title = 'Max';
+                    } else {
+                        prog.title = prog.steps[prog.level].stepName;
+                    }
+
+                    if (prog.level + 1 >= prog.steps.length) {
+                        prog.nextTitle = 'Max';
+                    } else {
+                        prog.nextTitle = prog.steps[prog.level + 1].stepName;
+                    }
                 }
+
             }
 
             if (p.nextLevelAt > 0) {
@@ -475,6 +492,113 @@ export class ParseService {
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
 
+    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[]): AggHistoryEntry[] {
+        const returnMe: AggHistoryEntry[] = [];
+        let aKeys = [];
+        for (const c of charAggHistDicts) {
+            aKeys = aKeys.concat(Object.keys(c));
+        }
+        aKeys = ParseService.dedupeArray(aKeys);
+
+        for (const key of aKeys) {
+            let model: AggHistoryEntry = null;
+            for (const c of charAggHistDicts) {
+                if (c[key] == null) {
+                    continue;
+                } if (model == null) {
+                    model = c[key];
+                } else {
+                    model = ParseService.mergeAggHistoryEntry(model, c[key]);
+                }
+            }
+            if (model != null) {
+                returnMe.push(model);
+            }
+        }
+        returnMe.sort((a, b) => {
+            if (a.name > b.name) {
+                return 1;
+            } else if (a.name < b.name) {
+                return -1;
+            } else {
+                return 0;
+            }
+        });
+        return returnMe;
+
+    }
+
+    public parseAggHistory2(resp: any): { [key: string]: AggHistoryEntry } {
+        if (resp.activities == null) {
+            return;
+        }
+
+        const dict: { [key: string]: AggHistoryEntry } = {};
+        for (const a of resp.activities) {
+            if (!a.activityHash) { continue; }
+            const vDesc: any = this.destinyCacheService.cache.Activity[a.activityHash];
+            if (vDesc == null || vDesc.activityModeHashes == null) { continue; }
+            const name = vDesc.displayProperties.name;
+            if (name == null) {
+                continue;
+            }
+            const nf = vDesc.activityModeHashes.indexOf(547513715) >= 0 && vDesc.tier >= 2;
+            const raid = vDesc.activityModeHashes.indexOf(2043403989) >= 0;
+            if (nf || raid) {
+                const entry = this.parseAggHistoryEntry(name, a, nf ? 'nf' : 'raid');
+                if (dict[name] == null) {
+                    dict[name] = entry;
+                } else {
+                    dict[name] = ParseService.mergeAggHistoryEntry(dict[name], entry);
+                }
+            }
+        }
+        return dict;
+    }
+
+    private static mergeAggHistoryEntry(a: AggHistoryEntry, b: AggHistoryEntry): AggHistoryEntry {
+        if (b == null) { return a; }
+        let fastest: number = null;
+        if (a.fastestCompletionMsForActivity &&  b.fastestCompletionMsForActivity) {
+            fastest = Math.min(a.fastestCompletionMsForActivity, b.fastestCompletionMsForActivity);
+        } else if (a.fastestCompletionMsForActivity) {
+            fastest = a.fastestCompletionMsForActivity;
+        } else if (a.fastestCompletionMsForActivity) {
+            fastest = b.fastestCompletionMsForActivity;
+        }
+        return {
+            name: a.name,
+            type: a.type,
+            hash: a.hash.concat(b.hash),
+            activityBestSingleGameScore: Math.max(a.activityBestSingleGameScore, b.activityBestSingleGameScore),
+            fastestCompletionMsForActivity: fastest,
+            activityCompletions: a.activityCompletions + b.activityCompletions,
+            activityKills: a.activityKills + b.activityKills,
+            activityAssists: a.activityAssists + b.activityAssists,
+            activityDeaths: a.activityDeaths + b.activityDeaths,
+            activityPrecisionKills: a.activityPrecisionKills + b.activityPrecisionKills,
+            activitySecondsPlayed: a.activitySecondsPlayed + b.activitySecondsPlayed
+        };
+    }
+
+    private parseAggHistoryEntry(name: string, a: any, type: string): AggHistoryEntry {
+        return {
+            name: name,
+            type,
+            hash: [a.activityHash],
+            activityBestSingleGameScore: ParseService.getBasicValue(a.values.activityBestSingleGameScore),
+            fastestCompletionMsForActivity: ParseService.getBasicValue(a.values.fastestCompletionMsForActivity),
+            activityCompletions: ParseService.getBasicValue(a.values.activityCompletions),
+
+            activityKills: ParseService.getBasicValue(a.values.activityKills),
+            activityAssists: ParseService.getBasicValue(a.values.activityAssists),
+            activityDeaths: ParseService.getBasicValue(a.values.activityDeaths),
+
+            activityPrecisionKills: ParseService.getBasicValue(a.values.activityPrecisionKills),
+            activitySecondsPlayed: ParseService.getBasicValue(a.values.activitySecondsPlayed)
+        };
+    }
+
     public parseAggHistory(resp: any): AggHistory {
         const returnMe: AggHistory = new AggHistory();
 
@@ -574,11 +698,6 @@ export class ParseService {
             });
         }
         return returnMe;
-    }
-
-    private dedupeArray(arr: number[]): number[] {
-        const unique_array = Array.from(new Set(arr));
-        return unique_array;
     }
 
     public parseVendorData(resp: any): SaleItem[] {
@@ -984,7 +1103,7 @@ export class ParseService {
             let nothingInteresting = true;
             for (const key of Object.keys(dAct)) {
                 const aggAct = dAct[key];
-                aggAct.lls = this.dedupeArray(aggAct.lls);
+                aggAct.lls = ParseService.dedupeArray(aggAct.lls);
                 if (aggAct.activity.challenges.length > 0 ||
                     aggAct.activity.modifiers.length > 0 ||
                     aggAct.activity.loadoutReqs.length > 0) {
@@ -2996,11 +3115,12 @@ export class ParseService {
             platformName = 'BNET';
         }
         return {
-            'membershipType': i.membershipType,
-            'membershipId': i.membershipId,
-            'displayName': i.displayName,
-            'icon': iconPath,
-            'platformName': platformName
+            membershipType: i.membershipType,
+            membershipId: i.membershipId,
+            crossSaveOverride: i.crossSaveOverride,
+            displayName: i.displayName,
+            icon: iconPath,
+            platformName: platformName
         };
     }
 
@@ -3014,11 +3134,12 @@ export class ParseService {
             platformName = 'BNET';
         }
         return {
-            'membershipType': i.membershipType,
-            'membershipId': i.membershipId,
-            'displayName': i.displayName,
-            'icon': i.iconPath,
-            'platformName': platformName
+            membershipType: i.membershipType,
+            membershipId: i.membershipId,
+            crossSaveOverride: i.crossSaveOverride,
+            displayName: i.displayName,
+            icon: i.iconPath,
+            platformName: platformName
         };
 
     }

@@ -51,7 +51,8 @@ export class ClanStateService {
   public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public notFound: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  public oldCount: number; // number of accounts < 1 year without playing that we're hiding
+  public inactiveMembers: BungieGroupMember[] = [];
+  public defunctMembers: BungieGroupMember[] = [];
 
   public id: string;
   public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
@@ -65,6 +66,8 @@ export class ClanStateService {
   public modelPlayer: BehaviorSubject<Player> = new BehaviorSubject(null);
 
   public dTrackedTriumphIds = {};
+  public inactivityMonthThreshold = 6;
+  public inactivityMonthOptions = [1, 3, 6, 12, 48];
 
   platforms: Platform[];
   selectedPlatform: Platform;
@@ -73,8 +76,6 @@ export class ClanStateService {
     name: 'date',
     ascending: false
   };
-  filterMode = 'none';
-  filterActivity: MileStoneName = null;
 
   public static sortSeals(pushMe: ClanSeal, sort: Sort) {
     const modifier = sort.ascending ? 1 : -1;
@@ -236,6 +237,18 @@ export class ClanStateService {
 
     this.storageService.settingFeed.pipe().subscribe(
       x => {
+        if (x.clanplatform != null && x.clanplatform != this.selectedPlatform.type) {
+          for (const p of this.platforms) {
+            if (p.type == x.clanplatform) {
+              this.selectedPlatform = p;
+              this.sortData();
+            }
+          }
+        }
+        if (x.claninactivitymonththreshold != null && this.inactivityMonthThreshold != x.claninactivitymonththreshold) {
+          this.inactivityMonthThreshold = x.claninactivitymonththreshold;
+          this.inactivityThresholdChange();
+        }
         if (x.trackedtriumphs != null) {
           this.dTrackedTriumphIds = x.trackedtriumphs;
         } else {
@@ -284,8 +297,8 @@ export class ClanStateService {
     }
   }
 
-  public async load(id: string) {
-    if (id == null || id == this.id) {
+  public async load(id: string, force?: boolean) {
+    if (id == null || (!force && id == this.id)) {
       return;
     }
     this.id = id;
@@ -293,6 +306,9 @@ export class ClanStateService {
     this.notFound.next(false);
     this.loading.next(true);
     this.members = [];
+    
+    this.defunctMembers = [];
+    this.inactiveMembers = [];
     this.modelPlayer.next(null);
     this.profilesLoaded.next(0);
     try {
@@ -300,14 +316,24 @@ export class ClanStateService {
       this.loadClanInfo();
       // load the clan members
       const allMembers = await this.bungieService.getClanMembers(this.id);
-
-      const oneYearAgo = new Date();
-      oneYearAgo.setMonth(oneYearAgo.getMonth() - 6);
-      const oneYearUnix = oneYearAgo.getTime() / 1000;
-      const members = allMembers.filter(x => {
-        return x.lastOnlineStatusChange > oneYearUnix;
+      const functMembers = allMembers.filter(x => {
+        if (x.destinyUserInfo.crossSaveOverride == 0 || (x.destinyUserInfo.crossSaveOverride == x.destinyUserInfo.membershipType)) {
+          return true;
+        } else {
+          this.defunctMembers.push(x);
+        }
       });
-      this.oldCount = allMembers.length - members.length;
+      const cutoff = new Date();
+      cutoff.setMonth(cutoff.getMonth() - this.inactivityMonthThreshold);
+      const cutoffUnix = cutoff.getTime() / 1000;
+      const members = functMembers.filter(x => {
+        if (x.lastOnlineStatusChange > cutoffUnix){
+          return true;
+        } else {
+          
+          this.inactiveMembers.push(x);
+        }
+      });
       this.members = members;
       this.sortedMembers.next(this.members.slice(0));
       this.loading.next(false);
@@ -333,7 +359,7 @@ export class ClanStateService {
   }
 
 
-  private downloadCsvReport() {
+  public downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
     let sCsv = 'member,platform,chars,lastPlayed days ago,Triumph Score,Glory,Infamy,Valor,Weekly XP,max LL,';
     this.modelPlayer.getValue().milestoneList.forEach(m => {
@@ -429,7 +455,19 @@ export class ClanStateService {
     this.sortData();
   }
 
-  private sortData(): void {
+  public inactivityThresholdChange() {
+    this.storageService.setItem('claninactivitymonththreshold', this.inactivityMonthThreshold);
+    this.load(this.id, true);
+  }
+
+
+  public selectedPlatformChange() {
+    this.storageService.setItem('clanplatform', this.selectedPlatform.type);
+    this.sortData();
+  }
+
+
+  public sortData(): void {
     let temp = this.members.slice(0);
     if (this.selectedPlatform != Const.ALL_PLATFORM) {
       temp = temp.filter(member => {

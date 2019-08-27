@@ -68,8 +68,9 @@
                         <ng-container *ngIf="!member.player.superprivate && member.player.glory">
                             {{member.player.glory.currentProgress|number}}
                             <div class="simple-caption">
-                                {{member.player.glory.steps[member.player.glory.level].stepName}}
+                                {{member.player.glory.title}}
                             </div>
+                            
                         </ng-container>
                     </td>
                     <td data-label="Infamy">

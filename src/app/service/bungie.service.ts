@@ -10,7 +10,7 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -146,6 +146,21 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    public async getAggHistory2(char: Character): Promise<{ [key: string]: AggHistoryEntry }> {
+        try {
+            const resp = await this.makeReq(
+                'Destiny2/' + char.membershipType + '/Account/' +
+                char.membershipId + '/Character/' + char.characterId +
+                '/Stats/AggregateActivityStats/');
+            return this.parseService.parseAggHistory2(resp);
+        } catch (err) {
+            console.log('Error getting aggregate history for char');
+            console.dir(err);
+            return {};
+        }
+    }
+
+
     public async getAggHistory(char: Character): Promise<void> {
         try {
             const resp = await this.makeReq(
@@ -210,9 +225,24 @@ export class BungieService implements OnDestroy {
         return Promise.all(promises);
     }
 
+    public async updateAggHistory2(player: Player): Promise<void> {
+        const chars = player.characters;
+        const promises: Promise<{ [key: string]: AggHistoryEntry }>[] = [];
+        chars.forEach(c => {
+            const p = this.getAggHistory2(c);
+            promises.push(p);
+        });
+        const x = await Promise.all(promises);
+        const arr = ParseService.mergeAggHistory2(x);
+        
+        console.dir(arr);
+        return;
+    }
+
     public async observeUpdateAggHistory(player: BehaviorSubject<Player>) {
         const p = player.getValue();
         await this.updateAggHistory(p.characters);
+        await this.updateAggHistory2(p);
         player.next(p);
     }
     public async observeUpdatePvpStreak(player: BehaviorSubject<Player>) {

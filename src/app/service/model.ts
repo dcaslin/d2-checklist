@@ -365,6 +365,7 @@ export interface BungieNetUserInfo {
 export interface UserInfo {
     membershipType: number;
     membershipId: string;
+    crossSaveOverride: number;
     platformName: string;
     displayName: string;
     icon: string;
@@ -475,6 +476,7 @@ export class Player {
     readonly infamy: Progression;
     maxLL = 0;
     pvpStreak: PvpStreak;
+    aggHistory: AggHistoryEntry[];
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
@@ -800,6 +802,27 @@ export class Nightfall {
     image: string;
 }
 
+
+// TODO show, time played, completions,  fastest completion (NF only)
+// KD, KDA
+// kills, deaths, assists, prec kills,
+// best personal score?
+export interface AggHistoryEntry {
+    name: string;
+    type: string;
+    hash: string[];
+    activityBestSingleGameScore: number; // this is a personal score, NOT team score, useless
+    fastestCompletionMsForActivity: number;
+    activityCompletions: number;
+
+    activityKills: number;
+    activityAssists: number;
+    activityDeaths: number;
+
+    activityPrecisionKills: number;
+    activitySecondsPlayed: number;
+}
+
 export class AggHistory {
     crownNm = 0;
     crownNmFastestMs: number;
@@ -1057,6 +1080,8 @@ export class Progression {
     totalProgress: number;
     currentResetCount: number;
     lifetimeResetCount: number;
+    title: string;
+    nextTitle: string;
 }
 
 export interface PvpStreak {

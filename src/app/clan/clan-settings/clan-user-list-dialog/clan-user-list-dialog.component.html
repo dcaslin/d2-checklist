@@ -1,0 +1,44 @@
+<mat-dialog-content>
+    <div class="column">
+
+
+        <h4>{{title}}</h4>
+        <div>{{desc}}</div>
+
+
+        <table class="checklist-table">
+            <thead>
+                <tr>
+                    <th>
+                        Player
+                    </th>
+                    <th>
+                        Platform
+                    </th>
+                    <th>
+                        Last Logon
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let member of users">
+                    <td>
+                        <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                            [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                            {{member.destinyUserInfo.displayName}}
+                        </a>
+                        <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                            (click)="state.navigateBnetMember(member)">
+                            {{member.destinyUserInfo.displayName}}
+                        </a>
+                    </td>
+                    <td>
+                        {{member.destinyUserInfo.platformName}}
+                    </td>
+                    <td>
+                        {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>

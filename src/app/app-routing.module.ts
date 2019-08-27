@@ -47,6 +47,8 @@ import { SettingsComponent } from './settings';
 import { ClanTriumphSearchComponent } from './clan/clan-triumphs/clan-triumph-search/clan-triumph-search.component';
 import { ClanTriumphTrackedComponent } from './clan/clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
 import { ClanSettingsComponent } from './clan/clan-settings/clan-settings.component';
+import { MoreComponent } from './player/more/more.component';
+import { LifetimeComponent } from './player/lifetime/lifetime.component';
 
 
 @Injectable()
@@ -245,10 +247,6 @@ export class AuthGuard implements CanActivate {
           component: ChecklistComponent,
         },
         {
-          path: 'progress',
-          component: ProgressComponent,
-        },
-        {
           path: 'triumphs',
           component: TriumphsComponent,
           children: [
@@ -328,9 +326,28 @@ export class AuthGuard implements CanActivate {
           ]
         },
         {
-          path: 'chars',
-          component: CharsComponent,
+          path: 'lifetime',
+          component: LifetimeComponent
         },
+        {
+          path: 'more',
+          component: MoreComponent,
+          children: [
+            {
+              path: '',
+              redirectTo: 'progress',
+              pathMatch: 'full'
+            },
+            {
+              path: 'chars',
+              component: CharsComponent,
+            },
+            {
+              path: 'progress',
+              component: ProgressComponent,
+            }
+          ]
+        }
       ]
     },
     {

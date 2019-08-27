@@ -1,46 +1,44 @@
 <ng-container *ngIf="state.modelPlayer|async as modelPlayer; else loadingModel">
     <div class="filter-row">        
         <mat-form-field>
-            <mat-select [(ngModel)]="state.filterMode" (selectionChange)="state.filterPlayers()"
+            <mat-select [(ngModel)]="filterMode" (selectionChange)="filterUpdated()"
                 placeholder="Filter players by activity">
                 <mat-option value="none">Show All Players</mat-option>
                 <mat-option value="zero">Show only zero completions</mat-option>
                 <mat-option value="all">Show completely done</mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field *ngIf="state.filterMode!='none'">
-            <mat-select [(ngModel)]="state.filterActivity" (selectionChange)="state.filterPlayers()"
+        <mat-form-field *ngIf="filterMode!='none'">
+            <mat-select [(ngModel)]="filterActivity" (selectionChange)="filterUpdated()"
                 placeholder="Activity">
                 <mat-option *ngFor="let mileStoneName of modelPlayer.milestoneList" [value]="mileStoneName">{{
                   mileStoneName.name }}</mat-option>
             </mat-select>
         </mat-form-field>
-        <span class="filter-count">{{(state.sortedMembers|async).length}} / {{state.members.length}}</span>        
-        <button class="d-none d-md-inline" mat-raised-button (click)="showAllClanMilestones()" color="accent"
+        <span class="filter-count">{{(filteredMembers|async).length}} / {{(state.sortedMembers|async).length}}</span>        
+        <button class="d-none d-md-inline" mat-button (click)="showAllClanMilestones()" 
             *ngIf="(hiddenClanMilestones|async).length>0">
             <i class="fal fa-eye"></i> All
         </button>
-        <button class="d-none d-md-inline" mat-raised-button (click)="showDefaultClanMilestones()" color="accent"
+        <button class="d-none d-md-inline" mat-button (click)="showDefaultClanMilestones()"
             *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
             <i class="fal fa-eye"></i> Default
         </button>
     </div>
     <div class="mobile-button-row">       
-        <button mat-raised-button (click)="showAllClanMilestones()" color="accent"
-            *ngIf="(hiddenClanMilestones|async).length>0">
+        <button mat-button (click)="showAllClanMilestones()"  *ngIf="(hiddenClanMilestones|async).length>0">
             <i class="fal fa-eye"></i> All
         </button>
-        <button mat-raised-button (click)="showDefaultClanMilestones()" color="accent"
-            *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
+        <button mat-button (click)="showDefaultClanMilestones()" *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
             <i class="fal fa-eye"></i> Default
         </button>
     </div>
     <div class="mobile-button-row">
-        <button mat-button (click)="toggleMemberSort()">Sort Name
+        <button mat-button (click)="state.toggleSort('name')">Sort Name
             <i *ngIf="sort=='memberDesc'" class="fas fa-sort-up"></i>
             <i *ngIf="sort=='memberAsc'" class="fas fa-sort-down"></i>
         </button>
-        <button mat-button (click)="toggleDateSort()">Sort Last Played
+        <button mat-button (click)="state.toggleSort('date')">Sort Last Played
             <i *ngIf="sort=='dateDesc'" class="fas fa-sort-up"></i>
             <i *ngIf="sort=='dateAsc'" class="fas fa-sort-down"></i>
         </button>
@@ -64,7 +62,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let member of state.sortedMembers|async">
+            <tr *ngFor="let member of filteredMembers|async">
                 <td class="lead">
                     <a *ngIf="member.destinyUserInfo.membershipType!=4"
                         [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
