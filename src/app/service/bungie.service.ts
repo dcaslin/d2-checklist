@@ -15,6 +15,7 @@ import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
+const MAX_PAGE_SIZE = 250;
 
 @Injectable()
 export class BungieService implements OnDestroy {
@@ -744,12 +745,12 @@ export class BungieService implements OnDestroy {
     public async getActivityHistoryUntilDate(membershipType: number, membershipId: string, characterId: string, mode: number, stopDate: Date): Promise<Activity[]> {
         let returnMe = [];
         let page = 0;
-        // repeat until we run out of activities or we preceed the start date or we hit 10 pages
+        // repeat until we run out of activities or we precede the start date or we hit 10 pages
         while (true) {
-            const activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, 100, true);
+            const activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, MAX_PAGE_SIZE, true);
             returnMe = returnMe.concat(activities);
             // out of activities
-            if (activities.length < 100) {
+            if (activities.length < MAX_PAGE_SIZE) {
                 break;
             }
             const lastActivity = activities[activities.length - 1];
@@ -772,7 +773,6 @@ export class BungieService implements OnDestroy {
 
     public async getActivityHistory(membershipType: number, membershipId: string,
         characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
-        const MAX_PAGE_SIZE = 100;
         let curPage = 0;
         let allMatches: any[] = [];
         while (true) {
