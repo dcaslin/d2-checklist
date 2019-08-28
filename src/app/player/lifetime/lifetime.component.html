@@ -62,9 +62,13 @@
                                 <i class="far fa-spinner fa-pulse fa-fw"></i>
                             </ng-container>
                             <ng-container *ngIf="a.highScore!=null">
-                                <a color="primary" [routerLink]="['/pgcr', a.highScorePGCR]">
-                                    {{a.highScore| number:0}}
-                                </a>
+                                {{a.highScore| number:0}}
+                                <div class="pgcr-link">
+                                    <a [routerLink]="['/pgcr', a.highScorePGCR]">
+                                        PGCR
+                                    </a>
+                                </div>
+                                
                             </ng-container>
 
                         </ng-container>
