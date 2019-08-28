@@ -450,8 +450,8 @@ export class Player {
     readonly characters: Character[];
     milestoneList: MileStoneName[] = [];
     readonly currencies: Currency[];
-    readonly bounties: {[id: string]: InventoryItem[]};
-    readonly quests: {[id: string]: InventoryItem[]};
+    readonly bounties: { [id: string]: InventoryItem[] };
+    readonly quests: { [id: string]: InventoryItem[] };
     readonly rankups: Rankup[];
     readonly checklists: Checklist[];
     readonly charChecklists: CharChecklist[];
@@ -476,13 +476,13 @@ export class Player {
     readonly infamy: Progression;
     maxLL = 0;
     pvpStreak: PvpStreak;
-    aggHistory: AggHistoryEntry[];
+    aggHistory: AggHistoryEntry[] = null;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
         currencies: Currency[],
-        bounties: {[id: string]: InventoryItem[]},
-        quests: {[id: string]: InventoryItem[]},
+        bounties: { [id: string]: InventoryItem[] },
+        quests: { [id: string]: InventoryItem[] },
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
         collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
@@ -524,8 +524,8 @@ export class Player {
         this.seasons = seasons;
         this.hasHiddenClosest = hasHiddenClosest;
         this.accountProgressions = accountProgressions;
-        if (accountProgressions!=null){
-            for (const ap of accountProgressions){
+        if (accountProgressions != null) {
+            for (const ap of accountProgressions) {
 
                 //valor
                 if (ap.hash == '2626549951') {
@@ -811,6 +811,7 @@ export interface AggHistoryEntry {
     name: string;
     type: string;
     hash: string[];
+    special?: boolean;
     activityBestSingleGameScore: number; // this is a personal score, NOT team score, useless
     fastestCompletionMsForActivity: number;
     activityCompletions: number;
@@ -821,6 +822,9 @@ export interface AggHistoryEntry {
 
     activityPrecisionKills: number;
     activitySecondsPlayed: number;
+    kd?: number;
+    highScore?: number;
+    highScorePGCR?: string;
 }
 
 export class AggHistory {
@@ -950,6 +954,7 @@ export class Activity {
     kd: number;
     assists: number;
     score: number;
+    teamScore: number;
     completionReason: number;
     success: boolean;
 
@@ -1108,9 +1113,9 @@ export class Const {
 
     public static readonly CHALICE_KEY = '88888';
 
-    public static readonly SPIDER_KEY =  '99999';
+    public static readonly SPIDER_KEY = '99999';
     public static readonly DRIFTER_KEY = '77777';
-    public static readonly WERNER_KEY =   '66666';
+    public static readonly WERNER_KEY = '66666';
 
 
     public static readonly NO_BOOST = 0; // 0, 0
@@ -1237,4 +1242,11 @@ export interface QuestStepReward {
     hash: string;
     name: string;
     quantity: number;
+}
+
+export interface Mission {
+    name: string;
+    icon: string;
+    hash: string;
+    time: number;
 }

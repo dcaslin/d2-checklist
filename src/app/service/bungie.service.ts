@@ -10,7 +10,7 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault, Mission } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -141,7 +141,7 @@ export class BungieService implements OnDestroy {
             return await this.getActivityHistory(char.membershipType, char.membershipId, char.characterId,
                 69, 50);
         } catch (err) {
-            console.log('Error getting aggregate history for char');
+            console.log('Error getting PVP streak history for char');
             return [];
         }
     }
@@ -157,21 +157,6 @@ export class BungieService implements OnDestroy {
             console.log('Error getting aggregate history for char');
             console.dir(err);
             return {};
-        }
-    }
-
-
-    public async getAggHistory(char: Character): Promise<void> {
-        try {
-            const resp = await this.makeReq(
-                'Destiny2/' + char.membershipType + '/Account/' +
-                char.membershipId + '/Character/' + char.characterId +
-                '/Stats/AggregateActivityStats/');
-            char.aggHistory = this.parseService.parseAggHistory(resp);
-            return;
-        } catch (err) {
-            console.log('Error getting aggregate history for char');
-            return;
         }
     }
 
@@ -216,14 +201,6 @@ export class BungieService implements OnDestroy {
         };
     }
 
-    public updateAggHistory(chars: Character[]): Promise<void[]> {
-        const promises: Promise<void>[] = [];
-        chars.forEach(c => {
-            const p = this.getAggHistory(c);
-            promises.push(p);
-        });
-        return Promise.all(promises);
-    }
 
     public async updateAggHistory2(player: Player): Promise<void> {
         const chars = player.characters;
@@ -233,18 +210,86 @@ export class BungieService implements OnDestroy {
             promises.push(p);
         });
         const x = await Promise.all(promises);
-        const arr = ParseService.mergeAggHistory2(x);
-        
+        const nf = await this.getNightFalls();
+        const arr = ParseService.mergeAggHistory2(x, nf);
         console.dir(arr);
+        player.aggHistory = arr;
         return;
+    }
+
+    public async getNightFalls(): Promise<Mission[]> {
+        const nightfalls: Mission[] = [];
+        const publicMilestones = await this.getPublicMilestones();
+        if (publicMilestones != null) {
+            for (const m of publicMilestones) {
+                if ('2853331463' === m.hash) {
+                    for (const a of m.aggActivities) {
+                        let name = a.activity.name;
+                        name = name.replace('Nightfall: ', '');
+                        nightfalls.push({
+                            name: name,
+                            icon: a.activity.icon,
+                            hash: a.activity.hash,
+                            time: -1
+                        });
+                    }
+                }
+            }
+        }
+        return nightfalls;
     }
 
     public async observeUpdateAggHistory(player: BehaviorSubject<Player>) {
         const p = player.getValue();
-        await this.updateAggHistory(p.characters);
         await this.updateAggHistory2(p);
         player.next(p);
+        await this.updateNfScores(p);
+        player.next(p);
     }
+
+    private async updateNfScores(player: Player): Promise<void> {
+        const promises: Promise<Activity[]>[] = [];
+        for (const c of player.characters) {
+            const promise = this.getNightfallPGCR(c);
+            promises.push(promise);
+
+        }
+        const results = await Promise.all(promises);
+        let allAct: Activity[] = [];
+        for (const nfActivities of results) {
+            const filtered = nfActivities.filter(x => {
+                return x.success;
+            });
+            allAct = allAct.concat(filtered);
+        }
+        for (const agg of player.aggHistory) {
+            if (agg.type != 'nf') {
+                continue;
+            }
+            for (const hash of agg.hash) {
+                for (const act of allAct) {
+                    if (act.referenceId == +hash) {
+                        if (agg.highScore == null || agg.highScore < act.teamScore) {
+                            agg.highScore = act.teamScore;
+                            agg.highScorePGCR = act.instanceId;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public async getNightfallPGCR(char: Character): Promise<Activity[]> {
+        try {
+            return await this.getActivityHistory(char.membershipType, char.membershipId, char.characterId,
+                46, 500);
+        } catch (err) {
+            console.log('Error getting PVP streak history for char');
+            return [];
+        }
+    }
+
+
     public async observeUpdatePvpStreak(player: BehaviorSubject<Player>) {
         const p = player.getValue();
         p.pvpStreak = await this.updatePvpStreak(p);
@@ -727,7 +772,6 @@ export class BungieService implements OnDestroy {
 
     public async getActivityHistory(membershipType: number, membershipId: string,
         characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
-        const self = this;
         const MAX_PAGE_SIZE = 100;
         let curPage = 0;
         let allMatches: any[] = [];

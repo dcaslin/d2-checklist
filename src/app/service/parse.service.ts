@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistory, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, Mission } from './model';
 
 
 
@@ -15,7 +15,7 @@ export class ParseService {
         this.lowlineService.init();
     }
 
-    private static dedupeArray(arr: any[]): number[] {
+    private static dedupeArray(arr: any[]): any[] {
         const unique_array = Array.from(new Set(arr));
         return unique_array;
     }
@@ -450,6 +450,7 @@ export class ParseService {
             act.deaths = ParseService.getBasicValue(a.values.deaths);
             act.assists = ParseService.getBasicValue(a.values.assists);
             act.score = ParseService.getBasicValue(a.values.score);
+            act.teamScore = ParseService.getBasicValue(a.values.teamScore);
             act.kd = ParseService.getBasicValue(a.values.killsDeathsRatio);
             act.completionReason = ParseService.getBasicValue(a.values.completionReason);
             if (desc.isPvP) {
@@ -492,13 +493,18 @@ export class ParseService {
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
 
-    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[]): AggHistoryEntry[] {
+    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[], nf: Mission[]): AggHistoryEntry[] {
         const returnMe: AggHistoryEntry[] = [];
         let aKeys = [];
         for (const c of charAggHistDicts) {
             aKeys = aKeys.concat(Object.keys(c));
         }
         aKeys = ParseService.dedupeArray(aKeys);
+
+        const nfHashes = [];
+        for (const n of nf) {
+            nfHashes.push(n.hash);
+        }
 
         for (const key of aKeys) {
             let model: AggHistoryEntry = null;
@@ -512,6 +518,25 @@ export class ParseService {
                 }
             }
             if (model != null) {
+                if (model.type == 'nf') {
+                    model.special = nfHashes.filter(x => model.hash.includes(x)).length > 0;
+                }
+                const nfPrefix = 'Nightfall: ';
+                if (model.name.startsWith(nfPrefix)) {
+                    model.name = model.name.substr(nfPrefix.length);
+                }
+                if (model.special) {
+                    model.name = '* ' + model.name;
+                }
+                if (model.name.startsWith('QUEST')) {
+                    continue;
+                }
+                if (model.activityDeaths == 0) {
+                    model.kd = model.activityKills;
+                } else {
+                    model.kd = model.activityKills / model.activityDeaths;
+                }
+                model.hash = ParseService.dedupeArray(model.hash);
                 returnMe.push(model);
             }
         }
@@ -597,107 +622,6 @@ export class ParseService {
             activityPrecisionKills: ParseService.getBasicValue(a.values.activityPrecisionKills),
             activitySecondsPlayed: ParseService.getBasicValue(a.values.activitySecondsPlayed)
         };
-    }
-
-    public parseAggHistory(resp: any): AggHistory {
-        const returnMe: AggHistory = new AggHistory();
-
-        if (resp.activities != null) {
-            // activity type hash 2043403989 raid
-            // 575572995 nightfall
-            resp.activities.forEach((act: any) => {
-                if (!act.activityHash) { return; }
-
-                const vDesc: any = this.destinyCacheService.cache.Activity[act.activityHash];
-                if (vDesc == null) { return; }
-                const tDesc: any = this.destinyCacheService.cache.ActivityType[vDesc.activityTypeHash];
-                // raid
-                if (vDesc.activityTypeHash === 2043403989) {
-                    const desc: any = this.destinyCacheService.cache.Activity[act.activityHash];
-                    let name: string = null;
-                    let tier: number = null;
-                    if (desc) {
-                        name = desc.displayProperties.name;
-                        tier = desc.tier;
-                    } else {
-                        console.log('No entry found for activity hash: ' + act.activityhash);
-                    }
-                    if (name === 'Leviathan') {
-                        // nm
-                        if (tier < 2) {
-                            const c = ParseService.getBasicValue(act.values.activityCompletions);
-                            returnMe.raid += c;
-                            const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                            if ((f > 0) && (returnMe.raidFastestMs == null || returnMe.raidFastestMs > f)) {
-                                returnMe.raidFastestMs = f;
-                            }
-                        } else {
-                            const c = ParseService.getBasicValue(act.values.activityCompletions);
-                            returnMe.hmRaid += c;
-                            const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                            if ((f > 0) && (returnMe.hmRaidFastestMs == null || returnMe.hmRaidFastestMs > f)) {
-                                returnMe.hmRaidFastestMs = f;
-                            }
-                        }
-
-                    } else if (name === 'Leviathan, Eater of Worlds') {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.eater += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.eaterFastestMs == null || returnMe.eaterFastestMs > f)) {
-                            returnMe.eaterFastestMs = f;
-                        }
-                    } else if (name === 'Leviathan, Spire of Stars') {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.spire += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.spireFastestMs == null || returnMe.spireFastestMs > f)) {
-                            returnMe.spireFastestMs = f;
-                        }
-                    } else if (name.indexOf('Last Wish') === 0) {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.lwNm += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.lwNmFastestMs == null || returnMe.lwNmFastestMs > f)) {
-                            returnMe.lwNmFastestMs = f;
-                        }
-                    } else if (name.indexOf('Scourge of the Past') === 0) {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.spNm += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.spNmFastestMs == null || returnMe.spNmFastestMs > f)) {
-                            returnMe.spNmFastestMs = f;
-                        }
-                    } else if (name.indexOf('Crown of Sorrow') === 0) {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.crownNm += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.spNmFastestMs == null || returnMe.crownNmFastestMs > f)) {
-                            returnMe.crownNmFastestMs = f;
-                        }
-                    }
-
-                } else if (vDesc.activityTypeHash === 575572995) {
-                    // heroic nightfall - scored
-                    if (vDesc.directActivityModeHash === 532484583) {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.hmNf += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.hmNfFastestMs == null || returnMe.hmNfFastestMs > f)) {
-                            returnMe.hmNfFastestMs = f;
-                        }
-                    } else if (vDesc.directActivityModeHash === 547513715) {
-                        const c = ParseService.getBasicValue(act.values.activityCompletions);
-                        returnMe.nf += c;
-                        const f = ParseService.getBasicValue(act.values.fastestCompletionMsForActivity);
-                        if ((f > 0) && (returnMe.nfFastestMs == null || returnMe.nfFastestMs > f)) {
-                            returnMe.nfFastestMs = f;
-                        }
-                    }
-                }
-            });
-        }
-        return returnMe;
     }
 
     public parseVendorData(resp: any): SaleItem[] {

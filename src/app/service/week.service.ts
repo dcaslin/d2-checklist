@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { NameDesc, PublicMilestone } from './model';
+import { NameDesc, PublicMilestone, Mission } from './model';
 import { BungieService } from './bungie.service';
 import * as moment from 'moment';
 
@@ -26,7 +26,6 @@ export class WeekService {
     const burns = await this.bungieService.getBurns();
     const reckBurns = await this.bungieService.getReckBurns();
     const missions: Mission[] = [];
-    const nightfalls: Mission[] = [];
     let flashpoint: string = null;
     let start: string = null;
     if (publicMilestones != null) {
@@ -55,18 +54,7 @@ export class WeekService {
           name = name.replace(/\w\S*/g, function(txt) {return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
           flashpoint = name;
           start = m.start;
-        } else if ('2853331463' === m.hash) {
-          for (const a of m.aggActivities) {
-            let name = a.activity.name;
-            name = name.replace('Nightfall: ', '');
-            nightfalls.push({
-              name: name,
-              icon: a.activity.icon,
-              hash: a.activity.hash,
-              time: -1
-            });
-          }
-        }
+        } 
 
       }
     }
@@ -81,7 +69,7 @@ export class WeekService {
       }
 
     }
-
+    const nightfalls = await this.bungieService.getNightFalls();
     return {
       week: currWeek,
       publicMilestones: publicMilestones,
@@ -189,11 +177,4 @@ interface Week {
   escalationProtocolWeapon: string;
   escalationProtocolBoss: string;
   epVideo?: string;
-}
-
-interface Mission {
-  name: string;
-  icon: string;
-  hash: string;
-  time: number;
 }
