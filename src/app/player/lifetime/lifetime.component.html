@@ -1,1 +1,99 @@
-<p>lifetime works!</p>
+<div class="body">
+    <ng-container *ngIf="state.player|async as player; else loading">
+        <ng-container *ngIf="player.aggHistory; else loading">
+
+            <mat-tab-group>
+                <mat-tab label="Nightfalls">
+                    <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', player: player}">
+                    </ng-container>
+                </mat-tab>
+                <mat-tab label="Raids">
+                    <ng-container *ngTemplateOutlet="aggTable; context: {type: 'raid', player: player}">
+                    </ng-container>
+                </mat-tab>
+            </mat-tab-group>
+
+
+        </ng-container>
+    </ng-container>
+    <ng-template #loading>
+        <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+    </ng-template>
+</div>
+
+
+<ng-template #aggTable let-type="type" let-player="player">
+    <table class="responsive-table">
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>Completions</th>
+                <th *ngIf="type=='nf'">Top Personal Score</th>
+                <th *ngIf="type=='nf'">High Score</th>
+                <th *ngIf="type=='nf'">Fastest</th>
+                <th>Time Played</th>
+                <th>K/D</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let a of player.aggHistory">
+                <tr *ngIf="type==a.type">
+                    <td>
+                        <span *ngIf="a.special" matTooltip="Weekly Nightfall">
+                            <b>{{a.name}}</b>
+                            <i class="pad-left accent-text fas fa-calendar-star"></i>
+                        </span>
+                        <span *ngIf="!a.special">
+                            {{a.name}}
+                        </span>
+
+                    </td>
+                    <td data-label="Completions">
+                        {{a.activityCompletions}}
+                    </td>
+                    <td *ngIf="type=='nf'" data-label="Top Personal Score">
+                        <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
+                            {{a.activityBestSingleGameScore| number:0}}
+                        </ng-container>
+                    </td>
+                    <td *ngIf="type=='nf'" data-label="High Score">
+                        <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
+                            <ng-container *ngIf="a.highScore==null">
+                                <i class="far fa-spinner fa-pulse fa-fw"></i>
+                            </ng-container>
+                            <ng-container *ngIf="a.highScore!=null">
+                                <a color="primary" [routerLink]="['/pgcr', a.highScorePGCR]">
+                                    {{a.highScore| number:0}}
+                                </a>
+                            </ng-container>
+
+                        </ng-container>
+                    </td>
+                    <td *ngIf="type=='nf'" data-label="Fastest">
+                        <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
+                            {{a.fastestCompletionMsForActivity| amnsTiming:'ms'}}
+                        </ng-container>
+                    </td>
+                    <td data-label="Time Played">
+                        {{a.activitySecondsPlayed| amnsTiming:'s'}}
+                    </td>
+                    <td data-label="K/D">
+                        {{a.kd| number:'1.1-1'}}
+                    </td>
+                </tr>
+            </ng-container>
+
+            <!-- 
+                    activityKills: number;
+                    activityAssists: number;
+                    activityDeaths: number;
+
+                    activityPrecisionKills: number; -->
+        </tbody>
+    </table>
+</ng-template>
+
+
+<ng-template #emptyCell>
+    &nbsp;
+</ng-template>
