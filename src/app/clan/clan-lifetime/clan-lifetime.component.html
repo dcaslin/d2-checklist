@@ -1,5 +1,5 @@
 <ng-container *ngIf="!(state.aggHistoryAllLoaded|async)">
-    <p>Loading lifetime data for clan members (this could take a while)...
+    <p>Loading lifetime data for clan members. <ng-container *ngIf="state.sweepMsg|async as msg">{{msg}}</ng-container>
         <ng-container *ngIf="state.aggHistoryLoaded|async as pct">
             <span *ngIf="state.sortedMembers|async as m">{{pct * m.length}} / {{m.length}}</span>
         </ng-container>
@@ -32,6 +32,7 @@
         <thead>
             <tr>
                 <th>Activity</th>
+                <th>Incomplete</th>
                 <th>Completions</th>
                 <th *ngIf="type=='nf'">Top Personal Score</th>
                 <th *ngIf="type=='nf'">High Score</th>
@@ -44,13 +45,21 @@
             <ng-container *ngFor="let a of history">
                 <tr *ngIf="type==a.data.type">
                     <td class="lead">
-                        <span *ngIf="a.data.special" matTooltip="Weekly Nightfall">
-                            <b>{{a.data.name}}</b>
-                            <i class="pad-left accent-text fas fa-calendar-star"></i>
-                        </span>
-                        <span *ngIf="!a.data.special">
-                            {{a.data.name}}
-                        </span>
+                        <button mat-stroked-button (click)="openDialog(a)">
+                            <span matTooltip="Weekly Nightfall">
+                                <i *ngIf="a.data.special"  class="pad-right accent-text fas fa-calendar-star"></i>
+                                <b>{{a.data.name}}</b>
+                            </span>
+                            
+                        </button>
+
+
+
+                    </td>
+                    <td data-label="Incomplete">
+                        <button mat-button (click)="openIncompleteDialog(a)">
+                            {{a.notDone.users.length}} members
+                        </button>
                     </td>
                     <td data-label="Completions">
                         <ng-container *ngIf="a.activityCompletions.length==0">-</ng-container>

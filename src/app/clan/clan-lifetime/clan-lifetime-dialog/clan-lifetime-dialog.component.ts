@@ -1,18 +1,18 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClanSeal, Sort, ClanStateService } from '@app/clan/clan-state.service';
+import { ClanSeal, Sort, ClanStateService, ClanAggHistoryEntry } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
-  selector: 'd2c-clan-triumph-seal-dialog',
-  templateUrl: './clan-triumph-seal-dialog.component.html',
-  styleUrls: ['./clan-triumph-seal-dialog.component.scss'],
+  selector: 'd2c-clan-lifetime-dialog',
+  templateUrl: './clan-lifetime-dialog.component.html',
+  styleUrls: ['./clan-lifetime-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClanTriumphSealDialogComponent extends ChildComponent implements OnInit {
+export class ClanLifetimeDialogComponent extends ChildComponent implements OnInit {
   sort: Sort = {
-    name: 'pct',
+    name: 'name',
     ascending: false
   };
 
@@ -23,17 +23,16 @@ export class ClanTriumphSealDialogComponent extends ChildComponent implements On
       this.sort.ascending = true;
       this.sort.name = field;
     }
-    ClanStateService.sortSeals(this.seal, this.sort);
+    ClanStateService.sortAggHistory(this.entry, this.sort);
 
   }
 
   constructor(
     storageService: StorageService,
-    public dialogRef: MatDialogRef<ClanTriumphSealDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public seal: ClanSeal) {
+    public dialogRef: MatDialogRef<ClanLifetimeDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public entry: ClanAggHistoryEntry) {
       super(storageService);
-      ClanStateService.sortSeals(this.seal, this.sort);
-
+      ClanStateService.sortAggHistory(this.entry, this.sort);
     }
 
   ngOnInit() {

@@ -1,15 +1,16 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ChartOptions, ChartDataSets, ChartLegendOptions } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { PlayerTriumph } from '@app/clan/clan-state.service';
+import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
+
 
 @Component({
-  selector: 'd2c-clan-triumph-graph',
-  templateUrl: './clan-triumph-graph.component.html',
-  styleUrls: ['./clan-triumph-graph.component.scss'],
+  selector: 'd2c-clan-lifetime-graph',
+  templateUrl: './clan-lifetime-graph.component.html',
+  styleUrls: ['./clan-lifetime-graph.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClanTriumphGraphComponent implements OnInit {
+export class ClanLifetimeGraphComponent  implements OnInit {
   public b: ChartLegendOptions;
   public chartOptions: ChartOptions = {
     responsive: true,
@@ -30,7 +31,7 @@ export class ClanTriumphGraphComponent implements OnInit {
 
 
   @Input()
-  set data(all: PlayerTriumph[]) {
+  set data(all: PlayerAggHistoryEntry[]) {
     this.chartLabels = [];
     const dataDict = {};
     const data = [];

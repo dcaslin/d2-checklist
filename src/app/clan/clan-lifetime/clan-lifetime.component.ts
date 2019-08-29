@@ -1,8 +1,11 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
-import { ClanStateService } from '../clan-state.service';
+import { ClanStateService, ClanAggHistoryEntry } from '../clan-state.service';
 import { takeUntil } from 'rxjs/operators';
+import { MatDialogConfig, MatDialog } from '@angular/material';
+import { ClanLifetimeDialogComponent } from './clan-lifetime-dialog/clan-lifetime-dialog.component';
+import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dialog/clan-user-list-dialog.component';
 
 @Component({
   selector: 'd2c-clan-lifetime',
@@ -13,7 +16,8 @@ import { takeUntil } from 'rxjs/operators';
 export class ClanLifetimeComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
-    public state: ClanStateService) {
+    public state: ClanStateService,
+    public dialog: MatDialog) {
     super(storageService);
   }
 
@@ -21,12 +25,28 @@ export class ClanLifetimeComponent extends ChildComponent implements OnInit {
     this.state.allLoaded.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe((done: boolean) => {
-        if (done){
-          console.log("load lifetime");
-          
+        if (done) {
           this.state.loadAggHistory();
         }
       });
+  }
+
+
+
+  public openDialog(entry: ClanAggHistoryEntry): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    dc.data = entry;
+    this.dialog.open(ClanLifetimeDialogComponent, dc);
+  }
+  
+  openIncompleteDialog(entry: ClanAggHistoryEntry) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    dc.data = entry.notDone;
+    this.dialog.open(ClanUserListDialogComponent, dc);
   }
 
 }

@@ -6,12 +6,6 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { BungieGroupMember } from '@app/service/model';
 import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-list-dialog.component';
 
-export interface ClanUserList {
-  title: string;
-  desc: string;
-  users: BungieGroupMember[];
-}
-
 @Component({
   selector: 'd2c-clan-settings',
   templateUrl: './clan-settings.component.html',

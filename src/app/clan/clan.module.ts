@@ -16,6 +16,8 @@ import { ChartsModule } from 'ng2-charts';
 import { ClanTriumphGraphComponent } from './clan-triumphs/clan-triumph-graph/clan-triumph-graph.component';
 import { ClanSettingsComponent } from './clan-settings/clan-settings.component';
 import { ClanUserListDialogComponent } from './clan-settings/clan-user-list-dialog/clan-user-list-dialog.component';
+import { ClanLifetimeDialogComponent } from './clan-lifetime/clan-lifetime-dialog/clan-lifetime-dialog.component';
+import { ClanLifetimeGraphComponent } from './clan-lifetime/clan-lifetime-graph/clan-lifetime-graph.component';
 
 @NgModule({
   imports: [
@@ -23,7 +25,7 @@ import { ClanUserListDialogComponent } from './clan-settings/clan-user-list-dial
     ChartsModule
   ],
   declarations: [ClanComponent, ClanMilestonesComponent, ClanInfoComponent,
-    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent],
-  entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanUserListDialogComponent]
+    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanLifetimeGraphComponent],
+  entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent]
 })
 export class ClanModule { }

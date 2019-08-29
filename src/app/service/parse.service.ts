@@ -494,7 +494,9 @@ export class ParseService {
         const returnMe: AggHistoryEntry[] = [];
         let aKeys = [];
         for (const c of charAggHistDicts) {
-            aKeys = aKeys.concat(Object.keys(c));
+            if (c != null) {
+                aKeys = aKeys.concat(Object.keys(c));
+            }
         }
         aKeys = ParseService.dedupeArray(aKeys);
 
@@ -604,12 +606,16 @@ export class ParseService {
     }
 
     private parseAggHistoryEntry(name: string, a: any, type: string): AggHistoryEntry {
+        let fastest = ParseService.getBasicValue(a.values.fastestCompletionMsForActivity);
+        if (fastest == 0) {
+            fastest = null;
+        }
         return {
             name: name,
             type,
             hash: [a.activityHash],
             activityBestSingleGameScore: ParseService.getBasicValue(a.values.activityBestSingleGameScore),
-            fastestCompletionMsForActivity: ParseService.getBasicValue(a.values.fastestCompletionMsForActivity),
+            fastestCompletionMsForActivity: fastest,
             activityCompletions: ParseService.getBasicValue(a.values.activityCompletions),
 
             activityKills: ParseService.getBasicValue(a.values.activityKills),

@@ -74,7 +74,7 @@
                         </ng-container>
                     </td>
                     <td *ngIf="type=='nf'" data-label="Fastest">
-                        <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
+                        <ng-container *ngIf="a.activityCompletions>0 && a.fastestCompletionMsForActivity; else emptyCell">
                             {{a.fastestCompletionMsForActivity| amnsTiming:'ms'}}
                         </ng-container>
                     </td>

@@ -6,7 +6,7 @@
         <div>{{desc}}</div>
 
 
-        <table class="checklist-table">
+        <table class="responsive-table">
             <thead>
                 <tr>
                     <th>
@@ -22,7 +22,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let member of users">
-                    <td>
+                    <td class="lead">
                         <a *ngIf="member.destinyUserInfo.membershipType!=4"
                             [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
                             {{member.destinyUserInfo.displayName}}
@@ -32,10 +32,10 @@
                             {{member.destinyUserInfo.displayName}}
                         </a>
                     </td>
-                    <td>
+                    <td data-label="Platform">
                         {{member.destinyUserInfo.platformName}}
                     </td>
-                    <td>
+                    <td data-label="Last Logon">
                         {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
                     </td>
                 </tr>

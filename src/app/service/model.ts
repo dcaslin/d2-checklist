@@ -476,8 +476,7 @@ export class Player {
     readonly infamy: Progression;
     maxLL = 0;
     pvpStreak: PvpStreak;
-    aggHistory: AggHistoryEntry[] = null;
-    aggHistoryHasNf = false;
+    aggHistory: AggHistoryEntry[] = [];
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
@@ -805,7 +804,6 @@ export interface AggHistoryCache {
     membershipId: string;
     lastLogon: number;
     stale: boolean;
-    nfIncluded: boolean;
     data: AggHistoryEntry[];
 }
 

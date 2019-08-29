@@ -230,7 +230,6 @@ export class BungieService implements OnDestroy {
             membershipId: player.profile.userInfo.membershipId,
             lastLogon: Date.parse(player.profile.dateLastPlayed),
             stale: false,
-            nfIncluded: player.aggHistoryHasNf,
             data: player.aggHistory
         };
         const key = BungieService.getAgghistoryCacheKey(player);
@@ -243,21 +242,20 @@ export class BungieService implements OnDestroy {
         if (type !== 'force') {
             const cache = await this.getCachedAggHistoryForPlayer(player);
             if (cache != null) {
+                player.aggHistory = cache.data;
                 if (type == 'cache') {
-                    player.aggHistory = cache.data;
-                    console.log(type + ': ' + cache.stale);
+                    // console.log(player.profile.userInfo.displayName + ' found cached history, fresh = ' + (!cache.stale));
                     return cache.stale;
                 } else if (!cache.stale) {
-                    player.aggHistory = cache.data;
-                    console.log(type + ': ' + cache.stale);
+                    // console.log(player.profile.userInfo.displayName + ' found cached history, fresh = ' + (!cache.stale));
                     return cache.stale;
                 }
             } else if (type == 'cache') {
-                console.log(type + ': ' + null);
-                return false;
+                // console.log(player.profile.userInfo.displayName + ' no cached history');
+                return true;
             }
         }
-        console.log(type + ': load');
+        console.log(player.profile.userInfo.displayName + ' no cached history, loading from API');
         const chars = player.characters;
         const promises: Promise<{ [key: string]: AggHistoryEntry }>[] = [];
         chars.forEach(c => {
@@ -301,9 +299,9 @@ export class BungieService implements OnDestroy {
 
     public async observeUpdateAggHistory(player: BehaviorSubject<Player>) {
         const p = player.getValue();
-        const fresh = await this.applyAggHistoryForPlayer(p, 'cache');
+        const stale = await this.applyAggHistoryForPlayer(p, 'cache');
         player.next(p);
-        if (!fresh) {
+        if (stale) {
             await this.applyAggHistoryForPlayer(p, 'force');
             player.next(p);
         }
@@ -315,10 +313,25 @@ export class BungieService implements OnDestroy {
         player.next(p);
     }
 
-    public async updateNfScores(player: Player): Promise<boolean> {
-        if (player.aggHistoryHasNf) {
+    private static hasNfHighScores(player: Player): boolean {
+        if (player.aggHistory == null) {
             return false;
         }
+        for (const a of player.aggHistory){
+            if (a.activityCompletions>0 && a.activityBestSingleGameScore && (a.highScore==null)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public async updateNfScores(player: Player): Promise<boolean> {
+        if (BungieService.hasNfHighScores(player)) {
+            // console.log(player.profile.userInfo.displayName + ' NF pre-cached');
+            return false;
+        }
+
+        console.log(player.profile.userInfo.displayName + ' NF loading from API...');
         const promises: Promise<Activity[]>[] = [];
         for (const c of player.characters) {
             const promise = this.getNightfallPGCR(c);
@@ -348,7 +361,6 @@ export class BungieService implements OnDestroy {
                 }
             }
         }
-        player.aggHistoryHasNf = true;
         this.setCachedAggHistoryForPlayer(player);
         return true;
     }
