@@ -136,21 +136,21 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(
         x => {
           if (x.mode === 'success') {
-            const snackRef = this.snackBar.openFromComponent(SuccessSnackbarComponent, {
+            this.snackBar.openFromComponent(SuccessSnackbarComponent, {
               duration: 2000,
               data: {
                 message: x.message
               }
             });
           } else if (x.mode === 'info') {
-            const snackRef = this.snackBar.openFromComponent(InfoSnackbarComponent, {
+            this.snackBar.openFromComponent(InfoSnackbarComponent, {
               duration: 2000,
               data: {
                 message: x.message
               }
             });
           } else if (x.mode === 'error') {
-            const snackRef = this.snackBar.openFromComponent(WarnSnackbarComponent, {
+            this.snackBar.openFromComponent(WarnSnackbarComponent, {
               duration: 5000,
               data: {
                 message: x.message
@@ -228,8 +228,6 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(
         (navEnd: NavigationEnd) => {
           try {
-
-            const rs = this.router.routerState;
             const route = this.route;
             const path = AppComponent.getFinalComponent(route);
             (window as any).ga('set', 'disabled-ads', this.disableads);

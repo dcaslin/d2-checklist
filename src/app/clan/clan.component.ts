@@ -1,11 +1,7 @@
 
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import * as moment from 'moment';
-import { BehaviorSubject } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
-import { BungieService } from '../service/bungie.service';
-import { BungieGroupMember, ClanInfo, Const, MileStoneName, Platform, Player } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { ClanStateService } from './clan-state.service';

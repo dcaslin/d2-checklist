@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { ClanStateService } from '../clan-state.service';
@@ -37,7 +37,7 @@ export class ClanSettingsComponent extends ChildComponent implements OnInit {
       desc,
       users
     };
-    const dialogRef = this.dialog.open(ClanUserListDialogComponent, dc);
+    this.dialog.open(ClanUserListDialogComponent, dc);
   }
 
 }

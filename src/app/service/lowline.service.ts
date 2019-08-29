@@ -1,6 +1,5 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { merge, fromEvent as observableFromEvent, Subject, Observable, of as observableOf, forkJoin } from 'rxjs';
-import { catchError, map, startWith, switchMap, flatMap } from 'rxjs/operators';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LowLinks } from './model';
 

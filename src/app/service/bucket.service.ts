@@ -1,5 +1,5 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { InventoryItem, Character, Target } from './model';
+import { Injectable } from '@angular/core';
+import { InventoryItem, Target } from './model';
 
 export class Bucket {
     equipped: InventoryItem;

@@ -28,7 +28,7 @@ export class ClanSealsComponent extends ChildComponent implements OnInit {
     dc.disableClose = false;
     dc.autoFocus = true;
     dc.data = triumph;
-    const dialogRef = this.dialog.open(ClanTriumphSealDialogComponent, dc);
+    this.dialog.open(ClanTriumphSealDialogComponent, dc);
   }
 
 }

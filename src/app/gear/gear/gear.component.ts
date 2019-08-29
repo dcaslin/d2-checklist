@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA } from '@angular/material';
 import { BungieService } from '@app/service/bungie.service';
 import { GearService } from '@app/service/gear.service';
@@ -797,7 +797,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     dc.data = {
       parent: this,
     };
-    const dialogRef = this.dialog.open(ArmorPerksDialogComponent, dc);
+    this.dialog.open(ArmorPerksDialogComponent, dc);
   }
 
   public showTargetArmorPerks(): void {
@@ -806,7 +806,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     dc.data = {
       parent: this,
     };
-    const dialogRef = this.dialog.open(TargetArmorPerksDialogComponent, dc);
+    this.dialog.open(TargetArmorPerksDialogComponent, dc);
   }
 
   public showUtilities(): void {
@@ -815,7 +815,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     dc.data = {
       parent: this,
     };
-    const dialogRef = this.dialog.open(GearUtilitiesDialogComponent, dc);
+    this.dialog.open(GearUtilitiesDialogComponent, dc);
   }
 
   public openGearDialog(items: InventoryItem[]): void {
@@ -827,7 +827,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       parent: this,
       items: items
     };
-    const dialogRef = this.dialog.open(GearDetailsDialogComponent, dc);
+    this.dialog.open(GearDetailsDialogComponent, dc);
   }
 
 
@@ -838,7 +838,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
     dc.data = {
     };
-    const dialogRef = this.dialog.open(GearHelpDialogComponent, dc);
+    this.dialog.open(GearHelpDialogComponent, dc);
   }
 
   public showBulkOperationHelp(): void {
@@ -846,7 +846,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     dc.disableClose = false;
     dc.data = {
     };
-    const dialogRef = this.dialog.open(BulkOperationsHelpDialogComponent, dc);
+    this.dialog.open(BulkOperationsHelpDialogComponent, dc);
   }
 
   ngOnInit() {
@@ -929,7 +929,6 @@ export class ArmorPerksDialogComponent {
   tempWishlistOverrideUrl: string;
   WishlistService = WishlistService;
   constructor(
-    private targetPerkSerice: TargetPerkService,
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;

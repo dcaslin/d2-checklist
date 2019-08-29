@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
-import { UserInfo, TriumphRecordNode } from './model';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { UserInfo } from './model';
 import { BungieService } from './bungie.service';
 
 
@@ -15,8 +15,8 @@ const CLAN_MS_KEY = 'hiddenClanMilestones';
 
 @Injectable()
 export class StorageService {
-  private settingSub: BehaviorSubject<any> = new BehaviorSubject({});;
-  public settingFeed: Observable<any> = this.settingSub.asObservable();;
+  private settingSub: BehaviorSubject<any> = new BehaviorSubject({});
+  public settingFeed: Observable<any> = this.settingSub.asObservable();
 
 
   constructor(

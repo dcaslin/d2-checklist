@@ -32,15 +32,6 @@ export class ClanMilestonesComponent extends ChildComponent implements OnInit {
   ngOnInit() {
   }
 
-
-  private filterUpdated() {
-    if (this.filterMode === 'none') {
-      this.filterActivity = null;
-    }
-    this.filterMilestones();
-  }
-
-
   public showAllClanMilestones(): void {
     this.storageService.showAllClanMilestones();
   }

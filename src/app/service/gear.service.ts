@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core';
 import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
 import { BucketService, Bucket } from './bucket.service';
-import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, Vault, ItemType } from './model';
+import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, ItemType } from './model';
 import { WishlistService } from './wishlist.service';
 import { NotificationService } from './notification.service';
 import { BehaviorSubject } from 'rxjs';
 import { TargetPerkService } from './target-perk.service';
-import { isObject } from 'util';
 
 @Injectable()
 export class GearService {
@@ -65,10 +64,6 @@ export class GearService {
         }
     }
 
-    private static async delay(ms: number) {
-        await new Promise(resolve => setTimeout(() => resolve(), ms)).then(() => console.log('fired'));
-    }
-
     private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], weaponsOnly: Boolean): Promise<number> {
         console.log('Clearing inventory ahead of a mode.');
         this.notificationService.info('Clearing inventory ahead of time...');
@@ -113,7 +108,6 @@ export class GearService {
         const target = player.characters[0];
         const totalErr = await this.clearInvForMode(target, player, ['junk'], weaponsOnly);
         let moved = 0;
-        let storeErr = 0;
         for (const i of player.gear) {
             // might we move it?
             if (i.mark == 'junk' && i.owner.id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
@@ -132,7 +126,7 @@ export class GearService {
                         await this.transfer(player, i, target);
                         moved++;
                     } catch (e) {
-                        storeErr++;
+                        console.log('Error on move: ' + e);
                     }
                 }
             }
@@ -172,11 +166,10 @@ export class GearService {
 
     public async clearInv(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
-        let totalErr = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], weaponsOnly);
+        const totalErr = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], weaponsOnly);
         if (totalErr > 0) {
             this.notificationService.info('Inventory was cleared of all junk/infuse except for ' + totalErr + ' items that failed and were skipped.');
-        }
-        else {
+        } else {
             this.notificationService.success('Inventory was cleared of all junk/infuse');
         }
 

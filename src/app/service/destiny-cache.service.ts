@@ -5,7 +5,6 @@ import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
 
 declare let JSZip: any;
-declare let JSZipUtils: any;
 
 @Injectable()
 export class DestinyCacheService {

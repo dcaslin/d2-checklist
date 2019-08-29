@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../service/auth.service';
-import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 
@@ -17,7 +16,7 @@ import { ChildComponent } from '../../shared/child.component';
 export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy {
   msg: string;
 
-  constructor(private bungieService: BungieService,
+  constructor(
     storageService: StorageService, private authService: AuthService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {

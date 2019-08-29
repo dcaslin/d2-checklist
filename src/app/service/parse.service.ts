@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistory, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, Mission } from './model';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -241,7 +241,6 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                        milestonesByKey['3603098564'].resets;
                         const ms2: MileStoneName = {
                             key: skipDesc.hash + '',
                             resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
@@ -287,10 +286,8 @@ export class ParseService {
                         if (q.status.completed) { complete++; }
 
                         if (q.status.completed === false && q.status.started === true) {
-                            let oCntr = 0;
                             if (q.status.stepObjectives != null) {
                                 q.status.stepObjectives.forEach(o => {
-                                    oCntr++;
                                     const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                                     if (oDesc.completionValue != null && oDesc.completionValue > 0) {
                                         oPct = o.progress / oDesc.completionValue;
@@ -2310,7 +2307,6 @@ export class ParseService {
         }
         const steps = qdesc.setData.itemList;
         let cntr = 0;
-        const stepNum = -1;
         const oSteps = [];
         let progress = '';
         for (const step of steps) {
@@ -2399,7 +2395,6 @@ export class ParseService {
             return null;
         }
         if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0 && plug) {
-            const objs: ItemObjective[] = [];
             for (const o of plug.plugObjectives) {
                 const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                 if (oDesc == null) { continue; }
@@ -2456,7 +2451,7 @@ export class ParseService {
         }
         const name = plugDesc.displayProperties.name.replace('_', ' ');
         return new InventoryPlug(plugDesc.hash,
-            plugDesc.displayProperties.name, desc,
+            name, desc,
             plugDesc.displayProperties.icon, true);
     }
 
@@ -2931,7 +2926,7 @@ export class ParseService {
 
             r.kills = ParseService.getBasicValue(e.values.kills);
             r.deaths = ParseService.getBasicValue(e.values.deaths);
-
+            r.teamScore = ParseService.getBasicValue(e.values.teamScore);
             if (r.deaths === 0) {
                 r.kd = r.kills;
             } else {
@@ -3089,6 +3084,7 @@ export class ParseService {
         const fireTeamCounts: any = {};
 
         let teamPveSuccess = false;
+        let scoreSum = 0;
         r.pve = !desc.isPvP;
 
         p.entries.forEach((ent) => {
@@ -3101,7 +3097,15 @@ export class ParseService {
                 }
             }
 
+            if (p.activityDetails.mode == 46) {
+                if (entry.teamScore != null && (r.teamScore == null || entry.teamScore > r.teamScore)) {
 
+                    r.teamScore = entry.teamScore;
+                }
+                if (entry.score != null) {
+                    scoreSum += entry.score;
+                }
+            }
             if (entry.activityDurationSeconds != null) {
                 r.activityDurationSeconds = entry.activityDurationSeconds;
                 r.finish = new Date(Date.parse(r.period) + r.activityDurationSeconds * 1000).toISOString();
@@ -3113,7 +3117,9 @@ export class ParseService {
             r.entries.push(entry);
         });
         r.pveSuccess = teamPveSuccess;
-
+        if (scoreSum && r.teamScore) {
+            r.timeLostPoints = scoreSum - r.teamScore;
+        }
         r.entries.forEach(e => {
             e.fireteamSize = fireTeamCounts[e.fireteamId];
         });
@@ -3423,37 +3429,3 @@ interface PrivInventoryItem {
     state: number;
     expirationDate: string;
 }
-
-
-
-interface PrivInventoryInstanceData {
-    damageType: number; // YES
-    damageTypeHash: number; // YES
-    primaryStat: PrivInventoryStat; // YES
-    itemLevel: number;
-    quality: number;
-    isEquipped: boolean; // YES
-    canEquip: boolean;
-    equipRequiredLevel: number;
-    unlockHashesRequiredToEquip: number[];
-    cannotEquipReason: number;
-}
-
-interface PrivInventoryStat {
-    statHash: number;
-    value: number;
-    maximumValue: number;
-}
-
-// interface _InventoryPerk {
-//     perkHash: number;
-//     iconPath: string;
-//     isActive: boolean;
-//     visible: boolean;
-// }
-
-// interface _InventorySocket {
-//     plugHash: number;
-//     isEnabled: boolean;
-//     reusablePlugHashes: number[];
-// }

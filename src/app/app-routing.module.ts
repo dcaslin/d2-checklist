@@ -1,6 +1,5 @@
 import { Injectable, NgModule } from '@angular/core';
 import { CanActivate, RouterModule } from '@angular/router';
-import { BungieService } from '@app/service/bungie.service';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { AboutComponent } from './about';
@@ -12,7 +11,10 @@ import { ClanInfoComponent } from './clan/clan-info/clan-info.component';
 import { ClanLifetimeComponent } from './clan/clan-lifetime/clan-lifetime.component';
 import { ClanMembersComponent } from './clan/clan-members/clan-members.component';
 import { ClanMilestonesComponent } from './clan/clan-milestones/clan-milestones.component';
+import { ClanSettingsComponent } from './clan/clan-settings/clan-settings.component';
 import { ClanSealsComponent } from './clan/clan-triumphs/clan-seals/clan-seals.component';
+import { ClanTriumphSearchComponent } from './clan/clan-triumphs/clan-triumph-search/clan-triumph-search.component';
+import { ClanTriumphTrackedComponent } from './clan/clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
 import { ClanTriumphsComponent } from './clan/clan-triumphs/clan-triumphs.component';
 import { FriendsComponent } from './friends';
 import { GearComponent } from './gear';
@@ -27,7 +29,9 @@ import { CollectionBadgesComponent } from './player/collections/collection-badge
 import { CollectionSearchComponent } from './player/collections/collection-search/collection-search.component';
 import { CollectionTreeComponent } from './player/collections/collection-tree/collection-tree.component';
 import { CollectionsComponent } from './player/collections/collections.component';
+import { LifetimeComponent } from './player/lifetime/lifetime.component';
 import { MilestonesComponent } from './player/milestones/milestones.component';
+import { MoreComponent } from './player/more/more.component';
 import { ProgressComponent } from './player/progress/progress.component';
 import { BountiesComponent } from './player/pursuits/bounties/bounties.component';
 import { PursuitsComponent } from './player/pursuits/pursuits.component';
@@ -44,18 +48,13 @@ import { RecentPlayersComponent } from './recent-players';
 import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
-import { ClanTriumphSearchComponent } from './clan/clan-triumphs/clan-triumph-search/clan-triumph-search.component';
-import { ClanTriumphTrackedComponent } from './clan/clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
-import { ClanSettingsComponent } from './clan/clan-settings/clan-settings.component';
-import { MoreComponent } from './player/more/more.component';
-import { LifetimeComponent } from './player/lifetime/lifetime.component';
 
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   public loader$ = new Subject<boolean>();
 
-  constructor(private destinyCacheService: DestinyCacheService, private bungieService: BungieService) {
+  constructor(private destinyCacheService: DestinyCacheService) {
   }
 
   canActivate(): Observable<boolean> {
