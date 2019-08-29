@@ -11,12 +11,20 @@ export interface Sort {
   ascending: boolean;
 }
 
+
+export interface ClanUserList {
+  title: string;
+  desc: string;
+  users: BungieGroupMember[];
+}
+
+
 interface ClanAggregate {
   complete: number;
   total: number;
 }
 
-interface PlayerTriumph {
+export interface PlayerTriumph {
   member: BungieGroupMember;
   data: TriumphRecordNode;
 }
@@ -26,7 +34,7 @@ interface PlayerSeal {
   data: Seal;
 }
 
-interface PlayerAggHistoryEntry {
+export interface PlayerAggHistoryEntry {
   member: BungieGroupMember;
   data: AggHistoryEntry;
 }
@@ -45,8 +53,7 @@ export interface ClanAggHistoryEntry extends ClanAggregate {
   highScore: PlayerAggHistoryEntry[];
 
   all: PlayerAggHistoryEntry[];
-  done: PlayerAggHistoryEntry[];
-  notDone: PlayerAggHistoryEntry[];
+  notDone: ClanUserList;
 }
 
 export interface ClanSeal extends ClanAggregate {
@@ -82,6 +89,8 @@ export class ClanStateService {
   public searchableTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
   public trackedTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
   public aggHistory: BehaviorSubject<ClanAggHistoryEntry[]> = new BehaviorSubject([]);
+  public sweepMsg: BehaviorSubject<string> = new BehaviorSubject(null);
+
 
   public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -102,58 +111,131 @@ export class ClanStateService {
     ascending: false
   };
 
-  private static setLeader(pushMe: ClanAggHistoryEntry, x: PlayerAggHistoryEntry, field: string, requiresCompletion?: boolean, compare?: string) {
-    if (x.data[field] != null) {
-      if (requiresCompletion && x.data.activityCompletions == 0) {
+  private static setLeader(pushMe: ClanAggHistoryEntry, x: PlayerAggHistoryEntry, field: string, requiresCompletion?: boolean) {
+    // no data for this entry, can't be a leader
+    if (!x.data[field]) {
+      return;
+    }
+
+    // to be a meaningful leader, reqs completion which they don't have
+    if (requiresCompletion && !x.data.activityCompletions) {
+      return;
+    }
+
+    // if we have no leader, default they're a leader now
+    if (pushMe[field].length === 0) {
+      pushMe[field] = [x];
+      return;
+    }
+    const curLeader = pushMe[field][0];
+
+    // if this entry is better than the current leader, it's a new leader
+    if (x.data[field] > curLeader.data[field]) {
+      pushMe[field] = [x];
+      return;
+    }
+    // if this entry is equal, add it
+    if (x.data[field] == curLeader.data[field]) {
+      // TODO check on this bug after we have proper view
+      pushMe[field].push(x);
+      pushMe[field].sort((a, b) => {
+        const aN = a.member.destinyUserInfo.displayName;
+        const bN = b.member.destinyUserInfo.displayName;
+        if (aN < bN) {
+          return -1;
+        } else if (aN > bN) {
+          return 1;
+        }
+      });      
+    }
+  }
+
+  private static setLeaderFastest(pushMe: ClanAggHistoryEntry, x: PlayerAggHistoryEntry) {
+    if (x.data.fastestCompletionMsForActivity) {
+      if (x.data.activityCompletions == 0) {
         return;
       }
-      if (pushMe[field].length === 0) {
-        pushMe[field] = [x];
-      } else if ('reverse' == compare && (x.data[field] < pushMe[field][0].data[field])) {
-        pushMe[field] = [x];
-      } else if (x.data[field] > pushMe[field][0].data[field]) {
-        pushMe[field] = [x];
-      } else if (x.data[field] == pushMe[field][0].data[field]) {
-        pushMe[field].push(x);
+      if (pushMe.fastestCompletionMsForActivity.length === 0) {
+        pushMe.fastestCompletionMsForActivity = [x];
+      } else if (x.data.fastestCompletionMsForActivity < pushMe.fastestCompletionMsForActivity[0].data.fastestCompletionMsForActivity) {
+        pushMe.fastestCompletionMsForActivity = [x];
+      } else if (x.data.fastestCompletionMsForActivity == pushMe.fastestCompletionMsForActivity[0].data.fastestCompletionMsForActivity) {
+        pushMe.fastestCompletionMsForActivity.push(x);
       }
     }
   }
 
-  public static cookAggHistory(pushMe: ClanAggHistoryEntry, sort: Sort) {
-    const modifier = sort.ascending ? 1 : -1;
-    pushMe.all.sort((a, b) => {
-      // if (sort.name === 'pct') {
-      //   if (a.data.percent < b.data.percent) {
 
-      //     return modifier * -1;
-      //   } else if (a.data.percent > b.data.percent) {
-      //     return modifier * 1;
-      //   }
+  public static cookAggHistoryEntry(pushMe: ClanAggHistoryEntry, members: BungieGroupMember[]) {
+    for (const x of pushMe.all) {
+      ClanStateService.setLeader(pushMe, x, 'kd');
+      // if (pushMe.data.type == 'nf') {
+      ClanStateService.setLeader(pushMe, x, 'activityBestSingleGameScore', true);
+      ClanStateService.setLeaderFastest(pushMe, x);
+      ClanStateService.setLeader(pushMe, x, 'highScore', true);
       // }
-      const aN = a.member.destinyUserInfo.displayName;
-      const bN = b.member.destinyUserInfo.displayName;
+      ClanStateService.setLeader(pushMe, x, 'activityCompletions', true);
+      ClanStateService.setLeader(pushMe, x, 'activitySecondsPlayed');
+    }
+    const notDone: ClanUserList = {
+      title: pushMe.data.name,
+      desc: 'The following players have never completed this activity',
+      users: []
+    };
+    for (const x of members) {
+      let found: PlayerAggHistoryEntry = null;
+      for (const y of pushMe.all) {
+        if (y.member.destinyUserInfo.membershipId == x.destinyUserInfo.membershipId) {
+          found = y;
+          break;
+        }
+      }
+      if (!found || !found.data.activityCompletions) {
+        notDone.users.push(x);
+      }
+    }
+    notDone.users.sort((a, b) => {
+      const aN = a.destinyUserInfo.displayName;
+      const bN = b.destinyUserInfo.displayName;
       if (aN < bN) {
-        return modifier * -1;
+        return -1;
       } else if (aN > bN) {
-        return modifier * 1;
+        return 1;
       }
       return 0;
     });
-    pushMe.done = [];
-    pushMe.notDone = [];
-    for (const x of pushMe.all) {
-      if (x.data.activityCompletions > 0) {
-        pushMe.done.push(x);
-      } else {
-        pushMe.notDone.push(x);
-      }
-      ClanStateService.setLeader(pushMe, x, 'kd');
-      ClanStateService.setLeader(pushMe, x, 'activityBestSingleGameScore', true);
-      ClanStateService.setLeader(pushMe, x, 'activityCompletions', true);
-      ClanStateService.setLeader(pushMe, x, 'activitySecondsPlayed');
-      ClanStateService.setLeader(pushMe, x, 'fastestCompletionMsForActivity', true, 'reverse');
-      ClanStateService.setLeader(pushMe, x, 'highScore', true);
+    pushMe.notDone = notDone;
+  }
 
+  public static sortAggHistory(pushMe: ClanAggHistoryEntry, sort: Sort) {
+    const modifier = sort.ascending ? 1 : -1;
+    if (sort.name == 'name') {
+      pushMe.all.sort((a, b) => {
+        const aN = a.member.destinyUserInfo.displayName;
+        const bN = b.member.destinyUserInfo.displayName;
+        if (aN < bN) {
+          return modifier * -1;
+        } else if (aN > bN) {
+          return modifier * 1;
+        }
+        return 0;
+      });
+    } else {
+      pushMe.all.sort((a, b) => {
+        if (a.data[sort.name] < b.data[sort.name]) {
+          return modifier * -1;
+        } else if (a.data[sort.name] > b.data[sort.name]) {
+          return modifier * 1;
+        }
+        const aN = a.member.destinyUserInfo.displayName;
+        const bN = b.member.destinyUserInfo.displayName;
+        if (aN < bN) {
+          return modifier * -1;
+        } else if (aN > bN) {
+          return modifier * 1;
+        }
+        return 0;
+      });
     }
   }
 
@@ -675,12 +757,10 @@ export class ClanStateService {
     return ClanStateService.simpleCompare(aPts, bPts, reverse);
   }
 
-
-  //TODO show state of sweep
-  //sort agghistoryentreis by name
-  //dialog
-  //graph
-  private async sweepAggHistory(type: string) {
+  // dialog
+  // graph
+  private async sweepAggHistory(type: string, msg: string) {
+    this.sweepMsg.next(msg);
     const loadAggDenom = this.sortedMembers.getValue().length;
     let loadAggNum = 0;
     for (const m of this.sortedMembers.getValue()) {
@@ -688,7 +768,9 @@ export class ClanStateService {
         if (!m.player) {
           continue;
         }
-        const fresh = await this.bungieService.applyAggHistoryForPlayer(m.player, type);
+        if (type != 'nf') {
+          await this.bungieService.applyAggHistoryForPlayer(m.player, type);
+        }
         if (type == 'nf') {
           await this.bungieService.updateNfScores(m.player);
         }
@@ -701,9 +783,6 @@ export class ClanStateService {
         loadAggNum++;
         const pct = loadAggNum / loadAggDenom;
         this.aggHistoryLoaded.next(pct);
-        if (pct >= 1 && type != 'cache') {
-          this.aggHistoryAllLoaded.next(true);
-        }
       }
     }
   }
@@ -713,15 +792,27 @@ export class ClanStateService {
     if (this.aggHistoryAllLoaded.getValue()) {
       return;
     }
-    await this.sweepAggHistory('cache');
-    await this.sweepAggHistory('best');
-    await this.sweepAggHistory('nf');
+    await this.sweepAggHistory('cache', 'Checking cached history info: ');
+    await this.sweepAggHistory('best', 'Loading latest history info: ');
+    await this.sweepAggHistory('nf', 'Checking NF high scores: ');
+    this.aggHistoryAllLoaded.next(true);
+  }
 
+  private static removePrefix(s: string, preFix: string, ignoreCase: true): string {
+    if (s == null) { return s; }
+    const s1 = ignoreCase ? s.toLowerCase() : s;
+    const p1 = ignoreCase ? preFix.toLowerCase() : preFix;
+
+    if (s1.startsWith(p1)) {
+      return s.substr(preFix.length);
+    }
+    return s;
   }
 
   private handleAggHistory(): void {
     const clanAggHistoryDict: { [key: string]: ClanAggHistoryEntry } = {};
-    for (const m of this.sortedMembers.getValue()) {
+    const sortedMembers = this.sortedMembers.getValue();
+    for (const m of sortedMembers) {
       if (!m.player) {
         continue;
       }
@@ -734,9 +825,7 @@ export class ClanStateService {
               complete: 0,
               total: 0,
               all: [],
-              done: [],
-              notDone: [],
-
+              notDone: null,
               activityCompletions: [],
               activitySecondsPlayed: [],
               kd: [],
@@ -761,10 +850,23 @@ export class ClanStateService {
     const clanAggHistoryEntrys: ClanAggHistoryEntry[] = [];
     for (const key of Object.keys(clanAggHistoryDict)) {
       const pushMe: ClanAggHistoryEntry = clanAggHistoryDict[key];
-      ClanStateService.cookAggHistory(pushMe, { name: 'name', ascending: true });
+      ClanStateService.cookAggHistoryEntry(pushMe, sortedMembers);
       clanAggHistoryEntrys.push(pushMe);
     }
-    console.dir(clanAggHistoryEntrys);
+    clanAggHistoryEntrys.sort((a, b) => {
+      let aN = ClanStateService.removePrefix(a.data.name, 'The ', true);
+      const bN = ClanStateService.removePrefix(b.data.name, 'The ', true);
+      if (aN.startsWith('The ')) {
+        aN = aN.substr('The '.length);
+      }
+      if (aN > bN) {
+        return 1;
+      }
+      if (bN > aN) {
+        return -1;
+      }
+      return 0;
+    });
     this.aggHistory.next(clanAggHistoryEntrys);
   }
 

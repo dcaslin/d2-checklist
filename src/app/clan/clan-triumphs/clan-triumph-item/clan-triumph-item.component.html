@@ -10,10 +10,11 @@
                 <i class="fas fa-star accent-text"></i>
             </button>
         </div>
-        <div class="clan-child-spacer">{{triumph.complete}} / {{triumph.total}} members</div>
+        <div class="clan-child-spacer"></div>
         <div class="clan-child-details">
-            <button mat-icon-button (click)="openTriumphDialog(triumph)">
-                <i class="fal fa-plus-square"></i>
+            <button mat-stroked-button (click)="openTriumphDialog(triumph)">
+                    {{triumph.complete}} / {{triumph.total}} members
+                
             </button>
         </div>
     </div>

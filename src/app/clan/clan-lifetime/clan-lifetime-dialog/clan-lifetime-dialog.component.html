@@ -1,0 +1,166 @@
+<mat-dialog-content>
+    <h4>{{entry.data.name}}</h4>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Chart</span>
+            </ng-template>
+            <div class="tab-body">
+                <d2c-clan-lifetime-graph [data]="entry.all"></d2c-clan-triumph-graph>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="far fa-table"></i><span
+                    class="d-none d-md-inline">&ensp;Data&ensp;-</span>&ensp;{{entry.all.length}}
+            </ng-template>
+            <div class="tab-body">
+
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="javascript:void(0)" (click)="sortData('name')"> Player
+                                    <ng-container *ngIf="sort.name=='name'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="javascript:void(0)" (click)="sortData('activityCompletions')">
+                                    Completions
+                                    <ng-container *ngIf="sort.name=='activityCompletions'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+                            </th>
+                            <th *ngIf="entry.data.type=='nf'">
+
+                                <a href="javascript:void(0)" (click)="sortData('activityBestSingleGameScore')">
+                                    Top Personal Score
+                                    <ng-container *ngIf="sort.name=='activityBestSingleGameScore'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+                            </th>
+                            <th *ngIf="entry.data.type=='nf'">
+                                <a href="javascript:void(0)" (click)="sortData('highScore')">
+                                    High Score
+                                    <ng-container *ngIf="sort.name=='highScore'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+
+                            </th>
+                            <th *ngIf="entry.data.type=='nf'">
+                                <a href="javascript:void(0)" (click)="sortData('fastestCompletionMsForActivity')">
+                                    Fastest
+                                    <ng-container *ngIf="sort.name=='fastestCompletionMsForActivity'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+
+                            </th>
+                            <th>
+                                <a href="javascript:void(0)" (click)="sortData('activitySecondsPlayed')">
+                                    Time Played
+                                    <ng-container *ngIf="sort.name=='activitySecondsPlayed'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="javascript:void(0)" (click)="sortData('kd')">
+                                    K/D
+                                    <ng-container *ngIf="sort.name=='kd'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let entry of entry.all">
+                            <tr *ngIf="entry.data as a">
+                                <td *ngIf="entry.member as member" class="lead">
+                                    <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                                        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                                        {{member.destinyUserInfo.displayName}}
+                                    </a>
+                                    <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                                        (click)="state.navigateBnetMember(member)">
+                                        {{member.destinyUserInfo.displayName}}
+                                    </a>
+                                </td>
+                                <td data-label="Completions">
+                                    {{a.activityCompletions}}
+                                </td>
+                                <td *ngIf="entry.data.type=='nf'" data-label="Top Personal Score">
+                                    <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
+                                        {{a.activityBestSingleGameScore| number:0}}
+                                    </ng-container>
+                                </td>
+                                <td *ngIf="entry.data.type=='nf'" data-label="High Score">
+                                    <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
+                                        <ng-container *ngIf="a.highScore==null">
+                                            <i class="far fa-spinner fa-pulse fa-fw"></i>
+                                        </ng-container>
+                                        <ng-container *ngIf="a.highScore!=null">
+                                            {{a.highScore| number:0}}
+                                            <div class="pgcr-link">
+                                                <a [routerLink]="['/pgcr', a.highScorePGCR]">
+                                                    PGCR
+                                                </a>
+                                            </div>
+                                        </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td *ngIf="entry.data.type=='nf'" data-label="Fastest">
+                                    <ng-container *ngIf="a.activityCompletions>0; else emptyCell">                                        
+                                        <ng-container
+                                            *ngIf="a.activityCompletions>0 && a.fastestCompletionMsForActivity; else emptyCell">
+                                            {{a.fastestCompletionMsForActivity| amnsTiming:'ms'}}
+                                        </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td data-label="Time Played">
+                                    {{a.activitySecondsPlayed| amnsTiming:'s'}}
+                                </td>
+                                <td data-label="K/D">
+                                    {{a.kd| number:'1.1-1'}}
+                                </td>
+
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+
+
+
+                <ng-template #emptyCell>
+                    &nbsp;
+                </ng-template>
+
+                <ng-template #playerLabel let-member="member">
+                    <a class="player-link" *ngIf="member.destinyUserInfo.membershipType!=4"
+                        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                        {{member.destinyUserInfo.displayName}}
+                    </a>
+                    <a class="player-link" *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                        (click)="state.navigateBnetMember(member)">
+                        {{member.destinyUserInfo.displayName}}
+                    </a>
+                </ng-template>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
+</mat-dialog-content>

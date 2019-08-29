@@ -10,10 +10,8 @@
                         <ng-container *ngIf="debugmode|async">{{s.data.hash}}</ng-container>
                     </mat-panel-title>
                     <mat-panel-description>
-                        {{s.complete}} / {{s.total}}
-
-                        <button mat-icon-button (click)="openSealDialog(s, $event)">
-                            <i class="fal fa-plus-square"></i>
+                        <button mat-stroked-button (click)="openSealDialog(s, $event)">
+                            {{s.complete}} / {{s.total}}
                         </button>
                     </mat-panel-description>
                 </mat-expansion-panel-header>

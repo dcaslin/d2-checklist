@@ -1,9 +1,8 @@
 <div class="settings-body">
 
-    <div class="filter-row">
-        <span>{{state.defunctMembers.length}} members overridden by cross save ignored.</span>
-        <button mat-icon-button (click)="openUserDialog('Overridden Cross-Save Members', 'These accounts were overridden by cross-save from another platform, you should probably remove them from your clan.', state.defunctMembers)">
-            <i class="fal fa-plus-square"></i>
+    <div class="filter-row">        
+        <button mat-stroked-button (click)="openUserDialog('Overridden Cross-Save Members', 'These accounts were overridden by cross-save from another platform, you should probably remove them from your clan.', state.defunctMembers)">
+                {{state.defunctMembers.length}} members overridden by cross save ignored.
         </button>
     </div>
     <div class="filter-row">
@@ -15,9 +14,9 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <span>{{state.inactiveMembers.length}} inactive hidden.</span>
-        <button mat-icon-button (click)="openUserDialog('Inactive Members', 'These accounts are valid but haven\'t logged on in '+state.inactivityMonthThreshold+' months.', state.inactiveMembers)">
-            <i class="fal fa-plus-square"></i>
+        
+        <button mat-stroked-button (click)="openUserDialog('Inactive Members', 'These accounts are valid but haven\'t logged on in '+state.inactivityMonthThreshold+' months.', state.inactiveMembers)">
+                {{state.inactiveMembers.length}} inactive hidden.
         </button>
     </div>
     <div class="filter-row">

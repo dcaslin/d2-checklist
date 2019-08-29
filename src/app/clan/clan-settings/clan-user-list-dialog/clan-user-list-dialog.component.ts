@@ -2,8 +2,8 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { ClanUserList } from '../clan-settings.component';
 import { BungieGroupMember } from '@app/service/model';
+import { ClanUserList } from '@app/clan/clan-state.service';
 
 @Component({
   selector: 'd2c-clan-user-list-dialog',
