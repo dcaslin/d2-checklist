@@ -1,1 +1,125 @@
-<h3>Coming Soon</h3>
+<ng-container *ngIf="!(state.aggHistoryAllLoaded|async)">
+    <p>Loading lifetime data for clan members (this could take a while)...
+        <ng-container *ngIf="state.aggHistoryLoaded|async as pct">
+            <span *ngIf="state.sortedMembers|async as m">{{pct * m.length}} / {{m.length}}</span>
+        </ng-container>
+    </p>
+    <mat-progress-bar mode="determinate" [value]="(state.aggHistoryLoaded|async)*100"></mat-progress-bar>
+    <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true">
+        </mat-spinner>
+    </div>
+</ng-container>
+
+
+<div class="body" *ngIf="state.aggHistory|async as history">
+
+    <mat-tab-group>
+        <mat-tab label="Nightfalls">
+            <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', history: history}">
+            </ng-container>
+        </mat-tab>
+        <mat-tab label="Raids">
+            <ng-container *ngTemplateOutlet="aggTable; context: {type: 'raid', history: history}">
+            </ng-container>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>
+
+<ng-template #aggTable let-type="type" let-history="history">
+    <table class="responsive-table">
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>Completions</th>
+                <th *ngIf="type=='nf'">Top Personal Score</th>
+                <th *ngIf="type=='nf'">High Score</th>
+                <th *ngIf="type=='nf'">Fastest</th>
+                <th>Time Played</th>
+                <th>K/D</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let a of history">
+                <tr *ngIf="type==a.data.type">
+                    <td class="lead">
+                        <span *ngIf="a.data.special" matTooltip="Weekly Nightfall">
+                            <b>{{a.data.name}}</b>
+                            <i class="pad-left accent-text fas fa-calendar-star"></i>
+                        </span>
+                        <span *ngIf="!a.data.special">
+                            {{a.data.name}}
+                        </span>
+                    </td>
+                    <td data-label="Completions">
+                        <ng-container *ngIf="a.activityCompletions.length==0">-</ng-container>
+                        <div *ngFor="let c of a.activityCompletions; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.activityCompletions|number}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                    </td>
+                    <td *ngIf="type=='nf'" data-label="Top Personal Score">
+                        <ng-container *ngIf="a.activityBestSingleGameScore.length==0">-</ng-container>
+                        <div *ngFor="let c of a.activityBestSingleGameScore; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.activityBestSingleGameScore|number}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                    </td>
+                    <td *ngIf="type=='nf'" data-label="High Score">
+                        <ng-container *ngIf="a.highScore.length==0">-</ng-container>
+                        <div *ngFor="let c of a.highScore; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.highScore|number}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                    </td>
+                    <td *ngIf="type=='nf'" data-label="Fastest">
+                        <ng-container *ngIf="a.fastestCompletionMsForActivity.length==0">-</ng-container>
+                        <div *ngFor="let c of a.fastestCompletionMsForActivity; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.fastestCompletionMsForActivity| amnsTiming:'ms'}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                    </td>
+                    <td data-label="Time Played">
+                        <ng-container *ngIf="a.activitySecondsPlayed.length==0">-</ng-container>
+                        <div *ngFor="let c of a.activitySecondsPlayed; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.activitySecondsPlayed|amnsTiming:'s'}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                    </td>
+                    <td data-label="K/D">
+                        <ng-container *ngIf="a.kd.length==0">-</ng-container>
+                        <div *ngFor="let c of a.kd; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.kd| number:'1.1-1'}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                    </td>
+
+                </tr>
+            </ng-container>
+
+            <!-- 
+                                activityKills: number;
+                                activityAssists: number;
+                                activityDeaths: number;
+            
+                                activityPrecisionKills: number; -->
+        </tbody>
+    </table>
+</ng-template>
+
+
+<ng-template #emptyCell>
+    &nbsp;
+</ng-template>
+
+<ng-template #playerLabel let-member="member">
+    <a class="player-link" *ngIf="member.destinyUserInfo.membershipType!=4"
+        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+        {{member.destinyUserInfo.displayName}}
+    </a>
+    <a class="player-link" *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+        (click)="state.navigateBnetMember(member)">
+        {{member.destinyUserInfo.displayName}}
+    </a>
+</ng-template>

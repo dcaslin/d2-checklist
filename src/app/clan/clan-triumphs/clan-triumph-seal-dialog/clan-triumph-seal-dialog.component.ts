@@ -15,7 +15,7 @@ export class ClanTriumphSealDialogComponent extends ChildComponent implements On
     ascending: false
   };
 
-  sortData(field: string){
+  sortData(field: string) {
     if (field === this.sort.name) {
       this.sort.ascending = !this.sort.ascending;
     } else {

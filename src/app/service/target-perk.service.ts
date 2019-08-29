@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { BucketService } from './bucket.service';
 import { Character, InventoryItem, InventoryPlug, ItemType, PerkCount, Player } from './model';
 
 @Injectable({
@@ -56,22 +55,6 @@ export class TargetPerkService {
       return false;
     }
     return r.test(p);
-  }
-
-
-  private checkWeapon3(w: string, p: string): boolean {
-    if (w == null || w === 'none') {
-      return false;
-    }
-    if (w === 'combat bow') {
-      return p.indexOf('bow') >= 0;
-    } else if (w === 'fusion rifle') {
-      return p.indexOf('linear') < 0 && p.indexOf('fusion rifle') >= 0;
-    } else if (w === 'machine gun') {
-      return p.indexOf('submachine') < 0 && p.indexOf('machine gun') >= 0;
-    } else {
-      return p.indexOf(w) >= 0;
-    }
   }
 
   private isTargetPerk(p: InventoryPlug): boolean {
@@ -185,9 +168,7 @@ export class TargetPerkService {
     this.perks.next(target);
   }
 
-  constructor(
-    private bucketService: BucketService
-  ) {
+  constructor() {
     this.parsedMappings = {};
     for (const key of Object.keys(this.MAPPINGS)) {
       try {
@@ -274,6 +255,6 @@ export interface TargetPerks {
   heavyAmmoFinder: boolean; // 2867719094
   traction: boolean; // 1818103563
   fastball: boolean; // 3030206832
-  distribution: boolean; //2610215900 
+  distribution: boolean; // 2610215900
   enhanced: boolean;
 }

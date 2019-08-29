@@ -59,9 +59,8 @@ export class QuestsComponent  extends ChildComponent implements OnInit {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-    // dc.width = '500px';
     dc.data = quest;
-    const dialogRef = this.dialog.open(QuestDialogComponent, dc);
+    this.dialog.open(QuestDialogComponent, dc);
   }
 
 

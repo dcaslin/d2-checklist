@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
+import { StorageService } from '@app/service/storage.service';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
-import { BungieGroupMember, ClanInfo, Const, MileStoneName, Platform, Player, Seal, TriumphRecordNode } from '../service/model';
-import { StorageService } from '@app/service/storage.service';
+import { BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphRecordNode, AggHistoryEntry } from '../service/model';
 
 export interface Sort {
   name: string;
@@ -26,6 +26,28 @@ interface PlayerSeal {
   data: Seal;
 }
 
+interface PlayerAggHistoryEntry {
+  member: BungieGroupMember;
+  data: AggHistoryEntry;
+}
+
+export interface ClanAggHistoryEntry extends ClanAggregate {
+  data: AggHistoryEntry;
+
+  // all
+  activityCompletions: PlayerAggHistoryEntry[];
+  activitySecondsPlayed: PlayerAggHistoryEntry[];
+  kd?: PlayerAggHistoryEntry[];
+
+  // nf only
+  activityBestSingleGameScore: PlayerAggHistoryEntry[]; // this is a personal score, NOT team score, useless
+  fastestCompletionMsForActivity: PlayerAggHistoryEntry[];
+  highScore: PlayerAggHistoryEntry[];
+
+  all: PlayerAggHistoryEntry[];
+  done: PlayerAggHistoryEntry[];
+  notDone: PlayerAggHistoryEntry[];
+}
 
 export interface ClanSeal extends ClanAggregate {
   data: Seal;
@@ -59,10 +81,13 @@ export class ClanStateService {
   public seals: BehaviorSubject<ClanSeal[]> = new BehaviorSubject([]);
   public searchableTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
   public trackedTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
+  public aggHistory: BehaviorSubject<ClanAggHistoryEntry[]> = new BehaviorSubject([]);
 
   public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public profilesLoaded: BehaviorSubject<number> = new BehaviorSubject(0);
+  public profilesLoaded: BehaviorSubject<number> = new BehaviorSubject(0.01);
+  public aggHistoryLoaded: BehaviorSubject<number> = new BehaviorSubject(0);
+  public aggHistoryAllLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public modelPlayer: BehaviorSubject<Player> = new BehaviorSubject(null);
 
   public dTrackedTriumphIds = {};
@@ -77,6 +102,61 @@ export class ClanStateService {
     ascending: false
   };
 
+  private static setLeader(pushMe: ClanAggHistoryEntry, x: PlayerAggHistoryEntry, field: string, requiresCompletion?: boolean, compare?: string) {
+    if (x.data[field] != null) {
+      if (requiresCompletion && x.data.activityCompletions == 0) {
+        return;
+      }
+      if (pushMe[field].length === 0) {
+        pushMe[field] = [x];
+      } else if ('reverse' == compare && (x.data[field] < pushMe[field][0].data[field])) {
+        pushMe[field] = [x];
+      } else if (x.data[field] > pushMe[field][0].data[field]) {
+        pushMe[field] = [x];
+      } else if (x.data[field] == pushMe[field][0].data[field]) {
+        pushMe[field].push(x);
+      }
+    }
+  }
+
+  public static cookAggHistory(pushMe: ClanAggHistoryEntry, sort: Sort) {
+    const modifier = sort.ascending ? 1 : -1;
+    pushMe.all.sort((a, b) => {
+      // if (sort.name === 'pct') {
+      //   if (a.data.percent < b.data.percent) {
+
+      //     return modifier * -1;
+      //   } else if (a.data.percent > b.data.percent) {
+      //     return modifier * 1;
+      //   }
+      // }
+      const aN = a.member.destinyUserInfo.displayName;
+      const bN = b.member.destinyUserInfo.displayName;
+      if (aN < bN) {
+        return modifier * -1;
+      } else if (aN > bN) {
+        return modifier * 1;
+      }
+      return 0;
+    });
+    pushMe.done = [];
+    pushMe.notDone = [];
+    for (const x of pushMe.all) {
+      if (x.data.activityCompletions > 0) {
+        pushMe.done.push(x);
+      } else {
+        pushMe.notDone.push(x);
+      }
+      ClanStateService.setLeader(pushMe, x, 'kd');
+      ClanStateService.setLeader(pushMe, x, 'activityBestSingleGameScore', true);
+      ClanStateService.setLeader(pushMe, x, 'activityCompletions', true);
+      ClanStateService.setLeader(pushMe, x, 'activitySecondsPlayed');
+      ClanStateService.setLeader(pushMe, x, 'fastestCompletionMsForActivity', true, 'reverse');
+      ClanStateService.setLeader(pushMe, x, 'highScore', true);
+
+    }
+  }
+
   public static sortSeals(pushMe: ClanSeal, sort: Sort) {
     const modifier = sort.ascending ? 1 : -1;
     pushMe.all.sort((a, b) => {
@@ -90,7 +170,7 @@ export class ClanStateService {
       }
       const aN = a.member.destinyUserInfo.displayName;
       const bN = b.member.destinyUserInfo.displayName;
-      if ( aN < bN) {
+      if (aN < bN) {
         return modifier * -1;
       } else if (aN > bN) {
         return modifier * 1;
@@ -120,7 +200,7 @@ export class ClanStateService {
       }
       const aN = a.member.destinyUserInfo.displayName;
       const bN = b.member.destinyUserInfo.displayName;
-      if ( aN < bN) {
+      if (aN < bN) {
         return modifier * -1;
       } else if (aN > bN) {
         return modifier * 1;
@@ -146,7 +226,7 @@ export class ClanStateService {
       if (!m.player) {
         continue;
       }
-      if (m.player.seals ) {
+      if (m.player.seals) {
         for (const s of m.player.seals) {
           let seal: ClanSeal = clanSealsDict[s.hash];
           if (seal == null) {
@@ -194,7 +274,7 @@ export class ClanStateService {
           triumph.all.push(playerTriumph);
           if (s.complete) {
 
-          clanSearchableTriumphsDict[s.hash].complete++;
+            clanSearchableTriumphsDict[s.hash].complete++;
           }
           clanSearchableTriumphsDict[s.hash].total++;
         }
@@ -204,7 +284,7 @@ export class ClanStateService {
     const clanSearchableTriumphs: ClanSearchableTriumph[] = [];
     for (const key of Object.keys(clanSearchableTriumphsDict)) {
       const pushMe: ClanSearchableTriumph = clanSearchableTriumphsDict[key];
-      ClanStateService.sortTriumphs(pushMe, {name: 'pct', ascending: false});
+      ClanStateService.sortTriumphs(pushMe, { name: 'pct', ascending: false });
       clanSearchableTriumphs.push(pushMe);
     }
     for (const key of Object.keys(clanSealsDict)) {
@@ -217,7 +297,7 @@ export class ClanStateService {
         }
         seal.children.push(triumph);
       }
-      ClanStateService.sortSeals(seal, {name: 'pct', ascending: false});
+      ClanStateService.sortSeals(seal, { name: 'pct', ascending: false });
 
       clanSeals.push(seal);
     }
@@ -303,14 +383,17 @@ export class ClanStateService {
     }
     this.id = id;
     this.allLoaded.next(false);
+    this.aggHistoryAllLoaded.next(false);
+    this.aggHistory.next([]);
     this.notFound.next(false);
     this.loading.next(true);
     this.members = [];
-    
+
     this.defunctMembers = [];
     this.inactiveMembers = [];
     this.modelPlayer.next(null);
-    this.profilesLoaded.next(0);
+    this.profilesLoaded.next(0.01);
+    this.aggHistoryLoaded.next(0);
     try {
       // async load clan progressions etc
       this.loadClanInfo();
@@ -327,10 +410,10 @@ export class ClanStateService {
       cutoff.setMonth(cutoff.getMonth() - this.inactivityMonthThreshold);
       const cutoffUnix = cutoff.getTime() / 1000;
       const members = functMembers.filter(x => {
-        if (x.lastOnlineStatusChange > cutoffUnix){
+        if (x.lastOnlineStatusChange > cutoffUnix) {
           return true;
         } else {
-          
+
           this.inactiveMembers.push(x);
         }
       });
@@ -463,7 +546,7 @@ export class ClanStateService {
 
   public selectedPlatformChange() {
     this.storageService.setItem('clanplatform', this.selectedPlatform.type);
-    this.sortData();
+    this.load(this.id, true);
   }
 
 
@@ -590,6 +673,99 @@ export class ClanStateService {
       bPts = b.player.maxLL;
     }
     return ClanStateService.simpleCompare(aPts, bPts, reverse);
+  }
+
+
+  //TODO show state of sweep
+  //sort agghistoryentreis by name
+  //dialog
+  //graph
+  private async sweepAggHistory(type: string) {
+    const loadAggDenom = this.sortedMembers.getValue().length;
+    let loadAggNum = 0;
+    for (const m of this.sortedMembers.getValue()) {
+      try {
+        if (!m.player) {
+          continue;
+        }
+        const fresh = await this.bungieService.applyAggHistoryForPlayer(m.player, type);
+        if (type == 'nf') {
+          await this.bungieService.updateNfScores(m.player);
+        }
+        this.handleAggHistory();
+      } catch (err) {
+        console.dir(err);
+        console.log('Skipping aggHistory error on ' + m.destinyUserInfo.displayName + ' and continuing');
+      }
+      finally {
+        loadAggNum++;
+        const pct = loadAggNum / loadAggDenom;
+        this.aggHistoryLoaded.next(pct);
+        if (pct >= 1 && type != 'cache') {
+          this.aggHistoryAllLoaded.next(true);
+        }
+      }
+    }
+  }
+
+  public async loadAggHistory() {
+    // don't reload unless clan is reloaded
+    if (this.aggHistoryAllLoaded.getValue()) {
+      return;
+    }
+    await this.sweepAggHistory('cache');
+    await this.sweepAggHistory('best');
+    await this.sweepAggHistory('nf');
+
+  }
+
+  private handleAggHistory(): void {
+    const clanAggHistoryDict: { [key: string]: ClanAggHistoryEntry } = {};
+    for (const m of this.sortedMembers.getValue()) {
+      if (!m.player) {
+        continue;
+      }
+      if (m.player.aggHistory) {
+        for (const s of m.player.aggHistory) {
+          let entry = clanAggHistoryDict[s.name];
+          if (entry == null) {
+            entry = {
+              data: s,
+              complete: 0,
+              total: 0,
+              all: [],
+              done: [],
+              notDone: [],
+
+              activityCompletions: [],
+              activitySecondsPlayed: [],
+              kd: [],
+              activityBestSingleGameScore: [],
+              fastestCompletionMsForActivity: [],
+              highScore: []
+            };
+            clanAggHistoryDict[s.name] = entry;
+          }
+          const playerEntry: PlayerAggHistoryEntry = {
+            member: m,
+            data: s
+          };
+          entry.all.push(playerEntry);
+          if (s.activityCompletions > 0) {
+            clanAggHistoryDict[s.name].complete++;
+          }
+          clanAggHistoryDict[s.name].total++;
+        }
+      }
+    }
+    const clanAggHistoryEntrys: ClanAggHistoryEntry[] = [];
+    for (const key of Object.keys(clanAggHistoryDict)) {
+      const pushMe: ClanAggHistoryEntry = clanAggHistoryDict[key];
+      ClanStateService.cookAggHistory(pushMe, { name: 'name', ascending: true });
+      clanAggHistoryEntrys.push(pushMe);
+    }
+    console.dir(clanAggHistoryEntrys);
+    this.aggHistory.next(clanAggHistoryEntrys);
   }
 
   public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {

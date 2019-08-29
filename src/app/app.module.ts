@@ -2,8 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { RouterModule, RouteReuseStrategy } from '@angular/router';
-import { StickyReuseStrategy } from './sticky-reuse-strategy';
 
 
 import { AuthService } from './service/auth.service';
@@ -11,7 +9,7 @@ import { BungieService } from './service/bungie.service';
 import { LowLineService } from './service/lowline.service';
 import { MarkService } from './service/mark.service';
 import { WishlistService } from './service/wishlist.service';
-import { BucketService, Bucket } from './service/bucket.service';
+import { BucketService } from './service/bucket.service';
 import { GearService } from './service/gear.service';
 import { StorageService } from './service/storage.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
@@ -37,7 +35,7 @@ import { AboutModule } from './about';
 import { FriendsModule } from './friends';
 import { GearModule } from './gear';
 
-import { AppRoutingModule, AuthGuard } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import {
   AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
   SelectPlatformDialogComponent

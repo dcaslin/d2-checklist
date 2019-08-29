@@ -29,7 +29,7 @@ export class ProgressComponent extends ChildComponent implements OnInit {
     dc.autoFocus = true;
     dc.data = faction;
     dc.maxWidth = '500px';
-    const dialogRef = this.dialog.open(ProgressStepDialogComponent, dc);
+    this.dialog.open(ProgressStepDialogComponent, dc);
   }
 
 

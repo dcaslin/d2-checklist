@@ -477,6 +477,7 @@ export class Player {
     maxLL = 0;
     pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = null;
+    aggHistoryHasNf = false;
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
@@ -526,15 +527,12 @@ export class Player {
         this.accountProgressions = accountProgressions;
         if (accountProgressions != null) {
             for (const ap of accountProgressions) {
-
-                //valor
+                // valor
                 if (ap.hash == '2626549951') {
                     this.valor = ap;
-                }
-                else if (ap.hash == '2772425241') {
+                } else if (ap.hash == '2772425241') {
                     this.infamy = ap;
-                }
-                else if (ap.hash == '2000925172') {
+                } else if (ap.hash == '2000925172') {
                     this.glory = ap;
                 }
             }
@@ -767,7 +765,6 @@ export class Character extends Target {
     hasLwNm = false;
     hasSpNm = false;
     hasPrestigeNf = false;
-    aggHistory: AggHistory;
 
     constructor(membershipType: number, membershipId: string, className: string, light: number, characterId: string) {
         super(className, characterId);
@@ -803,6 +800,15 @@ export class Nightfall {
 }
 
 
+export interface AggHistoryCache {
+    membershipType: number;
+    membershipId: string;
+    lastLogon: number;
+    stale: boolean;
+    nfIncluded: boolean;
+    data: AggHistoryEntry[];
+}
+
 // TODO show, time played, completions,  fastest completion (NF only)
 // KD, KDA
 // kills, deaths, assists, prec kills,
@@ -826,37 +832,6 @@ export interface AggHistoryEntry {
     highScore?: number;
     highScorePGCR?: string;
 }
-
-export class AggHistory {
-    crownNm = 0;
-    crownNmFastestMs: number;
-    nf = 0;
-    nfFastestMs: number;
-
-    hmNf = 0;
-    hmNfFastestMs: number;
-
-    eater = 0;
-    eaterFastestMs: number;
-
-    spire = 0;
-    spireFastestMs: number;
-
-    raid = 0;
-    raidFastestMs: number;
-
-    hmRaid = 0;
-    hmRaidFastestMs: number;
-
-    lwNm = 0;
-    lwNmFastestMs: number;
-
-
-    spNm = 0;
-    spNmFastestMs: number;
-}
-
-
 
 export class NameDesc {
     name: string;
@@ -920,6 +895,8 @@ export class PGCR {
     pveSuccess?: boolean;
     pve: boolean;
     ll: number;
+    teamScore: number;
+    timeLostPoints: number;
 
 }
 
@@ -970,6 +947,7 @@ export class Activity {
 export class PGCREntry {
     standing: number;
     score: number;
+    teamScore: number;
     values: any;
     kd: number;
     user: UserInfo;

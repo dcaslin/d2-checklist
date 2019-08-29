@@ -38,10 +38,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.selectedPlatform = this.platforms[0];
   }
 
-  // public branchNodeClick(hash: string): void {
-  //   this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab, { id: hash }]);
-  // }
-
   public showBurns() {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
@@ -50,7 +46,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       burns: this.burns,
       reckBurns: this.reckBurns
     };
-    const dialogRef = this.dialog.open(BurnDialogComponent, dc);
+    this.dialog.open(BurnDialogComponent, dc);
   }
 
   public getRaidLink(p: Player) {

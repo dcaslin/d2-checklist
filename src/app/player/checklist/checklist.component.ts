@@ -1,8 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
-import { Player } from '@app/service/model';
-import { BehaviorSubject } from 'rxjs';
 import { PlayerStateService } from '../player-state.service';
 
 @Component({

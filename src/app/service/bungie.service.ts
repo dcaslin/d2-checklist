@@ -10,9 +10,11 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault, Mission } from './model';
+import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault, Mission, AggHistoryCache } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
+import { environment as env } from '@env/environment';
+import { del, get, keys, set } from 'idb-keyval';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
@@ -101,7 +103,6 @@ export class BungieService implements OnDestroy {
     // this is one of the only way to get a fully suffixed BNET user id
     public async getFullBNetName(bungieId: string): Promise<string> {
         try {
-            const opt = await this.buildReqOptions();
             const resp = await this.makeReq('User/GetBungieNetUserById/' + bungieId + '/');
             const m = this.parseService.parseBungieMember(resp);
             if (m.bnet != null) {
@@ -116,7 +117,6 @@ export class BungieService implements OnDestroy {
 
     public async searchBungieUsers(name: string): Promise<BungieMember[]> {
         try {
-            const opt = await this.buildReqOptions();
             const resp = await this.makeReq('User/SearchUsers/?q=' + encodeURIComponent(name));
             return this.parseService.parseBungieMembers(resp);
         } catch (err) {
@@ -128,7 +128,6 @@ export class BungieService implements OnDestroy {
 
     public async searchClans(name: string): Promise<ClanInfo> {
         try {
-            const opt = await this.buildReqOptions();
             const resp = await this.makeReq('GroupV2/Name/' + encodeURIComponent(name) + '/1/');
             return this.parseService.parseClanInfo(resp.detail);
         } catch (err) {
@@ -147,7 +146,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async getAggHistory2(char: Character): Promise<{ [key: string]: AggHistoryEntry }> {
+    public async getAggHistoryForChar(char: Character): Promise<{ [key: string]: AggHistoryEntry }> {
         try {
             const resp = await this.makeReq(
                 'Destiny2/' + char.membershipType + '/Account/' +
@@ -164,8 +163,8 @@ export class BungieService implements OnDestroy {
     private async updatePvpStreak(p: Player): Promise<PvpStreak> {
         const promises: Promise<Activity[]>[] = [];
         p.characters.forEach(c => {
-            const p = this.getPvpStreakMatches(c);
-            promises.push(p);
+            const prom = this.getPvpStreakMatches(c);
+            promises.push(prom);
         });
         const charCompAct = await Promise.all(promises);
         let allAct: Activity[] = [];
@@ -202,20 +201,75 @@ export class BungieService implements OnDestroy {
         };
     }
 
+    private static getAgghistoryCacheKey(player: Player) {
+        const key = 'aggHistory-' + env.versions.app + '-' + player.profile.userInfo.membershipType + '-' + player.profile.userInfo.membershipId;
+        return key;
+    }
 
-    public async updateAggHistory2(player: Player): Promise<void> {
+    public async getCachedAggHistoryForPlayer(player: Player): Promise<AggHistoryCache> {
+        const key = BungieService.getAgghistoryCacheKey(player);
+        const cache = await get(key) as AggHistoryCache;
+        if (cache == null) {
+            return null;
+        }
+        if (cache.membershipId == player.profile.userInfo.membershipId && cache.membershipType == player.profile.userInfo.membershipType) {
+            if (history.length > 0) {
+                const ms = Date.parse(player.profile.dateLastPlayed);
+                if (ms > cache.lastLogon) {
+                    cache.stale = true;
+                }
+                return cache;
+            }
+        }
+        return null;
+    }
+
+    public setCachedAggHistoryForPlayer(player: Player): Promise<void> {
+        const cacheMe: AggHistoryCache = {
+            membershipType: player.profile.userInfo.membershipType,
+            membershipId: player.profile.userInfo.membershipId,
+            lastLogon: Date.parse(player.profile.dateLastPlayed),
+            stale: false,
+            nfIncluded: player.aggHistoryHasNf,
+            data: player.aggHistory
+        };
+        const key = BungieService.getAgghistoryCacheKey(player);
+        return set(key, cacheMe);
+    }
+
+
+    // type can be 'force', 'cache' or 'best'
+    public async applyAggHistoryForPlayer(player: Player, type: string): Promise<boolean> {
+        if (type !== 'force') {
+            const cache = await this.getCachedAggHistoryForPlayer(player);
+            if (cache != null) {
+                if (type == 'cache') {
+                    player.aggHistory = cache.data;
+                    console.log(type + ': ' + cache.stale);
+                    return cache.stale;
+                } else if (!cache.stale) {
+                    player.aggHistory = cache.data;
+                    console.log(type + ': ' + cache.stale);
+                    return cache.stale;
+                }
+            } else if (type == 'cache') {
+                console.log(type + ': ' + null);
+                return false;
+            }
+        }
+        console.log(type + ': load');
         const chars = player.characters;
         const promises: Promise<{ [key: string]: AggHistoryEntry }>[] = [];
         chars.forEach(c => {
-            const p = this.getAggHistory2(c);
+            const p = this.getAggHistoryForChar(c);
             promises.push(p);
         });
         const x = await Promise.all(promises);
         const nf = await this.getNightFalls();
         const arr = ParseService.mergeAggHistory2(x, nf);
-        console.dir(arr);
         player.aggHistory = arr;
-        return;
+        this.setCachedAggHistoryForPlayer(player);
+        return true;
     }
 
     public async getNightFalls(): Promise<Mission[]> {
@@ -240,15 +294,31 @@ export class BungieService implements OnDestroy {
         return nightfalls;
     }
 
+    public async observeUpdateAggHistoryAndScores(player: BehaviorSubject<Player>) {
+        await this.observeUpdateAggHistory(player);
+        await this.observeUpdateNfScores(player);
+    }
+
     public async observeUpdateAggHistory(player: BehaviorSubject<Player>) {
         const p = player.getValue();
-        await this.updateAggHistory2(p);
+        const fresh = await this.applyAggHistoryForPlayer(p, 'cache');
         player.next(p);
+        if (!fresh) {
+            await this.applyAggHistoryForPlayer(p, 'force');
+            player.next(p);
+        }
+    }
+
+    public async observeUpdateNfScores(player: BehaviorSubject<Player>) {
+        const p = player.getValue();
         await this.updateNfScores(p);
         player.next(p);
     }
 
-    private async updateNfScores(player: Player): Promise<void> {
+    public async updateNfScores(player: Player): Promise<boolean> {
+        if (player.aggHistoryHasNf) {
+            return false;
+        }
         const promises: Promise<Activity[]>[] = [];
         for (const c of player.characters) {
             const promise = this.getNightfallPGCR(c);
@@ -278,6 +348,9 @@ export class BungieService implements OnDestroy {
                 }
             }
         }
+        player.aggHistoryHasNf = true;
+        this.setCachedAggHistoryForPlayer(player);
+        return true;
     }
 
     public async getNightfallPGCR(char: Character): Promise<Activity[]> {
@@ -330,7 +403,6 @@ export class BungieService implements OnDestroy {
 
     public async getClans(bungieId: string): Promise<ClanRow[]> {
         try {
-            const opt = await this.buildReqOptions();
             const resp = await this.makeReq('GroupV2/User/254/' + bungieId + '/0/1/');
             const returnMe: ClanRow[] = [];
             const clanMap = {};
@@ -597,13 +669,6 @@ export class BungieService implements OnDestroy {
         const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.WERNER_KEY] = wernerPsuedoMs;
         p.next(p.getValue());
-    }
-
-    private getPctString(pct: number) {
-        if (pct > 0 && pct < 1) {
-            return Math.floor(100 * pct) + '% complete';
-        }
-        return null;
     }
 
     public isSignedOn(p: Player): boolean {

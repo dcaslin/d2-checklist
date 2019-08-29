@@ -1,12 +1,11 @@
 
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
-import { Player, ActivityMode, Const, Activity, PGCR, UserInfo, PGCREntry, BungieNetUserInfo, BungieMember } from '../../service/model';
-import { MatPaginator, MatSort } from '@angular/material';
-import { ChildComponent } from '../../shared/child.component';
+import { Activity, ActivityMode, BungieNetUserInfo, Const, PGCR, PGCREntry, Player } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
+import { ChildComponent } from '../../shared/child.component';
 
 @Component({
   selector: 'd2c-history',
@@ -124,7 +123,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
       if (a.user.name > b.user.name) { return 1; }
       if (a.user.name < b.user.name) { return -1; }
       return 0;
-    });    
+    });
   }
 
   pgcr(instanceId: string) {
@@ -154,11 +153,4 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
       }
     });
   }
-
-}
-
-interface Friend {
-  user: UserInfo[];
-  bungieNetUserInfo: BungieNetUserInfo;
-  instances: PGCR[];
 }

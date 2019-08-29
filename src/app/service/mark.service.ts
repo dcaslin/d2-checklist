@@ -1,10 +1,9 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, BehaviorSubject, } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
 import * as LZString from 'lz-string';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { InventoryItem } from './model';
-import { NotificationService } from './notification.service';
 
 @Injectable()
 export class MarkService implements OnDestroy {
@@ -18,7 +17,7 @@ export class MarkService implements OnDestroy {
 
     private unsubscribe$: Subject<void> = new Subject<void>();
 
-    constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
+    constructor(private httpClient: HttpClient) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};

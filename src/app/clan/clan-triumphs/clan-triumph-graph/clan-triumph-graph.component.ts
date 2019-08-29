@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ChartOptions, ChartType, ChartDataSets, ChartLegendOptions } from 'chart.js';
+import { ChartOptions, ChartDataSets, ChartLegendOptions } from 'chart.js';
 import { Label } from 'ng2-charts';
 
 @Component({

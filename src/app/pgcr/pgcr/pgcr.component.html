@@ -16,18 +16,22 @@
                 aria-hidden="true"></i>
             </span>
           </h2>
+          <h2 *ngIf="data.teamScore">Team Score: {{data.teamScore|number}}</h2>
+          <h4 *ngIf="data.timeLostPoints">Points lost to time: {{data.timeLostPoints}}</h4>
           <div *ngIf="debugmode|async">
             <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
             <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
           </div>
           <table class="timing-table">
             <tr>
+              
               <th>Date</th>
               <th>Start</th>
               <th>Finish</th>
               <th>Duration</th>
             </tr>
             <tr>
+              <td>{{data.period|date:'shortDate'}}</td>
               <td>{{data.period|date:'shortDate'}}</td>
               <td>{{data.period|date:'shortTime'}}</td>
               <td>{{data.finish|date:'shortTime'}}</td>
@@ -39,7 +43,7 @@
             <mat-card-content>
 
               <b *ngFor="let t of data.teams;let last = last;">
-                {{t.name}} {{t.score}} ({{t.standing}}) <ng-container *ngIf="!last">&emsp;-&emsp;</ng-container>
+                {{t.name}} {{t.score|number}} ({{t.standing}}) <ng-container *ngIf="!last">&emsp;-&emsp;</ng-container>
               </b>
 
             </mat-card-content>

@@ -30,7 +30,7 @@ export class ClanTriumphItemComponent extends ChildComponent implements OnInit {
     dc.disableClose = false;
     dc.autoFocus = true;
     dc.data = triumph;
-    const dialogRef = this.dialog.open(ClanTriumphItemDialogComponent, dc);
+    this.dialog.open(ClanTriumphItemDialogComponent, dc);
   }
 
 }

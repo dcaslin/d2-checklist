@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
 import { Player, SearchResult, SelectedUser, TriumphRecordNode } from '@app/service/model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { StorageService } from '@app/service/storage.service';
 
 @Injectable({
@@ -183,8 +183,8 @@ export class PlayerStateService {
         this._player.next(x);
         this.bungieService.loadWeeklyPowerfulBounties(this._player);
         this.bungieService.loadClans(this._player);
-        this.bungieService.observeUpdateAggHistory(this._player);
         this.bungieService.observeUpdatePvpStreak(this._player);
+        this.bungieService.observeUpdateAggHistoryAndScores(this._player);
 
         // need to get out of this change detection cycle to have tabs set
         // setTimeout(() => {
@@ -283,7 +283,6 @@ export class PlayerStateService {
     if (player == null) {
        return;
     }
-    console.log("apply");
     const tempTriumphs = [];
     if (Object.keys(this.dTrackedTriumphIds).length > 0) {
       for (const t of player.searchableTriumphs) {
