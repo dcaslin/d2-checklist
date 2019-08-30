@@ -10,20 +10,51 @@ import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
   styleUrls: ['./clan-lifetime-graph.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClanLifetimeGraphComponent  implements OnInit {
+export class ClanLifetimeGraphComponent implements OnInit {
   public b: ChartLegendOptions;
   public chartOptions: ChartOptions = {
     responsive: true,
-    maintainAspectRatio: false,
+    maintainAspectRatio: true,
     legend: {
       display: false
     },
-    scales: { xAxes: [{}], yAxes: [{}] },
-    plugins: {
-      datalabels: {
-        anchor: 'end',
-        align: 'end',
+    tooltips: {
+      callbacks: {
+        label: function (tooltipItem, data) {
+          console.dir(tooltipItem);
+          const row: any = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+          const point: PlayerAggHistoryEntry = row.z as PlayerAggHistoryEntry;
+          const hrs = (point.data.activitySecondsPlayed / (60 * 60)).toFixed(2);
+          console.dir(data);
+          return point.data.activityCompletions + ' clears / '
+            + hrs + ' hrs: ' + point.member.destinyUserInfo.displayName;
+        }
       }
+    },
+    scales: {
+      xAxes: [{
+        position: 'bottom',
+        ticks: {
+          callback: function (tick) {
+            return tick.toString() + ' hr';
+          }
+        },
+        scaleLabel: {
+          labelString: 'Hours',
+          display: true,
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          // callback: function (tick) {
+          //   return tick.toString() + 'dB';
+          // }
+        },
+        scaleLabel: {
+          labelString: 'Completions',
+          display: true
+        }
+      }]
     }
   };
   public chartLabels: Label[] = [];
@@ -33,26 +64,21 @@ export class ClanLifetimeGraphComponent  implements OnInit {
   @Input()
   set data(all: PlayerAggHistoryEntry[]) {
     this.chartLabels = [];
-    const dataDict = {};
     const data = [];
     for (const pt of all) {
-      const val = Math.ceil(pt.data.percent / 10) * 10;
-      if (dataDict[val] == null) {
-        dataDict[val] = 1;
-      } else {
-        dataDict[val]++;
-      }
+      const comp = pt.data.activityCompletions;
+      const hours = pt.data.activitySecondsPlayed / (60 * 60);
+      data.push({
+        x: hours,
+        y: comp,
+        z: pt
+      });
     }
-    for (let cntr = 0; cntr <= 100; cntr += 10) {
-      this.chartLabels.push(cntr + '%');
-      if (!dataDict[cntr]) {
-        data.push(0);
-      } else {
-        data.push(dataDict[cntr]);
-      }
-    }
+    console.dir(data);
     this.chartData = [
       {
+        pointRadius: 7,
+        pointHoverRadius: 9,
         data: data,
         label: 'Members'
       }

@@ -96,6 +96,7 @@ export class ClanStateService {
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public profilesLoaded: BehaviorSubject<number> = new BehaviorSubject(0.01);
   public aggHistoryLoaded: BehaviorSubject<number> = new BehaviorSubject(0);
+  public aggHistoryLoadCount: BehaviorSubject<number> = new BehaviorSubject(0);
   public aggHistoryAllLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public modelPlayer: BehaviorSubject<Player> = new BehaviorSubject(null);
 
@@ -136,7 +137,6 @@ export class ClanStateService {
     }
     // if this entry is equal, add it
     if (x.data[field] == curLeader.data[field]) {
-      // TODO check on this bug after we have proper view
       pushMe[field].push(x);
       pushMe[field].sort((a, b) => {
         const aN = a.member.destinyUserInfo.displayName;
@@ -476,6 +476,8 @@ export class ClanStateService {
     this.modelPlayer.next(null);
     this.profilesLoaded.next(0.01);
     this.aggHistoryLoaded.next(0);
+    this.aggHistoryLoadCount.next(0);
+    
     try {
       // async load clan progressions etc
       this.loadClanInfo();
@@ -782,6 +784,7 @@ export class ClanStateService {
       finally {
         loadAggNum++;
         const pct = loadAggNum / loadAggDenom;
+        this.aggHistoryLoadCount.next(loadAggNum);
         this.aggHistoryLoaded.next(pct);
       }
     }

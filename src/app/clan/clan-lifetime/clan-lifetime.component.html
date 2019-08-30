@@ -1,8 +1,6 @@
 <ng-container *ngIf="!(state.aggHistoryAllLoaded|async)">
     <p>Loading lifetime data for clan members. <ng-container *ngIf="state.sweepMsg|async as msg">{{msg}}</ng-container>
-        <ng-container *ngIf="state.aggHistoryLoaded|async as pct">
-            <span *ngIf="state.sortedMembers|async as m">{{pct * m.length}} / {{m.length}}</span>
-        </ng-container>
+            <span *ngIf="state.aggHistoryLoadCount|async as cnt">{{cnt}} / {{(state.sortedMembers|async).length}}</span>
     </p>
     <mat-progress-bar mode="determinate" [value]="(state.aggHistoryLoaded|async)*100"></mat-progress-bar>
     <div class="center-spinner">

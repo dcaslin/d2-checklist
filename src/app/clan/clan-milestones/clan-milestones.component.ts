@@ -47,7 +47,6 @@ export class ClanMilestonesComponent extends ChildComponent implements OnInit {
 
 
   private filterMilestones() {
-    // todo use this
     let temp = this.state.sortedMembers.getValue().slice(0);
     temp = temp.filter(member => {
       if (this.filterActivity == null) { return true; }

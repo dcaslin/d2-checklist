@@ -807,10 +807,7 @@ export interface AggHistoryCache {
     data: AggHistoryEntry[];
 }
 
-// TODO show, time played, completions,  fastest completion (NF only)
-// KD, KDA
-// kills, deaths, assists, prec kills,
-// best personal score?
+// TODO completions per hour?
 export interface AggHistoryEntry {
     name: string;
     type: string;
