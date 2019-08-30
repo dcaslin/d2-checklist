@@ -513,6 +513,9 @@ export class ParseService {
         for (const key of aKeys) {
             let model: AggHistoryEntry = null;
             for (const c of charAggHistDicts) {
+                if (c == null) {
+                    continue;
+                }
                 if (c[key] == null) {
                     continue;
                 } if (model == null) {
@@ -553,7 +556,6 @@ export class ParseService {
             const val = nfDict[hash];
             // this NF is missing, add it
             if (!val.found) {
-                console.dir(val);
                 const addMe = {
                     name: '* ' + val.mission.name,
                     type: 'nf',
