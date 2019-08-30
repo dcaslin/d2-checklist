@@ -38,6 +38,7 @@ export class ClanLifetimeComponent extends ChildComponent implements OnInit {
     dc.disableClose = false;
     dc.autoFocus = true;
     dc.data = entry;
+    dc.minWidth = '50vw';
     this.dialog.open(ClanLifetimeDialogComponent, dc);
   }
   

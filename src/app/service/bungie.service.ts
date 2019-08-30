@@ -255,7 +255,7 @@ export class BungieService implements OnDestroy {
                 return true;
             }
         }
-        console.log(player.profile.userInfo.displayName + ' no cached history, loading from API');
+        console.log(player.profile.userInfo.displayName + ' stale/missing cached history, loading from API');
         const chars = player.characters;
         const promises: Promise<{ [key: string]: AggHistoryEntry }>[] = [];
         chars.forEach(c => {
