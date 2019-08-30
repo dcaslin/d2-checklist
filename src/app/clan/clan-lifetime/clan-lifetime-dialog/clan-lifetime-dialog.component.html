@@ -36,6 +36,15 @@
                                     </ng-container>
                                 </a>
                             </th>
+                            <th>
+                                <a href="javascript:void(0)" (click)="sortData('efficiency')">
+                                    Efficiency
+                                    <ng-container *ngIf="sort.name=='efficiency'">
+                                        <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                                        <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                                    </ng-container>
+                                </a>
+                            </th>
                             <th *ngIf="entry.data.type=='nf'">
 
                                 <a href="javascript:void(0)" (click)="sortData('activityBestSingleGameScore')">
@@ -103,6 +112,9 @@
                                 <td data-label="Completions">
                                     {{a.activityCompletions}}
                                 </td>
+                                <td data-label="Efficiency">
+                                    {{a.efficiency|number: '1.1-1'}}
+                                </td>
                                 <td *ngIf="entry.data.type=='nf'" data-label="Top Personal Score">
                                     <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
                                         {{a.activityBestSingleGameScore| number:0}}
@@ -124,7 +136,7 @@
                                     </ng-container>
                                 </td>
                                 <td *ngIf="entry.data.type=='nf'" data-label="Fastest">
-                                    <ng-container *ngIf="a.activityCompletions>0; else emptyCell">                                        
+                                    <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
                                         <ng-container
                                             *ngIf="a.activityCompletions>0 && a.fastestCompletionMsForActivity; else emptyCell">
                                             {{a.fastestCompletionMsForActivity| amnsTiming:'ms'}}

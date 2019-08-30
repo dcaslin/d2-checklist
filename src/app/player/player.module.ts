@@ -26,12 +26,16 @@ import { TriumphMotComponent } from './triumphs/triumph-mot/triumph-mot.componen
 import { ProgressStepDialogComponent } from './progress/progress-step-dialog/progress-step-dialog.component';
 import { LifetimeComponent } from './lifetime/lifetime.component';
 import { MoreComponent } from './more/more.component';
+import { ChartsModule } from 'ng2-charts';
+
+import { PlayerEfficiencyGraphComponent } from './lifetime/player-efficiency-graph/player-efficiency-graph.component';
 
 @NgModule({
   imports: [
-    SharedModule
+    SharedModule,
+    ChartsModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, QuestsComponent, TriumphMotComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, BountiesComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, QuestsComponent, TriumphMotComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, PlayerEfficiencyGraphComponent],
   entryComponents: [
     QuestDialogComponent, BurnDialogComponent, ProgressStepDialogComponent
   ],

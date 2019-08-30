@@ -3,6 +3,9 @@
         <ng-container *ngIf="player.aggHistory; else loading">
 
             <mat-tab-group>
+                <mat-tab label="Efficiency">
+                    <d2c-player-efficiency-graph *ngIf="player.aggHistory.length>0; else loading"></d2c-player-efficiency-graph>
+                </mat-tab>
                 <mat-tab label="Nightfalls">
                     <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', player: player}">
                     </ng-container>
@@ -27,6 +30,7 @@
         <thead>
             <tr>
                 <th>Activity</th>
+                <th>Efficiency</th>
                 <th>Completions</th>
                 <th *ngIf="type=='nf'">Top Personal Score</th>
                 <th *ngIf="type=='nf'">High Score</th>
@@ -48,6 +52,9 @@
                         </span>
 
                     </td>
+                    <td data-label="Efficiency">
+                        {{a.efficiency|number: '1.1-1'}}
+                    </td>
                     <td data-label="Completions">
                         {{a.activityCompletions}}
                     </td>
@@ -68,13 +75,14 @@
                                         PGCR
                                     </a>
                                 </div>
-                                
+
                             </ng-container>
 
                         </ng-container>
                     </td>
                     <td *ngIf="type=='nf'" data-label="Fastest">
-                        <ng-container *ngIf="a.activityCompletions>0 && a.fastestCompletionMsForActivity; else emptyCell">
+                        <ng-container
+                            *ngIf="a.activityCompletions>0 && a.fastestCompletionMsForActivity; else emptyCell">
                             {{a.fastestCompletionMsForActivity| amnsTiming:'ms'}}
                         </ng-container>
                     </td>

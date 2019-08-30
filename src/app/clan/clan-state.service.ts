@@ -44,6 +44,8 @@ export interface ClanAggHistoryEntry extends ClanAggregate {
 
   // all
   activityCompletions: PlayerAggHistoryEntry[];
+  efficiency: PlayerAggHistoryEntry[];
+
   activitySecondsPlayed: PlayerAggHistoryEntry[];
   kd?: PlayerAggHistoryEntry[];
 
@@ -175,6 +177,7 @@ export class ClanStateService {
       ClanStateService.setLeader(pushMe, x, 'highScore', true);
       // }
       ClanStateService.setLeader(pushMe, x, 'activityCompletions', true);
+      ClanStateService.setLeader(pushMe, x, 'efficiency');
       ClanStateService.setLeader(pushMe, x, 'activitySecondsPlayed');
     }
     const notDone: ClanUserList = {
@@ -830,6 +833,7 @@ export class ClanStateService {
               all: [],
               notDone: null,
               activityCompletions: [],
+              efficiency: [],
               activitySecondsPlayed: [],
               kd: [],
               activityBestSingleGameScore: [],

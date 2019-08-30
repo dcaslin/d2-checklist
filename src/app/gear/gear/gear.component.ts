@@ -116,6 +116,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   filter: ElementRef;
 
   filterTags: string[] = [];
+  orMode = false;
+
   options = [
     { name: 'Weapons', type: ItemType.Weapon },
     { name: 'Armor', type: ItemType.Armor },
@@ -155,6 +157,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filter.nativeElement.value = '';
     this.visibleFilterText = null;
     this.filterTags = [];
+    this.orMode = false;
     for (const toggle of this.filters) {
       toggle.selectAll(true);
     }
@@ -350,24 +353,38 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
-  filterItem(i: InventoryItem): boolean {
-    for (const f of this.filterTags) {
-      // not argument
-      if (f.startsWith('!')) {
-        const actual = f.substr(1);
-        if (i.searchText.indexOf(actual) >= 0) { return false; }
-        if (i.notes != null && i.notes.toLowerCase().indexOf(actual) >= 0) { return false; }
-      } else {
-        // check wildcard first
-        if (i.searchText.indexOf(f) < 0) {
-          // then check notes
-          if (i.notes == null) { return false; }
-          if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
-        }
+  private static processFilterTag(f: string, i: InventoryItem): boolean {
+    if (f.startsWith('!')) {
+      const actual = f.substr(1);
+      if (i.searchText.indexOf(actual) >= 0) {
+        return false;
       }
-
+      if (i.notes != null && i.notes.toLowerCase().indexOf(actual) >= 0) { return false; }
+    } else {
+      // check wildcard first
+      if (i.searchText.indexOf(f) < 0) {
+        // then check notes
+        if (i.notes == null) { return false; }
+        if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
+      }
     }
     return true;
+  }
+
+  shouldKeepItem(i: InventoryItem): boolean {
+    for (const f of this.filterTags) {
+      const match = GearComponent.processFilterTag(f, i);
+      if (!this.orMode && !match) {
+        return false;
+      } else if (this.orMode && match) {
+        return true;
+      }
+    }
+    if (this.orMode) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
@@ -375,7 +392,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       for (const f of this.filterTags) {
         this.filterNotes.push('wildcard = ' + f);
       }
-      return gear.filter(this.filterItem, this);
+      return gear.filter(this.shouldKeepItem, this);
     } else {
       return gear;
     }
@@ -721,9 +738,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     if (val == null || val.trim().length === 0) {
       this.filterTags = [];
+      this.orMode = false;
     } else {
       const rawFilter = val.toLowerCase();
-      this.filterTags = rawFilter.split(' and ');
+      if (rawFilter.indexOf(' or ') >= 0) {
+        this.filterTags = rawFilter.split(' or ');
+        this.orMode = true;
+      } else {
+        this.orMode = false;
+        this.filterTags = rawFilter.split(' and ');
+      }
     }
     this.filterChanged();
 
