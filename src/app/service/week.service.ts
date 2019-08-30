@@ -16,10 +16,6 @@ export class WeekService {
     }
   }
 
-  public getReckCalendar(reckBurns: NameDesc[]): void {
-    console.dir(reckBurns);
-  }
-
   public async  getToday(): Promise<Today> {
 
     const publicMilestones = await this.bungieService.getPublicMilestones();

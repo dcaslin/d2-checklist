@@ -225,9 +225,16 @@ export class ClanStateService {
       });
     } else {
       pushMe.all.sort((a, b) => {
-        if (a.data[sort.name] < b.data[sort.name]) {
+        let aV = a.data[sort.name];
+        let bV = b.data[sort.name];
+        if (aV == null){
+          aV = 0;
+        } else if (bV == null){
+          bV = 0;
+        }
+        if (aV < bV) {
           return modifier * -1;
-        } else if (a.data[sort.name] > b.data[sort.name]) {
+        } else if (aV > bV) {
           return modifier * 1;
         }
         const aN = a.member.destinyUserInfo.displayName;

@@ -77,7 +77,6 @@ export class PlayerEfficiencyGraphComponent implements OnInit {
         z: a
       });
     }
-    console.dir(data);
     this.chartData = [
       {
         pointRadius: 7,

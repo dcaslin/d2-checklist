@@ -13,7 +13,7 @@ import { ChildComponent } from '@app/shared/child.component';
 export class ClanLifetimeDialogComponent extends ChildComponent implements OnInit {
   sort: Sort = {
     name: 'name',
-    ascending: false
+    ascending: true
   };
 
   sortData(field: string) {
