@@ -501,8 +501,13 @@ export class ParseService {
         aKeys = ParseService.dedupeArray(aKeys);
 
         const nfHashes = [];
+        const nfDict = {};
         for (const n of nf) {
             nfHashes.push(n.hash);
+            nfDict[n.hash] = {
+                found: false,
+                mission: n
+            };
         }
 
         for (const key of aKeys) {
@@ -518,7 +523,12 @@ export class ParseService {
             }
             if (model != null) {
                 if (model.type == 'nf') {
-                    model.special = nfHashes.filter(x => model.hash.includes(x)).length > 0;
+                    const match = nfHashes.filter(x => model.hash.includes(x));
+                    for (const m of match) {
+                        nfDict[m].found = true;
+                    }
+                    model.special = match.length > 0;
+
                 }
                 const nfPrefix = 'Nightfall: ';
                 if (model.name.startsWith(nfPrefix)) {
@@ -537,6 +547,30 @@ export class ParseService {
                 }
                 model.hash = ParseService.dedupeArray(model.hash);
                 returnMe.push(model);
+            }
+        }
+        for (const hash of Object.keys(nfDict)) {
+            const val = nfDict[hash];
+            // this NF is missing, add it
+            if (!val.found) {
+                console.dir(val);
+                const addMe = {
+                    name: '* ' + val.mission.name,
+                    type: 'nf',
+                    special: true,
+                    hash: [hash],
+                    activityBestSingleGameScore: null,
+                    fastestCompletionMsForActivity: null,
+                    activityCompletions: 0,
+                    activityKills: null,
+                    activityAssists: null,
+                    activityDeaths: null,
+                    activityPrecisionKills: null,
+                    activitySecondsPlayed: null,
+                    efficiency: null
+                };
+                returnMe.push(addMe);
+
             }
         }
         returnMe.sort((a, b) => {
@@ -580,6 +614,14 @@ export class ParseService {
         return dict;
     }
 
+    private static setEfficiency(x: AggHistoryEntry) {
+        if (x.activitySecondsPlayed > 0) {
+            x.efficiency = x.activityCompletions / (x.activitySecondsPlayed / (60 * 60));
+        } else {
+            x.efficiency = 0;
+        }
+    }
+
     private static mergeAggHistoryEntry(a: AggHistoryEntry, b: AggHistoryEntry): AggHistoryEntry {
         if (b == null) { return a; }
         let fastest: number = null;
@@ -590,7 +632,12 @@ export class ParseService {
         } else if (a.fastestCompletionMsForActivity) {
             fastest = b.fastestCompletionMsForActivity;
         }
-        return {
+        const timePlayed =   a.activitySecondsPlayed + b.activitySecondsPlayed;
+        const efficiency = 0;
+        if (timePlayed == 0 ) {
+
+        }
+        const returnMe = {
             name: a.name,
             type: a.type,
             hash: a.hash.concat(b.hash),
@@ -601,8 +648,11 @@ export class ParseService {
             activityAssists: a.activityAssists + b.activityAssists,
             activityDeaths: a.activityDeaths + b.activityDeaths,
             activityPrecisionKills: a.activityPrecisionKills + b.activityPrecisionKills,
-            activitySecondsPlayed: a.activitySecondsPlayed + b.activitySecondsPlayed
+            activitySecondsPlayed: timePlayed,
+            efficiency: 0
         };
+        ParseService.setEfficiency(returnMe);
+        return returnMe;
     }
 
     private parseAggHistoryEntry(name: string, a: any, type: string): AggHistoryEntry {
@@ -610,7 +660,7 @@ export class ParseService {
         if (fastest == 0) {
             fastest = null;
         }
-        return {
+        const returnMe = {
             name: name,
             type,
             hash: [a.activityHash],
@@ -623,8 +673,11 @@ export class ParseService {
             activityDeaths: ParseService.getBasicValue(a.values.activityDeaths),
 
             activityPrecisionKills: ParseService.getBasicValue(a.values.activityPrecisionKills),
-            activitySecondsPlayed: ParseService.getBasicValue(a.values.activitySecondsPlayed)
+            activitySecondsPlayed: ParseService.getBasicValue(a.values.activitySecondsPlayed),
+            efficiency: 0
         };
+        ParseService.setEfficiency(returnMe);
+        return returnMe;
     }
 
     public parseVendorData(resp: any): SaleItem[] {
@@ -2401,6 +2454,7 @@ export class ParseService {
             return null;
         }
         if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0 && plug) {
+            const itemObjs: ItemObjective[] = [];
             for (const o of plug.plugObjectives) {
                 const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                 if (oDesc == null) { continue; }
@@ -2411,11 +2465,11 @@ export class ParseService {
                     complete: o.complete,
                     percent: 0
                 };
-                objs.push(iObj);
+                itemObjs.push(iObj);
             }
             return new InventoryPlug(plugDesc.hash,
                 'Catalyst in-progress', plugDesc.displayProperties.description,
-                plugDesc.displayProperties.icon, true, false, objs);
+                plugDesc.displayProperties.icon, true, false, itemObjs);
 
         }
         if (plugDesc.hash == 3786277607) { // legacy MW armor slot
@@ -2841,7 +2895,9 @@ export class ParseService {
                 searchText += desc.itemTypeDisplayName + ' ';
                 searchText += desc.displaySource + ' ';
             }
-
+            if (desc.itemTypeDisplayName) {
+                searchText += desc.itemTypeDisplayName;
+            }
             searchText = searchText.toLowerCase();
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,

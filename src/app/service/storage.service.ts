@@ -15,8 +15,7 @@ const CLAN_MS_KEY = 'hiddenClanMilestones';
 
 @Injectable()
 export class StorageService {
-  private settingSub: BehaviorSubject<any> = new BehaviorSubject({});
-  public settingFeed: Observable<any> = this.settingSub.asObservable();
+  public settingFeed: BehaviorSubject<any> = new BehaviorSubject({});
 
 
   constructor(
@@ -26,14 +25,14 @@ export class StorageService {
     if (!state.hiddenClanMilestones) {
       state.hiddenClanMilestones = this.getDefaultClanMs();
     }
-    this.settingSub.next(state);
+    this.settingFeed.next(state);
   }
 
   setItem(key: string, value: any) {
     localStorage.setItem(`${APP_PREFIX}${key}`, JSON.stringify(value));
-    const emitMe = {};
+    const emitMe = this.settingFeed.getValue();
     emitMe[key] = value;
-    this.settingSub.next(emitMe);
+    this.settingFeed.next(emitMe);
   }
 
   public trackHashList(key: string, hash: string) {

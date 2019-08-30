@@ -1,6 +1,6 @@
 <ng-container *ngIf="!(state.aggHistoryAllLoaded|async)">
     <p>Loading lifetime data for clan members. <ng-container *ngIf="state.sweepMsg|async as msg">{{msg}}</ng-container>
-            <span *ngIf="state.aggHistoryLoadCount|async as cnt">{{cnt}} / {{(state.sortedMembers|async).length}}</span>
+        <span *ngIf="state.aggHistoryLoadCount|async as cnt">{{cnt}} / {{(state.sortedMembers|async).length}}</span>
     </p>
     <mat-progress-bar mode="determinate" [value]="(state.aggHistoryLoaded|async)*100"></mat-progress-bar>
     <div class="center-spinner">
@@ -30,8 +30,8 @@
         <thead>
             <tr>
                 <th>Activity</th>
-                <th>Incomplete</th>
                 <th>Completions</th>
+                <th>Efficiency</th>
                 <th *ngIf="type=='nf'">Top Personal Score</th>
                 <th *ngIf="type=='nf'">High Score</th>
                 <th *ngIf="type=='nf'">Fastest</th>
@@ -45,24 +45,28 @@
                     <td class="lead">
                         <button mat-stroked-button (click)="openDialog(a)">
                             <span matTooltip="Weekly Nightfall">
-                                <i *ngIf="a.data.special"  class="pad-right accent-text fas fa-calendar-star"></i>
+                                <i *ngIf="a.data.special" class="pad-right accent-text fas fa-calendar-star"></i>
                                 <b>{{a.data.name}}</b>
                             </span>
-                            
-                        </button>
-
-
-
-                    </td>
-                    <td data-label="Incomplete">
-                        <button mat-button (click)="openIncompleteDialog(a)">
-                            {{a.notDone.users.length}} members
                         </button>
                     </td>
                     <td data-label="Completions">
                         <ng-container *ngIf="a.activityCompletions.length==0">-</ng-container>
                         <div *ngFor="let c of a.activityCompletions; first as isFirst">
                             <div *ngIf="isFirst">{{c.data.activityCompletions|number}}</div>
+                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
+                        </div>
+                        <div class="pgcr-link" *ngIf="a.notDone.users.length>0">
+                            <a href="javascript:void(0)" (click)="openIncompleteDialog(a)">
+                                {{a.notDone.users.length}} incomplete
+                            </a>
+                        </div>
+
+                    </td>
+                    <td data-label="Efficiency">
+                        <ng-container *ngIf="a.efficiency.length==0">-</ng-container>
+                        <div *ngFor="let c of a.efficiency; first as isFirst">
+                            <div *ngIf="isFirst">{{c.data.efficiency|number: '1.1-1'}}</div>
                             <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
                         </div>
                     </td>

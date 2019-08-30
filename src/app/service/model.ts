@@ -816,6 +816,7 @@ export interface AggHistoryEntry {
     activityBestSingleGameScore: number; // this is a personal score, NOT team score, useless
     fastestCompletionMsForActivity: number;
     activityCompletions: number;
+    efficiency: number;
 
     activityKills: number;
     activityAssists: number;
