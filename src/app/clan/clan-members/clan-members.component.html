@@ -1,5 +1,5 @@
 <ng-container *ngIf="state.modelPlayer|async as modelPlayer; else loadingModel">
-    
+
     <table class="tidy-auto-table clan-table">
         <thead>
             <tr>
@@ -70,21 +70,31 @@
                             <div class="simple-caption">
                                 {{member.player.glory.title}}
                             </div>
-                            
+
                         </ng-container>
                     </td>
                     <td data-label="Infamy">
                         <ng-container *ngIf="!member.player.superprivate && member.player.infamy">
                             {{member.player.infamy.currentProgress|number}}
-                            <div class="simple-caption" *ngIf="member.player.infamy.currentResetCount">
-                                {{member.player.infamy.currentResetCount}} resets</div>
+
+                            <div class="simple-caption" *ngIf="member.player.infamy.lifetimeResetCount">
+                                {{member.player.infamy.lifetimeResetCount}} resets
+                                <div *ngIf="member.player.infamy.currentResetCount">
+                                    {{member.player.infamy.currentResetCount}} current</div>
+                            </div>
+
                         </ng-container>
                     </td>
                     <td data-label="Valor">
                         <ng-container *ngIf="!member.player.superprivate && member.player.valor">
                             {{member.player.valor.currentProgress|number}}
-                            <div class="simple-caption" *ngIf="member.player.valor.currentResetCount">
-                                {{member.player.valor.currentResetCount}} resets</div>
+
+                            <div class="simple-caption" *ngIf="member.player.valor.lifetimeResetCount">
+                                {{member.player.valor.lifetimeResetCount}} resets
+                                <div *ngIf="member.player.valor.currentResetCount">
+                                    {{member.player.valor.currentResetCount}} current</div>
+                            </div>
+
                         </ng-container>
                     </td>
                     <td>
@@ -104,8 +114,8 @@
                         <span class="simple-caption" *ngIf="member.errorMsg">{{member.errorMsg}}</span>
                     </td>
                 </ng-template>
-               
-                
+
+
             </tr>
         </tbody>
         <tfoot>

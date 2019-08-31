@@ -345,6 +345,12 @@ export class BungieGroupMember {
     joinDate: string;
     player: Player;
     errorMsg: string;
+
+    isDefunct(): boolean {
+        const current = this.destinyUserInfo.crossSaveOverride == 0 ||
+            (this.destinyUserInfo.crossSaveOverride == this.destinyUserInfo.membershipType);
+        return !current;
+    }
 }
 
 
@@ -1054,6 +1060,7 @@ export class Progression {
     weeklyProgress: number;
     weeklyLimit: number;
     currentProgress: number;
+    completeProgress?: number; // includes resets
     percentToNextLevel: number;
     steps: ProgressStep[];
     totalProgress: number;
