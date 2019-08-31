@@ -1,14 +1,22 @@
-
-.clan-card {
+.body {
+    margin: 10px;
     text-align: left;
-    margin-bottom: 10px;
 }
 
-.download-csv {
-    text-align: left;
+.section {
+    margin-top: 10px;
+    margin-left: 25px;
+    margin-bottom: 25px;
+}
+
+// .download-csv {
+//     text-align: left;
+//     margin: 10px;
+// }
+
+.clan-progress-row{
     margin: 10px;
 }
-
 
 .clanMs {
     font-weight: bold;
@@ -16,12 +24,4 @@
     margin-bottom: 5px;
     margin-right: 10px;
     margin-left: 10px;
-}
-
-.clanMsRow {
-    text-align: left;
-}
-
-.clan-header-image {
-    background-size: cover;
 }

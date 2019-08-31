@@ -1,53 +1,112 @@
+<div class="body" *ngIf="state.info|async as info">
 
+    <h3>Progress</h3>
+    <div class="section" *ngIf="info.primaryProgression!=null">
 
-<mat-card class="clanMsRow clan-card">
-    <h2 class="d-none d-md-block">Weekly Clan Bounties</h2>
-    <div *ngIf="state.modelPlayer|async as modelPlayer ; else loadingModel">
-        <span style="margin-right: 0.5em" *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
-            {{clanMs.name}}
-            <i *ngIf="clanMs.earned==true" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-            <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
-        </span>
-    </div>
-</mat-card>
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <div class="clan-progress-row" *ngIf="state.modelPlayer|async as modelPlayer ; else loadingModel">
+                    <span style="margin-right: 0.5em" *ngFor="let clanMs of modelPlayer.characters[0].clanMilestones">
+                        {{clanMs.name}}
+                        <i *ngIf="clanMs.earned==true"
+                            class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                        <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
+                    </span>
+                </div>
+                <div class="clan-progress-row simple-caption-no-margin">
 
-<ng-container *ngIf="state.info|async as info">
-    <mat-expansion-panel>
-        <mat-expansion-panel-header>
-            <mat-panel-title>
-                Clan Progress
-                <ng-container *ngIf="info.primaryProgression!=null"> | Level
-                    {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
-                    XP progress this week:<b>&ensp;{{(info.primaryProgression.weeklyProgress)|number}}</b>
-                </ng-container>
-            </mat-panel-title>
-            <mat-panel-description class="d-none d-md-block">
-                Created: {{info.creationDate|date:'short'}} &emsp; {{info.memberCount}} members
-            </mat-panel-description>
-        </mat-expansion-panel-header>
-        <br>
-        <mat-card class="clan-card" *ngFor="let faction of info.progressions">
-            <mat-card-header>
-                <mat-card-title>
-                    <ng-container *ngIf="debugmode|async"> {{faction.hash}} </ng-container>{{faction.name}} &ensp; Level
-                    {{faction.level}} - {{faction.percentToNextLevel|percent:'1.0-0'}} to next level
-                </mat-card-title>
-                <mat-card-subtitle>{{faction.desc}}
-                </mat-card-subtitle>
-            </mat-card-header>
-            <div>
-                <mat-progress-bar mode="determinate" [value]="faction.percentToNextLevel*100">
-                </mat-progress-bar>
+                    Level {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
+                    XP progress this week:&ensp;{{(info.primaryProgression.weeklyProgress)|number}}
+                </div>
             </div>
-        </mat-card>
-    </mat-expansion-panel>
+            <div class="col-sm-12 col-md-6">
+                <div class="clan-progress-row">
+                    <button mat-stroked-button [disabled]="!(state.allLoaded|async)" (click)="state.downloadCsvReport()">
+                        <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
+                        <i class="fal fa-download" aria-hidden="true"></i> Download CSV Report</button>
+                </div>
+            </div>
 
-    <div class="download-csv" >
-            <button mat-button [disabled]="!(state.allLoaded|async)" (click)="state.downloadCsvReport()">
-                <i [hidden]="state.allLoaded|async" class="far fa-spinner fa-pulse fa-fw"></i>
-                <i class="fal fa-download" aria-hidden="true"></i> Download CSV Report</button>
+
         </div>
-</ng-container>
+    </div>
+
+
+
+    <h3>Membership Status</h3>
+    <div class="section">
+        <div class="simple-caption">
+            Clan created: {{info.creationDate|date:'short'}} | {{info.memberCount}} members
+        </div>
+
+
+        <table class="checklist-table">
+            <thead>
+                <th>
+                    <a href="javascript:void(0)" (click)="sortData('name')">
+                        Player
+                        <ng-container *ngIf="sort.name=='name'">
+                            <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+                            <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+                        </ng-container>
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:void(0)" (click)="sortData('lastOnlineStatusChange')">
+                        Last Played
+                        <ng-container *ngIf="sort.name=='lastOnlineStatusChange'">
+                            <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+                            <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+                        </ng-container>
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:void(0)" (click)="sortData('joinDate')">
+                        Date Joined Clan
+                        <ng-container *ngIf="sort.name=='joinDate'">
+                            <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+                            <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+                        </ng-container>
+                    </a>
+                </th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let member of members|async">
+                    <td>
+                        <a *ngIf="member.destinyUserInfo.membershipType!=4"
+                            [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                            {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                        </a>
+                        <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
+                            (click)="state.navigateBnetMember(member)">
+                            {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
+                        </a>
+                        <span class="warn-text"
+                            matTooltip="Overridden by cross save, consider removing from clan to free space">
+                            <i *ngIf="member.isDefunct()" class="fas fa-exclamation-square"></i></span>
+                    </td>
+                    <td>
+
+                        <div>{{member.lastOnlineStatusChange | amFromUnix | amTimeAgo}}</div>
+                        <div class="simple-caption">
+                            {{member.lastOnlineStatusChange | amFromUnix | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}
+                        </div>
+                    </td>
+                    <td>
+                        <div>{{member.joinDate | amTimeAgo}}</div>
+                        <div class="simple-caption">{{member.joinDate | amDateFormat:'MMMM Do YYYY'}}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+</div>
+
 
 <ng-template #loadingModel>
     <br>

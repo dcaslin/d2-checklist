@@ -381,6 +381,7 @@ export class ParseService {
                             }
                         }
                         if (!found) {
+                            ParseService.cookAccountProgression(prog);
                             accountProgressions.push(prog);
                         }
                     }
@@ -404,6 +405,19 @@ export class ParseService {
         c.factions = factions;
     }
 
+    private static cookAccountProgression(prog: Progression) {
+        prog.completeProgress = prog.currentProgress;
+        if (!prog.steps || prog.steps.length === 0) {
+            return;
+        }
+        if (prog.lifetimeResetCount == null || prog.lifetimeResetCount == 0) {
+            return;
+        }
+        const resetValue = prog.steps[prog.steps.length - 1].cumulativeTotal;
+        prog.completeProgress += prog.lifetimeResetCount * resetValue;
+
+
+    }
 
 
     private static getBasicValue(val: any): number {
@@ -2958,6 +2972,7 @@ export class ParseService {
             b.memberType = x.memberType;
             b.destinyUserInfo = this.parseUserInfo(x.destinyUserInfo);
             b.bungieNetUserInfo = x.bungieNetUserInfo;
+            b.joinDate = x.joinDate;
             returnMe.push(b);
         });
 

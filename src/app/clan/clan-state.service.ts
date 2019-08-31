@@ -77,23 +77,19 @@ export interface ClanSearchableTriumph extends ClanAggregate {
   providedIn: 'root'
 })
 export class ClanStateService {
-
-
   public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public notFound: BehaviorSubject<boolean> = new BehaviorSubject(false);
-
   public inactiveMembers: BungieGroupMember[] = [];
   public defunctMembers: BungieGroupMember[] = [];
-
   public id: string;
+
+  public rawMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
   public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
   public seals: BehaviorSubject<ClanSeal[]> = new BehaviorSubject([]);
   public searchableTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
   public trackedTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
   public aggHistory: BehaviorSubject<ClanAggHistoryEntry[]> = new BehaviorSubject([]);
   public sweepMsg: BehaviorSubject<string> = new BehaviorSubject(null);
-
-
   public info: BehaviorSubject<ClanInfo> = new BehaviorSubject(null);
   public allLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public profilesLoaded: BehaviorSubject<number> = new BehaviorSubject(0.01);
@@ -101,7 +97,6 @@ export class ClanStateService {
   public aggHistoryLoadCount: BehaviorSubject<number> = new BehaviorSubject(0);
   public aggHistoryAllLoaded: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public modelPlayer: BehaviorSubject<Player> = new BehaviorSubject(null);
-
   public dTrackedTriumphIds = {};
   public inactivityMonthThreshold = 6;
   public inactivityMonthOptions = [1, 3, 6, 12, 48];
@@ -148,7 +143,7 @@ export class ClanStateService {
         } else if (aN > bN) {
           return 1;
         }
-      });      
+      });
     }
   }
 
@@ -227,9 +222,9 @@ export class ClanStateService {
       pushMe.all.sort((a, b) => {
         let aV = a.data[sort.name];
         let bV = b.data[sort.name];
-        if (aV == null){
+        if (aV == null) {
           aV = 0;
-        } else if (bV == null){
+        } else if (bV == null) {
           bV = 0;
         }
         if (aV < bV) {
@@ -487,17 +482,18 @@ export class ClanStateService {
     this.profilesLoaded.next(0.01);
     this.aggHistoryLoaded.next(0);
     this.aggHistoryLoadCount.next(0);
-    
+
     try {
       // async load clan progressions etc
       this.loadClanInfo();
       // load the clan members
       const allMembers = await this.bungieService.getClanMembers(this.id);
+      this.rawMembers.next(allMembers);
       const functMembers = allMembers.filter(x => {
-        if (x.destinyUserInfo.crossSaveOverride == 0 || (x.destinyUserInfo.crossSaveOverride == x.destinyUserInfo.membershipType)) {
-          return true;
-        } else {
+        if (x.isDefunct()) {
           this.defunctMembers.push(x);
+        } else {
+          return true;
         }
       });
       const cutoff = new Date();
@@ -736,24 +732,24 @@ export class ClanStateService {
   private static compareGlory(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null && a.player.glory != null) { aX = a.player.glory.currentProgress; }
-    if (b.player != null && b.player.glory != null) { bX = b.player.glory.currentProgress; }
+    if (a.player != null && a.player.glory != null) { aX = a.player.glory.completeProgress; }
+    if (b.player != null && b.player.glory != null) { bX = b.player.glory.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareValor(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null && a.player.valor != null) { aX = a.player.valor.currentProgress; }
-    if (b.player != null && b.player.valor != null) { bX = b.player.valor.currentProgress; }
+    if (a.player != null && a.player.valor != null) { aX = a.player.valor.completeProgress; }
+    if (b.player != null && b.player.valor != null) { bX = b.player.valor.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareInfamy(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null && a.player.infamy != null) { aX = a.player.infamy.currentProgress; }
-    if (b.player != null && b.player.infamy != null) { bX = b.player.infamy.currentProgress; }
+    if (a.player != null && a.player.infamy != null) { aX = a.player.infamy.completeProgress; }
+    if (b.player != null && b.player.infamy != null) { bX = b.player.infamy.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
