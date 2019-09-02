@@ -11,7 +11,7 @@
             <div class="d-none d-md-block d-lg-none">Screen: MD</div>
             <div class="d-none d-lg-block d-xl-none">Screen: LG</div>
             <div class="d-none d-xl-block">Screen: XL</div>
-          </div>          
+          </div>
           <div class="searchRow">
             <mat-form-field class="searchField searchPlatform">
               <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
@@ -239,10 +239,12 @@
       </div>
     </div>
     <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
+      <div>
+        <small class="adText">Advertisement</small>
+        <ng-adsense adFormat="vertical"></ng-adsense>
+      </div>
+      <div class="height-fix"></div>
     </div>
-
   </div>
   <div *ngIf="(disableAds|async)!==true" class="adBottom">
     <small class="adText">Advertisement</small><br>
