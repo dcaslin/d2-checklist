@@ -5,16 +5,12 @@
     margin-left: 35px;
 }
 .clan-body {
-    // max-width: 2000px !important;
+    max-width: 2000px !important;
 }
-
-// .main {
-//     overflow: scroll;
-// }
 
 @media (max-width: map-get($grid-breakpoints, xl)) {
     .clan-body {
-        // max-width: 90vw !important;
+        max-width: 90vw !important;
     }
 }
 
@@ -42,7 +38,7 @@
 }
 
 .clan-table {
-    // max-width: 2000px !important;
+    max-width: 2000px !important;
 }
 
 
@@ -55,7 +51,7 @@
 }
 
 .body {
-    // max-width: 1200px;
+    max-width: 1200px;
     margin: 10px auto 0 auto;
     padding-bottom: 10px;
     font-size: 0.9em;

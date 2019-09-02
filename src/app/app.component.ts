@@ -121,8 +121,10 @@ export class AppComponent implements OnInit, OnDestroy {
         x => {
           if (x.theme != null) {
             this.overlayContainer.getContainerElement().classList.remove(this.componentCssClass);
+            document.body.classList.remove('parent-' + this.componentCssClass);
             this.componentCssClass = x.theme;
             this.overlayContainer.getContainerElement().classList.add(x.theme);
+            document.body.classList.add('parent-' + x.theme);
             this.ref.markForCheck();
           }
           if (x.disableads != null) {
