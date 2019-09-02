@@ -29,6 +29,8 @@ export class BungieService implements OnDestroy {
     selectedUser: SelectedUser;
     apiDown = false;
 
+
+    pubilc;
     private async updateSelectedUser(selectedUser: SelectedUser): Promise<void> {
         if (selectedUser != null) {
             // wait until cache is ready
@@ -98,21 +100,6 @@ export class BungieService implements OnDestroy {
                 this.emitUsers();
             }
         });
-    }
-
-    // this is one of the only way to get a fully suffixed BNET user id
-    public async getFullBNetName(bungieId: string): Promise<string> {
-        try {
-            const resp = await this.makeReq('User/GetBungieNetUserById/' + bungieId + '/');
-            const m = this.parseService.parseBungieMember(resp);
-            if (m.bnet != null) {
-                return m.bnet.name;
-            }
-            return null;
-        } catch (err) {
-            this.handleError(err);
-            return null;
-        }
     }
 
     public async searchBungieUsers(name: string): Promise<BungieMember[]> {
@@ -204,6 +191,21 @@ export class BungieService implements OnDestroy {
     private static getAgghistoryCacheKey(player: Player) {
         const key = 'aggHistory-' + env.versions.app + '-' + player.profile.userInfo.membershipType + '-' + player.profile.userInfo.membershipId;
         return key;
+    }
+    
+    public static parsePlatform(s: string) {
+        if (s == null) {
+            return null;
+        }
+        s = s.toLowerCase().trim();
+        for (const p of Const.PLATFORMS_ARRAY) {
+            if (s === '' + p.type) {
+                return p;
+            }
+            if (s === '' + p.name) {
+                return p;
+            }
+        }
     }
 
     public async getCachedAggHistoryForPlayer(player: Player): Promise<AggHistoryCache> {
@@ -317,8 +319,8 @@ export class BungieService implements OnDestroy {
         if (player.aggHistory == null) {
             return false;
         }
-        for (const a of player.aggHistory){
-            if (a.activityCompletions>0 && a.activityBestSingleGameScore && (a.highScore==null)) {
+        for (const a of player.aggHistory) {
+            if (a.activityCompletions > 0 && a.activityBestSingleGameScore && (a.highScore == null)) {
                 return false;
             }
         }

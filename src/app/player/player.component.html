@@ -5,41 +5,8 @@
         <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true"></mat-spinner>
       </div>
       <div class="body-text">
-        <br />
-        <div class="searchRow">
-          <mat-form-field class="searchField searchPlatform">
-            <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
-              <mat-select-trigger>
-                <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
-              </mat-select-trigger>
-              <mat-option *ngFor="let p of platforms" [value]="p">
-                <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field class="searchField searchGt">
-            <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
-              (change)="onGtChange()">
-          </mat-form-field>
-          <button mat-mini-fab color="primary searchField" (click)="routeSearch()" color="primary">
-            <mat-icon>search</mat-icon>
-          </button>
-        </div>
-
-        <ng-container *ngIf="state.playerNotFound|async">
-          <h4>Player not found on {{selectedPlatform.desc}}, try another or search?</h4>
-          <div class="button-row">
-            <ng-container *ngFor="let plat of platforms">
-              <button class="space-right" *ngIf="plat.type!=selectedPlatform.type" mat-raised-button color="accent"
-                (click)="router.navigate([plat.type, gamerTag, selectedTab])">{{plat.desc}}</button>
-            </ng-container>
-            <button mat-raised-button color="primary" (click)="router.navigate(['search', gamerTag])">Search Bungie
-              Names</button>
-          </div>
-          <br>
-          <br>
-          <br>
-        </ng-container>
+        
+        <div *ngIf="errorMsg|async as msg">{{msg}}</div>
         <ng-container *ngIf="state.player|async as player">
           <ng-container *ngIf="player!=null && player.superprivate">
             <h4><i style="font-weight: normal !important"
@@ -52,9 +19,10 @@
               <i style="font-weight: normal !important"
                 [ngClass]="const.PLATFORMS_DICT[player.profile.userInfo.membershipType+''].iconClass"></i>
               {{player.profile.userInfo.displayName}}
-              <a [ngClass]="(favoritesMap|async)[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
-                (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i
-                  style="font-weight: normal !important" class="far fa-heart"></i></a>
+              <a mat-icon-button
+                [ngClass]="(favoritesMap|async)[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
+                (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i class="far fa-heart"></i></a>
+              <a mat-icon-button href="javascript:void(0)" (click)="state.requestRefresh()"> <i class="far fa-sync"></i></a>
             </h1>
             <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
             <ng-container
@@ -109,11 +77,6 @@
                   <mat-icon>flag</mat-icon>
                   <span>Raid.Report</span>
                 </a>
-
-                <!-- <a mat-menu-item [href]="getTrialsLink(player)" rel="noopener" target="_blank" rel="noopener">
-                  <mat-icon>remove_red_eye</mat-icon>
-                  <span>Trials.Report</span>
-                </a> -->
               </mat-menu>
             </div>
 

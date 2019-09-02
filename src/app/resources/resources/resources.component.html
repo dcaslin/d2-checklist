@@ -7,7 +7,7 @@
       </div>
       <div class="body-text">
         <h2 *ngIf="this.player!=null && this.player.profile!=null" class="centerMe">Vendors -
-          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]"
+          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]"
             *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.userInfo.platformName}}</a>
         </h2>
 

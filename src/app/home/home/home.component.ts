@@ -70,7 +70,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
+    this.router.navigate(['gt', this.selectedPlatform.type, this.gamerTag]);
   }
 
   onPlatformChange() {

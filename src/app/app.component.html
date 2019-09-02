@@ -8,7 +8,7 @@
       </div>
       <mat-nav-list>
         <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null">
-          <a mat-list-item (click)="sidenav.close();myProfile()">
+          <a mat-list-item [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]" (click)="sidenav.close();">
             <mat-icon>account_circle</mat-icon>&ensp;{{(signedOnUser|async).userInfo.displayName}} -
             {{(signedOnUser|async).userInfo.platformName}}
           </a>
@@ -158,7 +158,8 @@
             </mat-menu>
           </ng-container>
 
-          <button mat-button class="d-none d-md-inline nav-button" (click)="myProfile()"
+          <button mat-button class="d-none d-md-inline nav-button" 
+            [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"          
             *ngIf="(signedOnUser|async)!=null">
             <i [ngClass]="const.PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].iconClass"></i>
             My Info

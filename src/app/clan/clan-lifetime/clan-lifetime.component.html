@@ -125,12 +125,7 @@
 </ng-template>
 
 <ng-template #playerLabel let-member="member">
-    <a class="player-link" *ngIf="member.destinyUserInfo.membershipType!=4"
-        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
-        {{member.destinyUserInfo.displayName}}
-    </a>
-    <a class="player-link" *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
-        (click)="state.navigateBnetMember(member)">
+    <a class="player-link" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
         {{member.destinyUserInfo.displayName}}
     </a>
 </ng-template>

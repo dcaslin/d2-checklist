@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
-import { Player, SearchResult, SelectedUser, TriumphRecordNode } from '@app/service/model';
+import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const } from '@app/service/model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StorageService } from '@app/service/storage.service';
@@ -59,8 +59,6 @@ export class PlayerStateService {
   }
   private _sort = 'rewardsDesc';
 
-  private searchResult: SearchResult = null;
-
   public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
 
   private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
@@ -69,8 +67,6 @@ export class PlayerStateService {
   private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public loading: Observable<boolean> = this._loading.asObservable();
 
-  private _playerNotFound: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public playerNotFound: Observable<boolean> = this._playerNotFound.asObservable();
 
   public _signedOnUserIsCurrent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public signedOnUserIsCurrent: Observable<boolean> = this._loading.asObservable();
@@ -92,18 +88,20 @@ export class PlayerStateService {
 
   public requestRefresh() {
     const p = this.currPlayer();
-    this.performSearch(p.profile.userInfo.membershipType, p.profile.userInfo.displayName, true);
+    const platform = Const.PLATFORMS_DICT['' + p.profile.userInfo.membershipType];
+    this.loadPlayer(platform, p.profile.userInfo.membershipId);
+
   }
 
   public getPlayerRoute(params: any[]): string[] {
     const p = this._player.getValue();
-    const baseRoute = ['/', '' + p.profile.userInfo.membershipType, this.searchResult.displayName];
+    const baseRoute = ['/', '' + p.profile.userInfo.membershipType, p.profile.userInfo.membershipId];
     return baseRoute.concat(params);
   }
 
   public getPlayerRouteString(params: any[]): string {
     const p = this._player.getValue();
-    const baseRoute = ['' + p.profile.userInfo.membershipType, encodeURIComponent(this.searchResult.displayName)];
+    const baseRoute = ['' + p.profile.userInfo.membershipType, p.profile.userInfo.membershipId];
     const entries = baseRoute.concat(params);
     let s = entries[0];
     for (let i = 1; i < entries.length; i++) {
@@ -122,7 +120,7 @@ export class PlayerStateService {
     }));
     this.bungieService.selectedUserFeed.pipe().subscribe((selectedUser: SelectedUser) => {
       this._isSignedOn.next(selectedUser != null);
-      this.checkSignedOnCurrent();
+      this.checkSignedOnCurrent(this.currPlayer());
     });
     this._showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
     this._showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
@@ -130,83 +128,53 @@ export class PlayerStateService {
     this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';
 
     this.storageService.settingFeed.pipe().subscribe(
-        x => {
-          if (x.trackedtriumphs != null) {
-            this.dTrackedTriumphIds = x.trackedtriumphs;
-          } else {
-            this.dTrackedTriumphIds = {};
-          }
-          this.applyTrackedTriumphs(this._player.getValue());
+      x => {
+        if (x.trackedtriumphs != null) {
+          this.dTrackedTriumphIds = x.trackedtriumphs;
+        } else {
+          this.dTrackedTriumphIds = {};
+        }
+        this.applyTrackedTriumphs(this._player.getValue());
 
-        });
+      });
   }
 
-  private checkSignedOnCurrent() {
+  private checkSignedOnCurrent(currentPlayer: Player) {
     const a = this.bungieService.selectedUser;
-    const b = this._player.getValue();
     let isCurrent = false;
-    if (a != null && b != null) {
-      if (b.profile.userInfo.membershipId == a.userInfo.membershipId) {
+    if (a != null && currentPlayer != null) {
+      if (currentPlayer.profile.userInfo.membershipId == a.userInfo.membershipId) {
         isCurrent = true;
       }
     }
     this._signedOnUserIsCurrent.next(isCurrent);
   }
 
-  public async performSearch(platform: number, gamerTag: string, forceRefresh?: boolean): Promise<void> {
-    this._playerNotFound.next(false);
-    if (gamerTag == null || gamerTag.trim().length === 0) {
-      return;
-    }
+  public async loadPlayer(platform: Platform, memberId: string): Promise<void> {
+
     this._loading.next(true);
-    // set player to empty unless we're refreshing in place
-    if (forceRefresh !== true) {
-      this._player.next(null);
-    }
-    const p = await this.bungieService.searchPlayer(platform, gamerTag);
-    this.searchResult = p;
     try {
-      if (p != null) {
-        this.checkSignedOnCurrent();
-        const x = await this.bungieService.getChars(p.membershipType, p.membershipId,
-          ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
-            'CharacterEquipment', 'CharacterInventories',
-            'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles' , 'ItemSockets'
-            // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
-            // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
-          ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
-        if (x == null || x.characters == null) {
-          this.handleMissingPlayer(false);
-          return;
-        }
-        this.applyTrackedTriumphs(x);
-        this._player.next(x);
-        this.bungieService.loadWeeklyPowerfulBounties(this._player);
-        this.bungieService.loadClans(this._player);
-        this.bungieService.observeUpdatePvpStreak(this._player);
-        this.bungieService.observeUpdateAggHistoryAndScores(this._player);
-
-        // need to get out of this change detection cycle to have tabs set
-        // setTimeout(() => {
-        //   this.setTab();
-        // }, 0);
-
-
-      } else {
-        this.handleMissingPlayer(false);
-        return;
+      const x = await this.bungieService.getChars(platform.type, memberId,
+        ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
+          'CharacterEquipment', 'CharacterInventories',
+          'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets'
+          // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
+          // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
+        ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
+      if (x == null || x.characters == null) {
+        throw new Error('No valid destiny player found for ' + memberId + ' on ' + platform.name);
       }
-    } catch (x) {
-      console.log(x);
-    } finally {
+      this.checkSignedOnCurrent(x);
+      this.applyTrackedTriumphs(x);
+      this._player.next(x);
+      this.bungieService.loadWeeklyPowerfulBounties(this._player);
+      this.bungieService.loadClans(this._player);
+      this.bungieService.observeUpdatePvpStreak(this._player);
+      this.bungieService.observeUpdateAggHistoryAndScores(this._player);
+    }
+    finally {
       this._loading.next(false);
     }
-  }
-
-  private handleMissingPlayer(missingCharsOnly: boolean) {
-    console.log('Not found: missing chars only? ' + missingCharsOnly);
-    this._playerNotFound.next(true);
-    this._player.next(null);
   }
 
   public static sortMileStones(player: Player, sort: string): Player {
@@ -281,7 +249,7 @@ export class PlayerStateService {
 
   private applyTrackedTriumphs(player: Player) {
     if (player == null) {
-       return;
+      return;
     }
     const tempTriumphs = [];
     if (Object.keys(this.dTrackedTriumphIds).length > 0) {

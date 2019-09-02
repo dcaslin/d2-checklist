@@ -447,14 +447,6 @@ export class ClanStateService {
     this.trackedTriumphs.next(tempTriumphs);
   }
 
-
-
-  public async navigateBnetMember(target: BungieGroupMember) {
-    const bnetName = await this.bungieService.getFullBNetName(target.bungieNetUserInfo.membershipId);
-    if (bnetName != null) { this.router.navigate(['/', 4, bnetName]); }
-    return;
-  }
-
   private async loadClanInfo() {
     try {
       const i = await this.bungieService.getClanInfo(this.id);

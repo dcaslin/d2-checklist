@@ -43,10 +43,7 @@
           <tbody>
             <tr *ngFor="let member of members|async">
               <td class="lead">
-                <a *ngIf="member.user.membershipType!=4" [routerLink]="['/',member.user.membershipType, member.user.displayName]">
-                  {{member.user.displayName}}
-                </a>
-                <a *ngIf="member.user.membershipType==4" href="javascript:void(0)" (click)="navigateBnetMember(member.user.bungieMembershipId)">
+                <a [routerLink]="['/',member.user.membershipType, member.user.membershipId]">
                   {{member.user.displayName}}
                 </a>
                 <a style="margin-left:0.25em" *ngIf="member.player==null" href="javascript:void(0)" (click)="loadPlayer(member)">
