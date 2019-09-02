@@ -100,12 +100,10 @@
       </div>
     </div>
     <div *ngIf="(disableAds|async)!==true" class="adRight">
-        <div>
-          <small class="adText">Advertisement</small>
-          <ng-adsense adFormat="vertical"></ng-adsense>
-        </div>
-        <div class="height-fix"></div>
-      </div>
+      <small class="adText">Advertisement</small>
+      <ng-adsense adFormat="vertical"></ng-adsense>
+    </div>
+
   </div>
   <div *ngIf="(disableAds|async)!==true" class="adBottom">
     <small class="adText">Advertisement</small>

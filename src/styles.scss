@@ -1,19 +1,21 @@
-@import "styles-variables";
-@import "reboot";
-@import "grid";
 
-@import "styles-reset";
 
-@import "~@angular/material/theming";
+@import 'styles-variables';
+@import 'reboot';
+@import 'grid';
+
+@import 'styles-reset';
+
+@import '~@angular/material/theming';
 
 @include mat-core();
 
-@import "default-theme.scss";
-@import "light-theme.scss";
-@import "black-theme.scss";
+@import 'default-theme.scss';
+@import 'light-theme.scss';
+@import 'black-theme.scss';
 
-@import "styles-reset.scss-theme";
-@import "app/app.component.scss-theme";
+@import 'styles-reset.scss-theme';
+@import 'app/app.component.scss-theme';
 
 @mixin custom-components-theme($theme) {
   @include d2c-styles-reset-theme($theme);
@@ -24,6 +26,7 @@
   @include angular-material-theme($d2c-theme);
   @include custom-components-theme($d2c-theme);
   @include default-gear-tags;
+ 
 }
 
 .light-theme {
@@ -36,37 +39,40 @@
   @include angular-material-theme($d2c-black-theme);
   @include custom-components-theme($d2c-black-theme);
   @include black-gear-tags;
+
 }
 
-.break-easy {
+.break-easy{
+
   word-wrap: break-word;
   word-break: break-all;
   white-space: unset;
 }
 
-.break-word {
+.break-word{
   word-wrap: break-word;
   word-break: normal;
 }
 
 .fixed-spinner {
   z-index: 1000;
-  position: fixed;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  position: fixed; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
   top: 45%;
   width: 100px; /* Need a specific value to work */
 }
 
+
 .center-spinner {
   z-index: 1000;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  margin-left: auto; 
+  margin-right: auto; 
   width: 100px; /* Need a specific value to work */
 }
 
@@ -85,35 +91,33 @@
   width: 56px !important;
 }
 
-.mat-tab-label {
+.mat-tab-label{
   padding-left: 10px !important;
-  padding-right: 10px !important;
+  padding-right: 10px  !important;
 }
 
-.mat-tab-link {
+.mat-tab-link{
   padding-left: 10px !important;
-  padding-right: 10px !important;
+  padding-right: 10px  !important;
 }
 
 .tiny {
   font-size: small;
 }
 
-.left {
+.left{
   text-align: left !important;
 }
 
 .mat-table {
   display: table;
 
-  > .mat-header-row,
-  > .mat-row {
+  > .mat-header-row, > .mat-row {
     display: table-row;
     padding: 5px;
     border: none;
 
-    > .mat-header-cell,
-    > .mat-cell {
+    > .mat-header-cell, > .mat-cell {
       display: table-cell;
       height: 48px;
       padding: 5px;
@@ -126,22 +130,24 @@
   }
 }
 
-.centerMe {
+.centerMe{
   text-align: center;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto; 
+  margin-right: auto; 
 }
 
-.childComponent {
+
+.childComponent{
   height: 100%;
   flex: 1 0 auto;
 
+  
   display: flex;
   flex-direction: column;
   // background-color: purple;
 }
 
-.childVert {
+.childVert{
   order: 1;
   flex: 1 1 auto;
 
@@ -150,42 +156,37 @@
   // background-color: yellow;
 }
 
-.height-fix {
-  height: 100%;
-  width: 0px;
-  // background-color: purple;
-}
-
-.adRight {
+.adRight{
   order: 2;
   width: 300px;
   min-height: 300px;
   flex-grow: 0;
-  display: flex;
-  flex-direction: row;
-  //background-color: red;
+  // background-color: red;
 }
 
-.main {
+.main{
   order: 1;
   height: 100%;
   padding: 20px;
-
+  
   text-align: center;
-  margin-left: auto;
+  margin-left: auto; 
   margin-right: auto;
   // background-color: green;
 }
+
 
 .adText {
   opacity: 0.5;
   text-align: center;
 }
 
+
 .mobile-button-row {
   display: none;
   visibility: hidden;
 }
+
 
 @media screen and (max-width: 600px) {
   .mobile-button-row {
@@ -196,33 +197,23 @@
     margin-bottom: 5px;
   }
 
-  .tree-leaf {
+  
+  .tree-leaf{
     padding-left: 0px !important;
   }
 }
 
-.adBottom {
+.adBottom{
   order: 2;
   display: none;
   visibility: hidden;
   text-align: center;
-  // background-color: pink;
-}
-
-.adBottomAlwaysVisible {
-  order: 2;
-  min-width: 336px;
-  // background-color: pink;
-  display: block;
-  visibility: visible;
-  height: 300px;
-  text-align: center;
-  // background-color: pink;
+  //background-color: pink;
 }
 
 @media (max-width: 1440px) {
   .adRight {
-    width: 120px;
+      width: 120px;
   }
 }
 
@@ -230,44 +221,45 @@
 
 @media (max-width: 960px) {
   .adRight {
-    display: none;
-    visibility: hidden;
+      display: none;
+      visibility: hidden;
   }
-
-  .main {
+  
+  .main{
     padding: 5px;
   }
-
-  .adBottom {
+    
+  .adBottom{
     min-width: 336px;
     // background-color: pink;
     display: block;
     visibility: visible;
     height: 300px;
   }
+
 }
 
-.loading {
+.loading{
   text-align: center;
   margin-top: 100px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: auto; 
+  margin-right: auto; 
 }
 
-.space-right {
-  margin-right: 0.3em !important;
+.space-right{
+  margin-right: 0.30em !important;
 }
 
-.mat-button-toggle-appearance-standard .mat-button-toggle-label-content {
+.mat-button-toggle-appearance-standard .mat-button-toggle-label-content{
   line-height: 32px !important;
 }
 
-mat-form-field.full-width .mat-form-field-infix {
-  min-width: 0;
-  width: 100% !important;
+mat-form-field.full-width .mat-form-field-infix{
+    min-width: 0;
+    width: 100% !important;
 }
 
-.preserve-white-space {
+.preserve-white-space{
   white-space: pre-wrap;
 }
 
@@ -275,6 +267,7 @@ mat-form-field.full-width .mat-form-field-infix {
   margin: 10px;
   text-align: left;
 }
+
 
 .pres-node-prog {
   max-width: 100px;
@@ -296,6 +289,7 @@ mat-form-field.full-width .mat-form-field-infix {
   }
 }
 
+
 .transparent-leaf-icon {
   float: left;
   width: 48px;
@@ -305,6 +299,7 @@ mat-form-field.full-width .mat-form-field-infix {
   margin: 5px;
   background-size: cover;
 }
+
 
 .transparent-branch-icon {
   float: left;
@@ -329,10 +324,10 @@ mat-form-field.full-width .mat-form-field-infix {
   text-align: left;
 }
 
-.pad-left {
+.pad-left{
   margin-left: 5px;
 }
 
-.pad-right {
+.pad-right{
   margin-right: 5px;
 }
