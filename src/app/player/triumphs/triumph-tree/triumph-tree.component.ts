@@ -81,6 +81,22 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
     return s;
   }
 
+  public sumTriumphs() {
+    let sum = 0;
+    for (const t of this.state.currPlayer().searchableTriumphs) {
+      if (t.redeemed) {
+        sum += t.score;
+      }
+    }
+
+    const score = this.state.currPlayer().triumphScore;
+    const diff = sum - score;
+
+    alert('Summed score: ' + sum + '.\nReported score: ' + score + '.\n Difference: ' + diff);
+
+
+  }
+
   public downloadCsvTriumphs() {
     const header = 'Name,Path,Score,Percent,Complete,Redeemed,Description';
     let rows = [];

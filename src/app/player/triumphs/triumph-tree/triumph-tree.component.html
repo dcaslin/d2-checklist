@@ -3,6 +3,9 @@
     <button class="hide-complete-triumphs" mat-button (click)="downloadCsvTriumphs()">
       <i class="fal fa-download"></i> CSV
     </button>
+    <button class="hide-complete-triumphs" mat-button (click)="sumTriumphs()">
+        <i class="fal fa-sigma"></i>
+      </button>
     <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
       Hide Completed
     </mat-checkbox>
