@@ -23,12 +23,7 @@
             <tbody>
                 <tr *ngFor="let member of users">
                     <td class="lead">
-                        <a *ngIf="member.destinyUserInfo.membershipType!=4"
-                            [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
-                            {{member.destinyUserInfo.displayName}}
-                        </a>
-                        <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
-                            (click)="state.navigateBnetMember(member)">
+                        <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                             {{member.destinyUserInfo.displayName}}
                         </a>
                     </td>

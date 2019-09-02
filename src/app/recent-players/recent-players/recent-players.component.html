@@ -8,12 +8,9 @@
       </div>
       <div class="body-text">
         <h2 class="centerMe">Recent Teammates -
-            <a  *ngIf="player!=null && this.player.profile.userInfo.membershipType!=4" [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]">
+            <a  [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]">
               {{player.profile.userInfo.displayName}}
-            </a>
-            <ng-container *ngIf="player!=null && this.player.profile.userInfo.membershipType==4">
-                {{player.profile.userInfo.displayName}}
-            </ng-container>            
+            </a>      
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <a mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'"
@@ -68,12 +65,9 @@
                   <span *ngIf="friend.user.icon!=null" class="friend-icon" [style.background-image]="'url(//www.bungie.net' + friend.user.icon + ')'"></span>
                 </td>
                 <td>
-                  <a *ngIf="friend.user.membershipType!=4" [routerLink]="['/'+friend.user.membershipType, friend.user.displayName]"
+                  <a [routerLink]="['/'+friend.user.membershipType, friend.user.membershipId]"
                     color="accent">{{friend.user.displayName}}</a>
-                  <a *ngIf="friend.user.membershipType==4" href="javascript:void(0)" color="accent" (click)="navigateBnetMember(friend.bungieNetUserInfo)">
-                    {{friend.user.displayName}}                    
-                  </a>
-                    
+                  
                   <a style="margin-left:0.5em" [ngClass]="(favoritesMap|async)[storageService.getFavKey(friend.user)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(friend.user, friend.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
                     <i style="font-weight: normal !important" class="far fa-heart"></i>
                   </a>

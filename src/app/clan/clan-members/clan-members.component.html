@@ -9,14 +9,9 @@
         <tbody>
             <tr *ngFor="let member of state.sortedMembers|async">
                 <td class="lead">
-                    <a *ngIf="member.destinyUserInfo.membershipType!=4"
-                        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                    <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                    </a>
-                    <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
-                        (click)="state.navigateBnetMember(member)">
-                        {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                    </a>
+                    </a>                    
                     <a style="margin-left:0.25em"
                         [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
                         (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"

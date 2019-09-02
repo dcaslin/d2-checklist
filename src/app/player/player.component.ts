@@ -1,13 +1,14 @@
 
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
 import { Character, Const, NameDesc, Platform, Player } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'd2c-player',
@@ -16,14 +17,8 @@ import { PlayerStateService } from './player-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
-  currentGt: string;
-  currentPlatform: string;
-  platforms: Platform[];
-  selectedPlatform: Platform;
-  gamerTag: string;
-
   public const: Const = Const;
-  msg: string;
+  public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
 
   burns: NameDesc[] = [];
   reckBurns: NameDesc[] = [];
@@ -34,8 +29,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     public dialog: MatDialog,
     public state: PlayerStateService) {
     super(storageService);
-    this.platforms = Const.PLATFORMS_ARRAY;
-    this.selectedPlatform = this.platforms[0];
   }
 
   public showBurns() {
@@ -65,42 +58,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     return 'http://raid.report/' + platformstr + '/' + memberid;
   }
 
-  public getTrialsLink(p: Player) {
-    let platformstr: string;
-    if (p.profile.userInfo.membershipType === 1) {
-      platformstr = 'xbox';
-    } else if (p.profile.userInfo.membershipType === 2) {
-      platformstr = 'ps';
-    } else if (p.profile.userInfo.membershipType === 4) {
-      platformstr = 'pc';
-    }
-    return 'https://trials.report/report/' + platformstr + '/' + encodeURI(this.gamerTag);
-  }
-
-
   public history(c: Character) {
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
-  }
-
-  public routeSearch(): void {
-
-    // if route hasn't changed it won't refresh, so we have to force it
-    if (this.selectedPlatform.type === +this.route.snapshot.params.platform &&
-      this.gamerTag === this.route.snapshot.params.gt) {
-      this.performSearch(true);
-      return;
-    }
-
-    // otherwise just re-route
-    if (this.gamerTag == null || this.gamerTag.trim().length < 1) {
-      return;
-    }
-    // this.router.navigate([this.selectedPlatform.type, this.gamerTag, this.selectedTab]);
-    this.router.navigate([this.selectedPlatform.type, this.gamerTag]);
-  }
-
-  public async performSearch(forceRefresh?: boolean): Promise<void> {
-    this.state.performSearch(this.selectedPlatform.type, this.gamerTag, forceRefresh);
   }
 
   async setBurns() {
@@ -108,57 +67,52 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.reckBurns = await this.bungieService.getReckBurns();
   }
 
+  private static validateInteger(s: string): string {
+    if (!/^[0-9]\d*$/.test(s)) {
+      return null;
+    }
+    return s;
+  }
+
+  private async init(params: Params){
+    try {
+      const sPlatform = params['platform'];
+      const platform = BungieService.parsePlatform(sPlatform);
+      if (platform == null) {
+        throw new Error(sPlatform + ' is not a valid platform');
+      }
+      const sMemberId = params['memberId'];
+      const memberId: string = PlayerComponent.validateInteger(sMemberId);
+      if (memberId == null) {
+        throw new Error(sMemberId + ' is an invalid member id');
+      }
+      // if nothing changed, don't do anything
+      const player = this.state.currPlayer();
+      if (player != null){
+        const ui = player.profile.userInfo;
+        if (ui.membershipType == platform.type && ui.membershipId == memberId) {
+          return;
+        }
+      }
+      await this.state.loadPlayer(platform, memberId);
+      // todo load player
+
+
+    } catch (exc) {
+      console.dir(exc);
+      this.errorMsg.next(exc.message);
+      // todo show exc.message
+    }
+  }
+
   ngOnInit() {
     this.setBurns();
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
-      const newPlatform: string = params['platform'];
-      const newGt: string = params['gt'];
-      const tab: string = params['tab'];
-      // nothing changed
-      if (this.currentGt === newGt && this.currentPlatform === newPlatform) {
-        return;
-      }
-      let oNewPlatform: Platform = null;
-      let redirected = false;
-      this.platforms.forEach((p: Platform) => {
-        if ((p.type + '') === newPlatform) {
-          oNewPlatform = p;
-        } else if (p.name.toLowerCase() === newPlatform.toLowerCase()) {
-          this.router.navigate([p.type, newGt, tab]);
-          redirected = true;
-        }
-      });
-
-      // we already redirected
-      if (redirected) { return; }
-
-      // invalid platform
-      if (oNewPlatform == null) {
-        this.router.navigate(['home']);
-        return;
-      }
-
-      // we have a valid numeric platform, and a gamer tag, and a tab
-      this.currentGt = newGt;
-      this.currentPlatform = newPlatform;
-
-      this.selectedPlatform = oNewPlatform;
-
-      this.gamerTag = newGt;
-      // this.selectedTab = tab.trim().toLowerCase();
-
-      this.performSearch();
+      this.init(params);
     });
 
 
 
-  }
-
-  onPlatformChange() {
-    this.storageService.setItem('defaultplatform', this.selectedPlatform.type);
-  }
-  onGtChange() {
-    this.storageService.setItem('defaultgt', this.gamerTag);
   }
 
   ngOnDestroy(): void {

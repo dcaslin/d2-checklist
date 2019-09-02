@@ -48,6 +48,7 @@ import { RecentPlayersComponent } from './recent-players';
 import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
+import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 
 
 @Injectable()
@@ -208,7 +209,13 @@ export class AuthGuard implements CanActivate {
       component: RecentPlayersComponent
     },
     {
-      path: ':platform/:gt',
+      path: 'gt/:platform/:gamertag',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      component: GamerTagSearchComponent
+    },
+    {
+      path: ':platform/:memberId',
       pathMatch: 'prefix',
       canActivate: [AuthGuard],
       component: PlayerComponent,

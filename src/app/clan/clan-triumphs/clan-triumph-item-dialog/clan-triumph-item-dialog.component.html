@@ -59,12 +59,7 @@
         <tbody>
             <tr *ngFor="let pt of triumphs">
                 <td *ngIf="pt.member as member">
-                    <a *ngIf="member.destinyUserInfo.membershipType!=4"
-                        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
-                        {{member.destinyUserInfo.displayName}}
-                    </a>
-                    <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
-                        (click)="state.navigateBnetMember(member)">
+                    <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}}
                     </a>
                     <span class="simple-caption" *ngIf="member.player.title.trim().length>0">

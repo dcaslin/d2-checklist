@@ -16,8 +16,9 @@ import { ChildComponent } from '../../shared/child.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
+  routedName: string;
   name: string;
-  public accounts: BehaviorSubject<BungieMember[]> = new BehaviorSubject([]);
+  public accounts: BehaviorSubject<BungieMember[]> = new BehaviorSubject(null);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     private route: ActivatedRoute, private router: Router,
@@ -65,12 +66,17 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
 
   search() {
     if (this.name != null) {
-      this.router.navigate(['search', this.name]);
+      if (this.name === this.routedName) {
+        this.load();
+      } else {
+        this.router.navigate(['search', this.name]);
+      }
     }
 
   }
 
   private async load() {
+    console.log('loading');
     this.loading.next(true);
     try {
       const x: BungieMember[] = await this.bungieService.searchBungieUsers(this.name);
@@ -83,6 +89,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
 
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      this.routedName = params['name'];
       this.name = params['name'];
       if (this.name != null) {
         this.load();

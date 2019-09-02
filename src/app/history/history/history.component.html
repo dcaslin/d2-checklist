@@ -8,12 +8,9 @@
         </div>
       <div class="body-text">
         <h2 class="centerMe">Activity History - 
-          <a  *ngIf="player!=null && this.player.profile.userInfo.membershipType!=4" [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.displayName]">
+          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]">
             {{player.profile.userInfo.displayName}}
           </a>
-          <ng-container *ngIf="player!=null && this.player.profile.userInfo.membershipType==4">
-              {{player.profile.userInfo.displayName}}
-          </ng-container>
         </h2>
         <div *ngIf="player!=null && player.characters!=null" class="button-row">
           <a mat-raised-button *ngFor="let c of player.characters" 

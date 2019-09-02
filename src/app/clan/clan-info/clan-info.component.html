@@ -73,14 +73,9 @@
             <tbody>
                 <tr *ngFor="let member of members|async">
                     <td>
-                        <a *ngIf="member.destinyUserInfo.membershipType!=4"
-                            [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.displayName]">
+                        <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                             {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                        </a>
-                        <a *ngIf="member.destinyUserInfo.membershipType==4" href="javascript:void(0)"
-                            (click)="state.navigateBnetMember(member)">
-                            {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                        </a>
+                        </a>                        
                         <span class="warn-text"
                             matTooltip="Overridden by cross save, consider removing from clan to free space">
                             <i *ngIf="member.isDefunct()" class="fas fa-exclamation-square"></i></span>

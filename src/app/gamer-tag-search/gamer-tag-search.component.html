@@ -1,0 +1,37 @@
+<div class="childComponent">
+    <div class="childVert">
+        <div class="main">
+            <div *ngIf="errorMsg|async as msg">{{msg}}</div>
+            <div *ngIf="progressMsg|async as msg">{{msg}}</div>
+
+            <ng-container *ngIf="playerNotFound|async">
+                <h4>{{gamerTag}} not found on {{platform.desc}}. Try a different platform:</h4>
+                <div class="button-row">
+                    <ng-container *ngFor="let plat of platforms">
+                        <button class="space-right" *ngIf="plat.type!=platform.type" mat-raised-button color="accent"
+                            (click)="router.navigate(['gt', plat.type, gamerTag])">{{plat.desc}}</button>
+                    </ng-container>
+                </div>
+                <h4>Search Bungie account names or return home to try again:</h4>
+                <div class="button-row">
+                    <button class="space-right" mat-raised-button color="primary"
+                        (click)="router.navigate(['search', gamerTag])">Search Bungie Names</button>
+                    <button mat-raised-button (click)="router.navigate(['home'])">Back Home</button>
+                </div>
+            </ng-container>
+
+            <div class="center-spinner">
+                <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+            </div>
+        </div>
+        <div *ngIf="(disableAds|async)!==true" class="adRight">
+            <small class="adText">Advertisement</small>
+            <ng-adsense adFormat="vertical"></ng-adsense>
+        </div>
+
+    </div>
+    <div *ngIf="(disableAds|async)!==true" class="adBottom">
+        <small class="adText">Advertisement</small>
+        <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+    </div>
+</div>

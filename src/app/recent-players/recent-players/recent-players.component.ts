@@ -130,12 +130,6 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     this.router.navigate(['/pgcr', instanceId]);
   }
 
-  public async navigateBnetMember(target: BungieNetUserInfo) {
-    const bnetName = await this.bungieService.getFullBNetName(target.membershipId);
-    if (bnetName != null) { this.router.navigate(['/', 4, bnetName]); }
-    return;
-  }
-
   ngOnInit() {
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const platform: string = params['platform'];

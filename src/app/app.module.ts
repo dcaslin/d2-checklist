@@ -40,6 +40,7 @@ import {
   AppComponent, SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
   SelectPlatformDialogComponent
 } from './app.component';
+import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 
 @NgModule({
   imports: [
@@ -71,7 +72,7 @@ import {
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent
   ],
   entryComponents: [
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent

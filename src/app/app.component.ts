@@ -185,19 +185,6 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  async myProfile() {
-    if (this.signedOnUser != null) {
-      if (this.signedOnUser.value.userInfo.membershipType === 4) {
-        const bnetName = await this.bungieService.getFullBNetName(this.signedOnUser.value.membership.bungieId);
-        if (bnetName != null) {
-          this.router.navigate(['/', 4, bnetName]);
-        }
-      } else {
-        this.router.navigate([this.signedOnUser.value.userInfo.membershipType, this.signedOnUser.value.userInfo.displayName]);
-      }
-    }
-  }
-
   private static getFinalComponent(r: ActivatedRoute): string {
     // grab platform while we're here
     if (r.snapshot.params.platform != null) {
