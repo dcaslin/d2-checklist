@@ -20,6 +20,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public const: Const = Const;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
 
+
   burns: NameDesc[] = [];
   reckBurns: NameDesc[] = [];
 
@@ -74,8 +75,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     return s;
   }
 
-  private async init(params: Params){
+  private async init(params: Params) {
     try {
+      this.errorMsg.next(null);
       const sPlatform = params['platform'];
       const platform = BungieService.parsePlatform(sPlatform);
       if (platform == null) {
@@ -83,12 +85,14 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       }
       const sMemberId = params['memberId'];
       const memberId: string = PlayerComponent.validateInteger(sMemberId);
+      // handle old URL's nicely
       if (memberId == null) {
-        throw new Error(sMemberId + ' is an invalid member id');
+        this.router.navigate(['gt', '' + platform.type, sMemberId]);
+        return;
       }
       // if nothing changed, don't do anything
       const player = this.state.currPlayer();
-      if (player != null){
+      if (player != null) {
         const ui = player.profile.userInfo;
         if (ui.membershipType == platform.type && ui.membershipId == memberId) {
           return;
