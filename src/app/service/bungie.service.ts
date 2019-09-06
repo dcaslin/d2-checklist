@@ -776,7 +776,7 @@ export class BungieService implements OnDestroy {
     public async getBurns(): Promise<NameDesc[]> {
         const ms = await this.getPublicMilestones();
         for (const m of ms) {
-            if ('3172444947' === m.hash) {
+            if ('1437935813' === m.hash) {  //daily is gone, use weekly strike challenge instead
                 return m.aggActivities[0].activity.modifiers;
             }
         }
