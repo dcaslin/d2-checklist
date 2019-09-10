@@ -49,6 +49,9 @@ import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
 import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
+import { ClanCollectionSearchComponent } from './clan/clan-collections/clan-collection-search/clan-collection-search.component';
+import { ClanBadgesComponent } from './clan/clan-collections/clan-badges/clan-badges.component';
+import { ClanCollectionsComponent } from './clan/clan-collections/clan-collections.component';
 
 
 @Injectable()
@@ -168,6 +171,25 @@ export class AuthGuard implements CanActivate {
             }, {
               path: 'tracked',
               component: ClanTriumphTrackedComponent
+            }
+          ]
+        },
+        {
+          path: 'collections',
+          pathMatch: 'prefix',
+          component: ClanCollectionsComponent,
+          children: [
+            {
+              path: '',
+              redirectTo: 'badges',
+              pathMatch: 'full'
+            },
+            {
+              path: 'badges',
+              component: ClanBadgesComponent
+            }, {
+              path: 'search',
+              component: ClanCollectionSearchComponent
             }
           ]
         }
