@@ -1,0 +1,24 @@
+<div class="collection-item">
+    <div class="clan-child-header">
+        <div class="clan-child-name">
+            <div *ngIf="item.data.icon!=null" class="transparent-icon transparent-leaf-icon"
+                [style.background-image]="'url(//www.bungie.net' + item.data.icon + ')'"></div>
+            {{item.data.name}}
+            <span class="simple-caption" *ngIf="debugmode|async">{{item.data.hash}}</span>
+        </div>
+        <div class="clan-child-spacer"></div>
+        <div class="clan-child-details">
+            <button mat-stroked-button (click)="openDialog(item)">
+                {{item.complete}} / {{item.total}} members
+
+            </button>
+        </div>
+    </div>
+    <div class="small-margin">
+        <mat-progress-bar mode="determinate" [value]="item.complete*100/item.total">
+        </mat-progress-bar>
+        <div class="small-margin simple-caption">
+            {{item.data.desc}}
+        </div>
+    </div>
+</div>

@@ -1450,7 +1450,7 @@ export class ParseService {
         const pDesc = this.destinyCacheService.cache.PresentationNode[node.hash];
         if (pDesc == null) { return null; }
         const badgeClasses: BadgeClass[] = [];
-        let badgeComplete = true;
+        let badgeComplete = false;
         let bestProgress = 0;
         let total = 0;
         for (const c of node.children) {
@@ -1472,7 +1472,7 @@ export class ParseService {
                 total: c.children.length,
                 children: c.children as TriumphCollectibleNode[]
             });
-            badgeComplete = badgeComplete && complete === c.children.length;
+            badgeComplete = badgeComplete || complete === c.children.length;
         }
         return {
             hash: node.hash,
@@ -1899,6 +1899,23 @@ export class ParseService {
                         badges.push(badge);
                     }
                 }
+                badges.sort((a, b) => {
+                    const aP = a.bestProgress / (a.total ? a.total : 1);
+                    const bP = b.bestProgress / (b.total ? b.total : 1);
+                    if (aP > bP) {
+                        return -1;
+                    }
+                    if (aP < bP) {
+                        return 1;
+                    }
+                    if (a.name > b.name) {
+                        return 1;
+                    }
+                    if (a.name < b.name) {
+                        return -1;
+                    }
+                    return 0;
+                });
 
                 const collLeaves: TriumphCollectibleNode[] = [];
                 colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
