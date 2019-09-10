@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Badge } from '@app/service/model';
+import { Badge, Player } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
@@ -14,6 +14,7 @@ import { PlayerStateService } from '../../player-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionBadgeComponent extends ChildComponent implements OnInit {
+  private selectedBadge: string = null;
   public _badge: BehaviorSubject<Badge> = new BehaviorSubject<Badge>(null);
 
   constructor(storageService: StorageService,
@@ -22,15 +23,16 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
     super(storageService);
   }
 
-  ngOnInit() {
-    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
-      const selectedBadge = params['node'];
-      if (this.state.currPlayer() == null) {
-        return;
-      }
-      const badges = this.state.currPlayer().badges;
+  private load(player: Player, selectedBadgeHash: string) {
+    if (player == null) {
+      return;
+    }
+    if (selectedBadgeHash == null) {
+      return;
+    }
+    const badges = player.badges;
       for (const b of badges) {
-        if (b.hash == selectedBadge) {
+        if (b.hash == selectedBadgeHash) {
           this._badge.next(b);
           window.scrollTo(0, 0);
           setTimeout(() => {
@@ -44,8 +46,15 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
           return;
         }
       }
-
-    });
   }
 
+  ngOnInit() {
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      this.selectedBadge = params['node'];
+      this.load(this.state.currPlayer(), this.selectedBadge);
+    });
+    this.state.player.pipe(takeUntil(this.unsubscribe$)).subscribe((p: Player) => {
+      this.load(p, this.selectedBadge);
+    });
+  }
 }

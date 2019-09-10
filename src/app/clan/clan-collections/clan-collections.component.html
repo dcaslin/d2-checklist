@@ -1,0 +1,16 @@
+<nav mat-tab-nav-bar>
+    <a mat-tab-link routerLink="badges" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+        <i class="far fa-badge-check"></i><span class="d-none d-md-inline">&ensp;Badges</span>
+    </a>
+    <a mat-tab-link routerLink="search" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
+        <i class="far fa-search"></i><span class="d-none d-md-inline">&ensp;Search</span>
+    </a>
+</nav>
+<ng-container *ngIf="state.allLoaded|async; else notLoaded">
+    <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #notLoaded>
+    <br>
+    <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+</ng-template>

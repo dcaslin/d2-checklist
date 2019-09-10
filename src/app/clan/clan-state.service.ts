@@ -4,7 +4,7 @@ import { BungieService } from '@app/service/bungie.service';
 import { StorageService } from '@app/service/storage.service';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
-import { BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphRecordNode, AggHistoryEntry } from '../service/model';
+import { AggHistoryEntry, Badge, BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphCollectibleNode, TriumphRecordNode } from '../service/model';
 
 export interface Sort {
   name: string;
@@ -29,9 +29,19 @@ export interface PlayerTriumph {
   data: TriumphRecordNode;
 }
 
+export interface PlayerCollectible {
+  member: BungieGroupMember;
+  data: TriumphCollectibleNode;
+}
+
 interface PlayerSeal {
   member: BungieGroupMember;
   data: Seal;
+}
+
+interface PlayerBadge {
+  member: BungieGroupMember;
+  data: Badge;
 }
 
 export interface PlayerAggHistoryEntry {
@@ -66,12 +76,29 @@ export interface ClanSeal extends ClanAggregate {
   notDone: PlayerSeal[];
 }
 
+export interface ClanBadge extends ClanAggregate {
+  data: Badge;
+  children: ClanSearchableCollection[];
+  all: PlayerBadge[];
+  done: PlayerBadge[];
+  notDone: PlayerBadge[];
+}
+
+
 export interface ClanSearchableTriumph extends ClanAggregate {
   data: TriumphRecordNode;
   all: PlayerTriumph[];
   done: PlayerTriumph[];
   notDone: PlayerTriumph[];
 }
+
+export interface ClanSearchableCollection extends ClanAggregate {
+  data: TriumphCollectibleNode;
+  all: PlayerCollectible[];
+  done: PlayerCollectible[];
+  notDone: PlayerCollectible[];
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -87,6 +114,10 @@ export class ClanStateService {
   public sortedMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
   public seals: BehaviorSubject<ClanSeal[]> = new BehaviorSubject([]);
   public searchableTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
+
+  public badges: BehaviorSubject<ClanBadge[]> = new BehaviorSubject([]);
+  public searchableCollection: BehaviorSubject<ClanSearchableCollection[]> = new BehaviorSubject([]);
+
   public trackedTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
   public aggHistory: BehaviorSubject<ClanAggHistoryEntry[]> = new BehaviorSubject([]);
   public sweepMsg: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -393,6 +424,115 @@ export class ClanStateService {
     this.applyTrackedTriumphs();
   }
 
+  private static buildBestCollectionNodes(b: Badge): TriumphCollectibleNode[] {
+    const dict = {};
+    for (const bc of b.classes) {
+      for (const c of bc.children) {
+        if (dict[c.hash] == null) {
+          dict[c.hash] = c;
+        } else {
+          if (!dict[c.hash].complete && c.complete) {
+            dict[c.hash] = c;
+          }
+        }
+      }
+    }
+    const returnMe: TriumphCollectibleNode[] = [];
+    for (const key of Object.keys(dict)) {
+      returnMe.push(dict[key]);
+    }
+    return returnMe;
+
+  }
+
+  private handleCollections(): void {
+    const clanBadgesDict: any = {};
+
+    const clanSearchableCollectionsDict: any = {};
+    for (const m of this.sortedMembers.getValue()) {
+      if (!m.player) {
+        continue;
+      }
+      if (m.player.seals) {
+        for (const b of m.player.badges) {
+          let badge: ClanBadge = clanBadgesDict[b.hash];
+          if (badge == null) {
+            badge = {
+              data: b,
+              complete: 0,
+              total: 0,
+              done: [],
+              all: [],
+              notDone: [],
+              children: []
+            };
+            clanBadgesDict[b.hash] = badge;
+          }
+          const playerBadge: PlayerBadge = {
+            member: m,
+            data: b
+          };
+          badge.all.push(playerBadge);
+          if (b.complete) {
+            badge.complete++;
+          }
+          badge.total++;
+        }
+      }
+
+      if (m.player.searchableCollection) {
+        for (const c of m.player.searchableCollection) {
+          let collectible = clanSearchableCollectionsDict[c.hash];
+          if (collectible == null) {
+            collectible = {
+              data: c,
+              complete: 0,
+              total: 0,
+              all: [],
+              done: [],
+              notDone: []
+            };
+            clanSearchableCollectionsDict[c.hash] = collectible;
+          }
+          const playerCollectible: PlayerCollectible = {
+            member: m,
+            data: c
+          };
+          collectible.all.push(playerCollectible);
+          if (c.complete) {
+            clanSearchableCollectionsDict[c.hash].complete++;
+          }
+          clanSearchableCollectionsDict[c.hash].total++;
+        }
+      }
+    }
+    const clanBadges: ClanBadge[] = [];
+    const clanSearchableCollection: ClanSearchableCollection[] = [];
+    for (const key of Object.keys(clanSearchableCollectionsDict)) {
+      const pushMe: ClanSearchableCollection = clanSearchableCollectionsDict[key];
+      // TODO sort ClanStateService.sortTriumphs(pushMe, { name: 'pct', ascending: false });
+      clanSearchableCollection.push(pushMe);
+    }
+    for (const key of Object.keys(clanBadgesDict)) {
+      // stock children
+      const badge: ClanBadge = clanBadgesDict[key];
+      const children = ClanStateService.buildBestCollectionNodes(badge);
+      
+      for (const child of badge.data.children) {
+        const triumph = clanSearchableCollectionsDict[child.hash];
+        if (!triumph) {
+          throw new Error(child.hash + ' not found');
+        }
+        badge.children.push(triumph);
+      }
+      // TODO sort ClanStateService.sortSeals(seal, { name: 'pct', ascending: false });
+
+      clanBadges.push(badge);
+    }
+    this.badges.next(clanBadges);
+    this.searchableCollection.next(clanSearchableCollection);
+  }
+
 
   constructor(
     private router: Router,
@@ -644,6 +784,7 @@ export class ClanStateService {
 
     if (this.allLoaded.getValue()) {
       this.handleTriumphs();
+      this.handleCollections();
     }
   }
 
@@ -878,7 +1019,7 @@ export class ClanStateService {
     try {
       const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType,
         target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions',
-          'CharacterActivities', 'Records', 'PresentationNodes'], true);
+        'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true);
       target.player = x;
       if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
         this.modelPlayer.next(x);
