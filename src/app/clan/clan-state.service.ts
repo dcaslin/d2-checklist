@@ -275,6 +275,29 @@ export class ClanStateService {
     }
   }
 
+  public static sortBadges(pushMe: ClanBadge, sort: Sort) {
+    const modifier = sort.ascending ? 1 : -1;
+    pushMe.all.sort((a, b) => {
+      const aN = a.member.destinyUserInfo.displayName;
+      const bN = b.member.destinyUserInfo.displayName;
+      if (aN < bN) {
+        return modifier * -1;
+      } else if (aN > bN) {
+        return modifier * 1;
+      }
+      return 0;
+    });
+    pushMe.done = [];
+    pushMe.notDone = [];
+    for (const x of pushMe.all) {
+      if (x.data.complete) {
+        pushMe.done.push(x);
+      } else {
+        pushMe.notDone.push(x);
+      }
+    }
+  }
+
   public static sortSeals(pushMe: ClanSeal, sort: Sort) {
     const modifier = sort.ascending ? 1 : -1;
     pushMe.all.sort((a, b) => {
@@ -286,6 +309,29 @@ export class ClanStateService {
           return modifier * 1;
         }
       }
+      const aN = a.member.destinyUserInfo.displayName;
+      const bN = b.member.destinyUserInfo.displayName;
+      if (aN < bN) {
+        return modifier * -1;
+      } else if (aN > bN) {
+        return modifier * 1;
+      }
+      return 0;
+    });
+    pushMe.done = [];
+    pushMe.notDone = [];
+    for (const x of pushMe.all) {
+      if (x.data.complete) {
+        pushMe.done.push(x);
+      } else {
+        pushMe.notDone.push(x);
+      }
+    }
+  }
+
+  public static sortCollectibles(pushMe: ClanSearchableCollection, sort: Sort) {
+    const modifier = sort.ascending ? 1 : -1;
+    pushMe.all.sort((a, b) => {
       const aN = a.member.destinyUserInfo.displayName;
       const bN = b.member.destinyUserInfo.displayName;
       if (aN < bN) {
@@ -446,16 +492,25 @@ export class ClanStateService {
   }
 
   private handleCollections(): void {
+    // dictionary by hash of badges
     const clanBadgesDict: any = {};
 
+    //  dictionary by hash of collectibles
     const clanSearchableCollectionsDict: any = {};
+
+    // loop through all clan-members to gather badges and collectibles
     for (const m of this.sortedMembers.getValue()) {
       if (!m.player) {
         continue;
       }
-      if (m.player.seals) {
+
+      // process players badges
+      if (m.player.badges) {
         for (const b of m.player.badges) {
+          // do we have this badge already?
           let badge: ClanBadge = clanBadgesDict[b.hash];
+
+          // if not, create it and store in the dict
           if (badge == null) {
             badge = {
               data: b,
@@ -468,20 +523,29 @@ export class ClanStateService {
             };
             clanBadgesDict[b.hash] = badge;
           }
+
+          // create this specific players badge and save it
           const playerBadge: PlayerBadge = {
             member: m,
             data: b
           };
           badge.all.push(playerBadge);
+
+          // record complete vs not
           if (b.complete) {
             badge.complete++;
+            badge.done.push(playerBadge);
+          } else {
+            badge.notDone.push(playerBadge);
           }
           badge.total++;
         }
       }
 
+      // process player collectibles
       if (m.player.searchableCollection) {
         for (const c of m.player.searchableCollection) {
+          // do we have a copy of this collectible yet? If not create it
           let collectible = clanSearchableCollectionsDict[c.hash];
           if (collectible == null) {
             collectible = {
@@ -494,6 +558,7 @@ export class ClanStateService {
             };
             clanSearchableCollectionsDict[c.hash] = collectible;
           }
+          // create player collectible link
           const playerCollectible: PlayerCollectible = {
             member: m,
             data: c
@@ -506,29 +571,36 @@ export class ClanStateService {
         }
       }
     }
+
+    // convert our dicts into arrays
     const clanBadges: ClanBadge[] = [];
     const clanSearchableCollection: ClanSearchableCollection[] = [];
     for (const key of Object.keys(clanSearchableCollectionsDict)) {
       const pushMe: ClanSearchableCollection = clanSearchableCollectionsDict[key];
-      // TODO sort ClanStateService.sortTriumphs(pushMe, { name: 'pct', ascending: false });
+      // sort the node's children and divide into done/notDone before pushing
+      // we divide into done/notDone here so we can avoid 3 sorts and just use one
+      ClanStateService.sortCollectibles(pushMe, { name: 'name', ascending: true });
       clanSearchableCollection.push(pushMe);
     }
+
+
+    // we're going to skip stocking children b/c it's too confusing with diff badge entries across classes
+    // also using the accordion UI is too slow and painful
     for (const key of Object.keys(clanBadgesDict)) {
       // stock children
       const badge: ClanBadge = clanBadgesDict[key];
-      const children = ClanStateService.buildBestCollectionNodes(badge);
-      
-      for (const child of badge.data.children) {
-        const triumph = clanSearchableCollectionsDict[child.hash];
-        if (!triumph) {
-          throw new Error(child.hash + ' not found');
-        }
-        badge.children.push(triumph);
-      }
-      // TODO sort ClanStateService.sortSeals(seal, { name: 'pct', ascending: false });
-
+      ClanStateService.sortBadges(badge, { name: 'name', ascending: false });
       clanBadges.push(badge);
     }
+    clanBadges.sort((a, b) => {
+      if (a.data.name > b.data.name) {
+        return 1;
+      }
+      if (a.data.name < b.data.name) {
+        return -1;
+      }
+      return 0;
+    });
     this.badges.next(clanBadges);
     this.searchableCollection.next(clanSearchableCollection);
   }

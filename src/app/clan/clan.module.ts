@@ -21,6 +21,9 @@ import { ClanTriumphSearchComponent } from './clan-triumphs/clan-triumph-search/
 import { ClanTriumphTrackedComponent } from './clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
 import { ClanTriumphsComponent } from './clan-triumphs/clan-triumphs.component';
 import { ClanComponent } from './clan.component';
+import { ClanCollectionBadgeDialogComponent } from './clan-collections/clan-collection-badge-dialog/clan-collection-badge-dialog.component';
+import { ClanCollectionItemComponent } from './clan-collections/clan-collection-item/clan-collection-item.component';
+import { ClanCollectionItemDialogComponent } from './clan-collections/clan-collection-item-dialog/clan-collection-item-dialog.component';
 
 @NgModule({
   imports: [
@@ -28,7 +31,7 @@ import { ClanComponent } from './clan.component';
     ChartsModule
   ],
   declarations: [ClanComponent, ClanMilestonesComponent, ClanInfoComponent,
-    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanLifetimeGraphComponent, ClanCollectionsComponent, ClanBadgesComponent, ClanCollectionSearchComponent],
-  entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent]
+    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanLifetimeGraphComponent, ClanCollectionsComponent, ClanBadgesComponent, ClanCollectionSearchComponent, ClanCollectionBadgeDialogComponent, ClanCollectionItemComponent, ClanCollectionItemDialogComponent],
+  entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanCollectionBadgeDialogComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanCollectionItemDialogComponent]
 })
 export class ClanModule { }

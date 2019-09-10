@@ -1,1 +1,27 @@
-<p>clan-collection-search works!</p>
+<div *ngIf="filteredCollection|async as c" class="clan-collection-search">
+        <div class="left" class="medium-margin">
+            <mat-form-field class="searchField">
+                <input matInput (keyup)="collectionSearchChange()" [(ngModel)]="collectionFilterText"
+                    placeholder="Wildcard Search collections">
+            </mat-form-field>
+        </div>
+        <div *ngIf="c.length==0" class="left" class="medium-margin">
+            <ng-container *ngIf="collectionFilterText==null || collectionFilterText.length==0">
+                Type above to search
+            </ng-container>
+            <ng-container *ngIf="collectionFilterText!=null && collectionFilterText.length>0">
+                No results found, try a different search
+            </ng-container>
+        </div>
+        <div *ngIf="c.length>=100">More than 100 results, refine your search</div>
+
+        <table *ngIf="c.length>0 && c.length<100" class="checklist-table">
+            <tbody>
+                <tr *ngFor="let coll of c">
+                    <td>
+                        <d2c-clan-collection-item [item]="coll"></d2c-clan-collection-item>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>

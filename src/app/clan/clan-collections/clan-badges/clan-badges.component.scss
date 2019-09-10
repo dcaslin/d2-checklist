@@ -1,0 +1,28 @@
+.badge-icon {
+    flex-shrink: 0;
+    flex-grow: 0;
+    height: 63px;
+    width: 104px;
+    margin: 5px 5px 5px 5px;
+    background-size: cover;
+  }
+  
+  .badge-list {
+      display: flex;
+      flex-direction: column;
+  }
+  
+  .badge-row {
+      display: flex;
+      flex-direction: row;
+  }
+  
+  .badge-info {
+      text-align: left;
+      flex-grow: 1;
+      margin-left: 10px;
+  }
+
+  .button-section {
+    margin: 0.5em 0 0.75em;
+  }

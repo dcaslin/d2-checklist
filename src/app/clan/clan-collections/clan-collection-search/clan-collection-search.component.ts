@@ -34,23 +34,23 @@ export class ClanCollectionSearchComponent extends ChildComponent implements OnI
         this.filterTriumphs();
       });
   }
-  triumphSearchChange() {
+  collectionSearchChange() {
     this.collectionSearchSubject.next();
   }
 
   private filterTriumphs() {
-    const searchableTriumphs = this.state.searchableTriumphs.getValue();
+    const searchableCollection = this.state.searchableCollection.getValue();
     if (this.collectionFilterText == null || this.collectionFilterText.trim().length == 0) {
       this.filteredCollection.next([]);
       return;
     }
-    if (searchableTriumphs == null) {
+    if (searchableCollection == null) {
       this.filteredCollection.next([]);
       return;
     }
     const temp = [];
     const filterText = this.collectionFilterText.toLowerCase();
-    for (const t of searchableTriumphs) {
+    for (const t of searchableCollection) {
       if (temp.length > 20) { break; }
       if (t.data.searchText.indexOf(filterText) >= 0) {
         temp.push(t);
