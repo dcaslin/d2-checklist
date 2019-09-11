@@ -918,13 +918,14 @@ export class ParseService {
         return null;
     }
 
-    public parsePublicMilestones(resp: any): PublicMilestone[] {
+    public parsePublicMilestones(resp: any, resp2: any): PublicMilestone[] {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
             const ms: any = resp[key];
             msMilestones.push(ms);
         });
+        let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
             let rewards = '';
             let activityRewards = null;
@@ -1163,7 +1164,7 @@ export class ParseService {
             if (rewards.trim().length == 0 && activityRewards != null) {
                 rewards = activityRewards;
             }
-            returnMe.push({
+            const pushMe = {
                 hash: ms.milestoneHash + '',
                 name: desc.displayProperties.name,
                 desc: desc.displayProperties.description,
@@ -1176,9 +1177,83 @@ export class ParseService {
                 rewards: rewards,
                 pl: pl,
                 summary: summary
-            });
+            };
+            if (pushMe.hash == '4253138191') {
+                sample = pushMe;
+            }
+            returnMe.push(pushMe);
 
         }
+
+        // we're still missing nightfalls and heroic menagerie
+        let charAct = null;
+        if (sample && resp2 && resp2.characterActivities && resp2.characterActivities.data) {
+            charAct = resp2.characterActivities.data['2305843009264730899'];
+        }
+        if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
+            for (const aa of charAct.availableActivities) {
+                const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+                if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
+                    continue;
+                }
+                const name = desc.displayProperties.name;
+                let type = null;
+                const modifiers: NameDesc[] = [];
+                if (name.indexOf('The Menagerie (Heroic)') >= 0) {
+                    type = 'herMenag';
+                    if (desc.modifiers != null && desc.modifiers.length > 0) {
+                        for (const n of desc.modifiers) {
+                            const mod: NameDesc = this.parseModifier(n.activityModifierHash);
+                            modifiers.push(mod);
+                        }
+                    }
+                } else if (name.indexOf('Nightfall: ') >= 0) {
+                    // skip variant nightfalls that are quest related, and lower level NF's
+                    if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
+                        type = 'nf';
+                    }
+                }
+                if (!type) {
+                    continue;
+                }
+
+                const msa: MilestoneActivity = {
+                    hash: aa.activityHash,
+                    name: desc.displayProperties.name,
+                    desc: desc.displayProperties.description,
+                    ll: aa.recommendedLight,
+                    tier: aa.difficultyTier,
+                    icon: desc.displayProperties.icon,
+                    challenges: [],
+                    modifiers: modifiers,
+                    loadoutReqs: []
+                };
+
+
+                const pushMe = {
+                    hash: msa.hash,
+                    name: msa.name,
+                    desc: msa.desc,
+                    start: sample.start,
+                    end: sample.end,
+                    order: sample.order,
+                    icon: msa.icon,
+                    activities: [msa],
+                    aggActivities: [{
+                        lls: [msa.ll],
+                        activity: msa
+                    }],
+                    rewards: '',
+                    pl: msa.ll,
+                    summary: '',
+                    type: type
+                };
+                returnMe.push(pushMe);
+            }
+        }
+
+
+
 
         returnMe.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
@@ -1618,7 +1693,8 @@ export class ParseService {
                     // '2188900244' === p.hash    // recipe for success
                     '291994631' === p.hash ||   // spring comes to eververse
                     '2958665367' === p.hash ||   // lost cryptarch
-                    '3915793660' === p.hash    // reverly begins
+                    '3915793660' === p.hash ||   // reverly begins
+                    p.type != null   // fake milestones
                 ) {
                     if ('4253138191' === p.hash) {
                         weekEnd = p.end;

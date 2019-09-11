@@ -204,6 +204,7 @@ export interface PublicMilestone {
     rewards: string;
     pl: number;
     summary: string;
+    type?: string;
 
 }
 

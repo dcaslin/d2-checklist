@@ -25,11 +25,11 @@ export class ClanCollectionItemComponent extends ChildComponent implements OnIni
   ngOnInit() {
   }
 
-  public openDialog(triumph: ClanSearchableTriumph): void {
+  public openDialog(item: ClanSearchableCollection): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;
-    dc.data = triumph;
+    dc.data = item;
     this.dialog.open(ClanCollectionItemDialogComponent, dc);
   }
 
