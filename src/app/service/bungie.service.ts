@@ -277,7 +277,7 @@ export class BungieService implements OnDestroy {
         const publicMilestones = await this.getPublicMilestones();
         if (publicMilestones != null) {
             for (const m of publicMilestones) {
-                if ('2853331463' === m.hash) {
+                if ('2853331463' === m.hash || 'nf' === m.type) {
                     for (const a of m.aggActivities) {
                         let name = a.activity.name;
                         name = name.replace('Nightfall: ', '');
@@ -764,7 +764,9 @@ export class BungieService implements OnDestroy {
         }
         try {
             const resp = await this.makeReq('Destiny2/Milestones/');
-            const reply = this.parseService.parsePublicMilestones(resp);
+            // hack to get menagerie burns and public nightfalls
+            const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities');
+            const reply = this.parseService.parsePublicMilestones(resp, resp2);
             this.publicMilestones = reply;
             return reply;
         } catch (err) {
@@ -777,6 +779,16 @@ export class BungieService implements OnDestroy {
         const ms = await this.getPublicMilestones();
         for (const m of ms) {
             if ('1437935813' === m.hash) {  //daily is gone, use weekly strike challenge instead
+                return m.aggActivities[0].activity.modifiers;
+            }
+        }
+        return null;
+    }
+
+    public async getMenagBurns(): Promise<NameDesc[]> {
+        const ms = await this.getPublicMilestones();
+        for (const m of ms) {
+            if ('herMenag' == m.type) {
                 return m.aggActivities[0].activity.modifiers;
             }
         }

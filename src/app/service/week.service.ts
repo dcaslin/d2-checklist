@@ -21,6 +21,7 @@ export class WeekService {
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const burns = await this.bungieService.getBurns();
     const reckBurns = await this.bungieService.getReckBurns();
+    const menagBurns = await this.bungieService.getMenagBurns();
     const missions: Mission[] = [];
     let flashpoint: string = null;
     let start: string = null;
@@ -71,6 +72,7 @@ export class WeekService {
       publicMilestones: publicMilestones,
       burns: burns,
       reckBurns: reckBurns,
+      herMenagBurns: menagBurns,
       missions: missions,
       nightfalls: nightfalls,
       flashpoint: flashpoint,
@@ -145,6 +147,7 @@ export interface Today {
   publicMilestones: PublicMilestone[];
   burns: NameDesc[];
   reckBurns: NameDesc[];
+  herMenagBurns: NameDesc[];
   missions: Mission[];
   nightfalls: Mission[];
   flashpoint: string;

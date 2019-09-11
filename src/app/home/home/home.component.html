@@ -46,8 +46,8 @@
           <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
         <div class="grid-parent" *ngIf="today!=null" width="100%">
-          <div>
-            <mat-card>
+          <div *ngIf="today.missions!=null && today.missions.length>0">
+            <mat-card >
               <mat-card-header>
                 <mat-card-title>
                   <a href="https://www.reddit.com/r/DestinyTheGame/comments/9t16yz/list_of_heroic_story_missions_from_fastest_to/"
@@ -122,6 +122,21 @@
           <div>
             <mat-card>
               <mat-card-header>
+                <mat-card-title>Heroic Modifiers</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list role="list">
+                  <mat-list-item *ngFor="let b of today.burns" [matTooltip]="b.desc">
+                    <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    {{b.name}}
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div>
+            <mat-card>
+              <mat-card-header>
                 <mat-card-title>Reckoning Modifiers</mat-card-title>
               </mat-card-header>
               <mat-card-content>
@@ -137,11 +152,11 @@
           <div>
             <mat-card>
               <mat-card-header>
-                <mat-card-title>Heroic Modifiers</mat-card-title>
+                <mat-card-title>Heroic Menagerie Modifiers</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <mat-list role="list">
-                  <mat-list-item *ngFor="let b of today.burns" [matTooltip]="b.desc">
+                  <mat-list-item *ngFor="let b of today.herMenagBurns" [matTooltip]="b.desc">
                     <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
                     {{b.name}}
                   </mat-list-item>
@@ -149,6 +164,7 @@
               </mat-card-content>
             </mat-card>
           </div>
+         
 
           <div *ngIf="today.week!=null">
             <mat-card>
