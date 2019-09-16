@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "9.2.3",
+  "version": "9.2.4",
   "license": "MIT",
   "scripts": {
     "ng": "ng",

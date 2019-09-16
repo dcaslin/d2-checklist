@@ -5,6 +5,7 @@ import { StorageService } from '@app/service/storage.service';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { AggHistoryEntry, Badge, BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphCollectibleNode, TriumphRecordNode } from '../service/model';
+import { all } from 'q';
 
 export interface Sort {
   name: string;
@@ -575,8 +576,31 @@ export class ClanStateService {
     // convert our dicts into arrays
     const clanBadges: ClanBadge[] = [];
     const clanSearchableCollection: ClanSearchableCollection[] = [];
+    const allMembers = this.sortedMembers.getValue();
     for (const key of Object.keys(clanSearchableCollectionsDict)) {
       const pushMe: ClanSearchableCollection = clanSearchableCollectionsDict[key];
+      // handle secret collections
+      if (pushMe.total == pushMe.complete && pushMe.total < allMembers.length) {
+        for (const m of allMembers) {
+          const found = pushMe.all.some(x => {
+            return x.member == m;
+          });
+          if (!found) {
+            const newData = Object.assign({}, pushMe.data);
+            newData.complete = false;
+            newData.acquired = false;
+            pushMe.total++;
+            const playerCollectible: PlayerCollectible = {
+              member: m,
+              data: newData
+            };
+            pushMe.all.push(playerCollectible);
+          }
+        }
+
+      }
+
+
       // sort the node's children and divide into done/notDone before pushing
       // we divide into done/notDone here so we can avoid 3 sorts and just use one
       ClanStateService.sortCollectibles(pushMe, { name: 'name', ascending: true });

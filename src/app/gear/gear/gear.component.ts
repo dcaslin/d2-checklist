@@ -952,6 +952,7 @@ export class ArmorPerksDialogComponent {
   parent: GearComponent;
   tempWishlistOverrideUrl: string;
   WishlistService = WishlistService;
+  TargetPerkService = TargetPerkService;
   constructor(
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
