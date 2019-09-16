@@ -96,7 +96,7 @@ export class TargetPerkService {
     const equippedPerks: { [key: string]: string[] } = {};
     for (const char of player.characters) {
       const perks = [];
-      const perkCounts = this.getEquippedPerks(char, items);
+      const perkCounts = TargetPerkService.getEquippedPerks(char, items);
 
       for (const pc of perkCounts) {
         perks.push(pc.perk.hash);
@@ -203,7 +203,7 @@ export class TargetPerkService {
     };
   }
 
-  public getEquippedPerks(char: Character, gear: InventoryItem[]): PerkCount[] {
+  public static getEquippedPerks(char: Character, gear: InventoryItem[]): PerkCount[] {
     const activePerks: InventoryPlug[] = [];
     for (const g of gear) {
       if (g.type != ItemType.Armor) { continue; }

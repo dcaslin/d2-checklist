@@ -15,7 +15,7 @@ export class TargetArmorPerksDialogComponent implements OnInit {
   targetChoices: Choice[];
 
   constructor(
-    private targetPerkService: TargetPerkService,
+    public targetPerkService: TargetPerkService,
     public dialogRef: MatDialogRef<TargetArmorPerksDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;

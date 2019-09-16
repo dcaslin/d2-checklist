@@ -5,7 +5,7 @@
     <mat-tab-group>
         <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of data.parent.player.characters">
             <div style="margin: 20px">
-                    <ng-container *ngFor="let p of targetPerkSerice.getEquippedPerks(char, data.parent.player.gear)">
+                    <ng-container *ngFor="let p of TargetPerkService.getEquippedPerks(char, data.parent.player.gear)">
                             <div [title]="p.perk.desc" [class.warn-text]="p.count>1" >
                                 {{p.perk.name}} 
                                 <span *ngIf="p.count>1">
