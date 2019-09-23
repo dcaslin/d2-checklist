@@ -40,7 +40,7 @@ interface PlayerSeal {
   data: Seal;
 }
 
-interface PlayerBadge {
+export interface PlayerBadge {
   member: BungieGroupMember;
   data: Badge;
 }
@@ -279,6 +279,14 @@ export class ClanStateService {
   public static sortBadges(pushMe: ClanBadge, sort: Sort) {
     const modifier = sort.ascending ? 1 : -1;
     pushMe.all.sort((a, b) => {
+      if (sort.name === 'pct') {
+        if (a.data.percent < b.data.percent) {
+
+          return modifier * -1;
+        } else if (a.data.percent > b.data.percent) {
+          return modifier * 1;
+        }
+      }
       const aN = a.member.destinyUserInfo.displayName;
       const bN = b.member.destinyUserInfo.displayName;
       if (aN < bN) {

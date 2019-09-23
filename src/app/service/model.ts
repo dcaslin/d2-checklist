@@ -81,6 +81,7 @@ export interface Badge {
     icon: string;
     complete: boolean;
     bestProgress: number;
+    percent: number;
     total: number;
     classes: BadgeClass[];
 }

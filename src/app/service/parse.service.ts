@@ -1557,6 +1557,7 @@ export class ParseService {
             complete: badgeComplete,
             bestProgress: bestProgress,
             total: total,
+            percent: 100 * bestProgress / (total ? total : 1),
             classes: badgeClasses
         };
     }
@@ -1976,8 +1977,8 @@ export class ParseService {
                     }
                 }
                 badges.sort((a, b) => {
-                    const aP = a.bestProgress / (a.total ? a.total : 1);
-                    const bP = b.bestProgress / (b.total ? b.total : 1);
+                    const aP = a.percent;
+                    const bP = b.percent;
                     if (aP > bP) {
                         return -1;
                     }
