@@ -1,1 +1,74 @@
-<p>Coming soon!</p>
+<mat-dialog-content>
+    <h4>{{badge.data.name}}</h4>
+    <div class="simple-caption">{{badge.data.desc}}</div>
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Chart</span>
+            </ng-template>
+            <div class="tab-body">
+                <d2c-clan-triumph-graph [data]="badge.all"></d2c-clan-triumph-graph>
+            </div>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="far fa-square"></i><span class="d-none d-md-inline">&ensp;Incomplete&ensp;-</span>&ensp;{{badge.notDone.length}}
+            </ng-template>
+            <div class="tab-body">
+
+                <ng-container *ngTemplateOutlet="playerTable; context: {badge: badge, playerBadges: badge.notDone}">
+                </ng-container>
+            </div>
+        </mat-tab>
+        <mat-tab label="Complete">
+            <ng-template mat-tab-label>
+                <i class="far fa-check-square"></i><span class="d-none d-md-inline">&ensp;Complete&ensp;-</span>&ensp;{{badge.done.length}}
+            </ng-template>
+            <div class="tab-body">
+                <ng-container *ngTemplateOutlet="playerTable; context: {badge: badge, playerBadges: badge.done}">
+                </ng-container>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</mat-dialog-content>
+
+<ng-template #playerTable let-badge="badge" let-playerBadges='playerBadges'>
+    <div class="simple-caption" *ngIf="playerBadges.length==0">None</div>
+    <table class="checklist-table" *ngIf="playerBadges.length>0">
+        <thead>
+            <tr>
+                <th>
+                    <a href="javascript:void(0)" (click)="sortData('name')"> Player
+                        <ng-container *ngIf="sort.name=='name'">
+                            <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                            <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                        </ng-container>
+                    </a>
+                </th>
+                <th>
+                    <a href="javascript:void(0)" (click)="sortData('pct')"> Progress
+                        <ng-container *ngIf="sort.name=='pct'">
+                            <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                            <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                        </ng-container>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let s of playerBadges">
+                <td *ngIf="s.member as member">
+                    <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId, 'collections','badges',badge.data.hash]">
+                        {{member.destinyUserInfo.displayName}}
+                    </a>                   
+                    <span class="simple-caption" *ngIf="member.player.title.trim().length>0">
+                        {{member.player.title}}
+                    </span>
+                </td>
+                <td>
+                    {{s.data.percent|number : '0.0-0'}}%
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>

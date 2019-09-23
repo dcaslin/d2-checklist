@@ -58,7 +58,7 @@
         <tbody>
             <tr *ngFor="let s of playerSeals">
                 <td *ngIf="s.member as member">
-                    <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
+                    <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId, 'triumphs','seals']">
                         {{member.destinyUserInfo.displayName}}
                     </a>                   
                     <span class="simple-caption" *ngIf="member.player.title.trim().length>0">

@@ -36,6 +36,7 @@ export class ClanTriumphGraphComponent implements OnInit {
     const data = [];
     for (const pt of all) {
       const val = Math.ceil(pt.data.percent / 10) * 10;
+      console.log(val);
       if (dataDict[val] == null) {
         dataDict[val] = 1;
       } else {
