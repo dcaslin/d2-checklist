@@ -30,6 +30,7 @@
                   <th scope="col">Name</th>
                   <th scope="col"><i class="fab fa-xbox"></i>&ensp;Xbox</th>
                   <th scope="col"><i class="fab fa-playstation"></i>&ensp;PSN</th>
+                  <th scope="col"><i class="fab fa-steam"></i>&ensp;STEAM</th>
                   <th scope="col"><i class="fab fa-windows"></i>&ensp;BNET</th>
                   <th scope="col">Clan</th>
                 </tr>
@@ -50,6 +51,14 @@
                       <span class="strikethrough" *ngIf="account.psn.defunct">{{account.psn.name}}</span>
                     </ng-container>
                     <ng-container *ngIf="account.psn==null">&nbsp;</ng-container>
+                  </td>
+                  <td data-label="Steam">
+                    <ng-container *ngIf="account.steam!=null">
+                      <a href="javascript:void(0)" 
+                      *ngIf="!account.steam.defunct" (click)="loadPlayer(account.steam)">{{account.steam.name}}</a>
+                      <span class="strikethrough" *ngIf="account.bnet.defunct">{{account.steam.name}}</span>
+                    </ng-container>
+                    <ng-container *ngIf="account.steam==null">&nbsp;</ng-container>
                   </td>
                   <td data-label="BNet">
                     <ng-container *ngIf="account.bnet!=null">

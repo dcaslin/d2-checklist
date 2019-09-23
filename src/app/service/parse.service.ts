@@ -3439,6 +3439,7 @@ export class ParseService {
         let xbl: BungieMemberPlatform;
         let psn: BungieMemberPlatform;
         let bnet: BungieMemberPlatform;
+        let steam: BungieMemberPlatform;
         if (r.xboxDisplayName != null) {
             xbl = new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM);
         }
@@ -3449,8 +3450,11 @@ export class ParseService {
 
             bnet = new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM);
         }
-        if (xbl == null && psn == null && bnet == null) { return null; }
-        return new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet);
+        if (r.steamDisplayName != null) {
+            steam = new BungieMemberPlatform(r.steamDisplayName, Const.STEAM_PLATFORM);
+        }
+        if (xbl == null && psn == null && bnet == null && steam == null) { return null; }
+        return new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet, steam);
 
     }
 
@@ -3577,6 +3581,7 @@ interface PrivBungieMember {
     lastUpdate: string;
     psnDisplayName: string;
     xboxDisplayName: string;
+    steamDisplayName: string;
     showActivity: boolean;
     locale: string;
     localeInheritDefault: boolean;

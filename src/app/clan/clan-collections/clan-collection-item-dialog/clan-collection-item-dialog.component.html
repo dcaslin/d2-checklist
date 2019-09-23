@@ -1,1 +1,56 @@
-<p>Coming soon!</p>
+<mat-dialog-content>
+    <h4>{{item.data.name}}</h4>
+    <div class="simple-caption">{{item.data.desc}}</div>
+
+    <mat-tab-group>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <i class="far fa-square"></i><span class="d-none d-md-inline">&ensp;Incomplete&ensp;-</span>&ensp;{{item.notDone.length}}
+            </ng-template>
+            <div class="tab-body">
+                <ng-container *ngTemplateOutlet="playerTable; context: {items: item.notDone}">
+                </ng-container>
+            </div>
+        </mat-tab>
+        <mat-tab label="Complete">
+            <ng-template mat-tab-label>
+                <i class="far fa-check-square"></i><span class="d-none d-md-inline">&ensp;Complete&ensp;-</span>&ensp;{{item.done.length}}
+            </ng-template>
+            <div class="tab-body">
+                <ng-container *ngTemplateOutlet="playerTable; context: {items: item.done}">
+                </ng-container>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</mat-dialog-content>
+
+<ng-template #playerTable let-items='items'>
+    <div class="simple-caption" *ngIf="items.length==0">None</div>
+
+    <table class="checklist-table" *ngIf="items.length>0">
+        <thead>
+            <tr>
+                <th>
+                    <a href="javascript:void(0)" (click)="sortData('name')"> Player
+                        <ng-container *ngIf="sort.name=='name'">
+                            <i *ngIf="sort.ascending" class="fas fa-sort-up"></i>
+                            <i *ngIf="!sort.ascending" class="fas fa-sort-down"></i>
+                        </ng-container>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let i of items">
+                <td *ngIf="i.member as member">
+                    <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
+                        {{member.destinyUserInfo.displayName}}
+                    </a>
+                    <span class="simple-caption" *ngIf="member.player.title.trim().length>0">
+                        {{member.player.title}}
+                    </span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>
