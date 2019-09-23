@@ -318,13 +318,17 @@ export class BungieMember {
     xbl: BungieMemberPlatform;
     psn: BungieMemberPlatform;
     bnet: BungieMemberPlatform;
+    steam: BungieMemberPlatform;
 
-    constructor(name: string, id: string, xbl: BungieMemberPlatform, psn: BungieMemberPlatform, bnet: BungieMemberPlatform) {
+    constructor(name: string, id: string, xbl: BungieMemberPlatform, 
+        psn: BungieMemberPlatform, bnet: BungieMemberPlatform,
+        steam: BungieMemberPlatform) {
         this.id = id;
         this.name = name;
         this.xbl = xbl;
         this.psn = psn;
         this.bnet = bnet;
+        this.steam = steam;
     }
 }
 
@@ -1081,16 +1085,20 @@ export class Const {
     public static readonly ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
     public static readonly XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
     public static readonly PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
+    public static readonly STEAM_PLATFORM = new Platform(3, 'STEAM', 'Steam', 'fab fa-steam');
     public static readonly BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fab fa-windows');
+    public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', 'fab fa-google');
 
     public static readonly PLATFORMS_ARRAY = [
-        Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.BNET_PLATFORM
+        Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.STEAM_PLATFORM, Const.BNET_PLATFORM, Const.STADIA_PLATFORM
     ];
 
     public static readonly PLATFORMS_DICT = {
         '1': Const.XBL_PLATFORM,
         '2': Const.PSN_PLATFORM,
-        '4': Const.BNET_PLATFORM
+        '3': Const.STEAM_PLATFORM,
+        '4': Const.BNET_PLATFORM,
+        '5': Const.STADIA_PLATFORM
     };
 
     public static readonly CHALICE_KEY = '88888';
