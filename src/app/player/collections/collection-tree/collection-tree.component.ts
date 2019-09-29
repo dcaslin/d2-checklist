@@ -57,7 +57,6 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit, A
         if (n.data.hash === +selectedTreeNodeHash) {
           treeControl.expand(n);
           CollectionTreeComponent.expandParents(treeControl, n);
-          console.log(n.data.name);
           // wait for view to catch up then try to scroll
           setTimeout(() => {
             const id = 'tree-node-' + n.data.hash;

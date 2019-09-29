@@ -10,10 +10,14 @@ a.underline:link {
     text-decoration: underline;
 }
 
-.header-cell {
-    min-width: 200px;
-}
+// .header-cell {
+//     max-width: 250px;
+// }
 
+.bounty-caption {
+    max-width: 300px;
+}
+  
 .item-icon {
     float: left;
     width: 48px;
@@ -34,4 +38,26 @@ a.underline:link {
     max-width: 250px;
     display: inline-block;
     margin-left: 5px;
+}
+
+.obj-progress {
+    max-width: 50px;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+.total-progress {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.progress-pct {
+    flex-grow: 0;
+    margin: 5px 5px 5px 0px;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    margin: 5px;
 }

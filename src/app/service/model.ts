@@ -463,6 +463,7 @@ export class Player {
     milestoneList: MileStoneName[] = [];
     readonly currencies: Currency[];
     readonly bounties: { [id: string]: InventoryItem[] };
+    readonly allBounties: InventoryItem[];
     readonly quests: { [id: string]: InventoryItem[] };
     readonly rankups: Rankup[];
     readonly checklists: Checklist[];
@@ -508,6 +509,13 @@ export class Player {
         this.milestoneList = milestoneList;
         this.currencies = currencies;
         this.bounties = bounties;
+        let allBounties = [];
+        if (bounties != null) {
+            for (const key of Object.keys(bounties)) {
+                allBounties = allBounties.concat(bounties[key]);
+            }
+        }
+        this.allBounties = allBounties;
         this.quests = quests;
         this.rankups = rankups;
         this.superprivate = superprivate;
