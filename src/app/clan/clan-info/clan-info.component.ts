@@ -4,7 +4,8 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ClanStateService, Sort } from '../clan-state.service';
+import { ClanStateService } from '../clan-state.service';
+import { Sort } from '@app/service/model';
 
 @Component({
   selector: 'd2c-clan-info',

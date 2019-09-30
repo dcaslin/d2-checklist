@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClanSearchableTriumph, Sort, ClanStateService } from '@app/clan/clan-state.service';
+import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
+import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Label } from 'ng2-charts';

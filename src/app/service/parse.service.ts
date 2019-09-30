@@ -1923,14 +1923,6 @@ export class ParseService {
                     });
                 }
             }
-
-            bounties.sort(function (a, b) {
-                return b.aggProgress - a.aggProgress;
-            });
-            quests.sort(function (a, b) {
-                return b.aggProgress - a.aggProgress;
-            });
-
             const nodes: any[] = [];
             const records: any[] = [];
             const collections: any[] = [];
@@ -2099,24 +2091,7 @@ export class ParseService {
                 break;
             }
         }
-        let charBounties: { [id: string]: InventoryItem[] } = null;
-        let charQuests: { [id: string]: InventoryItem[] } = null;
-        if (!privateGear && chars.length > 0) {
-            charBounties = {};
-            charQuests = {};
-            for (const c of chars) {
-                charBounties[c.id] = [];
-                charQuests[c.id] = [];
-            }
-            for (const b of bounties) {
-                charBounties[b.owner.id].push(b);
-            }
-            for (const q of quests) {
-                charQuests[q.owner.id].push(q);
-            }
-        }
-
-        return new Player(profile, chars, currentActivity, milestoneList, currencies, charBounties, charQuests,
+        return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasons, hasHiddenClosest, accountProgressions);

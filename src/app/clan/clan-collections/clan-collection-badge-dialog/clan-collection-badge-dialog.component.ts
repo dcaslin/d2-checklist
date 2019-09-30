@@ -1,8 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClanBadge, ClanStateService, Sort } from '@app/clan/clan-state.service';
+import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
+
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { Sort } from '@app/service/model';
 
 @Component({
   selector: 'd2c-clan-collection-badge-dialog',

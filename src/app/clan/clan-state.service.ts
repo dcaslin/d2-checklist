@@ -4,21 +4,14 @@ import { BungieService } from '@app/service/bungie.service';
 import { StorageService } from '@app/service/storage.service';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
+import { Sort } from '@app/service/model';
 import { AggHistoryEntry, Badge, BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphCollectibleNode, TriumphRecordNode } from '../service/model';
-import { all } from 'q';
-
-export interface Sort {
-  name: string;
-  ascending: boolean;
-}
-
 
 export interface ClanUserList {
   title: string;
   desc: string;
   users: BungieGroupMember[];
 }
-
 
 interface ClanAggregate {
   complete: number;

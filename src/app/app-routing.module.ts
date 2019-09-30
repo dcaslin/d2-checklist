@@ -7,6 +7,9 @@ import { AuthComponent } from './auth';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
 import { ClanSearchComponent } from './clan-search';
+import { ClanBadgesComponent } from './clan/clan-collections/clan-badges/clan-badges.component';
+import { ClanCollectionSearchComponent } from './clan/clan-collections/clan-collection-search/clan-collection-search.component';
+import { ClanCollectionsComponent } from './clan/clan-collections/clan-collections.component';
 import { ClanInfoComponent } from './clan/clan-info/clan-info.component';
 import { ClanLifetimeComponent } from './clan/clan-lifetime/clan-lifetime.component';
 import { ClanMembersComponent } from './clan/clan-members/clan-members.component';
@@ -17,6 +20,7 @@ import { ClanTriumphSearchComponent } from './clan/clan-triumphs/clan-triumph-se
 import { ClanTriumphTrackedComponent } from './clan/clan-triumphs/clan-triumph-tracked/clan-triumph-tracked.component';
 import { ClanTriumphsComponent } from './clan/clan-triumphs/clan-triumphs.component';
 import { FriendsComponent } from './friends';
+import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 import { GearComponent } from './gear';
 import { HistoryComponent } from './history';
 import { HomeComponent } from './home';
@@ -33,9 +37,8 @@ import { LifetimeComponent } from './player/lifetime/lifetime.component';
 import { MilestonesComponent } from './player/milestones/milestones.component';
 import { MoreComponent } from './player/more/more.component';
 import { ProgressComponent } from './player/progress/progress.component';
-import { BountiesComponent } from './player/pursuits/bounties/bounties.component';
+import { PursuitListComponent } from './player/pursuits/pursuit-list/pursuit-list.component';
 import { PursuitsComponent } from './player/pursuits/pursuits.component';
-import { QuestsComponent } from './player/pursuits/quests/quests.component';
 import { TriumphClosestComponent } from './player/triumphs/triumph-closest/triumph-closest.component';
 import { TriumphMotComponent } from './player/triumphs/triumph-mot/triumph-mot.component';
 import { TriumphSealsComponent } from './player/triumphs/triumph-seals/triumph-seals.component';
@@ -48,10 +51,6 @@ import { RecentPlayersComponent } from './recent-players';
 import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
-import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
-import { ClanCollectionSearchComponent } from './clan/clan-collections/clan-collection-search/clan-collection-search.component';
-import { ClanBadgesComponent } from './clan/clan-collections/clan-badges/clan-badges.component';
-import { ClanCollectionsComponent } from './clan/clan-collections/clan-collections.component';
 
 
 @Injectable()
@@ -262,11 +261,15 @@ export class AuthGuard implements CanActivate {
             },
             {
               path: 'bounties',
-              component: BountiesComponent,
+              component: PursuitListComponent,
             },
             {
               path: 'quests',
-              component: QuestsComponent,
+              component: PursuitListComponent,
+            },
+            {
+              path: 'tracked',
+              component: PursuitListComponent,
             }
           ]
         },
@@ -278,11 +281,6 @@ export class AuthGuard implements CanActivate {
           path: 'triumphs',
           component: TriumphsComponent,
           children: [
-            // {
-            //   path: '',
-            //   redirectTo: 'tree',
-            //   pathMatch: 'full'
-            // },
             {
               path: '',
               redirectTo: 'mot',
