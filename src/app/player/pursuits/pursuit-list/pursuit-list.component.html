@@ -1,0 +1,145 @@
+<ng-container *ngIf="state.player|async as player">
+  <div class="left" style="margin: 10px">
+    <mat-form-field class="searchField">
+      <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText" placeholder="Wildcard filter">
+      <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async).length>0" matSuffix
+        mat-icon-button aria-label="Clear" (click)="displayFilterText=null;searchSubject.next()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+  <table class="responsive-table">
+    <thead>
+      <tr>
+
+
+        <th class="header-cell">
+          <a href="javascript:void(0)" (click)="sortData('name')"> {{getTitle()}}
+            <ng-container *ngIf="sort.name=='name'">
+              <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+              <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+          </a>
+
+        </th>
+        <th class="header-cell">
+          <a href="javascript:void(0)" (click)="sortData('player')"> Player
+            <ng-container *ngIf="sort.name=='player'">
+              <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+              <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+          </a>
+
+        </th>
+        <th class="header-cell" *ngIf="mode!='quests'">
+          <a href="javascript:void(0)" (click)="sortData('expiration')"> Expiration
+            <ng-container *ngIf="sort.name=='expiration'">
+              <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+              <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+          </a>
+        </th>
+        <th class="header-cell">
+          <a href="javascript:void(0)" (click)="sortData('progress')"> Progress
+            <ng-container *ngIf="sort.name=='progress'">
+              <i *ngIf="!sort.ascending" class="fas fa-sort-up"></i>
+              <i *ngIf="sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+          </a>
+        </th>
+        <th class="header-cell">Rewards</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let g of filteredPursuits|async">
+        <tr>
+          <td class="lead" data-label="">
+            <div class="img-layout">
+              <div class="img-cell">
+                <span *ngIf="g.icon!=null" class="item-icon"
+                  [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
+              </div>
+              <div class="img-body">
+                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null"> {{getPursuitName(g)}}</ng-container>
+                <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null" target="_blank"
+                  rel="noopener">
+                  {{getPursuitName(g)}} <i class='accent-text far fa-map-marker-alt'></i>
+                </a>
+                <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]!=true" (click)="state.trackPursuit(g)">
+                  <i class="far fa-star"></i>
+                </button>
+                <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">
+                  <i class="fas fa-star accent-text"></i>
+                </button>
+                <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
+                <div *ngIf="g.questline">
+                  <a mat-stroked-button (click)="openQuestDialog(g.questline)">
+                    <i class="far fa-project-diagram"></i> Questline {{g.questline.progress}}
+                  </a>
+                </div>
+                <div class="simple-caption pursuit-caption">{{g.desc}}</div>
+              </div>
+            </div>
+          </td>
+          <td data-label="">
+            <div class="img-layout">
+              <div class="img-cell d-none d-md-inline">
+                <span *ngIf="g.owner.emblemPath!=null" class="player-icon"
+                  [style.background-image]="'url(//www.bungie.net' + g.owner.emblemPath + ')'"></span>
+              </div>
+              <div class="img-body">
+                {{g.owner.label}}
+              </div>
+            </div>
+
+
+
+          </td>
+          <td data-label="Expiration" *ngIf="mode!='quests'">
+            <span *ngIf="g.expired else notExpired" class="expire-caption warn-text">
+              Expired {{ g.expirationDate | amDifference: today | amDuration:'ms'}} ago
+            </span>
+            <ng-template #notExpired>
+              <span *ngIf="g.expirationDate!=null else noExp" class="expire-caption">
+                <i class="fas fa-clock"></i>
+                {{ g.expirationDate | amDifference: today | amDuration:'ms'}}
+              </span>
+              <ng-template #noExp>
+                <span class="expire-caption">
+                  <i class="fas fa-clock"></i> Never
+                </span>
+              </ng-template>
+            </ng-template>
+
+          </td>
+          <td data-label="">
+            <div class="total-progress">
+              <div class="progress-pct">{{g.aggProgress|number : '1.0-0'}}%</div>
+              <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
+              </mat-progress-bar>
+            </div>
+            <div class="obj-desc" *ngFor="let obj of g.objectives">
+              <i *ngIf="obj.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+              <i *ngIf="!obj.complete" class="far fa-square"></i>
+              {{obj.progressDescription}}
+              <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+            </div>
+
+          </td>
+
+          <td data-label="">
+            <ul class="obj-desc" *ngIf="g.values!=null && g.values.length>0">
+              <li *ngFor="let v of g.values">
+                <span *ngIf="v.quantity>0">{{v.quantity}}</span> {{v.name}}
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <div *ngIf="mode=='tracked' && (filteredPursuits|async).length==0" class="left" style="margin: 10px">
+    Click a star on a pursuit on another tab to track it here
+  </div>
+
+</ng-container>

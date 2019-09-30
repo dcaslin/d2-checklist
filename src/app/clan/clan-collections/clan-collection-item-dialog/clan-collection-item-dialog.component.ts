@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClanSearchableCollection, Sort, ClanStateService } from '@app/clan/clan-state.service';
+import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state.service';
+import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 @Component({

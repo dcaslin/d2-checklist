@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClanSeal, Sort, ClanStateService } from '@app/clan/clan-state.service';
+import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
+import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 

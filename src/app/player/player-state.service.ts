@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
-import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const } from '@app/service/model';
+import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const, InventoryItem } from '@app/service/model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StorageService } from '@app/service/storage.service';
@@ -60,6 +60,7 @@ export class PlayerStateService {
   private _sort = 'rewardsDesc';
 
   public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public trackedPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
 
   private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
   public player: Observable<Player>;
@@ -81,6 +82,7 @@ export class PlayerStateService {
 
 
   public dTrackedTriumphIds = {};
+  public dTrackedPursuits = {};
 
   public currPlayer(): Player {
     return this._player.getValue();
@@ -125,8 +127,7 @@ export class PlayerStateService {
     this._showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
     this._showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
     this._hideCompleteTriumphs = localStorage.getItem('hide-completed-triumphs') === 'true';
-    this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';
-
+    this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';    
     this.storageService.settingFeed.pipe().subscribe(
       x => {
         if (x.trackedtriumphs != null) {
@@ -135,6 +136,12 @@ export class PlayerStateService {
           this.dTrackedTriumphIds = {};
         }
         this.applyTrackedTriumphs(this._player.getValue());
+        if (x.trackedpursuits != null) {
+          this.dTrackedPursuits = x.trackedpursuits;
+        } else {
+          this.dTrackedPursuits = {};
+        }
+        this.applyTrackedPursuits(this._player.getValue());
 
       });
   }
@@ -166,6 +173,7 @@ export class PlayerStateService {
       }
       this.checkSignedOnCurrent(x);
       this.applyTrackedTriumphs(x);
+      this.applyTrackedPursuits(x);
       this._player.next(x);
       this.bungieService.loadWeeklyPowerfulBounties(this._player);
       this.bungieService.loadClans(this._player);
@@ -246,6 +254,33 @@ export class PlayerStateService {
     this.storageService.untrackHashList('trackedtriumphs', n.hash);
   }
 
+  public trackPursuit(n: InventoryItem) {
+    this.storageService.trackHashList('trackedpursuits', n.hash);
+  }
+
+  public untrackPursuit(n: InventoryItem) {
+    this.storageService.untrackHashList('trackedpursuits', n.hash);
+  }
+
+  private applyTrackedPursuits(player: Player) {
+    if (player == null) {
+      return;
+    }
+    const tempPursuits = [];
+    if (Object.keys(this.dTrackedPursuits).length > 0) {
+      for (const t of player.bounties) {
+        if (this.dTrackedPursuits[t.hash] == true) {
+          tempPursuits.push(t);
+        }
+      }
+      for (const t of player.quests) {
+        if (this.dTrackedPursuits[t.hash] == true) {
+          tempPursuits.push(t);
+        }
+      }
+    }
+    this.trackedPursuits.next(tempPursuits);
+  }
 
   private applyTrackedTriumphs(player: Player) {
     if (player == null) {

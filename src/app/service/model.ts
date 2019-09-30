@@ -321,7 +321,7 @@ export class BungieMember {
     bnet: BungieMemberPlatform;
     steam: BungieMemberPlatform;
 
-    constructor(name: string, id: string, xbl: BungieMemberPlatform, 
+    constructor(name: string, id: string, xbl: BungieMemberPlatform,
         psn: BungieMemberPlatform, bnet: BungieMemberPlatform,
         steam: BungieMemberPlatform) {
         this.id = id;
@@ -462,9 +462,8 @@ export class Player {
     readonly characters: Character[];
     milestoneList: MileStoneName[] = [];
     readonly currencies: Currency[];
-    readonly bounties: { [id: string]: InventoryItem[] };
-    readonly allBounties: InventoryItem[];
-    readonly quests: { [id: string]: InventoryItem[] };
+    readonly bounties: InventoryItem[];
+    readonly quests: InventoryItem[];
     readonly rankups: Rankup[];
     readonly checklists: Checklist[];
     readonly charChecklists: CharChecklist[];
@@ -494,8 +493,8 @@ export class Player {
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
         milestoneList: MileStoneName[],
         currencies: Currency[],
-        bounties: { [id: string]: InventoryItem[] },
-        quests: { [id: string]: InventoryItem[] },
+        bounties: InventoryItem[],
+        quests: InventoryItem[],
         rankups: Rankup[], superprivate: boolean, hasWellRested: boolean,
         checklists: Checklist[], charChecklists: CharChecklist[], triumphScore: number, records: TriumphNode[],
         collections: TriumphNode[], gear: InventoryItem[], vault: Target, shared: Target,
@@ -508,14 +507,7 @@ export class Player {
         this.currentActivity = currentActivity;
         this.milestoneList = milestoneList;
         this.currencies = currencies;
-        this.bounties = bounties;
-        let allBounties = [];
-        if (bounties != null) {
-            for (const key of Object.keys(bounties)) {
-                allBounties = allBounties.concat(bounties[key]);
-            }
-        }
-        this.allBounties = allBounties;
+        this.bounties = bounties;        
         this.quests = quests;
         this.rankups = rankups;
         this.superprivate = superprivate;
@@ -592,6 +584,7 @@ export class InventoryItem {
     readonly aggProgress: number;
     readonly values: any;
     readonly expirationDate: string;
+    readonly expired: boolean;
     public locked: boolean;
     readonly masterworked: boolean;
     readonly masterwork: MastworkInfo;
@@ -656,6 +649,12 @@ export class InventoryItem {
         this.aggProgress = aggProgress;
         this.values = values;
         this.expirationDate = expirationDate;
+        if (!this.expirationDate) {
+            this.expired = false;
+        } else {
+            const d = Date.parse(this.expirationDate);
+            this.expired = Date.now() > d;
+        }
         this.locked = locked;
         this.masterworked = masterworked;
         this.masterwork = masterwork;
@@ -1249,3 +1248,10 @@ export interface Mission {
     hash: string;
     time: number;
 }
+
+
+export interface Sort {
+    name: string;
+    ascending: boolean;
+  }
+
