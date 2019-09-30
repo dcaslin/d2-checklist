@@ -353,22 +353,50 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
+  private static _processFilterTag(actual: string, i: InventoryItem) {
+    if (actual.startsWith('ll')) {
+      const reg = /^\d+$/;
+      if (actual.startsWith('ll<=')) {
+        const ll = actual.substr(4);
+        if (reg.test(ll)) {
+          return i.power <= +ll;
+        }
+      } else if (actual.startsWith('ll>=')) {
+        const ll = actual.substr(4);
+        if (reg.test(ll)) {
+          return i.power >= +ll;
+        }
+      } else if (actual.startsWith('ll<')) {
+        const ll = actual.substr(3);
+        if (reg.test(ll)) {
+          return i.power < +ll;
+        }
+      } else if (actual.startsWith('ll>')) {
+        const ll = actual.substr(3);
+        if (reg.test(ll)) {
+          return i.power > +ll;
+        }
+      } else if (actual.startsWith('ll=')) {
+        const ll = actual.substr(3);
+        if (reg.test(ll)) {
+          return i.power == +ll;
+        }
+      }
+    }
+    if (i.searchText.indexOf(actual) >= 0) {
+      return true;
+    }
+    if (i.notes != null && i.notes.toLowerCase().indexOf(actual) >= 0) { return true; }
+    return false;
+  }
+
   private static processFilterTag(f: string, i: InventoryItem): boolean {
     if (f.startsWith('!')) {
       const actual = f.substr(1);
-      if (i.searchText.indexOf(actual) >= 0) {
-        return false;
-      }
-      if (i.notes != null && i.notes.toLowerCase().indexOf(actual) >= 0) { return false; }
+      return !this._processFilterTag(actual, i);
     } else {
-      // check wildcard first
-      if (i.searchText.indexOf(f) < 0) {
-        // then check notes
-        if (i.notes == null) { return false; }
-        if (i.notes.toLowerCase().indexOf(f) < 0) { return false; }
-      }
+      return this._processFilterTag(f, i);
     }
-    return true;
   }
 
   shouldKeepItem(i: InventoryItem): boolean {
