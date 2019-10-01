@@ -20,7 +20,6 @@ import { PursuitListComponent } from './pursuits/pursuit-list/pursuit-list.compo
 import { QuestDialogComponent } from './pursuits/pursuit-list/quest-dialog/quest-dialog.component';
 import { PursuitsComponent } from './pursuits/pursuits.component';
 import { TriumphClosestComponent } from './triumphs/triumph-closest/triumph-closest.component';
-import { TriumphMotComponent } from './triumphs/triumph-mot/triumph-mot.component';
 import { TriumphSealsComponent } from './triumphs/triumph-seals/triumph-seals.component';
 import { TriumphSearchComponent } from './triumphs/triumph-search/triumph-search.component';
 import { TriumphSeasonsComponent } from './triumphs/triumph-seasons/triumph-seasons.component';
@@ -34,7 +33,7 @@ import { TriumphsComponent } from './triumphs/triumphs.component';
     SharedModule,
     ChartsModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, TriumphMotComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, PlayerEfficiencyGraphComponent, PursuitListComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, PlayerEfficiencyGraphComponent, PursuitListComponent],
   entryComponents: [
     QuestDialogComponent, BurnDialogComponent, ProgressStepDialogComponent
   ],

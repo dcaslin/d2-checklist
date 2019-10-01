@@ -37,7 +37,12 @@ export class ParseService {
         if (c.titleRecordHash != null) {
             const rDesc = this.destinyCacheService.cache.Record[c.titleRecordHash];
             if (rDesc != null) {
-                char.title = rDesc.titleInfo.titlesByGenderHash[c.genderHash];
+                if (rDesc.titleInfo != null) {
+                    char.title = rDesc.titleInfo.titlesByGenderHash[c.genderHash];
+                } else {
+                    char.title = 'Secret';
+                }
+
             }
 
         }
@@ -641,16 +646,16 @@ export class ParseService {
     private static mergeAggHistoryEntry(a: AggHistoryEntry, b: AggHistoryEntry): AggHistoryEntry {
         if (b == null) { return a; }
         let fastest: number = null;
-        if (a.fastestCompletionMsForActivity &&  b.fastestCompletionMsForActivity) {
+        if (a.fastestCompletionMsForActivity && b.fastestCompletionMsForActivity) {
             fastest = Math.min(a.fastestCompletionMsForActivity, b.fastestCompletionMsForActivity);
         } else if (a.fastestCompletionMsForActivity) {
             fastest = a.fastestCompletionMsForActivity;
         } else if (a.fastestCompletionMsForActivity) {
             fastest = b.fastestCompletionMsForActivity;
         }
-        const timePlayed =   a.activitySecondsPlayed + b.activitySecondsPlayed;
+        const timePlayed = a.activitySecondsPlayed + b.activitySecondsPlayed;
         const efficiency = 0;
-        if (timePlayed == 0 ) {
+        if (timePlayed == 0) {
 
         }
         const returnMe = {
@@ -1568,7 +1573,10 @@ export class ParseService {
         const completionRecordHash = pDesc.completionRecordHash;
         const cDesc = this.destinyCacheService.cache.Record[completionRecordHash];
         if (cDesc == null) { return null; }
-        const title = cDesc.titleInfo.titlesByGenderHash[2204441813];
+        let title = 'Secret';
+        if (cDesc.titleInfo != null) {
+            title = cDesc.titleInfo.titlesByGenderHash[2204441813];
+        }
         let progress = 0;
         for (const c of node.children) {
             if (c.complete) {
@@ -2032,8 +2040,7 @@ export class ParseService {
                 });
                 searchableTriumphs = triumphLeaves.filter(x => {
                     return (x.name != null) && (x.name.trim().length > 0);
-                });
-                // hack to add 2 missing moments of triumph
+                });                
                 const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs);
                 const highScore = this.handleRecordNode([], '2884099200', records, showZeroPtTriumphs, showInvisTriumphs);
                 searchableTriumphs.push(mmxix);
@@ -2194,6 +2201,7 @@ export class ParseService {
 
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
+       
         path.push({
             path: rDesc.displayProperties.name,
             hash: key
@@ -2202,7 +2210,19 @@ export class ParseService {
 
         let objs: ItemObjective[] = [];
         let totalProgress = 0;
-        for (const o of val.objectives) {
+
+        let iterateMe = val.objectives;
+        if (!val.objectives && val.intervalObjectives) {
+            iterateMe = val.intervalObjectives;
+            // TODO store "intervalsRedeemedCount" and "state"
+        }
+        if (!iterateMe){
+            console.log("Missing objs");
+            console.dir(val);
+            return null;
+        }
+
+        for (const o of iterateMe) {
             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
             if (oDesc == null) { continue; }
             const iObj: ItemObjective = {
