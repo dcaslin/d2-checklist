@@ -40,7 +40,6 @@ import { ProgressComponent } from './player/progress/progress.component';
 import { PursuitListComponent } from './player/pursuits/pursuit-list/pursuit-list.component';
 import { PursuitsComponent } from './player/pursuits/pursuits.component';
 import { TriumphClosestComponent } from './player/triumphs/triumph-closest/triumph-closest.component';
-import { TriumphMotComponent } from './player/triumphs/triumph-mot/triumph-mot.component';
 import { TriumphSealsComponent } from './player/triumphs/triumph-seals/triumph-seals.component';
 import { TriumphSearchComponent } from './player/triumphs/triumph-search/triumph-search.component';
 import { TriumphSeasonsComponent } from './player/triumphs/triumph-seasons/triumph-seasons.component';
@@ -283,12 +282,8 @@ export class AuthGuard implements CanActivate {
           children: [
             {
               path: '',
-              redirectTo: 'mot',
+              redirectTo: 'tree',
               pathMatch: 'full'
-            },
-            {
-              path: 'mot',
-              component: TriumphMotComponent,
             },
             {
               path: 'tree/:node',
