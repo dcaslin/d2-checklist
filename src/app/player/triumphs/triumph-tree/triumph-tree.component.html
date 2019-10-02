@@ -39,7 +39,6 @@
         <i *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true" class="far fa-star" (click)="state.trackTriumph(node.data)"></i>
         <i *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="fas fa-star accent-text"
           (click)="state.untrackTriumph(node.data)"></i>
-
         <br>
         <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
           redeemed.<br></span>

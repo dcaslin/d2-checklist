@@ -74,10 +74,7 @@
             </span>
             <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="sort"
               (sortClick)="sortByRewards()"></d2c-reward-desc>
-            <div class="accent-text" *ngIf="mileStoneName.key == Const.CHALICE_KEY">
-              <a href="https://i.imgur.com/EzOgjqy.png" class="recipes" target="_blank" rel="noopener">Recipes</a>
-            </div>
-
+            
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
             <span class="check">
@@ -128,13 +125,13 @@
 
 
               </ng-container>
-              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
+              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && (!mileStoneName.neverDisappears && char.light>=900)">
                 <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
                   class="accent-text mat-option.mat-selected fas fa-check-square"></i>
                 <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
                   matTooltip="Not max level: possibly complete / possibly ineligible"></i>
               </ng-container>
-              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.neverDisappears">
+              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && (mileStoneName.neverDisappears || char.light<900)">
                 <i class="far fa-minus-square" matTooltip="Not unlocked?"></i>
               </ng-container>
             </span>
