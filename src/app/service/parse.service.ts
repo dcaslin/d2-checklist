@@ -206,13 +206,10 @@ export class ParseService {
         c.milestones = {};
         if (_prog.milestones != null) {
             Object.keys(_prog.milestones).forEach((key) => {
-
                 const ms: PrivMilestone = _prog.milestones[key];
-                // ignore milestones we're not reporting
+                // special case for clan rewards
                 if (key === '4253138191') {
-
                     const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
-
                     // grab weekly reset from this
                     c.startWeek = new Date(ms.startDate);
                     c.endWeek = new Date(ms.endDate);
@@ -246,11 +243,15 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
+                        let descRewards = this.parseMilestoneRewards(skipDesc);
+                        if (descRewards == null || descRewards.trim().length == 0) {
+                            descRewards = 'Unknown';
+                        }
                         const ms2: MileStoneName = {
                             key: skipDesc.hash + '',
                             resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
-                            rewards: 'Gear',
-                            pl: Const.NO_BOOST,
+                            rewards: descRewards,
+                            pl: this.parseMilestonePl(descRewards),
                             name: skipDesc.displayProperties.name,
                             desc: skipDesc.displayProperties.description,
                             hasPartial: false
@@ -273,10 +274,8 @@ export class ParseService {
                 let suppInfo: string = null;
                 let oPct = 0;
                 if (ms.availableQuests != null) {
-
                     ms.availableQuests.forEach((q: PrivAvailableQuest) => {
                         total++;
-
                         if (key === '466653501') {
                             if (q.status.stepHash != null && q.status.stepHash > 0) {
 
@@ -286,8 +285,6 @@ export class ParseService {
                                 }
                             }
                         }
-
-
                         if (q.status.completed) { complete++; }
 
                         if (q.status.completed === false && q.status.started === true) {
@@ -300,7 +297,6 @@ export class ParseService {
                                 });
                             }
                         }
-
 
                     });
                 } else if (ms.activities != null && ms.activities.length > 0) {
@@ -923,6 +919,59 @@ export class ParseService {
         return null;
     }
 
+    private parseMilestoneRewards(desc: any): string {
+        if (desc == null) { return ''; }
+        let rewards = '';
+        let rewCnt = 0;
+        if (desc.rewards != null) {
+            for (const entryKey of Object.keys(desc.rewards)) {
+                const entry = desc.rewards[entryKey];
+                if (entry.rewardEntries != null) {
+                    for (const rewEntKey of Object.keys(entry.rewardEntries)) {
+                        const rewEnt = entry.rewardEntries[rewEntKey];
+                        if (rewEnt.items != null) {
+                            for (const reI of rewEnt.items) {
+                                rewCnt++;
+                                const iDesc: any = this.destinyCacheService.cache.InventoryItem[reI.itemHash];
+                                if (iDesc != null) {
+                                    rewCnt++;
+                                    rewards += iDesc.displayProperties.name;
+                                    if (reI.quantity > 0) {
+                                        rewards += reI.quantity + ' ';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (rewCnt > 4) {
+            rewards = '';
+        }
+        return rewards;
+    }
+
+    private parseMilestonePl(rewards: string): number {
+        let pl = Const.UNKNOWN_BOOST;
+        if (rewards) {
+            if (rewards.startsWith('Powerful')) {
+                if (rewards.endsWith('2)')) {
+                    pl = Const.MID_BOOST;
+
+                } else {
+                    pl = Const.LOW_BOOST;
+                }
+            } else if (rewards.startsWith('Pinnacle')) {
+                pl = Const.HIGH_BOOST;
+
+            } else if (rewards.startsWith('Legendary')) {
+                pl = Const.NO_BOOST;
+            }
+        }
+        return pl;
+    }
+
     public parsePublicMilestones(resp: any, resp2: any): PublicMilestone[] {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
@@ -932,10 +981,8 @@ export class ParseService {
         });
         let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
-            let rewards = '';
-            let activityRewards = null;
-            let pl = 0;
-            let rewCnt = 0;
+            let activityRewards = '';
+            const questRewards: string = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
                 continue;
@@ -1029,12 +1076,9 @@ export class ParseService {
                                 if (v.itemHash != null && v.itemHash > 0) {
                                     const rewDesc: any = this.destinyCacheService.cache.InventoryItem[v.itemHash];
                                     if (rewDesc != null) {
-                                        rewCnt++;
-                                        rewards += rewDesc.displayProperties.name;
+                                        activityRewards += rewDesc.displayProperties.name;
                                     }
-
                                 }
-
                             }
                         }
                         if (icon == null) {
@@ -1055,35 +1099,6 @@ export class ParseService {
                 }
             }
 
-            if (desc.rewards != null) {
-                for (const entryKey of Object.keys(desc.rewards)) {
-                    const entry = desc.rewards[entryKey];
-                    if (entry.rewardEntries != null) {
-                        for (const rewEntKey of Object.keys(entry.rewardEntries)) {
-                            const rewEnt = entry.rewardEntries[rewEntKey];
-                            if (rewEnt.items != null) {
-                                for (const reI of rewEnt.items) {
-
-                                    rewCnt++;
-                                    const iDesc: any = this.destinyCacheService.cache.InventoryItem[reI.itemHash];
-                                    if (iDesc != null) {
-
-                                        rewCnt++;
-                                        rewards += iDesc.displayProperties.name;
-                                        if (reI.quantity > 0) {
-                                            rewards += reI.quantity + ' ';
-                                        }
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (rewCnt > 4) {
-                rewards = '';
-            }
 
             const dAct = {};
 
@@ -1123,52 +1138,22 @@ export class ParseService {
                 summary = '';
                 for (const a of aggActivities) {
                     summary += a.activity.name + ' ';
-                    // if (a.lls.length > 0) {
-                    //     for (const ll of a.lls) {
-                    //         summary += ll + ' ';
-                    //     }
-                    // }
                 }
             }
-            if (ms.milestoneHash === 2188900244) {// recipe for success
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 601087286) {// reckoning
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 2010672046) {// Gambit prime
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 3603098564) {// clan rewards
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 2171429505) { // weekly nightfall
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 2853331463) { // NF score
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 463010297) { // flashpoint
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 536115997) { // guardian of all
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 3082135827) { // heroic story
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 3448738070) { // weekly gambit
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 1437935813) { // weekly strike
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 3172444947) { // daily vanguard
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 3312018120) { // daily crucible
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 157823523) { // weekly crucible
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 941217864) { // daily gambit
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 1300394968) { // heroic adv
-                pl = Const.MID_BOOST;
-            } else if (ms.milestoneHash === 1342567285) { // Scourge of the Past
-                pl = Const.MID_BOOST;
-                rewards = 'Powerful Gear';
-            }
-            if (rewards.trim().length == 0 && activityRewards != null) {
+
+            const descRewards = this.parseMilestoneRewards(desc);
+            let rewards = '';
+            if (descRewards && descRewards.trim().length > 0) {
+                rewards = descRewards;
+            } else if (activityRewards && activityRewards.trim().length > 0) {
                 rewards = activityRewards;
+            } else if (questRewards && questRewards.trim().length > 0) {
+                rewards = questRewards;
+            } else {
+                rewards = 'Unknown';
             }
+            const pl = this.parseMilestonePl(rewards);
+
             const pushMe = {
                 hash: ms.milestoneHash + '',
                 name: desc.displayProperties.name,
@@ -1181,15 +1166,14 @@ export class ParseService {
                 aggActivities: aggActivities,
                 rewards: rewards,
                 pl: pl,
-                summary: summary
+                summary: summary,
+                milestoneType: desc.milestoneType
             };
             if (pushMe.hash == '4253138191') {
                 sample = pushMe;
             }
             returnMe.push(pushMe);
-
         }
-
         // we're still missing nightfalls and heroic menagerie
         let charAct = null;
         if (sample && resp2 && resp2.characterActivities && resp2.characterActivities.data) {
@@ -1251,15 +1235,12 @@ export class ParseService {
                     rewards: '',
                     pl: msa.ll,
                     summary: '',
-                    type: type
+                    type: type,
+                    milestoneType: 3
                 };
                 returnMe.push(pushMe);
             }
         }
-
-
-
-
         returnMe.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
             if (a.pl > b.pl) { return -1; }
@@ -1631,36 +1612,6 @@ export class ParseService {
                 imperials = obj.progress;
             }
         }
-        if (char != null) {
-            if (milestonesByKey[Const.CHALICE_KEY] == null) {
-                const ms: MileStoneName = {
-                    key: Const.CHALICE_KEY,
-                    resets: char.endWeek.toISOString(),
-                    rewards: 'Powerful Gear',
-                    pl: Const.HIGH_BOOST,
-                    name: 'Menagerie',
-                    desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
-                    hasPartial: false,
-                    suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
-                };
-                milestoneList.push(ms);
-                milestonesByKey[Const.CHALICE_KEY] = ms;
-            }
-            // constructor(hash, complete, pct, info, suppInfo, phases) {
-            const complete = powerfulDropsRemaining === 0;
-            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null);
-        } else if (!perfected) {
-            const currDesc: any = this.destinyCacheService.cache.InventoryItem['1642918584'];
-            let impAdded = false;
-            for (const c of currencies) {
-                if (c.hash == '1642918584') {
-                    impAdded = true;
-                }
-            }
-            if (!impAdded) {
-                currencies.push(new Currency(currDesc.hash, currDesc.displayProperties.name, currDesc.displayProperties.icon, imperials));
-            }
-        }
 
     }
 
@@ -1690,19 +1641,11 @@ export class ParseService {
         const milestonesByKey: { [id: string]: MileStoneName } = {};
         if (publicMilestones != null) {
             for (const p of publicMilestones) {
+                // things to skip
                 if (
-                    '2986584050' === p.hash ||  // eater
-                    '2683538554' === p.hash ||  // spire
-                    '3660836525' === p.hash ||  // raid
                     '534869653' === p.hash ||   // xur
-                    // '1342567285' === p.hash ||   // scourge
-                    '4128810957' === p.hash ||   // eva return
                     '4253138191' === p.hash ||  // weekly clan engrams
-                    '3177730289' === p.hash || // ||   // season of giving
-                    // '2188900244' === p.hash    // recipe for success
-                    '291994631' === p.hash ||   // spring comes to eververse
-                    '2958665367' === p.hash ||   // lost cryptarch
-                    '3915793660' === p.hash ||   // reverly begins
+                    p.milestoneType == 5 || // special
                     p.type != null   // fake milestones
                 ) {
                     if ('4253138191' === p.hash) {
@@ -1732,37 +1675,37 @@ export class ParseService {
                 milestoneList.push(ms);
             }
 
-            // add crown of sorrows manually
-            if (milestonesByKey['2590427074'] == null) {
-                const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
-                const ms: MileStoneName = {
-                    key: raidDesc.hash + '',
-                    resets: weekEnd,
-                    rewards: 'Powerful Gear',
-                    pl: Const.HIGHEST_BOOST,
-                    name: raidDesc.displayProperties.name,
-                    neverDisappears: true,
-                    desc: raidDesc.displayProperties.description,
-                    hasPartial: false
-                };
-                milestoneList.push(ms);
-                milestonesByKey[ms.key] = ms;
-            }
+            // // add crown of sorrows manually
+            // if (milestonesByKey['2590427074'] == null) {
+            //     const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
+            //     const ms: MileStoneName = {
+            //         key: raidDesc.hash + '',
+            //         resets: weekEnd,
+            //         rewards: 'Powerful Gear',
+            //         pl: Const.HIGHEST_BOOST,
+            //         name: raidDesc.displayProperties.name,
+            //         neverDisappears: true,
+            //         desc: raidDesc.displayProperties.description,
+            //         hasPartial: false
+            //     };
+            //     milestoneList.push(ms);
+            //     milestonesByKey[ms.key] = ms;
+            // }
             // add Last wish if its missing, as it has been from public milestones for a while
-            if (milestonesByKey['3181387331'] == null) {
-                const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
-                const ms: MileStoneName = {
-                    key: raidDesc.hash + '',
-                    resets: weekEnd,
-                    rewards: 'Powerful Gear',
-                    pl: Const.LOW_BOOST,
-                    name: raidDesc.displayProperties.name,
-                    desc: raidDesc.displayProperties.description,
-                    hasPartial: false
-                };
-                milestoneList.push(ms);
-                milestonesByKey[ms.key] = ms;
-            }
+            // if (milestonesByKey['3181387331'] == null) {
+            //     const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
+            //     const ms: MileStoneName = {
+            //         key: raidDesc.hash + '',
+            //         resets: weekEnd,
+            //         rewards: 'Powerful Gear',
+            //         pl: Const.LOW_BOOST,
+            //         name: raidDesc.displayProperties.name,
+            //         desc: raidDesc.displayProperties.description,
+            //         hasPartial: false
+            //     };
+            //     milestoneList.push(ms);
+            //     milestonesByKey[ms.key] = ms;
+            // }
             for (const milestone of milestoneList) {
                 milestonesByKey[milestone.key] = milestone;
             }
@@ -2040,7 +1983,7 @@ export class ParseService {
                 });
                 searchableTriumphs = triumphLeaves.filter(x => {
                     return (x.name != null) && (x.name.trim().length > 0);
-                });                
+                });
                 const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs);
                 const highScore = this.handleRecordNode([], '2884099200', records, showZeroPtTriumphs, showInvisTriumphs);
                 searchableTriumphs.push(mmxix);
@@ -2201,23 +2144,26 @@ export class ParseService {
 
         const val = this.getBestRec(records, key);
         if (val == null) { return null; }
-       
+
         path.push({
             path: rDesc.displayProperties.name,
             hash: key
         });
 
 
+        let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
         let objs: ItemObjective[] = [];
         let totalProgress = 0;
 
         let iterateMe = val.objectives;
+        let intervalsRedeemedCount = null;
         if (!val.objectives && val.intervalObjectives) {
             iterateMe = val.intervalObjectives;
-            // TODO store "intervalsRedeemedCount" and "state"
+            intervalsRedeemedCount = val.intervalsRedeemedCount;
+            searchText += ' interval';
         }
-        if (!iterateMe){
-            console.log("Missing objs");
+        if (!iterateMe) {
+            console.log('Missing objs');
             console.dir(val);
             return null;
         }
@@ -2265,7 +2211,6 @@ export class ParseService {
             }
         }
 
-        let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
         let percent = 0;
         if (objs.length > 0) {
             let sum = 0;
@@ -2285,6 +2230,7 @@ export class ParseService {
             icon: rDesc.displayProperties.icon,
             index: rDesc.index,
             objectives: objs,
+            intervalsRedeemedCount: intervalsRedeemedCount,
             complete: complete,
             redeemed: redeemed,
             title: title,
