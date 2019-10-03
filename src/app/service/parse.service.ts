@@ -981,7 +981,7 @@ export class ParseService {
         });
         let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
-            let activityRewards = '';
+            let activityRewards: string = '';
             const questRewards: string = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
@@ -1134,7 +1134,7 @@ export class ParseService {
 
 
             let summary = null;
-            if (nothingInteresting && aggActivities.length > 0) {
+            if (nothingInteresting && aggActivities.length > 0 && aggActivities.length < 2) {
                 summary = '';
                 for (const a of aggActivities) {
                     summary += a.activity.name + ' ';
@@ -1150,10 +1150,16 @@ export class ParseService {
             } else if (questRewards && questRewards.trim().length > 0) {
                 rewards = questRewards;
             } else {
-                rewards = 'Unknown';
+                let checkMe = '' + desc.displayProperties.name + desc.displayProperties.description;
+                checkMe = checkMe.toLowerCase();
+                if (checkMe.indexOf('raid') >= 0) {
+                    rewards = 'Legendary Gear';
+                } else {
+                    rewards = 'Unknown';
+                }
+
             }
             const pl = this.parseMilestonePl(rewards);
-
             const pushMe = {
                 hash: ms.milestoneHash + '',
                 name: desc.displayProperties.name,
