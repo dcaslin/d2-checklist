@@ -1126,8 +1126,8 @@ export class Const {
         },
         {
             level: Const.NO_BOOST,
-            min: 2,
-            max: 5,
+            min: -3,
+            max: 0,
             softCap: 900
         },
         {
