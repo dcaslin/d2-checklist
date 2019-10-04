@@ -204,8 +204,15 @@ export class ParseService {
 
     private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
         c.milestones = {};
+        let notReady = false;
         if (_prog.milestones != null) {
-            Object.keys(_prog.milestones).forEach((key) => {
+            // A Mysterious Disturbance 2126982445
+            // Catching Up 3957677607
+            if (_prog.milestones['2126982445'] != null && _prog.milestones['3957677607'] != null) {
+                notReady = true;
+            }
+
+            for (const key of Object.keys(_prog.milestones)) {
                 const ms: PrivMilestone = _prog.milestones[key];
                 // special case for clan rewards
                 if (key === '4253138191') {
@@ -239,7 +246,6 @@ export class ParseService {
                     });
 
                     c.clanMilestones = clanMilestones;
-                    return;
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
@@ -259,11 +265,9 @@ export class ParseService {
                         milestoneList.push(ms2);
                         milestonesByKey[ms2.key] = ms2;
                     } else if (skipDesc != null) {
-                        // console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
-                        return;
+                        console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
                     } else {
                         console.log('Skipping unknown milestone: ' + key);
-                        return;
                     }
                 }
 
@@ -338,7 +342,19 @@ export class ParseService {
                 if (phases.length == 0) { phases = null; }
                 const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases);
                 c.milestones[key] = m;
-            });
+            }
+        }
+        for (const key of Object.keys(milestonesByKey)) {
+
+            if (c.milestones[key] == null) {
+                if (notReady) {
+                    const placeholder: MilestoneStatus = new MilestoneStatus(key, false, 0, null, null, [], true);
+                    c.milestones[key] = placeholder;
+                } else {
+                    const placeholder: MilestoneStatus = new MilestoneStatus(key, true, 1, null, null, []);
+                    c.milestones[key] = placeholder;
+                }
+            }
         }
 
         const factions: Progression[] = [];
@@ -982,7 +998,7 @@ export class ParseService {
         let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
             let activityRewards: string = '';
-            const questRewards: string = '';
+            let questRewards: string = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
                 continue;

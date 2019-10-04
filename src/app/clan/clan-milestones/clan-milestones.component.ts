@@ -12,9 +12,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./clan-milestones.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClanMilestonesComponent extends ChildComponent implements OnInit {
-  filterMode = 'none';
-  filterActivity: MileStoneName = null;
+export class ClanMilestonesComponent extends ChildComponent implements OnInit {  
   public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
 
   constructor(
@@ -49,21 +47,22 @@ export class ClanMilestonesComponent extends ChildComponent implements OnInit {
   private filterMilestones() {
     let temp = this.state.sortedMembers.getValue().slice(0);
     temp = temp.filter(member => {
-      if (this.filterActivity == null) { return true; }
+      // if (this.filterActivity == null) { return true; }
       if (member.player == null) { return false; }
       if (member.player.characters == null) { return false; }
       if (member.player.characters.length === 0) { return false; }
       if (member.player.characters[0].milestones == null) { return false; }
-      let comp = 0;
-      let total = 0;
-      member.player.characters.forEach(char => {
-        total++;
-        const ms = char.milestones[this.filterActivity.key];
-        if (ms == null && char.baseCharacterLevel >= char.maxLevel) { comp++; } else if (ms != null && ms.complete === true) { comp++; }
-      });
-      if (this.filterMode === 'zero' && comp === 0) { return true; }
-      if (this.filterMode === 'all' && comp === total) { return true; }
-      return false;
+      return true;
+      // let comp = 0;
+      // let total = 0;
+      // member.player.characters.forEach(char => {
+      //   total++;
+      //   const ms = char.milestones[this.filterActivity.key];
+      //   if (ms == null && char.baseCharacterLevel >= char.maxLevel) { comp++; } else if (ms != null && ms.complete === true) { comp++; }
+      // });
+      // if (this.filterMode === 'zero' && comp === 0) { return true; }
+      // if (this.filterMode === 'all' && comp === total) { return true; }
+      // return false;
     });
     this.filteredMembers.next(temp);
   }

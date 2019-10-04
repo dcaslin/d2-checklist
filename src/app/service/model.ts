@@ -695,14 +695,16 @@ export class MilestoneStatus {
     readonly info: string;
     readonly suppInfo: string;
     readonly phases: boolean[];
+    readonly indeterminate: boolean;
 
-    constructor(hash, complete, pct, info, suppInfo, phases) {
+    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string, phases: boolean[], indeterminate?: boolean) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
         this.info = info;
         this.suppInfo = suppInfo;
         this.phases = phases;
+        this.indeterminate = indeterminate;
     }
 }
 
