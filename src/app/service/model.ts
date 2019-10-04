@@ -934,6 +934,17 @@ export class CurrentActivity {
     activityLightLevel: number;
 }
 
+// export interface SuppCurrentActivityInfo{
+//     partyMembers: PartyMember[];
+// }
+
+// export interface PartyMember {
+//     membershipId: string;
+//     displayName: string;
+//     status: number;
+//     emblemHash: number;
+// }
+
 export class Activity {
     period: string;
     type: string;
