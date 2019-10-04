@@ -77,64 +77,7 @@
             
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
-            <span class="check">
-              <ng-container *ngIf="char.milestones[mileStoneName.key]!=null">
-
-                <div>
-                  <ng-container *ngIf="char.milestones[mileStoneName.key].phases!=null">
-                    <ng-container *ngFor="let phase of char.milestones[mileStoneName.key].phases">
-                      <i *ngIf="phase===true" style="margin-left: 5px"
-                        class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                      <i *ngIf="phase===false" style="margin-left: 5px" class="far fa-square"></i>
-                    </ng-container>
-                  </ng-container>
-                  <ng-container *ngIf="char.milestones[mileStoneName.key].phases==null">
-                    <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                      <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-
-                      <div *ngIf="mileStoneName.hasPartial==true" class="percent">
-                        {{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                    </ng-container>
-                    <ng-container
-                      *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                      <i class="far fa-square"></i>
-                      <div *ngIf="mileStoneName.hasPartial==true" class="percent">
-                        {{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}</div>
-                    </ng-container>
-                    <ng-container
-                      *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                      <i [matTooltip]="char.milestones[mileStoneName.key].info"
-                        class="accent-text far fa-minus-square"></i>
-                      <div class="percent">{{char.milestones[mileStoneName.key].pct|percent:'1.0-0'}}
-                      </div>
-                    </ng-container>
-                  </ng-container>
-
-                </div>
-                
-                <div class="lifetime" *ngIf="char.milestones[mileStoneName.key].suppInfo!=null">
-                  {{char.milestones[mileStoneName.key].suppInfo}}
-                </div>
-
-                
-                
-                
-                
-               
-                
-
-
-              </ng-container>
-              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && (!mileStoneName.neverDisappears && char.light>=900)">
-                <i *ngIf="char.baseCharacterLevel>=char.maxLevel"
-                  class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square"
-                  matTooltip="Not max level: possibly complete / possibly ineligible"></i>
-              </ng-container>
-              <ng-container *ngIf="char.milestones[mileStoneName.key]==null && (mileStoneName.neverDisappears || char.light<900)">
-                <i class="far fa-minus-square" matTooltip="Not unlocked?"></i>
-              </ng-container>
-            </span>
+            <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" detailed="true"></d2c-milestone-check>
           </td>
         </tr>
       </ng-container>

@@ -84,24 +84,7 @@
                         </a>
                       </span>
                       <ng-container *ngFor="let char of member.player.characters">
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]!=null">
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==true">
-                            <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].complete==false && char.milestones[mileStoneName.key].pct==0">
-                            <i class="far fa-square"></i>
-                          </ng-container>
-                          <ng-container *ngIf="char.milestones[mileStoneName.key].pct>0 && char.milestones[mileStoneName.key].pct<1">
-                            <i [matTooltip]="char.milestones[mileStoneName.key].info" class="accent-text far fa-minus-square"></i>
-                          </ng-container>
-                        </span>
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && !mileStoneName.neverDisappears">
-                          <i *ngIf="char.baseCharacterLevel>=char.maxLevel" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                          <i *ngIf="char.baseCharacterLevel<char.maxLevel" class="far fa-minus-square" matTooltip="Not max level: possibly complete / possibly ineligible"></i>
-                        </span>
-                        <span class="check" *ngIf="char.milestones[mileStoneName.key]==null && mileStoneName.neverDisappears">
-                          <i class="far fa-minus-square" matTooltip="Not unlocked?"></i>
-                        </span>
+                        <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" detailed="false"></d2c-milestone-check>
                       </ng-container>
                     </td>
                   </ng-container>

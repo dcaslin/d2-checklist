@@ -33,7 +33,11 @@ import { TriumphsComponent } from './triumphs/triumphs.component';
     SharedModule,
     ChartsModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, PlayerEfficiencyGraphComponent, PursuitListComponent],
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, 
+    CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, 
+    TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, 
+    CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, 
+    PlayerEfficiencyGraphComponent, PursuitListComponent],
   entryComponents: [
     QuestDialogComponent, BurnDialogComponent, ProgressStepDialogComponent
   ],

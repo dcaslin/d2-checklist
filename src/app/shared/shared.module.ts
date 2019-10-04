@@ -39,6 +39,7 @@ import {
 } from '@angular/cdk/table/';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { RouterModule } from '@angular/router';
+import { MilestoneCheckComponent } from './milestone-check/milestone-check.component';
 
 
 @NgModule({
@@ -80,8 +81,9 @@ import { RouterModule } from '@angular/router';
     ScrollingModule
   ],
   declarations: [
-  ],
+  MilestoneCheckComponent],
   exports: [
+    MilestoneCheckComponent,
     RouterModule,
     PipeModule,
 
