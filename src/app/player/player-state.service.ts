@@ -165,6 +165,7 @@ export class PlayerStateService {
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
           'CharacterEquipment', 'CharacterInventories',
           'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets'
+          //, '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
           // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
         ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);

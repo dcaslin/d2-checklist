@@ -265,7 +265,7 @@ export class ParseService {
                         milestoneList.push(ms2);
                         milestonesByKey[ms2.key] = ms2;
                     } else if (skipDesc != null) {
-                        console.log('Skipping special milestone: ' + key + ' - ' + skipDesc.displayProperties.name);
+
                     } else {
                         console.log('Skipping unknown milestone: ' + key);
                     }
@@ -1649,7 +1649,6 @@ export class ParseService {
         if (resp.profile != null) {
             profile = resp.profile.data;
         }
-
         let superprivate = false;
 
         const charsDict: { [key: string]: Character } = {};
@@ -2063,6 +2062,16 @@ export class ParseService {
                 break;
             }
         }
+
+
+        // // enhance current activity with transitory profile data
+        // if (resp.profileTransitoryData != null && resp.profileTransitoryData.data != null) {
+        //     const transData: PrivProfileTransitoryData = resp.profileTransitoryData.data;
+        //     transData.
+        //     //partyMembers[]
+        // }
+
+
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -2818,25 +2827,31 @@ export class ParseService {
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
-                                const socketDesc = desc.sockets.socketEntries[index];
+                                const socketDesc = desc.sockets.socketEntries[index]; //asdf
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
 
-                                isRandomRoll = isRandomRoll || socketDesc.randomizedPlugItems != null && socketDesc.randomizedPlugItems.length > 0;
+                                isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
                                 if (socketVal.reusablePlugs != null) {
                                     for (const plug of socketVal.reusablePlugs) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
                                         if (plugDesc == null) { continue; }
-                                        if (isMod) {
-                                            const mwInfo = this.parseMasterwork(plugDesc);
-                                            if (mwInfo != null) {
-                                                mw = mwInfo;
-                                                continue;
-                                            }
-                                            const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId, plug);
-                                            if (modInfo != null) {
-                                                mods.push(modInfo);
-                                                continue;
+                                        // mods and masterworks only matter if they're selected
+                                        if (isMod ) {
+                                            if ( plug.plugItemHash == socketVal.plugHash) {
+                                                const mwInfo = this.parseMasterwork(plugDesc);
+                                                if (itm.itemHash == 1301696822) {
+                                                    console.log("mimetic greaves");
+                                                }
+                                                if (mwInfo != null) {
+                                                    mw = mwInfo;
+                                                    continue;
+                                                }
+                                                const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId, plug);
+                                                if (modInfo != null) {
+                                                    mods.push(modInfo);
+                                                    continue;
+                                                }
                                             }
                                             continue;
                                         }
@@ -3570,3 +3585,32 @@ interface PrivInventoryItem {
     state: number;
     expirationDate: string;
 }
+
+// interface PrivProfileTransitoryData {
+//     partyMembers: PrivPartyMember[];
+//     currentActivity: PrivCurrentActivity;
+//     joinability: PrivJoinability;
+//     tracking: any[];
+//     lastOrbitedDestinationHash: number;
+//   }
+
+// interface PrivPartyMember {
+//     membershipId: string;
+//     emblemHash: number;
+//     displayName: string;
+//     status: number;
+// }
+
+// interface PrivCurrentActivity {
+//   startTime: string;
+//   score: number;
+//   highestOpposingFactionScore: number;
+//   numberOfOpponents: number;
+//   numberOfPlayers: number;
+// }
+
+// interface PrivJoinability {
+//     openSlots: number;
+//     privacySetting: number;
+//     closedReasons: number;
+//   }
