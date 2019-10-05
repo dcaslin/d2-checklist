@@ -11,7 +11,7 @@
                 <td class="lead">
                     <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
-                    </a>                    
+                    </a>
                     <a style="margin-left:0.25em"
                         [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
                         (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
@@ -54,6 +54,11 @@
 
                 </td>
                 <ng-container *ngIf="member.player!=null; else noPlayer">
+                    <td>
+                        <ng-container *ngIf="!member.player.superprivate">
+                            +{{member.player.artifactPowerBonus}}
+                        </ng-container>
+                    </td>
                     <td>
                         <ng-container *ngIf="!member.player.superprivate">
                             {{member.player.triumphScore|number : '1.0-0'}}
@@ -104,7 +109,7 @@
                     </td>
                 </ng-container>
                 <ng-template #noPlayer>
-                    <td colspan="6">
+                    <td colspan="7">
                         <i *ngIf="!member.errorMsg" class="far fa-spinner fa-pulse fa-fw"></i>
                         <span class="simple-caption" *ngIf="member.errorMsg">{{member.errorMsg}}</span>
                     </td>
@@ -140,6 +145,14 @@
     <th>
         <a href="javascript:void(0)" (click)="state.toggleSort('date')">Last Played
             <ng-container *ngIf="state.sort && state.sort.name=='date'">
+                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
+                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('artifactPowerBonus')">Artifact
+            <ng-container *ngIf="state.sort && state.sort.name=='artifactPowerBonus'">
                 <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
                 <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
             </ng-container>

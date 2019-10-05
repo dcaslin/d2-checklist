@@ -77,7 +77,9 @@
             
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
-            <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" detailed="true"></d2c-milestone-check>
+            <div class="asdf">
+                <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" [detailed]="true"></d2c-milestone-check>
+            </div>
           </td>
         </tr>
       </ng-container>

@@ -98,7 +98,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
           return;
         }
       }
-      await this.state.loadPlayer(platform, memberId);
+      await this.state.loadPlayer(platform, memberId, false);
       // todo load player
 
 

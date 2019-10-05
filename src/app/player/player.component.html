@@ -24,7 +24,10 @@
                 (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> <i class="far fa-heart"></i></a>
               <a mat-icon-button href="javascript:void(0)" (click)="state.requestRefresh()"> <i class="far fa-sync"></i></a>
             </h1>
-            <h4 *ngIf="player.title.trim().length>0">{{player.title}}</h4>
+            <h4 *ngIf="player.title">
+              <ng-container *ngIf="player.title.trim().length>0"> {{player.title}} |</ng-container>
+              <ng-container> +{{player.artifactPowerBonus}} Artifact</ng-container>
+            </h4>
             <ng-container
               *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
 

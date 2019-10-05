@@ -128,6 +128,8 @@ export class ParseService {
             if (p.progressionHash === 3759191272) { name = 'Guided Trials'; }
             if (p.progressionHash === 1273404180) { name = 'Guided Nightfall'; }
             if (p.progressionHash === 3381682691) { name = 'Guided Raid'; }
+            if (p.progressionHash === 2084155873) { name = 'Artifact Points'; }
+            if (p.progressionHash === 671558512) { name = 'Artifact Power Bonus'; }
             prog.name = name;
             prog.info = info;
 
@@ -370,7 +372,7 @@ export class ParseService {
         }
         c.maxLevel = this.MAX_LEVEL;
 
-        // only progression we care about right now is Legend
+        // only progression we care about right now are Legend, Glory, Valor and Infamy
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
                 // legend
@@ -414,6 +416,7 @@ export class ParseService {
                 }
 
             });
+
         }
 
         factions.sort(function (a, b) {
@@ -997,8 +1000,8 @@ export class ParseService {
         });
         let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
-            let activityRewards: string = '';
-            let questRewards: string = '';
+            let activityRewards = '';
+            let questRewards = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
                 continue;
@@ -1412,6 +1415,33 @@ export class ParseService {
         return checklists;
     }
 
+    private parseArtifactProgressions(resp: any, accountProgressions: Progression[]): number {
+        if (resp.profileProgression == null || resp.profileProgression.data == null
+            || resp.profileProgression.data.seasonalArtifact == null) {
+            return null;
+        }
+        const _art = resp.profileProgression.data.seasonalArtifact;
+
+        const pointProg = _art.pointProgression;
+        // TODO show these on the main player page
+        _art.pointsAcquired;
+        _art.powerBonus;
+        const powerProg = _art.powerBonusProgression;
+
+        let parsedProg: Progression = this.parseProgression(pointProg,
+            this.destinyCacheService.cache.Progression[pointProg.progressionHash], pointProg);
+        if (parsedProg != null) {
+           accountProgressions.push(parsedProg);
+        }
+        parsedProg = this.parseProgression(powerProg,
+            this.destinyCacheService.cache.Progression[powerProg.progressionHash], powerProg);
+        if (parsedProg != null) {
+           accountProgressions.push(parsedProg);
+        }
+        return _art.powerBonus;
+
+    }
+
     private parseCharChecklists(resp: any, chars: Character[]): CharChecklist[] {
         const checklists: CharChecklist[] = [];
         if (resp.characterProgressions && resp.characterProgressions.data) {
@@ -1806,14 +1836,17 @@ export class ParseService {
         let privateGear = true;
         const gear: InventoryItem[] = [];
         let checklists: Checklist[] = [];
+
         let charChecklists: CharChecklist[] = [];
         let vault: Vault = null;
         let shared: Shared = null;
         let hasHiddenClosest = false;
+        let artifactPowerBonus = 0;
 
         if (!superprivate) {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
+            artifactPowerBonus = this.parseArtifactProgressions(resp, accountProgressions);
             // hit with a hammer
             if (resp.profileCurrencies != null && resp.profileCurrencies.data != null &&
                 resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
@@ -2075,7 +2108,7 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
-            seals, badges, title, seasons, hasHiddenClosest, accountProgressions);
+            seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -2599,6 +2632,8 @@ export class ParseService {
 
     private getPlugName(plugDesc: any): string {
         const name = plugDesc.displayProperties.name;
+        if (name == null) { return null; }
+        if (name.trim().length == 0) { return null; }
         if (plugDesc.plug == null) { return null; }
         if (plugDesc.plug.plugCategoryIdentifier == null) { return null; }
         if (plugDesc.plug.plugCategoryHash == null) { return null; }
@@ -2697,6 +2732,7 @@ export class ParseService {
                     let objs: any[] = null;
                     if (parentObj != null) {
                         objs = parentObj.objectives;
+
                     }
                     if (objs == null && characterProgressions != null && characterProgressions.data != null &&
                         owner != null && characterProgressions.data[owner.id] != null) {
@@ -2731,6 +2767,9 @@ export class ParseService {
             }
             let power = 0;
             let damageType: DamageType = DamageType.None;
+            let energyCapacity: number = null;
+            let energyUsed: number = null;
+            let totalStatPoints: number = null;
             let equipped = false;
             let canEquip = false;
             let searchText = '';
@@ -2765,6 +2804,13 @@ export class ParseService {
                         damageType = instanceData.damageType;
                         equipped = instanceData.isEquipped;
                         canEquip = instanceData.canEquip;
+                        if (instanceData.energy != null) {
+                            const itmEnergy: PrivItemEnergy = instanceData.energy;
+                            damageType = itmEnergy.energyType;
+                            energyCapacity = itmEnergy.energyCapacity;
+                            energyUsed = itmEnergy.energyUsed;
+
+                        }
                     }
                 }
                 if (itemComp.stats != null && itemComp.stats.data != null) {
@@ -2814,20 +2860,25 @@ export class ParseService {
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
                     if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
                         for (const jCat of desc.sockets.socketCategories) {
-                            let isMod = false;
 
                             // skip ghost mods
                             if (jCat.socketCategoryHash == 3379164649) {
                                 continue;
                             }
-                            // armor and weapon mods
-                            if (jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949) {
-                                isMod = true;
+                            // skip cosmetics
+                            if (jCat.socketCategoryHash == 2048875504 || jCat.socketCategoryHash == 1926152773) {
+                                continue;
                             }
+                            // read armor tier info from the item instance instead
+                            if (760375309 == jCat.socketCategoryHash) {
+                                continue;
+                            }
+                            const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949;
+
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
-                                const socketDesc = desc.sockets.socketEntries[index]; //asdf
+                                const socketDesc = desc.sockets.socketEntries[index];
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
 
@@ -2837,12 +2888,10 @@ export class ParseService {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
                                         if (plugDesc == null) { continue; }
                                         // mods and masterworks only matter if they're selected
-                                        if (isMod ) {
-                                            if ( plug.plugItemHash == socketVal.plugHash) {
+                                        if (isMod) {
+                                            if (plug.plugItemHash == socketVal.plugHash) {
                                                 const mwInfo = this.parseMasterwork(plugDesc);
-                                                if (itm.itemHash == 1301696822) {
-                                                    console.log("mimetic greaves");
-                                                }
+
                                                 if (mwInfo != null) {
                                                     mw = mwInfo;
                                                     continue;
@@ -2887,7 +2936,7 @@ export class ParseService {
                                     plugs.push(oPlug);
                                 }
                                 if (plugs.length > 0) {
-                                    sockets.push(new InventorySocket(plugs));
+                                    sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs));
                                 }
                             }
                         }
@@ -2987,6 +3036,9 @@ export class ParseService {
                 searchText += desc.itemTypeDisplayName;
             }
             searchText = searchText.toLowerCase();
+            for (const s of stats) {
+                totalStatPoints += s.value;
+            }
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
@@ -2996,6 +3048,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, invBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
+                , energyUsed, energyCapacity, totalStatPoints
             );
         } catch (exc) {
             console.dir(itemComp);
@@ -3614,3 +3667,12 @@ interface PrivInventoryItem {
 //     privacySetting: number;
 //     closedReasons: number;
 //   }
+
+
+interface PrivItemEnergy {
+    energyCapacity: number;
+    energyType: number;
+    energyTypeHash: number;
+    energyUnused: number;
+    energyUsed: number;
+}

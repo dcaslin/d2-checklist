@@ -488,6 +488,7 @@ export class Player {
     readonly glory: Progression;
     readonly valor: Progression;
     readonly infamy: Progression;
+    readonly artifactPowerBonus: number;
     maxLL = 0;
     pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = [];
@@ -503,7 +504,8 @@ export class Player {
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
         searchableCollection: TriumphCollectibleNode[],
         seals: Seal[], badges: Badge[],
-        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean, accountProgressions: Progression[]) {
+        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean, 
+        accountProgressions: Progression[], artifactPowerBonus: number) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -538,6 +540,7 @@ export class Player {
         this.seasons = seasons;
         this.hasHiddenClosest = hasHiddenClosest;
         this.accountProgressions = accountProgressions;
+        this.artifactPowerBonus = artifactPowerBonus;
         if (accountProgressions != null) {
             for (const ap of accountProgressions) {
                 // valor
@@ -593,6 +596,9 @@ export class InventoryItem {
     readonly mods: InventoryPlug[];
     readonly tracked: boolean;
     readonly questline: Questline;
+    readonly energyCapacity: number;
+    readonly energyUsed: number;
+    readonly totalStatPoints: number;
     public searchText: string;
     public markLabel: string;
     public mark: string;
@@ -627,7 +633,8 @@ export class InventoryItem {
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[],
-        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean
+        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number, 
+        energyCapacity?: number, totalStatPoints?: number
     ) {
         this.id = id;
         this.hash = hash;
@@ -672,6 +679,9 @@ export class InventoryItem {
         this.ammoType = ammoType;
 
         this.postmaster = postmaster;
+        this.energyUsed = energyUsed;
+        this.energyCapacity = energyCapacity;
+        this.totalStatPoints = totalStatPoints;
     }
 }
 
@@ -1186,9 +1196,11 @@ export class InventoryStat {
 }
 
 export class InventorySocket {
+    readonly socketCategoryHash: string;
     readonly plugs: InventoryPlug[];
 
-    constructor(plugs: InventoryPlug[]) {
+    constructor(socketCategoryHash: string, plugs: InventoryPlug[]) {
+        this.socketCategoryHash = socketCategoryHash;
         this.plugs = plugs;
     }
 
