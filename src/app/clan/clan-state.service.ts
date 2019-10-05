@@ -896,6 +896,8 @@ export class ClanStateService {
         return ClanStateService.compareXp(a, b, sort.ascending);
       } else if (sort.name === 'triumph') {
         return ClanStateService.compareTriumph(a, b, sort.ascending);
+      } else if (sort.name === 'artifactPowerBonus') {
+        return ClanStateService.compareArtifactPowerBonus(a, b, sort.ascending);
       } else if (sort.name === 'glory') {
         return ClanStateService.compareGlory(a, b, sort.ascending);
       } else if (sort.name === 'valor') {
@@ -950,6 +952,16 @@ export class ClanStateService {
     if (b.player != null) { bX = b.player.getWeeklyXp(); }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
+
+
+  private static compareArtifactPowerBonus(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.player != null) { aX = a.player.artifactPowerBonus; }
+    if (b.player != null) { bX = b.player.artifactPowerBonus; }
+    return ClanStateService.simpleCompare(aX, bX, reverse);
+  }
+
 
   private static compareTriumph(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
@@ -1115,7 +1127,7 @@ export class ClanStateService {
 
     try {
       const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType,
-        target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions',
+        target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions','ProfileProgression',
         'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true);
       target.player = x;
       if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {

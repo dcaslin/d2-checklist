@@ -1,4 +1,4 @@
-<span class="check">
+<div class="check" [style.display]="(detailed == true) ? 'block' : 'inline' ">
     <ng-container *ngIf="char.milestones[mileStoneName.key] as milestone else isNull">
         
             <ng-container *ngIf="detailed==true && (milestone.phases!=null && milestone.phases.length>0)  else noPhases">
@@ -31,7 +31,7 @@
                     </ng-template>
                 </ng-template>
             </ng-template>
-        
+         
         <div class="supp-info" *ngIf="detailed==true && milestone.suppInfo!=null">
             {{milestone.suppInfo}}
         </div>
@@ -39,4 +39,4 @@
     <ng-template #isNull>        
             <i class="far fa-times-square faint" matTooltip="Milestone missing, raise your PL or progress your quests"></i>
     </ng-template>
-</span>
+</div>

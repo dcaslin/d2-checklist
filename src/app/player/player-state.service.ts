@@ -91,7 +91,7 @@ export class PlayerStateService {
   public requestRefresh() {
     const p = this.currPlayer();
     const platform = Const.PLATFORMS_DICT['' + p.profile.userInfo.membershipType];
-    this.loadPlayer(platform, p.profile.userInfo.membershipId);
+    this.loadPlayer(platform, p.profile.userInfo.membershipId, true);
 
   }
 
@@ -157,9 +157,12 @@ export class PlayerStateService {
     this._signedOnUserIsCurrent.next(isCurrent);
   }
 
-  public async loadPlayer(platform: Platform, memberId: string): Promise<void> {
+  public async loadPlayer(platform: Platform, memberId: string, refresh: boolean): Promise<void> {
 
     this._loading.next(true);
+    if (!refresh) {
+      this._player.next(null);
+    }
     try {
       const x = await this.bungieService.getChars(platform.type, memberId,
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
