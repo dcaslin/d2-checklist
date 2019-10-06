@@ -50,6 +50,7 @@ import { RecentPlayersComponent } from './recent-players';
 import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
+import { PartyComponent } from './party/party.component';
 
 
 @Injectable()
@@ -227,6 +228,12 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: RecentPlayersComponent
+    },
+    {
+      path: 'party/:platform/:memberId',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      component: PartyComponent
     },
     {
       path: 'gt/:platform/:gamertag',

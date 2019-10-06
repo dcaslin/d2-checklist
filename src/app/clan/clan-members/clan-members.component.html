@@ -29,13 +29,19 @@
                 <td>
                     <ng-container *ngIf="member.player!=null">
                         <ng-container *ngIf="!member.player.superprivate">
-                            <span
-                                *ngIf="member.isOnline && member.player && member.player.currentActivity; else lastPlayed "
-                                matTooltip="Playing right now!">
-                                <i class="fal fa-gamepad fa-2x accent-text"></i>
+                            <ng-container
+                                *ngIf="member.isOnline && member.player && member.player.currentActivity; else lastPlayed">
+                                <a mat-flat-button color="accent"
+                                    [routerLink]="['/','party',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]"
+                                    matTooltip="Playing right now!">
+                                    <i class="fal fa-gamepad fa-2x"></i>
+
+                                </a>
                                 <div *ngIf="member.player && member.player.currentActivity">
                                     {{member.player.currentActivity.type}}</div>
-                            </span>
+
+                            </ng-container>
+
                             <ng-template #lastPlayed>
                                 <ng-container *ngIf="member.player">
                                     {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago

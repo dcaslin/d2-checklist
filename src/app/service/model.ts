@@ -489,6 +489,7 @@ export class Player {
     readonly valor: Progression;
     readonly infamy: Progression;
     readonly artifactPowerBonus: number;
+    readonly transitoryData: ProfileTransitoryData;
     maxLL = 0;
     pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = [];
@@ -504,8 +505,8 @@ export class Player {
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
         searchableCollection: TriumphCollectibleNode[],
         seals: Seal[], badges: Badge[],
-        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean, 
-        accountProgressions: Progression[], artifactPowerBonus: number) {
+        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean,
+        accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -541,6 +542,7 @@ export class Player {
         this.hasHiddenClosest = hasHiddenClosest;
         this.accountProgressions = accountProgressions;
         this.artifactPowerBonus = artifactPowerBonus;
+        this.transitoryData = transitoryData;
         if (accountProgressions != null) {
             for (const ap of accountProgressions) {
                 // valor
@@ -578,7 +580,7 @@ export class InventoryItem {
     readonly type: ItemType;
     readonly typeName: string;
     readonly quantity: number;
-    readonly power: number;
+    power: number;
     readonly damageType: DamageType;
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
@@ -633,7 +635,7 @@ export class InventoryItem {
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[],
-        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number, 
+        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
         energyCapacity?: number, totalStatPoints?: number
     ) {
         this.id = id;
@@ -1269,9 +1271,27 @@ export interface Mission {
     time: number;
 }
 
-
 export interface Sort {
     name: string;
     ascending: boolean;
-  }
+}
 
+export interface ProfileTransitoryData {
+    partyMembers: SearchResult[];
+    currentActivity: CurrentPartyActivity;
+    joinability: Joinability;
+}
+
+export interface CurrentPartyActivity {
+    startTime: string;
+    score: number;
+    highestOpposingFactionScore: number;
+    numberOfOpponents: number;
+    numberOfPlayers: number;
+}
+
+export interface Joinability {
+    openSlots: number;
+    privacySetting: number;
+    closedReasons: number;
+}
