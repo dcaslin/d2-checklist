@@ -68,7 +68,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.reckBurns = await this.bungieService.getReckBurns();
   }
 
-  private static validateInteger(s: string): string {
+  public static validateInteger(s: string): string {
     if (!/^[0-9]\d*$/.test(s)) {
       return null;
     }

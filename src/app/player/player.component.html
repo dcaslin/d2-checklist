@@ -41,10 +41,10 @@
 
             <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
               <ng-container
-                *ngIf="(player.currentActivity==null || (player.currentActivity!=null && player.currentActivity.name=='Tower'))">
+                *ngIf="player.currentActivity==null">
                 Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
               </ng-container>
-              <span *ngIf="player.currentActivity!=null && player.currentActivity.name!='Tower'">
+              <span *ngIf="player.currentActivity!=null">
                 Playing now: {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
                     amDifference:player.currentActivity.dateActivityStarted|
                     amDuration:'ms'}} ago
@@ -52,10 +52,15 @@
             </div>
 
             <div class="button-row">
-              <button mat-button (click)="showBurns()">
+              <!-- <button mat-button (click)="showBurns()">
                 <i class="menu-icon fa-icon fas fa-burn"></i>
                 <span class="d-none d-md-inline">Today's Modifiers</span>
-              </button>
+              </button> -->
+              <a mat-button
+                [routerLink]="['/party', player.characters[0].membershipType, player.characters[0].membershipId]">
+                <i class="menu-icon fal fa-gamepad" [class.accent-text]="player.currentActivity!=null" ></i>
+                <span class="d-none d-md-inline">Current Party</span>
+              </a>
               <a mat-button
                 [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
                 <i class="menu-icon fa-icon fas fa-history"></i>

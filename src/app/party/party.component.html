@@ -1,0 +1,160 @@
+<div class="childComponent">
+    <div class="childVert">
+        <div class="main">
+            <div class="fixed-spinner">
+                <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+            </div>
+            <div class="body-text">
+                <div *ngIf="errorMsg|async as msg">{{msg}}</div>
+                <ng-container *ngIf="_player|async as player">
+                    <h2 class="centerMe">Party -
+                        <a
+                            [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId]">
+                            {{player.profile.userInfo.displayName}}
+                        </a>
+                    </h2>
+                    <div *ngIf="player.transitoryData as t else noData">
+
+                        <table class="checklist-table">
+                            <thead>
+                                <tr>
+                                    <th>Activity</th>
+                                    <th>Players</th>
+                                    <th>
+
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <ng-container *ngIf="player.currentActivity as c else emptyCell">
+                                            <div>
+                                                <ng-container *ngIf="c.type && c.name">{{c.type}} - {{c.name}}
+                                                </ng-container>
+                                                <ng-container *ngIf="!c.type && c.name">{{c.name}}</ng-container>
+                                                <ng-container *ngIf="c.type && !c.name">{{c.type}}</ng-container>
+
+                                            </div>
+                                            <div class="simple-caption">
+                                                Started {{today|amDifference:c.dateActivityStarted|amDuration:'ms'}} ago
+                                            </div>
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="player.transitoryData as t else emptyCell">
+                                            <ng-container *ngIf="t.currentActivity as c">
+                                                <div>{{c.numberOfPlayers}} players</div>
+                                                <div *ngIf="c.numberOfOpponents">{{c.numberOfOpponents}} opponents</div>
+                                            </ng-container>
+                                            <div class="simple-caption" *ngIf="t.joinability as j">
+                                                {{j.openSlots}} open slots
+                                            </div>
+                                        </ng-container>
+                                    </td>
+                                    <td>
+                                        <ng-container *ngIf="player.transitoryData as t else emptyCell">
+                                            <ng-container *ngIf="t.currentActivity as c">
+                                                <div *ngIf="c.score">{{c.score}} score</div>
+                                                <div *ngIf="c.highestOpposingFactionScore as os">
+                                                    {{os}} opponent score
+                                                </div>
+                                            </ng-container>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Weapons</th>
+                                    <th>Exotic Armor</th>
+                                </tr>
+                                <ng-container *ngIf="_party|async as party">
+                                    <tr *ngFor="let p of party">
+                                        <ng-container *ngIf="p.player==null else hasPlayer">
+                                            <td colspan="4">
+                                                {{p.searchResult.displayName}}
+                                                <ng-container *ngIf="p.errMsg == null">
+                                                    <i class="far fa-spinner fa-pulse fa-fw"></i>
+                                                </ng-container>
+                                                <ng-container *ngIf="p.errMsg != null">
+                                                    <a style="margin-left:0.25em" href="javascript:void(0)"
+                                                        (click)="loadPlayer(player.profile.userInfo.membershipType, p)">
+                                                        &ensp;<i class="fas fa-sync"></i>
+                                                    </a>
+                                                    <div class='simple-warn-caption'>{{p.errMsg}}</div>
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+                                        <ng-template #hasPlayer>
+                                            <td>
+
+                                                <a mat-stroked-button class="player-link"
+                                                    [routerLink]="['/',p.player.profile.userInfo.membershipType, p.player.profile.userInfo.membershipId]">
+                                                    {{p.player.profile.userInfo.displayName}}
+                                                </a>
+                                                <div class="player-info">
+                                                    <div *ngIf="p.subClass as g">
+                                                        <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                        </ng-container>
+                                                    </div>
+                                                    <div class="simple-caption">
+                                                        Artifact: +{{p.player.artifactPowerBonus}}
+                                                    </div>
+                                                    <div class="simple-caption">
+                                                        Triumph: {{p.player.triumphScore|number : '1.0-0'}}
+                                                    </div>
+                                                    <div class="simple-caption">
+                                                        Glory: {{p.player.glory.currentProgress|number}}
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                            <td class="center">
+                                                <div class="gun center" *ngFor="let g of p.guns">
+                                                    <div>
+                                                        <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                        </ng-container>
+                                                    </div>
+                                                    <div>
+                                                        {{g.name}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="center">
+                                                <div *ngIf="p.exoticArmor as g">
+                                                    <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                    </ng-container>
+                                                    {{g.name}}
+                                                </div>
+                                            </td>
+                                        </ng-template>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                    </div>
+                    <ng-template #noData>
+                        <div>Not playing right now</div>
+                    </ng-template>
+                    <ng-template #emptyCell>
+                        &nbsp;
+                    </ng-template>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="(disableAds|async)!==true" class="adBottom">
+        <small class="adText">Advertisement</small>
+        <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+    </div>
+</div>
+
+<ng-template #gearIcon let-i="i">
+    <div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+        [class.masterworked]="i.masterworked">
+        <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
+            [class.arc]="i.damageType===DamageType.Arc" [class.solar]="i.damageType===DamageType.Thermal">
+            {{i.power}}
+        </div>
+    </div>
+</ng-template>

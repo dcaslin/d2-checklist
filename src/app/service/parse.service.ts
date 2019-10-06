@@ -2,7 +2,8 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, SearchResult, Joinability, CurrentPartyActivity, ProfileTransitoryData } from './model';
+import { parse } from 'querystring';
 
 
 
@@ -80,8 +81,6 @@ export class ParseService {
                 act.activityLevel = desc.activityLevel;
                 act.activityLightLevel = desc.activityLightLevel;
             }
-
-            // ignore in orbit
             if (act.name != null && act.name.trim().length > 0) {
                 c.currentActivity = act;
             }
@@ -1001,7 +1000,7 @@ export class ParseService {
         let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
             let activityRewards = '';
-            let questRewards = '';
+            let questRewards: string = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
                 continue;
@@ -1431,12 +1430,12 @@ export class ParseService {
         let parsedProg: Progression = this.parseProgression(pointProg,
             this.destinyCacheService.cache.Progression[pointProg.progressionHash], pointProg);
         if (parsedProg != null) {
-           accountProgressions.push(parsedProg);
+            accountProgressions.push(parsedProg);
         }
         parsedProg = this.parseProgression(powerProg,
             this.destinyCacheService.cache.Progression[powerProg.progressionHash], powerProg);
         if (parsedProg != null) {
-           accountProgressions.push(parsedProg);
+            accountProgressions.push(parsedProg);
         }
         return _art.powerBonus;
 
@@ -1916,7 +1915,7 @@ export class ParseService {
                         }
                         const parsed: InventoryItem = this.parseInvItem(itm, owner, resp.itemComponents, detailedInv, options, null);
                         if (parsed != null) {
-                            if (parsed.type == ItemType.Weapon || parsed.type == ItemType.Armor || parsed.type == ItemType.Ghost || parsed.type == ItemType.Vehicle) {
+                            if (parsed.type == ItemType.Weapon || parsed.type == ItemType.Armor || parsed.type == ItemType.Ghost || parsed.type == ItemType.Vehicle || parsed.type == ItemType.Subclass) {
                                 parsed.options.pop();
                                 for (const c of chars) {
                                     parsed.options.push(c);
@@ -2096,19 +2095,36 @@ export class ParseService {
             }
         }
 
+        let transitoryData: ProfileTransitoryData = null;
 
-        // // enhance current activity with transitory profile data
-        // if (resp.profileTransitoryData != null && resp.profileTransitoryData.data != null) {
-        //     const transData: PrivProfileTransitoryData = resp.profileTransitoryData.data;
-        //     transData.
-        //     //partyMembers[]
-        // }
-
-
+        // enhance current activity with transitory profile data
+        if (resp.profileTransitoryData != null && resp.profileTransitoryData.data != null) {
+            const _transData: PrivProfileTransitoryData = resp.profileTransitoryData.data;
+            const partyMembers: SearchResult[] = [];
+            for (const p of _transData.partyMembers) {
+                if (!p.status) {
+                    continue;
+                }
+                const sr: SearchResult = {
+                    iconPath: null,
+                    membershipType: 0,
+                    membershipId: p.membershipId,
+                    displayName: p.displayName
+                };
+                partyMembers.push(sr);
+            }
+            transitoryData = {
+                partyMembers: partyMembers,
+                currentActivity: _transData.currentActivity,
+                joinability: _transData.joinability
+            };
+            console.dir(transitoryData);
+        }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
-            seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus);
+            seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus,
+            transitoryData);
     }
 
     private getBestPres(aNodes: any[], key: string): any {
@@ -2707,6 +2723,7 @@ export class ParseService {
                     && type != ItemType.Ghost
                     && type != ItemType.Vehicle
                     && type != ItemType.ExchangeMaterial
+                    && type != ItemType.Subclass
                     && type != ItemType.Consumable) {
                     return null;
                 }
@@ -3639,34 +3656,20 @@ interface PrivInventoryItem {
     expirationDate: string;
 }
 
-// interface PrivProfileTransitoryData {
-//     partyMembers: PrivPartyMember[];
-//     currentActivity: PrivCurrentActivity;
-//     joinability: PrivJoinability;
-//     tracking: any[];
-//     lastOrbitedDestinationHash: number;
-//   }
+interface PrivProfileTransitoryData {
+    partyMembers: PrivPartyMember[];
+    currentActivity: CurrentPartyActivity;
+    joinability: Joinability;
+    tracking: any[];
+    lastOrbitedDestinationHash: number;
+}
 
-// interface PrivPartyMember {
-//     membershipId: string;
-//     emblemHash: number;
-//     displayName: string;
-//     status: number;
-// }
-
-// interface PrivCurrentActivity {
-//   startTime: string;
-//   score: number;
-//   highestOpposingFactionScore: number;
-//   numberOfOpponents: number;
-//   numberOfPlayers: number;
-// }
-
-// interface PrivJoinability {
-//     openSlots: number;
-//     privacySetting: number;
-//     closedReasons: number;
-//   }
+interface PrivPartyMember {
+    membershipId: string;
+    emblemHash: number;
+    displayName: string;
+    status: number;
+}
 
 
 interface PrivItemEnergy {
