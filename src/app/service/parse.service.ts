@@ -1175,10 +1175,29 @@ export class ParseService {
 
             }
             const pl = this.parseMilestonePl(rewards);
+            let sDesc = desc.displayProperties.description;
+            if (sDesc == 'Complete bounties from this vendor to earn powerful rewards.') {
+                console.log(+ms.milestoneHash + ': ' + desc.displayProperties.name);
+                if (ms.milestoneHash == 2594202463) {
+                    sDesc = 'Complete bounties from Shaxx';
+                    summary += ' | Shaxx';
+                } else if (ms.milestoneHash == 2709491520) {
+                    sDesc = 'Complete bounties from Zavala';
+                    summary += ' | Zavala';
+                } else if (ms.milestoneHash == 3802603984) {
+                    sDesc = 'Complete bounties from Drifter';
+                    summary += ' | Drifter';
+
+                } else if (ms.milestoneHash == 3899487295) {
+                    sDesc = 'Complete bounties from the Gunsmith, Banshee';
+                    summary += ' | Banshee';
+                }
+            }
+
             const pushMe = {
                 hash: ms.milestoneHash + '',
                 name: desc.displayProperties.name,
-                desc: desc.displayProperties.description,
+                desc: sDesc,
                 start: ms.startDate,
                 end: ms.endDate,
                 order: ms.order,
@@ -1192,7 +1211,7 @@ export class ParseService {
             };
             if (pushMe.hash == '4253138191') {
                 sample = pushMe;
-            }            
+            }
             returnMe.push(pushMe);
         }
         // we're still missing nightfalls and heroic menagerie
