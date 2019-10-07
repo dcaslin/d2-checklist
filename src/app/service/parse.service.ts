@@ -2,8 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, SearchResult, Joinability, CurrentPartyActivity, ProfileTransitoryData } from './model';
-import { parse } from 'querystring';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -298,6 +297,9 @@ export class ParseService {
                                     const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                                     if (oDesc.completionValue != null && oDesc.completionValue > 0) {
                                         oPct = o.progress / oDesc.completionValue;
+                                        if (suppInfo == null && oDesc.completionValue > 1) {
+                                            suppInfo = o.progress + ' / ' + oDesc.completionValue;
+                                        }
                                     }
                                 });
                             }
@@ -314,8 +316,13 @@ export class ParseService {
                             if (oDesc != null) {
                                 if (obj.complete === true) {
                                     oPct = 1;
+
                                 } else {
                                     oPct = obj.progress / oDesc.completionValue;
+
+                                }
+                                if (suppInfo == null && oDesc.completionValue > 1) {
+                                    suppInfo = obj.progress + ' / ' + oDesc.completionValue;
                                 }
                             }
                         }
@@ -333,13 +340,15 @@ export class ParseService {
                 }
                 if (total === 0) { total++; }
                 let pct: number = complete / total;
-                if (pct === 0) { pct = oPct; }
+                if (pct === 0) { pct = oPct;
+                }
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + '% complete';
                     if (milestonesByKey[key] != null) {
                         milestonesByKey[key].hasPartial = true;
                     }
                 }
+
                 if (phases.length == 0) { phases = null; }
                 const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases);
                 c.milestones[key] = m;
@@ -1000,7 +1009,6 @@ export class ParseService {
         let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
             let activityRewards = '';
-            let questRewards: string = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
                 continue;
@@ -1165,8 +1173,6 @@ export class ParseService {
                 rewards = descRewards;
             } else if (activityRewards && activityRewards.trim().length > 0) {
                 rewards = activityRewards;
-            } else if (questRewards && questRewards.trim().length > 0) {
-                rewards = questRewards;
             } else {
                 let checkMe = '' + desc.displayProperties.name + desc.displayProperties.description;
                 checkMe = checkMe.toLowerCase();
