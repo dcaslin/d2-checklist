@@ -799,6 +799,7 @@ export class Character extends Target {
     hasLwNm = false;
     hasSpNm = false;
     hasPrestigeNf = false;
+    notReady = false;
 
     constructor(membershipType: number, membershipId: string, className: string, light: number, characterId: string) {
         super(className, characterId);
