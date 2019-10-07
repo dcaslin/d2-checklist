@@ -1159,19 +1159,19 @@ export class Const {
         {
             level: Const.LOW_BOOST,
             min: 3,
-            max: 6,
+            max: 3,
             softCap: 950
         },
         {
             level: Const.MID_BOOST,
             min: 4,
-            max: 8,
+            max: 4,
             softCap: 950
         },
         {
             level: Const.HIGH_BOOST,
-            min: 8,
-            max: 12,
+            min: 5,
+            max: 5,
             softCap: 960
         }
     ];

@@ -208,7 +208,10 @@ export class ParseService {
         if (_prog.milestones != null) {
             // A Mysterious Disturbance 2126982445
             // Catching Up 3957677607
-            if (_prog.milestones['2126982445'] != null && _prog.milestones['3957677607'] != null) {
+            // this is imperfect but probably good enough for now
+            if (_prog.milestones['2126982445'] != null && c.light < 910
+                // && _prog.milestones['3957677607'] != null
+            ) {
                 c.notReady = true;
             }
 
@@ -340,7 +343,8 @@ export class ParseService {
                 }
                 if (total === 0) { total++; }
                 let pct: number = complete / total;
-                if (pct === 0) { pct = oPct;
+                if (pct === 0) {
+                    pct = oPct;
                 }
                 if (pct > 0 && pct < 1) {
                     info = Math.floor(100 * pct) + '% complete';
@@ -951,7 +955,7 @@ export class ParseService {
                                 if (iDesc != null) {
                                     rewCnt++;
                                     rewards += iDesc.displayProperties.name;
-                                    if (reI.quantity > 0) {
+                                    if (reI.quantity > 1) {
                                         rewards += reI.quantity + ' ';
                                     }
                                 }
