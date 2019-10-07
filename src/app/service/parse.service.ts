@@ -246,7 +246,7 @@ export class ParseService {
                     });
 
                     c.clanMilestones = clanMilestones;
-                } else if (milestonesByKey[key] == null && key != '534869653') {                    
+                } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         let descRewards = this.parseMilestoneRewards(skipDesc);
@@ -999,6 +999,9 @@ export class ParseService {
             let activityRewards = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
+                continue;
+            }
+            if (ms.milestoneHash == 2712317338 && desc.displayProperties.name.startsWith('###')) {
                 continue;
             }
             let icon = desc.displayProperties.icon;
