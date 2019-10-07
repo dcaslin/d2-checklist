@@ -204,12 +204,12 @@ export class ParseService {
 
     private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
         c.milestones = {};
-        let notReady = false;
+        c.notReady = false;
         if (_prog.milestones != null) {
             // A Mysterious Disturbance 2126982445
             // Catching Up 3957677607
             if (_prog.milestones['2126982445'] != null && _prog.milestones['3957677607'] != null) {
-                notReady = true;
+                c.notReady = true;
             }
 
             for (const key of Object.keys(_prog.milestones)) {
@@ -246,7 +246,7 @@ export class ParseService {
                     });
 
                     c.clanMilestones = clanMilestones;
-                } else if (milestonesByKey[key] == null && key != '534869653') {
+                } else if (milestonesByKey[key] == null && key != '534869653') {                    
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         let descRewards = this.parseMilestoneRewards(skipDesc);
@@ -352,18 +352,6 @@ export class ParseService {
                 if (phases.length == 0) { phases = null; }
                 const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases);
                 c.milestones[key] = m;
-            }
-        }
-        for (const key of Object.keys(milestonesByKey)) {
-
-            if (c.milestones[key] == null) {
-                if (notReady) {
-                    const placeholder: MilestoneStatus = new MilestoneStatus(key, false, 0, null, null, [], true);
-                    c.milestones[key] = placeholder;
-                } else {
-                    const placeholder: MilestoneStatus = new MilestoneStatus(key, true, 1, null, null, []);
-                    c.milestones[key] = placeholder;
-                }
             }
         }
 
@@ -1201,7 +1189,7 @@ export class ParseService {
             };
             if (pushMe.hash == '4253138191') {
                 sample = pushMe;
-            }
+            }            
             returnMe.push(pushMe);
         }
         // we're still missing nightfalls and heroic menagerie
@@ -1776,11 +1764,34 @@ export class ParseService {
             if (resp.characterProgressions) {
                 if (resp.characterProgressions.data) {
                     const oProgs: any = resp.characterProgressions.data;
-                    Object.keys(oProgs).forEach((key) => {
+                    // load progs for chars
+                    for (const key of Object.keys(oProgs)) {
                         const curChar: Character = charsDict[key];
                         this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList, accountProgressions);
                         hasWellRested = curChar.wellRested || hasWellRested;
-                    });
+                    }
+
+                    // do a second pass for any missing milestones
+                    for (const key of Object.keys(oProgs)) {
+                        const c: Character = charsDict[key];
+                        for (const key of Object.keys(milestonesByKey)) {
+                            // if (key == "1437935813"){
+                            //     console.log("asdf");
+                            // }
+                            if (c.milestones[key] == null) {
+                                if (c.notReady) {
+                                    const placeholder: MilestoneStatus = new MilestoneStatus(key, false, 0, null, null, [], true);
+                                    c.milestones[key] = placeholder;
+                                } else {
+                                    const placeholder: MilestoneStatus = new MilestoneStatus(key, true, 1, null, null, []);
+                                    c.milestones[key] = placeholder;
+                                }
+                            }
+                        }
+                    }
+
+
+
                 } else {
                     superprivate = true;
                 }
