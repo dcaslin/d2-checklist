@@ -2343,7 +2343,17 @@ export class ParseService {
             }
             percent = Math.floor(sum / objs.length);
         }
-        const pts = rDesc.completionInfo == null ? 0 : rDesc.completionInfo.ScoreValue;
+        let pts = 0;
+        if (rDesc.completionInfo && rDesc.completionInfo.ScoreValue) {
+            pts = rDesc.completionInfo.ScoreValue;
+        } else if (rDesc.intervalInfo && rDesc.intervalInfo.intervalObjectives) {
+            for (const intervalObj of rDesc.intervalInfo.intervalObjectives) {
+                if (intervalObj.intervalScoreValue) {
+                    pts += intervalObj.intervalScoreValue;
+                }
+            }
+
+        }
 
         return {
             type: 'record',
