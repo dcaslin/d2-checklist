@@ -1471,6 +1471,9 @@ export class ParseService {
                     Object.keys(oChecklists).forEach((key) => {
                         const vals: any = oChecklists[key];
                         const desc: any = this.destinyCacheService.cache.Checklist[key];
+                        if (desc==null){
+                            return;
+                        }
 
                         let checklist: CharChecklist = null;
                         for (const c of checklists) {
