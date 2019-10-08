@@ -1176,28 +1176,12 @@ export class ParseService {
                 } else {
                     rewards = 'Unknown';
                 }
-
+            }
+            if (ms.milestoneHash == 2712317338 && rewards == 'Unknown') {
+                rewards = 'Pinnacle Gear';
             }
             const pl = this.parseMilestonePl(rewards);
-            let sDesc = desc.displayProperties.description;
-            if (sDesc == 'Complete bounties from this vendor to earn powerful rewards.') {
-                console.log(+ms.milestoneHash + ': ' + desc.displayProperties.name);
-                if (ms.milestoneHash == 2594202463) {
-                    sDesc = 'Complete bounties from Shaxx';
-                    summary += ' | Shaxx';
-                } else if (ms.milestoneHash == 2709491520) {
-                    sDesc = 'Complete bounties from Zavala';
-                    summary += ' | Zavala';
-                } else if (ms.milestoneHash == 3802603984) {
-                    sDesc = 'Complete bounties from Drifter';
-                    summary += ' | Drifter';
-
-                } else if (ms.milestoneHash == 3899487295) {
-                    sDesc = 'Complete bounties from the Gunsmith, Banshee';
-                    summary += ' | Banshee';
-                }
-            }
-
+            const sDesc = desc.displayProperties.description;
             const pushMe = {
                 hash: ms.milestoneHash + '',
                 name: desc.displayProperties.name,
@@ -1471,7 +1455,7 @@ export class ParseService {
                     Object.keys(oChecklists).forEach((key) => {
                         const vals: any = oChecklists[key];
                         const desc: any = this.destinyCacheService.cache.Checklist[key];
-                        if (desc==null){
+                        if (desc == null) {
                             return;
                         }
 
@@ -1804,9 +1788,6 @@ export class ParseService {
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
                         for (const key of Object.keys(milestonesByKey)) {
-                            // if (key == "1437935813"){
-                            //     console.log("asdf");
-                            // }
                             if (c.milestones[key] == null) {
                                 if (c.notReady) {
                                     const placeholder: MilestoneStatus = new MilestoneStatus(key, false, 0, null, null, [], true);
