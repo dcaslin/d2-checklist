@@ -1,6 +1,8 @@
 <ng-container *ngIf="state.modelPlayer|async as modelPlayer; else loadingModel">
-
-    <table class="tidy-auto-table clan-table">
+    <h4 *ngIf="(state.sortedMembers|async).length==0" class="left warn-text">
+        All members filtered out, check your <a routerLink="../settings">Settings</a>
+    </h4>
+    <table class="tidy-auto-table clan-table" *ngIf="(state.sortedMembers|async).length>0" >
         <thead>
             <tr>
                 <ng-container *ngTemplateOutlet="sortHeader"></ng-container>
