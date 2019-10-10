@@ -49,7 +49,7 @@
           <span class="simple-caption">
             <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
             <i *ngIf="!o.complete" class="far fa-square"></i>
-            {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
+            {{o.progress}}/{{o.completionValue}} {{o.progressDescription}} <span *ngIf="o.score"> - {{o.score}} pts</span>
           </span>
           <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"
             mode="determinate" [value]="o.progress*100/o.completionValue">

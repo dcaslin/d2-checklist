@@ -283,6 +283,10 @@ mat-form-field.full-width .mat-form-field-infix{
   max-width: 200px;
 }
 
+.low-hanging-desc {
+  max-width: 500px;
+}
+
 @media screen and (max-width: 600px) {
   .low-hanging-desc {
     max-width: 300px;
