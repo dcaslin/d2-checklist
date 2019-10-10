@@ -98,7 +98,7 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
   }
 
   public downloadCsvTriumphs() {
-    const header = 'Name,Path,Score,Percent,Complete,Redeemed,Description';
+    const header = 'Name,Path,Earned Pts, Total Pts,Percent,Complete,Redeemed,Description';
     let rows = [];
     for (const t of this.state.currPlayer().searchableTriumphs) {
       let sCsv = TriumphTreeComponent.escape(t.name) + ',';
@@ -107,6 +107,7 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
         sPath = sPath + e.path + ' / ';
       }
       sCsv += TriumphTreeComponent.escape(sPath) + ',';
+      sCsv += t.earned + ',';
       sCsv += t.score + ',';
       sCsv += t.percent + ',';
       sCsv += t.complete + ',';

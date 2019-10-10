@@ -2,8 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
-import { interval } from 'rxjs';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -390,12 +389,12 @@ export class ParseService {
                     let progDesc = this.destinyCacheService.cache.Progression[p.progressionHash];
                     if (key === '1628407317') { // Season of Undying
                         progDesc = {
-                            "displayProperties": {
-                                "description": "Season of the Undying Progress",
-                                "displayUnitsName": "",
-                                "hasIcon": true,
-                                "icon": "/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png",
-                                "name": "Season Rank"
+                            'displayProperties': {
+                                'description': 'Season of the Undying Progress',
+                                'displayUnitsName': '',
+                                'hasIcon': true,
+                                'icon': '/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png',
+                                'name': 'Season Rank'
                             }
                         };
                     }
@@ -2263,7 +2262,7 @@ export class ParseService {
 
 
         let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
-        
+
         let isInterval = false;
         let iterateMe = val.objectives;
         let intervalsRedeemedCount = null;
@@ -2284,13 +2283,13 @@ export class ParseService {
         let totalPts = 0;
         if (rDesc.completionInfo && rDesc.completionInfo.ScoreValue) {
             totalPts = rDesc.completionInfo.ScoreValue;
-        } else if (rDesc.intervalInfo && rDesc.intervalInfo.intervalObjectives) {     
-            let intervalIndex = 0;       
+        } else if (rDesc.intervalInfo && rDesc.intervalInfo.intervalObjectives) {
+            let intervalIndex = 0;
             for (const intervalObj of rDesc.intervalInfo.intervalObjectives) {
                 if (intervalObj.intervalScoreValue) {
                     totalPts += intervalObj.intervalScoreValue;
                 }
-                if (val.intervalObjectives.length>intervalIndex) {
+                if (val.intervalObjectives.length > intervalIndex) {
                     const intervalVal = val.intervalObjectives[intervalIndex];
                     if (intervalVal.complete) {
                         earnedPts += intervalObj.intervalScoreValue;
@@ -2587,10 +2586,36 @@ export class ParseService {
     }
 
     private cookDamageType(damageType: DamageType): string {
-
-        if (damageType == DamageType.None) { return 'None'; } else if (damageType == DamageType.Kinetic) { return 'Kinetic'; } else if (damageType == DamageType.Arc) { return 'Arc'; } else if (damageType == DamageType.Thermal) { return 'Solar'; } else if (damageType == DamageType.Void) { return 'Void'; } else { return ''; }
-
+        if (damageType == DamageType.None) {
+            return 'None';
+        } else if (damageType == DamageType.Kinetic) {
+            return 'Kinetic';
+        } else if (damageType == DamageType.Arc) {
+            return 'Arc';
+        } else if (damageType == DamageType.Thermal) {
+            return 'Solar';
+        } else if (damageType == DamageType.Void) {
+            return 'Void';
+        } else {
+            return '';
+        }
     }
+
+
+    private cookEnergyType(energyType: EnergyType): string {
+        if (energyType == EnergyType.Any) {
+            return 'Any';
+        } else if (energyType == EnergyType.Arc) {
+            return 'Arc';
+        } else if (energyType == EnergyType.Thermal) {
+            return 'Solar';
+        } else if (energyType == EnergyType.Void) {
+            return 'Void';
+        } else {
+            return '';
+        }
+    }
+
 
     private parseMasterwork(plugDesc: any): MastworkInfo {
         if (plugDesc.plug == null) { return null; }
@@ -2768,7 +2793,7 @@ export class ParseService {
                     && type !== ItemType.Chalice) {
                     return null;
                 }
-            } else {
+            } else {                
                 if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
                     // mods we use the perk desc
@@ -2852,6 +2877,7 @@ export class ParseService {
             }
             let power = 0;
             let damageType: DamageType = DamageType.None;
+            let energyType: EnergyType = EnergyType.Any;
             let energyCapacity: number = null;
             let energyUsed: number = null;
             let totalStatPoints: number = null;
@@ -2891,7 +2917,7 @@ export class ParseService {
                         canEquip = instanceData.canEquip;
                         if (instanceData.energy != null) {
                             const itmEnergy: PrivItemEnergy = instanceData.energy;
-                            damageType = itmEnergy.energyType;
+                            energyType = itmEnergy.energyType;
                             energyCapacity = itmEnergy.energyCapacity;
                             energyUsed = itmEnergy.energyUsed;
 
@@ -3086,6 +3112,9 @@ export class ParseService {
             if (damageType != null && damageType != DamageType.None) {
                 searchText += ' ' + this.cookDamageType(damageType);
             }
+            if (energyType != null) {
+                searchText += ' ' + this.cookEnergyType(energyType);
+            }
             if (ammoType != null) {
                 searchText += ' ' + DestinyAmmunitionType[ammoType];
             }
@@ -3128,7 +3157,7 @@ export class ParseService {
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
-                power, damageType, stats, sockets, objectives,
+                power, damageType, energyType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, invBucket, tier, options.slice(),

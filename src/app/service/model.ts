@@ -61,6 +61,13 @@ export enum DamageType {
     Raid = 5
 }
 
+export enum EnergyType {
+    Any = 0,
+    Arc = 1,
+    Thermal = 2,
+    Void = 3
+}
+
 export interface MastworkInfo {
     hash: string;
     name: string;
@@ -588,6 +595,7 @@ export class InventoryItem {
     readonly quantity: number;
     power: number;
     readonly damageType: DamageType;
+    readonly energyType: EnergyType;
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
     readonly objectives: ItemObjective[];
@@ -636,7 +644,7 @@ export class InventoryItem {
 
     constructor(id: string, hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Target,
         icon: string, type: ItemType, typeName: string, quantity: number,
-        power: number, damageType: DamageType, stats: InventoryStat[],
+        power: number, damageType: DamageType, energyType: EnergyType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
@@ -657,6 +665,7 @@ export class InventoryItem {
         this.quantity = quantity;
         this.power = power;
         this.damageType = damageType;
+        this.energyType = energyType;
         this.stats = stats;
         this.sockets = sockets;
         this.objectives = objectives;
