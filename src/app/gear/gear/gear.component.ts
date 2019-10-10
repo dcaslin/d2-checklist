@@ -3,7 +3,7 @@ import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPagi
 import { BungieService } from '@app/service/bungie.service';
 import { GearService } from '@app/service/gear.service';
 import { MarkService } from '@app/service/mark.service';
-import { ClassAllowed, DamageType, DestinyAmmunitionType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target } from '@app/service/model';
+import { ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { TargetPerkService } from '@app/service/target-perk.service';
 import { WishlistService } from '@app/service/wishlist.service';
@@ -136,6 +136,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   ItemType = ItemType;
   DamageType = DamageType;
+  EnergyType = EnergyType;
   ClassAllowed = ClassAllowed;
 
   show(count: number) {

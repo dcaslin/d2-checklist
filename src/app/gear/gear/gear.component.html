@@ -215,10 +215,10 @@
                 <div *ngIf="i.icon!=null" class="item-image"
                   [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
                   [class.masterworked]="i.masterworked">
-                  <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
-                    [class.arc]="i.damageType===DamageType.Arc" [class.solar]="i.damageType===DamageType.Thermal">
+                  <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
+                    [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc" [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
                     {{i.power}}
-                  </div>
+                  </div>                  
                   <div class="gear-lock">
                     <i *ngIf="i.locked" (click)="gearService.setLock(player, i, false)" class="fas fa-lock-alt"></i>
                     <i *ngIf="!i.locked && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle)"
