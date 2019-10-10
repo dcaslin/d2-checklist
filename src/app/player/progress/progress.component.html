@@ -12,7 +12,12 @@
         <tr *ngIf="faction!=null">
 
           <td class="lead" data-label="">
-            <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}</span>
+            <span [matTooltip]="faction.desc" matTooltipClass="preserve-white-space">{{faction.name}}
+                <ng-container *ngIf="faction.step==null || (faction.steps[faction.level]==null)">
+                    | Level {{faction.level}}
+                  </ng-container>
+
+            </span>
             <span class="light">
               <ng-container *ngIf="debugmode|async">{{faction.hash}} </ng-container>
               <ng-container *ngIf="faction.steps!=null && (faction.steps[faction.level]!=null)">
@@ -26,6 +31,7 @@
                   <span class="warn-text" *ngIf="!player.pvpStreak.win">Streak: {{player.pvpStreak.count}} L</span>
                 </span>
               </ng-container>
+
             </span>
             <span class="caption">{{faction.info}}</span>
             <div class="row dl-row simple-caption">

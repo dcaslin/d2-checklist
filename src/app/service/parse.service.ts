@@ -206,12 +206,7 @@ export class ParseService {
         c.milestones = {};
         c.notReady = false;
         if (_prog.milestones != null) {
-            // A Mysterious Disturbance 2126982445
-            // Catching Up 3957677607
-            // this is imperfect but probably good enough for now
-            if (_prog.milestones['2126982445'] != null && c.light < 910
-                // && _prog.milestones['3957677607'] != null
-            ) {
+            if (c.light < 900) {
                 c.notReady = true;
             }
 
@@ -372,7 +367,7 @@ export class ParseService {
         }
         c.maxLevel = this.MAX_LEVEL;
 
-        // only progression we care about right now are Legend, Glory, Valor and Infamy
+        // only progression we care about right now are Legend, Glory, Valor, and Season Pass
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
                 // legend
@@ -381,7 +376,7 @@ export class ParseService {
                     const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
                     c.legendProgression = prog;
                     c.wellRested = prog.nextLevelAt * 3 > prog.weeklyProgress;
-                } else if (key === '2626549951' || key === '2000925172' || key === '2772425241') {
+                } else if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '1628407317') {
                     const p: PrivProgression = _prog.progressions[key];
                     let suppProg: PrivProgression = null;
                     if (key === '2626549951') { // VALOR
@@ -391,7 +386,21 @@ export class ParseService {
                     } else if (key === '2000925172') { // GLORY
                         suppProg = _prog.progressions['2679551909'];
                     }
-                    const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash], suppProg);
+                    let progDesc = this.destinyCacheService.cache.Progression[p.progressionHash];
+                    if (key === '1628407317') { // Season of Undying
+                        progDesc = {
+                            "displayProperties": {
+                                "description": "Season of the Undying Progress",
+                                "displayUnitsName": "",
+                                "hasIcon": true,
+                                "icon": "/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png",
+                                "name": "Season Rank"
+                            }
+                        };
+                    }
+
+
+                    const prog: Progression = this.parseProgression(p, progDesc, suppProg);
                     if (prog != null) {
                         let found = false;
                         for (const a of accountProgressions) {
@@ -1789,13 +1798,8 @@ export class ParseService {
                         const c: Character = charsDict[key];
                         for (const key of Object.keys(milestonesByKey)) {
                             if (c.milestones[key] == null) {
-                                if (c.notReady) {
-                                    const placeholder: MilestoneStatus = new MilestoneStatus(key, false, 0, null, null, [], true);
-                                    c.milestones[key] = placeholder;
-                                } else {
-                                    const placeholder: MilestoneStatus = new MilestoneStatus(key, true, 1, null, null, []);
-                                    c.milestones[key] = placeholder;
-                                }
+                                const placeholder: MilestoneStatus = new MilestoneStatus(key, true, 1, null, null, [], c.notReady);
+                                c.milestones[key] = placeholder;
                             }
                         }
                     }
