@@ -78,7 +78,7 @@
                     <td class="d-none d-sm-table-cell">
                       <div *ngFor="let v of i.value">
                         {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
-                        <span *ngIf="debugmode|async">{{v.hash}}</span>
+                        <span *ngIf="debugmode|async"> {{v.hash}}</span>
                       </div>
                     </td>
                     <td>

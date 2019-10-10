@@ -611,6 +611,125 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
+        const powerfulBounties: SaleItem[] = [];
+        let vendorFound = false;
+        for (const i of vendorData) {
+            if (i.vendor.hash == targetVendorHash) {
+                vendorFound = true;
+                if (i.value != null && i.type == ItemType.Bounty) {
+                    for (const v of i.value) {
+                        // is powerful gear
+                        if (v.hash == '4039143015') {
+                            powerfulBounties.push(i);
+                        } 
+                        // is Firewalll Data Fragment
+                        else if (v.hash == '3586070587') {
+                            powerfulBounties.push(i);
+                        } // is Firewalll Data Fragment
+                    }
+                }
+            }
+        }
+        console.dir(powerfulBounties);
+        // no powerful bounties avail
+        if (powerfulBounties.length ==0) {
+            const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true);
+            return psuedoMs;
+        } else if (powerfulBounties.length == 1) {
+            const i = powerfulBounties[0];
+            const complete = i.status == 'Already completed';
+            const held = i.status == 'Already held';
+            let progress = complete ? 1 : 0;
+            if (held) {
+                const bounties: InventoryItem[] = p.bounties[c.characterId];
+                let bounty: InventoryItem = null;
+                for (const b of bounties) {
+                    if (b.hash == i.hash) {
+                        bounty = b;
+                    }
+                }
+                if (bounty != null) {
+                    progress = bounty.aggProgress / 100;
+                }
+            }
+            const psuedoMs = new MilestoneStatus(key, complete, progress, null,
+                complete ? null : held ? 'Held' : 'Not Held', null);
+            return psuedoMs;
+        } else {
+            if (!vendorFound) {
+                // const psuedoMs = new MilestoneStatus(key, false, 0, null,
+                //     'Vendor not found', null);
+                return null;
+            }
+            let complete = 0;
+            let held = 0;
+            for (const b of powerfulBounties) {
+                if (b.status == 'Already completed') {
+                    complete++;
+                }
+                if (b.status == 'Already held') {
+                    held++;
+                }
+            }
+            let info = complete + '/' + powerfulBounties.length;
+            if (held > 0) {
+                info += ', ' + held + ' held';
+            }
+            const allDone = complete === powerfulBounties.length;
+            const psuedoMs = new MilestoneStatus(key, allDone,
+                complete / powerfulBounties.length, null, allDone ? null : info, null);
+            return psuedoMs;
+        }
+    }
+
+    private async loadWeeklyPowerfulBountiesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
+        const vendorData = await this.loadVendors(c);
+        // 1616085565
+        const erisPsuedoMs = this.createVendorMilestone('1616085565', Const.ERIS_KEY, vendorData, p.getValue(), c);
+        c.milestones[Const.ERIS_KEY] = erisPsuedoMs;
+
+        // const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData, p.getValue(), c);
+        // c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
+        // const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData, p.getValue(), c);
+        // c.milestones[Const.DRIFTER_KEY] = drifterPsuedoMs;
+        // const wernerPsuedoMs = this.createVendorMilestone('880202832', Const.WERNER_KEY, vendorData, p.getValue(), c);
+        // c.milestones[Const.WERNER_KEY] = wernerPsuedoMs;
+        p.next(p.getValue());
+    }
+
+    public loadWeeklyPowerfulBounties(playerSubject: BehaviorSubject<Player>) {
+        const p = playerSubject.getValue();
+        // is this the signed on user?
+        if (!this.isSignedOn(p)) {
+            return;
+        }
+        const ms1: MileStoneName = {
+            key: Const.ERIS_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear',
+            pl: Const.LOW_BOOST,
+            name: 'Eris\'s Weekly Bounties',
+            desc: 'Complete Luna\'s Recall and Lunar Spelunker',
+            hasPartial: false,
+            neverDisappears: true
+        };
+        p.milestoneList.push(ms1);
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.ERIS_KEY, false, 0, null, 'Loading...', null);
+       
+        // load empty while we wait, so it doesn't show checked
+        for (const c of p.characters) {
+            c.milestones[Const.ERIS_KEY] = empty1;
+        }
+        playerSubject.next(p);
+        for (const c of p.characters) {
+            this.loadWeeklyPowerfulBountiesOnChar(playerSubject, c);
+        }
+        return playerSubject;
+    }
+
+
+
     public isSignedOn(p: Player): boolean {
         if (this.selectedUser == null) { return false; }
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
