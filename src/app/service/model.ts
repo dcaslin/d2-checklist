@@ -139,6 +139,8 @@ export interface TriumphRecordNode extends TriumphNode {
     intervalsRedeemedCount: number;
     redeemed: boolean;
     title: boolean;
+    interval: boolean;
+    earned: number;
     score: number;
     lowLinks?: LowLinks;
     percent: number;
@@ -275,6 +277,7 @@ export interface ItemObjective {
     progress: number;
     complete: boolean;
     percent: number;
+    score?: number;
 }
 
 export class ActivityMode {

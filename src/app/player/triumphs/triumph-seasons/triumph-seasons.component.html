@@ -62,16 +62,7 @@
               </td>
 
               <td class="left" data-label="">
-                <div class="low-hanging-desc">{{t.desc}}</div>
-                <div class="low-hanging-desc" *ngFor="let o of t.objectives">
-                  <span class="simple-caption">
-                    <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                    <i *ngIf="!o.complete" class="far fa-square"></i>
-                    {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
-                  </span>
-                  <mat-progress-bar class="pres-node-prog" mode="determinate"
-                    [value]="o.progress*100/o.completionValue"></mat-progress-bar>
-                </div>
+                <d2c-triumph-objectives [triumph]="t"></d2c-triumph-objectives>
               </td>
             </tr>
           </ng-container>

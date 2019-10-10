@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { interval } from 'rxjs';
 
 
 
@@ -2149,7 +2150,6 @@ export class ParseService {
                 currentActivity: _transData.currentActivity,
                 joinability: _transData.joinability
             };
-            console.dir(transitoryData);
         }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
@@ -2263,12 +2263,12 @@ export class ParseService {
 
 
         let searchText = rDesc.displayProperties.name + ' ' + rDesc.displayProperties.description;
-        let objs: ItemObjective[] = [];
-        let totalProgress = 0;
-
+        
+        let isInterval = false;
         let iterateMe = val.objectives;
         let intervalsRedeemedCount = null;
         if (!val.objectives && val.intervalObjectives) {
+            isInterval = true;
             iterateMe = val.intervalObjectives;
             intervalsRedeemedCount = val.intervalsRedeemedCount;
             searchText += ' interval';
@@ -2278,15 +2278,48 @@ export class ParseService {
             console.dir(val);
             return null;
         }
+        let objs: ItemObjective[] = [];
+        let totalProgress = 0;
+        let earnedPts = 0;
+        let totalPts = 0;
+        if (rDesc.completionInfo && rDesc.completionInfo.ScoreValue) {
+            totalPts = rDesc.completionInfo.ScoreValue;
+        } else if (rDesc.intervalInfo && rDesc.intervalInfo.intervalObjectives) {     
+            let intervalIndex = 0;       
+            for (const intervalObj of rDesc.intervalInfo.intervalObjectives) {
+                if (intervalObj.intervalScoreValue) {
+                    totalPts += intervalObj.intervalScoreValue;
+                }
+                if (val.intervalObjectives.length>intervalIndex) {
+                    const intervalVal = val.intervalObjectives[intervalIndex];
+                    if (intervalVal.complete) {
+                        earnedPts += intervalObj.intervalScoreValue;
+                    }
+                }
+                // if (val.)
+                intervalIndex++;
+            }
 
+        }
+
+
+        let objIndex = -1;
         for (const o of iterateMe) {
+            objIndex++;
             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
             if (oDesc == null) { continue; }
+
+            let score = null;
+            if (isInterval && objIndex < rDesc.intervalInfo.intervalObjectives.length) {
+                score = rDesc.intervalInfo.intervalObjectives[objIndex].intervalScoreValue;
+            }
+
             const iObj: ItemObjective = {
                 completionValue: oDesc.completionValue,
                 progressDescription: oDesc.progressDescription,
                 progress: o.progress == null ? 0 : o.progress,
                 complete: o.complete,
+                score: score,
                 percent: 0
             };
 
@@ -2331,18 +2364,10 @@ export class ParseService {
             }
             percent = Math.floor(sum / objs.length);
         }
-        let pts = 0;
-        if (rDesc.completionInfo && rDesc.completionInfo.ScoreValue) {
-            pts = rDesc.completionInfo.ScoreValue;
-        } else if (rDesc.intervalInfo && rDesc.intervalInfo.intervalObjectives) {
-            for (const intervalObj of rDesc.intervalInfo.intervalObjectives) {
-                if (intervalObj.intervalScoreValue) {
-                    pts += intervalObj.intervalScoreValue;
-                }
-            }
-
+        // interval or not, if it's done they got all the points
+        if (complete) {
+            earnedPts = totalPts;
         }
-
         return {
             type: 'record',
             hash: key,
@@ -2358,7 +2383,9 @@ export class ParseService {
             children: null,
             path: path,
             lowLinks: this.lowlineService.buildRecordLink(key),
-            score: pts,
+            interval: isInterval,
+            earned: earnedPts,
+            score: totalPts,
             percent: complete ? 100 : percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible,
