@@ -10,25 +10,19 @@
         </ng-container>
         <ng-template #noPhases>
             <ng-container *ngIf="milestone.complete==true else notComplete">
-                <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                <!-- <div *ngIf="detailed==true && mileStoneName.hasPartial==true" class="percent">
-                    {{milestone.pct|percent:'1.0-0'}}</div> -->
+                <ng-container *ngIf="milestone.indeterminate">
+                    <i class="accent-text fal fa-check-square" matTooltip="LL&lt;900, may not be unlocked"></i>
+                </ng-container>
+                <ng-container *ngIf="!milestone.indeterminate">
+                    <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                </ng-container>
             </ng-container>
             <ng-template #notComplete>
-                <ng-container *ngIf="milestone.indeterminate else determinate">
-                    <i class="far fa-times-square faint"
-                        matTooltip="Not unlocked, raise your PL or progress your quests"></i>
+                <ng-container *ngIf="milestone.pct==0 else nonZero">
+                    <i class="far fa-square"></i>
                 </ng-container>
-                <ng-template #determinate>
-                    <ng-container *ngIf="milestone.pct==0 else nonZero">
-                        <i class="far fa-square"></i>
-                        <!-- <div *ngIf="detailed==true && mileStoneName.hasPartial==true" class="percent">
-                            {{milestone.pct|percent:'1.0-0'}}</div> -->
-                    </ng-container>
-                    <ng-template #nonZero>
-                        <i [matTooltip]="milestone.info" class="accent-text far fa-minus-square"></i>
-                        <!-- <div *ngIf="detailed==true" class="percent">{{milestone.pct|percent:'1.0-0'}}</div> -->
-                    </ng-template>
+                <ng-template #nonZero>
+                    <i [matTooltip]="milestone.info" class="accent-text far fa-minus-square"></i>
                 </ng-template>
             </ng-template>
         </ng-template>
@@ -36,7 +30,7 @@
         <div class="simple-caption" *ngIf="detailed==true && milestone.suppInfo!=null">
             {{milestone.suppInfo}}
         </div>
-       
+
     </ng-container>
     <ng-template #isNull>
         <i class="far fa-times-square faint" matTooltip="Milestone missing, raise your PL or progress your quests"></i>

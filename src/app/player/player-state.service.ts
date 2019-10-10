@@ -70,10 +70,10 @@ export class PlayerStateService {
 
 
   public _signedOnUserIsCurrent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public signedOnUserIsCurrent: Observable<boolean> = this._loading.asObservable();
+  public signedOnUserIsCurrent: Observable<boolean> = this._signedOnUserIsCurrent.asObservable();
 
   public _isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public isSignedOn: Observable<boolean> = this._loading.asObservable();
+  public isSignedOn: Observable<boolean> = this._isSignedOn.asObservable();
 
   private _showZeroPtTriumphs = false;
   private _showInvisTriumphs = false;

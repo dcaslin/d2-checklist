@@ -486,6 +486,7 @@ export class Player {
     readonly hasHiddenClosest: boolean;
     readonly accountProgressions: Progression[];
     readonly glory: Progression;
+    readonly seasonRank: number;
     readonly valor: Progression;
     readonly infamy: Progression;
     readonly artifactPowerBonus: number;
@@ -552,6 +553,8 @@ export class Player {
                     this.infamy = ap;
                 } else if (ap.hash == '2000925172') {
                     this.glory = ap;
+                }  else if (ap.hash == '1628407317') {
+                    this.seasonRank = ap.level;
                 }
             }
         }
