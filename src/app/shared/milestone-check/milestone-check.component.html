@@ -11,7 +11,7 @@
         <ng-template #noPhases>
             <ng-container *ngIf="milestone.complete==true else notComplete">
                 <ng-container *ngIf="milestone.indeterminate">
-                    <i class="accent-text fal fa-check-square" matTooltip="LL&lt;900, may not be unlocked"></i>
+                    <i class="faint fal fa-check-square" matTooltip="LL&lt;900, may not be unlocked"></i>
                 </ng-container>
                 <ng-container *ngIf="!milestone.indeterminate">
                     <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
