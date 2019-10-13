@@ -12,7 +12,7 @@
           *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)">
         </mat-spinner>
       </div>
-
+      
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
         (change)="filterChanged()">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
@@ -26,6 +26,7 @@
           <span class="d-none d-md-inline"> {{o.name}}</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <div><a href="https://www.reddit.com/r/destinychecklistnet/comments/dhhs94/d2checklist_gear_manager_perks_and_god_rolls/?" target="_blank" class="warn-text important-note" rel="noopener">Important notes</a></div>
       <ng-container *ngIf="(loading|async)===false && selectedUser==null">
         <h2>Bungie Authentication Required</h2>
         <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
