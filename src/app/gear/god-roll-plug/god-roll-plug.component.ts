@@ -1,10 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { InventoryPlug } from '@app/service/model';
+import { NotificationService } from '@app/service/notification.service';
+import { ClipboardService } from 'ngx-clipboard';
 
 @Component({
   selector: 'd2c-god-roll-plug',
   templateUrl: './god-roll-plug.component.html',
-  styleUrls: ['./god-roll-plug.component.scss']
+  styleUrls: ['./god-roll-plug.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GodRollPlugComponent implements OnInit {
 
@@ -17,7 +20,15 @@ export class GodRollPlugComponent implements OnInit {
   @Input()
   debugmode: boolean;
 
-  constructor() { }
+  constructor(
+    private clipboardService: ClipboardService,
+    private notificationService: NotificationService) { }
+
+
+  copyToClipboard() {
+    this.clipboardService.copyFromContent(this.plug.hash);
+    this.notificationService.success('Copied ' + this.plug.name + ' to clipboard');
+  }
 
   ngOnInit() {
   }

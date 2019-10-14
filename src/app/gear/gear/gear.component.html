@@ -12,7 +12,7 @@
           *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)">
         </mat-spinner>
       </div>
-      
+
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
         (change)="filterChanged()">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
@@ -26,7 +26,9 @@
           <span class="d-none d-md-inline"> {{o.name}}</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
-      <div><a href="https://www.reddit.com/r/destinychecklistnet/comments/dhhs94/d2checklist_gear_manager_perks_and_god_rolls/?" target="_blank" class="warn-text important-note" rel="noopener">Important notes</a></div>
+      <div><a
+          href="https://www.reddit.com/r/destinychecklistnet/comments/dhhs94/d2checklist_gear_manager_perks_and_god_rolls/?"
+          target="_blank" class="warn-text important-note" rel="noopener">Important notes</a></div>
       <ng-container *ngIf="(loading|async)===false && selectedUser==null">
         <h2>Bungie Authentication Required</h2>
         <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
@@ -174,12 +176,10 @@
             <th class="limited-gear-width hide-mobile-table-cell">
               <a href="javascript:void(0)" (click)="sort('typeName')">Type</a>
             </th>
-            <th class="limited-gear-width hide-mobile-table-cell"
-              *ngIf="option.type==ItemType.Armor">
+            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
               <a href="javascript:void(0)" (click)="sort('energyCapacity')">Energy</a>
             </th>
-            <th class="limited-gear-width hide-mobile-table-cell"
-              *ngIf="option.type==ItemType.Armor">
+            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
               <a href="javascript:void(0)" (click)="sort('totalStatPoints')">Points</a>
             </th>
             <th class="limited-gear-width hide-mobile-table-cell"
@@ -216,10 +216,12 @@
                 <div *ngIf="i.icon!=null" class="item-image"
                   [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
                   [class.masterworked]="i.masterworked">
-                  <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
-                    [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc" [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
+                  <div *ngIf="i.power>0" class="primary-stat"
+                    [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
+                    [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"
+                    [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
                     {{i.power}}
-                  </div>                  
+                  </div>
                   <div class="gear-lock">
                     <i *ngIf="i.locked" (click)="gearService.setLock(player, i, false)" class="fas fa-lock-alt"></i>
                     <i *ngIf="!i.locked && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle)"
@@ -267,6 +269,9 @@
                     *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
                     (click)="copyToClipboard(i)">
                     <i class="fal fa-copy"></i> Copy for reddit
+                  </button>
+                  <button mat-menu-item *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
+                    <i class="fal fa-dice-d20"></i> Show random rolls
                   </button>
                 </mat-menu>
                 <span *ngIf="debugmode|async">[{{i.hash}}]</span>
@@ -317,13 +322,22 @@
                 <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
                 </ng-container>
                 <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket}}]</ng-container>
+                <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
+                  <div class="vertical-pad">
+                    <button mat-stroked-button *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)"><i
+                        class="fal fa-dice-d20"></i> Possible rolls</button>
+                  </div>
+                  <div *ngIf="i.noGodRollInfo" class="simple-caption-no-margin vertical-pad">
+                    No godroll info yet
+                  </div>
+                </ng-container>
+
+
               </td>
-              <td class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Armor">
+              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
                 {{i.energyCapacity}}
               </td>
-              <td class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Armor">
+              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
                 {{i.totalStatPoints}}
               </td>
               <td class="limited-gear-width hide-mobile-table-cell"
