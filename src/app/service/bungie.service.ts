@@ -631,7 +631,6 @@ export class BungieService implements OnDestroy {
                 }
             }
         }
-        console.dir(powerfulBounties);
         // no powerful bounties avail
         if (powerfulBounties.length ==0) {
             const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true);
