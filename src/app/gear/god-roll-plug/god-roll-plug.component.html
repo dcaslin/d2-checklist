@@ -7,4 +7,6 @@
 <i *ngIf="plug.targetArmorPerk" class="fas fa-bullseye-pointer perk" 
 [class.accent-text]="!plug.alreadyEquipped"
 [class.already-equipped]="plug.alreadyEquipped"></i>
-{{plug.name}} <ng-container *ngIf="debugmode">[{{plug.hash}}]</ng-container>
+{{plug.name}} <ng-container *ngIf="debugmode"> {{plug.hash}} 
+    <button mat-icon-button (click)="copyToClipboard()"><i class="far fa-copy"></i></button>
+</ng-container>

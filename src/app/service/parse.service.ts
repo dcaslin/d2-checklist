@@ -2793,7 +2793,7 @@ export class ParseService {
                     && type !== ItemType.Chalice) {
                     return null;
                 }
-            } else {                
+            } else {
                 if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
                     // mods we use the perk desc
@@ -2992,6 +2992,7 @@ export class ParseService {
                                 const socketDesc = desc.sockets.socketEntries[index];
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
+                                const possiblePlugs: InventoryPlug[] = [];
 
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
                                 if (socketVal.reusablePlugs != null) {
@@ -3047,7 +3048,21 @@ export class ParseService {
                                     plugs.push(oPlug);
                                 }
                                 if (plugs.length > 0) {
-                                    sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs));
+                                    sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs, possiblePlugs));
+                                }
+                                if (socketDesc.randomizedPlugSetHash) {
+                                    const randomRollsDesc: any = this.destinyCacheService.cache.PlugSet[socketDesc.randomizedPlugSetHash];
+                                    if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
+                                        for (const option of randomRollsDesc.reusablePlugItems) {
+                                            const plugDesc: any = this.destinyCacheService.cache.InventoryItem[option.plugItemHash];
+                                            const name = this.getPlugName(plugDesc);
+                                            if (name == null) { continue; }
+                                            const oPlug = new InventoryPlug(plugDesc.hash,
+                                                name, plugDesc.displayProperties.description,
+                                                plugDesc.displayProperties.icon, false);
+                                            possiblePlugs.push(oPlug);
+                                        }
+                                    }
                                 }
                             }
                         }

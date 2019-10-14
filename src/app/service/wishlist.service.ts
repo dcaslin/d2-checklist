@@ -97,6 +97,18 @@ export class WishlistService implements OnDestroy {
                   break;
                 }
               }
+              for (const p of s.possiblePlugs) {
+                if (+p.hash == desiredPerk) {
+                  p.godRoll = true;
+                  if (isPvp) {
+                    p.godRollPvp = true;
+                  }
+                  if (isPve) {
+                    p.godRollPve = true;
+                  }
+                  break;
+                }
+              }
               if (perkFound == true) { break; }
             }
             if (!perkFound) {
@@ -117,8 +129,8 @@ export class WishlistService implements OnDestroy {
               i.godRollPvp = true;
             }
           }
-        }
-
+        } 
+        
         // check if the right stuff is selected and handle tooltips
         for (const s of i.sockets) {
           let godPerkFound = false;
@@ -142,6 +154,9 @@ export class WishlistService implements OnDestroy {
             i.searchText = i.searchText + ' fixme';
           }
         }
+      } else {
+        i.noGodRollInfo = true;
+        i.searchText = i.searchText + ' nodata';
       }
     }
   }

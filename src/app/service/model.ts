@@ -630,6 +630,7 @@ export class InventoryItem {
     public godRoll = false;
     public godRollPve = false;
     public godRollPvp = false;
+    public noGodRollInfo = false;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -1218,10 +1219,12 @@ export class InventoryStat {
 export class InventorySocket {
     readonly socketCategoryHash: string;
     readonly plugs: InventoryPlug[];
+    readonly possiblePlugs: InventoryPlug[];
 
-    constructor(socketCategoryHash: string, plugs: InventoryPlug[]) {
+    constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[]) {
         this.socketCategoryHash = socketCategoryHash;
         this.plugs = plugs;
+        this.possiblePlugs = possiblePlugs;
     }
 
 }

@@ -14,6 +14,7 @@ import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
+import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
 
 
 @Component({
@@ -163,6 +164,19 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       toggle.selectAll(true);
     }
     this.filterChanged();
+
+  }
+
+  showPossibleRolls(i: InventoryItem) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    // dc.autoFocus = true;
+    // dc.width = '1000px';
+    dc.data = {
+      parent: this,
+      item: i
+    };
+    this.dialog.open(PossibleRollsDialogComponent, dc);
 
   }
 
