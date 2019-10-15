@@ -1248,6 +1248,7 @@ export class InventoryPlug {
     public targetArmorPerk = false;
     public alreadyEquipped = false;
     public desc: string;
+    public selectedPossible = false; // used for possible roll screen only
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean, enabled?: boolean, objectives?: ItemObjective[]) {
         this.hash = hash;
