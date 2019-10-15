@@ -4,23 +4,21 @@
         class="simple-caption-no-margin">Possible random rolls</span>
 </div>
 <mat-dialog-content>
-    <table class="gear-table mark-table">
-        <tbody>
-            <tr>
-                <td>
-                    <ng-container *ngFor="let socket of item.sockets; last as isLastSocket">
-                        <div *ngIf="socket.possiblePlugs!=null && socket.possiblePlugs.length>0" [class.bottom]="!isLastSocket">
-                            <span *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc"
-                            class="not-selected-plug"
-                                matTooltipClass="preserve-white-space">
-                                <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
-                                    [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
-                                <ng-container *ngIf="!isLastPlug">|</ng-container>
-                            </span>
-                        </div>
-                    </ng-container>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <ng-container *ngFor="let socket of item.sockets; last as isLastSocket">
+        <div *ngIf="socket.possiblePlugs!=null && socket.possiblePlugs.length>0" [class.bottom]="!isLastSocket">
+            <span *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc"
+                class="not-selected-plug" matTooltipClass="preserve-white-space">
+                <mat-checkbox [(ngModel)]="plug.selectedPossible" (change)="generateString()" style="margin-left: 5px">
+                    <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
+                        [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
+                </mat-checkbox>
+            </span>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="godrolls.length>0">
+        <hr>
+        <button mat-button (click)="copyToClipboard()"><i class="far fa-copy"></i> Copy Gist Text </button>
+        <div *ngFor="let g of godrolls">{{g}}</div>
+    </ng-container>
+    
 </mat-dialog-content>
