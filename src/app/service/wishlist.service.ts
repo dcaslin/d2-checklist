@@ -1,9 +1,9 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject, } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { DestinyCacheService } from './destiny-cache.service';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
-import { DestinyCacheService } from './destiny-cache.service';
 
 @Injectable()
 export class WishlistService implements OnDestroy {
@@ -129,8 +129,8 @@ export class WishlistService implements OnDestroy {
               i.godRollPvp = true;
             }
           }
-        } 
-        
+        }
+
         // check if the right stuff is selected and handle tooltips
         for (const s of i.sockets) {
           let godPerkFound = false;
@@ -156,7 +156,9 @@ export class WishlistService implements OnDestroy {
         }
       } else {
         i.noGodRollInfo = true;
-        i.searchText = i.searchText + ' nodata';
+        if (i.isRandomRoll && i.tier == 'Legendary') {
+          i.searchText = i.searchText + ' nodata';
+        }
       }
     }
   }
