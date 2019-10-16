@@ -11,7 +11,7 @@
             <div class="d-none d-md-block d-lg-none">Screen: MD</div>
             <div class="d-none d-lg-block d-xl-none">Screen: LG</div>
             <div class="d-none d-xl-block">Screen: XL</div>
-          </div>          
+          </div>
           <div class="searchRow">
             <mat-form-field class="searchField searchPlatform">
               <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
@@ -47,7 +47,7 @@
         </div>
         <div class="grid-parent" *ngIf="today!=null" width="100%">
           <div *ngIf="today.missions!=null && today.missions.length>0">
-            <mat-card >
+            <mat-card>
               <mat-card-header>
                 <mat-card-title>
                   <a href="https://www.reddit.com/r/DestinyTheGame/comments/9t16yz/list_of_heroic_story_missions_from_fastest_to/"
@@ -101,6 +101,15 @@
                 <mat-card-title><i class="icon-flashpoint lighter"></i> Flashpoint: {{today.flashpoint}}
                 </mat-card-title>
               </mat-card-header>
+              <mat-card-content>
+                <mat-list>
+                  <mat-list-item>
+                    <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
+                      How to make every Public Event Heroic <i class="accent-text fas fa-info-circle"></i></a>
+                  </mat-list-item>
+                </mat-list>
+
+              </mat-card-content>
             </mat-card>
             <mat-card>
               <mat-card-header>
@@ -163,7 +172,7 @@
               </mat-card-content>
             </mat-card>
           </div>
-         
+
 
           <div *ngIf="today.week!=null">
             <mat-card>
