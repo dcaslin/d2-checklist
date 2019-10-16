@@ -496,7 +496,7 @@ export class Player {
     readonly hasHiddenClosest: boolean;
     readonly accountProgressions: Progression[];
     readonly glory: Progression;
-    readonly seasonRank: number;
+    readonly seasonRank: Progression;
     readonly valor: Progression;
     readonly infamy: Progression;
     readonly artifactPowerBonus: number;
@@ -564,7 +564,7 @@ export class Player {
                 } else if (ap.hash == '2000925172') {
                     this.glory = ap;
                 }  else if (ap.hash == '1628407317') {
-                    this.seasonRank = ap.level;
+                    this.seasonRank = ap;
                 }
             }
         }
@@ -572,13 +572,7 @@ export class Player {
     }
 
     public getWeeklyXp(): number {
-        let sum = 0;
-        if (this.characters != null) {
-            for (const char of this.characters) {
-                sum += char.getWeeklyXp();
-            }
-        }
-        return sum;
+        return this.seasonRank ? this.seasonRank.weeklyProgress : 0;
     }
 }
 
@@ -791,8 +785,6 @@ export class Character extends Target {
     race: string;
     gender: string;
     classType: number;
-    levelProgression: LevelProgression;
-    legendProgression: Progression;
     wellRested = false;
     currentActivity: CurrentActivity;
     milestones: { [key: string]: MilestoneStatus };
@@ -826,19 +818,6 @@ export class Character extends Target {
         this.light = light;
 
     }
-
-    public getWeeklyXp(): number {
-        let sum = 0;
-        if (this.legendProgression != null) {
-            sum += this.legendProgression.weeklyProgress;
-        }
-        if (this.levelProgression != null) {
-
-            sum += this.levelProgression.weeklyProgress;
-        }
-        return sum;
-    }
-
 }
 
 export class Nightfall {
@@ -911,20 +890,6 @@ export interface ClanMilestoneResult {
     name: string;
     earned: boolean;
     redeemed: boolean;
-}
-
-export interface LevelProgression {
-    progressionHash: number;
-    dailyProgress: number;
-    dailyLimit: number;
-    weeklyProgress: number;
-    weeklyLimit: number;
-    currentProgress: number;
-    level: number;
-    levelCap: number;
-    stepIndex: number;
-    progressToNextLevel: number;
-    nextLevelAt: number;
 }
 
 export class PGCR {

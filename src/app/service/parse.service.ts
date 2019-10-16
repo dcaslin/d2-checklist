@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LevelProgression, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -30,9 +30,6 @@ export class ParseService {
 
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
-        char.levelProgression = c.levelProgression;
-        char.baseCharacterLevel = c.baseCharacterLevel;
-        char.percentToNextLevel = c.percentToNextLevel / 100;
         char.title = '';
         if (c.titleRecordHash != null) {
             const rDesc = this.destinyCacheService.cache.Record[c.titleRecordHash];
@@ -370,13 +367,7 @@ export class ParseService {
         // only progression we care about right now are Legend, Glory, Valor, and Season Pass
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
-                // legend
-                if (key === '2030054750') {
-                    const p: PrivProgression = _prog.progressions[key];
-                    const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Progression[p.progressionHash]);
-                    c.legendProgression = prog;
-                    c.wellRested = prog.nextLevelAt * 3 > prog.weeklyProgress;
-                } else if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '1628407317') {
+                if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '1628407317') {
                     const p: PrivProgression = _prog.progressions[key];
                     let suppProg: PrivProgression = null;
                     if (key === '2626549951') { // VALOR
@@ -3653,9 +3644,6 @@ interface PrivCharacter {
     emblemPath: string;
     emblemBackgroundPath: string;
     emblemHash: number;
-    levelProgression: LevelProgression;
-    baseCharacterLevel: number;
-    percentToNextLevel: number;
     titleRecordHash: number;
 }
 
