@@ -234,7 +234,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public iconService: IconService,
     public markService: MarkService,
     public gearService: GearService,
-    private wishlistSerivce: WishlistService,
+    private wishlistService: WishlistService,
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
     public dialog: MatDialog,
@@ -290,14 +290,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     let reloadMe = false;
     if (newPveVal != this.wishlistOverridePveUrl) {
-      const tempRolls = await this.wishlistSerivce.loadSingle('testPve', newPveVal, null);
+      const tempRolls = await this.wishlistService.loadSingle('testPve', newPveVal, null);
       if (tempRolls.length > 0) {
         localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY, newPveVal);
         reloadMe = true;
       }
     }
     if (newPvpVal != this.wishlistOverridePvpUrl) {
-      const tempRolls = await this.wishlistSerivce.loadSingle('testPvp', newPvpVal, null);
+      const tempRolls = await this.wishlistService.loadSingle('testPvp', newPvpVal, null);
       if (tempRolls.length > 0) {
         localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY, newPvpVal);
         reloadMe = true;
@@ -767,9 +767,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadWishlist() {
-    await this.wishlistSerivce.init(this.wishlistOverridePveUrl, this.wishlistOverridePvpUrl);
+    await this.wishlistService.init(this.wishlistOverridePveUrl, this.wishlistOverridePvpUrl);
     if (this.player != null) {
-      this.wishlistSerivce.processItems(this.player.gear);
+      this.wishlistService.processItems(this.player.gear);
     }
     this.filterChanged();
   }

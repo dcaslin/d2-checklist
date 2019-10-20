@@ -1134,31 +1134,36 @@ export class Const {
             level: Const.UNKNOWN_BOOST,
             min: 0,
             max: 1,
-            softCap: 900
+            softCap: 900,
+            hardCap: 950
         },
         {
             level: Const.NO_BOOST,
             min: -3,
             max: 0,
-            softCap: 900
+            softCap: 900,
+            hardCap: 950
         },
         {
             level: Const.LOW_BOOST,
             min: 3,
             max: 3,
-            softCap: 950
+            softCap: 950,
+            hardCap: 950
         },
         {
             level: Const.MID_BOOST,
             min: 4,
             max: 4,
-            softCap: 950
+            softCap: 950,
+            hardCap: 950
         },
         {
             level: Const.HIGH_BOOST,
             min: 5,
             max: 5,
-            softCap: 960
+            softCap: 950,
+            hardCap: 960
         }
     ];
 }
@@ -1168,6 +1173,7 @@ export interface DropInfo {
     min: number;
     max: number;
     softCap: number;
+    hardCap: number;
 }
 
 export class InventoryStat {
