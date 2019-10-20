@@ -9,6 +9,8 @@ import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
 import { BehaviorSubject } from 'rxjs';
+import * as moment from 'moment';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-player',
@@ -17,7 +19,9 @@ import { BehaviorSubject } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
+  public today =  moment(new Date());
   public const: Const = Const;
+  public PLATFORMS_DICT = Const.PLATFORMS_DICT;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
 
 
@@ -25,6 +29,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   reckBurns: NameDesc[] = [];
 
   constructor(public bungieService: BungieService,
+    public iconService: IconService,
     storageService: StorageService,
     private route: ActivatedRoute, private router: Router,
     public dialog: MatDialog,
