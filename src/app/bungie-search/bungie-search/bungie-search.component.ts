@@ -7,6 +7,7 @@ import { BungieService } from '../../service/bungie.service';
 import { BungieMember, BungieMemberPlatform } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
   public accounts: BehaviorSubject<BungieMember[]> = new BehaviorSubject(null);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    public iconService: IconService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);

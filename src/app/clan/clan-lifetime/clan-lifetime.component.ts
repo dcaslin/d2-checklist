@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material';
 import { ClanLifetimeDialogComponent } from './clan-lifetime-dialog/clan-lifetime-dialog.component';
 import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dialog/clan-user-list-dialog.component';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-lifetime',
@@ -16,6 +17,7 @@ import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dia
 export class ClanLifetimeComponent extends ChildComponent implements OnInit {
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     public state: ClanStateService,
     public dialog: MatDialog) {
     super(storageService);

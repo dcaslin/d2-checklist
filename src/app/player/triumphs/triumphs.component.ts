@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../player-state.service';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-triumphs',
@@ -11,8 +12,9 @@ import { PlayerStateService } from '../player-state.service';
 })
 export class TriumphsComponent extends ChildComponent implements OnInit {
 
-  constructor(
+  constructor(    
     storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService) {
     super(storageService);
   }

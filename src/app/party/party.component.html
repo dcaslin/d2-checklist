@@ -74,12 +74,12 @@
                                             <td colspan="4">
                                                 {{p.searchResult.displayName}}
                                                 <ng-container *ngIf="p.errMsg == null">
-                                                    <i class="far fa-spinner fa-pulse fa-fw"></i>
+                                                    <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
                                                 </ng-container>
                                                 <ng-container *ngIf="p.errMsg != null">
                                                     <a style="margin-left:0.25em" href="javascript:void(0)"
                                                         (click)="loadPlayer(player.profile.userInfo.membershipType, p)">
-                                                        &ensp;<i class="fas fa-sync"></i>
+                                                        &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
                                                     </a>
                                                     <div class='simple-warn-caption'>{{p.errMsg}}</div>
                                                 </ng-container>

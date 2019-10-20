@@ -24,10 +24,10 @@
             <mat-select [(ngModel)]="state.selectedPlatform" placeholder="Platform"
                 (selectionChange)="state.selectedPlatformChange()">
                 <mat-select-trigger>
-                    <i [ngClass]="state.selectedPlatform.iconClass"></i>&ensp;{{state.selectedPlatform.name }}
+                    <fa-icon [icon]="state.selectedPlatform.icon"></fa-icon>&ensp;{{state.selectedPlatform.name }}
                 </mat-select-trigger>
                 <mat-option *ngFor="let p of state.platforms" [value]="p">
-                    <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                    <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
                 </mat-option>
             </mat-select>
         </mat-form-field>

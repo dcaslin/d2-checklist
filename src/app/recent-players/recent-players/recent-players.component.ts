@@ -6,6 +6,7 @@ import { BungieService } from '../../service/bungie.service';
 import { Activity, ActivityMode, BungieNetUserInfo, Const, PGCR, PGCREntry, Player } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-history',
@@ -34,6 +35,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    public iconService: IconService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);

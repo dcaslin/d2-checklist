@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core
 import { InventoryPlug } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-god-roll-plug',
@@ -21,6 +22,7 @@ export class GodRollPlugComponent implements OnInit {
   debugmode: boolean;
 
   constructor(
+    public iconService: IconService,
     private clipboardService: ClipboardService,
     private notificationService: NotificationService) { }
 

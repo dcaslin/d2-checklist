@@ -15,6 +15,7 @@ import { ChildComponent } from '../../shared/child.component';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
+import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -230,6 +231,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    public iconService: IconService,
     public markService: MarkService,
     public gearService: GearService,
     private wishlistSerivce: WishlistService,
@@ -940,6 +942,7 @@ export class GearDetailsDialogComponent {
   items: InventoryItem[];
   parent: GearComponent;
   constructor(
+    public iconService: IconService,
     public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.items = data.items;
@@ -997,6 +1000,7 @@ export class ArmorPerksDialogComponent {
   WishlistService = WishlistService;
   TargetPerkService = TargetPerkService;
   constructor(
+    public iconService: IconService,
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
@@ -1015,6 +1019,7 @@ export class GearUtilitiesDialogComponent {
   tempWishlistPvpOverrideUrl: string;
   WishlistService = WishlistService;
   constructor(
+    public iconService: IconService,
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
@@ -1030,6 +1035,7 @@ export class GearUtilitiesDialogComponent {
 })
 export class BulkOperationsHelpDialogComponent {
   constructor(
+    public iconService: IconService,
     public dialogRef: MatDialogRef<BulkOperationsHelpDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }
@@ -1044,6 +1050,8 @@ export class BulkOperationsHelpDialogComponent {
 export class GearHelpDialogComponent {
 
   constructor(
+    
+    public iconService: IconService,
     public dialogRef: MatDialogRef<GearHelpDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
   }

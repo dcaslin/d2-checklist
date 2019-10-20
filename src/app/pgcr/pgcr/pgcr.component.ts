@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
   public pgcr: BehaviorSubject<PGCR[]> = new BehaviorSubject([]);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    public iconService: IconService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
   }

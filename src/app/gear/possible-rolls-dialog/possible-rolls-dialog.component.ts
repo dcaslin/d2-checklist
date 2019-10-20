@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatCheckboxChange } from '@angular/mater
 import { GearComponent } from '../gear/gear.component';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-possible-rolls-dialog',
@@ -17,6 +18,7 @@ export class PossibleRollsDialogComponent implements OnInit {
   parent: GearComponent;
   godrolls: string[] = [];
   constructor(
+    public iconService: IconService,
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
     public dialogRef: MatDialogRef<PossibleRollsDialogComponent>,
@@ -57,7 +59,7 @@ export class PossibleRollsDialogComponent implements OnInit {
   }
 
 
-  private generateString() {
+  public generateString() {
     const chosenPlugs: InventoryPlug[][] = [];
     for (const s of this.item.sockets) {
       const selected = [];

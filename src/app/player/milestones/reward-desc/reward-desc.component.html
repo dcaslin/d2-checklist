@@ -8,8 +8,8 @@
     <ng-template #diff>
       <ng-container *ngIf="Const.BOOSTS[pl].min>0">+</ng-container>{{Const.BOOSTS[pl].min}} to 
       <ng-container *ngIf="Const.BOOSTS[pl].max>0">+</ng-container>{{Const.BOOSTS[pl].max}}  
-    </ng-template>
-    <i *ngIf="sort=='rewardsDesc'" class="fal fa-sort-down"></i>
-    <i *ngIf="sort=='rewardsAsc'" class="fal fa-sort-up"></i>
+    </ng-template>    
+    <fa-icon *ngIf="sort=='rewardsDesc'" [icon]="iconService.falSortDown"></fa-icon>    
+    <fa-icon *ngIf="sort=='rewardsAsc'" [icon]="iconService.falSortUp"></fa-icon>    
   </a>
 </span>

@@ -14,20 +14,20 @@
                         {{i.power}}
                         <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                         <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
-                            <i class="fas fa-ellipsis-v"></i>
+                            <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
                         </a>
                         <mat-menu #itemMenu="matMenu">
                             <button mat-menu-item *ngIf="i.postmaster"
                                 (click)="parent.pullFromPostmaster(parent.player, i)">
-                                <i class="fal fa-envelope-open"></i> Pull from postmaster
+                                <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
                             </button>
                             <ng-container *ngIf="!i.postmaster">
                                 <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(parent.player, i)">
-                                    <i class="fal fa-tshirt"></i> Equip on {{i.owner.label}}
+                                        <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{i.owner.label}}
                                 </button>
                                 <button mat-menu-item *ngFor="let target of i.options"
                                     (click)="parent.transfer(parent.player, i, target)">
-                                    <i class="fal fa-exchange"></i> Transfer to {{target.label}}
+                                    <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
                                 </button>
                             </ng-container>
                         </mat-menu>
@@ -42,18 +42,18 @@
                         <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
                             [matMenuTriggerFor]="menu">
                             <ng-container *ngIf="i.mark==null">
-                                <i class="fas fa-tags"></i>&ensp;
+                                <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;
                                 Unmarked
                             </ng-container>
                             <ng-container *ngIf="i.mark!=null">
-                                <i [class]="parent.markService.markDict[i.mark].iconClass"></i>&ensp;
+                                <fa-icon [icon]="parent.markService.markDict[i.mark].icon"></fa-icon>&ensp;
                                 {{i.markLabel}}
                             </ng-container>
                         </button>
                         <mat-menu #menu="matMenu">
                             <ng-container *ngFor="let mc of parent.markService.markChoices">
                                 <button *ngIf="mc.value!=i.mark" mat-menu-item (click)="parent.mark(mc.value,i)">
-                                    <i [class]="mc.iconClass"></i>&ensp;
+                                    <fa-icon [icon]="mc.icon"></fa-icon>&ensp;
                                     {{mc.label}}
                                 </button>
                             </ng-container>

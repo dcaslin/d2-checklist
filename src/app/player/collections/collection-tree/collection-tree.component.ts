@@ -9,6 +9,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { Observable, of as observableOf } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { IconService } from '@app/service/icon.service';
 
 
 export class TriumphFlatNode {
@@ -29,6 +30,7 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit, A
   treeFlattener2: MatTreeFlattener<TriumphNode, TriumphFlatNode>;
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService,
     public location: Location,
     private route: ActivatedRoute) {

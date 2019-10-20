@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -8,6 +9,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CollectionsComponent {
-  constructor() {
+  constructor(public iconService: IconService) {
   }
 }

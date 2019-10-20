@@ -1,22 +1,22 @@
 
-import { filter, takeUntil } from 'rxjs/operators';
-import { Component, HostBinding, OnDestroy, OnInit, Inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Subject, BehaviorSubject } from 'rxjs';
-
-
-
-import { MatSnackBar, MatDialogConfig, MAT_SNACK_BAR_DATA } from '@angular/material';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from '@angular/material';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { AuthGuard } from '@app/app-routing.module';
 import { environment as env } from '@env/environment';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+import { AuthService } from './service/auth.service';
+import { BungieService } from './service/bungie.service';
+import { DestinyCacheService } from './service/destiny-cache.service';
+import { IconService } from './service/icon.service';
+import { ClanRow, Const, SelectedUser, UserInfo } from './service/model';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
-import { BungieService } from './service/bungie.service';
-import { SelectedUser, ClanRow, UserInfo, Const } from './service/model';
-import { AuthService } from './service/auth.service';
-import { DestinyCacheService } from './service/destiny-cache.service';
-import { AuthGuard } from '@app/app-routing.module';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+
+
 
 
 @Component({
@@ -61,6 +61,7 @@ export class WarnSnackbarComponent {
 })
 export class SelectPlatformDialogComponent {
   public const: Const = Const;
+  public PLATFORMS_DICT = Const.PLATFORMS_DICT;
   newMessage = '';
   constructor(
     public dialogRef: MatDialogRef<SelectPlatformDialogComponent>,
@@ -89,6 +90,8 @@ export class AppComponent implements OnInit, OnDestroy {
   readonly logo = require('../assets/logo.svg');
 
   public readonly const: Const = Const;
+  public PLATFORMS_DICT = Const.PLATFORMS_DICT;
+
 
   disableads: boolean; // for GA
 
@@ -99,6 +102,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     public authGuard: AuthGuard,
+    public iconService: IconService,
     private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
     public bungieService: BungieService,

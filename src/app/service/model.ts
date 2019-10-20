@@ -1,3 +1,6 @@
+import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
+import { faUsers } from '@fortawesome/free-solid-svg-icons';
+import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 import { BehaviorSubject } from 'rxjs';
 
 export enum ClassAllowed {
@@ -563,7 +566,7 @@ export class Player {
                     this.infamy = ap;
                 } else if (ap.hash == '2000925172') {
                     this.glory = ap;
-                }  else if (ap.hash == '1628407317') {
+                } else if (ap.hash == '1628407317') {
                     this.seasonRank = ap;
                 }
             }
@@ -1017,13 +1020,13 @@ export class Platform {
     name: string;
     type: number;
     desc: string;
-    iconClass: string;
+    icon: IconDefinition;
 
-    constructor(type: number, name: string, desc: string, iconClass: string) {
+    constructor(type: number, name: string, desc: string, icon: IconDefinition) {
         this.type = type;
         this.name = name;
         this.desc = desc;
-        this.iconClass = iconClass;
+        this.icon = icon;
     }
 }
 
@@ -1099,12 +1102,12 @@ export interface PvpStreak {
 
 export class Const {
     // used for clan filter
-    public static readonly ALL_PLATFORM = new Platform(0, 'ALL', 'All', 'fas fa-users');
-    public static readonly XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', 'fab fa-xbox');
-    public static readonly PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', 'fab fa-playstation');
-    public static readonly STEAM_PLATFORM = new Platform(3, 'STEAM', 'Steam', 'fab fa-steam');
-    public static readonly BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', 'fab fa-windows');
-    public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', 'fab fa-google');
+    public static readonly ALL_PLATFORM = new Platform(0, 'ALL', 'All', faUsers);
+    public static readonly XBL_PLATFORM = new Platform(1, 'XBL', 'Xbox', faXbox);
+    public static readonly PSN_PLATFORM = new Platform(2, 'PSN', 'Playstation', faPlaystation);
+    public static readonly STEAM_PLATFORM = new Platform(3, 'STEAM', 'Steam', faSteam);
+    public static readonly BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', faWindows);
+    public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', faGoogle);
 
     public static readonly PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.STEAM_PLATFORM, Const.BNET_PLATFORM, Const.STADIA_PLATFORM

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Const } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-reward-desc',
@@ -17,7 +18,7 @@ export class RewardDescComponent implements OnInit {
 
   @Output() sortClick = new EventEmitter<void>();
 
-  constructor() { }
+  constructor(public iconService: IconService) { }
 
   ngOnInit() {
   }

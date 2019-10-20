@@ -4,6 +4,7 @@ import { NotificationService } from '@app/service/notification.service';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-settings',
@@ -33,6 +34,7 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
   ];
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     private notificationService: NotificationService
     ) {
     super(storageService);

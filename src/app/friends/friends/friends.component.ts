@@ -6,6 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { IconService } from '@app/service/icon.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -15,11 +17,12 @@ import { ChildComponent } from '../../shared/child.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FriendsComponent extends ChildComponent implements OnInit {
+  public today =  moment(new Date());
   public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject([]);
   modelPlayer: Player;
   playerCntr: 0;
 
-  constructor(storageService: StorageService, private bungieService: BungieService,
+  constructor(storageService: StorageService, private bungieService: BungieService, public iconService: IconService,
     private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);
@@ -40,7 +43,7 @@ export class FriendsComponent extends ChildComponent implements OnInit {
         });
   }
 
-  private async loadPlayer(friend: FriendListEntry): Promise<void> {
+  public  async loadPlayer(friend: FriendListEntry): Promise<void> {
     const x = await this.bungieService.getChars(friend.user.membershipType, friend.user.membershipId,
       ['Profiles', 'Characters', 'CharacterProgressions', 'Records'], true);
     if (this.modelPlayer == null && x != null && x.characters != null) {

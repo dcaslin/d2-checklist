@@ -10,6 +10,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { Observable, of as observableOf } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-triumph-tree',
@@ -24,6 +25,7 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
   recordDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService,
     public location: Location,
     private route: ActivatedRoute) {

@@ -2,21 +2,25 @@
 
     <div class="mobile-button-row">
         <button mat-button (click)="showAllClanMilestones()" *ngIf="(hiddenClanMilestones|async).length>0">
-            <i class="fal fa-eye"></i> All
+            <fa-icon [icon]="iconService.falEye"></fa-icon> All
         </button>
         <button mat-button (click)="showDefaultClanMilestones()"
             *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
-            <i class="fal fa-eye"></i> Default
+            <fa-icon [icon]="iconService.falEye"></fa-icon> Default
         </button>
     </div>
     <div class="mobile-button-row">
         <button mat-button (click)="state.toggleSort('name')">Sort Name
-            <i *ngIf="sort=='memberDesc'" class="fas fa-sort-up"></i>
-            <i *ngIf="sort=='memberAsc'" class="fas fa-sort-down"></i>
+            <ng-container *ngIf="state.sort && state.sort.name=='member'">
+                <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
+                <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
+            </ng-container>
         </button>
         <button mat-button (click)="state.toggleSort('date')">Sort Last Played
-            <i *ngIf="sort=='dateDesc'" class="fas fa-sort-up"></i>
-            <i *ngIf="sort=='dateAsc'" class="fas fa-sort-down"></i>
+            <ng-container *ngIf="state.sort && state.sort.name=='date'">
+                <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
+                <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
+            </ng-container>
         </button>
     </div>
     <table class="responsive-table clan-table">
@@ -31,7 +35,7 @@
                         <a href="javascript:void(0)"
                             matTooltip="Hide this milestone, click Show All to restore it later"
                             class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
-                            <i class="fal fa-eye-slash"></i>
+                            <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                         </a>
                     </th>
                 </ng-container>
@@ -47,10 +51,10 @@
                         [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
                         (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
                         href="javascript:void(0)">
-                        <i style="font-weight: normal !important" class="far fa-heart"></i>
+                        <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
                     </a>
-                    <a style="margin-left:0.25em" href="javascript:void(0)" (click)="loadSpecificPlayer(member, true)">
-                        &ensp;<i class="fas fa-sync"></i>
+                    <a style="margin-left:0.25em" href="javascript:void(0)" (click)="state.loadSpecificPlayer(member, true)">
+                        &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
                     </a>
                     <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
                         {{member.player.title}}
@@ -102,7 +106,7 @@
                             <a href="javascript:void(0)"
                                 matTooltip="Hide this milestone, click Show All to restore it later"
                                 class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
-                                <i class="fal fa-eye-slash"></i>
+                                <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                             </a>
                         </th>
                     </ng-container>
@@ -116,7 +120,9 @@
 </ng-container>
 
 <ng-template #loadingModel>
-    <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+    <h1>
+        <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
+    </h1>
 </ng-template>
 <br>
 
@@ -127,7 +133,8 @@
             you're a clan leader trying to see when someone last played, trust the "Last Played" column even if
             some
             weekly milestones appear to be completed.</li>
-        <li>Milestones with this icon <i class="fa far fa-minus-square"></i> denote players that are not yet max
+        <li>Milestones with this icon <fa-icon [icon]="iconService.farMinusSquare"></fa-icon> denote players that are
+            not yet max
             level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
     </ul>
 </div>
@@ -136,18 +143,18 @@
     <th>
         <a href="javascript:void(0)" (click)="state.toggleSort('member')">Member
             <ng-container *ngIf="state.sort && state.sort.name=='member'">
-                <i *ngIf="state.sort.ascending" class="fas fa-sort-up"></i>
-                <i *ngIf="!state.sort.ascending" class="fas fa-sort-down"></i>
+                <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
+                <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
         </a>
         <div class="d-none d-md-inline">
             <button class="d-none d-md-inline" mat-button (click)="showAllClanMilestones()"
                 *ngIf="(hiddenClanMilestones|async).length>0">
-                <i class="fal fa-eye"></i> All
+                <fa-icon [icon]="iconService.falEye"></fa-icon> All
             </button>
             <button class="d-none d-md-inline" mat-button (click)="showDefaultClanMilestones()"
                 *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
-                <i class="fal fa-eye"></i> Default
+                <fa-icon [icon]="iconService.falEye"></fa-icon> Default
             </button>
         </div>
 

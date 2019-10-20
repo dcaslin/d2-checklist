@@ -25,7 +25,7 @@
           <mat-icon>home</mat-icon>&ensp;Home
         </a>
         <a mat-list-item (click)="sidenav.close()" routerLink="gear" routerLinkActive="active">
-          <i class="fas fa-bow-arrow"></i>&ensp;Gear
+          <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>&ensp;Gear
         </a>
         <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
           <mat-icon>favorite</mat-icon>&ensp;Friends
@@ -72,7 +72,7 @@
               <span class="d-none d-xl-inline"> Home</span>
             </button>
             <button mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
-              <i class="fas fa-bow-arrow"></i>
+              <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>
               <span class="d-none d-xl-inline"> Gear</span>
             </button>
             <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
@@ -116,7 +116,7 @@
               *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.destinyMemberships.length>1">
               <button mat-menu-item *ngFor="let avail of (signedOnUser|async).membership.destinyMemberships"
                 [disabled]="avail == (signedOnUser|async).userInfo" (click)="selectUser(avail)">
-                <i [ngClass]="const.PLATFORMS_DICT[avail.membershipType+''].iconClass"></i><span
+                <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon><span
                   style="margin-left: 1em">{{avail.platformName}}</span>
               </button>
             </ng-container>
@@ -161,8 +161,8 @@
 
           <button mat-button class="d-none d-md-inline nav-button" 
             [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"          
-            *ngIf="(signedOnUser|async)!=null">
-            <i [ngClass]="const.PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].iconClass"></i>
+            *ngIf="(signedOnUser|async)!=null">            
+            <fa-icon [icon]="PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].icon"></fa-icon>
             My Info
           </button>
 
@@ -219,25 +219,25 @@
       <div class="row">
         <div class="col-sm-12 links">
           <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">
-            <i class="fab fa-reddit fa-2x" aria-hidden="true"></i>
+            <fa-icon [icon]="iconService.fabReddit" size="2x"></fa-icon>            
             <span>Reddit</span>
           </a>
           <a href="https://github.com/dcaslin/d2-checklist/" target="_blank" rel="noopener">
-            <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+            <fa-icon [icon]="iconService.fabGithub" size="2x"></fa-icon>
             <span>Source</span>
           </a>
           <a href="https://twitter.com/DestinyChecklst" target="_blank" rel="noopener">
-            <i class="fab fa-twitter fa-2x" aria-hidden="true"></i>
+            <fa-icon [icon]="iconService.fabTwitter" size="2x"></fa-icon>
             <span>Twitter</span>
           </a>
 
           <a matTooltip="destinychecklistnet at gmail.com" matTooltipPosition="above">
-            <i class="fal fa-envelope fa-2x" aria-hidden="true"></i>
+              <fa-icon [icon]="iconService.falEnvelope" size="2x"></fa-icon>
             <span>Email</span>
           </a>
           <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank"
             rel="noopener">
-            <i class="fab fa-paypal fa-2x" aria-hidden="true"></i>
+            <fa-icon [icon]="iconService.fabPaypal" size="2x"></fa-icon>
             <span>Donate</span>
           </a>
         </div>

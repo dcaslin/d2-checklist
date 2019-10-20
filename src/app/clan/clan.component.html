@@ -4,32 +4,32 @@
 
       <h3 class="clan-name">
         <ng-container *ngIf="(state.info|async)!=null">Clan: {{(state.info|async).name}}</ng-container>
-        <ng-container *ngIf="(state.info|async)==null"><i class="far fa-spinner fa-pulse fa-fw"></i></ng-container>
+        <ng-container *ngIf="(state.info|async)==null"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></ng-container>
       </h3>
       <ng-container *ngIf="state.profilesLoaded|async as pct">
         <mat-progress-bar *ngIf="pct<1" mode="determinate" [value]="pct*100"></mat-progress-bar>
       </ng-container>
       <nav mat-tab-nav-bar>
         <a mat-tab-link routerLink="members" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
-          <i class="fas fa-users"></i><span class="d-none d-md-inline">&ensp;Members</span>
+          <fa-icon [icon]="iconService.fasUsers"></fa-icon><span class="d-none d-md-inline">&ensp;Members</span>
         </a>
         <a mat-tab-link routerLink="triumphs" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
-          <i class="fas fa-trophy"></i><span class="d-none d-md-inline">&ensp;Triumphs</span>
+            <fa-icon [icon]="iconService.fasTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
         </a>
         <a mat-tab-link routerLink="collections" routerLinkActive #rla9="routerLinkActive" [active]="rla9.isActive">
           <i class="icon-collections"></i><span class="d-none d-md-inline">&ensp;Collections</span>
         </a>
         <a mat-tab-link routerLink="milestones" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-          <i class="fas fa-flag"></i><span class="d-none d-md-inline">&ensp;Milestones</span>
+            <fa-icon [icon]="iconService.fasFlag"></fa-icon><span class="d-none d-md-inline">&ensp;Milestones</span>
         </a>
         <a mat-tab-link routerLink="info" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-          <i class="far fa-info-square"></i><span class="d-none d-md-inline">&ensp;Info</span>
+          <fa-icon [icon]="iconService.farInfoSquare"></fa-icon><span class="d-none d-md-inline">&ensp;Info</span>
         </a>
         <a mat-tab-link routerLink="lifetime" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
-          <i class="fas fa-sigma"></i><span class="d-none d-md-inline">&ensp;Lifetime</span>
+          <fa-icon [icon]="iconService.farSigma"></fa-icon><span class="d-none d-md-inline">&ensp;Lifetime</span>
         </a>
         <a mat-tab-link routerLink="settings" routerLinkActive #rla6="routerLinkActive" [active]="rla6.isActive">
-            <i class="fas fa-cog"></i><span class="d-none d-md-inline">&ensp;Settings</span>
+            <fa-icon [icon]="iconService.fasCog"></fa-icon><span class="d-none d-md-inline">&ensp;Settings</span>
           </a>
       </nav>
       <div class="body clan-body">

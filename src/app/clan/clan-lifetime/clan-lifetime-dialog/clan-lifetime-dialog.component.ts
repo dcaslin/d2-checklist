@@ -4,6 +4,7 @@ import { ClanSeal, ClanStateService, ClanAggHistoryEntry } from '@app/clan/clan-
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-lifetime-dialog',
@@ -28,8 +29,13 @@ export class ClanLifetimeDialogComponent extends ChildComponent implements OnIni
 
   }
 
+  public toInt(s: string): number {
+    return +s;
+  }
+
   constructor(
     storageService: StorageService,
+    public iconService: IconService, 
     public dialogRef: MatDialogRef<ClanLifetimeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public entry: ClanAggHistoryEntry) {
       super(storageService);

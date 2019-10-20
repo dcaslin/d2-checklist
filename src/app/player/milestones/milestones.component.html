@@ -24,20 +24,27 @@
     <thead>
       <tr>
         <th scope="col" style="width: 25%">Activity
-          <i *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'" class="fal fa-eye-slash"
-            matTooltip="Hide milestones where all chars are complete"></i>
-          <i *ngIf="hideCompleteChars=='ALL'" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
-            matTooltip="Stop hiding milestones where all chars are complete"></i>
+
+          <fa-icon *ngIf="'ALL'!=hideCompleteChars" [icon]="iconService.falEyeSlash"
+            matTooltip="Hide milestones where all chars are complete"></fa-icon>
+
+          <fa-icon *ngIf="hideCompleteChars=='ALL'" [icon]="iconService.falEye"
+            matTooltip="Hide milestones where all chars are complete" (click)="hideCompleteChars = null"
+            class="warn-text" matTooltip="Stop hiding milestones where all chars are complete"></fa-icon>
           <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null" href="javascript:void(0)"
             matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show
             all</a>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           {{char.className}} - {{char.light}} {{char.title}}
-          <i *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId"
-            class="fal fa-eye-slash" matTooltip="Hide milestones that this char has completed"></i>
-          <i *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null" class="warn-text fal fa-eye"
-            matTooltip="Stop hiding milestones that this char has completed"></i>
+
+          <fa-icon [icon]="iconService.falEyeSlash" *ngIf="char.characterId!=hideCompleteChars"
+            (click)="hideCompleteChars = char.characterId" matTooltip="Hide milestones that this char has completed">
+          </fa-icon>
+          <fa-icon [icon]="iconService.falEye" *ngIf="char.characterId==hideCompleteChars"
+            (click)="hideCompleteChars = null" class="warn-text"
+            matTooltip="Stop hiding milestones that this char has completed">
+          </fa-icon>
         </th>
       </tr>
     </thead>
@@ -48,22 +55,21 @@
             <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
               <a href="javascript:void(0)" (click)="sortByName()">
                 {{mileStoneName.name}} <span *ngIf="debugmode|async">PL({{mileStoneName.pl}})</span>
-                <i *ngIf="sort=='nameDesc'" class="fal fa-sort-down"></i>
-                <i *ngIf="sort=='nameAsc'" class="fal fa-sort-up"></i>
+                <fa-icon *ngIf="state.sort=='nameDesc'" [icon]="iconService.falSortDown"></fa-icon>
+                <fa-icon *ngIf="state.sort=='nameAsc'" [icon]="iconService.falSortUp"></fa-icon>
               </a>
             </span>
             <span *ngIf="debugmode|async"> {{mileStoneName.key}} </span>
             <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
               class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
-              <i class="fal fa-eye-slash"></i>
+              <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
             </a>
 
             <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
               <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByReset()">
                 Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
-
-                <i *ngIf="sort=='resetDesc'" class="fal fa-sort-down"></i>
-                <i *ngIf="sort=='resetAsc'" class="fal fa-sort-up"></i>
+                <fa-icon *ngIf="state.sort=='resetDesc'" [icon]="iconService.falSortDown"></fa-icon>
+                <fa-icon *ngIf="state.sort=='resetAsc'" [icon]="iconService.falSortUp"></fa-icon>
               </a>
               <ng-container *ngIf="debugmode|async">
                 <br> {{mileStoneName.resets|date:'short'}}
@@ -72,13 +78,14 @@
               </div>
 
             </span>
-            <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="sort"
+            <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="state.sort"
               (sortClick)="sortByRewards()"></d2c-reward-desc>
-            
+
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
             <div class="asdf">
-                <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" [detailed]="true"></d2c-milestone-check>
+              <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" [detailed]="true">
+              </d2c-milestone-check>
             </div>
           </td>
         </tr>
@@ -88,17 +95,18 @@
         <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
             class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
-          <d2c-reward-desc pl="1" rewards="Powerful Gear" [sort]="sort" (sortClick)="sortByRewards()"></d2c-reward-desc>
+          <d2c-reward-desc pl="1" rewards="Powerful Gear" [sort]="state.sort" (sortClick)="sortByRewards()">
+          </d2c-reward-desc>
         </td>
         <td [attr.colspan]="player.characters.length">
           <div class="clanMsRow">
             <span style="margin-right: 0.5em" *ngFor="let clanMs of player.characters[0].clanMilestones">
               {{clanMs.name}}
-              <i *ngIf="clanMs.earned==true && !clanMs.redeemed==true"
-                class="warn-text mat-option.mat-selected fas fa-check-square"></i>
-              <i *ngIf="clanMs.earned==true && clanMs.redeemed==true"
-                class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-              <i *ngIf="!clanMs.earned==true" class="far fa-square"></i>
+              <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="clanMs.earned==true && !clanMs.redeemed==true"
+                class="warn-text mat-option.mat-selected"></fa-icon>
+              <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="clanMs.earned==true && clanMs.redeemed==true"
+                class="accent-text mat-option.mat-selected"></fa-icon>
+              <fa-icon [icon]="iconService.farSquare" *ngIf="!clanMs.earned==true"></fa-icon>
             </span>
           </div>
         </td>
@@ -108,12 +116,15 @@
 </ng-container>
 <div class="bottom-note">
   <ul class="left">
-    <li>Thanks to /u/windzer408 for their <a target="_blank" rel="noopener" href="https://old.reddit.com/r/DestinyTheGame/comments/by1a21/i_made_simple_chalice_of_opulence_combination/">fantastic Menagerie combination table</a> (which is linked as "Recipes" above on the Menagerie milestone)</li>
+    <li>Thanks to /u/windzer408 for their <a target="_blank" rel="noopener"
+        href="https://old.reddit.com/r/DestinyTheGame/comments/by1a21/i_made_simple_chalice_of_opulence_combination/">fantastic
+        Menagerie combination table</a> (which is linked as "Recipes" above on the Menagerie milestone)</li>
     <li>Milestones disappear on completion, so it's hard to differentiate between complete and
       unavailable
       milestones. Chars that aren't eligable for milestones may therefore show as complete.</li>
     <li>lt = lifetime</li>
-    <li>Milestones with this icon <i class="far fa-minus-square"></i> denote players that are not yet
+    <li>Milestones with this icon <fa-icon [icon]="iconService.farMinusSquare"></fa-icon> denote players that are not
+      yet
       max
       level, due to recent API changes it's impossible to tell whether they're done or ineligible</li>
   </ul>

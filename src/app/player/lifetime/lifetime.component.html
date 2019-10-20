@@ -20,7 +20,7 @@
         </ng-container>
     </ng-container>
     <ng-template #loading>
-        <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+        <h1><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></h1>
     </ng-template>
 </div>
 
@@ -44,8 +44,8 @@
                 <tr *ngIf="type==a.type">
                     <td>
                         <span *ngIf="a.special" matTooltip="Weekly Nightfall">
-                            <b>{{a.name}}</b>
-                            <i class="pad-left accent-text fas fa-calendar-star"></i>
+                            <b>{{a.name}}</b>                            
+                            <fa-icon [icon]="iconService.fasCalendarStar" class="pad-left accent-text"></fa-icon>
                         </span>
                         <span *ngIf="!a.special">
                             {{a.name}}
@@ -60,16 +60,16 @@
                     </td>
                     <td *ngIf="type=='nf'" data-label="Top Personal Score">
                         <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
-                            {{a.activityBestSingleGameScore| number:0}}
+                            {{a.activityBestSingleGameScore| number}}
                         </ng-container>
                     </td>
                     <td *ngIf="type=='nf'" data-label="High Score">
                         <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
                             <ng-container *ngIf="a.highScore==null">
-                                <i class="far fa-spinner fa-pulse fa-fw"></i>
+                                <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
                             </ng-container>
                             <ng-container *ngIf="a.highScore!=null">
-                                {{a.highScore| number:0}}
+                                {{a.highScore| number}}
                                 <div class="pgcr-link">
                                     <a [routerLink]="['/pgcr', a.highScorePGCR]">
                                         PGCR

@@ -37,23 +37,23 @@
             <div class="row dl-row simple-caption">
               <dl class="col-xs-2 dl-child">
                 <dt>Daily</dt>
-                <dd>{{faction.dailyProgress| number:0}}</dd>
+                <dd>{{faction.dailyProgress| number}}</dd>
               </dl>
               <dl class="col-xs-2 dl-child">
                 <dt>Weekly</dt>
-                <dd>{{faction.weeklyProgress| number:0}}</dd>
+                <dd>{{faction.weeklyProgress| number}}</dd>
               </dl>
               <dl class="col-xs-2 dl-child">
                 <dt>To Next Level</dt>
                 <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
-                    number:0}}</dd>
+                    number}}</dd>
               </dl>
               <dl class="col-xs-2 dl-child">
                 <dt>Total Earned</dt>
                 <dd>
-                  {{faction.currentProgress|number:0}}
+                  {{faction.currentProgress|number}}
                   <ng-container *ngIf="faction.totalProgress">
-                    / {{faction.totalProgress|number:0}}
+                    / {{faction.totalProgress|number}}
                   </ng-container>
                 </dd>
               </dl>
@@ -125,22 +125,22 @@
               <div class="row dl-row simple-caption">
                 <dl class="col-xs-3 dl-child">
                   <dt>Daily</dt>
-                  <dd>{{faction.dailyProgress| number:0}}</dd>
+                  <dd>{{faction.dailyProgress| number}}</dd>
                 </dl>
                 <dl class="col-xs-3 dl-child">
                   <dt>Weekly</dt>
-                  <dd>{{faction.weeklyProgress| number:0}}</dd>
+                  <dd>{{faction.weeklyProgress| number}}</dd>
                 </dl>
                 <dl class="col-xs-3 dl-child">
                   <dt>To Next Level</dt>
                   <dd>{{(faction.nextLevelAt - faction.progressToNextLevel)|
-                  number:0}}</dd>
+                  number}}</dd>
                 </dl>
                 <dl class="col-xs-3 dl-child">
                   <dt>Level Cap</dt>
                   <dd>
                     <ng-container *ngIf="faction.levelCap>0">
-                      {{faction.levelCap| number:0}}
+                      {{faction.levelCap| number}}
                     </ng-container>
                     <ng-container *ngIf="faction.levelCap<=0">
                       None
@@ -150,7 +150,7 @@
                 <dl class="col-xs-3 dl-child">
                   <dt>Total Earned</dt>
                   <dd>
-                    {{faction.currentProgress|number:0}}
+                    {{faction.currentProgress|number}}
                   </dd>
                 </dl>
               </div>

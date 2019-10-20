@@ -10,10 +10,9 @@
         <ng-container *ngFor="let data of pgcr|async">
           <h2>
             {{data.mode}} - {{data.name}}
-            <span class="pad-left">
-              <i *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text fas fa-times" aria-hidden="true"></i>
-              <i *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text fas fa-check"
-                aria-hidden="true"></i>
+            <span class="pad-left">              
+              <fa-icon [icon]="iconService.fasTimes" *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text"></fa-icon>              
+              <fa-icon [icon]="iconService.fasCheck" *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text"></fa-icon>
             </span>
           </h2>
           <h2 *ngIf="data.teamScore">Team Score: {{data.teamScore|number}}</h2>
@@ -61,7 +60,7 @@
                     [ngClass]="(favoritesMap|async)[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
                     (click)="storageService.toggleFav(entry.user, entry.bungieNetUserInfo.membershipId)"
                     href="javascript:void(0)">
-                    <i style="font-weight: normal !important" class="far fa-heart"></i>
+                    <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
                   </a>
                 </b>
                 <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD
@@ -102,7 +101,7 @@
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
-                      <i class="fas fa-info-square"></i>&nbsp;Medals etc.
+                      <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>&nbsp;Medals etc.
                   </mat-expansion-panel-header>
                   <table class="weapon-table">
                     <thead>

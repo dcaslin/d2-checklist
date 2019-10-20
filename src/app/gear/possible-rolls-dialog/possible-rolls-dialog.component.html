@@ -17,7 +17,7 @@
     </ng-container>
     <ng-container *ngIf="godrolls.length>0">
         <hr>
-        <button mat-button (click)="copyToClipboard()"><i class="far fa-copy"></i> Copy Gist Text </button>
+        <button mat-button (click)="copyToClipboard()"><fa-icon [icon]="iconService.farCopy"></fa-icon> Copy Gist Text </button>
         <div *ngFor="let g of godrolls">{{g}}</div>
     </ng-container>
     

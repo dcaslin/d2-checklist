@@ -1,9 +1,9 @@
 <nav mat-tab-nav-bar>
     <a mat-tab-link routerLink="progress" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
-        <i class="fas fa-chart-line"></i><span class="d-none d-md-inline">&ensp;Progress</span>
+        <fa-icon [icon]="iconService.fasChartLine"></fa-icon><span class="d-none d-md-inline">&ensp;Progress</span>
     </a>
     <a mat-tab-link routerLink="chars" routerLinkActive #rla7="routerLinkActive" [active]="rla7.isActive">
-        <i class="fas fa-users"></i><span class="d-none d-md-inline">&ensp;Chars</span>
+            <fa-icon [icon]="iconService.fasUsers"></fa-icon><span class="d-none d-md-inline">&ensp;Chars</span>
     </a>
 </nav>
 <router-outlet></router-outlet>

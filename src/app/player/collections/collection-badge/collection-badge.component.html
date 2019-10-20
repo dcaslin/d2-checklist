@@ -1,12 +1,13 @@
 <div class="badge-body" *ngIf="_badge|async as b">
   <div class="badge-header">
     <h2>
-      <button routerLink=".." mat-button><i class="fas fa-arrow-left"></i></button>
-
+      <button routerLink=".." mat-button><fa-icon [icon]="iconService.fasArrowLeft"></fa-icon></button>
+      
       <span id="badge-name" style="margin-left: 5px; margin-right: 5px">{{b.name}}</span>
       <ng-container *ngIf="debugmode|async"> {{b.hash}}</ng-container>
-      <i *ngIf="b.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-      <i *ngIf="!b.complete" class="far fa-square"></i>
+      
+      <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="b.complete" class="accent-text mat-option.mat-selected"></fa-icon>      
+      <fa-icon [icon]="iconService.farSquare" *ngIf="!b.complete"></fa-icon>
     </h2>
     <div class="badge-row" *ngIf="!state.hideCompleteCollectibles || !b.complete">
       <div *ngIf="b.icon!=null" class="badge-icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'">
@@ -43,9 +44,9 @@
                 <td class="lead">
                   <div *ngIf="t.icon!=null" class="transparent-icon transparent-leaf-icon"
                     [style.background-image]="'url(//www.bungie.net' + t.icon + ')'"></div>
-                  {{t.name}}
-                  <i *ngIf="t.acquired" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                  <i *ngIf="!t.acquired" class="far fa-square"></i>
+                  {{t.name}}                  
+                  <fa-icon [icon]="iconService.fasCheckSquare"  *ngIf="t.acquired" class="accent-text mat-option.mat-selected"></fa-icon>                  
+                  <fa-icon [icon]="iconService.farSquare" *ngIf="!t.acquired"></fa-icon>
                   <ng-container *ngIf="debugmode|async"> {{t.hash}}</ng-container>
                   <br>
                   <span class="simple-caption">

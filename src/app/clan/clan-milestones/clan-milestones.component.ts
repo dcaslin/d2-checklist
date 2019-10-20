@@ -5,6 +5,7 @@ import { ClanStateService } from '../clan-state.service';
 import { takeUntil } from 'rxjs/operators';
 import { MileStoneName, BungieGroupMember } from '@app/service/model';
 import { BehaviorSubject } from 'rxjs';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-milestones',
@@ -17,7 +18,7 @@ export class ClanMilestonesComponent extends ChildComponent implements OnInit {
 
   constructor(
     public state: ClanStateService,
-    storageService: StorageService) {
+    storageService: StorageService, public iconService: IconService) {
     super(storageService);
     this.state.sortedMembers.pipe(
       takeUntil(this.unsubscribe$))

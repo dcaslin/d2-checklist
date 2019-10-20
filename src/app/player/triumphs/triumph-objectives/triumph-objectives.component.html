@@ -1,8 +1,8 @@
 <div class="low-hanging-desc">{{triumph.desc}}</div>
 <div class="low-hanging-desc" *ngFor="let o of triumph.objectives">
-  <span class="simple-caption">
-    <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-    <i *ngIf="!o.complete" class="far fa-square"></i>
+  <span class="simple-caption">    
+    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="o.complete" class="accent-text mat-option.mat-selected"></fa-icon>    
+    <fa-icon [icon]="iconService.farSquare" *ngIf="!o.complete"></fa-icon>
     {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
     <span *ngIf="o.score"> - {{o.score}} pts</span>
   </span>

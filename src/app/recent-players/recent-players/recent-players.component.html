@@ -47,7 +47,7 @@
             <thead>
               <tr>
                 <th class="icon-cell"></th>
-                <th>Name <i [hidden]="rowCntr >= rows.length" class="far fa-spinner fa-pulse fa-fw"></i></th>
+                <th>Name <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true" [hidden]="rowCntr >= rows.length"></fa-icon></th>
                 <th>Total</th>
                 <th class="d-none d-lg-table-cell">Dates</th>
               </tr>
@@ -69,7 +69,7 @@
                     color="accent">{{friend.user.displayName}}</a>
                   
                   <a style="margin-left:0.5em" [ngClass]="(favoritesMap|async)[storageService.getFavKey(friend.user)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(friend.user, friend.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
-                    <i style="font-weight: normal !important" class="far fa-heart"></i>
+                    <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
                   </a>
                   <div *ngIf="friend.user.bungieInfo!=null && friend.user.bungieInfo.clans!=null">
                     <div class="clans" *ngFor="let clan of friend.user.bungieInfo.clans">  

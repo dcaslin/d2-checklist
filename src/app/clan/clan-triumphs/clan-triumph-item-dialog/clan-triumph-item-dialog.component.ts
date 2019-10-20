@@ -6,6 +6,7 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Label } from 'ng2-charts';
 import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-triumph-item-dialog',
@@ -40,6 +41,7 @@ export class ClanTriumphItemDialogComponent extends ChildComponent implements On
 
   constructor(
     storageService: StorageService,
+    public iconService: IconService,
     public dialogRef: MatDialogRef<ClanTriumphItemDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public triumph: ClanSearchableTriumph) {
     super(storageService);

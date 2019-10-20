@@ -8,8 +8,9 @@
             Show Invisible
         </mat-checkbox>
         <ng-container *ngIf="player.hasHiddenClosest==true">
-            <button mat-button class="hide-complete-triumphs" color="warn" (click)="state.restoreHiddenClosestTriumphs()"><i
-                    class="fas fa-eye"></i>&emsp;Restore hidden
+            <button mat-button class="hide-complete-triumphs" color="warn"
+                (click)="state.restoreHiddenClosestTriumphs()">
+                <fa-icon [icon]="iconService.fasEye"></fa-icon>&emsp;Restore hidden
             </button>
         </ng-container>
 
@@ -26,20 +27,20 @@
                         <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
                             target="_blank" rel="noopener">
                             {{t.name}}
-                            <i class='accent-text far fa-map-marker-alt'></i>
+                            <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                         </a>
                         <ng-container *ngIf="debugmode|async">{{t.hash}} {{t.invisible}}</ng-container>
                         <button mat-icon-button *ngIf="state.dTrackedTriumphIds[t.hash]!=true"
                             (click)="state.trackTriumph(t)">
-                            <i class="far fa-star"></i>
+                            <fa-icon [icon]="iconService.farStar"></fa-icon>
                         </button>
                         <button mat-icon-button *ngIf="state.dTrackedTriumphIds[t.hash]==true"
                             (click)="state.untrackTriumph(t)">
-                            <i class="fas fa-star accent-text"></i>
+                            <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
                         </button>
                         <button mat-icon-button (click)="state.hideClosestTriumph(t)"
                             matTooltip="Hide this triumph from list">
-                            <i class="fas fa-eye-slash"></i>
+                            <fa-icon [icon]="iconService.fasEyeSlash"></fa-icon>
                         </button>
                         <br>
                         <span class="simple-caption">

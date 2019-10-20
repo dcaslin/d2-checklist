@@ -2,27 +2,26 @@
     <ng-container *ngIf="char.milestones[mileStoneName.key] as milestone else isNull">
 
         <ng-container *ngIf="detailed==true && (milestone.phases!=null && milestone.phases.length>0)  else noPhases">
-            <ng-container *ngFor="let phase of milestone.phases">
-                <i *ngIf="phase===true" style="margin-left: 5px"
-                    class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                <i *ngIf="phase===false" style="margin-left: 5px" class="far fa-square"></i>
+            <ng-container *ngFor="let phase of milestone.phases">                
+                <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected" *ngIf="phase===true" style="margin-left: 5px"></fa-icon>
+                <fa-icon [icon]="iconService.farSquare" *ngIf="phase===false" style="margin-left: 5px"></fa-icon>                
             </ng-container>
         </ng-container>
         <ng-template #noPhases>
             <ng-container *ngIf="milestone.complete==true else notComplete">
                 <ng-container *ngIf="milestone.indeterminate">
-                    <i class="faint fal fa-check-square" matTooltip="LL&lt;900, may not be unlocked"></i>
+                    <fa-icon [icon]="iconService.falCheckSquare" class="faint" matTooltip="LL&lt;900, may not be unlocked"></fa-icon>
                 </ng-container>
                 <ng-container *ngIf="!milestone.indeterminate">
-                    <i class="accent-text mat-option.mat-selected fas fa-check-square"></i>
+                    <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected"></fa-icon>
                 </ng-container>
             </ng-container>
             <ng-template #notComplete>
                 <ng-container *ngIf="milestone.pct==0 else nonZero">
-                    <i class="far fa-square"></i>
+                    <fa-icon [icon]="iconService.farSquare"></fa-icon>
                 </ng-container>
                 <ng-template #nonZero>
-                    <i [matTooltip]="milestone.info" class="accent-text far fa-minus-square"></i>
+                    <fa-icon [icon]="iconService.farMinusSquare" class="accent-text" [matTooltip]="milestone.info"></fa-icon>
                 </ng-template>
             </ng-template>
         </ng-template>
@@ -33,6 +32,6 @@
 
     </ng-container>
     <ng-template #isNull>
-        <i class="far fa-times-square faint" matTooltip="Milestone missing, raise your PL or progress your quests"></i>
+        <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Milestone missing, raise your PL or progress your quests"></fa-icon>
     </ng-template>
 </div>

@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 
 import { PipeModule} from './pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -42,11 +43,16 @@ import { RouterModule } from '@angular/router';
 import { MilestoneCheckComponent } from './milestone-check/milestone-check.component';
 
 
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+
+
 @NgModule({
   imports: [
     PipeModule,
     CommonModule,
     FormsModule,
+    
+    FontAwesomeModule,
 
     MomentModule,
     AdsenseModule.forRoot({
@@ -93,6 +99,8 @@ import { MilestoneCheckComponent } from './milestone-check/milestone-check.compo
     MomentModule,
     AdsenseModule,
 
+    FontAwesomeModule,
+    
     MatButtonModule,
     MatButtonToggleModule,
     MatMenuModule,
@@ -119,4 +127,8 @@ import { MilestoneCheckComponent } from './milestone-check/milestone-check.compo
     ScrollingModule
   ]
 })
-export class SharedModule { }
+export class SharedModule { 
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faCoffee);
+  }
+}

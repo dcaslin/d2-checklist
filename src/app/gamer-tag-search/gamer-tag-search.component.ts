@@ -23,7 +23,7 @@ export class GamerTagSearchComponent extends ChildComponent implements OnInit {
   platforms = Const.PLATFORMS_ARRAY;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router,
+    private route: ActivatedRoute, public router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);
   }

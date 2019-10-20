@@ -5,12 +5,13 @@
 
       <h1>Friends</h1>
       <div class="info centerMe">
-        <section class="body-2" style="text-align: left">To select friends, browse players on the site and click the <i
-            style="font-weight: normal !important" class="far fa-heart"></i>
-          so that it looks like this <span class="warn-text"><i style="font-weight: normal !important" class="far fa-heart"></i></span>.
+        <section class="body-2" style="text-align: left">To select friends, browse players on the site and click the 
+            <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
+          so that it looks like this <span class="warn-text">
+              <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon></span>.
         </section>
         <div class="button-row">
-          <a mat-button (click)="load()"><i class="fas fa-sync-alt"></i> Refresh</a>
+          <a mat-button (click)="load()"><fa-icon [icon]="iconService.fasSyncAlt"></fa-icon> Refresh</a>
           <a mat-button (click)="showAllMilestones()" *ngIf="(hiddenMilestones|async).length>0">Show Hidden Milestones</a>
         </div>
       </div>
@@ -32,7 +33,7 @@
                     <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
                     <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
                       class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
-                      <i class="fal fa-eye-slash"></i>
+                      <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                     </a>
 
                   </th>
@@ -47,11 +48,11 @@
                   {{member.user.displayName}}
                 </a>
                 <a style="margin-left:0.25em" *ngIf="member.player==null" href="javascript:void(0)" (click)="loadPlayer(member)">
-                  &ensp;<i class="fas fa-sync"></i>
+                  &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
                 </a>
                 <a style="margin-left:0.25em" [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.user)]!==undefined?'warn-text':''"
-                  (click)="storageService.toggleFav(member.user, member.bungieMembershipId)" href="javascript:void(0)">
-                  <i style="font-weight: normal !important" class="far fa-times"></i>
+                  (click)="storageService.toggleFav(member.user, member.bungieMembershipId)" href="javascript:void(0)">                  
+                  <fa-icon [icon]="iconService.farTimes" style="font-weight: normal !important"></fa-icon>
                 </a>
 
                 <ng-container *ngIf="member.player!=null  && !member.player.superprivate">
@@ -59,7 +60,7 @@
                   <span class="simple-caption-no-margin">{{member.player.maxLL}}LL.
                     {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
                     <br>
-                    {{member.player.triumphScore|number : '2.0-0'}} <i class="fal fa-trophy"></i>
+                    {{member.player.triumphScore|number : '2.0-0'}} <fa-icon [icon]="iconService.falTrophy"></fa-icon>
                   </span>
                 </ng-container>
 
@@ -80,7 +81,7 @@
                       <span>
                         <a style="float: left" href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
                           class="mobileVisibilityButton responsive-table-inline-mobile-only" (click)="hideMilestone(mileStoneName.key)">
-                          <i class="fal fa-eye-slash"></i>
+                          <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                         </a>
                       </span>
                       <ng-container *ngFor="let char of member.player.characters">

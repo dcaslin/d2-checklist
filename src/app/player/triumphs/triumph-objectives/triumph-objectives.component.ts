@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Const, TriumphRecordNode } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-triumph-objectives',
@@ -10,7 +11,7 @@ import { Const, TriumphRecordNode } from '@app/service/model';
 export class TriumphObjectivesComponent implements OnInit {
   @Input() triumph: TriumphRecordNode;
 
-  constructor() { }
+  constructor(public iconService: IconService) { }
 
   ngOnInit() {
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
 import { InventoryItem } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-god-roll-item',
@@ -13,7 +14,7 @@ export class GodRollItemComponent implements OnInit {
   item: InventoryItem;
 
 
-  constructor() { }
+  constructor(public iconService: IconService) { }
 
   ngOnInit() {
   }

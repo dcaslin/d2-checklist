@@ -1,12 +1,12 @@
 <nav mat-tab-nav-bar>
     <a mat-tab-link routerLink="seals" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-        <i class="far fa-medal"></i><span class="d-none d-md-inline">&ensp;Seals</span>
+        <fa-icon [icon]="iconService.farMedal"></fa-icon><span class="d-none d-md-inline">&ensp;Seals</span>
     </a>
     <a mat-tab-link routerLink="search" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
-        <i class="far fa-search"></i><span class="d-none d-md-inline">&ensp;Search</span>
+        <fa-icon [icon]="iconService.farSearch"></fa-icon><span class="d-none d-md-inline">&ensp;Search</span>
     </a>
     <a mat-tab-link routerLink="tracked" routerLinkActive #rla6="routerLinkActive" [active]="rla6.isActive">
-        <i class="far fa-thumbtack"></i><span class="d-none d-md-inline">&ensp;Tracked</span>
+        <fa-icon [icon]="iconService.farThumbtack"></fa-icon><span class="d-none d-md-inline">&ensp;Tracked</span>
     </a>
 </nav>
 
@@ -16,5 +16,5 @@
 
 <ng-template #notLoaded>
     <br>
-    <h1><i class="far fa-spinner fa-pulse fa-fw"></i></h1>
+    <h1><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></h1>
 </ng-template>
