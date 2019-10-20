@@ -4,12 +4,14 @@ import { Subject } from 'rxjs';
 import { DestinyCacheService } from './destiny-cache.service';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
+import { del, get, keys, set } from 'idb-keyval';
+import { environment as env } from '@env/environment';
 
 @Injectable()
 export class WishlistService implements OnDestroy {
   private data: { [hash: string]: CuratedRoll[]; };
   static WildcardItemId = -69420; // nice
-  
+
   // public static DEFAULT_PVE_URL = 'https://gist.githubusercontent.com/dcaslin/e614cf030f14c41e07c87f6f7f08d465/raw/64b3a65506e4ab814684d7f293e0e0b19cad7784/panda_pve.txt';
   public static DEFAULT_PVE_URL = 'https://gitcdn.link/repo/dcaslin/e614cf030f14c41e07c87f6f7f08d465/raw/64b3a65506e4ab814684d7f293e0e0b19cad7784/panda_pve.txt';
 
@@ -65,10 +67,32 @@ export class WishlistService implements OnDestroy {
     }
   }
 
-  public async load(overridePveUrl: string, overridePvpUrl: string): Promise<CuratedRoll[]> {
-    const pveRolls = await this.loadSingle('pve', overridePveUrl, WishlistService.DEFAULT_PVE_URL);
-    const pvpRolls = await this.loadSingle('pvp', overridePvpUrl, WishlistService.DEFAULT_PVP_URL);
-    return pveRolls.concat(pvpRolls);
+  private async load(overridePveUrl: string, overridePvpUrl: string): Promise<CuratedRoll[]> {
+    const t0 = performance.now();
+
+    const key = 'wishlist-' + env.versions.app + '-' + overridePveUrl + '-' + overridePvpUrl;
+    let rolls: CuratedRoll[] = await get(key);
+    if (rolls == null) {
+      console.log('    No cached wishlists: ' + key);
+
+      // clear cache
+      const ks = await keys();
+      for (const k of ks) {
+        if (k.toString().startsWith('wishlist')) {
+          del(k);
+        }
+      }
+      const pveRolls = await this.loadSingle('pve', overridePveUrl, WishlistService.DEFAULT_PVE_URL);
+      const pvpRolls = await this.loadSingle('pvp', overridePvpUrl, WishlistService.DEFAULT_PVP_URL);
+      rolls = pveRolls.concat(pvpRolls);
+      set(key, rolls);
+      console.log('    Wishlists downloaded, parsed and saved.');
+    } else {
+      console.log('    Using cached wishlists: ' + key);
+    }
+    const t1 = performance.now();
+    console.log((t1 - t0) + ' ms to load wishlists');
+    return rolls;
   }
 
   public processItems(items: InventoryItem[]): void {

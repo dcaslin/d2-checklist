@@ -1,6 +1,6 @@
 <br>
 <span class="simple-caption">
-  <a *ngIf="pl!=null && Const.BOOSTS[pl]!=null" href="javascript:void(0)" style="opacity: 0.75" (click)="sortClick.emit()" [matTooltip]="Const.BOOSTS[pl].softCap+' soft cap.'">
+  <a *ngIf="pl!=null && Const.BOOSTS[pl]!=null" href="javascript:void(0)" style="opacity: 0.75" (click)="sortClick.emit()" [matTooltip]="Const.BOOSTS[pl].softCap+' soft cap. '+Const.BOOSTS[pl].hardCap+' hard cap.'">
     {{rewards}}  
     <ng-container *ngIf="Const.BOOSTS[pl].min == Const.BOOSTS[pl].max else diff">
       <ng-container *ngIf="Const.BOOSTS[pl].min>0">+</ng-container>{{Const.BOOSTS[pl].min}}
