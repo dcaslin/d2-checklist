@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ItemType } from '@app/service/model';
+import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-gear-toggle',
@@ -23,12 +25,18 @@ export class GearToggleComponent implements OnInit {
   choices: Choice[];
 
   @Input()
+  icon: IconDefinition;
+
+
+  @Input()
   iconClass: string;
 
   @Input()
   title: string;
 
   @Output() change = new EventEmitter<ToggleInfo>();
+
+  constructor(public iconService: IconService) { }
 
   public setCurrentItemType(currentItemType: ItemType) {
     this.updateCurrentItemType(currentItemType, true);

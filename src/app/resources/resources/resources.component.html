@@ -27,10 +27,10 @@
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="option" style="margin-top: 1em" (change)="navigateStuff(optionsgroup.value)">
           <mat-button-toggle *ngFor="let o of options" [value]="o">
-            <i *ngIf="o=='Bounties'" class="far fa-gift"></i>
-            <i *ngIf="o=='Gear'" class="far fa-cog"></i>
-            <i *ngIf="o=='Exchange'" class="far fa-balance-scale"></i>
-            <i *ngIf="o=='Cosmetics'" class="far fa-palette"></i>
+            <fa-icon [icon]="iconService.farGift" *ngIf="o=='Bounties'"></fa-icon>
+            <fa-icon [icon]="iconService.farCog" *ngIf="o=='Gear'"></fa-icon>
+            <fa-icon [icon]="iconService.farBalanceScale" *ngIf="o=='Exchange'"></fa-icon>
+            <fa-icon [icon]="iconService.farPalette" *ngIf="o=='Cosmetics'"></fa-icon>
             <span class="d-none d-md-inline"> {{o}}</span>
           </mat-button-toggle>
         </mat-button-toggle-group>
@@ -64,7 +64,7 @@
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text far fa-map-marker-alt'></i>
+                        <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>
                       <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
@@ -118,7 +118,7 @@
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text far fa-map-marker-alt'></i>
+                        <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>                      
                       <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
@@ -177,7 +177,7 @@
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text far fa-map-marker-alt'></i>
+                        <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>
                       <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
                       {{i.itemTypeAndTierDisplayName}}
@@ -217,7 +217,7 @@
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
-                        <i class='accent-text far fa-map-marker-alt'></i>
+                        <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>
                       <br>
                       Quantity: {{i.quantity}}

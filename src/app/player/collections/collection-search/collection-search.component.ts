@@ -5,6 +5,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-collection-search',
@@ -18,6 +19,7 @@ export class CollectionSearchComponent extends ChildComponent implements OnInit 
   public filterText = '';
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService) {
     super(storageService);
   }

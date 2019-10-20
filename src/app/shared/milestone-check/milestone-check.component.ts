@@ -2,6 +2,7 @@
 
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Const, Character, MileStoneName } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-milestone-check',
@@ -15,7 +16,7 @@ export class MilestoneCheckComponent implements OnInit {
   @Input() mileStoneName: MileStoneName;
   @Input() detailed: boolean = false;
 
-  constructor() { }
+  constructor(public iconService: IconService) { }
 
   ngOnInit() {
   }

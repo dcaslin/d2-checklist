@@ -25,24 +25,25 @@
               <ng-container *ngFor="let c of s.children">
                 <tr *ngIf="!state.hideCompleteTriumphs || !c.complete">
                   <td>
-                    <i *ngIf="c.complete && c.redeemed"
-                      class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                    <i *ngIf="c.complete && !c.redeemed"
-                      class="warn-text mat-option.mat-selected fas fa-check-square"></i>
-                    <i *ngIf="!c.complete" class="far fa-square"></i>
+                    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && c.redeemed"
+                      class="accent-text mat-option.mat-selected"></fa-icon>
+
+                    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && !c.redeemed"
+                      class="warn-text mat-option.mat-selected"></fa-icon>
+                    <fa-icon [icon]="iconService.farSquare" *ngIf="!c.complete"></fa-icon>
 
                     <ng-container *ngIf="c.lowLinks==null || c.lowLinks.mapLink==null">
                       {{c.name}} </ng-container>
                     <a [href]="c.lowLinks.mapLink" *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null" target="_blank"
                       rel="noopener">
                       {{c.name}}
-                      <i class='accent-text far fa-map-marker-alt'></i>
+                      <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                     </a>
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
-                    <i *ngIf="state.dTrackedTriumphIds[c.hash]!=true" class="far fa-star"
-                      (click)="state.trackTriumph(c)"></i>
-                    <i *ngIf="state.dTrackedTriumphIds[c.hash]==true" class="fas fa-star accent-text"
-                      (click)="state.untrackTriumph(c)"></i>
+                    <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
+                      (click)="state.trackTriumph(c)"></fa-icon>
+                    <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true"
+                      class="accent-text" (click)="state.untrackTriumph(c)"></fa-icon>
                     <br>
                     <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
                       redeemed.<br></span>
@@ -59,8 +60,9 @@
                     </div>
                     <div *ngFor="let o of c.objectives">
                       <span class="simple-caption">
-                        <i *ngIf="o.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                        <i *ngIf="!o.complete" class="far fa-square"></i>
+                        <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="o.complete"
+                          class="accent-text mat-option.mat-selected"></fa-icon>
+                        <fa-icon [icon]="iconService.farSquare" *ngIf="!o.complete"></fa-icon>
                         {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
                       </span>
                       <mat-progress-bar class="pres-node-prog" mode="determinate"

@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../player-state.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'd2c-pursuits',
@@ -11,6 +12,7 @@ import { PlayerStateService } from '../player-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PursuitsComponent extends ChildComponent implements OnInit {
+  public today =  moment(new Date());
 
   constructor(
     storageService: StorageService,

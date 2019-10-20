@@ -8,6 +8,8 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
+import { IconService } from '@app/service/icon.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -17,9 +19,10 @@ import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PursuitListComponent extends ChildComponent implements OnInit {
+  public today =  moment(new Date());
   public displayFilterText: string = null;
-  private realFilterText: BehaviorSubject<string> = new BehaviorSubject<string>(null);
-  private searchSubject: Subject<void> = new Subject<void>();
+  public realFilterText: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  public searchSubject: Subject<void> = new Subject<void>();
   public filteredPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   sort: Sort = {
     name: 'expiration',
@@ -29,6 +32,7 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
 
   constructor(
     storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService,
     private route: ActivatedRoute,
     public dialog: MatDialog) {

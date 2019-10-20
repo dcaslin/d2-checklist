@@ -8,6 +8,7 @@ import { ActivityMode, Const, Player } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
+import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -36,6 +37,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   displayedColumns = ['period', 'mode', 'name', 'kd', 'timePlayedSeconds'];
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    public iconService: IconService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
     this.activityModes = bungieService.getActivityModes();

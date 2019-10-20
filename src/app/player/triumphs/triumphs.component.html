@@ -2,22 +2,22 @@
 
   <nav mat-tab-nav-bar>    
     <a mat-tab-link routerLink="tree" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
-      <i class="far fa-trophy"></i><span class="d-none d-md-inline">&ensp;Triumphs</span>
+      <fa-icon [icon]="iconService.farTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
     </a>
     <a mat-tab-link routerLink="seasons" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-      <i class="fas fa-wheat"></i><span class="d-none d-md-inline">&ensp;Seasons</span>
+        <fa-icon [icon]="iconService.fasWheat"></fa-icon><span class="d-none d-md-inline">&ensp;Seasons</span>
     </a>
     <a mat-tab-link routerLink="seals" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-      <i class="far fa-medal"></i><span class="d-none d-md-inline">&ensp;Seals</span>
+      <fa-icon [icon]="iconService.farTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Seals</span>
     </a>
     <a mat-tab-link routerLink="closest" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
-      <i class="far fa-trophy"></i><span class="d-none d-md-inline">&ensp;Closest</span>
+        <fa-icon [icon]="iconService.farTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Closest</span>
     </a>
     <a mat-tab-link routerLink="search" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
-      <i class="far fa-search"></i><span class="d-none d-md-inline">&ensp;Search</span>
+      <fa-icon [icon]="iconService.farSearch"></fa-icon><span class="d-none d-md-inline">&ensp;Search</span>
     </a>
     <a mat-tab-link routerLink="tracked" routerLinkActive #rla6="routerLinkActive" [active]="rla6.isActive">
-      <i class="far fa-thumbtack"></i><span class="d-none d-md-inline">&ensp;Tracked</span>
+        <fa-icon [icon]="iconService.farThumbtack"></fa-icon><span class="d-none d-md-inline">&ensp;Tracked</span>
     </a>
   </nav>
   <router-outlet></router-outlet>

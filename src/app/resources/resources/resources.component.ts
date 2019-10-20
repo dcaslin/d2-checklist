@@ -7,6 +7,8 @@ import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } 
 import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import * as moment from 'moment';
+import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -16,6 +18,7 @@ import { ChildComponent } from '../../shared/child.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResourcesComponent extends ChildComponent implements OnInit, OnDestroy {
+  public today =  moment(new Date());
 
   @ViewChild('filter', {static: true}) filter: ElementRef;
   selectedUser: SelectedUser = null;
@@ -31,7 +34,8 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   ItemType = ItemType;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
-    private route: ActivatedRoute, private router: Router) {
+    public iconService: IconService,
+    private route: ActivatedRoute, public router: Router) {
     super(storageService);
 
     this.loading.next(true);

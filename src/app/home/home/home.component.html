@@ -16,10 +16,11 @@
             <mat-form-field class="searchField searchPlatform">
               <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
                 <mat-select-trigger>
-                  <i [ngClass]="selectedPlatform.iconClass"></i>&ensp;{{selectedPlatform.name }}
+                  
+                  <fa-icon [icon]="selectedPlatform.icon"></fa-icon>&ensp;{{selectedPlatform.name }}
                 </mat-select-trigger>
                 <mat-option *ngFor="let p of platforms" [value]="p">
-                  <i [ngClass]="p.iconClass"></i>&ensp;{{ p.name }}
+                    <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -34,12 +35,12 @@
         </div>
 
         <div class="home-button-row">
-          <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2xKshBV">
-            <i class="fab fa-amazon"></i> Destiny Grimoire Anthology, Vol I
+          <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2xKshBV">            
+            <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Destiny Grimoire Anthology, Vol I
           </a>
           <div class="spacer"></div>
           <a mat-raised-button class="home-button" color="primary" target="_blank" href="https://imgur.com/a/dUlLzny">
-            <i class="fas fa-video"></i> Video tutorials
+            <fa-icon [icon]="iconService.fasVideo"></fa-icon> Video tutorials
           </a>
         </div>
         <div class="center-spinner" *ngIf="(loading|async)===true">
@@ -79,7 +80,7 @@
                   <mat-list-item>
                     <span class="simple-caption-no-margin right-margin">Ascendant Challenge</span>
                     <a [href]="today.week.ascendantVideo" target="_blank" rel="noopener">
-                      {{today.week.ascendantChallenge}} <i class="accent-text fab fa-youtube"></i>
+                      {{today.week.ascendantChallenge}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text"></fa-icon>
                     </a>
                   </mat-list-item>
                   <mat-list-item><span class="simple-caption-no-margin right-margin">Location</span>
@@ -88,7 +89,7 @@
                     {{today.week.curseStrength}}</mat-list-item>
                   <mat-list-item *ngIf="today.week.curseStrength=='Strong'">
                     <a href="https://www.youtube.com/watch?v=_lKQBwKfnnc" target="_blank" rel="noopener">
-                      Shattered Throne Active <i class="accent-text fab fa-youtube"></i>
+                      Shattered Throne Active <fa-icon [icon]="iconService.fabYoutube" class="accent-text"></fa-icon>
                     </a>
                   </mat-list-item>
                 </mat-list>
@@ -105,7 +106,7 @@
                 <mat-list>
                   <mat-list-item>
                     <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
-                      How to make every Public Event Heroic <i class="accent-text fas fa-info-circle"></i></a>
+                      How to make every Public Event Heroic <fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
                   </mat-list-item>
                 </mat-list>
 
@@ -184,7 +185,7 @@
                 <mat-list>
                   <mat-list-item><span class="simple-caption-no-margin right-margin">Boss</span>
                     <a [href]="today.week.epVideo" target="_blank" rel="noopener">
-                      {{today.week.escalationProtocolBoss}} <i class="accent-text fab fa-youtube"></i>
+                      {{today.week.escalationProtocolBoss}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text"></fa-icon>
                     </a>
                   </mat-list-item>
                   <mat-list-item><span class="simple-caption-no-margin right-margin">Weapon</span>
@@ -196,10 +197,10 @@
         </div>
         <div class="home-button-row">
           <button *ngIf="!showMoreInfo" mat-raised-button (click)="showMoreInfo=true">
-            <i class="fal fa-eye"></i> Show Detailed Milestones
+            <fa-icon [icon]="iconService.falEye"></fa-icon> Show Detailed Milestones
           </button>
           <button *ngIf="showMoreInfo" mat-raised-button (click)="showMoreInfo=false">
-            <i class="fal fa-eye-slash"></i> Hide Detailed Milestones
+            <fa-icon [icon]="iconService.falEyeSlash"></fa-icon> Hide Detailed Milestones
           </button>
         </div>
 

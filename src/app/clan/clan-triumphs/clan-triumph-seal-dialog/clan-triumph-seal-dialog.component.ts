@@ -4,6 +4,7 @@ import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-triumph-seal-dialog',
@@ -30,6 +31,7 @@ export class ClanTriumphSealDialogComponent extends ChildComponent implements On
 
   constructor(
     storageService: StorageService,
+    public iconService: IconService,
     public dialogRef: MatDialogRef<ClanTriumphSealDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public seal: ClanSeal) {
       super(storageService);

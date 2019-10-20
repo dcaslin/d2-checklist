@@ -45,7 +45,7 @@
                     <td class="lead">
                         <button mat-stroked-button (click)="openDialog(a)">
                             <span matTooltip="Weekly Nightfall">
-                                <i *ngIf="a.data.special" class="pad-right accent-text fas fa-calendar-star"></i>
+                                <fa-icon [icon]="iconService.fasCalendarStar" *ngIf="a.data.special" class="pad-right accent-text"></fa-icon>
                                 <b>{{a.data.name}}</b>
                             </span>
                         </button>

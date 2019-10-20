@@ -5,6 +5,7 @@ import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Sort } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-collection-badge-dialog',
@@ -19,6 +20,7 @@ export class ClanCollectionBadgeDialogComponent  extends ChildComponent implemen
 
   constructor(
     storageService: StorageService,
+    public iconService: IconService,
     public dialogRef: MatDialogRef<ClanCollectionBadgeDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public badge: ClanBadge) {
     super(storageService);

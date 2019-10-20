@@ -9,8 +9,8 @@
         <div *ngIf="b.icon!=null" class="badge-icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'">
         </div>
         <div class="badge-info">
-          <i *ngIf="b.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-          <i *ngIf="!b.complete" class="far fa-square"></i>
+          <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="b.complete" class="accent-text mat-option.mat-selected"></fa-icon>          
+          <fa-icon [icon]="iconService.farSquare" *ngIf="!b.complete"></fa-icon>
           {{b.name}}
           <ng-container *ngIf="debugmode|async"> {{b.hash}}</ng-container>
           <div class="simple-darker-larger-caption">

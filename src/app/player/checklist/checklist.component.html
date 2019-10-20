@@ -38,21 +38,21 @@
                     <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
                       {{check.name}}</ng-container>
                     <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
-                      target="_blank" rel="noopener">{{check.name}}
-                      <i class='far fa-map-marker-alt'></i>
+                      target="_blank" rel="noopener">{{check.name}}                      
+                      <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon>
                     </a>
 
                     <span *ngIf="debugmode|async">
                       &ensp;[{{check.hash}}] &ensp;
-                      <a href="javascript:void(0)" (click)="state.requestRefresh()">
-                        <i class="fas fa-sync fa-fw" [class.fa-spin]="state.loading|async" aria-hidden="true"></i>
+                      <a href="javascript:void(0)" (click)="state.requestRefresh()">                        
+                        <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true"></fa-icon>
                       </a>
                     </span>
                   </td>
                   <td>
                     <span>
-                      <i *ngIf="check.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                      <i *ngIf="!check.checked" class="far fa-square"></i>
+                      <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected" *ngIf="check.checked"></fa-icon>                                            
+                      <fa-icon [icon]="iconService.farSquare" *ngIf="!check.checked"></fa-icon>
                     </span>
                   </td>
                   <td class="d-none d-md-table-cell" *ngIf="checklist.hasDescs">
@@ -97,22 +97,23 @@
                     {{check.name}}</ng-container>
                   <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
                     target="_blank" rel="noopener">{{check.name}}
-                    <i class='far fa-map-marker-alt'></i>
+                    <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon>                    
                   </a>
 
                   <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                   <span *ngIf="debugmode|async">
                     &ensp;[{{check.hash}}] &ensp;
-                    <a href="javascript:void(0)" (click)="state.requestRefresh()">
-                      <i class="fas fa-sync fa-fw" [class.fa-spin]="state.loading|async" aria-hidden="true"></i>
+                    <a href="javascript:void(0)" (click)="state.requestRefresh()">                      
+                      <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true"></fa-icon>
                     </a>
                   </span>
                 </td>
                 <td>
                   <span class="space-right" *ngFor="let c of check.checked">
-                    <i *ngIf="c.checked" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-                    <i *ngIf="!c.checked && !check.oncePerAccount" class="far fa-square"></i>
-                    <i *ngIf="!c.checked && check.oncePerAccount" class="far fa-minus-square"></i>
+                    
+                    <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected" *ngIf="c.checked"></fa-icon>
+                    <fa-icon [icon]="iconService.farSquare" *ngIf="!c.checked && !check.oncePerAccount"></fa-icon>                    
+                    <fa-icon [icon]="iconService.farMinusSquare" *ngIf="!c.checked && check.oncePerAccount"></fa-icon>
                   </span>
                 </td>
 

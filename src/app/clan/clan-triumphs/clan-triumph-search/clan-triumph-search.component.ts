@@ -4,6 +4,7 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-triumph-search',
@@ -16,7 +17,7 @@ export class ClanTriumphSearchComponent extends ChildComponent implements OnInit
   public triumphFilterText: string = null;
   public filteredTriumphs: BehaviorSubject<ClanSearchableTriumph[]> = new BehaviorSubject([]);
 
-  constructor(storageService: StorageService, public state: ClanStateService) {
+  constructor(storageService: StorageService, public state: ClanStateService, public iconService: IconService) {
     super(storageService);
     this.triumphFilterText = localStorage.getItem('triumph-filter');
   }

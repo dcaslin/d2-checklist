@@ -49,7 +49,7 @@ import { PartyComponent } from './party/party.component';
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-
+    
     SharedModule,
 
     AboutModule,

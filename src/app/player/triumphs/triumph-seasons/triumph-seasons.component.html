@@ -30,14 +30,11 @@
                 <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null" target="_blank"
                   rel="noopener">
                   {{t.name}}
-                  <i class='accent-text far fa-map-marker-alt'></i>
+                  <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                 </a>
                 <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]!=true" class="far fa-star"
-                  (click)="state.trackTriumph(t)"></i>
-                <i *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="fas fa-star accent-text"
-                  (click)="state.untrackTriumph(t)"></i>
-
+                <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true" (click)="state.trackTriumph(t)"></fa-icon>                
+                <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="accent-text" (click)="state.untrackTriumph(t)"></fa-icon>
                 <br>
                 <span class="simple-caption">
                   <ng-container *ngFor="let p of t.path; index as i; last as isLast">

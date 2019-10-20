@@ -4,6 +4,7 @@ import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { IconService } from '@app/service/icon.service';
 @Component({
   selector: 'd2c-clan-collection-item-dialog',
   templateUrl: './clan-collection-item-dialog.component.html',
@@ -17,6 +18,7 @@ export class ClanCollectionItemDialogComponent extends ChildComponent implements
 
   constructor(
     storageService: StorageService,
+    public iconService: IconService,
     public dialogRef: MatDialogRef<ClanCollectionItemDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public item: ClanSearchableCollection) {
     super(storageService);

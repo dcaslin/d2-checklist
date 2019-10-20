@@ -15,7 +15,7 @@
                 <td [class.accent-bg-text]="(data.level)==i">
                     <ng-container *ngIf="i==0">0</ng-container>
                     <ng-container *ngIf="i>0">
-                        {{data.steps[i-1].cumulativeTotal| number:0}}
+                        {{data.steps[i-1].cumulativeTotal| number}}
                     </ng-container>
                 </td>
 

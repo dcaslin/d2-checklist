@@ -9,8 +9,8 @@
       <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
         [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
       <div style="text-align: left; margin-bottom: 20px" [class.warn-text]="node.data.hash == selectedTreeNodeHash" [id]="'tree-node-'+node.data.hash">
-        <i *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-        <i *ngIf="!node.data.acquired" class="far fa-square"></i>
+        <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected"></fa-icon>        
+        <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.acquired"></fa-icon>                
         {{node.data.name}} <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
         <br>
         <span class="simple-caption">
@@ -26,9 +26,9 @@
       </button>
       <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-branch-icon"
         [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
-      <div style="text-align: left" [id]="node.data.hash">
-        <i *ngIf="node.data.complete" class="accent-text mat-option.mat-selected fas fa-check-square"></i>
-        <i *ngIf="!node.data.complete" class="far fa-square"></i>
+      <div style="text-align: left" [id]="node.data.hash">        
+        <fa-icon [icon]="iconService.fasCheckSquare"  *ngIf="node.data.complete" class="accent-text mat-option.mat-selected"></fa-icon>        
+        <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
         {{node.data.name}}
         <span *ngIf="debugmode|async">{{node.data.hash}}</span>
         <span class="simple-caption">

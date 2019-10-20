@@ -4,6 +4,7 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BungieGroupMember } from '@app/service/model';
 import { ClanUserList } from '@app/clan/clan-state.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'd2c-clan-user-list-dialog',
@@ -11,6 +12,7 @@ import { ClanUserList } from '@app/clan/clan-state.service';
   styleUrls: ['./clan-user-list-dialog.component.scss']
 })
 export class ClanUserListDialogComponent extends ChildComponent implements OnInit {
+  public today =  moment(new Date());
   public title: string;
   public desc: string;
   public users: BungieGroupMember[];

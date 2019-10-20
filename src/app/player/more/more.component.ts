@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-more',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MoreComponent implements OnInit {
 
-  constructor() { }
+  constructor(public iconService: IconService) { }
 
   ngOnInit() {
   }

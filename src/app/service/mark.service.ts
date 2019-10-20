@@ -1,9 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
+import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
+import { faLevelUpAlt as fasLevelUpAlt, faSave as fasSave, faSyringe as fasSyringe, faTrashAlt as fasTrashAlt } from '@fortawesome/pro-solid-svg-icons';
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { IconService } from './icon.service';
 import { InventoryItem } from './model';
+
 
 @Injectable()
 export class MarkService implements OnDestroy {
@@ -17,7 +21,7 @@ export class MarkService implements OnDestroy {
 
     private unsubscribe$: Subject<void> = new Subject<void>();
 
-    constructor(private httpClient: HttpClient) {
+    constructor(private httpClient: HttpClient, private iconService: IconService) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};
@@ -59,22 +63,22 @@ export class MarkService implements OnDestroy {
         a.push({
             label: 'Upgrade',
             value: 'upgrade',
-            iconClass: 'fas fa-level-up-alt'
+            icon:  fasLevelUpAlt
         });
         a.push({
             label: 'Keep',
             value: 'keep',
-            iconClass: 'fas fa-save'
+            icon: fasSave
         });
         a.push({
             label: 'Infuse',
             value: 'infuse',
-            iconClass: 'icon-infuse'
+            icon: fasSyringe
         });
         a.push({
             label: 'Junk',
             value: 'junk',
-            iconClass: 'fas fa-trash-alt'
+            icon: fasTrashAlt
         });
         return a;
     }
@@ -224,7 +228,7 @@ export interface Marks {
 export interface MarkChoice {
     label: string;
     value: string;
-    iconClass: string;
+    icon: IconDefinition;
 }
 
 interface SaveResult {

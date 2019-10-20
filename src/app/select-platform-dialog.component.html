@@ -2,8 +2,8 @@
 <mat-dialog-content>
   
   <div *ngFor="let u of data" style="margin-bottom: 5px;">
-    <button style="width: 100%" color="primary" mat-raised-button [mat-dialog-close]="u">
-      <i [ngClass]="const.PLATFORMS_DICT[u.membershipType+''].iconClass"></i>&ensp;
+    <button style="width: 100%" color="primary" mat-raised-button [mat-dialog-close]="u">      
+      <fa-icon [icon]="PLATFORMS_DICT[u.membershipType+''].icon"></fa-icon>&ensp;
       {{u.platformName}}
     </button>
   </div>

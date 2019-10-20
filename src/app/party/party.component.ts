@@ -9,6 +9,8 @@ import { BungieService } from '../service/bungie.service';
 import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
+import { IconService } from '@app/service/icon.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'd2c-party',
@@ -17,6 +19,7 @@ import { ChildComponent } from '../shared/child.component';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PartyComponent extends ChildComponent implements OnInit, OnDestroy {
+  public today =  moment(new Date());
 
   DamageType = DamageType;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -24,6 +27,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
   public _party: BehaviorSubject<PartyPlayer[]> = new BehaviorSubject([]);
 
   constructor(public bungieService: BungieService,
+    public iconService: IconService,
     storageService: StorageService,
     private route: ActivatedRoute, private router: Router,
     public dialog: MatDialog) {
@@ -36,7 +40,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
     });
   }
 
-  private async loadPlayer(likelyMembershipType: number, pp: PartyPlayer): Promise<void> {
+  public async loadPlayer(likelyMembershipType: number, pp: PartyPlayer): Promise<void> {
     try {
       if (pp.errMsg) {
         pp.errMsg = null;

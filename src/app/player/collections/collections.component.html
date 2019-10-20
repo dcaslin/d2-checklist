@@ -3,10 +3,10 @@
     <i class="icon-collections"></i><span class="d-none d-md-inline">&ensp;Collections</span>
   </a>
   <a mat-tab-link routerLink="search" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-    <i class="far fa-search"></i><span class="d-none d-md-inline">&ensp;Search</span>
+    <fa-icon [icon]="iconService.farSearch"></fa-icon><span class="d-none d-md-inline">&ensp;Search</span>
   </a>
   <a mat-tab-link routerLink="badges" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-    <i class="far fa-badge-check"></i><span class="d-none d-md-inline">&ensp;Badges</span>
+    <fa-icon [icon]="iconService.farBadgeCheck"></fa-icon><span class="d-none d-md-inline">&ensp;Badges</span>
   </a>
 </nav>
 <router-outlet></router-outlet>

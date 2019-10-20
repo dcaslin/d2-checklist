@@ -6,6 +6,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-collection-badge',
@@ -18,6 +19,7 @@ export class CollectionBadgeComponent extends ChildComponent implements OnInit {
   public _badge: BehaviorSubject<Badge> = new BehaviorSubject<Badge>(null);
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService,
     private route: ActivatedRoute) {
     super(storageService);

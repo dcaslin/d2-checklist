@@ -1,10 +1,12 @@
 <ng-container *ngIf="!hidden">
-  <button mat-button [matMenuTriggerFor]="menu" [class.warn-text]="!isAllSelected"><i [class]="iconClass"></i>
+  <button mat-button [matMenuTriggerFor]="menu" [class.warn-text]="!isAllSelected">
+    <fa-icon *ngIf="icon" [icon]="icon"></fa-icon>
+    <i *ngIf="iconClass" [class]="iconClass"></i>
     <span class="hide-mobile-inline">&ensp;{{title}}</span>
   </button>
   <mat-menu #menu="matMenu">
     <button *ngIf="!isAllSelected" mat-menu-item (click)="selectAll()">
-      <i class="fas fa-times"></i>
+      <fa-icon [icon]="iconService.fasTimes"></fa-icon>
       Clear Filter
     </button>
     <a *ngFor="let choice of choices" mat-menu-item (click)="exclusiveSelect(choice)">

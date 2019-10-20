@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
 import { Sort } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-clan-info',
@@ -78,6 +79,7 @@ export class ClanInfoComponent extends ChildComponent implements OnInit {
   }
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     public state: ClanStateService) {
     super(storageService);
     this.state.rawMembers.pipe(

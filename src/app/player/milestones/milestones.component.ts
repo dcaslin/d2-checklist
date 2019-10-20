@@ -4,6 +4,8 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../player-state.service';
+import { IconService } from '@app/service/icon.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'd2c-milestones',
@@ -12,11 +14,13 @@ import { PlayerStateService } from '../player-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {
+  public today =  moment(new Date());
   hideCompleteChars: string = null;
   Const = Const;
 
   constructor(
     storageService: StorageService,
+    public iconService: IconService,
     public state: PlayerStateService) {
     super(storageService);
   }

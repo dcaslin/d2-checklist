@@ -8,6 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Const, Platform } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-home',
@@ -28,6 +29,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   constructor(
     private destinyCacheService: DestinyCacheService,
+    public iconService: IconService,
     storageService: StorageService,
     private weekService: WeekService,
     private router: Router,

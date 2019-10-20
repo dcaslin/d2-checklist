@@ -20,5 +20,8 @@
       "es2016",
       "dom"
     ]
+  }, 
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true
   }
 }
