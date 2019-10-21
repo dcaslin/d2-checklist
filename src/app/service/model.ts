@@ -558,6 +558,7 @@ export class Player {
         this.artifactPowerBonus = artifactPowerBonus;
         this.transitoryData = transitoryData;
         if (accountProgressions != null) {
+            let prestige: Progression = null;
             for (const ap of accountProgressions) {
                 // valor
                 if (ap.hash == '2626549951') {
@@ -568,7 +569,15 @@ export class Player {
                     this.glory = ap;
                 } else if (ap.hash == '1628407317') {
                     this.seasonRank = ap;
+                } else if (ap.hash == '3184735011') {
+                    prestige = ap;
                 }
+            }
+            if (prestige != null && this.seasonRank != null) {
+                prestige.level += this.seasonRank.level;
+                prestige.weeklyProgress += this.seasonRank.weeklyProgress;
+                prestige.dailyProgress += this.seasonRank.dailyProgress;
+                this.seasonRank = prestige;
             }
         }
 
