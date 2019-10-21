@@ -367,7 +367,7 @@ export class ParseService {
         // only progression we care about right now are Legend, Glory, Valor, and Season Pass
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
-                if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '1628407317') {
+                if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '1628407317' || key === '3184735011') {
                     const p: PrivProgression = _prog.progressions[key];
                     let suppProg: PrivProgression = null;
                     if (key === '2626549951') { // VALOR
@@ -386,6 +386,17 @@ export class ParseService {
                                 'hasIcon': true,
                                 'icon': '/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png',
                                 'name': 'Season Rank'
+                            }
+                        };
+                    }
+                    if (key === '3184735011') { // Season of Undying
+                        progDesc = {
+                            'displayProperties': {
+                                'description': 'Season of the Undying Prestige Progress',
+                                'displayUnitsName': '',
+                                'hasIcon': true,
+                                'icon': '/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png',
+                                'name': 'Season Prestige'
                             }
                         };
                     }
@@ -2140,7 +2151,7 @@ export class ParseService {
                 currentActivity: _transData.currentActivity,
                 joinability: _transData.joinability
             };
-        }
+        }       
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
