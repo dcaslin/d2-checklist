@@ -16,6 +16,8 @@ import { ChildComponent } from '../../shared/child.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
+import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
+import { PreferredStatService } from '@app/service/preferred-stat.service';
 
 
 @Component({
@@ -248,6 +250,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private notificationService: NotificationService,
     public dialog: MatDialog,
     private targetPerkService: TargetPerkService,
+    public preferredStatService: PreferredStatService,
     private ref: ChangeDetectorRef) {
     super(storageService);
     this.loading.next(true);
@@ -272,7 +275,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           this.load();
         }
       });
-
+    this.preferredStatService.stats.pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(x => {
+        if (this._player.getValue() != null) {
+          this.preferredStatService.processGear(this._player.getValue());
+          this.load();
+        }
+      });
   }
 
   public updateHighlightAllPerks() {
@@ -870,8 +880,11 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       .subscribe(() => {
         this.filtersDirty = this.checkFilterDirty();
         try {
-          this.option = this.optionsgroup.value;
-          this.filterGear();
+          if (this.optionsgroup){
+            this.option = this.optionsgroup.value;
+            this.filterGear();
+          }
+          
         } catch (e) {
           console.log('Error filtering: ' + e);
         }
@@ -917,6 +930,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     };
     this.dialog.open(TargetArmorPerksDialogComponent, dc);
   }
+
+  public showTargetArmorStats(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+    };
+    this.dialog.open(TargetArmorStatsDialogComponent, dc);
+  }
+
 
   public showUtilities(): void {
     const dc = new MatDialogConfig();

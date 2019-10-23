@@ -24,10 +24,6 @@ export class TargetArmorPerksDialogComponent implements OnInit {
     choices.push(new Choice('Melee', 'Melee', true));
     choices.push(new Choice('Grenade', 'Grenade', true));
     choices.push(new Choice('Ability', 'Ability', true));
-    const d = {};
-    for (const c of choices) {
-      d[c.matchValue.toLowerCase()] = '';
-    }
     this.targetChoices = choices;
     this.target = this.targetPerkService.perks.value;
     dialogRef.afterClosed().subscribe(result => {

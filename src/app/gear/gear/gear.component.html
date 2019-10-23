@@ -1,12 +1,12 @@
 <div class="childComponent">
   <div class="childVert">
     <div class="main">
-      <!-- <p class="simple-caption">
-        <span class="warn-text">This is alpha code, still a work in progress</span>
-      </p> -->
+
       <div class="fixed-spinner">
-        <fa-icon *ngIf="(loading|async)===true || (gearService.loading|async)===true" [icon]="iconService.farSpinner" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
-        <fa-icon *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)" [icon]="iconService.fasCog" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
+        <fa-icon *ngIf="(loading|async)===true || (gearService.loading|async)===true" [icon]="iconService.farSpinner"
+          [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
+        <fa-icon *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)"
+          [icon]="iconService.fasCog" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
       </div>
       <ng-container *ngIf="_player|async as player">
 
@@ -26,10 +26,11 @@
         </mat-button-toggle-group>
         <div>
           <a href="https://www.reddit.com/r/destinychecklistnet/comments/dhhs94/d2checklist_gear_manager_perks_and_god_rolls/?"
-            target="_blank" class="warn-text important-note header-link" rel="noopener">Important notes</a>
+            target="_blank" class="important-note header-link" rel="noopener">Important notes</a>
           <a href="https://old.reddit.com/r/sharditkeepit/comments/dhihw1/so_you_think_you_have_a_god_roll/"
             class="header-link" target="_blank" rel="noopener">pandapaxxy guides</a>
         </div>
+
         <ng-container *ngIf="(loading|async)===false && selectedUser==null">
           <h2>Bungie Authentication Required</h2>
           <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
@@ -40,7 +41,8 @@
 
         <div style="margin: 10px" [hidden]="selectedUser==null">
           <mat-form-field class="searchField">
-            <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter" (keyup)="filterKeyUp.next()">
+            <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter"
+              (keyup)="filterKeyUp.next()">
             <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
               (click)="visibleFilterText=null;parseWildcardFilter()">
               <mat-icon>close</mat-icon>
@@ -107,8 +109,9 @@
           <a mat-button (click)="load()">
             <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
           </a>
-          <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorPerks()">
-            <fa-icon [icon]="iconService.fasStar"></fa-icon><span class="hide-mobile-inline">&nbsp;Target Perks</span>
+          <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorStats()">
+            <fa-icon [icon]="iconService.fasStar"></fa-icon><span class="hide-mobile-inline">&nbsp;Preferred
+              Stats</span>
           </button>
           <button mat-button [matMenuTriggerFor]="menuMoreOptions">
             <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
@@ -123,10 +126,11 @@
                 {{player.characters[0].label}}
               </button>
             </ng-container>
-            <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                <button mat-menu-item [matMenuTriggerFor]="menuBulkTag">
-                    <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;Tag Current rows
-                  </button>
+            <ng-container
+              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+              <button mat-menu-item [matMenuTriggerFor]="menuBulkTag">
+                <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;Tag Current rows
+              </button>
             </ng-container>
             <button mat-menu-item [matMenuTriggerFor]="menuBulk">
               <fa-icon [icon]="iconService.fasForklift"></fa-icon>&ensp;Bulk Operations
@@ -148,18 +152,18 @@
             </button>
 
           </mat-menu>
-          
+
           <mat-menu #menuBulkTag="matMenu">
-              <ng-container *ngFor="let mc of markService.markChoices">
-                  <button mat-menu-item (click)="markCurrentRows(mc.value)">
-                      <fa-icon [icon]="mc.icon"></fa-icon>&ensp; {{mc.label}}
-                  </button>
-              </ng-container>
-              <button mat-menu-item (click)="markCurrentRows(null)">
-                  Remove Mark
+            <ng-container *ngFor="let mc of markService.markChoices">
+              <button mat-menu-item (click)="markCurrentRows(mc.value)">
+                <fa-icon [icon]="mc.icon"></fa-icon>&ensp; {{mc.label}}
               </button>
+            </ng-container>
+            <button mat-menu-item (click)="markCurrentRows(null)">
+              Remove Mark
+            </button>
           </mat-menu>
-            
+
           <mat-menu #menuBulk="matMenu">
             <button mat-menu-item (click)="showBulkOperationHelp()">
               <span class="warn-text">
@@ -223,23 +227,21 @@
               <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('energyCapacity')">Energy</a>
               </th>
-              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                <a href="javascript:void(0)" (click)="sort('totalStatPoints')">Points</a>
-              </th>
               <th class="limited-gear-width hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                 <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
               </th>
-              <th class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Weapon">
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                 <a href="javascript:void(0)" (click)="sort('masterwork')">Masterwork</a>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 <a href="javascript:void(0)" (click)="sort('mods')">Mod</a>
               </th>
-              <th class="hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Armor">
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('preferredStatPoints')">Points</a>
+              </th>
+              <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
                 Stats
               </th>
               <th class="hide-mobile-table-cell"
@@ -390,16 +392,12 @@
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
                   {{i.energyCapacity}}
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                  {{i.totalStatPoints}}
-                </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                   <button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
                     </fa-icon></button>
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell"
-                  *ngIf="option.type==ItemType.Weapon">
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
                     matTooltipClass="preserve-white-space">
 
@@ -410,40 +408,51 @@
                     <mat-progress-bar *ngIf="option.type == ItemType.Weapon" mode="determinate"
                       [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
                     </mat-progress-bar>
-                    <mat-progress-bar *ngIf="option.type == ItemType.Armor" mode="determinate"
+                    <!-- <mat-progress-bar *ngIf="option.type == ItemType.Armor" mode="determinate"
                       [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
-                    </mat-progress-bar>
+                    </mat-progress-bar> -->
                   </div>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
-                    <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
-                    {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
-                    <div *ngIf="mod.objectives && mod.objectives.length" class="mod-obj">
-                      <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
-                      <div class="left" *ngFor="let obj of mod.objectives">
-                        <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
-                          class="accent-text mat-option.mat-selected"></fa-icon>
-                        <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
-                        {{obj.progressDescription}}
-                        <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                        <mat-progress-bar class="bounty-progress"
-                          *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
-                          [value]="100*obj.progress/obj.completionValue">
-                        </mat-progress-bar>
-                      </div>
+                  <ng-container *ngFor="let mod of i.mods; last as isLastMod">
+                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
+                      <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
+                      {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
+                      <!-- <div *ngIf="mod.objectives && mod.objectives.length" class="mod-obj">
+                            <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
+                            <div class="left" *ngFor="let obj of mod.objectives">
+                              <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
+                                class="accent-text mat-option.mat-selected"></fa-icon>
+                              <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
+                              {{obj.progressDescription}}
+                              <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                              <mat-progress-bar class="bounty-progress"
+                                *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                                [value]="100*obj.progress/obj.completionValue">
+                              </mat-progress-bar>
+                            </div>
+                          </div> -->
                     </div>
-                  </div>
+                  </ng-container>
+
                 </td>
-                <td class="hide-mobile-table-cell"
-                  *ngIf="option.type==ItemType.Armor">
-                  <table>
-                    <tbody >
-                      <tr class="stat-table" *ngFor="let stat of i.stats">
-                        <td>{{stat.name}}</td>
-                        <td>{{stat.value}}</td>
-                      </tr>
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                  {{i.preferredStatPoints}}
+                  <div class="simple-caption">{{i.totalStatPoints}} total</div>
+                </td>
+                <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                  <table class="stat-table">
+                    <tbody>
+                      <ng-container *ngFor="let stat of i.stats">
+                        <tr *ngIf="preferredStatService.isPreferred(stat, true)">
+                          <td>{{stat.name}}</td>
+                          <td>{{stat.value}} 
+                            <span *ngIf="stat.enhancement" class="simple-caption-no-margin"> +{{stat.enhancement}}</span>
+                          </td>
+                        </tr>
+                      </ng-container>
+
                     </tbody>
                   </table>
                 </td>
