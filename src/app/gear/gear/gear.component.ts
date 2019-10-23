@@ -1,21 +1,21 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA } from '@angular/material';
+import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
 import { BungieService } from '@app/service/bungie.service';
 import { GearService } from '@app/service/gear.service';
+import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
 import { ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { TargetPerkService } from '@app/service/target-perk.service';
 import { WishlistService } from '@app/service/wishlist.service';
 import { ClipboardService } from 'ngx-clipboard';
-import { BehaviorSubject, fromEvent as observableFromEvent, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
+import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { Choice, GearToggleComponent } from './gear-toggle.component';
-import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
-import { IconService } from '@app/service/icon.service';
 
 
 @Component({
@@ -93,7 +93,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   @ViewChild('rarityToggle', { static: false })
   public rarityToggle: GearToggleComponent;
 
-  filters: GearToggleComponent[] = [];
+  // filters: GearToggleComponent[] = [];
   filtersDirty = false;
   filterNotes: string[] = [];
 
@@ -111,7 +111,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
 
   selectedUser: SelectedUser = null;
-  player: Player = null;
+  public _player: BehaviorSubject<Player> = new BehaviorSubject(null);
+  public filterKeyUp: Subject<void> = new Subject();
   visibleFilterText = null;
 
   @ViewChild('filter', { static: false })
@@ -157,11 +158,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   resetFilters(): void {
-    this.filter.nativeElement.value = '';
+    if (this.filter) {
+      this.filter.nativeElement.value = '';
+    }
     this.visibleFilterText = null;
     this.filterTags = [];
     this.orMode = false;
-    for (const toggle of this.filters) {
+    const filters = this.grabFilters();
+    for (const toggle of filters) {
       toggle.selectAll(true);
     }
     this.filterChanged();
@@ -201,6 +205,11 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     this.clipboardService.copyFromContent(markdown);
     this.notificationService.success('Copied ' + this.gearToShow.length + ' items to clipboard');
+  }
+
+  async moveAllVisible(target: Target) {
+    await this.gearService.bulkMove(this._player.getValue(), this.gearToShow, target);
+    await this.load(true);
   }
 
   private toMarkDown(i: InventoryItem, cntr?: number): string {
@@ -258,8 +267,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.targetPerkService.perks.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
-        if (this.player != null) {
-          this.targetPerkService.processGear(this.player);
+        if (this._player.getValue() != null) {
+          this.targetPerkService.processGear(this._player.getValue());
           this.load();
         }
       });
@@ -310,7 +319,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async syncLocks() {
     await this.load();
-    await this.gearService.processGearLocks(this.player);
+    await this.gearService.processGearLocks(this._player.getValue());
     this.filterChanged();
   }
 
@@ -344,6 +353,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.noteChanged.next(item);
   }
 
+  markCurrentRows(marking: string) {
+    const items = this.gearToShow;
+    for (const item of this.gearToShow) {
+      item.mark = marking;
+      this.markService.updateItem(item);
+    }
+    this.filterChanged();
+  }
+
   mark(marking: string, item: InventoryItem) {
     if (marking === item.mark) { marking = null; }
     item.mark = marking;
@@ -352,7 +370,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   showCopies(i: InventoryItem) {
-    const copies = this.gearService.findCopies(i, this.player);
+    const copies = this.gearService.findCopies(i, this._player.getValue());
     this.openGearDialog(copies);
   }
 
@@ -445,7 +463,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   checkFilterDirty() {
     if (this.filterTags.length > 0) { return true; }
-    for (const toggle of this.filters) {
+    const filters = this.grabFilters();
+    for (const toggle of filters) {
       if (!toggle.isAllSelected) { return true; }
     }
     return false;
@@ -605,8 +624,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   filterGear() {
     this.filterNotes = [];
-    if (this.player == null) { return; }
-    let tempGear = this.player.gear.filter(i => i.type == this.option.type);
+    if (this._player.getValue() == null) { return; }
+    let tempGear = this._player.getValue().gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
     tempGear = this.toggleFilter(tempGear);
     if (this.sortBy == 'masterwork' || this.sortBy == 'mods') {
@@ -671,19 +690,19 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async shardMode(weaponsOnly?: boolean) {
     await this.load(true);
-    await this.gearService.shardMode(this.player, weaponsOnly);
+    await this.gearService.shardMode(this._player.getValue(), weaponsOnly);
     await this.load(true);
     await this.syncLocks();
   }
 
   public async clearInv(weaponsOnly?: boolean) {
     await this.load(true);
-    await this.gearService.clearInv(this.player, weaponsOnly);
+    await this.gearService.clearInv(this._player.getValue(), weaponsOnly);
   }
 
   public async upgradeMode(weaponsOnly?: boolean) {
     await this.load(true);
-    await this.gearService.upgradeMode(this.player, weaponsOnly);
+    await this.gearService.upgradeMode(this._player.getValue(), weaponsOnly);
     await this.load(true);
     await this.syncLocks();
   }
@@ -696,9 +715,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     try {
       if (this.selectedUser == null) {
-        this.player = null;
+        this._player.next(null);
       } else {
-        this.player = await this.gearService.loadGear(this.selectedUser);
+        const p = await this.gearService.loadGear(this.selectedUser);
+        this._player.next(p);
       }
       this.generateChoices();
       this.filterChanged();
@@ -709,22 +729,22 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private generateChoices(force?: boolean) {
-    if (this.player == null) { return; }
-    if (this.player.gear == null) { return; }
-    if (this.player.gear.length == 0) { return; }
+    if (this._player.getValue() == null) { return; }
+    if (this._player.getValue().gear == null) { return; }
+    if (this._player.getValue().gear.length == 0) { return; }
     if (this.weaponTypeChoices.length > 0 && !force) { return; }
 
     const tempOwners = [];
-    for (const char of this.player.characters) {
+    for (const char of this._player.getValue().characters) {
       tempOwners.push(new Choice(char.id, char.label));
     }
-    tempOwners.push(new Choice(this.player.vault.id, this.player.vault.label));
-    tempOwners.push(new Choice(this.player.shared.id, this.player.shared.label));
+    tempOwners.push(new Choice(this._player.getValue().vault.id, this._player.getValue().vault.label));
+    tempOwners.push(new Choice(this._player.getValue().shared.id, this._player.getValue().shared.label));
     this.ownerChoices = tempOwners;
 
     const temp: any = {};
     temp['rarity'] = {};
-    for (const i of this.player.gear) {
+    for (const i of this._player.getValue().gear) {
       if (temp[i.type + ''] == null) {
         temp[i.type + ''] = [];
       }
@@ -761,15 +781,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   async loadMarks() {
     await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
       this.selectedUser.userInfo.membershipId);
-    if (this.player != null) {
-      this.markService.processItems(this.player.gear);
+    if (this._player.getValue() != null) {
+      this.markService.processItems(this._player.getValue().gear);
     }
   }
 
   async loadWishlist() {
     await this.wishlistService.init(this.wishlistOverridePveUrl, this.wishlistOverridePvpUrl);
-    if (this.player != null) {
-      this.wishlistService.processItems(this.player.gear);
+    if (this._player.getValue() != null) {
+      this.wishlistService.processItems(this._player.getValue().gear);
     }
     this.filterChanged();
   }
@@ -795,31 +815,53 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
     }
     this.filterChanged();
+  }
 
+  public handlePage(x: PageEvent) {
+    this.page = x.pageIndex;
+    this.size = x.pageSize;
+    this.filterChanged();
+  }
+
+  private grabFilters(): GearToggleComponent[] {
+    const filters = [];
+    if (this.markToggle) { filters.push(this.markToggle); }
+    if (this.weaponTypeToggle) { filters.push(this.weaponTypeToggle); }
+    if (this.ammoTypeToggle) { filters.push(this.ammoTypeToggle); }
+    if (this.armorTypeToggle) { filters.push(this.armorTypeToggle); }
+    if (this.vehicleTypeToggle) { filters.push(this.vehicleTypeToggle); }
+    if (this.modTypeToggle) { filters.push(this.modTypeToggle); }
+    if (this.consumableTypeToggle) { filters.push(this.consumableTypeToggle); }
+    if (this.exchangeTypeToggle) { filters.push(this.exchangeTypeToggle); }
+    if (this.ownerToggle) { filters.push(this.ownerToggle); }
+    if (this.equippedToggle) { filters.push(this.equippedToggle); }
+    if (this.rarityToggle) { filters.push(this.rarityToggle); }
+    if (this.classTypeToggle) { filters.push(this.classTypeToggle); }
+    return filters;
   }
 
   ngAfterViewInit() {
 
-    this.filters.push(this.markToggle);
-    this.filters.push(this.weaponTypeToggle);
-    this.filters.push(this.ammoTypeToggle);
-    this.filters.push(this.armorTypeToggle);
-    this.filters.push(this.vehicleTypeToggle);
-    this.filters.push(this.modTypeToggle);
-    this.filters.push(this.consumableTypeToggle);
-    this.filters.push(this.exchangeTypeToggle);
-    this.filters.push(this.ownerToggle);
-    this.filters.push(this.equippedToggle);
-    this.filters.push(this.rarityToggle);
-    this.filters.push(this.classTypeToggle);
+    // this.filters.push(this.markToggle);
+    // this.filters.push(this.weaponTypeToggle);
+    // this.filters.push(this.ammoTypeToggle);
+    // this.filters.push(this.armorTypeToggle);
+    // this.filters.push(this.vehicleTypeToggle);
+    // this.filters.push(this.modTypeToggle);
+    // this.filters.push(this.consumableTypeToggle);
+    // this.filters.push(this.exchangeTypeToggle);
+    // this.filters.push(this.ownerToggle);
+    // this.filters.push(this.equippedToggle);
+    // this.filters.push(this.rarityToggle);
+    // this.filters.push(this.classTypeToggle);
 
-    this.paginator.page.pipe(
-      takeUntil(this.unsubscribe$))
-      .subscribe(x => {
-        this.page = x.pageIndex;
-        this.size = x.pageSize;
-        this.filterChanged();
-      });
+    // this.paginator.page.pipe(
+    //   takeUntil(this.unsubscribe$))
+    //   .subscribe(x => {
+    //     this.page = x.pageIndex;
+    //     this.size = x.pageSize;
+    //     this.filterChanged();
+    //   });
 
 
     this.filterChangedSubject.pipe(
@@ -851,10 +893,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.visibleFilterText = gFilter;
     }
     this.parseWildcardFilter();
-    observableFromEvent(this.filter.nativeElement, 'keyup').pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(150),
-      distinctUntilChanged())
+    this.filterKeyUp.pipe(takeUntil(this.unsubscribe$),
+      debounceTime(150))
       .subscribe(() => {
         this.parseWildcardFilter();
       });
@@ -1050,7 +1090,7 @@ export class BulkOperationsHelpDialogComponent {
 export class GearHelpDialogComponent {
 
   constructor(
-    
+
     public iconService: IconService,
     public dialogRef: MatDialogRef<GearHelpDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {

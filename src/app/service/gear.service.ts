@@ -164,6 +164,22 @@ export class GearService {
         return copies;
     }
 
+    public async bulkMove(player: Player, items: InventoryItem[], target: Target) {
+        console.log('Moving ' + items.length + ' items.');
+        const buckets = this.bucketService.getBuckets(target);
+        for (const i of items) {
+            try {
+                if (target.id !== i.owner.id) {
+                    this.notificationService.info('Moving ' + i.name + ' to ' + target.label);
+                    await this.transfer(player, i, target);
+                }
+            } catch (e) {
+                // ignore
+                console.log('Error moving ' + i.name + ': ' + e);
+            }
+        }
+    }
+
     public async clearInv(player: Player, weaponsOnly?: boolean) {
         const target = player.characters[0];
         const totalErr = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], weaponsOnly);
