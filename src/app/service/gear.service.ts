@@ -7,6 +7,7 @@ import { WishlistService } from './wishlist.service';
 import { NotificationService } from './notification.service';
 import { BehaviorSubject } from 'rxjs';
 import { TargetPerkService } from './target-perk.service';
+import { PreferredStatService } from './preferred-stat.service';
 
 @Injectable()
 export class GearService {
@@ -17,7 +18,8 @@ export class GearService {
         private notificationService: NotificationService,
         private bucketService: BucketService,
         private wishlistService: WishlistService,
-        private targetPerkService: TargetPerkService) {
+        private targetPerkService: TargetPerkService,
+        private preferredStatService: PreferredStatService) {
     }
 
     public async loadGear(selectedUser: SelectedUser): Promise<Player> {
@@ -46,6 +48,7 @@ export class GearService {
             this.markService.processItems(player.gear);
             this.wishlistService.processItems(player.gear);
             this.targetPerkService.processGear(player);
+            this.preferredStatService.processGear(player);
             return player;
         } finally {
             this.loading.next(false);
@@ -395,6 +398,7 @@ export class GearService {
                 this.canEquip(itm);
                 this.canEquip(oldEquipped);
                 // any time we change equips we need to revisit current perks
+                // this is b/c we differentiate between currently equipped perks
                 if (itm.type === ItemType.Armor) {
                     this.targetPerkService.processGear(player);
                 }

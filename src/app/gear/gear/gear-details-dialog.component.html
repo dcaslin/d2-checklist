@@ -4,7 +4,7 @@
         class="simple-caption-no-margin hide-mobile-inline">{{items[0].desc}}</span>
 </div>
 <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
-<mat-dialog-content>
+<mat-dialog-content *ngIf="parent._player as player">
     <table class="gear-table mark-table">
         <tbody>
             <tr>
@@ -18,15 +18,15 @@
                         </a>
                         <mat-menu #itemMenu="matMenu">
                             <button mat-menu-item *ngIf="i.postmaster"
-                                (click)="parent.pullFromPostmaster(parent.player, i)">
+                                (click)="parent.pullFromPostmaster(player, i)">
                                 <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
                             </button>
                             <ng-container *ngIf="!i.postmaster">
-                                <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(parent.player, i)">
+                                <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(player, i)">
                                         <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{i.owner.label}}
                                 </button>
                                 <button mat-menu-item *ngFor="let target of i.options"
-                                    (click)="parent.transfer(parent.player, i, target)">
+                                    (click)="parent.transfer(player, i, target)">
                                     <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
                                 </button>
                             </ng-container>

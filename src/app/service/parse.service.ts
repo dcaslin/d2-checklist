@@ -2151,7 +2151,7 @@ export class ParseService {
                 currentActivity: _transData.currentActivity,
                 joinability: _transData.joinability
             };
-        }       
+        }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -2736,9 +2736,24 @@ export class ParseService {
             }
         }
         const name = plugDesc.displayProperties.name.replace('_', ' ');
-        return new InventoryPlug(plugDesc.hash,
+        const returnMe = new InventoryPlug(plugDesc.hash,
             name, desc,
             plugDesc.displayProperties.icon, true);
+
+        if (plugDesc.investmentStats && plugDesc.investmentStats.length > 0) {
+            for (const invStat of plugDesc.investmentStats) {
+
+                const statHash = invStat.statTypeHash;
+                const statDesc: any = this.destinyCacheService.cache.Stat[statHash];
+                if (statDesc == null) {
+                    continue;
+                }
+                const stat = new InventoryStat(statDesc.displayProperties.name,
+                    statDesc.displayProperties.description, invStat.value, null);
+                returnMe.inventoryStats.push(stat);
+            }
+        }
+        return returnMe;
     }
 
     private getPlugName(plugDesc: any): string {
@@ -3167,8 +3182,22 @@ export class ParseService {
                 searchText += desc.itemTypeDisplayName;
             }
             searchText = searchText.toLowerCase();
-            for (const s of stats) {
-                totalStatPoints += s.value;
+
+            if (type === ItemType.Armor) {
+                for (const s of stats) {
+                    for (const m of mods) {
+                        if (m.name.startsWith(s.name)) {
+                            if (m.inventoryStats && m.inventoryStats.length > 0) {
+                                for (const stat of m.inventoryStats) {
+                                    if (stat.name == s.name && stat.value > 0) {
+                                        s.enhancement = stat.value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    totalStatPoints += s.value;
+                }
             }
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,

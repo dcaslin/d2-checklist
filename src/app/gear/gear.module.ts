@@ -7,18 +7,19 @@ import { TargetArmorPerksDialogComponent } from './target-armor-perks-dialog/tar
 import { GodRollPlugComponent } from './god-roll-plug/god-roll-plug.component';
 import { GodRollItemComponent } from './god-roll-item/god-roll-item.component';
 import { PossibleRollsDialogComponent } from './possible-rolls-dialog/possible-rolls-dialog.component';
+import { TargetArmorStatsDialogComponent } from './target-armor-stats-dialog/target-armor-stats-dialog.component';
 
 @NgModule({
   imports: [
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearDetailsDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorPerksDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent],
+    ArmorPerksDialogComponent, TargetArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent],
   entryComponents: [
     PossibleRollsDialogComponent,
     GearDetailsDialogComponent, GearHelpDialogComponent,
     BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorPerksDialogComponent
+    ArmorPerksDialogComponent, TargetArmorPerksDialogComponent, TargetArmorStatsDialogComponent
   ],
 })
 export class GearModule  { }

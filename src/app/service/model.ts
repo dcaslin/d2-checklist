@@ -637,6 +637,7 @@ export class InventoryItem {
     public godRollPve = false;
     public godRollPvp = false;
     public noGodRollInfo = false;
+    public preferredStatPoints: number;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -1190,6 +1191,7 @@ export class InventoryStat {
     readonly desc: string;
     readonly value: number;
     baseValue: number;
+    enhancement: number;
 
     constructor(name, desc, value, baseValue) {
         this.name = name;
@@ -1232,6 +1234,7 @@ export class InventoryPlug {
     public alreadyEquipped = false;
     public desc: string;
     public selectedPossible = false; // used for possible roll screen only
+    public inventoryStats: InventoryStat[] = [];
 
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean, enabled?: boolean, objectives?: ItemObjective[]) {
         this.hash = hash;
