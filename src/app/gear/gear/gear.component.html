@@ -5,309 +5,423 @@
         <span class="warn-text">This is alpha code, still a work in progress</span>
       </p> -->
       <div class="fixed-spinner">
-        <mat-spinner class="loading" class="center-spinner"
-          *ngIf="(loading|async)===true || (gearService.loading|async)===true">
-        </mat-spinner>
-        <mat-spinner class="loading" class="center-spinner"
-          *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)">
-        </mat-spinner>
+        <fa-icon *ngIf="(loading|async)===true || (gearService.loading|async)===true" [icon]="iconService.farSpinner" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
+        <fa-icon *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)" [icon]="iconService.fasCog" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
       </div>
+      <ng-container *ngIf="_player|async as player">
 
-      <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
-        (change)="filterChanged()">
-        <mat-button-toggle *ngFor="let o of options" [value]="o">
-          
-          <fa-icon *ngIf="o.name=='Weapons'" [icon]="iconService.farAxeBattle"></fa-icon>
-          <fa-icon *ngIf="o.name=='Armor'" [icon]="iconService.farHelmetBattle"></fa-icon>
-          <i *ngIf="o.name=='Ghosts'" class="icon-ghost"></i>
-          <fa-icon *ngIf="o.name=='Vehicles'" [icon]="iconService.fasPlaneAlt"></fa-icon>
-          <i *ngIf="o.name=='Mods'" class="icon-modifications"></i>
-          <i *ngIf="o.name=='Consumable'" class="icon-consumables"></i>
-          <fa-icon *ngIf="o.name=='Material'" [icon]="iconService.farGem"></fa-icon>
-          <span class="d-none d-md-inline"> {{o.name}}</span>
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-      <div>
-        <a href="https://www.reddit.com/r/destinychecklistnet/comments/dhhs94/d2checklist_gear_manager_perks_and_god_rolls/?"
-          target="_blank" class="warn-text important-note header-link" rel="noopener">Important notes</a>
-        <a href="https://old.reddit.com/r/sharditkeepit/comments/dhihw1/so_you_think_you_have_a_god_roll/"
-          class="header-link" target="_blank" rel="noopener">pandapaxxy guides</a>
-      </div>
-      <ng-container *ngIf="(loading|async)===false && selectedUser==null">
-        <h2>Bungie Authentication Required</h2>
-        <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
-          site to access this info
-          (gear management is part of the private API, like what DIM uses). Click the "Sign In" button on the upper
-          right if you want to continue.</p>
-      </ng-container>
+        <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
+          (change)="filterChanged()">
+          <mat-button-toggle *ngFor="let o of options" [value]="o">
 
-      <div style="margin: 10px" [hidden]="selectedUser==null">
-        <mat-form-field class="searchField">
-          <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter">
-          <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
-            (click)="visibleFilterText=null;parseWildcardFilter()">
-            <mat-icon>close</mat-icon>
-          </button>
-          <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
-            <mat-icon>help_outline</mat-icon>
-          </button>
-        </mat-form-field>
-        <div class="filter-buttons">
-
-          <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
-            (change)="filterChanged()"
-            [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-
-
-          <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-
-          <d2c-gear-toggle #ammoTypeToggle iconClass="icon-ammo_x" title="Ammo" [choices]="ammoTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-
-
-          <d2c-gear-toggle #armorTypeToggle [icon]="iconService.fasHelmetBattle" title="Type" [choices]="armorTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasPlaneAlt" title="Type" [choices]="vehicleTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-
-          <d2c-gear-toggle #modTypeToggle [icon]="iconService.fasBookSpells" title="Type" [choices]="modTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #consumableTypeToggle [icon]="iconService.fasFlaskPotion" title="Type"
-            [choices]="consumableTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #exchangeTypeToggle [icon]="iconService.fasGem" title="Type" [choices]="exchangeTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #classTypeToggle [icon]="iconService.fasHoodCloak" title="Class" [choices]="classTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #ownerToggle [icon]="iconService.fasUsers" title="Owner" [choices]="ownerChoices"
-            (change)="filterChanged()">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #equippedToggle [icon]="iconService.fasTShirt" title="Equipped" [choices]="equippedChoices"
-            (change)="filterChanged()"
-            [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #rarityToggle [icon]="iconService.fasBalanceScale" title="Rarity" [choices]="rarityChoices"
-            (change)="filterChanged()">
-          </d2c-gear-toggle>
+            <fa-icon *ngIf="o.name=='Weapons'" [icon]="iconService.farAxeBattle"></fa-icon>
+            <fa-icon *ngIf="o.name=='Armor'" [icon]="iconService.farHelmetBattle"></fa-icon>
+            <i *ngIf="o.name=='Ghosts'" class="icon-ghost"></i>
+            <fa-icon *ngIf="o.name=='Vehicles'" [icon]="iconService.fasPlaneAlt"></fa-icon>
+            <i *ngIf="o.name=='Mods'" class="icon-modifications"></i>
+            <i *ngIf="o.name=='Consumable'" class="icon-consumables"></i>
+            <fa-icon *ngIf="o.name=='Material'" [icon]="iconService.farGem"></fa-icon>
+            <span class="d-none d-md-inline"> {{o.name}}</span>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+        <div>
+          <a href="https://www.reddit.com/r/destinychecklistnet/comments/dhhs94/d2checklist_gear_manager_perks_and_god_rolls/?"
+            target="_blank" class="warn-text important-note header-link" rel="noopener">Important notes</a>
+          <a href="https://old.reddit.com/r/sharditkeepit/comments/dhihw1/so_you_think_you_have_a_god_roll/"
+            class="header-link" target="_blank" rel="noopener">pandapaxxy guides</a>
         </div>
+        <ng-container *ngIf="(loading|async)===false && selectedUser==null">
+          <h2>Bungie Authentication Required</h2>
+          <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
+            site to access this info
+            (gear management is part of the private API, like what DIM uses). Click the "Sign In" button on the upper
+            right if you want to continue.</p>
+        </ng-container>
 
-        <a mat-button (click)="load()">
-          <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
-        </a>
-        <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorPerks()">
-          <fa-icon [icon]="iconService.fasStar"></fa-icon><span class="hide-mobile-inline">&nbsp;Target Perks</span>
-        </button>
-        <button mat-button [matMenuTriggerFor]="menuMoreOptions">
-          <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
-        </button>
-        <mat-menu #menuMoreOptions="matMenu" xPosition="before">
-          <button mat-menu-item [matMenuTriggerFor]="menuBulk">
-            <fa-icon [icon]="iconService.fasForklift"></fa-icon>&ensp;Bulk Operations
+        <div style="margin: 10px" [hidden]="selectedUser==null">
+          <mat-form-field class="searchField">
+            <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter" (keyup)="filterKeyUp.next()">
+            <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
+              (click)="visibleFilterText=null;parseWildcardFilter()">
+              <mat-icon>close</mat-icon>
+            </button>
+            <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
+              <mat-icon>help_outline</mat-icon>
+            </button>
+          </mat-form-field>
+          <div class="filter-buttons">
+
+            <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
+              (change)="filterChanged()"
+              [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+
+
+            <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
+              (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+            </d2c-gear-toggle>
+
+            <d2c-gear-toggle #ammoTypeToggle iconClass="icon-ammo_x" title="Ammo" [choices]="ammoTypeChoices"
+              (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+            </d2c-gear-toggle>
+
+
+            <d2c-gear-toggle #armorTypeToggle [icon]="iconService.fasHelmetBattle" title="Type"
+              [choices]="armorTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasPlaneAlt" title="Type"
+              [choices]="vehicleTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+
+            <d2c-gear-toggle #modTypeToggle [icon]="iconService.fasBookSpells" title="Type" [choices]="modTypeChoices"
+              (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #consumableTypeToggle [icon]="iconService.fasFlaskPotion" title="Type"
+              [choices]="consumableTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #exchangeTypeToggle [icon]="iconService.fasGem" title="Type"
+              [choices]="exchangeTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #classTypeToggle [icon]="iconService.fasHoodCloak" title="Class"
+              [choices]="classTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #ownerToggle [icon]="iconService.fasUsers" title="Owner" [choices]="ownerChoices"
+              (change)="filterChanged()">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #equippedToggle [icon]="iconService.fasTShirt" title="Equipped" [choices]="equippedChoices"
+              (change)="filterChanged()"
+              [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+            <d2c-gear-toggle #rarityToggle [icon]="iconService.fasBalanceScale" title="Rarity" [choices]="rarityChoices"
+              (change)="filterChanged()">
+            </d2c-gear-toggle>
+          </div>
+
+          <a mat-button (click)="load()">
+            <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
+          </a>
+          <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorPerks()">
+            <fa-icon [icon]="iconService.fasStar"></fa-icon><span class="hide-mobile-inline">&nbsp;Target Perks</span>
           </button>
-          <button mat-menu-item (click)="showUtilities()">
-            <fa-icon [icon]="iconService.fasCogs"></fa-icon>&ensp;Settings
+          <button mat-button [matMenuTriggerFor]="menuMoreOptions">
+            <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
           </button>
-          <button mat-menu-item (click)="showArmorPerks()">
-            <fa-icon [icon]="iconService.fasHelmetBattle"></fa-icon>&ensp;Show Armor Perks
-          </button>
-          <button mat-menu-item (click)="copyAllVisibleToClipboard()">
-            <fa-icon [icon]="iconService.fasCopy"></fa-icon>&ensp;Copy current rows for Reddit
-          </button>
-        </mat-menu>
-        <mat-menu #menuBulk="matMenu">
-          <button mat-menu-item (click)="showBulkOperationHelp()">
-            <span class="warn-text">
-              <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
-            </span>
-          </button>
-          <button mat-menu-item (click)="syncLocks()">
+          <mat-menu #menuMoreOptions="matMenu" xPosition="before">
+            <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+              <button mat-menu-item (click)="moveAllVisible(player.vault)">
+                <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to Vault
+              </button>
+              <button mat-menu-item (click)="moveAllVisible(player.characters[0])">
+                <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to
+                {{player.characters[0].label}}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                <button mat-menu-item [matMenuTriggerFor]="menuBulkTag">
+                    <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;Tag Current rows
+                  </button>
+            </ng-container>
+            <button mat-menu-item [matMenuTriggerFor]="menuBulk">
+              <fa-icon [icon]="iconService.fasForklift"></fa-icon>&ensp;Bulk Operations
+            </button>
+
+            <button mat-menu-item (click)="copyAllVisibleToClipboard()">
+              <fa-icon [icon]="iconService.fasCopy"></fa-icon>&ensp;Copy current rows for Reddit
+            </button>
+
+
+            <ng-container *ngIf="option.type==ItemType.Armor">
+              <button mat-menu-item (click)="showArmorPerks()">
+                <fa-icon [icon]="iconService.fasHelmetBattle"></fa-icon>&ensp;Show Armor Perks
+              </button>
+
+            </ng-container>
+            <button mat-menu-item (click)="showUtilities()">
+              <fa-icon [icon]="iconService.fasCogs"></fa-icon>&ensp;Settings
+            </button>
+
+          </mat-menu>
+          
+          <mat-menu #menuBulkTag="matMenu">
+              <ng-container *ngFor="let mc of markService.markChoices">
+                  <button mat-menu-item (click)="markCurrentRows(mc.value)">
+                      <fa-icon [icon]="mc.icon"></fa-icon>&ensp; {{mc.label}}
+                  </button>
+              </ng-container>
+              <button mat-menu-item (click)="markCurrentRows(null)">
+                  Remove Mark
+              </button>
+          </mat-menu>
+            
+          <mat-menu #menuBulk="matMenu">
+            <button mat-menu-item (click)="showBulkOperationHelp()">
+              <span class="warn-text">
+                <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
+              </span>
+            </button>
+            <button mat-menu-item (click)="syncLocks()">
               <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
             </button>
             <button mat-menu-item (click)="clearInv()">
-                <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Clear Inv
+              <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Clear Inv
             </button>
-          <button mat-menu-item (click)="clearInv(true)">
-            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Clear Inv (Weapons Only)
-          </button>
-          <button mat-menu-item (click)="shardMode()">
-            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode
-          </button>
-          <button mat-menu-item (click)="shardMode(true)">
-            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode (Weapons Only)
-          </button>
-          <button mat-menu-item (click)="upgradeMode()">
-            <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode
-          </button>
-          <button mat-menu-item (click)="upgradeMode(true)">
-            <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode (Weapons Only)
-          </button>
+            <button mat-menu-item (click)="clearInv(true)">
+              <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Clear Inv (Weapons Only)
+            </button>
+            <button mat-menu-item (click)="shardMode()">
+              <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode
+            </button>
+            <button mat-menu-item (click)="shardMode(true)">
+              <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode (Weapons Only)
+            </button>
+            <button mat-menu-item (click)="upgradeMode()">
+              <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode
+            </button>
+            <button mat-menu-item (click)="upgradeMode(true)">
+              <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode (Weapons Only)
+            </button>
 
-        </mat-menu>
-        <a mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()"><fa-icon [icon]="iconService.fasSave"></fa-icon></a>
-        <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
+          </mat-menu>
+          <a mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
+            <fa-icon [icon]="iconService.fasSave"></fa-icon>
+          </a>
+          <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
 
-          <fa-stack>
-            <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
-            <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
-          </fa-stack>
+            <fa-stack>
+              <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
+              <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
+            </fa-stack>
 
-        </a>
-        <span class="simple-caption">{{gearToShow.length}} / {{total}}</span>
-      </div>
-      <div *ngIf="debugmode|async">
-        <h5>Filters</h5>
-        <div *ngFor="let note of filterNotes">
-          {{note}}
+          </a>
+          <span class="simple-caption">{{gearToShow.length}} / {{total}}</span>
         </div>
-      </div>
-      <table class="gear-table mark-table">
-        <thead>
-          <tr>
-            <th class="limited-gear-width">
-              <a href="javascript:void(0)" (click)="sort('power')">Light</a>
-            </th>
-            <th class="limited-gear-width">
-              <a href="javascript:void(0)" (click)="sort('name')">Name</a>
-            </th>
-            <th class="limited-gear-width hide-mobile-table-cell">
-              <a href="javascript:void(0)" (click)="sort('typeName')">Type</a>
-            </th>
-            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-              <a href="javascript:void(0)" (click)="sort('energyCapacity')">Energy</a>
-            </th>
-            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-              <a href="javascript:void(0)" (click)="sort('totalStatPoints')">Points</a>
-            </th>
-            <th class="limited-gear-width hide-mobile-table-cell"
-              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
-            </th>
-            <th class="limited-gear-width hide-mobile-table-cell"
-              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-              <a href="javascript:void(0)" (click)="sort('masterwork')">Masterwork</a>
-            </th>
-            <th class="limited-gear-width hide-mobile-table-cell"
-              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-              <a href="javascript:void(0)" (click)="sort('mods')">Mod</a>
-            </th>
-            <th class="hide-mobile-table-cell"
-              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              Sockets
-            </th>
+        <div *ngIf="debugmode|async">
+          <h5>Filters</h5>
+          <div *ngFor="let note of filterNotes">
+            {{note}}
+          </div>
+        </div>
+        <table class="gear-table mark-table">
+          <thead>
+            <tr>
+              <th class="limited-gear-width">
+                <a href="javascript:void(0)" (click)="sort('power')">Light</a>
+              </th>
+              <th class="limited-gear-width">
+                <a href="javascript:void(0)" (click)="sort('name')">Name</a>
+              </th>
+              <th class="limited-gear-width hide-mobile-table-cell">
+                <a href="javascript:void(0)" (click)="sort('typeName')">Type</a>
+              </th>
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('energyCapacity')">Energy</a>
+              </th>
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('totalStatPoints')">Points</a>
+              </th>
+              <th class="limited-gear-width hide-mobile-table-cell"
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
+              </th>
+              <th class="limited-gear-width hide-mobile-table-cell"
+                *ngIf="option.type==ItemType.Weapon">
+                <a href="javascript:void(0)" (click)="sort('masterwork')">Masterwork</a>
+              </th>
+              <th class="limited-gear-width hide-mobile-table-cell"
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                <a href="javascript:void(0)" (click)="sort('mods')">Mod</a>
+              </th>
+              <th class="hide-mobile-table-cell"
+                *ngIf="option.type==ItemType.Armor">
+                Stats
+              </th>
+              <th class="hide-mobile-table-cell"
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                Sockets
+              </th>
 
-            <th class="limited-gear-width"
-              *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
-              <a href="javascript:void(0)" (click)="sort('quantity')">Quantity</a>
-            </th>
-            <th class="tag-cell"
-              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              Tag
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
-            <tr [ngClass]="i.mark">
-              <td class="limited-gear-width">
-                <div *ngIf="i.icon!=null" class="item-image"
-                  [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
-                  [class.masterworked]="i.masterworked">
-                  <div *ngIf="i.power>0" class="primary-stat"
-                    [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
-                    [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"
-                    [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
-                    {{i.power}}
+              <th class="limited-gear-width"
+                *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
+                <a href="javascript:void(0)" (click)="sort('quantity')">Quantity</a>
+              </th>
+              <th class="tag-cell"
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                Tag
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
+              <tr [ngClass]="i.mark">
+                <td class="limited-gear-width">
+                  <div *ngIf="i.icon!=null" class="item-image"
+                    [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+                    [class.masterworked]="i.masterworked">
+                    <div *ngIf="i.power>0" class="primary-stat"
+                      [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
+                      [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"
+                      [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
+                      {{i.power}}
+                    </div>
+                    <div class="gear-lock">
+                      <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked"
+                        (click)="gearService.setLock(player, i, false)"></fa-icon>
+                      <fa-icon [icon]="iconService.fasLockOpenAlt"
+                        *ngIf="!i.locked && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle)"
+                        (click)="gearService.setLock(player, i, true)"></fa-icon>
+                    </div>
+                    <div class="gear-equipped">
+                      <fa-icon [icon]="iconService.fasShieldCheck" *ngIf="i.equipped" title="Equipped"></fa-icon>
+                    </div>
                   </div>
-                  <div class="gear-lock">
-                    <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked" (click)="gearService.setLock(player, i, false)"></fa-icon>                    
-                    <fa-icon [icon]="iconService.fasLockOpenAlt" *ngIf="!i.locked && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle)"
-                    (click)="gearService.setLock(player, i, true)"></fa-icon>                      
+                  <br>
+                  <div class="mobile-only-block">
+                    <button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
+                      </fa-icon></button>
                   </div>
-                  <div class="gear-equipped">
-                    <fa-icon [icon]="iconService.fasShieldCheck"  *ngIf="i.equipped" title="Equipped"></fa-icon>
-                  </div>
-                </div>
-                <br>
-                <div class="mobile-only-block">
-                  <button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
-                    </fa-icon></button>
-                </div>
-              </td>
-              <td class="limited-gear-width">
-                <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
+                </td>
+                <td class="limited-gear-width">
+                  <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
 
-                <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
-                  class="item-name" href="javascript:void(0)" [matTooltip]="i.desc"
-                  matTooltipClass="preserve-white-space" (click)="showItem(i)">
-                  {{i.name}}
-                </a>
-                <span
-                  *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle"
-                  class="item-name" [matTooltip]="i.desc" matTooltipClass="preserve-white-space">
-                  {{i.name}}
-                </span>
-                <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">                  
-                  <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
-                </a>
-                <mat-menu #itemMenu="matMenu">
-                  <button mat-menu-item *ngIf="i.postmaster" (click)="pullFromPostmaster(player, i)">
-                    <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
-                  </button>
-                  <ng-container *ngIf="!i.postmaster">
-                    <button mat-menu-item *ngIf="i.canReallyEquip" (click)="equip(player, i)">
-                      <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{i.owner.label}}
+                  <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
+                    class="item-name" href="javascript:void(0)" [matTooltip]="i.desc"
+                    matTooltipClass="preserve-white-space" (click)="showItem(i)">
+                    {{i.name}}
+                  </a>
+                  <span
+                    *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle"
+                    class="item-name" [matTooltip]="i.desc" matTooltipClass="preserve-white-space">
+                    {{i.name}}
+                  </span>
+                  <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
+                    <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
+                  </a>
+                  <mat-menu #itemMenu="matMenu">
+                    <button mat-menu-item *ngIf="i.postmaster" (click)="pullFromPostmaster(player, i)">
+                      <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
                     </button>
-                    <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
-                      <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
+                    <ng-container *ngIf="!i.postmaster">
+                      <button mat-menu-item *ngIf="i.canReallyEquip" (click)="equip(player, i)">
+                        <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{i.owner.label}}
+                      </button>
+                      <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
+                        <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
+                      </button>
+                    </ng-container>
+
+                    <button mat-menu-item
+                      *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
+                      (click)="copyToClipboard(i)">
+                      <fa-icon [icon]="iconService.falCopy"></fa-icon> Copy for reddit
                     </button>
+                    <button mat-menu-item *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
+                      <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show random rolls
+                    </button>
+                  </mat-menu>
+                  <span *ngIf="debugmode|async">[{{i.hash}}]</span>
+
+                  <div class="simple-caption">{{i.owner.label}}
+                    <span *ngIf="i.postmaster" class="warn-text">
+                      <fa-icon [icon]="iconService.falMailbox"></fa-icon>
+                    </span>
+                  </div>
+
+
+
+                  <div class="mobile-only-block">
+                    <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
+                      matTooltipClass="preserve-white-space">
+                      {{i.masterwork.name}} {{i.masterwork.tier}}
+                      <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
+                        [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
+                      </mat-progress-bar>
+                      <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
+                        [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
+                      </mat-progress-bar>
+                    </div>
+
+                    <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
+                      {{mod.name}}
+                      <div *ngIf="mod && mod.objectives && mod.objectives.length" class="mod-obj">
+                        <div class="left" *ngFor="let obj of mod.objectives">
+                          <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
+                            class="accent-text mat-option.mat-selected"></fa-icon>
+                          <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
+                          {{obj.progressDescription}}
+                          <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                          <mat-progress-bar class="bounty-progress"
+                            *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                            [value]="100*obj.progress/obj.completionValue">
+                          </mat-progress-bar>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </td>
+
+                <td class="limited-gear-width hide-mobile-table-cell">
+                  {{i.typeName}}
+                  <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
+                  <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
+                  <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
+                  </ng-container>
+                  <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket}}]</ng-container>
+                  <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
+                    <div class="vertical-pad">
+                      <button mat-stroked-button *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
+                        <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Possible rolls
+                      </button>
+                    </div>
+                    <div *ngIf="i.noGodRollInfo" class="simple-caption-no-margin vertical-pad">
+                      No godroll info yet
+                    </div>
                   </ng-container>
 
-                  <button mat-menu-item
-                    *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
-                    (click)="copyToClipboard(i)">
-                    <fa-icon [icon]="iconService.falCopy"></fa-icon> Copy for reddit
-                  </button>
-                  <button mat-menu-item *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
-                    <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show random rolls
-                  </button>
-                </mat-menu>
-                <span *ngIf="debugmode|async">[{{i.hash}}]</span>
 
-                <div class="simple-caption">{{i.owner.label}}
-                  <span *ngIf="i.postmaster" class="warn-text">
-                    <fa-icon [icon]="iconService.falMailbox"></fa-icon>
-                  </span>
-                </div>
-
-
-
-                <div class="mobile-only-block">
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                  {{i.energyCapacity}}
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                  {{i.totalStatPoints}}
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell"
+                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                  <button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
+                    </fa-icon></button>
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell"
+                  *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
                     matTooltipClass="preserve-white-space">
-                    {{i.masterwork.name}} {{i.masterwork.tier}}
-                    <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
+
+                    {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode|async">
+                      [{{i.masterwork.hash}}]
+                    </ng-container>
+
+                    <mat-progress-bar *ngIf="option.type == ItemType.Weapon" mode="determinate"
                       [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
                     </mat-progress-bar>
-                    <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
+                    <mat-progress-bar *ngIf="option.type == ItemType.Armor" mode="determinate"
                       [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
                     </mat-progress-bar>
                   </div>
-
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell"
+                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
-                    {{mod.name}}
-                    <div *ngIf="mod && mod.objectives && mod.objectives.length" class="mod-obj">
+                    <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
+                    {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
+                    <div *ngIf="mod.objectives && mod.objectives.length" class="mod-obj">
+                      <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
                       <div class="left" *ngFor="let obj of mod.objectives">
                         <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
                           class="accent-text mat-option.mat-selected"></fa-icon>
@@ -321,128 +435,69 @@
                       </div>
                     </div>
                   </div>
-                </div>
-
-              </td>
-
-              <td class="limited-gear-width hide-mobile-table-cell">
-                {{i.typeName}}
-                <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
-                <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
-                <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
-                </ng-container>
-                <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket}}]</ng-container>
-                <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
-                  <div class="vertical-pad">
-                    <button mat-stroked-button *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
-                      <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Possible rolls
-                    </button>
+                </td>
+                <td class="hide-mobile-table-cell"
+                  *ngIf="option.type==ItemType.Armor">
+                  <table>
+                    <tbody >
+                      <tr class="stat-table" *ngFor="let stat of i.stats">
+                        <td>{{stat.name}}</td>
+                        <td>{{stat.value}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td class="hide-mobile-table-cell"
+                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                  <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
+                    <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
+                      [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
+                      <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
+                        [debugmode]="debugmode|async"></d2c-god-roll-plug>
+                      <ng-container *ngIf="!isLastPlug">|</ng-container>
+                    </span>
                   </div>
-                  <div *ngIf="i.noGodRollInfo" class="simple-caption-no-margin vertical-pad">
-                    No godroll info yet
-                  </div>
-                </ng-container>
-
-
-              </td>
-              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                {{i.energyCapacity}}
-              </td>
-              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                {{i.totalStatPoints}}
-              </td>
-              <td class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                <button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
-                  </fa-icon></button>
-              </td>
-              <td class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc" matTooltipClass="preserve-white-space">
-
-                  {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode|async">
-                    [{{i.masterwork.hash}}]
-                  </ng-container>
-
-                  <mat-progress-bar *ngIf="option.type == ItemType.Weapon" mode="determinate"
-                    [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
-                  </mat-progress-bar>
-                  <mat-progress-bar *ngIf="option.type == ItemType.Armor" mode="determinate"
-                    [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
-                  </mat-progress-bar>
-                </div>
-              </td>
-              <td class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
-                  <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
-                  {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
-                  <div *ngIf="mod.objectives && mod.objectives.length" class="mod-obj">
-                    <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
-                    <div class="left" *ngFor="let obj of mod.objectives">
-                      <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
-                        class="accent-text mat-option.mat-selected"></fa-icon>
-                      <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
-                      {{obj.progressDescription}}
-                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                      <mat-progress-bar class="bounty-progress"
-                        *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
-                        [value]="100*obj.progress/obj.completionValue">
-                      </mat-progress-bar>
-                    </div>
-                  </div>
-                </div>
-              </td>
-              <td class="hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
-                  <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                  <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
-                    [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                    <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
-                      [debugmode]="debugmode|async"></d2c-god-roll-plug>
-                    <ng-container *ngIf="!isLastPlug">|</ng-container>
-                  </span>
-                </div>
-              </td>
-              <td class="limited-gear-width"
-                *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
-                {{i.quantity}}
-              </td>
-              <td class="tag-cell"
-                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                <div class="hide-mobile-block">
-                  <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
-                    [ngClass]="['tag-button',mc.value]" [matTooltip]="mc.label">
-                    <fa-icon [icon]="mc.icon"></fa-icon>
-                  </button>
-                </div>
-                <div class="mobile-only-block">
-                  <button mat-icon-button [matMenuTriggerFor]="tagMenu">
-                      <fa-icon [icon]="iconService.fasTags"></fa-icon> Tag
-                  </button>
-                  <mat-menu #tagMenu="matMenu">
-                    <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-menu-item
-                      [ngClass]="['tag-button',mc.value]">
+                </td>
+                <td class="limited-gear-width"
+                  *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
+                  {{i.quantity}}
+                </td>
+                <td class="tag-cell"
+                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                  <div class="hide-mobile-block">
+                    <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
+                      [ngClass]="['tag-button',mc.value]" [matTooltip]="mc.label">
                       <fa-icon [icon]="mc.icon"></fa-icon>
-                      {{mc.value}}
                     </button>
-                  </mat-menu>
-                </div>
-                <div>
-                  <mat-form-field class="full-width">
-                    <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
-                      (change)="itemNotesChanged(i)">
-                  </mat-form-field>
-                </div>
-              </td>
-            </tr>
-          </ng-container>
-        </tbody>
-      </table>
-      <mat-paginator #paginator [length]="total" [pageIndex]="page" [pageSize]="size"
-        [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
-      </mat-paginator>
+                  </div>
+                  <div class="mobile-only-block">
+                    <button mat-icon-button [matMenuTriggerFor]="tagMenu">
+                      <fa-icon [icon]="iconService.fasTags"></fa-icon> Tag
+                    </button>
+                    <mat-menu #tagMenu="matMenu">
+                      <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-menu-item
+                        [ngClass]="['tag-button',mc.value]">
+                        <fa-icon [icon]="mc.icon"></fa-icon>
+                        {{mc.value}}
+                      </button>
+                    </mat-menu>
+                  </div>
+                  <div>
+                    <mat-form-field class="full-width">
+                      <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
+                        (change)="itemNotesChanged(i)">
+                    </mat-form-field>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <mat-paginator #paginator [length]="total" [pageIndex]="page" [pageSize]="size" (page)="handlePage($event)"
+          [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
+        </mat-paginator>
+      </ng-container>
     </div>
     <div *ngIf="(disableAds|async)!==true" class="adRight">
       <small class="adText">Advertisement</small>
