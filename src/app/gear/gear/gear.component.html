@@ -448,7 +448,7 @@
                         <tr *ngIf="preferredStatService.isPreferred(stat, true)">
                           <td>{{stat.name}}</td>
                           <td>{{stat.value}} 
-                            <span *ngIf="stat.enhancement" class="simple-caption-no-margin"> +{{stat.enhancement}}</span>
+                            <span *ngIf="stat.enhancement" class="accent-text pad-left">+{{stat.enhancement}}</span>
                           </td>
                         </tr>
                       </ng-container>

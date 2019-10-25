@@ -3191,6 +3191,7 @@ export class ParseService {
                                 for (const stat of m.inventoryStats) {
                                     if (stat.name == s.name && stat.value > 0) {
                                         s.enhancement = stat.value;
+                                        s.value -= s.enhancement;
                                     }
                                 }
                             }
