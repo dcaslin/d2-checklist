@@ -131,6 +131,7 @@
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                                 {{targetStat.value}}
+                                <span *ngIf="targetStat.enhancement" class="accent-text pad-left">+{{stat.enhancement}}</span>
                             </ng-container>
                             <ng-template #noState>0</ng-template>
                         </td>

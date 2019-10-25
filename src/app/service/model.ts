@@ -1189,7 +1189,7 @@ export interface DropInfo {
 export class InventoryStat {
     readonly name: string;
     readonly desc: string;
-    readonly value: number;
+    value: number;
     baseValue: number;
     enhancement: number;
 
