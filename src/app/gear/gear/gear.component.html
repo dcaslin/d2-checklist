@@ -116,14 +116,11 @@
           <button mat-button [matMenuTriggerFor]="menuMoreOptions">
             <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
           </button>
+
           <mat-menu #menuMoreOptions="matMenu" xPosition="before">
             <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-              <button mat-menu-item (click)="moveAllVisible(player.vault)">
-                <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to Vault
-              </button>
-              <button mat-menu-item (click)="moveAllVisible(player.characters[0])">
-                <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to
-                {{player.characters[0].label}}
+              <button mat-menu-item [matMenuTriggerFor]="menuBulkMove">
+                <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to:
               </button>
             </ng-container>
             <ng-container
@@ -151,6 +148,14 @@
               <fa-icon [icon]="iconService.fasCogs"></fa-icon>&ensp;Settings
             </button>
 
+          </mat-menu>
+          <mat-menu #menuBulkMove="matMenu">
+            <button mat-menu-item *ngFor="let target of player.characters" (click)="moveAllVisible(target)">
+              {{target.label}}
+            </button>
+            <button mat-menu-item (click)="moveAllVisible(player.vault)">
+                <fa-icon [icon]="iconService.falExchange"></fa-icon> {{player.vault.label}}
+              </button>
           </mat-menu>
 
           <mat-menu #menuBulkTag="matMenu">
@@ -447,7 +452,7 @@
                       <ng-container *ngFor="let stat of i.stats">
                         <tr *ngIf="preferredStatService.isPreferred(stat, true)">
                           <td>{{stat.name}}</td>
-                          <td>{{stat.value}} 
+                          <td>{{stat.value}}
                             <span *ngIf="stat.enhancement" class="accent-text pad-left">+{{stat.enhancement}}</span>
                           </td>
                         </tr>
