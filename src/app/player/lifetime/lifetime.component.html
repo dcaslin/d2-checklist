@@ -70,7 +70,7 @@
                             </ng-container>
                             <ng-container *ngIf="a.highScore!=null">
                                 {{a.highScore| number}}
-                                <div class="pgcr-link">
+                                <div class="pgcr-link" *ngIf="a.highScorePGCR">
                                     <a [routerLink]="['/pgcr', a.highScorePGCR]">
                                         PGCR
                                     </a>

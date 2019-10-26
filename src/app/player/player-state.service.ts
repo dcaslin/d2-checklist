@@ -112,7 +112,6 @@ export class PlayerStateService {
     return s;
   }
 
-
   constructor(
     private storageService: StorageService,
     private bungieService: BungieService) {
@@ -182,7 +181,7 @@ export class PlayerStateService {
       this.bungieService.loadWeeklyPowerfulBounties(this._player);
       this.bungieService.loadClans(this._player);
       this.bungieService.observeUpdatePvpStreak(this._player);
-      this.bungieService.observeUpdateAggHistoryAndScores(this._player);
+      this.bungieService.observeUpdateAggHistoryAndScores(this._player, this.storageService.isDebug());
     }
     finally {
       this._loading.next(false);

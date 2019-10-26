@@ -9,6 +9,7 @@ import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';
 import { IconService } from '@app/service/icon.service';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
   membershipType: number;
   membershipId: string;
   characterId: string;
-  player: Player;
+
+  public _player: BehaviorSubject<Player> = new BehaviorSubject(null);
 
   database = new SortFilterDatabase([]);
   dataSource: SortFilterDataSource | null;
@@ -79,7 +81,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
         this.membershipType = selPlatform.type;
         this.membershipId = params['memberId'];
         this.bungieService.getChars(this.membershipType, this.membershipId, ['Profiles', 'Characters'], false).then(p => {
-          this.player = p;
+          this._player.next(p);
 
         });
         this.characterId = params['characterId'];

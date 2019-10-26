@@ -647,13 +647,14 @@ export class ParseService {
         for (const a of resp.activities) {
             if (!a.activityHash) { continue; }
             const vDesc: any = this.destinyCacheService.cache.Activity[a.activityHash];
-            if (vDesc == null || vDesc.activityModeHashes == null) { continue; }
+            if (vDesc == null || (vDesc.activityModeHashes == null) && vDesc.activityTypeHash == null) { continue; }
             const name = vDesc.displayProperties.name;
             if (name == null) {
                 continue;
             }
-            const nf = vDesc.activityModeHashes.indexOf(547513715) >= 0 && vDesc.tier >= 2;
-            const raid = vDesc.activityModeHashes.indexOf(2043403989) >= 0;
+
+            const nf = ParseService.isActivityType(vDesc, 547513715) && vDesc.tier >= 2;
+            const raid = ParseService.isActivityType(vDesc, 2043403989);
             if (nf || raid) {
                 const entry = this.parseAggHistoryEntry(name, a, nf ? 'nf' : 'raid');
                 if (dict[name] == null) {
@@ -664,6 +665,16 @@ export class ParseService {
             }
         }
         return dict;
+    }
+
+    private static isActivityType(vDesc: any, typeHash: number): boolean {
+        if (vDesc.activityTypeHash == typeHash) {
+            return true;
+        }
+        if (vDesc.activityModeHashes != null && vDesc.activityModeHashes.indexOf(typeHash) >= 0) {
+            return true;
+        }
+        return false;
     }
 
     private static setEfficiency(x: AggHistoryEntry) {
