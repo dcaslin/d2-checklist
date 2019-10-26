@@ -246,7 +246,12 @@ export class ParseService {
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                         let descRewards = this.parseMilestoneRewards(skipDesc);
                         if (descRewards == null || descRewards.trim().length == 0) {
-                            descRewards = 'Unknown';
+                            // weekly pinnacle challenge
+                            if (key == '3881226684') {
+                                descRewards = 'Pinnacle Gear';
+                            } else {
+                                descRewards = 'Unknown';
+                            }
                         }
                         const ms2: MileStoneName = {
                             key: skipDesc.hash + '',
@@ -1188,7 +1193,13 @@ export class ParseService {
                     rewards = 'Unknown';
                 }
             }
+            // garden of salvation
             if (ms.milestoneHash == 2712317338 && rewards == 'Unknown') {
+                rewards = 'Pinnacle Gear';
+            }
+            // weekly pinnacle challenge, not in list yet, but just in case
+            if (ms.milestoneHash == 3881226684) {
+                console.dir(rewards);
                 rewards = 'Pinnacle Gear';
             }
             const pl = this.parseMilestonePl(rewards);
