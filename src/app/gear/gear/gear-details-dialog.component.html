@@ -4,7 +4,7 @@
         class="simple-caption-no-margin hide-mobile-inline">{{items[0].desc}}</span>
 </div>
 <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
-<mat-dialog-content *ngIf="parent._player as player">
+<mat-dialog-content *ngIf="parent._player|async as player">
     <table class="gear-table mark-table">
         <tbody>
             <tr>
