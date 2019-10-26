@@ -3,24 +3,28 @@
     <div class="main">
 
 
-        <div class="center-spinner">
-      <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
-        </div>
-      <div class="body-text">
-        <h2 class="centerMe">Activity History - 
-          <a [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]">
-            {{player.profile.userInfo.displayName}}
-          </a>
-        </h2>
-        <div *ngIf="player!=null && player.characters!=null" class="button-row">
-          <a mat-raised-button *ngFor="let c of player.characters" 
-            [color]="c.characterId==characterId?'accent':'default'" 
-            [routerLink]="['/history',this.membershipType, this.membershipId, c.characterId]">{{c.className}} - {{c.light}}</a>
-        </div>
+      <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+      </div>
+      <div class="body-text" [hidden]="(_player|async)==null">
+        <ng-container *ngIf="_player|async as player">
+            <h2 class="centerMe" >Activity History -
+                <a
+                  [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]">
+                  {{player.profile.userInfo.displayName}}
+                </a>
+              </h2>
+              <div *ngIf="player!=null && player.characters!=null" class="button-row">
+                <a mat-raised-button *ngFor="let c of player.characters"
+                  [color]="c.characterId==characterId?'accent':'default'"
+                  [routerLink]="['/history',this.membershipType, this.membershipId, c.characterId]">{{c.className}} -
+                  {{c.light}}</a>
+              </div>
+        </ng-container>
         <br/>
         <div class="centerMe">
           <mat-form-field class="searchField">
-            <mat-select  [(ngModel)]="selectedMode" (selectionChange)="history()" placeholder="Mode">
+            <mat-select [(ngModel)]="selectedMode" (selectionChange)="history()" placeholder="Mode">
               <mat-option *ngFor="let p of activityModes" [value]="p">
                 {{ p.name }}
               </mat-option>
@@ -28,7 +32,7 @@
           </mat-form-field>
 
           <mat-form-field class="searchField">
-            <mat-select  [(ngModel)]="selectedMaxResults" (selectionChange)="history()" placeholder="Max Results">
+            <mat-select [(ngModel)]="selectedMaxResults" (selectionChange)="history()" placeholder="Max Results">
               <mat-option *ngFor="let p of maxResults" [value]="p">
                 {{ p }}
               </mat-option>
@@ -82,7 +86,8 @@
             <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *cdkRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
-          <mat-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25" [pageSizeOptions]="[5, 10, 25, 100]">
+          <mat-paginator #paginator [length]="database.data.length" [pageIndex]="0" [pageSize]="25"
+            [pageSizeOptions]="[5, 10, 25, 100]">
           </mat-paginator>
         </div>
       </div>

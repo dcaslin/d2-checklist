@@ -192,7 +192,7 @@ export class BungieService implements OnDestroy {
         const key = 'aggHistory-' + env.versions.app + '-' + player.profile.userInfo.membershipType + '-' + player.profile.userInfo.membershipId;
         return key;
     }
-    
+
     public static parsePlatform(s: string) {
         if (s == null) {
             return null;
@@ -269,7 +269,8 @@ export class BungieService implements OnDestroy {
         const arr = ParseService.mergeAggHistory2(x, nf);
         player.aggHistory = arr;
         this.setCachedAggHistoryForPlayer(player);
-        return true;
+        // this isn't stale b/c we just loaded it
+        return false;
     }
 
     public async getNightFalls(): Promise<Mission[]> {
@@ -294,14 +295,15 @@ export class BungieService implements OnDestroy {
         return nightfalls;
     }
 
-    public async observeUpdateAggHistoryAndScores(player: BehaviorSubject<Player>) {
-        await this.observeUpdateAggHistory(player);
+    public async observeUpdateAggHistoryAndScores(player: BehaviorSubject<Player>, debug: boolean) {
+        await this.observeUpdateAggHistory(player, debug);
         await this.observeUpdateNfScores(player);
     }
 
-    public async observeUpdateAggHistory(player: BehaviorSubject<Player>) {
+    public async observeUpdateAggHistory(player: BehaviorSubject<Player>, debug: boolean) {
         const p = player.getValue();
-        const stale = await this.applyAggHistoryForPlayer(p, 'cache');
+        const cacheType = debug ? 'force' : 'cache';
+        const stale = await this.applyAggHistoryForPlayer(p, cacheType);
         player.next(p);
         if (stale) {
             await this.applyAggHistoryForPlayer(p, 'force');
@@ -360,6 +362,9 @@ export class BungieService implements OnDestroy {
                             agg.highScorePGCR = act.instanceId;
                         }
                     }
+                }
+                if (agg.highScore == null) {
+                    agg.highScore = 0;
                 }
             }
         }
@@ -622,9 +627,7 @@ export class BungieService implements OnDestroy {
                         // is powerful gear
                         if (v.hash == '4039143015') {
                             powerfulBounties.push(i);
-                        } 
-                        // is Firewalll Data Fragment
-                        else if (v.hash == '3586070587') {
+                        } else if (v.hash == '3586070587') {
                             powerfulBounties.push(i);
                         } // is Firewalll Data Fragment
                     }
@@ -632,7 +635,7 @@ export class BungieService implements OnDestroy {
             }
         }
         // no powerful bounties avail
-        if (powerfulBounties.length ==0) {
+        if (powerfulBounties.length == 0) {
             const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true);
             return psuedoMs;
         } else if (powerfulBounties.length == 1) {
@@ -715,7 +718,7 @@ export class BungieService implements OnDestroy {
         };
         p.milestoneList.push(ms1);
         const empty1: MilestoneStatus = new MilestoneStatus(Const.ERIS_KEY, false, 0, null, 'Loading...', null);
-       
+
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
             c.milestones[Const.ERIS_KEY] = empty1;
@@ -766,7 +769,7 @@ export class BungieService implements OnDestroy {
     public async getBurns(): Promise<NameDesc[]> {
         const ms = await this.getPublicMilestones();
         for (const m of ms) {
-            if ('1437935813' === m.hash) {  //daily is gone, use weekly strike challenge instead
+            if ('1437935813' === m.hash) {  // daily is gone, use weekly strike challenge instead
                 return m.aggActivities[0].activity.modifiers;
             }
         }

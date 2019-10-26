@@ -35,6 +35,13 @@ export class StorageService {
     this.settingFeed.next(emitMe);
   }
 
+
+  public isDebug(): boolean {
+    return this.settingFeed.getValue().debugmode == true;
+  }
+
+
+
   public trackHashList(key: string, hash: string) {
     // trackedtriumphs
     const trackedDict: any = this.getItem(key, {});
