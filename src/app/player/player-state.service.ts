@@ -177,6 +177,15 @@ export class PlayerStateService {
       this.checkSignedOnCurrent(x);
       this.applyTrackedTriumphs(x);
       this.applyTrackedPursuits(x);
+      x.milestoneList.sort((a, b) => {
+        if (a.pl < b.pl) { return 1; }
+        if (a.pl > b.pl) { return -1; }
+        if (a.rewards < b.rewards) { return 1; }
+        if (a.rewards > b.rewards) { return -1; }
+        if (a.name > b.name) { return 1; }
+        if (a.name < b.name) { return -1; }
+        return 0;
+      });
       this._player.next(x);
       this.bungieService.loadWeeklyPowerfulBounties(this._player);
       this.bungieService.loadClans(this._player);

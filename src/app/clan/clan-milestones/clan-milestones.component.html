@@ -5,7 +5,7 @@
             <fa-icon [icon]="iconService.falEye"></fa-icon> All
         </button>
         <button mat-button (click)="showDefaultClanMilestones()"
-            *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
+            *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultHideClanMs().length">
             <fa-icon [icon]="iconService.falEye"></fa-icon> Default
         </button>
     </div>
@@ -153,7 +153,7 @@
                 <fa-icon [icon]="iconService.falEye"></fa-icon> All
             </button>
             <button class="d-none d-md-inline" mat-button (click)="showDefaultClanMilestones()"
-                *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultClanMs().length">
+                *ngIf="(hiddenClanMilestones|async).length!=storageService.getDefaultHideClanMs().length">
                 <fa-icon [icon]="iconService.falEye"></fa-icon> Default
             </button>
         </div>
