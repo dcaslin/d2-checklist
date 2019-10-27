@@ -1132,6 +1132,7 @@ export class Const {
     };
 
     public static readonly ERIS_KEY = '11111111';
+    public static readonly CHALICE_KEY = '22222222';
 
     public static readonly UNKNOWN_BOOST = 0;
     public static readonly NO_BOOST = 1;

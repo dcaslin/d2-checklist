@@ -1704,6 +1704,27 @@ export class ParseService {
             }
         }
 
+        if (char != null) {
+            if (milestonesByKey[Const.CHALICE_KEY] == null) {
+                const reward = 'Legendary Gear';
+                const ms: MileStoneName = {
+                    key: Const.CHALICE_KEY,
+                    resets: char.endWeek.toISOString(),
+                    rewards: reward,
+                    pl: this.parseMilestonePl(reward),
+                    name: 'Menagerie',
+                    desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
+                    hasPartial: false,
+                    suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
+                };
+                milestoneList.push(ms);
+                milestonesByKey[Const.CHALICE_KEY] = ms;
+            }
+            // constructor(hash, complete, pct, info, suppInfo, phases) {
+            const complete = powerfulDropsRemaining === 0;
+            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null);
+        }
+
     }
 
     public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Player {
@@ -1924,15 +1945,21 @@ export class ParseService {
                     items.forEach(itm => {
                         const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
-                            if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
+                            if (parsed.type === ItemType.Chalice) {
+                                this.handleChalice(char, parsed, milestoneList, milestonesByKey, currencies);
+                            } else if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 bounties.push(parsed);
                             } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
-                            } else if (parsed.type === ItemType.Chalice) {
-                                this.handleChalice(char, parsed, milestoneList, milestonesByKey, currencies);
                             } else {
+                                if (parsed.objectives && parsed.objectives.length > 0) {
+                                    parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
+                                    quests.push(parsed);
+
+
+                                }
                                 gear.push(parsed);
                             }
                         }
@@ -2814,6 +2841,9 @@ export class ParseService {
 
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') >= 0) {
                 type = ItemType.Bounty;
+            }
+            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Key Mold') >= 0) {
+                type = ItemType.Quest;
             }
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
                 type = ItemType.ForgeVessel;

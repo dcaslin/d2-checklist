@@ -23,7 +23,7 @@ export class StorageService {
   ) {
     const state = StorageService.load();
     if (!state.hiddenClanMilestones) {
-      state.hiddenClanMilestones = this.getDefaultClanMs();
+      state.hiddenClanMilestones = this.getDefaultHideClanMs();
     }
     this.settingFeed.next(state);
   }
@@ -71,11 +71,15 @@ export class StorageService {
     this.setItem(CLAN_MS_KEY, clone);
   }
   public showDefaultClanMilestones(): void {
-    this.setItem(CLAN_MS_KEY, this.getDefaultClanMs());
+    this.setItem(CLAN_MS_KEY, this.getDefaultHideClanMs());
   }
 
-  public getDefaultClanMs(): string[] {
-    return ['3312018120',
+  public getDefaultHideClanMs(): string[] {
+    return [
+      '1342567285',
+      '3181387331',
+      '2590427074',
+      '3312018120',
     '941217864',
     '3172444947',
     '536115997',
