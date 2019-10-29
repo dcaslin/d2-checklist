@@ -2903,6 +2903,13 @@ export class ParseService {
                 }
             }
 
+            // if (itemComp.reusablePlugs) {
+            //     console.dir(itemComp.reusablePlugs);
+            // }
+            // if (itemComp.plugObjectives) {
+            //     console.dir(itemComp.plugObjectives);
+            // }
+
             const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
             if (itemComp != null) {

@@ -29,7 +29,7 @@ export class GearService {
                 selectedUser.userInfo.membershipId, ['Profiles', 'Characters',
                     'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
                     'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-                    'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories'], false, true);
+                    'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs','ItemPlugObjectives'], false, true);
             const gearById: { [key: string]: InventoryItem[]; } = {};
             for (const g of player.gear) {
                 this.canEquip(g);
