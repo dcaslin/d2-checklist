@@ -646,11 +646,14 @@ export class BungieService implements OnDestroy {
             if (held) {
                 const bounties: InventoryItem[] = p.bounties[c.characterId];
                 let bounty: InventoryItem = null;
-                for (const b of bounties) {
-                    if (b.hash == i.hash) {
-                        bounty = b;
+                if (bounties) {
+                    for (const b of bounties) {
+                        if (b.hash == i.hash) {
+                            bounty = b;
+                        }
                     }
                 }
+                
                 if (bounty != null) {
                     progress = bounty.aggProgress / 100;
                 }
