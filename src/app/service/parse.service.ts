@@ -2903,50 +2903,50 @@ export class ParseService {
                 }
             }
 
-            // if (itemComp.reusablePlugs) {
-            //     console.dir(itemComp.reusablePlugs);
-            // }
-            // if (itemComp.plugObjectives) {
-            //     console.dir(itemComp.plugObjectives);
+            // //  TODO this is for objectives on a specific plug, not going to worry about that yet
+            // if (itemComp.plugObjectives && itemComp.plugObjectives.data && itemComp.plugObjectives[itm.itemInstanceId]) {
+            //     const itemObj = itemComp.plugObjectives[itm.itemInstanceId];
+            //     console.log("Objectives");
+            //     console.dir(itemObj);
             // }
 
             const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
-            if (itemComp != null) {
-                if (itemComp.objectives != null && itemComp.objectives.data != null) {
-                    const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
-                    let objs: any[] = null;
-                    if (parentObj != null) {
-                        objs = parentObj.objectives;
+            // if (itemComp != null) {
+            //     if (itemComp.objectives != null && itemComp.objectives.data != null) {
+            //         const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
+            //         let objs: any[] = null;
+            //         if (parentObj != null) {
+            //             objs = parentObj.objectives;
 
-                    }
-                    if (objs == null && characterProgressions != null && characterProgressions.data != null &&
-                        owner != null && characterProgressions.data[owner.id] != null) {
-                        objs = characterProgressions.data[owner.id].uninstancedItemObjectives[itm.itemHash];
-                    }
-                    if (objs != null) {
-                        for (const o of objs) {
-                            const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-                            const iObj: ItemObjective = {
-                                completionValue: oDesc.completionValue,
-                                progressDescription: oDesc.progressDescription,
-                                progress: o.progress == null ? 0 : o.progress,
-                                complete: o.complete,
-                                percent: 0
-                            };
+            //         }
+            //         if (objs == null && characterProgressions != null && characterProgressions.data != null &&
+            //             owner != null && characterProgressions.data[owner.id] != null) {
+            //             objs = characterProgressions.data[owner.id].uninstancedItemObjectives[itm.itemHash];
+            //         }
+            //         if (objs != null) {
+            //             for (const o of objs) {
+            //                 const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+            //                 const iObj: ItemObjective = {
+            //                     completionValue: oDesc.completionValue,
+            //                     progressDescription: oDesc.progressDescription,
+            //                     progress: o.progress == null ? 0 : o.progress,
+            //                     complete: o.complete,
+            //                     percent: 0
+            //                 };
 
 
-                            if (iObj.completionValue != null && iObj.completionValue > 0) {
-                                progTotal += 100 * iObj.progress / iObj.completionValue;
-                                progCnt++;
-                                iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
-                            }
-                            objectives.push(iObj);
-                        }
-                    }
+            //                 if (iObj.completionValue != null && iObj.completionValue > 0) {
+            //                     progTotal += 100 * iObj.progress / iObj.completionValue;
+            //                     progCnt++;
+            //                     iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
+            //                 }
+            //                 objectives.push(iObj);
+            //             }
+            //         }
 
-                }
-            }
+            //     }
+            // }
             let aggProgress = 0;
             if (progCnt > 0) {
                 aggProgress = progTotal / progCnt;
@@ -3046,6 +3046,10 @@ export class ParseService {
                 if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
                     if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
+                        let reusablePlugs = null;
+                        if (itemComp.reusablePlugs && itemComp.reusablePlugs.data && itemComp.reusablePlugs.data[itm.itemInstanceId] && itemComp.reusablePlugs.data[itm.itemInstanceId].plugs) {
+                            reusablePlugs = itemComp.reusablePlugs.data[itm.itemInstanceId].plugs;
+                        }
                         for (const jCat of desc.sockets.socketCategories) {
 
                             // skip ghost mods
@@ -3071,8 +3075,8 @@ export class ParseService {
                                 const possiblePlugs: InventoryPlug[] = [];
 
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
-                                if (socketVal.reusablePlugs != null) {
-                                    for (const plug of socketVal.reusablePlugs) {
+                                if (reusablePlugs && reusablePlugs[index]) {
+                                    for (const plug of reusablePlugs[index]) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
                                         if (plugDesc == null) { continue; }
                                         // mods and masterworks only matter if they're selected
@@ -3099,7 +3103,7 @@ export class ParseService {
                                             plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
                                         plugs.push(oPlug);
                                     }
-                                } else if (socketVal.plugHash != null) {
+                                } else if (socketVal.plugHash != null) {  // only show plughash if there is no reusable, otherwise we'll dupe perks
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
@@ -3143,6 +3147,8 @@ export class ParseService {
                             }
                         }
                     }
+                   
+
                 }
             }
             const values: NameQuantity[] = [];
