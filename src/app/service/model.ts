@@ -2,6 +2,7 @@ import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesom
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 import { BehaviorSubject } from 'rxjs';
+import { Moment } from 'moment';
 
 export enum ClassAllowed {
     Titan = 0,
@@ -205,6 +206,18 @@ export interface ItemPerks {
     desc: string;
 }
 
+export interface PublicMilestonesAndActivities {
+    publicMilestones: PublicMilestone[];
+    crucibleCore: MilestoneActivity[];
+    crucibleRotator: MilestoneActivity[];
+    herMenag: MilestoneActivity;
+    heroicStrikes: MilestoneActivity;
+    reckoning: MilestoneActivity;
+    nightfalls: Mission[];
+    flashpoint: string;
+    weekStart: Moment;
+}
+
 export interface PublicMilestone {
     hash: string;
     name: string;
@@ -235,24 +248,7 @@ export interface MilestoneActivity {
     ll: number;
     tier: number;
     icon: string;
-    challenges: MilestoneChallenge[];
     modifiers: NameDesc[];
-    loadoutReqs: LoadoutRequirement[];
-}
-
-
-export interface LoadoutRequirement {
-    equipmentSlot: string;
-    allowedEquippedItems: string[];
-    allowedWeaponSubTypes: string[];
-}
-
-export interface MilestoneChallenge {
-
-    name: string;
-    desc: string;
-    completionValue: number;
-    progressDescription: number;
 }
 
 export interface PrivPublicMilestone {
@@ -1277,7 +1273,6 @@ export interface Mission {
     name: string;
     icon: string;
     hash: string;
-    time: number;
 }
 
 export interface Sort {

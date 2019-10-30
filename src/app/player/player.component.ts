@@ -4,7 +4,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
-import { Character, Const, NameDesc, Platform, Player } from '../service/model';
+import { Character, Const, NameDesc, Platform, Player, PublicMilestonesAndActivities } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
@@ -24,9 +24,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
 
-
-  burns: NameDesc[] = [];
-  reckBurns: NameDesc[] = [];
+  public publicInfo: PublicMilestonesAndActivities = null;
 
   constructor(public bungieService: BungieService,
     public iconService: IconService,
@@ -42,8 +40,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     dc.disableClose = false;
     dc.autoFocus = true;
     dc.data = {
-      burns: this.burns,
-      reckBurns: this.reckBurns
+      info: this.publicInfo
     };
     this.dialog.open(BurnDialogComponent, dc);
   }
@@ -68,9 +65,8 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.router.navigate(['/history', c.membershipType, c.membershipId, c.characterId]);
   }
 
-  async setBurns() {
-    this.burns = await this.bungieService.getBurns();
-    this.reckBurns = await this.bungieService.getReckBurns();
+  async setPublicInfo() {
+    this.publicInfo = await this.bungieService.getPublicMilestones();
   }
 
   public static validateInteger(s: string): string {
@@ -115,7 +111,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   }
 
   ngOnInit() {
-    this.setBurns();
+    this.setPublicInfo();
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       this.init(params);
     });
