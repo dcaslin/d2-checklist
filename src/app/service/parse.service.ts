@@ -1,8 +1,9 @@
 
 import { Injectable } from '@angular/core';
+import * as moment from 'moment';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, LoadoutRequirement, MastworkInfo, MilestoneActivity, MilestoneChallenge, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivLoadoutRequirement, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -1018,7 +1019,18 @@ export class ParseService {
         return pl;
     }
 
-    public parsePublicMilestones(resp: any, resp2: any): PublicMilestone[] {
+    private static hasChallenge(act: any, hash: string): boolean {
+        if (!act.challenges) { return false; }
+        if (!act.challenges.length) { return false; }
+        for (const c of act.challenges) {
+            if (c.objective && c.objective.objectiveHash == hash) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public parsePublicMilestones(resp: any, resp2: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
@@ -1032,6 +1044,7 @@ export class ParseService {
             if (desc == null) {
                 continue;
             }
+            // skip broken Garden of Salvation
             if (ms.milestoneHash == 2712317338 && desc.displayProperties.name.startsWith('###')) {
                 continue;
             }
@@ -1039,62 +1052,12 @@ export class ParseService {
             const activities: MilestoneActivity[] = [];
             if (ms.activities != null) {
                 for (const act of ms.activities) {
-                    const challenges: MilestoneChallenge[] = [];
                     const aDesc = this.destinyCacheService.cache.Activity[act.activityHash];
-                    if (act.challengeObjectiveHashes != null && act.challengeObjectiveHashes.length > 0) {
-                        for (const c of act.challengeObjectiveHashes) {
-                            const oDesc: any = this.destinyCacheService.cache.Objective[c];
-                            challenges.push({
-                                name: oDesc.displayProperties.name,
-                                desc: oDesc.displayProperties.description,
-                                completionValue: oDesc.completionValue,
-                                progressDescription: oDesc.progressDescription
-                            });
-                        }
-                    }
                     const modifiers: NameDesc[] = [];
                     if (act.modifierHashes != null && act.modifierHashes.length > 0) {
                         for (const n of act.modifierHashes) {
                             const mod: NameDesc = this.parseModifier(n);
                             modifiers.push(mod);
-                        }
-                    }
-                    const loadoutReqs: LoadoutRequirement[] = [];
-                    if (act.loadoutRequirementIndex != null) {
-                        if (aDesc != null) {
-                            if (aDesc.loadouts != null && aDesc.loadouts.length > act.loadoutRequirementIndex) {
-                                const pReq = aDesc.loadouts[act.loadoutRequirementIndex];
-                                if (pReq != null && pReq.requirements != null) {
-                                    const lReqs: PrivLoadoutRequirement[] = aDesc.loadouts[act.loadoutRequirementIndex].requirements;
-                                    for (const lReq of lReqs) {
-                                        const slotDesc = this.destinyCacheService.cache.EquipmentSlot[lReq.equipmentSlotHash];
-                                        const items = [];
-                                        const subtypes = [];
-                                        if (lReq.allowedEquippedItemHashes != null) {
-                                            for (const lReqItem of lReq.allowedEquippedItemHashes) {
-                                                const iDesc: any = this.destinyCacheService.cache.InventoryItem[lReqItem];
-                                                if (iDesc != null) {
-                                                    if (iDesc.displayProperties != null) {
-                                                        items.push(iDesc.displayProperties.name);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        if (lReq.allowedWeaponSubTypes != null) {
-                                            for (const lSubType of lReq.allowedWeaponSubTypes) {
-                                                const s = this.parseWeaponSubtype(lSubType);
-                                                subtypes.push(s);
-                                            }
-                                        }
-                                        loadoutReqs.push({
-                                            equipmentSlot: slotDesc.displayProperties.name,
-                                            allowedEquippedItems: items,
-                                            allowedWeaponSubTypes: subtypes
-                                        });
-                                    }
-
-                                }
-                            }
                         }
                     }
                     if (activityRewards == null && aDesc.rewards != null && aDesc.rewards.length > 0 && aDesc.rewards[0].rewardItems.length > 0) {
@@ -1110,9 +1073,7 @@ export class ParseService {
                         ll: aDesc.activityLightLevel,
                         tier: aDesc.tier,
                         icon: aDesc.displayProperties.icon,
-                        challenges: challenges,
-                        modifiers: modifiers,
-                        loadoutReqs: loadoutReqs
+                        modifiers: modifiers
                     });
                 }
             } else if (ms.availableQuests) {
@@ -1139,9 +1100,7 @@ export class ParseService {
                             ll: null,
                             tier: null,
                             icon: iDesc.displayProperties.icon,
-                            challenges: [],
-                            modifiers: [],
-                            loadoutReqs: []
+                            modifiers: []
                         });
                     }
                 }
@@ -1151,9 +1110,8 @@ export class ParseService {
             const dAct = {};
 
             for (const a of activities) {
-                const key = a.name + ' ' + a.challenges.length + ' ' + a.modifiers.length + ' ' + a.loadoutReqs.length;
+                const key = a.name + ' ' + a.modifiers.length;
                 if (dAct[key] == null) {
-
                     dAct[key] = {
                         activity: a,
                         lls: []
@@ -1169,9 +1127,7 @@ export class ParseService {
             for (const key of Object.keys(dAct)) {
                 const aggAct = dAct[key];
                 aggAct.lls = ParseService.dedupeArray(aggAct.lls);
-                if (aggAct.activity.challenges.length > 0 ||
-                    aggAct.activity.modifiers.length > 0 ||
-                    aggAct.activity.loadoutReqs.length > 0) {
+                if (aggAct.activity.modifiers.length > 0) {
                     nothingInteresting = false;
                 }
                 aggActivities.push(aggAct);
@@ -1235,11 +1191,19 @@ export class ParseService {
             }
             returnMe.push(pushMe);
         }
-        // we're still missing nightfalls and heroic menagerie
+        // we're still missing nightfalls and heroic menagerie and some other fun stuff we need to get from a character
         let charAct = null;
         if (sample && resp2 && resp2.characterActivities && resp2.characterActivities.data) {
             charAct = resp2.characterActivities.data['2305843009264730899'];
         }
+        const crucibleCore: MilestoneActivity[] = [];
+        const crucibleRotator: MilestoneActivity[] = [];
+
+        const nightfalls: MilestoneActivity[] = [];
+        let herMenag: MilestoneActivity = null;
+        let heroicStrikes: MilestoneActivity = null;
+        let reckoning: MilestoneActivity = null;
+
         if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
             for (const aa of charAct.availableActivities) {
                 const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
@@ -1247,24 +1211,15 @@ export class ParseService {
                     continue;
                 }
                 const name = desc.displayProperties.name;
-                let type = null;
+                console.log(name);
+                console.dir(aa);
                 const modifiers: NameDesc[] = [];
-                if (name.indexOf('The Menagerie (Heroic)') >= 0) {
-                    type = 'herMenag';
-                    if (desc.modifiers != null && desc.modifiers.length > 0) {
-                        for (const n of desc.modifiers) {
-                            const mod: NameDesc = this.parseModifier(n.activityModifierHash);
-                            modifiers.push(mod);
-                        }
+
+                if (aa.modifierHashes && aa.modifierHashes.length > 0) {
+                    for (const modHash of aa.modifierHashes) {
+                        const mod: NameDesc = this.parseModifier(modHash);
+                        modifiers.push(mod);
                     }
-                } else if (name.indexOf('Nightfall: ') >= 0) {
-                    // skip variant nightfalls that are quest related, and lower level NF's
-                    if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
-                        type = 'nf';
-                    }
-                }
-                if (!type) {
-                    continue;
                 }
 
                 const msa: MilestoneActivity = {
@@ -1274,32 +1229,62 @@ export class ParseService {
                     ll: aa.recommendedLight,
                     tier: aa.difficultyTier,
                     icon: desc.displayProperties.icon,
-                    challenges: [],
-                    modifiers: modifiers,
-                    loadoutReqs: []
+                    modifiers: modifiers
                 };
 
+                if (msa.name == 'Control') {
+                    console.log("hi");
+                }
+                // reckoning tier 3
+                if ('1446606128' == aa.activityHash) {
+                    reckoning = msa;
+                } else if (msa.hash == '4052671056') {
+                    heroicStrikes = msa;
+                } else if (name.indexOf('Nightfall: ') >= 0) {
+                    // skip variant nightfalls that are quest related, and lower level NF's
+                    if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
+                        msa.name = msa.name.replace('Nightfall: ', '');
+                        if (msa.name.indexOf('The Ordeal') >= 0) {
+                            // name = name.replace(': Master', '');
+                            msa.name += ': ' + msa.desc;
+                        }
+                        msa.name = name;
+                        nightfalls.push(msa);
+                    }
 
-                const pushMe = {
-                    hash: msa.hash,
-                    name: msa.name,
-                    desc: msa.desc,
-                    start: sample.start,
-                    end: sample.end,
-                    order: sample.order,
-                    icon: msa.icon,
-                    activities: [msa],
-                    aggActivities: [{
-                        lls: [msa.ll],
-                        activity: msa
-                    }],
-                    rewards: '',
-                    pl: msa.ll,
-                    summary: '',
-                    type: type,
-                    milestoneType: 3
-                };
-                returnMe.push(pushMe);
+                } else if (name.indexOf('The Menagerie (Heroic)') >= 0) {
+                    herMenag = msa;
+                } else if (ParseService.hasChallenge(aa, '455756300')) {
+                    crucibleCore.push(msa);
+                }  else if (ParseService.hasChallenge(aa, '978034479')) {
+                    crucibleRotator.push(msa);
+                }
+
+
+                // if (!type) {
+                //     continue;
+                // }
+
+                // const pushMe = {
+                //     hash: msa.hash,
+                //     name: msa.name,
+                //     desc: msa.desc,
+                //     start: sample.start,
+                //     end: sample.end,
+                //     order: sample.order,
+                //     icon: msa.icon,
+                //     activities: [msa],
+                //     aggActivities: [{
+                //         lls: [msa.ll],
+                //         activity: msa
+                //     }],
+                //     rewards: '',
+                //     pl: msa.ll,
+                //     summary: '',
+                //     type: type,
+                //     milestoneType: 3
+                // };
+                // returnMe.push(pushMe);
             }
         }
         returnMe.sort((a, b) => {
@@ -1311,7 +1296,33 @@ export class ParseService {
             if (a.name > b.name) { return 1; }
             return 0;
         });
-        return returnMe;
+
+        let flashpoint: string = null;
+        let weekStart: moment.Moment = null;
+
+        // grab special milestones to have them for the home screen and such
+        for (const m of returnMe) {
+
+            if ('463010297' === m.hash) {
+                let name = m.summary;
+                name = name.replace('FLASHPOINT: ', '');
+                name = name.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+                flashpoint = name;
+                weekStart = moment(m.start);
+            }
+        }
+
+        return {
+            publicMilestones: returnMe,
+            crucibleCore: crucibleCore,
+            crucibleRotator: crucibleRotator,
+            herMenag: herMenag,
+            heroicStrikes: heroicStrikes,
+            reckoning: reckoning,
+            nightfalls: nightfalls,
+            flashpoint: flashpoint,
+            weekStart: weekStart
+        };
     }
 
     private parseWeaponSubtype(n: number): String {
@@ -1695,6 +1706,7 @@ export class ParseService {
         }
 
 
+        // TODO fix this item objective
         for (const obj of chalice.objectives) {
             if (obj.progressDescription.indexOf('rewards') > 0) {
                 powerfulDropsRemaining = obj.progress;
@@ -2911,7 +2923,7 @@ export class ParseService {
             // }
 
             const objectives: ItemObjective[] = [];
-            let progTotal = 0, progCnt = 0;
+            const progTotal = 0, progCnt = 0;
             // if (itemComp != null) {
             //     if (itemComp.objectives != null && itemComp.objectives.data != null) {
             //         const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
@@ -3147,7 +3159,7 @@ export class ParseService {
                             }
                         }
                     }
-                   
+
 
                 }
             }

@@ -10,7 +10,7 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault, Mission, AggHistoryCache } from './model';
+import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault, Mission, AggHistoryCache, PublicMilestonesAndActivities } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 import { environment as env } from '@env/environment';
@@ -23,7 +23,7 @@ const MAX_PAGE_SIZE = 250;
 export class BungieService implements OnDestroy {
     private selectedUserSub = new ReplaySubject(1);
     public selectedUserFeed: Observable<SelectedUser>;
-    private publicMilestones: PublicMilestone[] = null;
+    private publicMilestonesAndActivities: PublicMilestonesAndActivities = null;
     private unsubscribe$: Subject<void> = new Subject<void>();
     authInfo: AuthInfo;
     selectedUser: SelectedUser;
@@ -277,7 +277,7 @@ export class BungieService implements OnDestroy {
         const nightfalls: Mission[] = [];
         const publicMilestones = await this.getPublicMilestones();
         if (publicMilestones != null) {
-            for (const m of publicMilestones) {
+            for (const m of publicMilestones.publicMilestones) {
                 if ('2853331463' === m.hash || 'nf' === m.type) {
                     for (const a of m.aggActivities) {
                         let name = a.activity.name;
@@ -285,8 +285,7 @@ export class BungieService implements OnDestroy {
                         nightfalls.push({
                             name: name,
                             icon: a.activity.icon,
-                            hash: a.activity.hash,
-                            time: -1
+                            hash: a.activity.hash
                         });
                     }
                 }
@@ -653,7 +652,7 @@ export class BungieService implements OnDestroy {
                         }
                     }
                 }
-                
+
                 if (bounty != null) {
                     progress = bounty.aggProgress / 100;
                 }
@@ -752,53 +751,22 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async getPublicMilestones(): Promise<PublicMilestone[]> {
-        if (this.publicMilestones != null) {
-            return this.publicMilestones;
+    public async getPublicMilestones(): Promise<PublicMilestonesAndActivities> {
+        if (this.publicMilestonesAndActivities != null) {
+            return this.publicMilestonesAndActivities;
         }
         try {
             const resp = await this.makeReq('Destiny2/Milestones/');
             // hack to get menagerie burns and public nightfalls
             const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities');
             const reply = this.parseService.parsePublicMilestones(resp, resp2);
-            this.publicMilestones = reply;
+            this.publicMilestonesAndActivities = reply;
             return reply;
         } catch (err) {
             this.handleError(err);
-            return [];
+            return null;
         }
     }
-
-    public async getBurns(): Promise<NameDesc[]> {
-        const ms = await this.getPublicMilestones();
-        for (const m of ms) {
-            if ('1437935813' === m.hash) {  // daily is gone, use weekly strike challenge instead
-                return m.aggActivities[0].activity.modifiers;
-            }
-        }
-        return null;
-    }
-
-    public async getMenagBurns(): Promise<NameDesc[]> {
-        const ms = await this.getPublicMilestones();
-        for (const m of ms) {
-            if ('herMenag' == m.type) {
-                return m.aggActivities[0].activity.modifiers;
-            }
-        }
-        return null;
-    }
-
-    public async getReckBurns(): Promise<NameDesc[]> {
-        const ms = await this.getPublicMilestones();
-        for (const m of ms) {
-            if ('601087286' === m.hash) {
-                return m.aggActivities[1].activity.modifiers;
-            }
-        }
-        return null;
-    }
-
 
     public async getActivityHistoryPage(membershipType: number, membershipId: string,
         characterId: string, mode: number, page: number, count: number, ignoreErrors?: boolean): Promise<Activity[]> {
@@ -885,7 +853,10 @@ export class BungieService implements OnDestroy {
                 membershipId + '/?components=' + sComp);
             let ms: PublicMilestone[] = null;
             if (components.includes('CharacterProgressions')) {
-                ms = await this.getPublicMilestones();
+                const publicInfo = await this.getPublicMilestones();
+                if (publicInfo != null) {
+                    ms = publicInfo.publicMilestones;
+                }
             }
             return this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
         } catch (err) {
