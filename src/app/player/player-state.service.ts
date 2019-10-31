@@ -166,7 +166,7 @@ export class PlayerStateService {
       const x = await this.bungieService.getChars(platform.type, memberId,
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
           'CharacterEquipment', 'CharacterInventories',
-          'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets'
+          'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives'
           //, '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
           // 'ItemTalentGrids','ItemCommonData','ProfileInventories'

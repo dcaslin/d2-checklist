@@ -154,8 +154,8 @@
               {{target.label}}
             </button>
             <button mat-menu-item (click)="moveAllVisible(player.vault)">
-                <fa-icon [icon]="iconService.falExchange"></fa-icon> {{player.vault.label}}
-              </button>
+              <fa-icon [icon]="iconService.falExchange"></fa-icon> {{player.vault.label}}
+            </button>
           </mat-menu>
 
           <mat-menu #menuBulkTag="matMenu">
@@ -425,19 +425,20 @@
                       <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
                       {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
                       <!-- <div *ngIf="mod.objectives && mod.objectives.length" class="mod-obj">
-                            <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
-                            <div class="left" *ngFor="let obj of mod.objectives">
-                              <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
-                                class="accent-text mat-option.mat-selected"></fa-icon>
-                              <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
-                              {{obj.progressDescription}}
-                              <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                              <mat-progress-bar class="bounty-progress"
-                                *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
-                                [value]="100*obj.progress/obj.completionValue">
-                              </mat-progress-bar>
-                            </div>
-                          </div> -->
+                        <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
+                        <div class="left" *ngFor="let obj of mod.objectives">
+                          <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
+                            class="accent-text mat-option.mat-selected"></fa-icon>
+                          <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
+                          {{obj.progressDescription}} <ng-container *ngIf="debugmode|async">[{{obj.hash}}]
+                          </ng-container>
+                          <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                          <mat-progress-bar class="bounty-progress"
+                            *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
+                            [value]="100*obj.progress/obj.completionValue">
+                          </mat-progress-bar>
+                        </div>
+                      </div> -->
                     </div>
                   </ng-container>
 
