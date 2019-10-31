@@ -278,6 +278,7 @@ export interface PrivMilestoneActivity {
 }
 
 export interface ItemObjective {
+    hash: string;
     completionValue: number;
     progressDescription: string;
     progress: number;
@@ -847,7 +848,6 @@ export interface AggHistoryCache {
     data: AggHistoryEntry[];
 }
 
-// TODO completions per hour?
 export interface AggHistoryEntry {
     name: string;
     type: string;

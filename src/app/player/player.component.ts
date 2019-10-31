@@ -100,13 +100,11 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
         }
       }
       await this.state.loadPlayer(platform, memberId, false);
-      // todo load player
 
 
     } catch (exc) {
       console.dir(exc);
       this.errorMsg.next(exc.message);
-      // todo show exc.message
     }
   }
 

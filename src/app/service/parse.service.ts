@@ -850,6 +850,7 @@ export class ParseService {
                         const perkSet = [];
                         if (socketVal.reusablePlugs != null) {
 
+                            // TODO fix this? might be ok, need to wait on xur, or do we even care about perks on vendor guns anymore?
                             for (const perkHash of socketVal.reusablePlugHashes) {
                                 const perkDesc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
                                 if (perkDesc != null) {
@@ -1211,8 +1212,6 @@ export class ParseService {
                     continue;
                 }
                 const name = desc.displayProperties.name;
-                console.log(name);
-                console.dir(aa);
                 const modifiers: NameDesc[] = [];
 
                 if (aa.modifierHashes && aa.modifierHashes.length > 0) {
@@ -1232,9 +1231,6 @@ export class ParseService {
                     modifiers: modifiers
                 };
 
-                if (msa.name == 'Control') {
-                    console.log("hi");
-                }
                 // reckoning tier 3
                 if ('1446606128' == aa.activityHash) {
                     reckoning = msa;
@@ -1245,10 +1241,9 @@ export class ParseService {
                     if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
                         msa.name = msa.name.replace('Nightfall: ', '');
                         if (msa.name.indexOf('The Ordeal') >= 0) {
-                            // name = name.replace(': Master', '');
+                            msa.name = msa.name.replace(': Master', '');
                             msa.name += ': ' + msa.desc;
                         }
-                        msa.name = name;
                         nightfalls.push(msa);
                     }
 
@@ -1256,7 +1251,7 @@ export class ParseService {
                     herMenag = msa;
                 } else if (ParseService.hasChallenge(aa, '455756300')) {
                     crucibleCore.push(msa);
-                }  else if (ParseService.hasChallenge(aa, '978034479')) {
+                } else if (ParseService.hasChallenge(aa, '978034479')) {
                     crucibleRotator.push(msa);
                 }
 
@@ -1470,7 +1465,6 @@ export class ParseService {
         const _art = resp.profileProgression.data.seasonalArtifact;
 
         const pointProg = _art.pointProgression;
-        // TODO show these on the main player page
         _art.pointsAcquired;
         _art.powerBonus;
         const powerProg = _art.powerBonusProgression;
@@ -2377,6 +2371,7 @@ export class ParseService {
             }
 
             const iObj: ItemObjective = {
+                hash: o.objectiveHash,
                 completionValue: oDesc.completionValue,
                 progressDescription: oDesc.progressDescription,
                 progress: o.progress == null ? 0 : o.progress,
@@ -2599,6 +2594,7 @@ export class ParseService {
             for (const objectiveHash of desc.objectives.objectiveHashes) {
                 const oDesc = this.destinyCacheService.cache.Objective[objectiveHash];
                 const iObj: ItemObjective = {
+                    hash: objectiveHash,
                     completionValue: oDesc.completionValue,
                     progressDescription: oDesc.progressDescription,
                     progress: 0,
@@ -2711,10 +2707,7 @@ export class ParseService {
         };
     }
 
-    private parseMod(plugDesc: any, objs: any, id: string, plug: any): InventoryPlug {
-        // plug will only be non-null for reusableable plugs which may be catalysts
-        // if (plugDesc.inventory == null) return null;
-        // if (plugDesc.inventory.bucketTypeHash != 3313201758) return null;
+    private parseMod(plugDesc: any, itemComp: any, id: string, socketDesc: any): InventoryPlug {
         if (plugDesc.displayProperties.name == 'Empty Mod Socket') { return null; }
         if (plugDesc.displayProperties.name == 'Default Ornament') { return null; }
         if (plugDesc.itemTypeDisplayName != null && plugDesc.itemTypeDisplayName.indexOf('Ornament') >= 0) {
@@ -2722,7 +2715,7 @@ export class ParseService {
         }
         if (plugDesc.displayProperties.name.indexOf('Catalyst') >= 0) {
             if (plugDesc.perks.length > 0) {
-                let catName = 'Catalyst complete';
+                let catName = plugDesc.displayProperties.name;
                 let catDesc = plugDesc.displayProperties.description;
                 for (const p of plugDesc.perks) {
                     if (p.perkVisibility == 1) {
@@ -2733,32 +2726,66 @@ export class ParseService {
                         }
                     }
                 }
+                const itemObjs: ItemObjective[] = [];
+                let plugObjectives = null;
+                if (itemComp.plugObjectives && itemComp.plugObjectives.data && itemComp.plugObjectives.data[id]) {
+                    const itemObj = itemComp.plugObjectives.data[id];
+                    if (itemObj.objectivesPerPlug && itemObj.objectivesPerPlug[plugDesc.hash]){
+                        plugObjectives = itemObj.objectivesPerPlug[plugDesc.hash];
+                    }
+                }
+
+                if (plugObjectives) {
+                    for (const o of plugObjectives) {
+                        const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                        if (oDesc == null) { continue; }
+                        const iObj: ItemObjective = {
+                            hash: o.objectiveHash,
+                            completionValue: oDesc.completionValue,
+                            progressDescription: oDesc.progressDescription,
+                            progress: o.progress == null ? 0 : o.progress,
+                            complete: o.complete,
+                            percent: 0
+                        };
+                        itemObjs.push(iObj);
+                    }
+                }
                 return new InventoryPlug(plugDesc.hash,
                     catName, catDesc,
-                    plugDesc.displayProperties.icon, true);
+                    plugDesc.displayProperties.icon, true, false, itemObjs);
             }
 
             return null;
         }
-        if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0 && plug) {
-            const itemObjs: ItemObjective[] = [];
-            for (const o of plug.plugObjectives) {
-                const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-                if (oDesc == null) { continue; }
-                const iObj: ItemObjective = {
-                    completionValue: oDesc.completionValue,
-                    progressDescription: oDesc.progressDescription,
-                    progress: o.progress == null ? 0 : o.progress,
-                    complete: o.complete,
-                    percent: 0
-                };
-                itemObjs.push(iObj);
-            }
-            return new InventoryPlug(plugDesc.hash,
-                'Catalyst in-progress', plugDesc.displayProperties.description,
-                plugDesc.displayProperties.icon, true, false, itemObjs);
+        // if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0) {
+        //     let plugObjectives = null;
+        //     if (itemComp.plugObjectives && itemComp.plugObjectives.data && itemComp.plugObjectives.data[id]) {
+        //         const itemObj = itemComp.plugObjectives.data[id];
+        //         console.log('Objectives');
+        //         console.dir(itemObj);
+        //         if (itemObj.objectivesPerPlug && itemObj.objectivesPerPlug[plugDesc.hash]){
+        //             plugObjectives = itemObj.objectivesPerPlug[plugDesc.hash];
+        //         }
+        //     }
+        //     const itemObjs: ItemObjective[] = [];
+        //     for (const o of plugObjectives) {
+        //         const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+        //         if (oDesc == null) { continue; }
+        //         const iObj: ItemObjective = {
+        //             hash: o.objectiveHash,
+        //             completionValue: oDesc.completionValue,
+        //             progressDescription: oDesc.progressDescription,
+        //             progress: o.progress == null ? 0 : o.progress,
+        //             complete: o.complete,
+        //             percent: 0
+        //         };
+        //         itemObjs.push(iObj);
+        //     }
+        //     return new InventoryPlug(plugDesc.hash,
+        //         'Catalyst in-progress', plugDesc.displayProperties.description,
+        //         plugDesc.displayProperties.icon, true, false, itemObjs);
 
-        }
+        // }
         if (plugDesc.hash == 3786277607) { // legacy MW armor slot
             return null;
         }
@@ -2914,51 +2941,44 @@ export class ParseService {
                     }
                 }
             }
+                       const objectives: ItemObjective[] = [];
+            let progTotal = 0, progCnt = 0;
+            if (itemComp != null) {
+                if (itemComp.objectives != null && itemComp.objectives.data != null) {
+                    const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
+                    let objs: any[] = null;
+                    if (parentObj != null) {
+                        objs = parentObj.objectives;
 
-            // //  TODO this is for objectives on a specific plug, not going to worry about that yet
-            // if (itemComp.plugObjectives && itemComp.plugObjectives.data && itemComp.plugObjectives[itm.itemInstanceId]) {
-            //     const itemObj = itemComp.plugObjectives[itm.itemInstanceId];
-            //     console.log("Objectives");
-            //     console.dir(itemObj);
-            // }
-
-            const objectives: ItemObjective[] = [];
-            const progTotal = 0, progCnt = 0;
-            // if (itemComp != null) {
-            //     if (itemComp.objectives != null && itemComp.objectives.data != null) {
-            //         const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
-            //         let objs: any[] = null;
-            //         if (parentObj != null) {
-            //             objs = parentObj.objectives;
-
-            //         }
-            //         if (objs == null && characterProgressions != null && characterProgressions.data != null &&
-            //             owner != null && characterProgressions.data[owner.id] != null) {
-            //             objs = characterProgressions.data[owner.id].uninstancedItemObjectives[itm.itemHash];
-            //         }
-            //         if (objs != null) {
-            //             for (const o of objs) {
-            //                 const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-            //                 const iObj: ItemObjective = {
-            //                     completionValue: oDesc.completionValue,
-            //                     progressDescription: oDesc.progressDescription,
-            //                     progress: o.progress == null ? 0 : o.progress,
-            //                     complete: o.complete,
-            //                     percent: 0
-            //                 };
+                    }
+                    if (objs == null && characterProgressions != null && characterProgressions.data != null &&
+                        owner != null && characterProgressions.data[owner.id] != null) {
+                        objs = characterProgressions.data[owner.id].uninstancedItemObjectives[itm.itemHash];
+                    }
+                    if (objs != null) {
+                        for (const o of objs) {
+                            const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
+                            const iObj: ItemObjective = {
+                                hash: o.objectiveHash,
+                                completionValue: oDesc.completionValue,
+                                progressDescription: oDesc.progressDescription,
+                                progress: o.progress == null ? 0 : o.progress,
+                                complete: o.complete,
+                                percent: 0
+                            };
 
 
-            //                 if (iObj.completionValue != null && iObj.completionValue > 0) {
-            //                     progTotal += 100 * iObj.progress / iObj.completionValue;
-            //                     progCnt++;
-            //                     iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
-            //                 }
-            //                 objectives.push(iObj);
-            //             }
-            //         }
+                            if (iObj.completionValue != null && iObj.completionValue > 0) {
+                                progTotal += 100 * iObj.progress / iObj.completionValue;
+                                progCnt++;
+                                iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
+                            }
+                            objectives.push(iObj);
+                        }
+                    }
 
-            //     }
-            // }
+                }
+            }
             let aggProgress = 0;
             if (progCnt > 0) {
                 aggProgress = progTotal / progCnt;
@@ -3077,7 +3097,6 @@ export class ParseService {
                                 continue;
                             }
                             const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949;
-
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
@@ -3085,29 +3104,13 @@ export class ParseService {
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
-
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
-                                if (reusablePlugs && reusablePlugs[index]) {
+                                // we do !isMod b/c for masterworks the "unselected" perk is actually the next tier (except for masterworks where they're the same and selected)
+                                // for those we just skip down to the socketVal
+                                if (!isMod && reusablePlugs && reusablePlugs[index]) {
                                     for (const plug of reusablePlugs[index]) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
                                         if (plugDesc == null) { continue; }
-                                        // mods and masterworks only matter if they're selected
-                                        if (isMod) {
-                                            if (plug.plugItemHash == socketVal.plugHash) {
-                                                const mwInfo = this.parseMasterwork(plugDesc);
-
-                                                if (mwInfo != null) {
-                                                    mw = mwInfo;
-                                                    continue;
-                                                }
-                                                const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId, plug);
-                                                if (modInfo != null) {
-                                                    mods.push(modInfo);
-                                                    continue;
-                                                }
-                                            }
-                                            continue;
-                                        }
                                         const name = this.getPlugName(plugDesc);
                                         if (name == null) { continue; }
                                         const oPlug = new InventoryPlug(plugDesc.hash,
@@ -3125,7 +3128,7 @@ export class ParseService {
                                             mw = mwInfo;
                                             continue;
                                         }
-                                        const modInfo = this.parseMod(plugDesc, itemComp.objectives == null ? null : itemComp.objectives.data, itm.itemInstanceId, plug);
+                                        const modInfo = this.parseMod(plugDesc, itemComp, itm.itemInstanceId, socketDesc);
                                         if (modInfo != null) {
                                             mods.push(modInfo);
                                             continue;
