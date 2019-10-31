@@ -18,6 +18,8 @@ import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/ta
 import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -56,7 +58,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ];
 
   weaponTypeChoices: Choice[] = [];
-  armorTypeChoices: Choice[] = [];
+  // armorTypeChoices: Choice[] = [];
+  armorInventoryBucketChoices: Choice[] = [];
+  weaponInventoryBucketChoices: Choice[] = [];
   vehicleTypeChoices: Choice[] = [];
   modTypeChoices: Choice[] = [];
   consumableTypeChoices: Choice[] = [];
@@ -76,8 +80,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public weaponTypeToggle: GearToggleComponent;
   @ViewChild('ammoTypeToggle', { static: false })
   public ammoTypeToggle: GearToggleComponent;
-  @ViewChild('armorTypeToggle', { static: false })
-  public armorTypeToggle: GearToggleComponent;
+  @ViewChild('armorInventoryBucketToggle', { static: false })
+  public armorInventoryBucketToggle: GearToggleComponent;
+  @ViewChild('weaponInventoryBucketToggle', { static: false })
+  public weaponInventoryBucketToggle: GearToggleComponent;
+  // @ViewChild('armorTypeToggle', { static: false })
+  // public armorTypeToggle: GearToggleComponent;
   @ViewChild('vehicleTypeToggle', { static: false })
   public vehicleTypeToggle: GearToggleComponent;
   @ViewChild('modTypeToggle', { static: false })
@@ -124,13 +132,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   orMode = false;
 
   options = [
-    { name: 'Weapons', type: ItemType.Weapon },
-    { name: 'Armor', type: ItemType.Armor },
-    { name: 'Ghosts', type: ItemType.Ghost },
-    { name: 'Vehicles', type: ItemType.Vehicle },
-    { name: 'Mods', type: ItemType.GearMod },
-    { name: 'Consumable', type: ItemType.Consumable },
-    { name: 'Material', type: ItemType.ExchangeMaterial }];
+    { name: 'Weapons', type: ItemType.Weapon, path: 'weapons' },
+    { name: 'Armor', type: ItemType.Armor, path: 'armor' },
+    { name: 'Ghosts', type: ItemType.Ghost, path: 'ghosts' },
+    { name: 'Vehicles', type: ItemType.Vehicle, path: 'vehicles' },
+    { name: 'Mods', type: ItemType.GearMod, path: 'mods' },
+    { name: 'Consumable', type: ItemType.Consumable, path: 'consumable' },
+    { name: 'Material', type: ItemType.ExchangeMaterial, path: 'material' }];
   option = this.options[0];
   sortBy = 'power';
   sortDesc = true;
@@ -152,6 +160,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   trackGearItem(index, item) {
     return item ? item.id : undefined;
 
+  }
+
+  tabChanged(): void {
+    this.router.navigate(['gear', this.optionsgroup.value.path]);
   }
 
   filterChanged(): void {
@@ -251,9 +263,25 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public dialog: MatDialog,
     private targetPerkService: TargetPerkService,
     public preferredStatService: PreferredStatService,
+    private route: ActivatedRoute,
+    public router: Router,
+    private location: Location,
     private ref: ChangeDetectorRef) {
     super(storageService);
     this.loading.next(true);
+
+    this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      const sTab = params.tab;
+      if (sTab) {
+        for (const o of this.options) {
+          if (o.path == sTab) {
+            this.option = o;
+          }
+        }
+      }
+      this.filterChanged();
+    });
+
     if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == 'false') {
       this.highlightAllPerks = false;
     }
@@ -304,7 +332,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY);
     }
     if (newPveVal == null && newPvpVal == null) {
-      location.reload();
+      window.location.reload();
       return;
     }
     let reloadMe = false;
@@ -323,7 +351,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
     }
     if (reloadMe) {
-      location.reload();
+      window.location.reload();
     }
   }
 
@@ -492,7 +520,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.markToggle);
     this.appendToggleFilterNote(this.weaponTypeToggle);
     this.appendToggleFilterNote(this.ammoTypeToggle);
-    this.appendToggleFilterNote(this.armorTypeToggle);
+    this.appendToggleFilterNote(this.armorInventoryBucketToggle);
+    this.appendToggleFilterNote(this.weaponInventoryBucketToggle);
+    // this.appendToggleFilterNote(this.armorTypeToggle);
     this.appendToggleFilterNote(this.vehicleTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
     this.appendToggleFilterNote(this.consumableTypeToggle);
@@ -529,14 +559,30 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false;
     }
-    if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) {
-      const key = 'armorType';
+    if (!this.armorInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket)) {
+      const key = 'armorInventoryBucket';
       if (report[key] == null) {
         report[key] = 0;
       }
       report[key] = report[key] + 1;
       return false;
     }
+    if (!this.weaponInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket)) {
+      const key = 'weaponInventoryBucket';
+      if (report[key] == null) {
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false;
+    }
+    // if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) {
+    //   const key = 'armorType';
+    //   if (report[key] == null) {
+    //     report[key] = 0;
+    //   }
+    //   report[key] = report[key] + 1;
+    //   return false;
+    // }
     if (!this.vehicleTypeToggle.isChosen(this.option.type, i.typeName)) {
       const key = 'vehicleType';
       if (report[key] == null) {
@@ -609,7 +655,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.markToggle.setCurrentItemType(this.option.type);
     this.weaponTypeToggle.setCurrentItemType(this.option.type);
     this.ammoTypeToggle.setCurrentItemType(this.option.type);
-    this.armorTypeToggle.setCurrentItemType(this.option.type);
+    this.armorInventoryBucketToggle.setCurrentItemType(this.option.type);
+    this.weaponInventoryBucketToggle.setCurrentItemType(this.option.type);
+    // this.armorTypeToggle.setCurrentItemType(this.option.type);
     this.vehicleTypeToggle.setCurrentItemType(this.option.type);
     this.modTypeToggle.setCurrentItemType(this.option.type);
     this.consumableTypeToggle.setCurrentItemType(this.option.type);
@@ -754,12 +802,16 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
     const temp: any = {};
     temp['rarity'] = {};
+    // for each piece of gear, grab a set of its type names, by type
+    // and grab the superset of rarity tiers
     for (const i of this._player.getValue().gear) {
       if (temp[i.type + ''] == null) {
         temp[i.type + ''] = [];
+        temp[i.type + 'bucket'] = [];
       }
       temp[i.type + ''][i.typeName] = true;
       temp['rarity'][i.tier] = true;
+      temp[i.type + 'bucket'][i.inventoryBucket] = true;
 
     }
     const arrays: any = {};
@@ -780,7 +832,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       arrays[key] = arr;
     }
     this.weaponTypeChoices = arrays[ItemType.Weapon + ''];
-    this.armorTypeChoices = arrays[ItemType.Armor + ''];
+    this.weaponInventoryBucketChoices = arrays[ItemType.Weapon + 'bucket'];
+    // this.armorTypeChoices = arrays[ItemType.Armor + ''];
+    this.armorInventoryBucketChoices = arrays[ItemType.Armor + 'bucket'];
     this.vehicleTypeChoices = arrays[ItemType.Vehicle + ''];
     this.modTypeChoices = arrays[ItemType.GearMod + ''];
     this.consumableTypeChoices = arrays[ItemType.Consumable + ''];
@@ -838,7 +892,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (this.markToggle) { filters.push(this.markToggle); }
     if (this.weaponTypeToggle) { filters.push(this.weaponTypeToggle); }
     if (this.ammoTypeToggle) { filters.push(this.ammoTypeToggle); }
-    if (this.armorTypeToggle) { filters.push(this.armorTypeToggle); }
+    if (this.armorInventoryBucketToggle) { filters.push(this.armorInventoryBucketToggle); }
+    if (this.weaponInventoryBucketToggle) { filters.push(this.weaponInventoryBucketToggle); }
+    // if (this.armorTypeToggle) { filters.push(this.armorTypeToggle); }
     if (this.vehicleTypeToggle) { filters.push(this.vehicleTypeToggle); }
     if (this.modTypeToggle) { filters.push(this.modTypeToggle); }
     if (this.consumableTypeToggle) { filters.push(this.consumableTypeToggle); }
@@ -851,40 +907,17 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   ngAfterViewInit() {
-
-    // this.filters.push(this.markToggle);
-    // this.filters.push(this.weaponTypeToggle);
-    // this.filters.push(this.ammoTypeToggle);
-    // this.filters.push(this.armorTypeToggle);
-    // this.filters.push(this.vehicleTypeToggle);
-    // this.filters.push(this.modTypeToggle);
-    // this.filters.push(this.consumableTypeToggle);
-    // this.filters.push(this.exchangeTypeToggle);
-    // this.filters.push(this.ownerToggle);
-    // this.filters.push(this.equippedToggle);
-    // this.filters.push(this.rarityToggle);
-    // this.filters.push(this.classTypeToggle);
-
-    // this.paginator.page.pipe(
-    //   takeUntil(this.unsubscribe$))
-    //   .subscribe(x => {
-    //     this.page = x.pageIndex;
-    //     this.size = x.pageSize;
-    //     this.filterChanged();
-    //   });
-
-
     this.filterChangedSubject.pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(50))
       .subscribe(() => {
         this.filtersDirty = this.checkFilterDirty();
         try {
-          if (this.optionsgroup){
+          if (this.optionsgroup) {
             this.option = this.optionsgroup.value;
             this.filterGear();
           }
-          
+
         } catch (e) {
           console.log('Error filtering: ' + e);
         }
