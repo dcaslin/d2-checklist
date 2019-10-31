@@ -2660,6 +2660,18 @@ export class ParseService {
         }
     }
 
+    private isEnergyType(damageType: DamageType): boolean {
+        if (damageType == DamageType.Arc) {
+            return true;
+        } else if (damageType == DamageType.Thermal) {
+            return true;
+        } else if (damageType == DamageType.Void) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
     private cookEnergyType(energyType: EnergyType): string {
         if (energyType == EnergyType.Any) {
@@ -3223,6 +3235,9 @@ export class ParseService {
             }
             if (damageType != null && damageType != DamageType.None) {
                 searchText += ' ' + this.cookDamageType(damageType);
+            }
+            if (this.isEnergyType(damageType)) {
+                searchText += ' energy';
             }
             if (energyType != null) {
                 searchText += ' ' + this.cookEnergyType(energyType);

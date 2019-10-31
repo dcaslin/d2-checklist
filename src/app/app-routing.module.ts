@@ -99,12 +99,19 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: FriendsComponent
-    }, {
+    }, 
+    {
       path: 'gear',
+      redirectTo: 'gear/weapons',
+      pathMatch: 'full'
+    },
+    {
+      path: 'gear/:tab',
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: GearComponent
-    }, {
+    }, 
+    {
       path: 'search',
       pathMatch: 'full',
       canActivate: [AuthGuard],

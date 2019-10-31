@@ -11,7 +11,7 @@
       <ng-container *ngIf="_player|async as player">
 
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
-          (change)="filterChanged()">
+          (change)="tabChanged()">
           <mat-button-toggle *ngFor="let o of options" [value]="o">
 
             <fa-icon *ngIf="o.name=='Weapons'" [icon]="iconService.farAxeBattle"></fa-icon>
@@ -59,6 +59,10 @@
               [currentItemType]="option.type">
             </d2c-gear-toggle>
 
+            <d2c-gear-toggle #weaponInventoryBucketToggle [icon]="iconService.fasHelmetBattle"  title="Slot"
+              [choices]="weaponInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
 
             <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
               (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
@@ -68,11 +72,15 @@
               (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
             </d2c-gear-toggle>
 
-
+            <d2c-gear-toggle #armorInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
+              [choices]="armorInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+<!-- 
             <d2c-gear-toggle #armorTypeToggle [icon]="iconService.fasHelmetBattle" title="Type"
               [choices]="armorTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
               [currentItemType]="option.type">
-            </d2c-gear-toggle>
+            </d2c-gear-toggle> -->
             <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasPlaneAlt" title="Type"
               [choices]="vehicleTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]"
               [currentItemType]="option.type">
