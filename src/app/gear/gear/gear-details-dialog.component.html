@@ -65,7 +65,26 @@
                     </td>
                 </ng-container>
             </tr>
-            <tr *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
+            <tr *ngIf="items[0].type==ItemType.Armor">
+                <th>Energy</th>
+                <ng-container *ngFor="let i of items">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        {{i.energyCapacity}} 
+                        <fa-icon [icon]="iconService.fasBolt" [class.void-text]="i.energyType===EnergyType.Void" [class.arc-text]="i.energyType===EnergyType.Arc" [class.solar-text]="i.energyType===EnergyType.Thermal"></fa-icon>
+                        
+                    </td>
+                </ng-container>
+            </tr>
+            <tr *ngIf="items[0].type==ItemType.Armor">
+                <th>Points</th>
+                <ng-container *ngFor="let i of items">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        {{i.preferredStatPoints}}
+                        <div class="simple-caption">{{i.totalStatPoints}} total</div>
+                    </td>
+                </ng-container>
+            </tr>           
+            <tr *ngIf="items[0].type==ItemType.Weapon">
                 <th>Masterwork</th>
 
                 <ng-container *ngFor="let i of items">
@@ -100,7 +119,7 @@
                 </ng-container>
             </tr>
             <tr
-                *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor || items[0].type==ItemType.Ghost || items[0].type==ItemType.Vehicle">
+                *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Ghost || items[0].type==ItemType.Vehicle">
                 <th>Sockets</th>
 
                 <ng-container *ngFor="let i of items">

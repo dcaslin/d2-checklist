@@ -622,7 +622,7 @@ export class InventoryItem {
     public markLabel: string;
     public mark: string;
     public notes: string;
-    public inventoryBucket: string;
+    public inventoryBucket: ApiInventoryBucket;
     public tier: string;
     public readonly options: Target[] = [];
     public readonly isRandomRoll: boolean;
@@ -653,7 +653,7 @@ export class InventoryItem {
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
-        questline: Questline, searchText: string, inventoryBucket: string, tier: string, options: Target[],
+        questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
         energyCapacity?: number, totalStatPoints?: number
     ) {
@@ -1184,13 +1184,15 @@ export interface DropInfo {
 }
 
 export class InventoryStat {
+    readonly hash: number;
     readonly name: string;
     readonly desc: string;
     value: number;
     baseValue: number;
     enhancement: number;
 
-    constructor(name, desc, value, baseValue) {
+    constructor(hash, name, desc, value, baseValue) {
+        this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.value = value;
@@ -1298,4 +1300,36 @@ export interface Joinability {
     openSlots: number;
     privacySetting: number;
     closedReasons: number;
+}
+
+export interface ApiInventoryBucket {
+    blacklisted: boolean;
+    bucketOrder: number;
+    category: number;
+    displayProperties: ApiDisplayProperties;
+    enabled: boolean;
+    fifo: boolean;
+    hasTransferDestination: boolean;
+    hash: number;
+    index: number;
+    itemCount: number;
+    location: number;
+    redacted: boolean;
+    scope: number;
+}
+
+
+interface ApiDisplayProperties {
+    description: string;
+    hasIcon: boolean;
+    name: string;
+}
+
+export interface ApiItemTierType {
+    blacklisted: boolean;
+    displayProperties: ApiDisplayProperties;
+    hash: number;
+    index: number;
+    infusionProcess: any;
+    redacted: boolean;
 }

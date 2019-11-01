@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { InventoryItem, Target } from './model';
+import { InventoryItem, Target, ApiInventoryBucket } from './model';
 
 export class Bucket {
     equipped: InventoryItem;
 
     readonly items: InventoryItem[] = [];
-    readonly name: string;
+    readonly desc: ApiInventoryBucket;
 
-    constructor(name: string) {
-        this.name = name;
+    constructor(desc: ApiInventoryBucket) {
+        this.desc = desc;
     }
 
     remove(item: InventoryItem): boolean {
@@ -38,16 +38,16 @@ export class BucketService {
     constructor() {
     }
 
-    getBucket(target: Target, bucketName: string): Bucket {
-        let returnMe = this.buckets[target.id][bucketName];
+    getBucket(target: Target, desc: ApiInventoryBucket): Bucket {
+        let returnMe = this.buckets[target.id][desc.hash];
         if (returnMe == null) {
-            console.log('No bucket found for ' + target.label + '|' + bucketName + ', using shared');
-            returnMe = this.buckets['shared'][bucketName];
+            console.log('No bucket found for ' + target.label + '|' + desc.displayProperties.name + ', using shared');
+            returnMe = this.buckets['shared'][desc.hash];
         }
         // if our bucket is truly empty b/c we hvae a classified weapon equipped, we need to make it on the fly
         if (returnMe == null) {
-            this.buckets[target.id][bucketName] = new Bucket(bucketName);
-            returnMe = this.buckets[target.id][bucketName];
+            this.buckets[target.id][desc.hash] = new Bucket(desc);
+            returnMe = this.buckets[target.id][desc.hash];
         }
         return returnMe;
     }
@@ -72,10 +72,10 @@ export class BucketService {
             const itm = items[cntr];
             if (!itm.inventoryBucket || !itm.owner) { continue; }
             const buckets: any = this.buckets[itm.owner.id];
-            let bucket: Bucket = buckets[itm.inventoryBucket];
+            let bucket: Bucket = buckets[itm.inventoryBucket.hash];
             if (bucket == null) {
                 bucket = new Bucket(itm.inventoryBucket);
-                buckets[itm.inventoryBucket] = bucket;
+                buckets[itm.inventoryBucket.hash] = bucket;
             }
             bucket.items.push(itm);
             if (itm.equipped) {
