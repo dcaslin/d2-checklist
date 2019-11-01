@@ -1,5 +1,13 @@
 <ng-container *ngIf="state.player|async as player">
+
   <div class="left" style="margin: 10px">
+    <mat-form-field style="margin-right: 10px" appearance="standard">
+      <!-- <mat-label>Character</mat-label> -->
+      <mat-select [(ngModel)]="state.filterChar" placeholder="Show all characters" (selectionChange)="filterAndSortPursuits()">        
+        <mat-option *ngFor="let char of player.characters" [value]="char">{{char.className}} - {{char.light}}</mat-option>
+        <mat-option [value]="null">All</mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-form-field class="searchField">
       <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText" placeholder="Wildcard filter">
       <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async).length>0" matSuffix
@@ -15,7 +23,7 @@
 
         <th class="header-cell">
           <a href="javascript:void(0)" (click)="sortData('name')"> {{getTitle()}}
-            <ng-container *ngIf="sort.name=='name'">              
+            <ng-container *ngIf="sort.name=='name'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
             </ng-container>
@@ -68,7 +76,7 @@
                 <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]!=true" (click)="state.trackPursuit(g)">
                   <fa-icon [icon]="iconService.farStar"></fa-icon>
                 </button>
-                <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">                  
+                <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">
                   <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
                 </button>
                 <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
@@ -118,8 +126,9 @@
               <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
               </mat-progress-bar>
             </div>
-            <div class="obj-desc" *ngFor="let obj of g.objectives">              
-              <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete" class="accent-text mat-option.mat-selected"></fa-icon>
+            <div class="obj-desc" *ngFor="let obj of g.objectives">
+              <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
+                class="accent-text mat-option.mat-selected"></fa-icon>
               <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
               {{obj.progressDescription}}
               <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
