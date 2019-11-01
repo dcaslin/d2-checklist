@@ -4,7 +4,7 @@ import { BungieService } from '@app/service/bungie.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target } from '@app/service/model';
+import { ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target, ApiItemTierType, ApiInventoryBucket } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { TargetPerkService } from '@app/service/target-perk.service';
 import { WishlistService } from '@app/service/wishlist.service';
@@ -20,6 +20,7 @@ import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/ta
 import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
+import { DestinyCacheService } from '@app/service/destiny-cache.service';
 
 
 @Component({
@@ -84,8 +85,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public armorInventoryBucketToggle: GearToggleComponent;
   @ViewChild('weaponInventoryBucketToggle', { static: false })
   public weaponInventoryBucketToggle: GearToggleComponent;
-  // @ViewChild('armorTypeToggle', { static: false })
-  // public armorTypeToggle: GearToggleComponent;
   @ViewChild('vehicleTypeToggle', { static: false })
   public vehicleTypeToggle: GearToggleComponent;
   @ViewChild('modTypeToggle', { static: false })
@@ -253,7 +252,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return markdown;
   }
 
-  constructor(storageService: StorageService, private bungieService: BungieService,
+  constructor(storageService: StorageService,
+    private bungieService: BungieService,
+    private cacheService: DestinyCacheService,
     public iconService: IconService,
     public markService: MarkService,
     public gearService: GearService,
@@ -522,7 +523,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.ammoTypeToggle);
     this.appendToggleFilterNote(this.armorInventoryBucketToggle);
     this.appendToggleFilterNote(this.weaponInventoryBucketToggle);
-    // this.appendToggleFilterNote(this.armorTypeToggle);
     this.appendToggleFilterNote(this.vehicleTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
     this.appendToggleFilterNote(this.consumableTypeToggle);
@@ -559,7 +559,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false;
     }
-    if (!this.armorInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket)) {
+    if (!this.armorInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
       const key = 'armorInventoryBucket';
       if (report[key] == null) {
         report[key] = 0;
@@ -567,7 +567,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false;
     }
-    if (!this.weaponInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket)) {
+    if (!this.weaponInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
       const key = 'weaponInventoryBucket';
       if (report[key] == null) {
         report[key] = 0;
@@ -575,15 +575,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false;
     }
-    // if (!this.armorTypeToggle.isChosen(this.option.type, i.typeName)) {
-    //   const key = 'armorType';
-    //   if (report[key] == null) {
-    //     report[key] = 0;
-    //   }
-    //   report[key] = report[key] + 1;
-    //   return false;
-    // }
-    if (!this.vehicleTypeToggle.isChosen(this.option.type, i.typeName)) {
+    if (!this.vehicleTypeToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
       const key = 'vehicleType';
       if (report[key] == null) {
         report[key] = 0;
@@ -657,7 +649,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.ammoTypeToggle.setCurrentItemType(this.option.type);
     this.armorInventoryBucketToggle.setCurrentItemType(this.option.type);
     this.weaponInventoryBucketToggle.setCurrentItemType(this.option.type);
-    // this.armorTypeToggle.setCurrentItemType(this.option.type);
     this.vehicleTypeToggle.setCurrentItemType(this.option.type);
     this.modTypeToggle.setCurrentItemType(this.option.type);
     this.consumableTypeToggle.setCurrentItemType(this.option.type);
@@ -786,6 +777,79 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
   }
 
+  private static sortByIndexReverse(a: any, b: any): number {
+    if (a.index < b.index) {
+      return 1;
+    } if (a.index > b.index) {
+      return -1;
+    }
+    return 0;
+  }
+
+  private static sortByIndex(a: any, b: any): number {
+    if (a.index < b.index) {
+      return -1;
+    } if (a.index > b.index) {
+      return 1;
+    }
+    return 0;
+  }
+
+  private generateRarityChoices(): Choice[] {
+    const tiers = this.cacheService.cache['ItemTierType'];
+    const aTiers: ApiItemTierType[] = [];
+    for (const key of Object.keys(tiers)) {
+      const val: ApiItemTierType = tiers[key];
+      if (!val.blacklisted && !val.redacted) {
+        if (val.displayProperties.name != 'Basic') {
+          aTiers.push(val);
+        }
+      }
+    }
+    aTiers.sort(GearComponent.sortByIndexReverse);
+    const returnMe: Choice[] = [];
+    for (const tier of aTiers) {
+      returnMe.push(new Choice(tier.displayProperties.name, tier.displayProperties.name));
+    }
+    return returnMe;
+  }
+
+  private generateBucketChoices(itemType: ItemType): Choice[] {
+    const buckets = this.cacheService.cache['InventoryBucket'];
+    const aBuckets: ApiInventoryBucket[] = [];
+    for (const key of Object.keys(buckets)) {
+      const val: ApiInventoryBucket = buckets[key];
+      if (!val.blacklisted && !val.redacted && val.category == 3) {
+        if (itemType === ItemType.Weapon) {
+          if (val.index <= 2) {
+            aBuckets.push(val);
+          }
+        } else if (itemType === ItemType.Armor) {
+
+          if (val.index >= 3 && val.index <= 7) {
+            aBuckets.push(val);
+          }
+        } else if (itemType === ItemType.Vehicle) {
+
+          if (val.index >= 9 && val.index <= 10) {
+            aBuckets.push(val);
+          }
+        }
+
+      }
+    }
+    aBuckets.sort(GearComponent.sortByIndex);
+    const returnMe: Choice[] = [];
+
+    for (const bucket of aBuckets) {
+      returnMe.push(new Choice(bucket.displayProperties.name, bucket.displayProperties.name));
+    }
+    return returnMe;
+  }
+
+
+  // TODO use inventorybucket to generate other type choices properly
+
   private generateChoices(force?: boolean) {
     if (this._player.getValue() == null) { return; }
     if (this._player.getValue().gear == null) { return; }
@@ -801,7 +865,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.ownerChoices = tempOwners;
 
     const temp: any = {};
-    temp['rarity'] = {};
     // for each piece of gear, grab a set of its type names, by type
     // and grab the superset of rarity tiers
     for (const i of this._player.getValue().gear) {
@@ -810,8 +873,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         temp[i.type + 'bucket'] = [];
       }
       temp[i.type + ''][i.typeName] = true;
-      temp['rarity'][i.tier] = true;
-      temp[i.type + 'bucket'][i.inventoryBucket] = true;
+      temp[i.type + 'bucket'][i.inventoryBucket.displayProperties.name] = true;
 
     }
     const arrays: any = {};
@@ -832,14 +894,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       arrays[key] = arr;
     }
     this.weaponTypeChoices = arrays[ItemType.Weapon + ''];
-    this.weaponInventoryBucketChoices = arrays[ItemType.Weapon + 'bucket'];
-    // this.armorTypeChoices = arrays[ItemType.Armor + ''];
-    this.armorInventoryBucketChoices = arrays[ItemType.Armor + 'bucket'];
-    this.vehicleTypeChoices = arrays[ItemType.Vehicle + ''];
+    this.weaponInventoryBucketChoices = this.generateBucketChoices(ItemType.Weapon);
+    this.armorInventoryBucketChoices = this.generateBucketChoices(ItemType.Armor);
+    this.vehicleTypeChoices = this.generateBucketChoices(ItemType.Vehicle);
     this.modTypeChoices = arrays[ItemType.GearMod + ''];
     this.consumableTypeChoices = arrays[ItemType.Consumable + ''];
     this.exchangeTypeChoices = arrays[ItemType.ExchangeMaterial + ''];
-    this.rarityChoices = arrays['rarity'];
+    this.rarityChoices = this.generateRarityChoices();
   }
 
   async loadMarks() {
@@ -894,7 +955,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (this.ammoTypeToggle) { filters.push(this.ammoTypeToggle); }
     if (this.armorInventoryBucketToggle) { filters.push(this.armorInventoryBucketToggle); }
     if (this.weaponInventoryBucketToggle) { filters.push(this.weaponInventoryBucketToggle); }
-    // if (this.armorTypeToggle) { filters.push(this.armorTypeToggle); }
     if (this.vehicleTypeToggle) { filters.push(this.vehicleTypeToggle); }
     if (this.modTypeToggle) { filters.push(this.modTypeToggle); }
     if (this.consumableTypeToggle) { filters.push(this.consumableTypeToggle); }
@@ -1034,11 +1094,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 })
 export class GearDetailsDialogComponent {
   ItemType = ItemType;
+  EnergyType = EnergyType;
   hideJunk = false;
   items: InventoryItem[];
   parent: GearComponent;
   constructor(
     public iconService: IconService,
+    private cacheService: DestinyCacheService,
     public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.items = data.items;
@@ -1061,7 +1123,19 @@ export class GearDetailsDialogComponent {
         }
       }
     }
+    const statDb = this.cacheService.cache.Stat;
     stats.sort(function (a, b) {
+      const aDesc = statDb[a.hash];
+      const bDesc = statDb[b.hash];
+      if (aDesc && bDesc) {
+        if (aDesc.index > bDesc.index) {
+          return 1;
+        } else if (aDesc.index < bDesc.index) {
+          return -1;
+        } else {
+          return 0;
+        }
+      }
       const bs: string = b.name;
       const as: string = a.name;
       if (bs < as) { return 1; }

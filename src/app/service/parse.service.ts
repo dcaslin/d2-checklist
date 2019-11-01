@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, ApiInventoryBucket } from './model';
 
 
 
@@ -2848,7 +2848,7 @@ export class ParseService {
                 if (statDesc == null) {
                     continue;
                 }
-                const stat = new InventoryStat(statDesc.displayProperties.name,
+                const stat = new InventoryStat(statHash, statDesc.displayProperties.name,
                     statDesc.displayProperties.description, invStat.value, null);
                 returnMe.inventoryStats.push(stat);
             }
@@ -3009,7 +3009,7 @@ export class ParseService {
             let mw: MastworkInfo = null;
             const mods: InventoryPlug[] = [];
 
-            let invBucket = null;
+            let inventoryBucket:ApiInventoryBucket = null;
             let tier = null;
             let isRandomRoll = false;
 
@@ -3022,7 +3022,7 @@ export class ParseService {
                     if (bucketHash != null) {
                         const bDesc = this.destinyCacheService.cache.InventoryBucket[bucketHash];
                         if (bDesc != null) {
-                            invBucket = bDesc.displayProperties.name;
+                            inventoryBucket = bDesc;
                         }
                     }
                 }
@@ -3051,7 +3051,7 @@ export class ParseService {
                         Object.keys(instanceData.stats).forEach(key => {
                             const val: any = instanceData.stats[key];
                             const jDesc: any = this.destinyCacheService.cache.Stat[key];
-                            statDict[key] = new InventoryStat(jDesc.displayProperties.name,
+                            statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
                                 jDesc.displayProperties.description, val.value, null);
                         });
                         const ostats = desc.stats.stats;
@@ -3060,7 +3060,7 @@ export class ParseService {
                             const baseValue = val.value;
                             if (statDict[key] == null) {
                                 const jDesc: any = this.destinyCacheService.cache.Stat[key];
-                                statDict[key] = new InventoryStat(jDesc.displayProperties.name,
+                                statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
                                     jDesc.displayProperties.description, null, baseValue);
                             } else {
                                 statDict[key].baseValue = baseValue;
@@ -3302,7 +3302,7 @@ export class ParseService {
                 power, damageType, energyType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
-                locked, masterworked, mw, mods, tracked, questline, searchText, invBucket, tier, options.slice(),
+                locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
                 , energyUsed, energyCapacity, totalStatPoints
             );

@@ -117,7 +117,7 @@ export class GearService {
                 // is bucket full?
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if (targetBucket.items.length < 10) {
-                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.name);
+                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
                     try {
                         if (i.postmaster) {
                             await this.transfer(player, i, i.owner);
@@ -219,7 +219,7 @@ export class GearService {
 
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if ((targetBucket.items.length + copies.length) <= 10) {
-                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.name);
+                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
                     this.notificationService.info('Prepping ' + i.name + ' for upgrade (' + copies.length + ' total)');
                     for (const moveMe of copies) {
                         console.log('    From ' + moveMe.owner.label);

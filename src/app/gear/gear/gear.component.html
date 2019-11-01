@@ -76,12 +76,8 @@
               [choices]="armorInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
               [currentItemType]="option.type">
             </d2c-gear-toggle>
-<!-- 
-            <d2c-gear-toggle #armorTypeToggle [icon]="iconService.fasHelmetBattle" title="Type"
-              [choices]="armorTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle> -->
-            <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasPlaneAlt" title="Type"
+
+            <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasHelmetBattle" title="Slot"
               [choices]="vehicleTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]"
               [currentItemType]="option.type">
             </d2c-gear-toggle>
@@ -388,7 +384,7 @@
                   <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
                   </ng-container>
-                  <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket}}]</ng-container>
+                  <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]</ng-container>
                   <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
                     <div class="vertical-pad">
                       <button mat-stroked-button *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
