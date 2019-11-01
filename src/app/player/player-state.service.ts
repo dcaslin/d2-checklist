@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
-import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const, InventoryItem } from '@app/service/model';
+import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const, InventoryItem, Character } from '@app/service/model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StorageService } from '@app/service/storage.service';
@@ -9,6 +9,8 @@ import { StorageService } from '@app/service/storage.service';
   providedIn: 'root'
 })
 export class PlayerStateService {
+
+  public filterChar: Character = null;
 
   public get sort() {
     return this._sort;
@@ -160,6 +162,7 @@ export class PlayerStateService {
 
     this._loading.next(true);
     if (!refresh) {
+      this.filterChar = null;
       this._player.next(null);
     }
     try {
@@ -186,6 +189,11 @@ export class PlayerStateService {
         if (a.name < b.name) { return -1; }
         return 0;
       });
+      if (x.characters && x.characters.length>0) {
+        this.filterChar = x.characters[0];
+      } else {
+        this.filterChar = null;
+      }
       this._player.next(x);
       this.bungieService.loadWeeklyPowerfulBounties(this._player);
       this.bungieService.loadClans(this._player);

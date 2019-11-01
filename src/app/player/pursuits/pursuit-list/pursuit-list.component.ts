@@ -130,7 +130,6 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
       return;
     }
     const pursuits: InventoryItem[] = [];
-
     for (const g of allPursuits) {
       if (this.shouldShow(g)) {
         pursuits.push(g);
@@ -171,6 +170,12 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
 
 
   private shouldShow(row: InventoryItem): boolean {
+
+    if (this.state.filterChar) {
+      if (row.owner != this.state.filterChar) {
+        return false;
+      }
+    }
     if (this.realFilterText.getValue() == null || this.realFilterText.getValue().length == 0) {
       return true;
     }
