@@ -59,10 +59,21 @@
               [currentItemType]="option.type">
             </d2c-gear-toggle>
 
-            <d2c-gear-toggle #weaponInventoryBucketToggle [icon]="iconService.fasHelmetBattle"  title="Slot"
+            <d2c-gear-toggle #weaponInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
               [choices]="weaponInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
               [currentItemType]="option.type">
             </d2c-gear-toggle>
+
+            <d2c-gear-toggle #energyTypeToggle [icon]="iconService.fasBolt" title="Energy"
+              [choices]="energyTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
+              [currentItemType]="option.type">
+            </d2c-gear-toggle>
+
+            <d2c-gear-toggle #damageTypeToggle [icon]="iconService.fasBolt" title="Energy"
+            [choices]="damageTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+
 
             <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
               (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
@@ -114,8 +125,7 @@
             <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
           </a>
           <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorStats()">
-            <fa-icon [icon]="iconService.fasStar"></fa-icon><span class="hide-mobile-inline">&nbsp;Preferred
-              Stats</span>
+            <fa-icon [icon]="iconService.fasSlidersV"></fa-icon><span class="hide-mobile-inline">&nbsp;Stats</span>
           </button>
           <button mat-button [matMenuTriggerFor]="menuMoreOptions">
             <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
@@ -384,7 +394,8 @@
                   <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
                   </ng-container>
-                  <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]</ng-container>
+                  <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]
+                  </ng-container>
                   <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
                     <div class="vertical-pad">
                       <button mat-stroked-button *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
