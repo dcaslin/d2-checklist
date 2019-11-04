@@ -56,7 +56,7 @@
                     <ng-container *ngIf="account.steam!=null">
                       <a href="javascript:void(0)" 
                       *ngIf="!account.steam.defunct" (click)="loadPlayer(account.steam)">{{account.steam.name}}</a>
-                      <span class="strikethrough" *ngIf="account.bnet.defunct">{{account.steam.name}}</span>
+                      <span class="strikethrough" *ngIf="account.steam.defunct">{{account.steam.name}}</span>
                     </ng-container>
                     <ng-container *ngIf="account.steam==null">&nbsp;</ng-container>
                   </td>

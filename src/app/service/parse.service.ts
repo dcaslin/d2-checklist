@@ -328,7 +328,8 @@ export class ParseService {
                             }
                         }
 
-                    } else if (act.phases != null && act.phases.length > 0) {
+                    }
+                    if (act.phases != null && act.phases.length > 0) {
                         for (const p of act.phases) {
 
                             phases.push(p.complete);
@@ -2360,6 +2361,7 @@ export class ParseService {
 
 
         let objIndex = -1;
+        let incompIntPercent = null;
         for (const o of iterateMe) {
             objIndex++;
             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
@@ -2390,6 +2392,9 @@ export class ParseService {
 
             totalProgress += oDesc.completionValue;
             objs.push(iObj);
+            if (incompIntPercent == null && !o.complete) {
+                incompIntPercent = iObj.percent;
+            }
         }
         if (totalProgress < 2) { objs = []; }
         let complete = false;
@@ -2443,7 +2448,7 @@ export class ParseService {
             interval: isInterval,
             earned: earnedPts,
             score: totalPts,
-            percent: complete ? 100 : percent,
+            percent: complete ? 100 : incompIntPercent ? incompIntPercent : percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible,
             pointsToBadge: pointsToBadge
@@ -2742,7 +2747,7 @@ export class ParseService {
                 let plugObjectives = null;
                 if (itemComp.plugObjectives && itemComp.plugObjectives.data && itemComp.plugObjectives.data[id]) {
                     const itemObj = itemComp.plugObjectives.data[id];
-                    if (itemObj.objectivesPerPlug && itemObj.objectivesPerPlug[plugDesc.hash]){
+                    if (itemObj.objectivesPerPlug && itemObj.objectivesPerPlug[plugDesc.hash]) {
                         plugObjectives = itemObj.objectivesPerPlug[plugDesc.hash];
                     }
                 }
@@ -2953,7 +2958,7 @@ export class ParseService {
                     }
                 }
             }
-                       const objectives: ItemObjective[] = [];
+            const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
             if (itemComp != null) {
                 if (itemComp.objectives != null && itemComp.objectives.data != null) {
@@ -3009,7 +3014,7 @@ export class ParseService {
             let mw: MastworkInfo = null;
             const mods: InventoryPlug[] = [];
 
-            let inventoryBucket:ApiInventoryBucket = null;
+            let inventoryBucket: ApiInventoryBucket = null;
             let tier = null;
             let isRandomRoll = false;
 

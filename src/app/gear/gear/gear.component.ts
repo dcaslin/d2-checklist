@@ -62,6 +62,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   // armorTypeChoices: Choice[] = [];
   armorInventoryBucketChoices: Choice[] = [];
   weaponInventoryBucketChoices: Choice[] = [];
+  energyTypeChoices: Choice[] = [];
+  damageTypeChoices: Choice[] = [];
+
   vehicleTypeChoices: Choice[] = [];
   modTypeChoices: Choice[] = [];
   consumableTypeChoices: Choice[] = [];
@@ -85,6 +88,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public armorInventoryBucketToggle: GearToggleComponent;
   @ViewChild('weaponInventoryBucketToggle', { static: false })
   public weaponInventoryBucketToggle: GearToggleComponent;
+  @ViewChild('energyTypeToggle', { static: false })
+  public energyTypeToggle: GearToggleComponent;
+  @ViewChild('damageTypeToggle', { static: false })
+  public damageTypeToggle: GearToggleComponent;
   @ViewChild('vehicleTypeToggle', { static: false })
   public vehicleTypeToggle: GearToggleComponent;
   @ViewChild('modTypeToggle', { static: false })
@@ -523,6 +530,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.ammoTypeToggle);
     this.appendToggleFilterNote(this.armorInventoryBucketToggle);
     this.appendToggleFilterNote(this.weaponInventoryBucketToggle);
+    this.appendToggleFilterNote(this.energyTypeToggle);
+    this.appendToggleFilterNote(this.damageTypeToggle);
     this.appendToggleFilterNote(this.vehicleTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
     this.appendToggleFilterNote(this.consumableTypeToggle);
@@ -561,6 +570,22 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     if (!this.armorInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
       const key = 'armorInventoryBucket';
+      if (report[key] == null) {
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false;
+    }
+    if (!this.damageTypeToggle.isChosen(this.option.type, i.damageType)) {
+      const key = 'damageType';
+      if (report[key] == null) {
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false;
+    }
+    if (!this.energyTypeToggle.isChosen(this.option.type, i.energyType)) {
+      const key = 'energyType';
       if (report[key] == null) {
         report[key] = 0;
       }
@@ -649,6 +674,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.ammoTypeToggle.setCurrentItemType(this.option.type);
     this.armorInventoryBucketToggle.setCurrentItemType(this.option.type);
     this.weaponInventoryBucketToggle.setCurrentItemType(this.option.type);
+    this.energyTypeToggle.setCurrentItemType(this.option.type);
+    this.damageTypeToggle.setCurrentItemType(this.option.type);
     this.vehicleTypeToggle.setCurrentItemType(this.option.type);
     this.modTypeToggle.setCurrentItemType(this.option.type);
     this.consumableTypeToggle.setCurrentItemType(this.option.type);
@@ -795,6 +822,26 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return 0;
   }
 
+  private generateDamageTypeChoices(): Choice[] {
+    const returnMe: Choice[] = [];
+    returnMe.push(new Choice('' + DamageType.Kinetic, 'Kinetic'));
+    returnMe.push(new Choice('' + DamageType.Arc, 'Arc'));
+    returnMe.push(new Choice('' + DamageType.Thermal, 'Thermal'));
+    returnMe.push(new Choice('' + DamageType.Void, 'Void'));
+    return returnMe;
+  }
+
+  private generateEnergyTypeChoices(): Choice[] {
+    const returnMe: Choice[] = [];
+    returnMe.push(new Choice('' + EnergyType.Arc, 'Arc'));
+    returnMe.push(new Choice('' + EnergyType.Thermal, 'Thermal'));
+    returnMe.push(new Choice('' + EnergyType.Void, 'Void'));
+    returnMe.push(new Choice('' + EnergyType.Any, 'Any'));
+    return returnMe;
+  }
+
+
+
   private generateRarityChoices(): Choice[] {
     const tiers = this.cacheService.cache['ItemTierType'];
     const aTiers: ApiItemTierType[] = [];
@@ -895,6 +942,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     this.weaponTypeChoices = arrays[ItemType.Weapon + ''];
     this.weaponInventoryBucketChoices = this.generateBucketChoices(ItemType.Weapon);
+    this.damageTypeChoices = this.generateDamageTypeChoices();
+    this.energyTypeChoices = this.generateEnergyTypeChoices();
     this.armorInventoryBucketChoices = this.generateBucketChoices(ItemType.Armor);
     this.vehicleTypeChoices = this.generateBucketChoices(ItemType.Vehicle);
     this.modTypeChoices = arrays[ItemType.GearMod + ''];
@@ -955,6 +1004,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (this.ammoTypeToggle) { filters.push(this.ammoTypeToggle); }
     if (this.armorInventoryBucketToggle) { filters.push(this.armorInventoryBucketToggle); }
     if (this.weaponInventoryBucketToggle) { filters.push(this.weaponInventoryBucketToggle); }
+    if (this.energyTypeToggle) { filters.push(this.energyTypeToggle); }
+    if (this.damageTypeToggle) { filters.push(this.damageTypeToggle); }
+
     if (this.vehicleTypeToggle) { filters.push(this.vehicleTypeToggle); }
     if (this.modTypeToggle) { filters.push(this.modTypeToggle); }
     if (this.consumableTypeToggle) { filters.push(this.consumableTypeToggle); }
