@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
+import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA, PageEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { BungieService } from '@app/service/bungie.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
@@ -57,6 +57,26 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     new Choice('true', 'Equipped'),
     new Choice('false', 'Not Equipped')
   ];
+
+  readonly autocompleteOptions: string[] = [
+    'is:godroll',
+    'is:fixme',
+    'is:light>=',
+    'is:postmaster',
+    'is:godrollpve',
+    'is:godrollpvp',
+    'is:masterwork',
+    'is:light<=',
+    'is:light=',
+    'is:light>',
+    'is:light<',
+    'is:random',
+    'is:fixed',
+    'is:hasmod',
+     ];
+
+
+  public filteredAutoCompleteOptions: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
   weaponTypeChoices: Choice[] = [];
   // armorTypeChoices: Choice[] = [];
@@ -136,6 +156,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   filterTags: string[] = [];
   orMode = false;
+  appendMode = false;
 
   options = [
     { name: 'Weapons', type: ItemType.Weapon, path: 'weapons' },
@@ -184,6 +205,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.visibleFilterText = null;
     this.filterTags = [];
     this.orMode = false;
+    this.appendMode = false;
     const filters = this.grabFilters();
     for (const toggle of filters) {
       toggle.selectAll(true);
@@ -435,30 +457,30 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   private static _processFilterTag(actual: string, i: InventoryItem) {
-    if (actual.startsWith('ll')) {
+    if (actual.startsWith('is:light')) {
       const reg = /^\d+$/;
-      if (actual.startsWith('ll<=')) {
-        const ll = actual.substr(4);
+      if (actual.startsWith('is:light<=')) {
+        const ll = actual.substr(10);
         if (reg.test(ll)) {
           return i.power <= +ll;
         }
-      } else if (actual.startsWith('ll>=')) {
-        const ll = actual.substr(4);
+      } else if (actual.startsWith('is:light>=')) {
+        const ll = actual.substr(10);
         if (reg.test(ll)) {
           return i.power >= +ll;
         }
-      } else if (actual.startsWith('ll<')) {
-        const ll = actual.substr(3);
+      } else if (actual.startsWith('is:light<')) {
+        const ll = actual.substr(9);
         if (reg.test(ll)) {
           return i.power < +ll;
         }
-      } else if (actual.startsWith('ll>')) {
-        const ll = actual.substr(3);
+      } else if (actual.startsWith('is:light>')) {
+        const ll = actual.substr(9);
         if (reg.test(ll)) {
           return i.power > +ll;
         }
-      } else if (actual.startsWith('ll=')) {
-        const ll = actual.substr(3);
+      } else if (actual.startsWith('is:light=')) {
+        const ll = actual.substr(9);
         if (reg.test(ll)) {
           return i.power == +ll;
         }
@@ -976,8 +998,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       localStorage.setItem('gear-filter', val);
     }
     if (val == null || val.trim().length === 0) {
+      this.filteredAutoCompleteOptions.next([]);
       this.filterTags = [];
       this.orMode = false;
+      this.appendMode = false;
     } else {
       const rawFilter = val.toLowerCase();
       if (rawFilter.indexOf(' or ') >= 0) {
@@ -987,8 +1011,23 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         this.orMode = false;
         this.filterTags = rawFilter.split(' and ');
       }
+      this.appendMode = rawFilter.endsWith(' and ') || rawFilter.endsWith(' or ');
+      const newFilteredOptions = [];
+      if (rawFilter.startsWith('is:')) {
+        for (const o of this.autocompleteOptions) {
+          if (o.startsWith(rawFilter)) {
+            newFilteredOptions.push(o);
+          }
+        }
+      }
+      this.filteredAutoCompleteOptions.next(newFilteredOptions);
     }
     this.filterChanged();
+  }
+
+  public autoCompleteSelected(event: MatAutocompleteSelectedEvent) {
+    this.parseWildcardFilter();
+    // console.dir(event);
   }
 
   public handlePage(x: PageEvent) {

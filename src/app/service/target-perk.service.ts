@@ -135,7 +135,7 @@ export class TargetPerkService {
       if (hasFixMeText && !needsFixing) {
         i.searchText.replace('fixme', '');
       } else if (!hasFixMeText && needsFixing) {
-        i.searchText += 'fixme';
+        i.searchText += 'is:fixme';
       }
 
       const hasTargetText = i.searchText.indexOf('targetperk') >= 0;

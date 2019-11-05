@@ -3234,9 +3234,9 @@ export class ParseService {
                 }
             }
             if (isRandomRoll == true) {
-                searchText += ' random';
+                searchText += ' is:random';
             } else {
-                searchText += ' fixed';
+                searchText += ' is:fixed';
             }
             if (damageType != null && damageType != DamageType.None) {
                 searchText += ' ' + this.cookDamageType(damageType);
@@ -3251,7 +3251,7 @@ export class ParseService {
                 searchText += ' ' + DestinyAmmunitionType[ammoType];
             }
             if (postmaster) {
-                searchText += ' mail postmaster';
+                searchText += ' mail is:postmaster';
             }
             if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep || type === ItemType.ForgeVessel) {
                 searchText = desc.displayProperties.name + ' ';
