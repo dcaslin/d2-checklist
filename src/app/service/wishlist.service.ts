@@ -142,14 +142,14 @@ export class WishlistService implements OnDestroy {
 
           if (rollMatches) {
             i.godRoll = true;
-            i.searchText = i.searchText + ' godroll is:wishlist';
+            i.searchText = i.searchText + ' is:godroll is:wishlist';
             if (isPve) {
-              i.searchText = i.searchText + ' godrollpve is:wishlistpve';
+              i.searchText = i.searchText + ' is:godrollpve is:wishlistpve';
               i.godRollPve = true;
 
             }
             if (isPvp) {
-              i.searchText = i.searchText + ' godrollpvp is:wishlistpvp';
+              i.searchText = i.searchText + ' is:godrollpvp is:wishlistpvp';
               i.godRollPvp = true;
             }
           }
@@ -175,13 +175,13 @@ export class WishlistService implements OnDestroy {
             }
           }
           if (godPerkFound && !godPerkSelected) {
-            i.searchText = i.searchText + ' fixme';
+            i.searchText = i.searchText + ' is:fixme';
           }
         }
       } else {
         i.noGodRollInfo = true;
         if (i.isRandomRoll && i.tier == 'Legendary') {
-          i.searchText = i.searchText + ' nodata';
+          i.searchText = i.searchText + ' is:nodata';
         }
       }
     }

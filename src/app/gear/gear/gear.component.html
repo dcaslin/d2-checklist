@@ -41,7 +41,9 @@
 
         <div style="margin: 10px" [hidden]="selectedUser==null">
           <mat-form-field class="searchField">
-            <input matInput #filter [(ngModel)]="visibleFilterText" placeholder="Wildcard filter"
+            
+            <mat-label>Wildcard filter</mat-label>
+            <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText" placeholder="Name, perk or is:godroll"
               (keyup)="filterKeyUp.next()">
             <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
               (click)="visibleFilterText=null;parseWildcardFilter()">
@@ -50,6 +52,11 @@
             <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
               <mat-icon>help_outline</mat-icon>
             </button>
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="autoCompleteSelected($event)">
+              <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
           <div class="filter-buttons">
 
@@ -64,15 +71,13 @@
               [currentItemType]="option.type">
             </d2c-gear-toggle>
 
-            <d2c-gear-toggle #energyTypeToggle [icon]="iconService.fasBolt" title="Energy"
-              [choices]="energyTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
-              [currentItemType]="option.type">
+            <d2c-gear-toggle #energyTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="energyTypeChoices"
+              (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
             </d2c-gear-toggle>
 
-            <d2c-gear-toggle #damageTypeToggle [icon]="iconService.fasBolt" title="Energy"
-            [choices]="damageTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
+            <d2c-gear-toggle #damageTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="damageTypeChoices"
+              (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+            </d2c-gear-toggle>
 
 
             <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
