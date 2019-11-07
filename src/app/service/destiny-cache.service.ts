@@ -1,8 +1,9 @@
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
+import { tap, last } from 'rxjs/operators';
 
 declare let JSZip: any;
 
@@ -65,30 +66,43 @@ export class DestinyCacheService {
     this.ready.next(true);
   }
 
+  private showProgress(evt: HttpEvent<any>) {
+    switch (evt.type) {
+      case HttpEventType.Sent:
+        this.percent.next(5);
+        break;
+      case HttpEventType.ResponseHeader:
+        this.percent.next(10);
+        break;
+      case HttpEventType.DownloadProgress:
+        const kbLoaded = Math.round(evt.loaded / 1024);
+        console.log(`Download in progress! ${kbLoaded}Kb loaded`);
+        this.percent.next(15 + 80 * evt.loaded / evt.total);
+        break;
+      case HttpEventType.Response: {
+        this.percent.next(95);
+      }
+    }
+  }
+
   async load(key: string): Promise<void> {
+    console.log("--- load ---");
+
+    let headers = new HttpHeaders();
+    headers = headers
+        .set('Content-Type', 'application/x-www-form-urlencoded');
+    const httpOptions = {
+        headers: headers};
+
     const req = new HttpRequest<Blob>('GET', '/assets/destiny2.zip?v=' + env.versions.app, {
       reportProgress: true,
       responseType: 'blob'
     });
-    const r = this.http.request(req);
-    r.subscribe((evt: HttpEvent<any>) => {
-      switch (evt.type) {
-        case HttpEventType.Sent:
-          this.percent.next(5);
-          break;
-        case HttpEventType.ResponseHeader:
-          this.percent.next(10);
-          break;
-        case HttpEventType.DownloadProgress:
-          const kbLoaded = Math.round(evt.loaded / 1024);
-          console.log(`Download in progress! ${kbLoaded}Kb loaded`);
-          this.percent.next(15 + 80 * evt.loaded / evt.total);
-          break;
-        case HttpEventType.Response: {
-          this.percent.next(95);
-        }
-      }
-    });
+
+    const r = this.http.request(req).pipe(
+      tap((evt: HttpEvent<any>) => this.showProgress(evt)),
+      last()
+    );
     const event = await r.toPromise();
     this.percent.next(100);
     this.unzipping.next(true);
