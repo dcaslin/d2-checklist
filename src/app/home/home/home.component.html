@@ -71,7 +71,7 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightfalls">
-                    <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <span class="icon invert" *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
                     <span> {{n.name}}
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </span>
@@ -88,7 +88,7 @@
                   <mat-card-content>
                     <mat-list role="list">
                       <mat-list-item *ngFor="let n of today.publicMilestones.crucibleRotator">
-                        <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                        <span class="icon invert" *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
                         <span> {{n.name}}
                           <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                         </span>
@@ -103,7 +103,7 @@
                   <mat-card-content>
                     <mat-list role="list">
                       <mat-list-item *ngFor="let n of today.publicMilestones.crucibleCore">
-                        <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                        <span class="icon invert" *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
                         <span> {{n.name}}
                           <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                         </span>
@@ -120,7 +120,7 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.heroicStrikes.modifiers" [matTooltip]="b.desc">
-                    <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <span class="icon invert" *ngIf="b.icon"  [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
                     {{b.name}}
                   </mat-list-item>
                 </mat-list>
@@ -149,7 +149,7 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.herMenag.modifiers" [matTooltip]="b.desc">
-                    <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <span class="icon invert" *ngIf="b.icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
                     {{b.name}}
                   </mat-list-item>
                 </mat-list>
