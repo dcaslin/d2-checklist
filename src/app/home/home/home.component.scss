@@ -110,6 +110,10 @@ a.underline:link {
   filter: invert(50%);
 }
 
+.brighten{
+  filter: brightness(1.8);
+}
+
 .icon{
   height: 24px;
   width: 24px;  

@@ -11,6 +11,14 @@ export enum ClassAllowed {
     Any = 3
 }
 
+export enum NumComparison {
+    gte = 0,
+    lte = 1,
+    gt = 2,
+    lt = 3,
+    e = 4
+}
+
 export enum DestinyAmmunitionType {
     None = 0,
     Primary = 1,
@@ -213,7 +221,8 @@ export interface PublicMilestonesAndActivities {
     herMenag: MilestoneActivity;
     heroicStrikes: MilestoneActivity;
     reckoning: MilestoneActivity;
-    nightfalls: Mission[];
+    nightfalls: MilestoneActivity[];
+    nightmareHunts: MilestoneActivity[];
     flashpoint: string;
     weekStart: Moment;
 }
@@ -1128,6 +1137,7 @@ export class Const {
     };
 
     public static readonly ERIS_KEY = '11111111';
+    public static readonly DUNGEON_KEY = '33333333';
     public static readonly CHALICE_KEY = '22222222';
 
     public static readonly UNKNOWN_BOOST = 0;
@@ -1167,10 +1177,10 @@ export class Const {
         },
         {
             level: Const.HIGH_BOOST,
-            min: 5,
-            max: 5,
+            min: 2,
+            max: 2,
             softCap: 950,
-            hardCap: 960
+            hardCap: 999
         }
     ];
 }
@@ -1316,6 +1326,12 @@ export interface ApiInventoryBucket {
     location: number;
     redacted: boolean;
     scope: number;
+}
+
+export interface ItemDisplay {
+    itemTypeDisplayName: string;
+    itemTypeAndTierDisplayName: string;
+    displayProperties: ApiDisplayProperties;
 }
 
 

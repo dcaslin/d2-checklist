@@ -245,10 +245,12 @@ export class ParseService {
                 } else if (milestonesByKey[key] == null && key != '534869653') {
                     const skipDesc = this.destinyCacheService.cache.Milestone[key];
                     if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
+                        let name = skipDesc.displayProperties.name;
                         let descRewards = this.parseMilestoneRewards(skipDesc);
                         if (descRewards == null || descRewards.trim().length == 0) {
                             // weekly pinnacle challenge
                             if (key == '3881226684') {
+                                name = "Nightmare Hunt: Master"
                                 descRewards = 'Pinnacle Gear';
                             } else {
                                 descRewards = 'Unknown';
@@ -259,7 +261,7 @@ export class ParseService {
                             resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
                             rewards: descRewards,
                             pl: this.parseMilestonePl(descRewards),
-                            name: skipDesc.displayProperties.name,
+                            name: name,
                             desc: skipDesc.displayProperties.description,
                             hasPartial: false
                         };
@@ -1032,6 +1034,30 @@ export class ParseService {
         return false;
     }
 
+    private buildMilestoneActivity(aa: any): MilestoneActivity {
+        const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+        if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
+            return null;
+        }
+        const modifiers: NameDesc[] = [];
+        if (aa.modifierHashes && aa.modifierHashes.length > 0) {
+            for (const modHash of aa.modifierHashes) {
+                const mod: NameDesc = this.parseModifier(modHash);
+                modifiers.push(mod);
+            }
+        }
+        const msa: MilestoneActivity = {
+            hash: aa.activityHash,
+            name: desc.displayProperties.name,
+            desc: desc.displayProperties.description,
+            ll: aa.recommendedLight,
+            tier: aa.difficultyTier,
+            icon: desc.displayProperties.icon,
+            modifiers: modifiers
+        };
+        return msa;
+    }
+
     public parsePublicMilestones(resp: any, resp2: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
@@ -1200,87 +1226,109 @@ export class ParseService {
         }
         const crucibleCore: MilestoneActivity[] = [];
         const crucibleRotator: MilestoneActivity[] = [];
-
         const nightfalls: MilestoneActivity[] = [];
+        const nightmareHunts: MilestoneActivity[] = [];
         let herMenag: MilestoneActivity = null;
         let heroicStrikes: MilestoneActivity = null;
         let reckoning: MilestoneActivity = null;
 
-        if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
-            for (const aa of charAct.availableActivities) {
-                const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
-                if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
-                    continue;
-                }
-                const name = desc.displayProperties.name;
-                const modifiers: NameDesc[] = [];
-
-                if (aa.modifierHashes && aa.modifierHashes.length > 0) {
-                    for (const modHash of aa.modifierHashes) {
-                        const mod: NameDesc = this.parseModifier(modHash);
-                        modifiers.push(mod);
-                    }
-                }
-
-                const msa: MilestoneActivity = {
-                    hash: aa.activityHash,
-                    name: desc.displayProperties.name,
-                    desc: desc.displayProperties.description,
-                    ll: aa.recommendedLight,
-                    tier: aa.difficultyTier,
-                    icon: desc.displayProperties.icon,
-                    modifiers: modifiers
-                };
-
-                // reckoning tier 3
-                if ('1446606128' == aa.activityHash) {
-                    reckoning = msa;
-                } else if (msa.hash == '4052671056') {
-                    heroicStrikes = msa;
-                } else if (name.indexOf('Nightfall: ') >= 0) {
-                    // skip variant nightfalls that are quest related, and lower level NF's
-                    if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
-                        msa.name = msa.name.replace('Nightfall: ', '');
-                        if (msa.name.indexOf('The Ordeal') >= 0) {
-                            msa.name = msa.name.replace(': Master', '');
-                            msa.name += ': ' + msa.desc;
+        if (sample && resp2 && resp2.characterActivities && resp2.characterActivities.data) {
+            for (const key of Object.keys(resp2.characterActivities.data)) {
+                const charAct = resp2.characterActivities.data[key];
+                if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
+                    if (crucibleCore.length == 0) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if (ParseService.hasChallenge(aa, '455756300')) {
+                                crucibleCore.push(msa);
+                            }
                         }
-                        nightfalls.push(msa);
                     }
+                    if (crucibleRotator.length == 0) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if (ParseService.hasChallenge(aa, '978034479')) {
+                                crucibleRotator.push(msa);
+                            }
+                        }
+                    }
+                    if (nightfalls.length == 0) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if (msa.name.indexOf('Nightfall: ') >= 0) {
+                                const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+                                if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
+                                    msa.name = msa.name.replace('Nightfall: ', '');
+                                    if (msa.name.indexOf('The Ordeal') >= 0) {
+                                        msa.name = msa.name.replace(': Master', '');
+                                        msa.name += ': ' + msa.desc;
+                                    }
+                                    nightfalls.push(msa);
+                                }
+                            }
 
-                } else if (name.indexOf('The Menagerie (Heroic)') >= 0) {
-                    herMenag = msa;
-                } else if (ParseService.hasChallenge(aa, '455756300')) {
-                    crucibleCore.push(msa);
-                } else if (ParseService.hasChallenge(aa, '978034479')) {
-                    crucibleRotator.push(msa);
+                        }
+                    }
+                    if (nightmareHunts.length == 0) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if (msa.name.indexOf('Nightmare Hunt: ') >= 0) {
+                                const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+                                if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
+                                    msa.name = msa.name.replace('Nightmare Hunt: ', '');
+                                    msa.name = msa.name.replace(': Master', '');
+                                    nightmareHunts.push(msa);
+                                }
+                            }
+                        }
+                    }
+                    if (herMenag == null) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if (msa.name.indexOf('The Menagerie (Heroic)') >= 0) {
+                                herMenag = msa;
+                            }
+                        }
+                    }
+                    if (heroicStrikes == null) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if (msa.hash == '4052671056') {
+                                heroicStrikes = msa;
+                            }
+                        }
+                    }
+                    if (reckoning == null) {
+                        for (const aa of charAct.availableActivities) {
+                            const msa = this.buildMilestoneActivity(aa);
+                            if (msa == null) {
+                                continue;
+                            }
+                            if ('1446606128' == aa.activityHash) {
+                                reckoning = msa;
+                            }
+                        }
+                    }
                 }
 
-
-                // if (!type) {
-                //     continue;
-                // }
-
-                // const pushMe = {
-                //     hash: msa.hash,
-                //     name: msa.name,
-                //     desc: msa.desc,
-                //     start: sample.start,
-                //     end: sample.end,
-                //     order: sample.order,
-                //     icon: msa.icon,
-                //     activities: [msa],
-                //     aggActivities: [{
-                //         lls: [msa.ll],
-                //         activity: msa
-                //     }],
-                //     rewards: '',
-                //     pl: msa.ll,
-                //     summary: '',
-                //     type: type,
-                //     milestoneType: 3
-                // };
-                // returnMe.push(pushMe);
             }
         }
         returnMe.sort((a, b) => {
@@ -1316,40 +1364,11 @@ export class ParseService {
             heroicStrikes: heroicStrikes,
             reckoning: reckoning,
             nightfalls: nightfalls,
+            nightmareHunts: nightmareHunts,
             flashpoint: flashpoint,
             weekStart: weekStart
         };
     }
-
-    private parseWeaponSubtype(n: number): String {
-        if (n === 0) { return 'None'; }
-        if (n === 6) { return 'Auto Rifle'; }
-        if (n === 7) { return 'Shotgun'; }
-        if (n === 8) { return 'Machine Gun'; }
-        if (n === 9) { return 'Hand Cannon'; }
-        if (n === 10) { return 'Rocket Launcher'; }
-        if (n === 11) { return 'Fusion Rifle'; }
-        if (n === 12) { return 'Sniper Rifle'; }
-        if (n === 13) { return 'Pulse Rifle'; }
-        if (n === 14) { return 'Scout Rifle'; }
-        if (n === 17) { return 'Sidearm'; }
-        if (n === 8) { return 'Sword'; }
-        if (n === 9) { return 'Mask'; }
-        if (n === 20) { return 'Shader'; }
-        if (n === 21) { return 'Ornament'; }
-        if (n === 22) { return 'Linear Fusion Rifle'; }
-        if (n === 23) { return 'Grenade Launcher'; }
-        if (n === 24) { return 'Submachine Gun'; }
-        if (n === 25) { return 'Trace Rifle'; }
-        if (n === 26) { return 'Helmet'; }
-        if (n === 27) { return 'Gauntlets'; }
-        if (n === 28) { return 'Chest'; }
-        if (n === 29) { return 'Leg'; }
-        if (n === 30) { return 'Class'; }
-        if (n === 31) { return 'Bow'; }
-        return '';
-    }
-
 
     public parseActivities(a: any[]): Activity[] {
         const returnMe: any[] = [];
@@ -3707,6 +3726,11 @@ export class ParseService {
         if (mode === 75) { return 'Gambit Prime'; }
         if (mode === 76) { return 'Reckoning'; }
         if (mode === 77) { return 'Menagerie'; }
+        if (mode === 78) { return 'Vex Offensive'; }
+        if (mode === 79) { return 'Nightmare Hunt'; }
+        if (mode === 80) { return 'Elimination'; }
+        if (mode === 81) { return 'Momentum'; }
+        if (mode === 82) { return 'Dungeon'; }
         return 'Unknown ' + mode;
     }
 
