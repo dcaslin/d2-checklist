@@ -16,11 +16,11 @@
             <mat-form-field class="searchField searchPlatform">
               <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
                 <mat-select-trigger>
-                  
+
                   <fa-icon [icon]="selectedPlatform.icon"></fa-icon>&ensp;{{selectedPlatform.name }}
                 </mat-select-trigger>
                 <mat-option *ngFor="let p of platforms" [value]="p">
-                    <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
+                  <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -47,31 +47,34 @@
           <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
         <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
-          
-          <div>
+          <div
+            *ngIf="today.altarOfSorrowsWeapon || (today.publicMilestones.nightmareHunts && today.publicMilestones.nightmareHunts.length>0)">
             <mat-card>
               <mat-card-header>
-                <mat-card-title><i class="icon-flashpoint lighter"></i> Flashpoint: {{today.publicMilestones.flashpoint}}
-                </mat-card-title>
+                <mat-card-title>Altar of Sorrow</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <mat-list>
                   <mat-list-item>
-                    <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
-                      Make every Public Event Heroic&nbsp;<fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
+                    <span class="simple-caption-no-margin right-margin">
+                      {{today.altarOfSorrowsWeapon.itemTypeDisplayName}}</span>
+                    <a href="https://docs.google.com/spreadsheets/d/1VXPqxaD9pKuOfTYO-aNp_NiQ_032bdltsCQ2JG4FbJM/htmlview?sle=true#gid=0"
+                      target="_blank" rel="noopener">
+                      {{today.altarOfSorrowsWeapon.displayProperties.name}}
+                      &nbsp;<fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
                   </mat-list-item>
                 </mat-list>
-
               </mat-card-content>
             </mat-card>
             <mat-card>
               <mat-card-header>
-                <mat-card-title>Nightfalls</mat-card-title>
+                <mat-card-title>Nightmare Hunts</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <mat-list role="list">
-                  <mat-list-item *ngFor="let n of today.publicMilestones.nightfalls">
-                    <span class="icon invert" *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                  <mat-list-item *ngFor="let n of today.publicMilestones.nightmareHunts">
+                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
+                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
                     <span> {{n.name}}
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </span>
@@ -81,38 +84,39 @@
             </mat-card>
           </div>
           <div>
-              <mat-card>
-                  <mat-card-header>
-                    <mat-card-title>Crucible Rotator</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <mat-list role="list">
-                      <mat-list-item *ngFor="let n of today.publicMilestones.crucibleRotator">
-                        <span class="icon invert" *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                        <span> {{n.name}}
-                          <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                        </span>
-                      </mat-list-item>
-                    </mat-list>
-                  </mat-card-content>
-                </mat-card>
-                <mat-card>
-                  <mat-card-header>
-                    <mat-card-title>Crucible Core</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <mat-list role="list">
-                      <mat-list-item *ngFor="let n of today.publicMilestones.crucibleCore">
-                        <span class="icon invert" *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                        <span> {{n.name}}
-                          <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                        </span>
-                      </mat-list-item>
-                    </mat-list>
-                  </mat-card-content>
-                </mat-card>
-            </div>
-          <div *ngIf="today.publicMilestones.heroicStrikes || today.publicMilestones.reckoning">
+            <mat-card *ngIf="today.publicMilestones.flashpoint">
+              <mat-card-header>
+                <mat-card-title><i class="icon-flashpoint lighter"></i> Flashpoint:
+                  {{today.publicMilestones.flashpoint}}
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list>
+                  <mat-list-item>
+                    <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
+                      Make every Public Event Heroic&nbsp;<fa-icon [icon]="iconService.fasInfoCircle"
+                        class="accent-text"></fa-icon></a>
+                  </mat-list-item>
+                </mat-list>
+
+              </mat-card-content>
+            </mat-card>
+            <mat-card *ngIf="today.publicMilestones.nightfalls && today.publicMilestones.nightfalls.length>0">
+              <mat-card-header>
+                <mat-card-title>Nightfalls</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list role="list">
+                  <mat-list-item *ngFor="let n of today.publicMilestones.nightfalls">
+                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
+                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <span> {{n.name}}
+                      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+                    </span>
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
             <mat-card *ngIf="today.publicMilestones.heroicStrikes && today.publicMilestones.heroicStrikes.modifiers">
               <mat-card-header>
                 <mat-card-title>Heroic Strike Modifiers</mat-card-title>
@@ -120,12 +124,49 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.heroicStrikes.modifiers" [matTooltip]="b.desc">
-                    <span class="icon invert" *ngIf="b.icon"  [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <span class="icon" [class.invert]="b.icon.endsWith('png')" [class.brighten]="b.icon.endsWith('jpg')"
+                      *ngIf="b.icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
                     {{b.name}}
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
             </mat-card>
+          </div>
+          <div>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Crucible Rotator</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list role="list">
+                  <mat-list-item *ngFor="let n of today.publicMilestones.crucibleRotator">
+                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
+                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <span> {{n.name}}
+                      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+                    </span>
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Crucible Core</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list role="list">
+                  <mat-list-item *ngFor="let n of today.publicMilestones.crucibleCore">
+                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
+                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <span> {{n.name}}
+                      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+                    </span>
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div *ngIf="today.publicMilestones.herMenag || today.publicMilestones.reckoning">
             <mat-card *ngIf="today.publicMilestones.reckoning && today.publicMilestones.reckoning.modifiers">
               <mat-card-header>
                 <mat-card-title>Reckoning Modifiers</mat-card-title>
@@ -133,15 +174,13 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.reckoning.modifiers" [matTooltip]="b.desc">
-                    <span class="icon invert" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <span class="icon" [class.invert]="b.icon.endsWith('png')" [class.brighten]="b.icon.endsWith('jpg')"
+                      [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
                     {{b.name}}
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
             </mat-card>
-          </div>
-         
-          <div *ngIf="today.publicMilestones.herMenag">
             <mat-card>
               <mat-card-header>
                 <mat-card-title>Heroic Menagerie Modifiers</mat-card-title>
@@ -149,7 +188,8 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.herMenag.modifiers" [matTooltip]="b.desc">
-                    <span class="icon invert" *ngIf="b.icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <span class="icon" [class.invert]="b.icon.endsWith('png')" [class.brighten]="b.icon.endsWith('jpg')"
+                      *ngIf="b.icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
                     {{b.name}}
                   </mat-list-item>
                 </mat-list>
@@ -157,23 +197,24 @@
             </mat-card>
           </div>
           <div *ngIf="today.week!=null">
-              <mat-card>
-                  <mat-card-header>
-                    <mat-card-title>Escalation Protocol</mat-card-title>
-                    <mat-card-subtitle>Complete all 7 waves for a chance at a weapon drop</mat-card-subtitle>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <mat-list>
-                      <mat-list-item><span class="simple-caption-no-margin right-margin">Boss</span>
-                        <a [href]="today.week.epVideo" target="_blank" rel="noopener">
-                          {{today.week.escalationProtocolBoss}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text"></fa-icon>
-                        </a>
-                      </mat-list-item>
-                      <mat-list-item><span class="simple-caption-no-margin right-margin">Weapon</span>
-                        {{today.week.escalationProtocolWeapon}}</mat-list-item>
-                    </mat-list>
-                  </mat-card-content>
-                </mat-card>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Escalation Protocol</mat-card-title>
+                <mat-card-subtitle>Complete all 7 waves for a chance at a weapon drop</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list>
+                  <mat-list-item><span class="simple-caption-no-margin right-margin">Boss</span>
+                    <a [href]="today.week.epVideo" target="_blank" rel="noopener">
+                      {{today.week.escalationProtocolBoss}} <fa-icon [icon]="iconService.fabYoutube"
+                        class="accent-text"></fa-icon>
+                    </a>
+                  </mat-list-item>
+                  <mat-list-item><span class="simple-caption-no-margin right-margin">Weapon</span>
+                    {{today.week.escalationProtocolWeapon}}</mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
             <mat-card>
               <mat-card-header>
                 <mat-card-title>Dreaming City</mat-card-title>
@@ -184,7 +225,8 @@
                   <mat-list-item>
                     <span class="simple-caption-no-margin right-margin">Ascendant Challenge</span>
                     <a [href]="today.week.ascendantVideo" target="_blank" rel="noopener">
-                      {{today.week.ascendantChallenge}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text"></fa-icon>
+                      {{today.week.ascendantChallenge}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text">
+                      </fa-icon>
                     </a>
                   </mat-list-item>
                   <mat-list-item><span class="simple-caption-no-margin right-margin">Location</span>

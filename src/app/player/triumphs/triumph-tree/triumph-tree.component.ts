@@ -88,6 +88,12 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
     for (const t of this.state.currPlayer().searchableTriumphs) {
       if (t.redeemed) {
         sum += t.score;
+      } else if (t.interval) {
+        for (const i of t.objectives) {
+          if (i.complete) {
+            sum += i.score;
+          }
+        }
       }
     }
 

@@ -1,11 +1,15 @@
+import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA, PageEvent, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
+import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, Player, SelectedUser, Target, ApiItemTierType, ApiInventoryBucket } from '@app/service/model';
+import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, NumComparison, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
+import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { TargetPerkService } from '@app/service/target-perk.service';
 import { WishlistService } from '@app/service/wishlist.service';
 import { ClipboardService } from 'ngx-clipboard';
@@ -15,12 +19,8 @@ import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
-import { Choice, GearToggleComponent } from './gear-toggle.component';
 import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
-import { PreferredStatService } from '@app/service/preferred-stat.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { Choice, GearToggleComponent } from './gear-toggle.component';
 
 
 @Component({
@@ -30,6 +30,9 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GearComponent extends ChildComponent implements OnInit, AfterViewInit {
+
+  private static NUMBER_REGEX = /^\d+$/;
+
   public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly markChoices: Choice[] = [
@@ -62,18 +65,23 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:godroll',
     'is:fixme',
     'is:light>=',
+    'is:stattotal>=',
     'is:postmaster',
     'is:godrollpve',
     'is:godrollpvp',
     'is:masterwork',
     'is:light<=',
-    'is:light=',
     'is:light>',
     'is:light<',
+    'is:light=',
+    'is:stattotal<=',
+    'is:stattotal>',
+    'is:stattotal<',
+    'is:stattotal=',
     'is:random',
     'is:fixed',
     'is:hasmod',
-     ];
+  ];
 
 
   public filteredAutoCompleteOptions: BehaviorSubject<string[]> = new BehaviorSubject([]);
@@ -456,35 +464,64 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChanged();
   }
 
-  private static _processFilterTag(actual: string, i: InventoryItem) {
-    if (actual.startsWith('is:light')) {
-      const reg = /^\d+$/;
-      if (actual.startsWith('is:light<=')) {
-        const ll = actual.substr(10);
-        if (reg.test(ll)) {
-          return i.power <= +ll;
-        }
-      } else if (actual.startsWith('is:light>=')) {
-        const ll = actual.substr(10);
-        if (reg.test(ll)) {
-          return i.power >= +ll;
-        }
-      } else if (actual.startsWith('is:light<')) {
-        const ll = actual.substr(9);
-        if (reg.test(ll)) {
-          return i.power < +ll;
-        }
-      } else if (actual.startsWith('is:light>')) {
-        const ll = actual.substr(9);
-        if (reg.test(ll)) {
-          return i.power > +ll;
-        }
-      } else if (actual.startsWith('is:light=')) {
-        const ll = actual.substr(9);
-        if (reg.test(ll)) {
-          return i.power == +ll;
-        }
+  private static _processComparison(prefix: string, tagVal: string, gearVal: number): boolean {
+    if (!tagVal.startsWith(prefix)) {
+      return null;
+    }
+    let val = tagVal.substr(prefix.length);
+    let comp: NumComparison = null;
+    if (val.startsWith('<=')) {
+      val = val.substr(2);
+      comp = NumComparison.lte;
+    } else if (val.startsWith('>=')) {
+      val = val.substr(2);
+      comp = NumComparison.gte;
+    } else if (val.startsWith('<')) {
+      val = val.substr(1);
+      comp = NumComparison.lt;
+    } else if (val.startsWith('>')) {
+      val = val.substr(1);
+      comp = NumComparison.gt;
+    } else if (val.startsWith('=')) {
+      val = val.substr(1);
+      comp = NumComparison.e;
+    } else {
+      return null;
+    }
+    if (!GearComponent.NUMBER_REGEX.test(val)) {
+      return null;
+    }
+    const iVal = +val;
+    switch (comp) {
+      case NumComparison.gte: {
+        return gearVal >= iVal;
       }
+      case NumComparison.lte: {
+        return gearVal <= iVal;
+      }
+      case NumComparison.gt: {
+        return gearVal > iVal;
+      }
+      case NumComparison.lt: {
+        return gearVal < iVal;
+      }
+      case NumComparison.e: {
+        return gearVal == iVal;
+      }
+      default: {
+        return null;
+      }
+    }
+  }
+
+  private static _processFilterTag(actual: string, i: InventoryItem) {
+    let compResult = GearComponent._processComparison('is:light', actual, i.power);
+    if (compResult != null) {
+      return compResult;
+    }
+    compResult = GearComponent._processComparison('is:stattotal', actual, i.totalStatPoints);
+    if (compResult != null) {
+      return compResult;
     }
     if (i.searchText.indexOf(actual) >= 0) {
       return true;

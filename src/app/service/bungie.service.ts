@@ -702,6 +702,44 @@ export class BungieService implements OnDestroy {
         p.next(p.getValue());
     }
 
+
+    private async loadActivityPsuedoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
+        const dungeonActivities = activities.filter(a => a.mode == 'Dungeon' && a.success);
+        const done = dungeonActivities.length >= 1;
+        const dungeonPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY, done, done ? 1 : 0, null, null, null, false);
+        c.milestones[Const.DUNGEON_KEY] = dungeonPsuedoMs;
+        p.next(p.getValue());
+    }
+
+
+    public loadActivityPsuedoMilestones(playerSubject: BehaviorSubject<Player>) {
+        const p = playerSubject.getValue();
+
+        const ms1: MileStoneName = {
+            key: Const.DUNGEON_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Pinnacle Gear',
+            pl: Const.HIGH_BOOST,
+            name: 'Pit of Heresy',
+            desc: 'Complete the Pit of Heresy Dungeon',
+            hasPartial: false,
+            neverDisappears: true
+        };
+        p.milestoneList.push(ms1);
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY, false, 0, null, 'Loading...', null);
+
+        // load empty while we wait, so it doesn't show checked
+        for (const c of p.characters) {
+            c.milestones[Const.DUNGEON_KEY] = empty1;
+        }
+        playerSubject.next(p);
+        for (const c of p.characters) {
+            this.loadActivityPsuedoMilestonesOnChar(playerSubject, c);
+        }
+        return playerSubject;
+    }
+
     public loadWeeklyPowerfulBounties(playerSubject: BehaviorSubject<Player>) {
         const p = playerSubject.getValue();
         // is this the signed on user?
