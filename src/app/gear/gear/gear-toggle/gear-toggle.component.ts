@@ -6,7 +6,7 @@ import { IconService } from '@app/service/icon.service';
 @Component({
   selector: 'd2c-gear-toggle',
   templateUrl: './gear-toggle.component.html',
-  styleUrls: ['./gear.component.scss']
+  styleUrls: ['../gear.component.scss']
 })
 export class GearToggleComponent implements OnInit {
 
@@ -78,12 +78,15 @@ export class GearToggleComponent implements OnInit {
   }
 
   setAllSelected() {
-    for (const ch of this.choices) {
-      if (!ch.value) {
-          this.isAllSelected = false;
-         return ;
+    if (this.choices){
+      for (const ch of this.choices) {
+        if (!ch.value) {
+            this.isAllSelected = false;
+           return ;
+        }
       }
     }
+    
     this.isAllSelected = true;
   }
 

@@ -5,10 +5,12 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { Today, WeekService } from '@app/service/week.service';
 import { environment as env } from '@env/environment';
 import { takeUntil } from 'rxjs/operators';
-import { Const, Platform } from '../../service/model';
+import { Const, Platform, MilestoneActivity } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 
 @Component({
   selector: 'd2c-home',
@@ -30,6 +32,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   constructor(
     private destinyCacheService: DestinyCacheService,
     public iconService: IconService,
+    public dialog: MatDialog,
     storageService: StorageService,
     private weekService: WeekService,
     private router: Router,
@@ -83,6 +86,12 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.storageService.setItem('defaultgt', this.gamerTag);
   }
 
+  showBurns(msa: MilestoneActivity) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = msa;
+    this.dialog.open(BurnDialogComponent, dc);
+  }
 
   async loadMileStones() {
     try {

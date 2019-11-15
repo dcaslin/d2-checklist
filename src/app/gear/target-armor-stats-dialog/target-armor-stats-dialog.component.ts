@@ -1,9 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { GearComponent } from '../gear/gear.component';
-import { TargetPerkService, TargetPerks } from '@app/service/target-perk.service';
-import { Choice } from '../gear/gear-toggle.component';
 import { PreferredStats, PreferredStatService } from '@app/service/preferred-stat.service';
+import { GearComponent } from '../gear/gear.component';
 
 @Component({
   selector: 'd2c-target-armor-stats-dialog',

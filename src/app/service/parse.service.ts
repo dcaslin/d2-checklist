@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, ApiInventoryBucket } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -250,7 +250,7 @@ export class ParseService {
                         if (descRewards == null || descRewards.trim().length == 0) {
                             // weekly pinnacle challenge
                             if (key == '3881226684') {
-                                name = "Nightmare Hunt: Master"
+                                name = 'Nightmare Hunt: Master';
                                 descRewards = 'Pinnacle Gear';
                             } else {
                                 descRewards = 'Unknown';
@@ -1058,6 +1058,66 @@ export class ParseService {
         return msa;
     }
 
+    private addNightmareLoot(msa: MilestoneActivity) {
+        let lootHash = null;
+        if (msa.name.indexOf('Insanity') >= 0) {
+            lootHash = '3690523502'; // love and death
+        } else if (msa.name.indexOf('Rage') >= 0) {
+            lootHash = '1016668089'; // one small step
+        } else if (msa.name.indexOf('Servitude') >= 0) {
+            lootHash = '2931957300'; // Dream breaker
+        } else if (msa.name.indexOf('Pride') >= 0) {
+            lootHash = '760455599'; // helmet
+        } else if (msa.name.indexOf('Isolation') >= 0) {
+            lootHash = '2874010934'; // Gauntlets
+        } else if (msa.name.indexOf('Fear') >= 0) {
+            lootHash = '2568538788'; // chest
+        } else if (msa.name.indexOf('Anguish') >= 0) {
+            lootHash = '4086393232'; // lets
+        } else if (msa.name.indexOf('Despair') >= 0) {
+            lootHash = '3312368889'; // class
+        }
+        if (lootHash) {
+            msa.specialLoot = this.destinyCacheService.cache.InventoryItem[lootHash];
+        }
+    }
+
+    private addNightfallLoot(msa: MilestoneActivity) {
+        let lootHash = null;
+        if (msa.name.indexOf('Lake of Shadows') >= 0) {
+            lootHash = '3745974521'; // Militia's birthright
+        } else if (msa.name.indexOf('Garden World') >= 0) {
+            lootHash = '1174053886'; // Universal Wavefunction
+        } else if (msa.name.indexOf('Arms Dealer') >= 0) {
+            lootHash = '2757144092'; // The	Tilt Fuse
+        } else if (msa.name.indexOf('Corrupted') >= 0) {
+            lootHash = '1071542914'; // Horror's Least
+        } else if (msa.name.indexOf('Exodus Crash') >= 0) {
+            lootHash = '2757144093'; // Impact Velocity
+        } else if (msa.name.indexOf('Hollowed Lair') >= 0) {
+            lootHash = '4117693024'; // Mindbender's Amibition
+        } else if (msa.name.indexOf('Insight Terminus') >= 0) {
+            lootHash = '2154059444'; // Long Goodbye
+        } else if (msa.name.indexOf('Inverted Spire') >= 0) {
+            lootHash = '953357968'; // Trichromatic
+        } else if (msa.name.indexOf('Pyramidion') >= 0) {
+            lootHash = '990416096'; // Silicon Neuroma
+        } else if (msa.name.indexOf('Savathun’s Song') >= 0) {
+            lootHash = '1457979868'; // Duty Bound
+        } else if (msa.name.indexOf('Strange Terrain') >= 0) {
+            lootHash = '1929278169'; // Braytech Osprey
+        } else if (msa.name.indexOf('Tree of Probabilities') >= 0) {
+            lootHash = '4238497225'; // D.F.A.
+        } else if (msa.name.indexOf('Warden of Nothing') >= 0) {
+            lootHash = '233423981'; // Warden's Law
+        } else if (msa.name.indexOf('Will of the Thousands') >= 0) {
+            lootHash = '1311389413'; // Worm God Incarnation
+        }
+        if (lootHash) {
+            msa.specialLoot = this.destinyCacheService.cache.InventoryItem[lootHash];
+        }
+    }
+
     public parsePublicMilestones(resp: any, resp2: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
@@ -1243,6 +1303,13 @@ export class ParseService {
                                 continue;
                             }
                             if (ParseService.hasChallenge(aa, '455756300')) {
+                                if (!msa.icon) {
+
+                                    const labDesc = this.destinyCacheService.cache.Activity['1709912095'];
+                                    if (labDesc && labDesc.displayProperties && labDesc.displayProperties.icon) {
+                                        msa.icon = labDesc.displayProperties.icon;
+                                    }
+                                }
                                 crucibleCore.push(msa);
                             }
                         }
@@ -1269,9 +1336,11 @@ export class ParseService {
                                 if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
                                     msa.name = msa.name.replace('Nightfall: ', '');
                                     if (msa.name.indexOf('The Ordeal') >= 0) {
+                                        msa.name = msa.name.replace('The Ordeal', 'Ordeal');
                                         msa.name = msa.name.replace(': Master', '');
                                         msa.name += ': ' + msa.desc;
                                     }
+                                    this.addNightfallLoot(msa);
                                     nightfalls.push(msa);
                                 }
                             }
@@ -1289,6 +1358,7 @@ export class ParseService {
                                 if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
                                     msa.name = msa.name.replace('Nightmare Hunt: ', '');
                                     msa.name = msa.name.replace(': Master', '');
+                                    this.addNightmareLoot(msa);
                                     nightmareHunts.push(msa);
                                 }
                             }

@@ -258,6 +258,7 @@ export interface MilestoneActivity {
     tier: number;
     icon: string;
     modifiers: NameDesc[];
+    specialLoot?: ItemDisplay;
 }
 
 export interface PrivPublicMilestone {
@@ -935,6 +936,9 @@ export class PGCRTeam {
     name: string;
     standing: string;
     score: number;
+    totalGlory: number;
+    size: number;
+    avgGlory: number;
 }
 
 

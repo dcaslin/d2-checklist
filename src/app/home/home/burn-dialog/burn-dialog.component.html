@@ -1,0 +1,17 @@
+<div mat-dialog-title style="margin-bottom: 0px">    
+    {{data.name}}
+    <span class="simple-caption-no-margin hide-mobile-inline">{{data.desc}}</span>
+</div> 
+<mat-dialog-content>
+    <mat-list>
+        <mat-list-item *ngFor="let b of data.modifiers">
+            <span mat-list-icon *ngIf="b.icon!=null" 
+            class="list-icon"
+                [class.invert]="b.icon.endsWith('png')"
+                [class.brighten]="b.icon.endsWith('jpg')"
+                [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+            <h4 mat-line>{{b.name}}</h4>
+            <p mat-line> {{b.desc}}</p>
+        </mat-list-item>
+    </mat-list>
+</mat-dialog-content>

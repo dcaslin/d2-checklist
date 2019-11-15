@@ -20,7 +20,12 @@ import { ChildComponent } from '../../shared/child.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
-import { Choice, GearToggleComponent } from './gear-toggle.component';
+import { ArmorPerksDialogComponent } from './armor-perks-dialog/armor-perks-dialog.component';
+import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
+import { GearCompareDialogComponent } from './gear-compare-dialog/gear-compare-dialog.component';
+import { GearHelpDialogComponent } from './gear-help-dialog/gear-help-dialog.component';
+import { BulkOperationsHelpDialogComponent } from './bulk-operations-help-dialog/bulk-operations-help-dialog.component';
+import { Choice, GearToggleComponent } from './gear-toggle/gear-toggle.component';
 
 
 @Component({
@@ -1180,7 +1185,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       parent: this,
       items: items
     };
-    this.dialog.open(GearDetailsDialogComponent, dc);
+    this.dialog.open(GearCompareDialogComponent, dc);
   }
 
 
@@ -1212,146 +1217,4 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.loadWishlist();
 
   }
-}
-
-
-@Component({
-  selector: 'd2c-gear-details-dialog',
-  templateUrl: './gear-details-dialog.component.html',
-  styleUrls: ['./gear.component.scss']
-})
-export class GearDetailsDialogComponent {
-  ItemType = ItemType;
-  EnergyType = EnergyType;
-  hideJunk = false;
-  items: InventoryItem[];
-  parent: GearComponent;
-  constructor(
-    public iconService: IconService,
-    private cacheService: DestinyCacheService,
-    public dialogRef: MatDialogRef<GearDetailsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.items = data.items;
-    this.parent = data.parent;
-  }
-
-  getAllStats(): InventoryStat[] {
-    const names = {};
-    const stats = this.items[0].stats.slice(0);
-    for (const s of stats) {
-      names[s.name] = true;
-    }
-    if (this.items.length > 1) {
-      for (const i of this.items.slice(1)) {
-        for (const s of i.stats) {
-          if (!names[s.name]) {
-            names[s.name] = true;
-            stats.push(s);
-          }
-        }
-      }
-    }
-    const statDb = this.cacheService.cache.Stat;
-    stats.sort(function (a, b) {
-      const aDesc = statDb[a.hash];
-      const bDesc = statDb[b.hash];
-      if (aDesc && bDesc) {
-        if (aDesc.index > bDesc.index) {
-          return 1;
-        } else if (aDesc.index < bDesc.index) {
-          return -1;
-        } else {
-          return 0;
-        }
-      }
-      const bs: string = b.name;
-      const as: string = a.name;
-      if (bs < as) { return 1; }
-      if (bs > as) { return -1; }
-      return 0;
-    });
-
-    return stats;
-  }
-
-  getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
-    if (i.stats == null) {
-      return null;
-    }
-    for (const s of i.stats) {
-      if (s.name == originalStat.name) {
-        return s;
-      }
-    }
-    return null;
-  }
-}
-
-@Component({
-  selector: 'd2c-armor-perks-dialog',
-  templateUrl: './armor-perks-dialog.component.html',
-  styleUrls: ['./gear.component.scss']
-})
-export class ArmorPerksDialogComponent {
-  parent: GearComponent;
-  tempWishlistOverrideUrl: string;
-  WishlistService = WishlistService;
-  TargetPerkService = TargetPerkService;
-  constructor(
-    public iconService: IconService,
-    public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.parent = data.parent;
-  }
-
-}
-
-@Component({
-  selector: 'd2c-gear-utilities-dialog',
-  templateUrl: './gear-utilities-dialog.component.html',
-  styleUrls: ['./gear.component.scss']
-})
-export class GearUtilitiesDialogComponent {
-  parent: GearComponent;
-  tempWishlistPveOverrideUrl: string;
-  tempWishlistPvpOverrideUrl: string;
-  WishlistService = WishlistService;
-  constructor(
-    public iconService: IconService,
-    public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.parent = data.parent;
-    this.tempWishlistPveOverrideUrl = this.parent.wishlistOverridePveUrl != null ? this.parent.wishlistOverridePveUrl : WishlistService.DEFAULT_PVE_URL;
-    this.tempWishlistPvpOverrideUrl = this.parent.wishlistOverridePvpUrl != null ? this.parent.wishlistOverridePvpUrl : WishlistService.DEFAULT_PVP_URL;
-  }
-}
-
-@Component({
-  selector: 'd2c-bulk-operations-help-dialog',
-  templateUrl: './bulk-operations-help-dialog.component.html',
-  styleUrls: ['./gear.component.scss']
-})
-export class BulkOperationsHelpDialogComponent {
-  constructor(
-    public iconService: IconService,
-    public dialogRef: MatDialogRef<BulkOperationsHelpDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
-}
-
-
-@Component({
-  selector: 'd2c-gear-help-dialog',
-  templateUrl: './gear-help-dialog.component.html',
-  styleUrls: ['./gear.component.scss']
-})
-export class GearHelpDialogComponent {
-
-  constructor(
-
-    public iconService: IconService,
-    public dialogRef: MatDialogRef<GearHelpDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {
-  }
-
 }
