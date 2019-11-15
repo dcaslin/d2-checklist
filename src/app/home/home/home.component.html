@@ -73,11 +73,15 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightmareHunts">
-                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
-                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                    <span> {{n.name}}
+                    <div mat-line>
+                      <button mat-stroked-button (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
+                          class="fa-icon"></fa-icon></button>
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                    </span>
+                    </div>
+                    <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span
+                        class="simple-caption-no-margin">{{n.specialLoot.itemTypeDisplayName}}</span></div>
+                    <div *ngIf="!n.specialLoot" mat-line class="nf-sub"><span class="simple-caption-no-margin">No
+                        special loot</span></div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -93,7 +97,7 @@
               <mat-card-content>
                 <mat-list>
                   <mat-list-item>
-                    <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
+                    <a mat-stroked-button href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
                       Make every Public Event Heroic&nbsp;<fa-icon [icon]="iconService.fasInfoCircle"
                         class="accent-text"></fa-icon></a>
                   </mat-list-item>
@@ -108,11 +112,15 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightfalls">
-                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
-                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                    <span> {{n.name}}
+                    <div mat-line>
+                      <button mat-stroked-button (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
+                          class="fa-icon"></fa-icon></button>
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                    </span>
+                    </div>
+                    <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span
+                        class="simple-caption-no-margin">{{n.specialLoot.itemTypeDisplayName}}</span></div>
+                    <div *ngIf="!n.specialLoot" mat-line class="nf-sub"><span class="simple-caption-no-margin">No
+                        special loot</span></div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -124,9 +132,10 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.heroicStrikes.modifiers" [matTooltip]="b.desc">
-                    <span class="icon" [class.invert]="b.icon.endsWith('png')" [class.brighten]="b.icon.endsWith('jpg')"
-                      *ngIf="b.icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-                    {{b.name}}
+                    <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
+                      [class.brighten]="b.icon.endsWith('jpg')" *ngIf="b.icon"
+                      [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <div mat-line>{{b.name}}</div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -140,11 +149,12 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.crucibleRotator">
-                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
-                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                    <span> {{n.name}}
+                    <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+                      [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+                      [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <div mat-line> {{n.name}}
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                    </span>
+                    </div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -156,11 +166,12 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.crucibleCore">
-                    <span class="icon" [class.invert]="n.icon.endsWith('png')" [class.brighten]="n.icon.endsWith('jpg')"
-                      *ngIf="n.icon" [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                    <span> {{n.name}}
+                    <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+                      [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+                      [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <div mat-line> {{n.name}}
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                    </span>
+                    </div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -174,9 +185,10 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.reckoning.modifiers" [matTooltip]="b.desc">
-                    <span class="icon" [class.invert]="b.icon.endsWith('png')" [class.brighten]="b.icon.endsWith('jpg')"
+                    <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
+                      [class.brighten]="b.icon.endsWith('jpg')"
                       [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-                    {{b.name}}
+                    <div mat-line>{{b.name}}</div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -188,9 +200,10 @@
               <mat-card-content>
                 <mat-list role="list">
                   <mat-list-item *ngFor="let b of today.publicMilestones.herMenag.modifiers" [matTooltip]="b.desc">
-                    <span class="icon" [class.invert]="b.icon.endsWith('png')" [class.brighten]="b.icon.endsWith('jpg')"
-                      *ngIf="b.icon" [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-                    {{b.name}}
+                    <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
+                      [class.brighten]="b.icon.endsWith('jpg')" *ngIf="b.icon"
+                      [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                    <div mat-line>{{b.name}}</div>
                   </mat-list-item>
                 </mat-list>
               </mat-card-content>
@@ -207,7 +220,8 @@
                   <mat-list-item><span class="simple-caption-no-margin right-margin">Boss</span>
                     <a [href]="today.week.epVideo" target="_blank" rel="noopener">
                       {{today.week.escalationProtocolBoss}} <fa-icon [icon]="iconService.fabYoutube"
-                        class="accent-text"></fa-icon>
+                        class="accent-text">
+                      </fa-icon>
                     </a>
                   </mat-list-item>
                   <mat-list-item><span class="simple-caption-no-margin right-margin">Weapon</span>

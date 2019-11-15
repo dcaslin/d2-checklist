@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>Wildcard Filter Info
+</h2>
+<mat-dialog-content>
+    <p>The wildcard filter will filter by item name, along with masterwork, mod and perk names. It also has a few
+        special commands (some of which match DIM's filters)</p>
+    <ul>
+        <li><code>AND</code> let's you type in multiple filters at once. For example <code>godroll AND rampage</code> or even <code>alloy AND rampage AND zen</code></li>
+        <li><code>OR</code> let's you type in multiple filters at once. For example <code>solar OR void</code> (OR causes AND to be ignored, they cannot be combined) </li>
+        <li><code>!</code> adds a NOT filter to your query. <code>!pulse monitor</code> will show guns missing Pulse Monitor. <code>!zen AND rampage</code></li> will show guns with rampage but not zen moment. This also works with "magic" words below, so you can use <code>!targetperk</code> to find all your armor missing features you care about (perhaps to mark it all as junk)
+        <li><code>is:wishlist</code> or <code>godroll</code> Show only items that match a god roll from a curated list of rolls (see "Utilities" button for more info)</li>
+        <li><code>is:wishlistpve</code> <code>is:wishlistpvp</code> or <code>godrollpvp</code> <code>godrollpve</code> Selected by PvE vs PvP god rolls</li>
+        <li><code>is:fixme</code> Show items with godroll perks that aren't currently active</li>
+        <li><code>is:masterwork</code> Has a fully upgraded masterwork socket</li>
+        <li><code>is:hasmod</code> Has a mod applied</li>
+        <li><code>is:random</code> Is a random roll, and thus cannot be restored from Collections</li>
+        <li><code>is:fixed</code> Is a fixed roll, you can always grab it from collections</li>
+        <li><code>is:light&gt;=900</code> Finds gear by Light Level (aka Power Level). Supports <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, and <code>=</code></li>
+        <li><code>is:stattotal&gt;=900</code> Finds armor by total stat points, same options as for is:light above</li>
+    </ul>
+</mat-dialog-content>

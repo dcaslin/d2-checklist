@@ -114,6 +114,16 @@ a.underline:link {
   filter: brightness(1.8);
 }
 
+.nf-sub {
+  margin-top: 5px !important;
+  margin-left: 0.5em !important;
+}
+
+.fa-icon {
+  opacity: 0.5;
+  margin-left: 0.25em;
+}
+
 .icon{
   height: 24px;
   width: 24px;  
@@ -121,6 +131,12 @@ a.underline:link {
   background-size: cover;
   display: block;
 }
+
+.list-icon{  
+  background-size: cover;
+  display: block;
+}
+
 
 dl{
   margin-left: 20px;

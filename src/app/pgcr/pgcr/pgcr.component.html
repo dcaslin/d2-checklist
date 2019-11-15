@@ -7,12 +7,14 @@
       </div>
       <div style="text-align:left">
 
-        <ng-container *ngFor="let data of pgcr|async">
+        <ng-container *ngIf="pgcr|async as data">
           <h2>
             {{data.mode}} - {{data.name}}
-            <span class="pad-left">              
-              <fa-icon [icon]="iconService.fasTimes" *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text"></fa-icon>              
-              <fa-icon [icon]="iconService.fasCheck" *ngIf="data.pve==true && data.pveSuccess==true" class="accent-text"></fa-icon>
+            <span class="pad-left">
+              <fa-icon [icon]="iconService.fasTimes" *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text">
+              </fa-icon>
+              <fa-icon [icon]="iconService.fasCheck" *ngIf="data.pve==true && data.pveSuccess==true"
+                class="accent-text"></fa-icon>
             </span>
           </h2>
           <h2 *ngIf="data.teamScore">Team Score: {{data.teamScore|number}}</h2>
@@ -23,30 +25,46 @@
           </div>
           <table class="timing-table">
             <tr>
-              
               <th>Date</th>
               <th>Start</th>
               <th>Finish</th>
               <th>Duration</th>
+              <th>Avg Glory</th>
             </tr>
             <tr>
-              <td>{{data.period|date:'shortDate'}}</td>
               <td>{{data.period|date:'shortDate'}}</td>
               <td>{{data.period|date:'shortTime'}}</td>
               <td>{{data.finish|date:'shortTime'}}</td>
               <td>{{data.activityDurationSeconds | amnsTiming:'seconds' }}</td>
+              <td>
+                <ng-container *ngIf="avgGlory|async as ag">
+                  {{ag|number: '0.0-0'}}
+                </ng-container>
+                <ng-container *ngIf="!(avgGlory|async)">
+                  ...
+                </ng-container>
+              </td>
             </tr>
           </table>
 
-          <mat-card class="card" *ngIf="data.teams!=null && data.teams.length>0">
-            <mat-card-content>
-
-              <b *ngFor="let t of data.teams;let last = last;">
-                {{t.name}} {{t.score|number}} ({{t.standing}}) <ng-container *ngIf="!last">&emsp;-&emsp;</ng-container>
-              </b>
-
-            </mat-card-content>
-          </mat-card>
+          <table class="timing-table" *ngIf="data.teams!=null && data.teams.length>0">
+            <tr>
+              <th>Team</th>
+              <td *ngFor="let t of data.teams">{{t.name}}</td>
+            </tr>
+            <tr>
+              <th>Score</th>
+              <td *ngFor="let t of data.teams">{{t.score|number}}</td>
+            </tr>
+            <tr>
+              <th>Standing</th>
+              <td *ngFor="let t of data.teams">{{t.standing}}</td>
+            </tr>
+            <tr>
+              <th>Avg Glory</th>
+              <td *ngFor="let t of data.teams">{{t.avgGlory|number: '0.0-0'}}</td>
+            </tr>
+          </table>
 
           <mat-card class="card" *ngFor="let entry of data.entries">
 
@@ -55,7 +73,8 @@
                 [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
               <mat-card-title class="full-width">
                 <b>
-                  <a [routerLink]="['/'+entry.user.membershipType, entry.user.membershipId]" color="accent">{{entry.user.displayName}}</a>                  
+                  <a [routerLink]="['/'+entry.user.membershipType, entry.user.membershipId]"
+                    color="accent">{{entry.user.displayName}}</a>
                   <a style="margin-left:0.25em"
                     [ngClass]="(favoritesMap|async)[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
                     (click)="storageService.toggleFav(entry.user, entry.bungieNetUserInfo.membershipId)"
@@ -68,6 +87,11 @@
                 </span>
               </mat-card-title>
               <mat-card-subtitle class="full-width">
+                <ng-container *ngIf="players|async as ps">
+                  <div class="pad-left" *ngIf="ps[entry.user.membershipId] as player">Glory
+                    {{player.glory.currentProgress|number}}</div>
+                </ng-container>
+
                 <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
                 <div>
                   <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}}LL</span>
@@ -101,7 +125,7 @@
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
-                      <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>&nbsp;Medals etc.
+                    <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>&nbsp;Medals etc.
                   </mat-expansion-panel-header>
                   <table class="weapon-table">
                     <thead>

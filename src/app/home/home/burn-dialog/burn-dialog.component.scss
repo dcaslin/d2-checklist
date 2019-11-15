@@ -1,0 +1,26 @@
+.hide-mobile-inline {
+    display: inline;
+    visibility: visible;
+  }
+
+  
+
+.invert{
+  filter: invert(50%);
+}
+
+.brighten{
+  filter: brightness(1.8);
+}
+
+.title-icon {
+  width: 32px;
+  height: 32px;
+  background-size: cover;
+  display: inline-block;
+}
+
+.list-icon{  
+  background-size: cover;
+  display: block;
+}
