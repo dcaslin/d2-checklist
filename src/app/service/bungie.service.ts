@@ -707,9 +707,6 @@ export class BungieService implements OnDestroy {
         const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon' && a.success && a.completed);
         const done = dungeonActivities.length >= 1;
-        if (done){
-            console.dir(dungeonActivities);
-        }
         const dungeonPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY, done, done ? 1 : 0, null, null, null, false);
         c.milestones[Const.DUNGEON_KEY] = dungeonPsuedoMs;
         p.next(p.getValue());

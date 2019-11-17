@@ -102,7 +102,7 @@
           </span>
           <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"
             matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
-            Sign in
+            <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
           </button>
           <button *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null"
             matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
 
-import { environment } from '../../environments/environment';
 
 @Injectable()
 export class AuthService {
@@ -53,86 +53,85 @@ export class AuthService {
         this.emit();
     }
 
-    private getToken(): Promise<Token> {
-        let loadedFromFile = false;
-        if (this.token == null) {
-            this.token = AuthService.loadTokenFromStorage();
-            loadedFromFile = true;
-        }
-
-        if (this.token != null) {
-            if (AuthService.isValid(this.token)) {
-                if (loadedFromFile) {
-                    // update all our in-memory data, things changed
-                    this.storeToken(this.token, false);
-                }
-                return Promise.resolve(this.token);
-            } else if (AuthService.isValidRefresh(this.token)) {
-                return this.refreshToken(this.token.refresh_token);
-            } else {
-                this.signOut();
+    private async getToken(): Promise<Token> {
+        try {
+            let loadedFromFile = false;
+            if (this.token == null) {
+                this.token = AuthService.loadTokenFromStorage();
+                loadedFromFile = true;
             }
+            if (this.token != null) {
+                if (AuthService.isValid(this.token)) {
+                    if (loadedFromFile) {
+                        // update all our in-memory data, things changed
+                        this.storeToken(this.token, false);
+                    }
+                    return this.token;
+                } else if (AuthService.isValidRefresh(this.token)) {
+                    return await this.refreshToken(this.token.refresh_token);
+                } else {
+                    throw new Error('No valid refresh token');
+                }
+            }
+            // no tokens found or they were completely invalid
+            return Promise.resolve(null);
+        } catch (exc) {
+            let msg = 'Unknown error';
+            if (exc.error && exc.error.error_description) {
+                msg = exc.error.error_description;
+            } else if (exc.message) {
+                msg = exc.message;
+            }
+            this.notificationService.fail('Error authorizing to Bungie, please sign on again: ' + msg);
+            this.signOut();
+            return null;
         }
-        // no tokens found or they were completely invalid
-        return Promise.resolve(null);
     }
 
-    public getCurrentMemberId(force: boolean): Promise<string> {
-        return this.getToken().then((x: Token) => {
-            if (x == null) {
-                if (force === true) {
-                    AuthService.reroute();
-                } else {
-                    // on initial logon confirm that we got no logons
-                    this.emit();
-                }
-                return null;
+    public async getCurrentMemberId(force: boolean): Promise<string> {
+        const x = await this.getToken();
+        if (x == null) {
+            if (force === true) {
+                AuthService.reroute();
+            } else {
+                // on initial logon confirm that we got no logons
+                this.emit();
             }
-            return x.membership_id;
-        });
+            return null;
+        }
+        return x.membership_id;
     }
 
     // called by lots of things
-    public getKey(): Promise<string> {
-        return this.getToken().then((x: Token) => {
-            if (x == null) { return null; }
-            return x.access_token;
-        });
+    public async getKey(): Promise<string> {
+        const x = await this.getToken();
+        if (x == null) { return null; }
+        return x.access_token;
     }
 
-    private refreshToken(refreshKey: string): Promise<Token> {
-        const self = this;
-
+    private async refreshToken(refreshKey: string): Promise<Token> {
         let headers = new HttpHeaders();
         headers = headers
             .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('X-API-Key',  environment.bungie.apiKey);
+            .set('X-API-Key', environment.bungie.apiKey);
         const httpOptions = {
-            headers: headers};
+            headers: headers
+        };
 
         let params = new HttpParams();
         params = params.set('grant_type', 'refresh_token');
         params = params.set('client_id', environment.bungie.clientId);
         params = params.set('client_secret', environment.bungie.clientSecret);
         params = params.set('refresh_token', refreshKey);
-
-        return this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/', params, httpOptions)
-        .toPromise().then(j => {
-            self.storeToken(j, true);
-            return self.token;
-        }).catch(
-            function (err) {
-                const errMsg = AuthService.parseError(err);
-                console.log('Error refreshing Auth token: ' + errMsg);
-                console.dir(err);
-                return null;
-            });
+        const j = await this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/',
+            params, httpOptions).toPromise();
+        this.storeToken(j, true);
+        return this.token;
     }
 
     // called by Auth page on redirect from logon
     // returns a msg, not the key
-    public fetchTokenFromCode(code: string, state: string): Promise<boolean> {
-        const self: AuthService = this;
+    public async fetchTokenFromCode(code: string, state: string): Promise<boolean> {
         const nonce: string = localStorage.getItem('nonce');
         if (nonce != null) {
             if (nonce !== state) {
@@ -144,9 +143,10 @@ export class AuthService {
         let headers = new HttpHeaders();
         headers = headers
             .set('Content-Type', 'application/x-www-form-urlencoded')
-            .set('X-API-Key',  environment.bungie.apiKey);
+            .set('X-API-Key', environment.bungie.apiKey);
         const httpOptions = {
-            headers: headers};
+            headers: headers
+        };
 
         let params = new HttpParams();
         params = params.set('grant_type', 'authorization_code');
@@ -154,16 +154,15 @@ export class AuthService {
         params = params.set('client_secret', environment.bungie.clientSecret);
         params = params.set('code', code);
 
-        return this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/', params, httpOptions)
-        .toPromise().then(j => {
-            self.storeToken(j, true);
+        try {
+            const j = await this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/', params, httpOptions).toPromise();
+            this.storeToken(j, true);
             return true;
-        }).catch(
-            function (err) {
-                const errMsg = AuthService.parseError(err);
-                self.notificationService.fail(err);
-                throw(errMsg);
-            });
+        } catch (err) {
+            const errMsg = AuthService.parseError(err);
+            this.notificationService.fail(err);
+            throw (errMsg);
+        }
     }
 
     private static cookToken(j: Token): Token {

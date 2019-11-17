@@ -13,7 +13,7 @@ import { ChildComponent } from '../../shared/child.component';
   styleUrls: ['./auth.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy {
+export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
   msg: string;
 
   constructor(
@@ -23,24 +23,28 @@ export class AuthComponent  extends ChildComponent implements OnInit, OnDestroy 
     super(storageService);
   }
 
+  async fetch(code: string, state: string) {
+    this.msg = 'Authenticating to Bungie';
+    if (code != null) {
+      try {
+        const success = await this.authService.fetchTokenFromCode(code, state);
+        this.msg = 'Success: ' + success;
+        if (success) {
+          this.router.navigate(['/home']);
+        }
+      } catch (x) {
+        this.msg = JSON.stringify(x);
+        this.ref.markForCheck();
+      }
+    }
+  }
+
 
   ngOnInit() {
     this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(queryParams => {
       const code: string = queryParams['code'];
       const state: string = queryParams['state'];
-      this.msg = 'Authenticating to Bungie';
-      if (code != null) {
-        this.authService.fetchTokenFromCode(code, state).then((success: boolean) => {
-          this.msg = 'Success: ' + success;
-          if (success) {
-            this.router.navigate(['/home']);
-          }
-
-        }).catch(x => {
-          this.msg = JSON.stringify(x);
-          this.ref.markForCheck();
-        });
-      }
+      this.fetch(code, state);
     });
   }
 }

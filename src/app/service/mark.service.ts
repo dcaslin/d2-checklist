@@ -5,8 +5,8 @@ import { faLevelUpAlt as fasLevelUpAlt, faSave as fasSave, faSyringe as fasSyrin
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
-import { IconService } from './icon.service';
 import { InventoryItem } from './model';
+import { NotificationService } from './notification.service';
 
 
 @Injectable()
@@ -18,10 +18,11 @@ export class MarkService implements OnDestroy {
     public markChoices: MarkChoice[];
     public markDict: {[id: string]: MarkChoice};
     private currentMarks: Marks = null;
+    private badState = false;
 
     private unsubscribe$: Subject<void> = new Subject<void>();
 
-    constructor(private httpClient: HttpClient, private iconService: IconService) {
+    constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};
@@ -32,13 +33,17 @@ export class MarkService implements OnDestroy {
             takeUntil(this.unsubscribe$),
             debounceTime(5000))
             .subscribe(() => {
-                if (this.dirty.value === true) {
+                if (this.dirty.value === true && !this.badState) {
                     this.saveMarks();
                 }
             });
     }
 
     public async saveMarks(): Promise<void> {
+        if (this.badState) {
+            this.notificationService.fail('Gear likely missing, saving marks disabled');
+            return;
+        }
         this.currentMarks.magic = 'this is magic!';
         const s = JSON.stringify(this.currentMarks);
         const lzSaveMe: string = LZString.compressToBase64(s);
@@ -164,9 +169,25 @@ export class MarkService implements OnDestroy {
         return unusedDelete;
     }
 
+    private hasPrivateItems(items: InventoryItem[]) {
+        for (const i of items) {
+            if (!i.equipped) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public processItems(items: InventoryItem[]): void {
         // if we don't have both, don't do anything
         if (this.currentMarks == null || items.length == 0) { return; }
+        // if there are no private items, don't bother processing marks in any way, including saving them
+        if (!this.hasPrivateItems(items)) {
+            this.notificationService.info('No private items found, disabling marking.');
+            this.badState = true;
+            return;
+        }
+        this.badState = false;
         const updatedMarks: boolean = MarkService.processMarks(this.currentMarks.marked, items);
         const updatedNotes: boolean = MarkService.processNotes(this.currentMarks.notes, items);
         this.dirty.next(this.dirty.value || updatedNotes || updatedMarks);

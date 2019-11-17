@@ -1017,10 +1017,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadMarks() {
-    await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
-      this.selectedUser.userInfo.membershipId);
-    if (this._player.getValue() != null) {
-      this.markService.processItems(this._player.getValue().gear);
+    if (this.selectedUser){
+      await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
+        this.selectedUser.userInfo.membershipId);
+      if (this._player.getValue() != null) {
+        this.markService.processItems(this._player.getValue().gear);
+      }
     }
   }
 

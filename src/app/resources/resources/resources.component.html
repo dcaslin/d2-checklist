@@ -11,12 +11,9 @@
             *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.userInfo.platformName}}</a>
         </h2>
 
-        <ng-container *ngIf="(loading|async)===false && player==null">
-          <h2>Bungie Authentication Required</h2>
-          <p>You must grant this site access to your Bungie account for the site to access this info (vendors are part
-            of the private API, like what DIM uses). Click the "Sign In" button on the upper
-            right if you want to continue.</p>
-        </ng-container>
+        <div *ngIf="(loading|async)===false && player==null">        
+          <d2c-sign-in-required style="display:inline-block"></d2c-sign-in-required>
+        </div>
         <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="char" (change)="router.navigate(['vendors',chargroup.value.characterId])">
           <mat-button-toggle *ngFor="let c of player.characters" [value]="c">

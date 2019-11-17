@@ -11,12 +11,8 @@
       </p>
     </div>
     <div class="privacy-note left" *ngIf="!(state.isSignedOn|async)">
-      <h4>Bungie Authentication Required</h4>
-      <p>If this is your account, you must grant this site access to your private Bungie API's for the site to
-        access this info on your account
-        (like what you might be doing with Destiny Item Manager today). <b>Click the "Sign In" button
-          on the upper
-          right if you want to continue.</b></p>
+      
+        <d2c-sign-in-required style="display:inline-block"></d2c-sign-in-required>
 
     </div>
 
