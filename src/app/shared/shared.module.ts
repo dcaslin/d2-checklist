@@ -45,6 +45,7 @@ import { MilestoneCheckComponent } from './milestone-check/milestone-check.compo
 
 
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+import { SignInRequiredComponent } from './sign-in-required/sign-in-required.component';
 
 
 @NgModule({
@@ -89,9 +90,11 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons';
     ScrollingModule
   ],
   declarations: [
-  MilestoneCheckComponent],
+  MilestoneCheckComponent,
+  SignInRequiredComponent],
   exports: [
     MilestoneCheckComponent,
+    SignInRequiredComponent,
     RouterModule,
     PipeModule,
 

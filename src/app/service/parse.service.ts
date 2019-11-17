@@ -200,6 +200,41 @@ export class ParseService {
         }
     }
 
+
+    private addPsuedoMilestone(key: string, milestonesByKey: any, milestoneList: MileStoneName[]) {
+        if (milestonesByKey[key] == null && key != '534869653') {
+            const skipDesc = this.destinyCacheService.cache.Milestone[key];
+            if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
+                let name = skipDesc.displayProperties.name;
+                let descRewards = this.parseMilestoneRewards(skipDesc);
+                if (descRewards == null || descRewards.trim().length == 0) {
+                    // weekly pinnacle challenge
+                    if (key == '3881226684') {
+                        name = 'Nightmare Hunt: Master';
+                        descRewards = 'Pinnacle Gear';
+                    } else {
+                        descRewards = 'Unknown';
+                    }
+                }
+                const ms2: MileStoneName = {
+                    key: skipDesc.hash + '',
+                    resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+                    rewards: descRewards,
+                    pl: this.parseMilestonePl(descRewards),
+                    name: name,
+                    desc: skipDesc.displayProperties.description,
+                    hasPartial: false
+                };
+                milestoneList.push(ms2);
+                milestonesByKey[ms2.key] = ms2;
+            } else if (skipDesc != null) {
+
+            } else {
+                console.log('Skipping unknown milestone: ' + key);
+            }
+        }
+    }
+
     private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
         c.milestones = {};
         c.notReady = false;
@@ -207,7 +242,6 @@ export class ParseService {
             if (c.light < 900) {
                 c.notReady = true;
             }
-
             for (const key of Object.keys(_prog.milestones)) {
                 const ms: PrivMilestone = _prog.milestones[key];
                 // special case for clan rewards
@@ -242,37 +276,20 @@ export class ParseService {
                     });
 
                     c.clanMilestones = clanMilestones;
-                } else if (milestonesByKey[key] == null && key != '534869653') {
-                    const skipDesc = this.destinyCacheService.cache.Milestone[key];
-                    if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                        let name = skipDesc.displayProperties.name;
-                        let descRewards = this.parseMilestoneRewards(skipDesc);
-                        if (descRewards == null || descRewards.trim().length == 0) {
-                            // weekly pinnacle challenge
-                            if (key == '3881226684') {
-                                name = 'Nightmare Hunt: Master';
-                                descRewards = 'Pinnacle Gear';
-                            } else {
-                                descRewards = 'Unknown';
-                            }
-                        }
-                        const ms2: MileStoneName = {
-                            key: skipDesc.hash + '',
-                            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
-                            rewards: descRewards,
-                            pl: this.parseMilestonePl(descRewards),
-                            name: name,
-                            desc: skipDesc.displayProperties.description,
-                            hasPartial: false
-                        };
-                        milestoneList.push(ms2);
-                        milestonesByKey[ms2.key] = ms2;
-                    } else if (skipDesc != null) {
-
-                    } else {
-                        console.log('Skipping unknown milestone: ' + key);
-                    }
+                } else {
+                    // add this milestone if not already there
+                    this.addPsuedoMilestone(key, milestonesByKey, milestoneList);
                 }
+
+                // if they finished all, then force them in anyway
+
+                // nightmare hunt pinnacle
+                this.addPsuedoMilestone('3881226684', milestonesByKey, milestoneList);
+                // weekly nightmare hunt
+                this.addPsuedoMilestone('2246196133', milestonesByKey, milestoneList);
+                // weekly strikes
+                this.addPsuedoMilestone('1437935813', milestonesByKey, milestoneList);
+
 
                 let total = 0;
                 let complete = 0;

@@ -1,0 +1,25 @@
+<mat-card class="sign-in-card">
+  <mat-card-header>
+    <div mat-card-avatar>
+      <fa-icon size="2x" [icon]="iconService.fasInfoCircle"></fa-icon>
+    </div>
+    <mat-card-title>Bungie Authentication Required</mat-card-title>
+    <mat-card-subtitle>Ya gotta sign for this part to work, sorry</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <p>
+      This site requires access to private endpoints to manage and view your gear. 
+    </p>
+    <p>
+      If you don't feel comfortable signing in, you can still use most of the rest of site by searching for your gamertag on the home
+      page.
+    </p>
+    <p>
+      If you have any questions or concerns, look to the bottom of the page and msg me on Twitter. Better yet, check out the open source code yourself to verify that I'm not doing anything nefarious with your data.
+    </p>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button (click)="logon()"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In</button>
+  </mat-card-actions>
+</mat-card>

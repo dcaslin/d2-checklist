@@ -8,6 +8,10 @@
         <fa-icon *ngIf="(filtering|async)===true && !((loading|async)===true || (gearService.loading|async)===true)"
           [icon]="iconService.fasCog" [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>
       </div>
+      <ng-container *ngIf="(loading|async)===false && selectedUser==null">
+        <d2c-sign-in-required></d2c-sign-in-required>
+      </ng-container>
+
       <ng-container *ngIf="_player|async as player">
 
         <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
@@ -31,20 +35,12 @@
             class="header-link" target="_blank" rel="noopener">pandapaxxy guides</a>
         </div>
 
-        <ng-container *ngIf="(loading|async)===false && selectedUser==null">
-          <h2>Bungie Authentication Required</h2>
-          <p style="max-width: 500px; text-align: left">You must grant this site access to your Bungie account for the
-            site to access this info
-            (gear management is part of the private API, like what DIM uses). Click the "Sign In" button on the upper
-            right if you want to continue.</p>
-        </ng-container>
-
         <div style="margin: 10px" [hidden]="selectedUser==null">
           <mat-form-field class="searchField">
-            
+
             <mat-label>Wildcard filter</mat-label>
-            <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText" placeholder="Name, perk or is:godroll"
-              (keyup)="filterKeyUp.next()">
+            <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText"
+              placeholder="Name, perk or is:godroll" (keyup)="filterKeyUp.next()">
             <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
               (click)="visibleFilterText=null;parseWildcardFilter()">
               <mat-icon>close</mat-icon>
@@ -52,7 +48,8 @@
             <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
               <mat-icon>help_outline</mat-icon>
             </button>
-            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="autoCompleteSelected($event)">
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
+              (optionSelected)="autoCompleteSelected($event)">
               <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option">
                 {{option}}
               </mat-option>
@@ -440,6 +437,18 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                  <ng-container *ngIf="option.type==ItemType.Armor && i.sockets && i.sockets.length>0">
+                    <div *ngFor="let socket of i.sockets; last as isLastSocket" class="simple-caption-no-margin"
+                      [class.bottom]="!isLastSocket">
+                      <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                        [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
+                        matTooltipClass="preserve-white-space">
+                        <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
+                          [debugmode]="debugmode|async"></d2c-god-roll-plug>
+                        <ng-container *ngIf="!isLastPlug">|</ng-container>
+                      </span>
+                    </div>
+                  </ng-container>
                   <ng-container *ngFor="let mod of i.mods; last as isLastMod">
                     <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
                       <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
@@ -460,6 +469,8 @@
                         </div>
                       </div> -->
                     </div>
+
+
                   </ng-container>
 
                 </td>
