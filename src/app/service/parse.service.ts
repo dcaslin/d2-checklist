@@ -521,7 +521,7 @@ export class ParseService {
             act.teamScore = ParseService.getBasicValue(a.values.teamScore);
             act.kd = ParseService.getBasicValue(a.values.killsDeathsRatio);
             act.completionReason = ParseService.getBasicValue(a.values.completionReason);
-            if (desc.isPvP) {
+            if (desc && desc.isPvP) {
                 act.success = act.standing === 0;
             } else {
                 act.success = act.completionReason === 0;
@@ -530,17 +530,21 @@ export class ParseService {
 
         }
         act.isPrivate = a.activityDetails.isPrivate;
-        if (desc.isPvP) {
+        if (desc && desc.isPvP) {
             act.pvType = 'PvP';
         } else {
             act.pvType = 'PvE';
         }
-
+        
         act.desc = act.mode + ': ' + act.name;
         if (act.isPrivate) {
             act.desc += '(Private)';
         }
         // act.values = a.values;
+        if (!desc) {
+            console.dir(act);
+        }
+
         return act;
 
     }
