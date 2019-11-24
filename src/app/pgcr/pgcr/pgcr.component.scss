@@ -33,6 +33,18 @@ table.weapon-table {
 .icon {
   background-size: cover;
 }
+
+.no-medal-icon {
+  text-align: center;
+}
+
+.medal-icon {
+  width: 48px;
+  height: 48px;
+  background-size: cover;
+}
+
+
 ::ng-deep .mat-card-header-text {
   width: 100% !important;
 }

@@ -716,6 +716,11 @@ export class BungieService implements OnDestroy {
     public loadActivityPsuedoMilestones(playerSubject: BehaviorSubject<Player>) {
         const p = playerSubject.getValue();
 
+        // privacy will hide this
+        if (!p.characters[0].endWeek) {
+            return;
+        }
+
         const ms1: MileStoneName = {
             key: Const.DUNGEON_KEY,
             resets: p.characters[0].endWeek.toISOString(),
