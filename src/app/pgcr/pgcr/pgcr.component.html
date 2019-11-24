@@ -88,8 +88,12 @@
               </mat-card-title>
               <mat-card-subtitle class="full-width">
                 <ng-container *ngIf="players|async as ps">
-                  <div class="pad-left" *ngIf="ps[entry.user.membershipId] as player">Glory
-                    {{player.glory.currentProgress|number}}</div>
+                  <div class="pad-left" *ngIf="ps[entry.user.membershipId] as player">
+                    Glory 
+                    <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
+                    <ng-container *ngIf="!player.glory">hidden
+                    </ng-container>
+                  </div>
                 </ng-container>
 
                 <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
@@ -128,14 +132,20 @@
                     <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>&nbsp;Medals etc.
                   </mat-expansion-panel-header>
                   <table class="weapon-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
+                    
                     <tbody>
                       <tr *ngFor="let w of entry.extra">
+                        <td>
+                          <div *ngIf="w.desc && w.desc.iconImage; else noMedal" 
+                          [style.background-image]="'url(//www.bungie.net' + w.desc.iconImage + ')'" 
+                          class="medal-icon" >
+                          </div>
+                          <ng-template  #noMedal>
+                            <div class="no-medal-icon">
+                              <fa-icon [icon]="iconService.fasHorizontalRule" [fixedWidth]="true"></fa-icon>
+                            </div>
+                          </ng-template>
+                        </td>
                         <td>
                           <span *ngIf="w.desc!=null">
                             {{w.desc.statName}}
