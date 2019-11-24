@@ -74,7 +74,7 @@ export class WishlistService implements OnDestroy {
 
     const key = 'wishlist-' + env.versions.app + '-' + overridePveUrl + '-' + overridePvpUrl;
     let rolls: CuratedRoll[] = await get(key);
-    if (rolls == null) {
+    if (rolls == null || rolls.length==0) {
       console.log('    No cached wishlists: ' + key);
 
       // clear cache
