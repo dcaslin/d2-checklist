@@ -1,13 +1,13 @@
 import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
-import { MatAutocompleteSelectedEvent, MatButtonToggleGroup, MatDialog, MatDialogConfig, MatDialogRef, MatPaginator, MAT_DIALOG_DATA, PageEvent } from '@angular/material';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatAutocompleteSelectedEvent, MatButtonToggleGroup, MatDialog, MatDialogConfig, MatPaginator, PageEvent } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, NumComparison, Player, SelectedUser, Target } from '@app/service/model';
+import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, ItemType, NumComparison, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { TargetPerkService } from '@app/service/target-perk.service';
@@ -21,11 +21,11 @@ import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-
 import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
 import { ArmorPerksDialogComponent } from './armor-perks-dialog/armor-perks-dialog.component';
-import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
+import { BulkOperationsHelpDialogComponent } from './bulk-operations-help-dialog/bulk-operations-help-dialog.component';
 import { GearCompareDialogComponent } from './gear-compare-dialog/gear-compare-dialog.component';
 import { GearHelpDialogComponent } from './gear-help-dialog/gear-help-dialog.component';
-import { BulkOperationsHelpDialogComponent } from './bulk-operations-help-dialog/bulk-operations-help-dialog.component';
 import { Choice, GearToggleComponent } from './gear-toggle/gear-toggle.component';
+import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
 
 
 @Component({
@@ -768,13 +768,32 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     let tempGear = this._player.getValue().gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
     tempGear = this.toggleFilter(tempGear);
-    if (this.sortBy == 'masterwork' || this.sortBy == 'mods') {
+    if (this.sortBy == 'masterwork' || this.sortBy == 'mods' || this.sortBy.startsWith('stat.')) {
       tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
         let aV: any = '';
         let bV: any = '';
-        if (this.sortBy == 'masterwork') {
-          aV = a[this.sortBy] != null ? a[this.sortBy].name : -1;
-          bV = b[this.sortBy] != null ? b[this.sortBy].name : -1;
+        if (this.sortBy.startsWith('stat.')) {
+          let isBase = false;
+          let hash;
+          if (this.sortBy.startsWith('stat.base.')) {
+            hash = this.sortBy.substr('stat.base.'.length);
+            isBase = true;
+          } else {
+            hash = this.sortBy.substr('stat.'.length);
+          }
+          for (const s of a.stats) {
+            if (s.hash == hash) {
+              aV = isBase ? s.baseValue : s.value;
+            }
+          }
+          for (const s of b.stats) {
+            if (s.hash == hash) {
+              bV = isBase ? s.baseValue : s.value;
+            }
+          }
+        } else if (this.sortBy == 'masterwork') {
+          aV = a[this.sortBy] != null ? a[this.sortBy].tier : -1;
+          bV = b[this.sortBy] != null ? b[this.sortBy].tier : -1;
         } else if (this.sortBy == 'mods') {
           aV = a[this.sortBy] != null && a[this.sortBy].length > 0 ? a[this.sortBy][0].name : '';
           bV = b[this.sortBy] != null && b[this.sortBy].length > 0 ? b[this.sortBy][0].name : '';
@@ -785,9 +804,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
         } else if (aV > bV) {
           return this.sortDesc ? -1 : 1;
         } else {
-          if (this.sortBy == 'masterwork') {
-            aV = a[this.sortBy] != null ? a[this.sortBy].tier : '';
-            bV = b[this.sortBy] != null ? b[this.sortBy].tier : '';
+          if (this.sortBy != 'mods') {
+            aV = a[this.sortBy] != null ? a[this.sortBy].name : '';
+            bV = b[this.sortBy] != null ? b[this.sortBy].name : '';
             if (aV < bV) {
               return this.sortDesc ? 1 : -1;
             } else if (aV > bV) {
@@ -1017,7 +1036,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadMarks() {
-    if (this.selectedUser){
+    if (this.selectedUser) {
       await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
         this.selectedUser.userInfo.membershipId);
       if (this._player.getValue() != null) {
