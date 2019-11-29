@@ -237,42 +237,61 @@
           <thead>
             <tr>
               <th class="limited-gear-width">
-                <a href="javascript:void(0)" (click)="sort('power')">Light</a>
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('power')">Light
+                  <d2c-sort-indicator field="power" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+                </a>
               </th>
               <th class="limited-gear-width">
-                <a href="javascript:void(0)" (click)="sort('name')">Name</a>
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('name')">Name
+                  <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+                </a>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell">
-                <a href="javascript:void(0)" (click)="sort('typeName')">Type</a>
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('typeName')">Type
+                  <d2c-sort-indicator field="typeName" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+                </a>
+
               </th>
               <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                <a href="javascript:void(0)" (click)="sort('energyCapacity')">Energy</a>
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('energyCapacity')">Energy
+                  <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
+                  </d2c-sort-indicator>
+                </a>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                <a href="javascript:void(0)" (click)="sort('copies')">Copies</a>
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('copies')">
+                  Copies
+                  <d2c-sort-indicator field="copies" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+                </a>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-                <a href="javascript:void(0)" (click)="sort('masterwork')">Masterwork</a>
-              </th>
-              <th class="limited-gear-width hide-mobile-table-cell"
-                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                <a href="javascript:void(0)" (click)="sort('mods')">Mod</a>
-              </th>
-              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                <a href="javascript:void(0)" (click)="sort('preferredStatPoints')">Stat Pts</a>
-              </th>
-              <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                Stats
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('masterwork')">MW
+                  <d2c-sort-indicator field="masterwork" [currVal]="sortBy" [descending]="sortDesc">
+                  </d2c-sort-indicator>
+                </a>
               </th>
               <th class="hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                 Sockets
               </th>
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('preferredStatPoints')">Stat Pts
+                  <d2c-sort-indicator field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc">
+                  </d2c-sort-indicator>
+                </a>
+              </th>
+              <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+                Stats
+              </th>
+
 
               <th class="limited-gear-width"
                 *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
-                <a href="javascript:void(0)" (click)="sort('quantity')">Quantity</a>
+                <a href="javascript:void(0)" (click)="sort('quantity')">Quantity
+                  <d2c-sort-indicator field="quantity" [currVal]="sortBy" [descending]="sortDesc">
+                  </d2c-sort-indicator>
+                </a>
               </th>
               <th class="tag-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
@@ -412,7 +431,15 @@
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                  {{i.energyCapacity}}
+                  <span class="mod-obj">{{i.energyCapacity}} / 10</span>
+                  <mat-progress-bar mode="determinate" class="mw-progress"
+                    [color]="i.energyCapacity>=10?'accent':'primary'" [value]="i.energyCapacity*10">
+                  </mat-progress-bar>
+                  <ng-container *ngFor="let mod of i.mods; last as isLastMod">
+                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
+                      {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
+                    </div>
+                  </ng-container>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
@@ -422,77 +449,20 @@
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
                     matTooltipClass="preserve-white-space">
-
                     {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode|async">
                       [{{i.masterwork.hash}}]
                     </ng-container>
-
-                    <mat-progress-bar *ngIf="option.type == ItemType.Weapon" mode="determinate"
+                    <mat-progress-bar mode="determinate" class="mw-progress"
                       [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
                     </mat-progress-bar>
-                    <!-- <mat-progress-bar *ngIf="option.type == ItemType.Armor" mode="determinate"
-                      [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
-                    </mat-progress-bar> -->
+                    <ng-container *ngFor="let mod of i.mods; last as isLastMod">
+                      <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
+                        {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
+                      </div>
+                    </ng-container>
                   </div>
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell"
-                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <ng-container *ngIf="option.type==ItemType.Armor && i.sockets && i.sockets.length>0">
-                    <div *ngFor="let socket of i.sockets; last as isLastSocket" class="simple-caption-no-margin"
-                      [class.bottom]="!isLastSocket">
-                      <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                        [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
-                        matTooltipClass="preserve-white-space">
-                        <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
-                          [debugmode]="debugmode|async"></d2c-god-roll-plug>
-                        <ng-container *ngIf="!isLastPlug">|</ng-container>
-                      </span>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
-                      <!-- <div *ngIf="mod.icon!=null" class="mod-icon transparent-icon" [style.background-image]="'url(//www.bungie.net' + mod.icon + ')'"></div> -->
-                      {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
-                      <!-- <div *ngIf="mod.objectives && mod.objectives.length" class="mod-obj">
-                        <mat-divider style="margin: 5px 0 5px 0"></mat-divider>
-                        <div class="left" *ngFor="let obj of mod.objectives">
-                          <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
-                            class="accent-text mat-option.mat-selected"></fa-icon>
-                          <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
-                          {{obj.progressDescription}} <ng-container *ngIf="debugmode|async">[{{obj.hash}}]
-                          </ng-container>
-                          <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                          <mat-progress-bar class="bounty-progress"
-                            *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
-                            [value]="100*obj.progress/obj.completionValue">
-                          </mat-progress-bar>
-                        </div>
-                      </div> -->
-                    </div>
 
-
-                  </ng-container>
-
-                </td>
-                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                  {{i.preferredStatPoints}}
-                  <div class="simple-caption">{{i.totalStatPoints}} total</div>
-                </td>
-                <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                  <table class="stat-table">
-                    <tbody>
-                      <ng-container *ngFor="let stat of i.stats">
-                        <tr *ngIf="preferredStatService.isPreferred(stat, true)">
-                          <td>{{stat.name}}</td>
-                          <td>{{stat.value}}
-                            <span *ngIf="stat.enhancement" class="accent-text pad-left">+{{stat.enhancement}}</span>
-                          </td>
-                        </tr>
-                      </ng-container>
-
-                    </tbody>
-                  </table>
-                </td>
                 <td class="hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
@@ -504,6 +474,61 @@
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
                   </div>
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                  
+                  <ng-container *ngIf="i.preferredStatPoints">{{i.preferredStatPoints}}</ng-container>
+
+                  <div class="total-pts" *ngIf="i.totalStatPoints">
+                    <a class="gear-sort" href="javascript:void(0)" (click)="sort('totalStatPoints')">
+                      {{i.totalStatPoints}} 
+                      <d2c-sort-indicator field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc">
+                      </d2c-sort-indicator>
+                    </a> 
+                  </div>
+                </td>
+                <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
+                  <table class="stat-table">
+                    <tbody>
+                      <ng-container *ngFor="let stat of i.stats">
+                        <tr *ngIf="stat.hash==1345609583">
+                          <td class="gear-sort"><a href="javascript:void(0)" (click)="sort('stat.base.'+stat.hash)">AA
+                              <d2c-sort-indicator [field]="'stat.base.'+stat.hash" [currVal]="sortBy"
+                                [descending]="sortDesc"></d2c-sort-indicator>
+                            </a>
+                          </td>
+                          <td>{{stat.baseValue}}</td>
+                        </tr>
+                        <tr *ngIf="stat.hash==155624089 || stat.hash==4043523819 || stat.hash==1240592695">
+                          <td><a class="gear-sort"href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">{{stat.name}}
+                              <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
+                                [descending]="sortDesc"></d2c-sort-indicator>
+                            </a>
+                          </td>
+                          <td>{{stat.value}}</td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </td>
+                <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                  <table class="stat-table">
+                    <tbody>
+                      <ng-container *ngFor="let stat of i.stats">
+                        <tr *ngIf="preferredStatService.isPreferred(stat, true)">
+                          <td class="gear-sort">
+                            <a href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">{{stat.name}}
+                              <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
+                                [descending]="sortDesc"></d2c-sort-indicator>
+                            </a>
+                          </td>
+                          <td>{{stat.value}}
+                            <span *ngIf="stat.enhancement" class="accent-text pad-left">+{{stat.enhancement}}</span>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
                 </td>
                 <td class="limited-gear-width"
                   *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">

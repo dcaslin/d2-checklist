@@ -12,6 +12,10 @@
   display: inline-block;
 }
 
+.gear-sort {
+  white-space: nowrap;
+}
+
 .plug-icon {
   width: 1em;
   height: 1em;
@@ -45,6 +49,10 @@
 
 div.bottom {
   border-bottom: 1px solid rgb(221, 221, 221);
+}
+
+.mw-progress {
+  margin-bottom: 10px;
 }
 
 $gear-table-padding: 0.4em;
@@ -212,12 +220,17 @@ table.stat-table {
   font-size: 12px;
 }
 
-a:link {
-  text-decoration: underline;
-}
+// a:link {
+//   text-decoration: underline;
+// }
 
 .options {
   margin-top: 5px;
+}
+
+.total-pts {
+  margin-top: 10px;
+  font-weight: lighter;
 }
 
 .limited-gear-width {

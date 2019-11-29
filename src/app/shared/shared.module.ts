@@ -46,6 +46,7 @@ import { MilestoneCheckComponent } from './milestone-check/milestone-check.compo
 
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import { SignInRequiredComponent } from './sign-in-required/sign-in-required.component';
+import { SortIndicatorComponent } from './sort-indicator/sort-indicator.component';
 
 
 @NgModule({
@@ -91,9 +92,12 @@ import { SignInRequiredComponent } from './sign-in-required/sign-in-required.com
   ],
   declarations: [
   MilestoneCheckComponent,
-  SignInRequiredComponent],
+  SortIndicatorComponent,
+  SignInRequiredComponent,
+  SortIndicatorComponent],
   exports: [
     MilestoneCheckComponent,
+    SortIndicatorComponent,
     SignInRequiredComponent,
     RouterModule,
     PipeModule,

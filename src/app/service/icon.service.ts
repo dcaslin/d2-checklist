@@ -1,9 +1,30 @@
 import { Injectable } from '@angular/core';
 import { faAmazon as fabAmazon, faGithub as fabGithub, faPaypal as fabPaypal, faPlaystation as fabPlaystation, faReddit as fabReddit, faSteam as fabSteam, faTwitter as fabTwitter, faWindows as fabWindows, faXbox as fabXbox, faYoutube as fabYoutube } from '@fortawesome/free-brands-svg-icons';
-import { faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone, faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen, faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faMailbox as falMailbox, faSigma as falSigma, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy, faTshirt as falTshirt } from '@fortawesome/pro-light-svg-icons';
-import { faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable, 
+import { faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone, faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen, faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faMailbox as falMailbox, faSigma as falSigma, faSort as falSort, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy, faTshirt as falTshirt } from '@fortawesome/pro-light-svg-icons';
+import { faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
   faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy } from '@fortawesome/pro-regular-svg-icons';
-import { faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt, faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt, faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, faArrowLeft as fasArrowLeft, faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed, faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer, faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck, faCheckSquare as fasCheckSquare, faClock as fasClock, faCog as fasCog, faCogs as fasCogs, faCopy as fasCopy, faEllipsisV as fasEllipsisV, faExclamationSquare as fasExclamationSquare, faEye as fasEye, faEyeSlash as fasEyeSlash, faFilter as fasFilter, faFlag as fasFlag, faFlaskPotion as fasFlaskPotion, faForklift as fasForklift, faGem as fasGem, faGift as fasGift, faHelmetBattle as fasHelmetBattle, faHistory as fasHistory, faHoodCloak as fasHoodCloak, faInfoCircle as fasInfoCircle, faInfoSquare as fasInfoSquare, faLevelUp as fasLevelUp, faLevelUpAlt as fasLevelUpAlt, faLockAlt as fasLockAlt, faLockOpenAlt as fasLockOpenAlt, faPlaneAlt as fasPlaneAlt, faQuestionCircle as fasQuestionCircle, faSave as fasSave, faShieldCheck as fasShieldCheck, faSigma as fasSigma, faSortDown as fasSortDown, faSortUp as fasSortUp, faStar as fasStar, faSwords as fasSwords, faSync as fasSync, faSyncAlt as fasSyncAlt, faSyringe as fasSyringe, faTags as fasTags, faTimes as fasTimes, faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt, faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo, faWheat as fasWheat } from '@fortawesome/pro-solid-svg-icons';
+import {
+  faSort as fasSort,
+  faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
+  faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
+  faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, faArrowLeft as fasArrowLeft,
+  faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed,
+  faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
+  faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
+  faCheckSquare as fasCheckSquare, faClock as fasClock, faCog as fasCog, faCogs as fasCogs,
+  faCopy as fasCopy, faEllipsisV as fasEllipsisV, faExclamationSquare as fasExclamationSquare,
+  faEye as fasEye, faEyeSlash as fasEyeSlash, faFilter as fasFilter, faFlag as fasFlag,
+  faFlaskPotion as fasFlaskPotion, faForklift as fasForklift, faGem as fasGem, faGift as fasGift,
+  faHelmetBattle as fasHelmetBattle, faHistory as fasHistory, faHoodCloak as fasHoodCloak,
+  faInfoCircle as fasInfoCircle, faInfoSquare as fasInfoSquare, faLevelUp as fasLevelUp,
+  faLevelUpAlt as fasLevelUpAlt, faLockAlt as fasLockAlt, faLockOpenAlt as fasLockOpenAlt,
+  faPlaneAlt as fasPlaneAlt, faQuestionCircle as fasQuestionCircle, faSave as fasSave,
+  faShieldCheck as fasShieldCheck, faSigma as fasSigma, faSortDown as fasSortDown,
+  faSortUp as fasSortUp, faStar as fasStar, faSwords as fasSwords, faSync as fasSync,
+  faSyncAlt as fasSyncAlt, faSyringe as fasSyringe, faTags as fasTags, faTimes as fasTimes,
+  faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
+  faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
+  faWheat as fasWheat } from '@fortawesome/pro-solid-svg-icons';
 
 
 
@@ -13,6 +34,8 @@ import { faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt, faT
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fasSort = fasSort;
+  public readonly falSort = falSort;
   public readonly fasHorizontalRule = fasHorizontalRule;
   public readonly fasTreasureChest = fasTreasureChest;
   public readonly fasSignInAlt = fasSignInAlt;
