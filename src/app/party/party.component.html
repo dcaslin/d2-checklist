@@ -23,6 +23,9 @@
                                     <th>
 
                                     </th>
+                                    <th>
+
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,11 +65,13 @@
                                             </ng-container>
                                         </ng-container>
                                     </td>
+                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th>Name</th>
                                     <th>Weapons</th>
                                     <th>Exotic Armor</th>
+                                    <th>Armor Perks</th>
                                 </tr>
                                 <ng-container *ngIf="_party|async as party">
                                     <tr *ngFor="let p of party">
@@ -74,7 +79,8 @@
                                             <td colspan="4">
                                                 {{p.searchResult.displayName}}
                                                 <ng-container *ngIf="p.errMsg == null">
-                                                    <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
+                                                    <fa-icon [icon]="iconService.farSpinner" [pulse]="true"
+                                                        [fixedWidth]="true"></fa-icon>
                                                 </ng-container>
                                                 <ng-container *ngIf="p.errMsg != null">
                                                     <a style="margin-left:0.25em" href="javascript:void(0)"
@@ -109,22 +115,37 @@
                                                 </div>
 
                                             </td>
-                                            <td class="center">
-                                                <div class="gun center" *ngFor="let g of p.guns">
-                                                    <div>
+                                            <td>
+                                                <div class="gun mod-parent" *ngFor="let g of p.guns">
+                                                    <div class="mod-icon">
                                                         <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
                                                         </ng-container>
                                                     </div>
-                                                    <div>
+                                                    <div class="mod-label">
                                                         {{g.name}}
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="center">
-                                                <div *ngIf="p.exoticArmor as g">
-                                                    <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
-                                                    </ng-container>
-                                                    {{g.name}}
+                                            <td>
+                                                <div class="mod-parent" *ngIf="p.exoticArmor as g">
+                                                    <div class="mod-icon">
+                                                        <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                        </ng-container>
+                                                    </div>
+                                                    <div class="mod-label">
+                                                        {{g.name}}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="mod-parent" *ngFor="let r of p.armorMods"
+                                                    [matTooltip]="r.mod.desc" matTooltipClass="preserve-white-space">
+                                                    <div *ngIf="r.mod.icon!=null" class="item-image mod-child-icon"
+                                                        [style.background-image]="'url(//www.bungie.net' + r.mod.icon + ')'">
+                                                    </div>
+                                                    <div class="mod-child-label">{{r.mod.name}}
+                                                        <ng-container *ngIf="r.count>1"> x {{r.count}}</ng-container>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </ng-template>
@@ -150,8 +171,8 @@
 </div>
 
 <ng-template #gearIcon let-i="i">
-    <div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
-        [class.masterworked]="i.masterworked">
+    <div *ngIf="i.icon!=null" class="item-image"
+        [style.background-image]="'url(//www.bungie.net' + i.icon + ')'" [class.masterworked]="i.masterworked">
         <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
             [class.arc]="i.damageType===DamageType.Arc" [class.solar]="i.damageType===DamageType.Thermal">
             {{i.power}}

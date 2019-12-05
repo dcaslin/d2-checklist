@@ -6,7 +6,7 @@ import { PlayerComponent } from '@app/player';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
-import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult } from '../service/model';
+import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult, InventoryPlug } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { IconService } from '@app/service/icon.service';
@@ -48,7 +48,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
       }
       const x = await this.bungieService.getChars(likelyMembershipType, pp.searchResult.membershipId,
         ['Profiles', 'Characters', 'CharacterEquipment', 'CharacterProgressions',
-          'CharacterActivities', 'Records', 'ProfileProgression', 'ItemInstances'], true, true);
+          'CharacterActivities', 'Records', 'ProfileProgression', 'ItemInstances', 'ItemSockets'], true, true);
 
       if (x == null || x.characters == null || x.characters.length == 0) {
         console.log('Nothing found');
@@ -62,6 +62,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
         const gear = [];
 
         pp.guns = [];
+        const armorMods: InventoryPlug[] = [];
         for (const g of x.gear) {
           if (g.equipped && g.owner == pp.character) {
             if (g.type == ItemType.Weapon) {
@@ -69,6 +70,10 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             } else if (g.type == ItemType.Armor) {
               if (g.tier == 'Exotic') {
                 pp.exoticArmor = g;
+                console.dir(g);
+              }
+              for (const m of g.mods) {
+                armorMods.push(m);
               }
             } else if (g.type == ItemType.Subclass) {
               pp.subClass = g;
@@ -76,6 +81,8 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             }
           }
         }
+        const mods = this.rollUpMods(armorMods);
+        pp.armorMods = mods;
         this._party.next(this._party.getValue());
       }
     } catch (exc) {
@@ -84,6 +91,39 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
     }
   }
 
+  private rollUpMods(mods: InventoryPlug[]): PlayerMods[] {
+    const map: { [key: string]: InventoryPlug[] } = {};
+    for (const m of mods) {
+      if (!map[m.hash]) {
+        map[m.hash] = [];
+      }
+      map[m.hash].push(m);
+    }
+    const returnMe: PlayerMods[] = [];
+    for (const key of Object.keys(map)) {
+      const val = map[key];
+      returnMe.push({
+        count: val.length,
+        mod: val[0]
+      });
+    }
+    returnMe.sort((a, b) => {
+      if (a.count > b.count) {
+        return -1;
+      }
+      if (b.count > a.count) {
+        return 1;
+      }
+      if (a.mod.name > b.mod.name) {
+        return 1;
+      }
+      if (b.mod.name > a.mod.name) {
+        return -1;
+      }
+      return 0;
+    });
+    return returnMe;
+  }
 
   private async init(params: Params) {
     try {
@@ -107,6 +147,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             player: null,
             character: null,
             guns: [],
+            armorMods: [],
             exoticArmor: null,
             subClass: null,
             errMsg: null
@@ -133,6 +174,12 @@ interface PartyPlayer {
   character: Character;
   guns: InventoryItem[];
   exoticArmor: InventoryItem;
+  armorMods: PlayerMods[];
   subClass: InventoryItem;
   errMsg: string;
+}
+
+interface PlayerMods {
+  count: number;
+  mod: InventoryPlug;
 }
