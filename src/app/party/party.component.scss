@@ -1,20 +1,23 @@
 table.checklist-table {
   & caption {
-      font-size: 1.5em;
-      margin: .5em 0 .75em;
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
   }
+
   & tr {
-      padding: .35em;
+    padding: .35em;
   }
+
   & td {
-      font-size: 14px;
-      text-align: left;
-      vertical-align: top;
+    font-size: 14px;
+    text-align: left;
+    vertical-align: top;
   }
+
   & th {
-      text-align: left;
-      font-size: .85em;
-      letter-spacing: .1em;
+    text-align: left;
+    font-size: .85em;
+    letter-spacing: .1em;
   }
 }
 
@@ -63,18 +66,40 @@ table.checklist-table {
 
 .player-link {
   width: 100%;
- //margin-bottom: 10px;
+  //margin-bottom: 10px;
 }
 
 .player-info {
   margin: 10px;
 }
 
-.center {
-  text-align: center !important;
+
+.mod-parent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.mod-child-label {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.mod-child-icon {
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 @media (max-width: 600px) {
+
+  .mod-parent {
+    flex-direction: column;
+  }
+  .mod-child-label {
+    text-align: center;
+  }
+
+
   .gun {
     flex-direction: column;
     align-items: center;
@@ -93,4 +118,3 @@ table.checklist-table {
 .arc {
   background: #85c5ec;
 }
-
