@@ -535,7 +535,7 @@ export class ParseService {
         } else {
             act.pvType = 'PvE';
         }
-        
+
         act.desc = act.mode + ': ' + act.name;
         if (act.isPrivate) {
             act.desc += '(Private)';
@@ -2986,6 +2986,26 @@ export class ParseService {
         return name;
     }
 
+    private getSeasonalMod(plugDesc: any): number|null {
+        if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
+            const h = plugDesc.plug.plugCategoryHash;
+            if (h == 1081029832) { // undying
+                return 8;
+            }
+            if (h == 2149155760 || h == 13646368) { // outlaw
+                return 4;
+            }
+            if (h == 1962317640 || h == 2712224971 || h == 1202876185) { // opulent
+                return 7;
+            }
+            if (h == 65589297) { // forge
+                return 5;
+            }
+
+        }
+        return null;
+    }
+
     private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
@@ -3119,6 +3139,7 @@ export class ParseService {
             let equipped = false;
             let canEquip = false;
             let searchText = '';
+            let seasonalModSlot = null;
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
             let mw: MastworkInfo = null;
@@ -3249,6 +3270,8 @@ export class ParseService {
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
+                                    seasonalModSlot = seasonalModSlot || this.getSeasonalMod(plugDesc);
+
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
                                         if (mwInfo != null) {
@@ -3410,7 +3433,9 @@ export class ParseService {
                     totalStatPoints += s.value;
                 }
             }
-
+            if (seasonalModSlot) {
+                searchText += 'is:seasonmod';
+            }
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
@@ -3419,7 +3444,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
-                , energyUsed, energyCapacity, totalStatPoints
+                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot
             );
         } catch (exc) {
             console.dir(itemComp);
