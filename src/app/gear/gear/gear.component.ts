@@ -67,6 +67,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ];
 
   readonly autocompleteOptions: string[] = [
+    'is:seasonmod',
     'is:godroll',
     'is:fixme',
     'is:light>=',

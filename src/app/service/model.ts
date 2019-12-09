@@ -645,6 +645,7 @@ export class InventoryItem {
     public godRollPvp = false;
     public noGodRollInfo = false;
     public preferredStatPoints: number;
+    public readonly seasonalModSlot: number;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -665,7 +666,7 @@ export class InventoryItem {
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
-        energyCapacity?: number, totalStatPoints?: number
+        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number
     ) {
         this.id = id;
         this.hash = hash;
@@ -714,6 +715,7 @@ export class InventoryItem {
         this.energyUsed = energyUsed;
         this.energyCapacity = energyCapacity;
         this.totalStatPoints = totalStatPoints;
+        this.seasonalModSlot = seasonalModSlot;
     }
 }
 

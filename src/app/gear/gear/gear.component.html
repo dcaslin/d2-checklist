@@ -387,8 +387,7 @@
                       <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
                         [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
                       </mat-progress-bar>
-                    </div>
-
+                    </div>                    
                     <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
                       {{mod.name}}
                       <div *ngIf="mod && mod.objectives && mod.objectives.length" class="mod-obj">
@@ -431,10 +430,11 @@
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                  <span class="mod-obj">{{i.energyCapacity}} / 10</span>
+                  <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator> </span>
                   <mat-progress-bar mode="determinate" class="mw-progress"
                     [color]="i.energyCapacity>=10?'accent':'primary'" [value]="i.energyCapacity*10">
                   </mat-progress-bar>
+                  
                   <ng-container *ngFor="let mod of i.mods; last as isLastMod">
                     <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
                       {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
