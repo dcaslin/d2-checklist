@@ -393,7 +393,7 @@ export class ParseService {
         // only progression we care about right now are Legend, Glory, Valor, and Season Pass
         if (_prog.progressions) {
             Object.keys(_prog.progressions).forEach((key) => {
-                if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '1628407317' || key === '3184735011') {
+                if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '3256821400' || key === '3184735011') {
                     const p: PrivProgression = _prog.progressions[key];
                     let suppProg: PrivProgression = null;
                     if (key === '2626549951') { // VALOR
@@ -404,13 +404,13 @@ export class ParseService {
                         suppProg = _prog.progressions['2679551909'];
                     }
                     let progDesc = this.destinyCacheService.cache.Progression[p.progressionHash];
-                    if (key === '1628407317') { // Season of Undying
+                    if (key === '3256821400') { // Season of dawn, Season of Undying 1628407317
                         progDesc = {
                             'displayProperties': {
-                                'description': 'Season of the Undying Progress',
+                                'description': 'Season of Dawn Progress',
                                 'displayUnitsName': '',
                                 'hasIcon': true,
-                                'icon': '/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png',
+                                'icon': '/common/destiny2_content/icons/DestinySeasonDefinition_b5a0daa606e06eb6ec2bca66c7572a26.png"',
                                 'name': 'Season Rank'
                             }
                         };
@@ -1576,8 +1576,9 @@ export class ParseService {
         const _art = resp.profileProgression.data.seasonalArtifact;
 
         const pointProg = _art.pointProgression;
-        _art.pointsAcquired;
-        _art.powerBonus;
+        if (pointProg==null) {
+            return null;
+        }
         const powerProg = _art.powerBonusProgression;
 
         let parsedProg: Progression = this.parseProgression(pointProg,
