@@ -25,7 +25,7 @@
             </h1>
             <h4 *ngIf="player.title">
               <ng-container *ngIf="player.title.trim().length>0"> {{player.title}} |</ng-container>
-              <ng-container> +{{player.artifactPowerBonus}} Artifact</ng-container>
+              <ng-container *ngIf="player.artifactPowerBonus"> +{{player.artifactPowerBonus}} Artifact</ng-container>
               <ng-container *ngIf="player.seasonRank!=null && player.seasonRank.level"> | Season Rank: {{player.seasonRank.level}} </ng-container>
             </h4>
             <ng-container

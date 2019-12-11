@@ -70,7 +70,6 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             } else if (g.type == ItemType.Armor) {
               if (g.tier == 'Exotic') {
                 pp.exoticArmor = g;
-                console.dir(g);
               }
               for (const m of g.mods) {
                 armorMods.push(m);
