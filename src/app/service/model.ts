@@ -574,7 +574,7 @@ export class Player {
                     this.infamy = ap;
                 } else if (ap.hash == '2000925172') {
                     this.glory = ap;
-                } else if (ap.hash == '1628407317') {
+                } else if (ap.hash == '3256821400') { // undying 1628407317
                     this.seasonRank = ap;
                 } else if (ap.hash == '3184735011') {
                     prestige = ap;
