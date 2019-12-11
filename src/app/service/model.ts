@@ -580,12 +580,12 @@ export class Player {
                     prestige = ap;
                 }
             }
-            if (prestige != null && this.seasonRank != null) {
-                prestige.level += this.seasonRank.level;
-                prestige.weeklyProgress += this.seasonRank.weeklyProgress;
-                prestige.dailyProgress += this.seasonRank.dailyProgress;
-                this.seasonRank = prestige;
-            }
+            // if (prestige != null && this.seasonRank != null) {
+            //     prestige.level += this.seasonRank.level;
+            //     prestige.weeklyProgress += this.seasonRank.weeklyProgress;
+            //     prestige.dailyProgress += this.seasonRank.dailyProgress;
+            //     this.seasonRank = prestige;
+            // }
         }
 
     }

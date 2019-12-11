@@ -541,9 +541,9 @@ export class ParseService {
             act.desc += '(Private)';
         }
         // act.values = a.values;
-        if (!desc) {
-            console.dir(act);
-        }
+        // if (!desc) {
+        //     console.dir(act);
+        // }
 
         return act;
 
@@ -1275,7 +1275,6 @@ export class ParseService {
             }
             // weekly pinnacle challenge, not in list yet, but just in case
             if (ms.milestoneHash == 3881226684) {
-                console.dir(rewards);
                 rewards = 'Pinnacle Gear';
             }
             const pl = this.parseMilestonePl(rewards);
@@ -1568,18 +1567,41 @@ export class ParseService {
         return checklists;
     }
 
-    private parseArtifactProgressions(resp: any, accountProgressions: Progression[]): number {
+    private getSpecificCharProg(resp: any, chars: Character[], hash: string) {
+        if (resp.characterProgressions && resp.characterProgressions.data && chars && chars.length > 0) {
+            for (const char of chars) {
+                const charProg = resp.characterProgressions.data[char.characterId];
+                if (charProg && charProg.progressions && charProg.progressions[hash]) {
+                    return charProg.progressions[hash];
+                }
+            }
+        }
+        return null;
+    }
+
+    private parseArtifactProgressions(resp: any, chars: Character[], accountProgressions: Progression[]): number {
         if (resp.profileProgression == null || resp.profileProgression.data == null
             || resp.profileProgression.data.seasonalArtifact == null) {
             return null;
         }
         const _art = resp.profileProgression.data.seasonalArtifact;
 
-        const pointProg = _art.pointProgression;
-        if (pointProg==null) {
-            return null;
+        let pointProg = _art.pointProgression;
+        if (pointProg == null) {
+            pointProg = this.getSpecificCharProg(resp, chars, '2691820383');
+            if (pointProg == null) {
+                console.log('doh');
+                return null;
+            }
         }
-        const powerProg = _art.powerBonusProgression;
+        let powerProg = _art.powerBonusProgression;
+        if (powerProg == null) {
+            powerProg = this.getSpecificCharProg(resp, chars, '2046159590');
+            if (powerProg == null) {
+                console.log('doh');
+                return null;
+            }
+        }
 
         let parsedProg: Progression = this.parseProgression(pointProg,
             this.destinyCacheService.cache.Progression[pointProg.progressionHash], pointProg);
@@ -1591,7 +1613,8 @@ export class ParseService {
         if (parsedProg != null) {
             accountProgressions.push(parsedProg);
         }
-        return _art.powerBonus;
+        //return _art.powerBonus;
+        return powerProg.level;
 
     }
 
@@ -2039,7 +2062,7 @@ export class ParseService {
         if (!superprivate) {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
-            artifactPowerBonus = this.parseArtifactProgressions(resp, accountProgressions);
+            artifactPowerBonus = this.parseArtifactProgressions(resp, chars, accountProgressions);
             // hit with a hammer
             if (resp.profileCurrencies != null && resp.profileCurrencies.data != null &&
                 resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
