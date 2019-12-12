@@ -860,6 +860,11 @@ export interface AggHistoryCache {
     data: AggHistoryEntry[];
 }
 
+export interface CharCompletions {
+    char: Character;
+    count: number;
+}
+
 export interface AggHistoryEntry {
     name: string;
     type: string;
@@ -868,6 +873,7 @@ export interface AggHistoryEntry {
     activityBestSingleGameScore: number; // this is a personal score, NOT team score, useless
     fastestCompletionMsForActivity: number;
     activityCompletions: number;
+    charCompletions:  CharCompletions[];
     efficiency: number;
 
     activityKills: number;
