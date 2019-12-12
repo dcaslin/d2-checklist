@@ -4,7 +4,8 @@
 
             <mat-tab-group>
                 <mat-tab label="Efficiency">
-                    <d2c-player-efficiency-graph *ngIf="player.aggHistory.length>0; else loading"></d2c-player-efficiency-graph>
+                    <d2c-player-efficiency-graph *ngIf="player.aggHistory.length>0; else loading">
+                    </d2c-player-efficiency-graph>
                 </mat-tab>
                 <mat-tab label="Nightfalls">
                     <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', player: player}">
@@ -20,7 +21,9 @@
         </ng-container>
     </ng-container>
     <ng-template #loading>
-        <h1><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></h1>
+        <h1>
+            <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
+        </h1>
     </ng-template>
 </div>
 
@@ -44,7 +47,7 @@
                 <tr *ngIf="type==a.type">
                     <td>
                         <span *ngIf="a.special" matTooltip="Weekly Nightfall">
-                            <b>{{a.name}}</b>                            
+                            <b>{{a.name}}</b>
                             <fa-icon [icon]="iconService.fasCalendarStar" class="pad-left accent-text"></fa-icon>
                         </span>
                         <span *ngIf="!a.special">
@@ -57,6 +60,9 @@
                     </td>
                     <td data-label="Completions">
                         {{a.activityCompletions}}
+                        <div class="simple-caption-no-margin" *ngFor="let cc of a.charCompletions">
+                            {{cc.char.className}}: {{cc.count}}
+                        </div>
                     </td>
                     <td *ngIf="type=='nf'" data-label="Top Personal Score">
                         <ng-container *ngIf="a.activityCompletions>0; else emptyCell">

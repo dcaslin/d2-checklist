@@ -139,7 +139,7 @@ export class BungieService implements OnDestroy {
                 'Destiny2/' + char.membershipType + '/Account/' +
                 char.membershipId + '/Character/' + char.characterId +
                 '/Stats/AggregateActivityStats/');
-            return this.parseService.parseAggHistory2(resp);
+            return this.parseService.parseAggHistory2(char, resp);
         } catch (err) {
             console.log('Error getting aggregate history for char');
             console.dir(err);

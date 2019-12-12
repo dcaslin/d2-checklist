@@ -639,6 +639,7 @@ export class ParseService {
                     activityBestSingleGameScore: null,
                     fastestCompletionMsForActivity: null,
                     activityCompletions: 0,
+                    charCompletions: [],
                     activityKills: null,
                     activityAssists: null,
                     activityDeaths: null,
@@ -663,7 +664,7 @@ export class ParseService {
 
     }
 
-    public parseAggHistory2(resp: any): { [key: string]: AggHistoryEntry } {
+    public parseAggHistory2(char: Character, resp: any): { [key: string]: AggHistoryEntry } {
         if (resp.activities == null) {
             return;
         }
@@ -681,7 +682,7 @@ export class ParseService {
             const nf = ParseService.isActivityType(vDesc, 547513715) && vDesc.tier >= 2;
             const raid = ParseService.isActivityType(vDesc, 2043403989);
             if (nf || raid) {
-                const entry = this.parseAggHistoryEntry(name, a, nf ? 'nf' : 'raid');
+                const entry = this.parseAggHistoryEntry(char, name, a, nf ? 'nf' : 'raid');
                 if (dict[name] == null) {
                     dict[name] = entry;
                 } else {
@@ -725,13 +726,27 @@ export class ParseService {
         if (timePlayed == 0) {
 
         }
-        const returnMe = {
+        const charCompDict = {};
+
+        for (const c of a.charCompletions.concat(b.charCompletions)) {
+            if (!charCompDict[c.char.id]) {
+                charCompDict[c.char.id] = c;
+            } else {
+                charCompDict[c.char.id].count += c.count;
+            }
+        }
+        const charCompletions = [];
+        for (const k of Object.keys(charCompDict)) {
+            charCompletions.push(charCompDict[k]);
+        }
+        const returnMe: AggHistoryEntry = {
             name: a.name,
             type: a.type,
             hash: a.hash.concat(b.hash),
             activityBestSingleGameScore: Math.max(a.activityBestSingleGameScore, b.activityBestSingleGameScore),
             fastestCompletionMsForActivity: fastest,
             activityCompletions: a.activityCompletions + b.activityCompletions,
+            charCompletions: charCompletions,
             activityKills: a.activityKills + b.activityKills,
             activityAssists: a.activityAssists + b.activityAssists,
             activityDeaths: a.activityDeaths + b.activityDeaths,
@@ -743,19 +758,24 @@ export class ParseService {
         return returnMe;
     }
 
-    private parseAggHistoryEntry(name: string, a: any, type: string): AggHistoryEntry {
+    private parseAggHistoryEntry(char: Character, name: string, a: any, type: string): AggHistoryEntry {
         let fastest = ParseService.getBasicValue(a.values.fastestCompletionMsForActivity);
         if (fastest == 0) {
             fastest = null;
         }
-        const returnMe = {
+        const total = ParseService.getBasicValue(a.values.activityCompletions);
+
+        const returnMe: AggHistoryEntry = {
             name: name,
             type,
             hash: [a.activityHash],
             activityBestSingleGameScore: ParseService.getBasicValue(a.values.activityBestSingleGameScore),
             fastestCompletionMsForActivity: fastest,
-            activityCompletions: ParseService.getBasicValue(a.values.activityCompletions),
-
+            activityCompletions: total,
+            charCompletions: [{
+                char: char,
+                count: total
+            }],
             activityKills: ParseService.getBasicValue(a.values.activityKills),
             activityAssists: ParseService.getBasicValue(a.values.activityAssists),
             activityDeaths: ParseService.getBasicValue(a.values.activityDeaths),
@@ -1613,7 +1633,7 @@ export class ParseService {
         if (parsedProg != null) {
             accountProgressions.push(parsedProg);
         }
-        //return _art.powerBonus;
+        // return _art.powerBonus;
         return powerProg.level;
 
     }
@@ -3010,7 +3030,7 @@ export class ParseService {
         return name;
     }
 
-    private getSeasonalMod(plugDesc: any): number|null {
+    private getSeasonalMod(plugDesc: any): number | null {
         if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
             const h = plugDesc.plug.plugCategoryHash;
             if (h == 1081029832) { // undying
