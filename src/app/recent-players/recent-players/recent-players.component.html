@@ -8,7 +8,7 @@
       </div>
       <div class="body-text">
         <h2 class="centerMe">Recent Teammates -
-            <a  [routerLink]="['/',this.player.profile.userInfo.membershipType, this.player.profile.userInfo.membershipId]">
+            <a *ngIf="player" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId]">
               {{player.profile.userInfo.displayName}}
             </a>      
         </h2>

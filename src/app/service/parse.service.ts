@@ -212,6 +212,9 @@ export class ParseService {
                     if (key == '3881226684') {
                         name = 'Nightmare Hunt: Master';
                         descRewards = 'Pinnacle Gear';
+                    } else if (key == '95049884') {
+                        descRewards = 'Powerful Gear';
+
                     } else {
                         descRewards = 'Unknown';
                     }
@@ -1293,10 +1296,10 @@ export class ParseService {
             if (ms.milestoneHash == 2712317338 && rewards == 'Unknown') {
                 rewards = 'Pinnacle Gear';
             }
-            // weekly pinnacle challenge, not in list yet, but just in case
-            if (ms.milestoneHash == 3881226684) {
-                rewards = 'Pinnacle Gear';
-            }
+            // // weekly pinnacle challenge, not in list yet, but just in case
+            // if (ms.milestoneHash == 3881226684) {
+            //     rewards = 'Pinnacle Gear';
+            // }
             const pl = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
             const pushMe = {
@@ -1342,7 +1345,7 @@ export class ParseService {
                             if (msa == null) {
                                 continue;
                             }
-                            if (ParseService.hasChallenge(aa, '455756300')) {
+                            if (ParseService.hasChallenge(aa, '3118376466')) { //  455756300
                                 if (!msa.icon) {
 
                                     const labDesc = this.destinyCacheService.cache.Activity['1709912095'];
@@ -1360,7 +1363,7 @@ export class ParseService {
                             if (msa == null) {
                                 continue;
                             }
-                            if (ParseService.hasChallenge(aa, '978034479')) {
+                            if (ParseService.hasChallenge(aa, '1607758693')) { // 978034479
                                 crucibleRotator.push(msa);
                             }
                         }
@@ -3729,7 +3732,7 @@ export class ParseService {
 
         let teamPveSuccess = false;
         let scoreSum = 0;
-        r.pve = !desc.isPvP;
+        r.pve = desc && !desc.isPvP;
 
         p.entries.forEach((ent) => {
             const entry = this.parsePGCREntry(ent);
