@@ -3041,6 +3041,9 @@ export class ParseService {
             if (h == 1081029832) { // undying
                 return 8;
             }
+            if (h == 208760563) { // dawn
+                return 9;
+            }
             if (h == 2149155760 || h == 13646368) { // outlaw
                 return 4;
             }
