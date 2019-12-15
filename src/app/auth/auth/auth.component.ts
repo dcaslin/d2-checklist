@@ -33,7 +33,7 @@ export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
           this.router.navigate(['/home']);
         }
       } catch (x) {
-        this.msg = JSON.stringify(x);
+        this.msg = 'Error: ' + JSON.stringify(x);
         this.ref.markForCheck();
       }
     }
