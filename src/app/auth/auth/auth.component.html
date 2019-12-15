@@ -4,10 +4,10 @@
       <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
       </div>
-      <h1>Authorizing...</h1>
-      <ng-container *ngIf="msg!=null">
+      <h1>{{statusMsg}}</h1>
+      <ng-container *ngIf="errMsg!=null">
         <section>
-          <code>Error: {{msg}}</code>
+          <code>Error: {{errMsg}}</code>
         </section>
         <section>
           <h3 class='warn-text'>If you are using Kasperky Internet read below</h3>
