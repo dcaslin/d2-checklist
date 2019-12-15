@@ -212,8 +212,8 @@ export class ParseService {
                     if (key == '3881226684') {
                         name = 'Nightmare Hunt: Master';
                         descRewards = 'Pinnacle Gear';
-                    } else if (key == '95049884') {
-                        descRewards = 'Powerful Gear';
+                    } else if (key == '95049884') { // sundial
+                        descRewards = 'Powerful Gear (Tier 2)';
 
                     } else {
                         descRewards = 'Unknown';
@@ -1130,6 +1130,8 @@ export class ParseService {
         let lootHash = null;
         if (msa.name.indexOf('Lake of Shadows') >= 0) {
             lootHash = '3745974521'; // Militia's birthright
+        } else if (msa.name.indexOf('Savathûn\'s Song') >= 0) {
+            lootHash = '1457979868'; // Duty Bound
         } else if (msa.name.indexOf('Garden World') >= 0) {
             lootHash = '1174053886'; // Universal Wavefunction
         } else if (msa.name.indexOf('Arms Dealer') >= 0) {

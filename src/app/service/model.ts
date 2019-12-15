@@ -1164,35 +1164,35 @@ export class Const {
             min: 0,
             max: 1,
             softCap: 900,
-            hardCap: 950
+            hardCap: 960
         },
         {
             level: Const.NO_BOOST,
             min: -3,
             max: 0,
             softCap: 900,
-            hardCap: 950
+            hardCap: 960
         },
         {
             level: Const.LOW_BOOST,
             min: 3,
             max: 3,
             softCap: 950,
-            hardCap: 950
+            hardCap: 960
         },
         {
             level: Const.MID_BOOST,
             min: 4,
             max: 4,
             softCap: 950,
-            hardCap: 950
+            hardCap: 960
         },
         {
             level: Const.HIGH_BOOST,
             min: 2,
             max: 2,
-            softCap: 950,
-            hardCap: 999
+            softCap: 970,
+            hardCap: 970
         }
     ];
 }
