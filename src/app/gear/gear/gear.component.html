@@ -369,9 +369,13 @@
                   </mat-menu>
                   <span *ngIf="debugmode|async">[{{i.hash}}]</span>
 
-                  <div class="simple-caption">{{i.owner.label}}
+                  <div>
+                    <span class="simple-caption">{{i.owner.label}}</span>
                     <span *ngIf="i.postmaster" class="warn-text">
                       <fa-icon [icon]="iconService.falMailbox"></fa-icon>
+                    </span>
+                    <span class="mobile-only-block">
+                      <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
                     </span>
                   </div>
 
