@@ -74,8 +74,8 @@
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightmareHunts">
                     <div mat-line>
-                      <button mat-stroked-button (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
-                          class="fa-icon"></fa-icon></button>
+                      <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
+                          class="fa-icon"></fa-icon></a>
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </div>
                     <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span
@@ -97,9 +97,9 @@
               <mat-card-content>
                 <mat-list>
                   <mat-list-item>
-                    <a mat-stroked-button href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
-                      Make Public Events Heroic&nbsp;<fa-icon [icon]="iconService.fasInfoCircle"
-                        class="accent-text"></fa-icon></a>
+                    <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
+                      Make Public Events <span style="white-space:nowrap;">Heroic <fa-icon [icon]="iconService.fasInfoCircle"
+                        class="accent-text"></fa-icon></span></a>
                   </mat-list-item>
                 </mat-list>
 
@@ -113,8 +113,8 @@
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightfalls">
                     <div mat-line>
-                      <button mat-stroked-button (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
-                          class="fa-icon"></fa-icon></button>
+                      <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
+                          class="fa-icon"></fa-icon></a>
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </div>
                     <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span
@@ -169,6 +169,9 @@
                     <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
                       [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
                       [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+                    <span mat-list-icon class="list-icon" *ngIf="!n.icon">
+                      <fa-icon style="opacity: 0.5;" [icon]="iconService.fasSwords"></fa-icon>
+                    </span>
                     <div mat-line> {{n.name}}
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </div>
