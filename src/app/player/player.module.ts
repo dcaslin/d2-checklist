@@ -13,7 +13,7 @@ import { PlayerEfficiencyGraphComponent } from './lifetime/player-efficiency-gra
 import { MilestonesComponent } from './milestones/milestones.component';
 import { RewardDescComponent } from './milestones/reward-desc/reward-desc.component';
 import { MoreComponent } from './more/more.component';
-import { BurnDialogComponent, PlayerComponent } from './player.component';
+import { PlayerComponent } from './player.component';
 import { ProgressStepDialogComponent } from './progress/progress-step-dialog/progress-step-dialog.component';
 import { ProgressComponent } from './progress/progress.component';
 import { PursuitListComponent } from './pursuits/pursuit-list/pursuit-list.component';
@@ -34,13 +34,13 @@ import { TriumphObjectivesComponent } from './triumphs/triumph-objectives/triump
     SharedModule,
     ChartsModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, BurnDialogComponent, CollectionsComponent, TriumphsComponent, 
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, CollectionsComponent, TriumphsComponent, 
     CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, 
     TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, 
     CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, 
     PlayerEfficiencyGraphComponent, PursuitListComponent, TriumphObjectivesComponent],
   entryComponents: [
-    QuestDialogComponent, BurnDialogComponent, ProgressStepDialogComponent
+    QuestDialogComponent, ProgressStepDialogComponent
   ],
 })
 export class PlayerModule { }

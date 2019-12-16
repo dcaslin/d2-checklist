@@ -1,17 +1,27 @@
-<div mat-dialog-title style="margin-bottom: 0px">    
+<div mat-dialog-title style="margin-bottom: 0px">
     {{data.name}}
     <span class="simple-caption-no-margin hide-mobile-inline">{{data.desc}}</span>
-</div> 
+</div>
 <mat-dialog-content>
-    <mat-list>
-        <mat-list-item *ngFor="let b of data.modifiers">
-            <span mat-list-icon *ngIf="b.icon!=null" 
-            class="list-icon"
-                [class.invert]="b.icon.endsWith('png')"
-                [class.brighten]="b.icon.endsWith('jpg')"
-                [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-            <h4 mat-line>{{b.name}}</h4>
-            <p mat-line> {{b.desc}}</p>
-        </mat-list-item>
-    </mat-list>
+    <div class="grid-parent mat-typography">
+        <div  *ngFor="let b of data.modifiers">
+
+            <div class="title">
+                <div class="icon-parent">
+                    <div class="icon" *ngIf="b.icon!=null" [class.invert]="b.icon.endsWith('png')"
+                        [class.brighten]="b.icon.endsWith('jpg')"
+                        [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></div>
+                </div>
+                <div class="icon-parent">
+                    <h4 class="title-text">
+                        {{b.name}}
+                    </h4>
+                </div>
+                
+            </div>
+            <div>
+                <p>{{b.desc}}</p>
+            </div>
+        </div>
+    </div>
 </mat-dialog-content>

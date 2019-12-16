@@ -1426,7 +1426,7 @@ export class ParseService {
                             if (msa == null) {
                                 continue;
                             }
-                            if (msa.hash == '4052671056') {
+                            if (msa.hash == '4252456044') {
                                 heroicStrikes = msa;
                             }
                         }
@@ -2419,9 +2419,10 @@ export class ParseService {
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
                 }
-                if (oChild.complete && oChild.redeemed) {
-                    pts += oChild.score;
-                }
+                pts += oChild.earned;
+                // if (oChild.complete && oChild.redeemed) {
+                //     pts += oChild.score;
+                // }
                 total += oChild.score;
             }
         }

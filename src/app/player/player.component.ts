@@ -35,16 +35,6 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     super(storageService);
   }
 
-  public showBurns() {
-    const dc = new MatDialogConfig();
-    dc.disableClose = false;
-    dc.autoFocus = true;
-    dc.data = {
-      info: this.publicInfo
-    };
-    this.dialog.open(BurnDialogComponent, dc);
-  }
-
   public getRaidLink(p: Player) {
     let platformstr: string;
     let memberid: string;
@@ -121,15 +111,4 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
     super.ngOnDestroy();
   }
-}
-
-@Component({
-  selector: 'd2c-burn-dialog',
-  templateUrl: './burn-dialog.component.html',
-  styleUrls: ['./burn-dialog.component.scss']
-})
-export class BurnDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<BurnDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { }
 }
