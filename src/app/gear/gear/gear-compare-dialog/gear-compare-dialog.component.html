@@ -1,185 +1,227 @@
-<div mat-dialog-title style="margin-bottom: 0px" *ngIf="!showAllNames">
-    {{items[0].name}}
-    <d2c-season-indicator [season]="items[0].seasonalModSlot"></d2c-season-indicator>
-    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{items[0].typeName}}</span><br><span
-        class="simple-caption-no-margin hide-mobile-inline">{{items[0].desc}}</span>
-</div>
-<mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
-<mat-dialog-content *ngIf="parent._player|async as player">
-    <table class="gear-table mark-table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <ng-container *ngFor="let i of items">
-                    <th *ngIf="!hideJunk || i.mark!='junk'">
-                        {{i.name}}
-                        <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                        <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
-                        <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
-                            <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
-                        </a>
-                        <mat-menu #itemMenu="matMenu">
-                            <button mat-menu-item *ngIf="i.postmaster" (click)="parent.pullFromPostmaster(player, i)">
-                                <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
-                            </button>
-                            <ng-container *ngIf="!i.postmaster">
-                                <ng-container *ngIf="i.owner|async as owner">
-                                    <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(player, i)">
-                                        <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{owner.label}}
+<ng-container *ngIf="items[0] as model">
+
+
+    <div mat-dialog-title style="margin-bottom: 0px" *ngIf="!showAllNames">
+        {{model.name}}
+        <d2c-season-indicator [season]="model.seasonalModSlot"></d2c-season-indicator>
+        <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{model.typeName}}</span><br><span
+            class="simple-caption-no-margin hide-mobile-inline">{{model.desc}}</span>
+    </div>
+    <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
+    <mat-dialog-content *ngIf="parent._player|async as player">
+        <table class="gear-table mark-table">
+            <thead>
+                <tr>
+                    <th>
+                        <d2c-horizontal-sort field="name" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Name
+                    </d2c-horizontal-sort>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <th *ngIf="!hideJunk || i.mark!='junk'">
+                            {{i.name}}
+                            <span class="no-wrap">
+
+                                <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
+                                <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
+                                <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
+                                    <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
+                                </a>
+
+                            </span>
+                            <mat-menu #itemMenu="matMenu">
+                                <button mat-menu-item *ngIf="i.postmaster"
+                                    (click)="parent.pullFromPostmaster(player, i)">
+                                    <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
+                                </button>
+                                <ng-container *ngIf="!i.postmaster">
+                                    <ng-container *ngIf="i.owner|async as owner">
+                                        <button mat-menu-item *ngIf="i.canReallyEquip"
+                                            (click)="parent.equip(player, i)">
+                                            <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{owner.label}}
+                                        </button>
+                                    </ng-container>
+
+                                    <button mat-menu-item *ngFor="let target of i.options"
+                                        (click)="parent.transfer(player, i, target)">
+                                        <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to
+                                        {{target.label}}
                                     </button>
                                 </ng-container>
-                               
-                                <button mat-menu-item *ngFor="let target of i.options"
-                                    (click)="parent.transfer(player, i, target)">
-                                    <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
-                                </button>
-                            </ng-container>
-                        </mat-menu>
-
+                            </mat-menu>
+                        </th>
+                    </ng-container>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th class="compare-icon-lead">
+                        <div>
+                            <d2c-horizontal-sort field="power" [currVal]="sortBy" [descending]="sortDesc"
+                                (sort)="sort($event)">Light</d2c-horizontal-sort>
+                        </div>
+                        <div>
+                            <d2c-horizontal-sort *ngIf="model.type == ItemType.Weapon" field="damageType"
+                                [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Energy
+                            </d2c-horizontal-sort>
+                            <d2c-horizontal-sort *ngIf="model.type == ItemType.Armor" field="energyType"
+                                [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Energy
+                            </d2c-horizontal-sort>
+                        </div>
                     </th>
-                </ng-container>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>Light</th>
-                <ng-container *ngFor="let i of items">
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <d2c-item-icon [i]="i" [option]="i.type" (toggleLock)="gearService.setLock(player, i, $event)"></d2c-item-icon>
-                    </td>
-                </ng-container>
-            </tr>
-            <tr>
-                <th>Tag</th>
-                <ng-container *ngFor="let i of items">
-
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
-                            [matMenuTriggerFor]="menu">
-                            <ng-container *ngIf="i.mark==null">
-                                <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;
-                                Unmarked
-                            </ng-container>
-                            <ng-container *ngIf="i.mark!=null">
-                                <fa-icon [icon]="parent.markService.markDict[i.mark].icon"></fa-icon>&ensp;
-                                {{i.markLabel}}
-                            </ng-container>
-                        </button>
-                        <mat-menu #menu="matMenu">
-                            <ng-container *ngFor="let mc of parent.markService.markChoices">
-                                <button *ngIf="mc.value!=i.mark" mat-menu-item (click)="parent.mark(mc.value,i)">
-                                    <fa-icon [icon]="mc.icon"></fa-icon>&ensp;
-                                    {{mc.label}}
-                                </button>
-                            </ng-container>
-
-                            <button *ngIf="i.mark!=null" mat-menu-item (click)="parent.mark(null,i)">
-                                Remove Mark
-                            </button>
-                        </mat-menu>
-                    </td>
-                </ng-container>
-            </tr>
-            <tr *ngIf="items[0].type==ItemType.Armor">
-                <th>Energy</th>
-                <ng-container *ngFor="let i of items">
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        {{i.energyCapacity}}
-                        <d2c-item-energy-indicator [i]="i"></d2c-item-energy-indicator>
-
-                    </td>
-                </ng-container>
-            </tr>
-            <tr *ngIf="items[0].type==ItemType.Armor">
-                <th>Points</th>
-                <ng-container *ngFor="let i of items">
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        {{i.preferredStatPoints}}
-                        <div class="simple-caption">{{i.totalStatPoints}} total</div>
-                    </td>
-                </ng-container>
-            </tr>
-            <tr *ngIf="items[0].type==ItemType.Weapon">
-                <th>Masterwork</th>
-
-                <ng-container *ngFor="let i of items">
-
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
-                            matTooltipClass="preserve-white-space">
-                            {{i.masterwork.name}} {{i.masterwork.tier}}
-
-                            <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
-                                [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
-                            </mat-progress-bar>
-                            <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
-                                [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
-                            </mat-progress-bar>
-                        </div>
-                    </td>
-                </ng-container>
-            </tr>
-            <tr *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor ">
-                <th>Mod</th>
-
-                <ng-container *ngFor="let i of items">
-
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngIf="i.type==ItemType.Weapon">
-                            <d2c-item-energy-indicator [i]="i"></d2c-item-energy-indicator>
-                        </div>
-                        <ng-container *ngFor="let mod of i.mods">
-                            <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
-                                {{mod.name}}
-                            </div>
-                        </ng-container>
-                    </td>
-                </ng-container>
-            </tr>
-            <tr
-                *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor || items[0].type==ItemType.Ghost || items[0].type==ItemType.Vehicle">
-                <th>Sockets</th>
-
-                <ng-container *ngFor="let i of items">
-
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
-                            <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                                [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
-                                matTooltipClass="preserve-white-space">
-                                <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
-                                    [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
-                                <ng-container *ngIf="!isLastPlug"><br></ng-container>
-                            </span>
-                        </div>
-                    </td>
-                </ng-container>
-            </tr>
-
-            <ng-container *ngIf="items[0].type==ItemType.Weapon || items[0].type==ItemType.Armor">
-                <tr *ngFor="let stat of getAllStats(); let cntr = index">
-                    <td>{{stat.name}}
-                        <span class="caption" *ngIf="!showAllNames && stat.baseValue!=null">
-                            {{stat.baseValue}}
-                        </span>
-                    </td>
-
-                    <ng-container *ngFor="let i of items">
+                    <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
-                                {{targetStat.value}}
-
-                                <div class="caption" *ngIf="targetStat.value==null">
-                                    {{targetStat.baseValue}}
-                                </div>
-                                <span *ngIf="targetStat.enhancement"
-                                    class="accent-text pad-left">+{{stat.enhancement}}</span>
-                            </ng-container>
-                            <ng-template #noState>0</ng-template>
+                            <d2c-item-icon [i]="i" [option]="i.type"
+                                (toggleLock)="gearService.setLock(player, i, $event)">
+                            </d2c-item-icon>
                         </td>
                     </ng-container>
                 </tr>
-            </ng-container>
-        </tbody>
-    </table>
-</mat-dialog-content>
+                <tr>
+                    <th>
+                        <d2c-horizontal-sort field="mark" [currVal]="sortBy"
+                            [descending]="sortDesc" (sort)="sort($event)">Tag</d2c-horizontal-sort>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
+                                [matMenuTriggerFor]="menu">
+                                <ng-container *ngIf="i.mark==null">
+                                    <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;
+                                    Unmarked
+                                </ng-container>
+                                <ng-container *ngIf="i.mark!=null">
+                                    <fa-icon [icon]="parent.markService.markDict[i.mark].icon"></fa-icon>&ensp;
+                                    {{i.markLabel}}
+                                </ng-container>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <ng-container *ngFor="let mc of parent.markService.markChoices">
+                                    <button *ngIf="mc.value!=i.mark" mat-menu-item (click)="parent.mark(mc.value,i)">
+                                        <fa-icon [icon]="mc.icon"></fa-icon>&ensp;
+                                        {{mc.label}}
+                                    </button>
+                                </ng-container>
+
+                                <button *ngIf="i.mark!=null" mat-menu-item (click)="parent.mark(null,i)">
+                                    Remove Mark
+                                </button>
+                            </mat-menu>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="model.type==ItemType.Armor">
+                    <th>
+                        <d2c-horizontal-sort field="energyCapacity" [currVal]="sortBy"
+                            [descending]="sortDesc" (sort)="sort($event)">Capacity</d2c-horizontal-sort>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            {{i.energyCapacity}}
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="model.type==ItemType.Armor">
+                    <th>
+                        <d2c-horizontal-sort field="preferredStatPoints" [currVal]="sortBy"
+                        [descending]="sortDesc" (sort)="sort($event)">Points</d2c-horizontal-sort>    
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            {{i.preferredStatPoints}}
+                            <div class="simple-caption">{{i.totalStatPoints}} total</div>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="model.type==ItemType.Weapon">                    
+                    <th>
+                        <div>
+                            <d2c-horizontal-sort field="masterwork.name" [currVal]="sortBy"
+                            [descending]="sortDesc" (sort)="sort($event)">MW Type</d2c-horizontal-sort>    
+                        </div>
+                        <div>
+                            <d2c-horizontal-sort field="masterwork.tier" [currVal]="sortBy"
+                            [descending]="sortDesc" (sort)="sort($event)">MW Tier</d2c-horizontal-sort>    
+                        </div>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
+                                matTooltipClass="preserve-white-space">
+                                {{i.masterwork.name}} {{i.masterwork.tier}}
+
+                                <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
+                                    [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
+                                </mat-progress-bar>
+                                <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
+                                    [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
+                                </mat-progress-bar>
+                            </div>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
+                    <th>
+                        <d2c-horizontal-sort field="mods" [currVal]="sortBy"
+                        [descending]="sortDesc" (sort)="sort($event)">Mod</d2c-horizontal-sort>    
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <ng-container *ngFor="let mod of i.mods">
+                                <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
+                                    {{mod.name}}
+                                </div>
+                            </ng-container>
+                        </td>
+                    </ng-container>                
+                </tr>
+                <tr
+                    *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
+                    <th>Sockets</th>
+
+                    <ng-container *ngFor="let i of sortedItems|async">
+
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
+                                <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                                    [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
+                                    matTooltipClass="preserve-white-space">
+                                    <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
+                                        [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
+                                    <ng-container *ngIf="!isLastPlug"><br></ng-container>
+                                </span>
+                            </div>
+                        </td>
+                    </ng-container>
+                </tr>
+
+                <ng-container *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor">
+                    <tr *ngFor="let stat of getAllStats(); let cntr = index">
+                        <th>
+                            <d2c-horizontal-sort [field]="'stat.'+stat.hash" [currVal]="sortBy"
+                            [descending]="sortDesc" (sort)="sort($event)">{{stat.name}}</d2c-horizontal-sort>
+                            <span class="caption" *ngIf="!showAllNames && stat.baseValue!=null">
+                                {{stat.baseValue}}
+                            </span>
+                        </th>                       
+
+                        <ng-container *ngFor="let i of sortedItems|async">
+                            <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                                <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
+                                    {{targetStat.value}}
+
+                                    <div class="caption" *ngIf="targetStat.value==null">
+                                        {{targetStat.baseValue}}
+                                    </div>
+                                    <span *ngIf="targetStat.enhancement"
+                                        class="accent-text pad-left">+{{stat.enhancement}}</span>
+                                </ng-container>
+                                <ng-template #noState>0</ng-template>
+                            </td>
+                        </ng-container>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </mat-dialog-content>
+</ng-container>

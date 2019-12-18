@@ -5,6 +5,8 @@ import { IconService } from '@app/service/icon.service';
 import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { GearComponent } from '../gear.component';
 import { GearService } from '@app/service/gear.service';
+import { SortEvent } from './horizontal-sort/horizontal-sort.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'd2c-gear-compare-dialog',
@@ -13,11 +15,15 @@ import { GearService } from '@app/service/gear.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GearCompareDialogComponent {
+  sortBy = 'power';
+  sortDesc = true;
+
   ItemType = ItemType;
   EnergyType = EnergyType;
   DamageType = DamageType;
   hideJunk = false;
   items: InventoryItem[];
+  sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   parent: GearComponent;
   showAllNames: boolean;
 
@@ -28,8 +34,22 @@ export class GearCompareDialogComponent {
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.items = data.items;
+    this.sortedItems.next(this.items);
     this.parent = data.parent;
     this.showAllNames = data.showNames;
+  }
+
+  sort(event: SortEvent) {
+    console.log(event.field);
+    this.sortBy = event.field;
+    this.sortDesc = event.descending;
+    this._sort();
+  }
+
+  private _sort() {
+    const items = this.items.slice(0);
+    GearService.sortGear(this.sortBy, this.sortDesc, items);
+    this.sortedItems.next(items);
   }
 
   getAllStats(): InventoryStat[] {
