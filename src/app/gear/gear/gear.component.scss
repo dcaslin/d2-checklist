@@ -16,6 +16,13 @@
   white-space: nowrap;
 }
 
+.compare-icon-lead {
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between; 
+  min-height: 70px;
+}
+
 .plug-icon {
   width: 1em;
   height: 1em;
@@ -56,7 +63,7 @@ div.bottom {
 }
 
 
-$gear-table-padding: 0.15em;
+$gear-table-padding: 0.3em;
 table.gear-table {
   border-collapse: collapse;
   margin: 0;

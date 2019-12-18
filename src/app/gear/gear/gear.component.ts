@@ -776,79 +776,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return returnMe;
   }
 
+ 
+
   filterGear() {
     this.filterNotes = [];
     if (this._player.getValue() == null) { return; }
     let tempGear = this._player.getValue().gear.filter(i => i.type == this.option.type);
     tempGear = this.wildcardFilter(tempGear);
     tempGear = this.toggleFilter(tempGear);
-    if (this.sortBy == 'masterwork' || this.sortBy == 'mods' || this.sortBy.startsWith('stat.')) {
-      tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
-        let aV: any = '';
-        let bV: any = '';
-        if (this.sortBy.startsWith('stat.')) {
-          let isBase = false;
-          let hash;
-          if (this.sortBy.startsWith('stat.base.')) {
-            hash = this.sortBy.substr('stat.base.'.length);
-            isBase = true;
-          } else {
-            hash = this.sortBy.substr('stat.'.length);
-          }
-          for (const s of a.stats) {
-            if (s.hash == hash) {
-              aV = isBase ? s.baseValue : s.value;
-            }
-          }
-          for (const s of b.stats) {
-            if (s.hash == hash) {
-              bV = isBase ? s.baseValue : s.value;
-            }
-          }
-        } else if (this.sortBy == 'masterwork') {
-          aV = a[this.sortBy] != null ? a[this.sortBy].tier : -1;
-          bV = b[this.sortBy] != null ? b[this.sortBy].tier : -1;
-        } else if (this.sortBy == 'mods') {
-          aV = a[this.sortBy] != null && a[this.sortBy].length > 0 ? a[this.sortBy][0].name : '';
-          bV = b[this.sortBy] != null && b[this.sortBy].length > 0 ? b[this.sortBy][0].name : '';
-        }
-
-        if (aV < bV) {
-          return this.sortDesc ? 1 : -1;
-        } else if (aV > bV) {
-          return this.sortDesc ? -1 : 1;
-        } else {
-          if (this.sortBy != 'mods') {
-            aV = a[this.sortBy] != null ? a[this.sortBy].name : '';
-            bV = b[this.sortBy] != null ? b[this.sortBy].name : '';
-            if (aV < bV) {
-              return this.sortDesc ? 1 : -1;
-            } else if (aV > bV) {
-              return this.sortDesc ? -1 : 1;
-            }
-          }
-          return 0;
-        }
-      });
-    } else {
-      tempGear.sort((a: any, b: any): number => {
-        try {
-          const aV = a[this.sortBy] != null ? a[this.sortBy] : '';
-          const bV = b[this.sortBy] != null ? b[this.sortBy] : '';
-
-          if (aV < bV) {
-            return this.sortDesc ? 1 : -1;
-          } else if (aV > bV) {
-            return this.sortDesc ? -1 : 1;
-          } else {
-            return 0;
-          }
-        } catch (e) {
-          console.log('Error sorting: ' + e);
-          return 0;
-        }
-      });
-    }
+    GearService.sortGear(this.sortBy, this.sortDesc, tempGear);
     const start = this.page * this.size;
     const end = Math.min(start + this.size, tempGear.length);
     if (start >= end) {

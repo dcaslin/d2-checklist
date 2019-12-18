@@ -9,9 +9,78 @@ import { BehaviorSubject } from 'rxjs';
 import { TargetPerkService } from './target-perk.service';
 import { PreferredStatService } from './preferred-stat.service';
 
+
+
 @Injectable()
 export class GearService {
+
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    
+    public static sortGear(sortBy: string, sortDesc: boolean, tempGear: InventoryItem[]) {
+        if (sortBy.startsWith('masterwork.') || sortBy == 'mods' || sortBy.startsWith('stat.')) {
+          tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
+            let aV: any = '';
+            let bV: any = '';
+            if (sortBy.startsWith('stat.')) {
+              const hash = +sortBy.substr('stat.'.length);
+              for (const s of a.stats) {
+                if (s.hash == hash) {
+                  aV = s.getValue();
+                }
+              }
+              for (const s of b.stats) {
+                if (s.hash == hash) {
+                  bV = s.getValue();
+                }
+              }
+            }  else if (sortBy == 'masterwork.tier') {
+              aV = a.masterwork != null ? a.masterwork.tier : -1;
+              bV = b.masterwork != null ? b.masterwork.tier : -1;
+            } else if (sortBy == 'masterwork.name') {
+              aV = a.masterwork != null ? a.masterwork.name : '';
+              bV = b.masterwork != null ? b.masterwork.name : '';
+            } else if (sortBy == 'mods') {
+              aV = a[sortBy] != null && a[sortBy].length > 0 ? a[sortBy][0].name : '';
+              bV = b[sortBy] != null && b[sortBy].length > 0 ? b[sortBy][0].name : '';
+            }
+
+            if (aV < bV) {
+              return sortDesc ? 1 : -1;
+            } else if (aV > bV) {
+              return sortDesc ? -1 : 1;
+            } else {
+              if (sortBy != 'mods') {
+                aV = a[sortBy] != null ? a[sortBy].name : '';
+                bV = b[sortBy] != null ? b[sortBy].name : '';
+                if (aV < bV) {
+                  return sortDesc ? 1 : -1;
+                } else if (aV > bV) {
+                  return sortDesc ? -1 : 1;
+                }
+              }
+              return 0;
+            }
+          });
+        } else {
+          tempGear.sort((a: any, b: any): number => {
+            try {
+              const aV = a[sortBy] != null ? a[sortBy] : '';
+              const bV = b[sortBy] != null ? b[sortBy] : '';
+
+              if (aV < bV) {
+                return sortDesc ? 1 : -1;
+              } else if (aV > bV) {
+                return sortDesc ? -1 : 1;
+              } else {
+                return 0;
+              }
+            } catch (e) {
+              console.log('Error sorting: ' + e);
+              return 0;
+            }
+          });
+        }
+      }
 
     constructor(private bungieService: BungieService,
         public markService: MarkService,
@@ -204,15 +273,6 @@ export class GearService {
             }
 
         }
-        copies.sort(function (a, b) {
-            if (a.power < b.power) {
-                return 1;
-            }
-            if (a.power > b.power) {
-                return -1;
-            }
-            return 0;
-        });
         return copies;
     }
 
@@ -223,15 +283,6 @@ export class GearService {
                 copies.push(g);
             }
         }
-        copies.sort(function (a, b) {
-            if (a.power < b.power) {
-                return 1;
-            }
-            if (a.power > b.power) {
-                return -1;
-            }
-            return 0;
-        });
         return copies;
     }
 
@@ -476,6 +527,4 @@ export class GearService {
             this.loading.next(false);
         }
     }
-
-
 }

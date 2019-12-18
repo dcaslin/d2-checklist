@@ -266,8 +266,8 @@
                 </a>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('masterwork')">MW
-                  <d2c-sort-indicator field="masterwork" [currVal]="sortBy" [descending]="sortDesc">
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('masterwork.tier')">MW
+                  <d2c-sort-indicator field="mw.tier" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
                 </a>
               </th>
@@ -303,7 +303,7 @@
             <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
               <tr [ngClass]="i.mark">
                 <td class="limited-gear-width">
-                  <d2c-item-icon [i]="i" [option="option.type" (toggleLock)="gearService.setLock(player, i, $event)"></d2c-item-icon>
+                  <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="gearService.setLock(player, i, $event)"></d2c-item-icon>
                   <br>
                   <div class="mobile-only-block">
                     <button mat-button [matMenuTriggerFor]="compareMenu">
@@ -485,22 +485,22 @@
                   <table class="stat-table">
                     <tbody>
                       <ng-container *ngFor="let stat of i.stats">
-                        <tr *ngIf="stat.hash==1345609583">
+                        <!-- <tr *ngIf="stat.hash==1345609583">
                           <td class="gear-sort"><a href="javascript:void(0)" (click)="sort('stat.base.'+stat.hash)">AA
                               <d2c-sort-indicator [field]="'stat.base.'+stat.hash" [currVal]="sortBy"
                                 [descending]="sortDesc"></d2c-sort-indicator>
                             </a>
                           </td>
                           <td>{{stat.baseValue}}</td>
-                        </tr>
-                        <tr *ngIf="stat.hash==155624089 || stat.hash==4043523819 || stat.hash==1240592695">
+                        </tr> -->
+                        <tr *ngIf="stat.hash==1345609583 || stat.hash==155624089 || stat.hash==4043523819 || stat.hash==1240592695">
                           <td><a class="gear-sort" href="javascript:void(0)"
                               (click)="sort('stat.'+stat.hash)">{{stat.name}}
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
                                 [descending]="sortDesc"></d2c-sort-indicator>
                             </a>
                           </td>
-                          <td>{{stat.value}}</td>
+                          <td>{{stat.getValue()}}</td>
                         </tr>
                       </ng-container>
                     </tbody>
