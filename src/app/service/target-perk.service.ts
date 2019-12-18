@@ -37,7 +37,7 @@ export class TargetPerkService {
 
   private alreadyEquipped(itm: InventoryItem, p: InventoryPlug, equippedPerks: { [key: string]: string[] }): boolean {
     // this is actively equipped it doesn't count
-    if (itm.equipped == true) {
+    if (itm.equipped.getValue() == true) {
       return false;
     }
     const currPerks = equippedPerks[itm.classAllowed];
@@ -207,8 +207,8 @@ export class TargetPerkService {
     const activePerks: InventoryPlug[] = [];
     for (const g of gear) {
       if (g.type != ItemType.Armor) { continue; }
-      if (!g.equipped) { continue; }
-      if (g.owner.id != char.id) { continue; }
+      if (!g.equipped.getValue()) { continue; }
+      if (g.owner.getValue().id != char.id) { continue; }
       for (const s of g.sockets) {
         for (const p of s.plugs) {
           if (!p.active) { continue; }

@@ -7,23 +7,13 @@
 <mat-checkbox [(ngModel)]="hideJunk">Hide Junk</mat-checkbox>
 <mat-dialog-content *ngIf="parent._player|async as player">
     <table class="gear-table mark-table">
-        <thead *ngIf="showAllNames">
+        <thead>
             <tr>
-                <th>&nbsp;</th>
+                <th>Name</th>
                 <ng-container *ngFor="let i of items">
                     <th *ngIf="!hideJunk || i.mark!='junk'">
                         {{i.name}}
                         <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                    </th>
-                </ng-container>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <th>Light</th>
-                <ng-container *ngFor="let i of items">
-                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                        {{i.power}}
                         <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                         <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
                             <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
@@ -33,15 +23,29 @@
                                 <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
                             </button>
                             <ng-container *ngIf="!i.postmaster">
-                                <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(player, i)">
-                                    <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{i.owner.label}}
-                                </button>
+                                <ng-container *ngIf="i.owner|async as owner">
+                                    <button mat-menu-item *ngIf="i.canReallyEquip" (click)="parent.equip(player, i)">
+                                        <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{owner.label}}
+                                    </button>
+                                </ng-container>
+                               
                                 <button mat-menu-item *ngFor="let target of i.options"
                                     (click)="parent.transfer(player, i, target)">
                                     <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
                                 </button>
                             </ng-container>
                         </mat-menu>
+
+                    </th>
+                </ng-container>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Light</th>
+                <ng-container *ngFor="let i of items">
+                    <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <d2c-item-icon [i]="i" [option]="i.type" (toggleLock)="gearService.setLock(player, i, $event)"></d2c-item-icon>
                     </td>
                 </ng-container>
             </tr>

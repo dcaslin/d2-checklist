@@ -147,8 +147,8 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
         aN = a.name;
         bN = b.name;
       } else if ('player' == sort.name) {
-        aN = a.owner.label;
-        bN = b.owner.label;
+        aN = a.owner.getValue().label;
+        bN = b.owner.getValue().label;
       } else if ('expiration' == sort.name) {
         aN = a.expirationDate ? a.expirationDate : '4000-09-17T22:30:02Z';
         bN = b.expirationDate ? b.expirationDate : '4000';
@@ -172,7 +172,7 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
   private shouldShow(row: InventoryItem): boolean {
 
     if (this.state.filterChar) {
-      if (row.owner != this.state.filterChar) {
+      if (row.owner.getValue() != this.state.filterChar) {
         return false;
       }
     }
@@ -182,7 +182,7 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
     if (row.searchText.indexOf(this.realFilterText.getValue()) >= 0) {
       return true;
     }
-    if (row.owner.label.toLowerCase().indexOf(this.realFilterText.getValue()) >= 0) {
+    if (row.owner.getValue().label.toLowerCase().indexOf(this.realFilterText.getValue()) >= 0) {
       return true;
     }
     return false;

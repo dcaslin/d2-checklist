@@ -58,9 +58,9 @@ export class GearService {
 
     public canEquip(itm: InventoryItem) {
         // ignore itm.canEquip
-        if (itm.equipped == true || (itm.owner.id == 'vault') || (itm.owner.id == 'shared')) {
+        if (itm.equipped.getValue() == true || (itm.owner.getValue().id == 'vault') || (itm.owner.getValue().id == 'shared')) {
             itm.canReallyEquip = false;
-        } else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner as Character).className) {
+        } else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner.getValue() as Character).className) {
             itm.canReallyEquip = true;
         } else {
             itm.canReallyEquip = false;
@@ -77,7 +77,7 @@ export class GearService {
         for (const bucket of buckets) {
             const items = bucket.items.slice();
             for (const i of items) {
-                if (i.equipped == false && (ignoreMark.indexOf(i.mark) === -1)) {
+                if (i.equipped.getValue() == false && (ignoreMark.indexOf(i.mark) === -1)) {
                     if (i.type == ItemType.Weapon || !weaponsOnly) {
                         if (i.type == ItemType.Weapon
                             || i.type == ItemType.Armor
@@ -113,15 +113,16 @@ export class GearService {
         let moved = 0;
         for (const i of player.gear) {
             // might we move it?
-            if (i.mark == 'junk' && i.owner.id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
+            if (i.mark == 'junk' && i.owner.getValue().id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
                 // is bucket full?
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if (targetBucket.items.length < 10) {
                     console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
                     try {
                         if (i.postmaster) {
-                            await this.transfer(player, i, i.owner);
-                            if (i.owner.id === target.characterId) {
+                            const owner = i.owner.getValue();
+                            await this.transfer(player, i, owner);
+                            if (owner.id === target.characterId) {
                                 moved++;
                                 continue;
                             }
@@ -149,7 +150,7 @@ export class GearService {
     }
 
 
-    public findSimilar(i: InventoryItem, player: Player): InventoryItem[] {
+    public findSimilar(i: InventoryItem, player: Player, season?: boolean): InventoryItem[] {
         const copies = [i];
         for (const g of player.gear) {
             if (g.id == i.id) {
@@ -159,16 +160,24 @@ export class GearService {
                 if (i.classAllowed != g.classAllowed) {
                     continue;
                 }
-                if (i.energyType != g.energyType) {
-                    continue;
-                }
                 if (!i.inventoryBucket || !g.inventoryBucket) {
                     continue;
                 }
                 if (i.inventoryBucket.displayProperties.name != g.inventoryBucket.displayProperties.name) {
                     continue;
                 }
-
+                if (i.tier != g.tier) {
+                    continue;
+                }
+                if (season) {
+                    if (i.seasonalModSlot != g.seasonalModSlot) {
+                        continue;
+                    }
+                } else {
+                    if (i.energyType != g.energyType) {
+                        continue;
+                    }
+                }
                 copies.push(g);
             } else if (i.type == ItemType.Weapon) {
                 if (i.typeName != g.typeName) {
@@ -231,7 +240,7 @@ export class GearService {
         const buckets = this.bucketService.getBuckets(target);
         for (const i of items) {
             try {
-                if (target.id !== i.owner.id) {
+                if (target.id !== i.owner.getValue().id) {
                     this.notificationService.info('Moving ' + i.name + ' to ' + target.label);
                     await this.transfer(player, i, target);
                 }
@@ -270,7 +279,7 @@ export class GearService {
                 }
                 copies.push(i);
 
-                copies = copies.filter(copy => copy.owner.id != target.id);
+                copies = copies.filter(copy => copy.owner.getValue().id != target.id);
                 // nothing to infuse
                 if (copies.length == 0) {
                     continue;
@@ -281,13 +290,13 @@ export class GearService {
                     console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
                     this.notificationService.info('Prepping ' + i.name + ' for upgrade (' + copies.length + ' total)');
                     for (const moveMe of copies) {
-                        console.log('    From ' + moveMe.owner.label);
+                        console.log('    From ' + moveMe.owner.getValue().label);
                         try {
                             await this.transfer(player, moveMe, target);
                             moved++;
                         } catch (e) {
                             console.log('Couldn\'t move ' + moveMe.name);
-                            this.notificationService.fail('Unable to move ' + moveMe.name + ' from ' + moveMe.owner.label + '. Nothing else to equip?');
+                            this.notificationService.fail('Unable to move ' + moveMe.name + ' from ' + moveMe.owner.getValue().label + '. Nothing else to equip?');
                             totalErr++;
                         }
                     }
@@ -318,24 +327,24 @@ export class GearService {
         for (const i of gear) {
             if (i.mark == null) { continue; }
             if (i.mark == 'upgrade' || i.mark == 'keep') {
-                if (i.locked == false) {
+                if (i.locked.getValue() == false) {
                     try {
                         await this.setLock(player, i, true);
-                        this.notificationService.info('Locked ' + i.name + ' on ' + i.owner.label);
+                        this.notificationService.info('Locked ' + i.name + ' on ' + i.owner.getValue().label);
                         lockCnt++;
                     } catch (e) {
-                        this.notificationService.info('Failed to lock ' + i.name + ' on ' + i.owner.label);
+                        this.notificationService.info('Failed to lock ' + i.name + ' on ' + i.owner.getValue().label);
                         errCnt++;
                     }
                 }
             } else if (i.mark == 'junk' || i.mark == 'infuse') {
-                if (i.locked == true) {
+                if (i.locked.getValue() == true) {
                     try {
                         await this.setLock(player, i, false);
-                        this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.label);
+                        this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.getValue().label);
                         unlockedCnt++;
                     } catch (e) {
-                        this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.label);
+                        this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.getValue(). label);
                         errCnt++;
                     }
                 }
@@ -349,8 +358,8 @@ export class GearService {
             this.loading.next(true);
 
             // equip something else from our bucket, if we can
-            if (itm.equipped == true) {
-                let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
+            if (itm.equipped.getValue() == true) {
+                let equipMe: InventoryItem = this.bucketService.getBucket(itm.owner.getValue(), itm.inventoryBucket).otherItem(itm);
                 if (equipMe == null) {
                     // grab something from the vault
                     const vaultItem: InventoryItem = this.bucketService.getBucket(player.vault, itm.inventoryBucket).otherItem(itm);
@@ -358,9 +367,9 @@ export class GearService {
                         throw new Error('Nothing to equip to replace ' + itm.name);
                     }
                     // transfer to source player
-                    await this.transfer(player, vaultItem, itm.owner);
+                    await this.transfer(player, vaultItem, itm.owner.getValue());
                     // get a reference to it now that it's on that other player
-                    equipMe = this.bucketService.getBucket(itm.owner, itm.inventoryBucket).otherItem(itm);
+                    equipMe = this.bucketService.getBucket(itm.owner.getValue(), itm.inventoryBucket).otherItem(itm);
                     if (equipMe == null) {
                         throw new Error('2) Nothing to equip to replace ' + itm.name);
                     }
@@ -368,24 +377,24 @@ export class GearService {
                 console.log(itm.name + ' was equipped. Equipping ' + equipMe.name + ' in its place.');
                 const equipSuccess = await this.equip(player, equipMe);
                 if (!equipSuccess) {
-                    throw new Error(('Could not equip ' + equipMe.name + ' on ' + equipMe.owner.label));
+                    throw new Error(('Could not equip ' + equipMe.name + ' on ' + equipMe.owner.getValue().label));
                 }
             }
 
             // if the target is the vault, we just need to put it there
             if (target.id == 'vault') {
-                let owner = itm.owner;
+                let owner = itm.owner.getValue();
                 if (owner == player.shared) {
                     owner = player.characters[0];
                 }
 
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     owner, itm, true, player.vault, this.bucketService);
-                itm.options.push(itm.owner);
-                itm.owner = player.vault;
-                itm.options.splice(itm.options.indexOf(itm.owner), 1);
+                itm.options.push(itm.owner.getValue());
+                itm.owner.next(player.vault);
+                itm.options.splice(itm.options.indexOf(itm.owner.getValue()), 1);
 
-            } else if (itm.owner.id == 'vault' || itm.postmaster) {
+            } else if (itm.owner.getValue().id == 'vault' || itm.postmaster) {
                 let tempTarget = target;
                 if (target == player.shared) {
                     tempTarget = player.characters[0];
@@ -395,23 +404,23 @@ export class GearService {
                 if (itm.postmaster) {
                     itm.postmaster = false;
                 } else {
-                    itm.options.push(itm.owner);
-                    itm.owner = target;
-                    itm.options.splice(itm.options.indexOf(itm.owner), 1);
+                    itm.options.push(itm.owner.getValue());
+                    itm.owner.next(target);
+                    itm.options.splice(itm.options.indexOf(itm.owner.getValue()), 1);
                 }
 
             } else {
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                    itm.owner, itm, true, player.vault, this.bucketService);
-                itm.options.push(itm.owner);
-                itm.owner = player.vault;
-                itm.options.splice(itm.options.indexOf(itm.owner), 1);
+                    itm.owner.getValue(), itm, true, player.vault, this.bucketService);
+                itm.options.push(itm.owner.getValue());
+                itm.owner.next(player.vault);
+                itm.options.splice(itm.options.indexOf(itm.owner.getValue()), 1);
 
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     target, itm, false, player.vault, this.bucketService);
-                itm.options.push(itm.owner);
-                itm.owner = target;
-                itm.options.splice(itm.options.indexOf(itm.owner), 1);
+                itm.options.push(itm.owner.getValue());
+                itm.owner.next(target);
+                itm.options.splice(itm.options.indexOf(itm.owner.getValue()), 1);
             }
 
         }
@@ -425,14 +434,14 @@ export class GearService {
         try {
             this.loading.next(true);
             let owner;
-            if (itm.owner == player.vault || itm.owner == player.shared) {
+            if (itm.owner.getValue() == player.vault || itm.owner.getValue() == player.shared) {
                 owner = player.characters[0];
             } else {
-                owner = itm.owner;
+                owner = itm.owner.getValue();
             }
             const success = await this.bungieService.setLock(player.profile.userInfo.membershipType, owner.id, itm, locked);
             if (success === true) {
-                itm.locked = locked;
+                itm.locked.next(locked);
                 return true;
             }
             return false;
@@ -447,13 +456,11 @@ export class GearService {
             this.loading.next(true);
             const success = await this.bungieService.equip(player.profile.userInfo.membershipType, itm);
             if (success === true) {
-                const bucket: Bucket = this.bucketService.getBucket(itm.owner, itm.inventoryBucket);
+                const bucket: Bucket = this.bucketService.getBucket(itm.owner.getValue(), itm.inventoryBucket);
                 const oldEquipped = bucket.equipped;
-                oldEquipped.equipped = false;
-                itm.equipped = true;
+                oldEquipped.equipped.next(false);
                 bucket.equipped = itm;
-                itm.equipped = true;
-
+                itm.equipped.next(true);
                 this.canEquip(itm);
                 this.canEquip(oldEquipped);
                 // any time we change equips we need to revisit current perks

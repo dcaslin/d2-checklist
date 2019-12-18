@@ -993,7 +993,7 @@ export class BungieService implements OnDestroy {
     public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
         try {
             await this.postReq('Destiny2/Actions/Items/EquipItem/', {
-                characterId: item.owner.id,
+                characterId: item.owner.getValue().id,
                 itemId: item.id,
                 membershipType: membershipType
             });

@@ -1,0 +1,18 @@
+<div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+    [class.masterworked]="i.masterworked">
+    <div *ngIf="i.power>0" class="primary-stat"
+        [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
+        [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"
+        [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
+        {{i.power}}
+    </div>
+    <div class="gear-lock">
+        <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked|async" (click)="toggleLock.emit(false)">
+        </fa-icon>
+        <fa-icon [icon]="iconService.fasLockOpenAlt"
+            *ngIf="!(i.locked|async) && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option==ItemType.Ghost || option==ItemType.Vehicle)"
+            (click)="toggleLock.emit(true)"></fa-icon>
+    </div>
+    <div class="gear-equipped">
+        <fa-icon [icon]="iconService.fasShieldCheck" *ngIf="i.equipped|async" title="Equipped"></fa-icon>
+    </div>
