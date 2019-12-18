@@ -77,7 +77,7 @@
                     color="accent">{{entry.user.displayName}}</a>
                   <a style="margin-left:0.25em"
                     [ngClass]="(favoritesMap|async)[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
-                    (click)="storageService.toggleFav(entry.user, entry.bungieNetUserInfo.membershipId)"
+                    (click)="storageService.toggleFav(entry.user, null)"
                     href="javascript:void(0)">
                     <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
                   </a>

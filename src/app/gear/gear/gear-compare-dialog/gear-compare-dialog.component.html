@@ -10,10 +10,12 @@
         <thead *ngIf="showAllNames">
             <tr>
                 <th>&nbsp;</th>
-                <th *ngFor="let i of items">
-                    {{i.name}}
-                    <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                </th>
+                <ng-container *ngFor="let i of items">
+                    <th *ngIf="!hideJunk || i.mark!='junk'">
+                        {{i.name}}
+                        <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
+                    </th>
+                </ng-container>
             </tr>
         </thead>
         <tbody>
