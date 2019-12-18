@@ -453,11 +453,17 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   showCopies(i: InventoryItem) {
     const copies = this.gearService.findCopies(i, this._player.getValue());
-    this.openGearDialog(copies);
+    this.openGearDialog(copies, false);
   }
 
+  showSimilar(i: InventoryItem) {
+    const copies = this.gearService.findSimilar(i, this._player.getValue());
+    this.openGearDialog(copies, true);
+  }
+
+
   showItem(i: InventoryItem) {
-    this.openGearDialog([i]);
+    this.openGearDialog([i], false);
   }
 
   sort(val: string) {
@@ -1198,14 +1204,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.dialog.open(GearUtilitiesDialogComponent, dc);
   }
 
-  public openGearDialog(items: InventoryItem[]): void {
+  public openGearDialog(items: InventoryItem[], showNames: boolean): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     // dc.autoFocus = true;
     // dc.width = '500px';
     dc.data = {
       parent: this,
-      items: items
+      items: items,
+      showNames: showNames
     };
     this.dialog.open(GearCompareDialogComponent, dc);
   }

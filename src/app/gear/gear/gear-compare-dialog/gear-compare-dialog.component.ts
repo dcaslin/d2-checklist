@@ -1,21 +1,25 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
-import { EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
+import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { GearComponent } from '../gear.component';
 
 @Component({
   selector: 'd2c-gear-compare-dialog',
   templateUrl: './gear-compare-dialog.component.html',
-  styleUrls: ['../gear.component.scss']
+  styleUrls: ['../gear.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GearCompareDialogComponent {
   ItemType = ItemType;
   EnergyType = EnergyType;
+  DamageType = DamageType;
   hideJunk = false;
   items: InventoryItem[];
   parent: GearComponent;
+  showAllNames: boolean;
+
   constructor(
     public iconService: IconService,
     private cacheService: DestinyCacheService,
@@ -23,6 +27,7 @@ export class GearCompareDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.items = data.items;
     this.parent = data.parent;
+    this.showAllNames = data.showNames;
   }
 
   getAllStats(): InventoryStat[] {

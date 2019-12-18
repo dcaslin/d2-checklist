@@ -27,9 +27,9 @@ export class GearService {
             this.loading.next(true);
             const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType,
                 selectedUser.userInfo.membershipId, ['Profiles', 'Characters',
-                    'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
-                    'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-                    'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs','ItemPlugObjectives'], false, true);
+                'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
+                'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
+                'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true);
             const gearById: { [key: string]: InventoryItem[]; } = {};
             for (const g of player.gear) {
                 this.canEquip(g);
@@ -146,6 +146,65 @@ export class GearService {
         } else {
             this.notificationService.success('Done! All set to start sharding! ' + msg);
         }
+    }
+
+
+    public findSimilar(i: InventoryItem, player: Player): InventoryItem[] {
+        const copies = [i];
+        for (const g of player.gear) {
+            if (g.id == i.id) {
+                continue;
+            }
+            if (i.type == ItemType.Armor) {
+                if (i.classAllowed != g.classAllowed) {
+                    continue;
+                }
+                if (i.energyType != g.energyType) {
+                    continue;
+                }
+                if (!i.inventoryBucket || !g.inventoryBucket) {
+                    continue;
+                }
+                if (i.inventoryBucket.displayProperties.name != g.inventoryBucket.displayProperties.name) {
+                    continue;
+                }
+
+                copies.push(g);
+            } else if (i.type == ItemType.Weapon) {
+                if (i.typeName != g.typeName) {
+                    continue;
+                }
+                let iArchetype = null;
+                let gArchetype = null;
+                for (const s of i.sockets) {
+                    if (s.socketCategoryHash == '4241085061') {
+                        iArchetype = s.plugs[0].hash;
+                        break;
+                    }
+                }
+                for (const s of g.sockets) {
+                    if (s.socketCategoryHash == '4241085061') {
+                        gArchetype = s.plugs[0].hash;
+                        break;
+                    }
+                }
+                if (iArchetype && gArchetype && iArchetype == gArchetype) {
+                    copies.push(g);
+
+                }
+            }
+
+        }
+        copies.sort(function (a, b) {
+            if (a.power < b.power) {
+                return 1;
+            }
+            if (a.power > b.power) {
+                return -1;
+            }
+            return 0;
+        });
+        return copies;
     }
 
     public findCopies(i: InventoryItem, player: Player): InventoryItem[] {
