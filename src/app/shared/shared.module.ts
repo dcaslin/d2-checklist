@@ -48,6 +48,7 @@ import { faCoffee } from '@fortawesome/free-solid-svg-icons';
 import { SignInRequiredComponent } from './sign-in-required/sign-in-required.component';
 import { SortIndicatorComponent } from './sort-indicator/sort-indicator.component';
 import { SeasonIndicatorComponent } from './season-indicator/season-indicator.component';
+import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energy-indicator.component';
 
 
 @NgModule({
@@ -97,11 +98,12 @@ import { SeasonIndicatorComponent } from './season-indicator/season-indicator.co
   SeasonIndicatorComponent,
   SignInRequiredComponent,
   SortIndicatorComponent,
-  SeasonIndicatorComponent],
+  ItemEnergyIndicatorComponent],
   exports: [
     MilestoneCheckComponent,
     SortIndicatorComponent,
     SeasonIndicatorComponent,
+    ItemEnergyIndicatorComponent,
     SignInRequiredComponent,
     RouterModule,
     PipeModule,

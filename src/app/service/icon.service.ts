@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { faAmazon as fabAmazon, faGithub as fabGithub, faPaypal as fabPaypal, faPlaystation as fabPlaystation, faReddit as fabReddit, faSteam as fabSteam, faTwitter as fabTwitter, faWindows as fabWindows, faXbox as fabXbox, faYoutube as fabYoutube } from '@fortawesome/free-brands-svg-icons';
-import { faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone, faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen, 
+import { faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone, 
+  faLayerGroup as falLayerGroup,
+  faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen, 
   faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faMailbox as falMailbox, faSigma as falSigma, faSort as falSort, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy, 
   faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow,  faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy} from '@fortawesome/pro-light-svg-icons';
 import { faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
@@ -36,6 +38,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly falLayerGroup = falLayerGroup;
   public readonly falSun = falSun;
   public readonly falHatCowboy = falHatCowboy;
   public readonly falGem = falGem;

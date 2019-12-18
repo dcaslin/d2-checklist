@@ -1,0 +1,10 @@
+<span *ngIf="i.type==ItemType.Weapon" [matTooltip]="DamageType[i.damageType]">
+    <fa-icon [icon]="iconService.fasBolt" [class.void-text]="i.damageType===DamageType.Void"
+        [class.arc-text]="i.damageType===DamageType.Arc" [class.solar-text]="i.damageType===DamageType.Thermal">
+    </fa-icon>
+</span>
+<span *ngIf="i.type==ItemType.Armor" [matTooltip]="EnergyType[i.energyType]">
+    <fa-icon [icon]="iconService.fasBolt" [class.void-text]="i.energyType===EnergyType.Void"
+        [class.arc-text]="i.energyType===EnergyType.Arc" [class.solar-text]="i.energyType===EnergyType.Thermal">
+    </fa-icon>
+</span>

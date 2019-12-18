@@ -447,8 +447,10 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                  <button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
-                    </fa-icon></button>
+                  <div><button mat-button (click)="showCopies(i)"> {{i.copies}} <fa-icon [icon]="iconService.falClone">
+                    </fa-icon></button></div>
+                  <div *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor"><button mat-button (click)="showSimilar(i)"><fa-icon [icon]="iconService.falLayerGroup">
+                  </fa-icon></button></div>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
