@@ -1,8 +1,8 @@
-import { bungieDev } from './keys';
+import { bungieProd } from './keys';
 
 const packageJson = require('../../package.json');
 export const environment = {
-  bungie: bungieDev,
+  bungie: bungieProd,
   production: true,
   versions: {
     app: packageJson.version,
