@@ -984,10 +984,12 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@fortawesome/angular-fontawesome@0.6.0-alpha.0":
-  version "0.6.0-alpha.0"
-  resolved "https://npm.fontawesome.com/@fortawesome/angular-fontawesome/-/0.6.0-alpha.0/angular-fontawesome-0.6.0-alpha.0.tgz#f1d5bca441117ed62679356b8cfea6195270c136"
-  integrity sha512-TcQT5pFDXn8m6FIEwwP6AJrzyLKdbAHCOGeN/nnrVg4/2Ls0+TckWtnjuqLGmutWoQ8HXlV4Ka4xOKNQ7JmHow==
+"@fortawesome/angular-fontawesome@0.5.0":
+  version "0.5.0"
+  resolved "https://npm.fontawesome.com/@fortawesome/angular-fontawesome/-/0.5.0/angular-fontawesome-0.5.0.tgz#5dbc01714b4af45a2ecb8dd63a6f8b462a8337e1"
+  integrity sha512-5IR/jNMddiEpgApcqSMfp7l5kZqOtxQYzkSLW6iZ4MZHbQQ+Kc9tu9qi2hro6VFSk/sPxeYEzkzGZUNrMYiwOg==
+  dependencies:
+    tslib "^1.9.0"
 
 "@fortawesome/fontawesome-common-types@^0.2.26":
   version "0.2.26"
