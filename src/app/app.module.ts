@@ -42,6 +42,12 @@ import {
 } from './app.component';
 import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 import { PartyComponent } from './party/party.component';
+import { IconService } from './service/icon.service';
+import { TargetPerkService } from './service/target-perk.service';
+import { ClanStateService } from './clan/clan-state.service';
+import { PlayerStateService } from './player/player-state.service';
+import { PreferredStatService } from './service/preferred-stat.service';
+import { WeekService } from './service/week.service';
 
 @NgModule({
   imports: [
@@ -49,7 +55,7 @@ import { PartyComponent } from './party/party.component';
     BrowserAnimationsModule,
     BrowserModule,
     HttpClientModule,
-    
+
     SharedModule,
 
     AboutModule,
@@ -79,15 +85,24 @@ import { PartyComponent } from './party/party.component';
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent
   ],
   providers: [
-    LowLineService, MarkService, WishlistService, BucketService, GearService,
-    BungieService, AuthService, StorageService, NotificationService,
-    DestinyCacheService, ParseService
-    // ,
-    // {
-    //   provide: RouteReuseStrategy,
-    //   useClass: StickyReuseStrategy
-    // }
-    ],
+    AuthService,
+    BucketService,
+    BungieService,
+    ClanStateService,
+    DestinyCacheService,
+    GearService,
+    IconService,
+    LowLineService,
+    MarkService,
+    NotificationService,
+    ParseService,
+    PlayerStateService,
+    PreferredStatService,
+    StorageService,
+    TargetPerkService,
+    WeekService,
+    WishlistService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
