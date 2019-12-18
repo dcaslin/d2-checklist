@@ -64,7 +64,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
         pp.guns = [];
         const armorMods: InventoryPlug[] = [];
         for (const g of x.gear) {
-          if (g.equipped && g.owner == pp.character) {
+          if (g.equipped && g.owner.getValue() == pp.character) {
             if (g.type == ItemType.Weapon) {
               pp.guns.push(g);
             } else if (g.type == ItemType.Armor) {

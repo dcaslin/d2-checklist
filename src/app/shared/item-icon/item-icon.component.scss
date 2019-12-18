@@ -1,0 +1,62 @@
+.primary-stat {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: auto;
+  padding: 0 2px !important;
+  background: rgba(255, 255, 255, 0.9);
+  line-height: 13px;
+  color: rgb(0, 0, 0);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.gear-equipped {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  padding: 0 2px !important;
+  background: rgba(255, 255, 255, 0.9);
+  line-height: 13px;
+  color: rgb(0, 0, 0);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.gear-lock {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  padding: 0 2px !important;
+  background: rgba(255, 255, 255, 0.9);
+  line-height: 13px;
+  color: rgb(0, 0, 0);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.void {
+  background: #b184c5;
+}
+
+.solar {
+  background: #f2721b;
+}
+
+.arc {
+  background: #85c5ec;
+}
+
+.item-image {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 72px;
+  height: 72px;
+  margin-right: 6px;
+  background-size: cover;
+  border: 1px solid rgb(221, 221, 221);
+  transition: 0.25s;
+}

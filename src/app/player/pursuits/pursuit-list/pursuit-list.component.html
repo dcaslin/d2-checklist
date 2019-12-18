@@ -90,13 +90,13 @@
             </div>
           </td>
           <td data-label="">
-            <div class="img-layout">
+            <div class="img-layout" *ngIf="g.owner|async as o">
               <div class="img-cell d-none d-md-inline">
-                <span *ngIf="g.owner.emblemPath!=null" class="player-icon"
-                  [style.background-image]="'url(//www.bungie.net' + g.owner.emblemPath + ')'"></span>
+                <span *ngIf="o.emblemPath!=null" class="player-icon"
+                  [style.background-image]="'url(//www.bungie.net' + o.emblemPath + ')'"></span>
               </div>
               <div class="img-body">
-                {{g.owner.label}}
+                {{o.label}}
               </div>
             </div>
 

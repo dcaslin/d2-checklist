@@ -599,10 +599,10 @@ export class InventoryItem {
     readonly id: string;
     readonly hash: string;
     readonly name: string;
-    equipped: boolean;
+    equipped: BehaviorSubject<boolean>;
     readonly canEquip: boolean;
     readonly icon: string;
-    owner?: Target;
+    owner: BehaviorSubject<Target>;
     readonly type: ItemType;
     readonly typeName: string;
     readonly quantity: number;
@@ -619,7 +619,7 @@ export class InventoryItem {
     readonly values: any;
     readonly expirationDate: string;
     readonly expired: boolean;
-    public locked: boolean;
+    public locked: BehaviorSubject<boolean>;
     readonly masterworked: boolean;
     readonly masterwork: MastworkInfo;
     readonly mods: InventoryPlug[];
@@ -671,9 +671,9 @@ export class InventoryItem {
         this.id = id;
         this.hash = hash;
         this.name = name;
-        this.equipped = equipped;
+        this.equipped = new BehaviorSubject(equipped);
         this.canEquip = canEquip;
-        this.owner = owner;
+        this.owner = new BehaviorSubject(owner);
 
         this.icon = icon;
         this.type = type;
@@ -697,7 +697,7 @@ export class InventoryItem {
             const d = Date.parse(this.expirationDate);
             this.expired = Date.now() > d;
         }
-        this.locked = locked;
+        this.locked = new BehaviorSubject(locked);
         this.masterworked = masterworked;
         this.masterwork = masterwork;
         this.mods = mods;
@@ -1219,6 +1219,14 @@ export class InventoryStat {
         this.desc = desc;
         this.value = value;
         this.baseValue = baseValue;
+    }
+
+    getValue(): number {
+        if (this.value != null) {
+            return this.value;
+        } else {
+            return this.baseValue;
+        }
     }
 }
 

@@ -70,15 +70,15 @@ export class BucketService {
 
         for (let cntr = 0; cntr < items.length; cntr++) {
             const itm = items[cntr];
-            if (!itm.inventoryBucket || !itm.owner) { continue; }
-            const buckets: any = this.buckets[itm.owner.id];
+            if (!itm.inventoryBucket || !itm.owner.getValue()) { continue; }
+            const buckets: any = this.buckets[itm.owner.getValue().id];
             let bucket: Bucket = buckets[itm.inventoryBucket.hash];
             if (bucket == null) {
                 bucket = new Bucket(itm.inventoryBucket);
                 buckets[itm.inventoryBucket.hash] = bucket;
             }
             bucket.items.push(itm);
-            if (itm.equipped) {
+            if (itm.equipped.getValue()) {
                 bucket.equipped = itm;
             }
         }

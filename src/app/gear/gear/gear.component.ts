@@ -407,8 +407,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async pullFromPostmaster(player: Player, itm: InventoryItem) {
     try {
-      await this.gearService.transfer(player, itm, itm.owner);
-      this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + itm.owner.label);
+      const owner = itm.owner.getValue();
+      await this.gearService.transfer(player, itm, owner);
+      this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + owner.label);
     } catch (e) {
       this.notificationService.fail(e);
     }
@@ -427,7 +428,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async equip(player: Player, itm: InventoryItem) {
     await this.gearService.equip(player, itm);
-    this.notificationService.success('Equipped ' + itm.name + ' on ' + itm.owner.label);
+    this.notificationService.success('Equipped ' + itm.name + ' on ' + itm.owner.getValue().label);
     this.filterChanged();
   }
 
@@ -456,7 +457,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.openGearDialog(copies, false);
   }
 
-  showSimilar(i: InventoryItem) {
+  showSimilarBySeason(i: InventoryItem) {
+    const copies = this.gearService.findSimilar(i, this._player.getValue(), true);
+    this.openGearDialog(copies, true);
+  }
+
+
+  showSimilar(i: InventoryItem, season?: boolean) {
     const copies = this.gearService.findSimilar(i, this._player.getValue());
     this.openGearDialog(copies, true);
   }
@@ -703,7 +710,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false;
     }
-    if (!this.ownerToggle.isChosen(this.option.type, i.owner.id)) {
+    if (!this.ownerToggle.isChosen(this.option.type, i.owner.getValue().id)) {
       const key = 'owner';
       if (report[key] == null) {
         report[key] = 0;
@@ -711,7 +718,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       report[key] = report[key] + 1;
       return false;
     }
-    if (!this.equippedToggle.isChosen(this.option.type, '' + i.equipped)) {
+    if (!this.equippedToggle.isChosen(this.option.type, '' + i.equipped.getValue())) {
       const key = 'equipped';
       if (report[key] == null) {
         report[key] = 0;

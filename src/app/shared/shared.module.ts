@@ -49,6 +49,7 @@ import { SignInRequiredComponent } from './sign-in-required/sign-in-required.com
 import { SortIndicatorComponent } from './sort-indicator/sort-indicator.component';
 import { SeasonIndicatorComponent } from './season-indicator/season-indicator.component';
 import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energy-indicator.component';
+import { ItemIconComponent } from './item-icon/item-icon.component';
 
 
 @NgModule({
@@ -98,10 +99,12 @@ import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energ
   SeasonIndicatorComponent,
   SignInRequiredComponent,
   SortIndicatorComponent,
-  ItemEnergyIndicatorComponent],
+  ItemEnergyIndicatorComponent,
+  ItemIconComponent],
   exports: [
     MilestoneCheckComponent,
     SortIndicatorComponent,
+    ItemIconComponent,
     SeasonIndicatorComponent,
     ItemEnergyIndicatorComponent,
     SignInRequiredComponent,

@@ -4,6 +4,7 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { GearComponent } from '../gear.component';
+import { GearService } from '@app/service/gear.service';
 
 @Component({
   selector: 'd2c-gear-compare-dialog',
@@ -22,6 +23,7 @@ export class GearCompareDialogComponent {
 
   constructor(
     public iconService: IconService,
+    public gearService: GearService,
     private cacheService: DestinyCacheService,
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {

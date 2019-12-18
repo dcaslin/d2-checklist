@@ -171,7 +171,7 @@ export class MarkService implements OnDestroy {
 
     private hasPrivateItems(items: InventoryItem[]) {
         for (const i of items) {
-            if (!i.equipped) {
+            if (!i.equipped.getValue()) {
                 return true;
             }
         }
