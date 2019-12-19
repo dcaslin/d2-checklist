@@ -303,7 +303,7 @@
             <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
               <tr [ngClass]="i.mark">
                 <td class="limited-gear-width">
-                  <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="gearService.setLock(player, i, $event)">
+                  <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="setLock(player, i, $event)">
                   </d2c-item-icon>
                   <br>
                   <div class="mobile-only-block">
@@ -578,7 +578,7 @@
                 </button>
                 <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
                   (click)="showSimilarBySeasonAndBurn(i)">
-                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon> By season & burn
+                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon> By season & energy
                 </button>
               </mat-menu>
             </ng-container>
