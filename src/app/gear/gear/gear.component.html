@@ -303,7 +303,8 @@
             <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
               <tr [ngClass]="i.mark">
                 <td class="limited-gear-width">
-                  <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="gearService.setLock(player, i, $event)"></d2c-item-icon>
+                  <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="gearService.setLock(player, i, $event)">
+                  </d2c-item-icon>
                   <br>
                   <div class="mobile-only-block">
                     <button mat-button [matMenuTriggerFor]="compareMenu">
@@ -311,22 +312,15 @@
                     </button>
                   </div>
                 </td>
-                <td class="limited-gear-width">
-                  <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
+                <td class="limited-gear-width">                  
 
-                  <a *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
-                    class="item-name" href="javascript:void(0)" [matTooltip]="i.desc"
-                    matTooltipClass="preserve-white-space" (click)="showItem(i)">
+                  <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.desc"
+                    [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                     {{i.name}}
-                  </a>
-                  <span
-                    *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle"
-                    class="item-name" [matTooltip]="i.desc" matTooltipClass="preserve-white-space">
-                    {{i.name}}
-                  </span>
-                  <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
-                    <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
-                  </a>
+                    <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
+                  </button>
+                  
+
                   <mat-menu #itemMenu="matMenu">
                     <button mat-menu-item *ngIf="i.postmaster" (click)="pullFromPostmaster(player, i)">
                       <fa-icon [icon]="iconService.falEnvelopeOpen"></fa-icon> Pull from postmaster
@@ -337,26 +331,38 @@
                           <fa-icon [icon]="iconService.falTshirt"></fa-icon> Equip on {{owner.label}}
                         </button>
                       </ng-container>
-                      
+
                       <button mat-menu-item *ngFor="let target of i.options" (click)="transfer(player, i, target)">
                         <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to {{target.label}}
                       </button>
+
+                      <button mat-menu-item [matMenuTriggerFor]="subItemMenu">
+                        <fa-icon [icon]="iconService.falBars"></fa-icon> More
+                      </button>
                     </ng-container>
 
+                  </mat-menu>
+                  <mat-menu #subItemMenu="matMenu">
+                    <button mat-menu-item
+                      *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
+                      (click)="showItem(i)">
+                      <fa-icon [icon]="iconService.falInfoSquare"></fa-icon> Details
+                    </button>
                     <button mat-menu-item
                       *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
                       (click)="copyToClipboard(i)">
                       <fa-icon [icon]="iconService.falCopy"></fa-icon> Copy for reddit
                     </button>
-                    <button mat-menu-item *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
-                      <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show random rolls
+                    <button mat-menu-item *ngIf="option.type == ItemType.Weapon && i.isRandomRoll"
+                      (click)="showPossibleRolls(i)">
+                      <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show possible rolls
                     </button>
                   </mat-menu>
                   <span *ngIf="debugmode|async">[{{i.hash}}]</span>
 
                   <div>
                     <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}</span>
-                    <span *ngIf="i.postmaster" class="warn-text">
+                    <span *ngIf="i.postmaster" class="margin-left warn-text">
                       <fa-icon [icon]="iconService.falMailbox"></fa-icon>
                     </span>
                     <span class="mobile-only-block">
@@ -396,7 +402,6 @@
                   </div>
 
                 </td>
-
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
                   <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
@@ -405,12 +410,14 @@
                   </ng-container>
                   <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]
                   </ng-container>
+
+                  <div class="vertical-pad">
+                    <button mat-stroked-button [matMenuTriggerFor]="compareMenu"
+                      *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                      Compare
+                    </button>
+                  </div>
                   <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
-                    <div class="vertical-pad">
-                      <button mat-stroked-button *ngIf="option.type==ItemType.Weapon" (click)="showPossibleRolls(i)">
-                        <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Possible rolls
-                      </button>
-                    </div>
                     <div *ngIf="i.noGodRollInfo" class="simple-caption-no-margin vertical-pad">
                       No godroll info yet
                     </div>
@@ -433,12 +440,7 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
                   || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-
-                  <button mat-button [matMenuTriggerFor]="compareMenu">
-                    {{i.copies}} <fa-icon [icon]="iconService.falClone"></fa-icon>
-                  </button>
-
-                  
+                  {{i.copies}}
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
@@ -493,11 +495,13 @@
                           </td>
                           <td>{{stat.baseValue}}</td>
                         </tr> -->
-                        <tr *ngIf="stat.hash==1345609583 || stat.hash==155624089 || stat.hash==4043523819 || stat.hash==1240592695">
+                        <tr
+                          *ngIf="stat.hash==1345609583 || stat.hash==155624089 || stat.hash==4043523819 || stat.hash==1240592695">
                           <td><a class="gear-sort" href="javascript:void(0)"
                               (click)="sort('stat.'+stat.hash)">{{stat.name}}
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
-                                [descending]="sortDesc"></d2c-sort-indicator>
+                                [descending]="sortDesc">
+                              </d2c-sort-indicator>
                             </a>
                           </td>
                           <td>{{stat.getValue()}}</td>
@@ -514,7 +518,8 @@
                           <td class="gear-sort">
                             <a href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">{{stat.name}}
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
-                                [descending]="sortDesc"></d2c-sort-indicator>
+                                [descending]="sortDesc">
+                              </d2c-sort-indicator>
                             </a>
                           </td>
                           <td>{{stat.value}}
@@ -559,15 +564,21 @@
               </tr>
               <mat-menu #compareMenu="matMenu">
                 <button mat-menu-item (click)="showCopies(i)">
-                  <fa-icon [icon]="iconService.falClone"></fa-icon> Compare copies
+                  <fa-icon [icon]="iconService.falClone"></fa-icon> Copies
                 </button>
-                <button *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" 
-                  mat-menu-item (click)="showSimilar(i)">
-                  <fa-icon [icon]="iconService.falLayerGroup"></fa-icon> Compare similar
+                <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilar(i)">
+                  <fa-icon [icon]="iconService.falCrosshairs"></fa-icon> By frame
                 </button>
-                <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" 
-                  mat-menu-item (click)="showSimilarBySeason(i)">
-                  <fa-icon [icon]="iconService.fasWheat"></fa-icon> Compare season
+                <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilar(i)">
+                  <fa-icon [icon]="iconService.falBolt"></fa-icon> By energy
+                </button>
+                <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
+                  (click)="showSimilarBySeason(i)">
+                  <fa-icon [icon]="iconService.falWheat"></fa-icon> By season
+                </button>
+                <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
+                  (click)="showSimilarBySeasonAndBurn(i)">
+                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon> By season & burn
                 </button>
               </mat-menu>
             </ng-container>

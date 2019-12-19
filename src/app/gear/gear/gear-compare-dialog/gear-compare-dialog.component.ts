@@ -34,9 +34,9 @@ export class GearCompareDialogComponent {
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.items = data.items;
-    this.sortedItems.next(this.items);
     this.parent = data.parent;
     this.showAllNames = data.showNames;
+    this._sort();
   }
 
   sort(event: SortEvent) {

@@ -462,6 +462,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.openGearDialog(copies, true);
   }
 
+  showSimilarBySeasonAndBurn(i: InventoryItem) {
+    const copies = this.gearService.findSimilar(i, this._player.getValue(), true, true);
+    this.openGearDialog(copies, true);
+  }
 
   showSimilar(i: InventoryItem, season?: boolean) {
     const copies = this.gearService.findSimilar(i, this._player.getValue());
