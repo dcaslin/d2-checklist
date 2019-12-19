@@ -87,6 +87,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:random',
     'is:fixed',
     'is:hasmod',
+    'is:locked',
+    'is:unlocked'
   ];
 
 
@@ -537,7 +539,19 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
   }
 
-  private static _processFilterTag(actual: string, i: InventoryItem) {
+  public async setLock(player: Player, itm: InventoryItem, locked: boolean) {
+    await this.gearService.setLock(player, itm, locked);
+    this.filterChanged();
+  }
+
+
+  private static _processFilterTag(actual: string, i: InventoryItem): boolean {
+    if (actual == 'is:locked') {
+      return i.locked.getValue();
+    }
+    if (actual == 'is:unlocked') {
+      return !i.locked.getValue();
+    }
     let compResult = GearComponent._processComparison('is:light', actual, i.power);
     if (compResult != null) {
       return compResult;
@@ -780,7 +794,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return returnMe;
   }
 
- 
+
 
   filterGear() {
     this.filterNotes = [];

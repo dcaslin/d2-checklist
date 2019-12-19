@@ -238,15 +238,15 @@ export class GearService {
                 if (i.tier != g.tier) {
                     continue;
                 }
-                if (season) {
-                    if (i.seasonalModSlot != g.seasonalModSlot) {
-                        continue;
-                    }
-                } else if (seasonAndBurn) {
+                if (seasonAndBurn) {
                     if (i.seasonalModSlot != g.seasonalModSlot) {
                         continue;
                     }
                     if (i.energyType != g.energyType) {
+                        continue;
+                    }
+                } else if (season) {
+                    if (i.seasonalModSlot != g.seasonalModSlot) {
                         continue;
                     }
                 } else {
