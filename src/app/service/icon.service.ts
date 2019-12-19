@@ -1,16 +1,27 @@
 import { Injectable } from '@angular/core';
 import { faAmazon as fabAmazon, faGithub as fabGithub, faPaypal as fabPaypal, faPlaystation as fabPlaystation, faReddit as fabReddit, faSteam as fabSteam, faTwitter as fabTwitter, faWindows as fabWindows, faXbox as fabXbox, faYoutube as fabYoutube } from '@fortawesome/free-brands-svg-icons';
-import { faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone, 
-  faLayerGroup as falLayerGroup,
-  faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen, 
-  faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faMailbox as falMailbox, faSigma as falSigma, faSort as falSort, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy, 
-  faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow,  faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy} from '@fortawesome/pro-light-svg-icons';
-import { faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
-  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy } from '@fortawesome/pro-regular-svg-icons';
+import {
+  faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone,
+  faLayerGroup as falLayerGroup, faBars as falBars,
+  faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen,
+  faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faMailbox as falMailbox, faSigma as falSigma, 
+  faSort as falSort, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy,
+  faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow, faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy,
+  faInfoSquare as falInfoSquare,
+  faCrosshairs as falCrosshairs,
+  faBolt as falBolt,
+  faWheat as falWheat,
+  faPlusSquare as falPlusSquare,
+
+} from '@fortawesome/pro-light-svg-icons';
+import {
+  faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
+  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy
+} from '@fortawesome/pro-regular-svg-icons';
 
 import { faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp } from '@fortawesome/pro-duotone-svg-icons';
 import {
-  faSort as fasSort,
+  faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
   faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, faArrowLeft as fasArrowLeft,
@@ -30,7 +41,8 @@ import {
   faSyncAlt as fasSyncAlt, faSyringe as fasSyringe, faTags as fasTags, faTimes as fasTimes,
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
-  faWheat as fasWheat } from '@fortawesome/pro-solid-svg-icons';
+  faWheat as fasWheat
+} from '@fortawesome/pro-solid-svg-icons';
 
 
 
@@ -40,6 +52,13 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+
+  public readonly falCrosshairs = falCrosshairs;
+  public readonly falBolt = falBolt;
+  public readonly falWheat = falWheat;
+  public readonly falPlusSquare = falPlusSquare;
+  public readonly falInfoSquare = falInfoSquare;
+  public readonly falBars = falBars;
   public readonly fadSort = fadSort;
   public readonly fadSortUp = fadSortUp;
   public readonly fadSortDown = fadSortDown;
@@ -65,31 +84,32 @@ export class IconService {
   public readonly fasEye = fasEye;
   public readonly fasEyeSlash = fasEyeSlash;
   public readonly fasArrowLeft = fasArrowLeft;
-  public readonly farProjectDiagram = farProjectDiagram ;
+  public readonly farProjectDiagram = farProjectDiagram;
   public readonly fasClock = fasClock;
-  public readonly  farGift = farGift;
+  public readonly farGift = farGift;
   public readonly farCog = farCog;
   public readonly farBalanceScale = farBalanceScale;
   public readonly farPalette = farPalette;
 
-  public readonly  falTrophy = falTrophy;
+  public readonly falTrophy = falTrophy;
   public readonly falGamepad = falGamepad;
 
-  public readonly  farSync = farSync;
-  public readonly  farExternalLink = farExternalLink;
-  public readonly  farTimes = farTimes;
-  public readonly  farTrophy = farTrophy;
+  public readonly farSync = farSync;
+  public readonly farExternalLink = farExternalLink;
+  public readonly farTimes = farTimes;
+  public readonly farTrophy = farTrophy;
 
   public readonly fasCalendarStar = fasCalendarStar;
   public readonly fasTimes = fasTimes;
-  public readonly  fasBullseyePointer = fasBullseyePointer;
+  public readonly fasBullseyePointer = fasBullseyePointer;
   public readonly fasCheck = fasCheck;
   public readonly fasInfoSquare = fasInfoSquare;
-  public readonly  fasHistory = fasHistory;
-  public readonly  fasUserFriends = fasUserFriends;
-  public readonly  fasGift = fasGift;
-  public readonly  fasSigma = fasSigma ;
-  public readonly  fasWheat = fasWheat;
+  public readonly fasHistory = fasHistory;
+  public readonly fasUserFriends = fasUserFriends;
+  public readonly fasGift = fasGift;
+  public readonly fasSigma = fasSigma;
+  public readonly fasWheat = fasWheat;
+  public readonly fasPlusSquare = fasPlusSquare;
 
   public readonly fabXbox = fabXbox;
   public readonly farTimesSquare = farTimesSquare;

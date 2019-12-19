@@ -219,7 +219,7 @@ export class GearService {
     }
 
 
-    public findSimilar(i: InventoryItem, player: Player, season?: boolean): InventoryItem[] {
+    public findSimilar(i: InventoryItem, player: Player, season?: boolean, seasonAndBurn?: boolean): InventoryItem[] {
         const copies = [i];
         for (const g of player.gear) {
             if (g.id == i.id) {
@@ -240,6 +240,13 @@ export class GearService {
                 }
                 if (season) {
                     if (i.seasonalModSlot != g.seasonalModSlot) {
+                        continue;
+                    }
+                } else if (seasonAndBurn) {
+                    if (i.seasonalModSlot != g.seasonalModSlot) {
+                        continue;
+                    }
+                    if (i.energyType != g.energyType) {
                         continue;
                     }
                 } else {
