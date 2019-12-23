@@ -88,7 +88,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:fixed',
     'is:hasmod',
     'is:locked',
-    'is:unlocked'
+    'is:unlocked',
+    'season:undying',
+    'season:dawn',
+    'season:opulence',
+    'season:forge',
+    'season:outlaw',
+
   ];
 
 
@@ -1044,7 +1050,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
       this.appendMode = rawFilter.endsWith(' and ') || rawFilter.endsWith(' or ');
       const newFilteredOptions = [];
-      if (rawFilter.startsWith('is:')) {
+      if (rawFilter.startsWith('is:')||rawFilter.startsWith('sea')) {
         for (const o of this.autocompleteOptions) {
           if (o.startsWith(rawFilter)) {
             newFilteredOptions.push(o);
