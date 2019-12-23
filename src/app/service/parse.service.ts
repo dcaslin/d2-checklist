@@ -3048,7 +3048,7 @@ export class ParseService {
             if (h == 2149155760 || h == 13646368) { // outlaw
                 return 4;
             }
-            if (h == 1962317640 || h == 2712224971 || h == 1202876185) { // opulent
+            if (h == 1962317640 || h == 2712224971 || h == 1202876185) { // opulence
                 return 7;
             }
             if (h == 65589297) { // forge
@@ -3488,6 +3488,21 @@ export class ParseService {
             }
             if (seasonalModSlot) {
                 searchText += 'is:seasonmod';
+                if (seasonalModSlot == 9) {
+                    searchText += 'season:dawn';
+                }
+                if (seasonalModSlot == 8) {
+                    searchText += 'season:undying';
+                }
+                if (seasonalModSlot == 7) {
+                    searchText += 'season:opulence';
+                }
+                if (seasonalModSlot == 5) {
+                    searchText += 'season:forge';
+                }
+                if (seasonalModSlot == 4) {
+                    searchText += 'season:outlaw';
+                }
             }
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
