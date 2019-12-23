@@ -404,7 +404,7 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
-                  <span class="simple-caption" *ngIf="i.isRandomRoll">Random</span>
+                  <a href="javascript:void(0)" class="simple-caption" *ngIf="i.isRandomRoll" (click)="showPossibleRolls(i)">Random</a>
                   <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
                   </ng-container>
