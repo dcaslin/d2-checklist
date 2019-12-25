@@ -1,0 +1,51 @@
+.hide-mobile-inline {
+  display: inline;
+  visibility: visible;
+}
+
+
+.grid-parent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  grid-auto-flow: row dense;
+}
+
+.objective {
+  font-size: smaller;
+  margin-left: 15px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 24px;
+  box-sizing: content-box;
+  padding: 4px;
+}
+
+.icon-parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+}
+
+.title-text {
+  margin: 0px !important;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+}
+
+.body-text {
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}

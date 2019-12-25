@@ -1,18 +1,19 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { Router } from '@angular/router';
+import { BungieService } from '@app/service/bungie.service';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { IconService } from '@app/service/icon.service';
 import { Today, WeekService } from '@app/service/week.service';
 import { environment as env } from '@env/environment';
+import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Const, Platform, MilestoneActivity, SelectedUser, BountySet } from '../../service/model';
+import { BountySet, Character, Const, MilestoneActivity, Platform, Player, SelectedUser } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { IconService } from '@app/service/icon.service';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { BountySetsDialogComponent } from './bounty-sets-dialog/bounty-sets-dialog.component';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
-import { BungieService } from '@app/service/bungie.service';
-import { BehaviorSubject, Subject } from 'rxjs';
 
 @Component({
   selector: 'd2c-home',
@@ -21,11 +22,20 @@ import { BehaviorSubject, Subject } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
-
+  readonly BOUNTY_CUTOFF = 4;
   readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly showAllBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  readonly bountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  readonly bountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
+
+  readonly playerLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly player: BehaviorSubject<Player> = new BehaviorSubject(null);
+  readonly char: BehaviorSubject<Character> = new BehaviorSubject(null);
+
+  readonly vendorBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly playerBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly playerBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
+  readonly vendorBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
+
+
   readonly version = env.versions.app;
   manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
@@ -101,6 +111,14 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.dialog.open(BurnDialogComponent, dc);
   }
 
+  showBountySet(bs: BountySet) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = bs;
+    dc.width = '80%';
+    this.dialog.open(BountySetsDialogComponent, dc);
+  }
+
   async loadMileStones() {
     try {
       this.today = await this.weekService.getToday();
@@ -111,33 +129,45 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     }
   }
 
-  async loadBountieGroups(selectedUser: SelectedUser) {
+  async loadPlayerForBounties(selectedUser: SelectedUser) {
     if (!selectedUser || !selectedUser.userInfo) {
       return;
     }
     try {
-      this.bountiesLoading.next(true);
+      this.playerLoading.next(true);
       const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId, ['Profiles', 'Characters']);
       if (!player.characters || player.characters.length == 0) {
         return;
       }
-      const bounties = await this.bungieService.groupBounties(player.characters[0]);
-      this.bountySets.next(bounties);
-      for (const bs of bounties) {
-        if (bs.bounties.length >= 4) {
-          console.log('---' + bs.tag + " - " + bs.bounties.length);
-          // for (const b of bs.bounties) {
-          //   console.log('    ' + b.name + ': ' + b.tags);
-          //   console.dir(b);
-          // }
-        }
-
-      }
+      this.player.next(player);
     }
     finally {
-      this.bountiesLoading.next(false);
+      this.playerLoading.next(false);
     }
   }
+
+  async loadVendorBountySets(char: Character) {
+    try {
+      this.vendorBountiesLoading.next(true);
+      const bounties = await this.bungieService.groupBounties(char);
+      this.vendorBountySets.next(bounties);
+    }
+    finally {
+      this.vendorBountiesLoading.next(false);
+    }
+  }
+
+  async loadPlayerBountySets(char: Character) {
+    try {
+      this.playerBountiesLoading.next(true);
+      const bounties = await this.bungieService.groupBounties(char);
+      this.playerBountySets.next(bounties);
+    }
+    finally {
+      this.playerBountiesLoading.next(false);
+    }
+  }
+
 
   ngOnInit() {
 
@@ -146,14 +176,31 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-      if (!selectedUser) {
-        this.isSignedOn.next(false);
-        this.bountySets.next([]);
-      } else {
-        this.isSignedOn.next(true);
-        this.bountySets.next([]);
-        this.loadBountieGroups(selectedUser);
-      }
+      this.player.next(null);
+      this.isSignedOn.next(selectedUser != null);
+      this.loadPlayerForBounties(selectedUser);
     });
+    this.player.pipe(takeUntil(this.unsubscribe$)).pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player) => {
+      this.vendorBountySets.next([]);
+      this.playerBountySets.next([]);
+      if (!player || !player.characters || player.characters.length == 0) {
+        this.char.next(null);
+        return;
+      }
+      this.char.next(player.characters[0]);
+    });
+    this.char.pipe(takeUntil(this.unsubscribe$)).pipe(takeUntil(this.unsubscribe$)).subscribe((char: Character) => {
+      this.vendorBountySets.next([]);
+      this.playerBountySets.next([]);
+      if (!char) {
+        return;
+      }
+
+      this.loadVendorBountySets(char);
+      this.loadPlayerBountySets(char);
+
+    });
+
+
   }
 }
