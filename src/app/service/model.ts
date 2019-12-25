@@ -359,7 +359,7 @@ export class BungieMember {
 
 export interface BountySet {
     tag: string;
-    bounties: SaleItem[];
+    bounties: (SaleItem|InventoryItem)[];
 }
 
 export class SelectedUser {
@@ -602,7 +602,7 @@ export class Player {
 }
 
 export class InventoryItem {
-    pursuitTags?: string[];
+    tags?: string[];
     readonly id: string;
     readonly hash: string;
     readonly name: string;

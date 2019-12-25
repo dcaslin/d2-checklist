@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { IconService } from '@app/service/icon.service';
-import { BountySet } from '@app/service/model';
+import { BountySet, SaleItem } from '@app/service/model';
 
 @Component({
   selector: 'd2c-bounty-sets-dialog',
@@ -16,14 +16,16 @@ export class BountySetsDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<BountySetsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: BountySet) {
       data.bounties.sort((a, b) => {
-        if (a.vendor && !b.vendor) {
+        const vA = a as SaleItem;
+        const vB = b as SaleItem;
+        if (vA.vendor && !vB.vendor) {
           return 1;
-        } else if (!a.vendor && b.vendor) {
+        } else if (!vA.vendor && vB.vendor) {
           return -1;
-        } else if (a.vendor && b.vendor) {
-          if (a.vendor.name > b.vendor.name) {
+        } else if (vA.vendor && vB.vendor) {
+          if (vA.vendor.name > vB.vendor.name) {
             return 1;
-          } else if (a.vendor.name < b.vendor.name) {
+          } else if (vA.vendor.name < vB.vendor.name) {
             return -1;
           }
         }

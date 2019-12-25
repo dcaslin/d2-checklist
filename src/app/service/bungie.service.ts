@@ -775,18 +775,16 @@ export class BungieService implements OnDestroy {
         return playerSubject;
     }
 
-
-
     public isSignedOn(p: Player): boolean {
         if (this.selectedUser == null) { return false; }
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
     }
 
-    public async groupBounties(c: Character) {
+    public async groupVendorBounties(c: Character) {
         try {
             const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
                 c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemSockets');
-            const vendorData = this.parseService.groupBounties(resp);
+            const vendorData = this.parseService.groupVendorBounties(resp);
             return vendorData;
         } catch (err) {
             this.handleError(err);
@@ -794,11 +792,14 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    
+
     public async loadVendors(c: Character): Promise<SaleItem[]> {
         try {
             const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
                 c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemSockets');
             const vendorData = this.parseService.parseVendorData(resp);
+
             return vendorData;
         } catch (err) {
             this.handleError(err);
