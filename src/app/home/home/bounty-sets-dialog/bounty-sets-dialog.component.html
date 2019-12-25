@@ -21,9 +21,12 @@
                                 <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                             </a>
                         </span>
-                        <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}
-                        </ng-container><br>
-                        <span class="type-caption">{{i.vendor.name}}</span>
+                        <br>
+                        <span *ngIf="i.vendor" class="type-caption">{{i.vendor.name}}
+                            <span *ngIf="i.status!=null" class="warn-text">
+                                {{i.status}}
+                            </span>
+                        </span>
                     </h4>
                 </div>
             </div>
@@ -34,8 +37,18 @@
             </div>
             <div>
                 <small>{{i.desc}}</small>
-                <div class='objective' *ngFor="let o of i.objectives">
-                    - {{o.total}} {{o.units}}
+                <div class='objective' *ngFor="let obj of i.objectives">
+                    <ng-container *ngIf="obj.total">
+                        - {{obj.total}} {{obj.units}}
+                    </ng-container>
+                    <ng-container *ngIf="obj.completionValue">
+                        <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
+                            class="accent-text mat-option.mat-selected"></fa-icon>
+                        <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
+                        {{obj.progressDescription}}
+                        <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+                    </ng-container>
+
                 </div>
             </div>
         </div>

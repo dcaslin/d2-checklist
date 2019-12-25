@@ -14,6 +14,8 @@ import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { BountySetsDialogComponent } from './bounty-sets-dialog/bounty-sets-dialog.component';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
+import { ParseService } from '@app/service/parse.service';
+import { AuthService } from '@app/service/auth.service';
 
 @Component({
   selector: 'd2c-home',
@@ -24,17 +26,18 @@ import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly BOUNTY_CUTOFF = 4;
   readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  readonly showAllBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly showAllVendorBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly showAllPlayerBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly playerLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly player: BehaviorSubject<Player> = new BehaviorSubject(null);
   readonly char: BehaviorSubject<Character> = new BehaviorSubject(null);
+  currentChar: Character = null;
 
   readonly vendorBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly playerBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly playerBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
   readonly vendorBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
-
 
   readonly version = env.versions.app;
   manifestVersion = '';
@@ -45,10 +48,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   showMoreInfo = false;
   today: Today = null;
 
-
   constructor(
     private destinyCacheService: DestinyCacheService,
     private bungieService: BungieService,
+    private authService: AuthService,
+    private parseService: ParseService,
     public iconService: IconService,
     public dialog: MatDialog,
     storageService: StorageService,
@@ -111,6 +115,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.dialog.open(BurnDialogComponent, dc);
   }
 
+  logon() {
+    this.authService.getCurrentMemberId(true);
+  }
+
+
   showBountySet(bs: BountySet) {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
@@ -135,8 +144,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     }
     try {
       this.playerLoading.next(true);
-      const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId, ['Profiles', 'Characters']);
-      if (!player.characters || player.characters.length == 0) {
+      const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId,
+        ['Profiles', 'Characters', 'CharacterInventories', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives']);
+      if (!player || !player.characters || player.characters.length == 0) {
         return;
       }
       this.player.next(player);
@@ -149,7 +159,8 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   async loadVendorBountySets(char: Character) {
     try {
       this.vendorBountiesLoading.next(true);
-      const bounties = await this.bungieService.groupBounties(char);
+      let bounties = await this.bungieService.groupVendorBounties(char);
+      bounties = bounties.filter(bs => bs.bounties.length > 1);
       this.vendorBountySets.next(bounties);
     }
     finally {
@@ -160,7 +171,8 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   async loadPlayerBountySets(char: Character) {
     try {
       this.playerBountiesLoading.next(true);
-      const bounties = await this.bungieService.groupBounties(char);
+      let bounties = this.parseService.groupCharBounties(this.player.getValue(), char);
+      bounties = bounties.filter(bs => bs.bounties.length > 1);
       this.playerBountySets.next(bounties);
     }
     finally {
@@ -190,6 +202,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       this.char.next(player.characters[0]);
     });
     this.char.pipe(takeUntil(this.unsubscribe$)).pipe(takeUntil(this.unsubscribe$)).subscribe((char: Character) => {
+      this.currentChar = char;
+      if (char) {
+        console.log(char.label);
+      }
       this.vendorBountySets.next([]);
       this.playerBountySets.next([]);
       if (!char) {

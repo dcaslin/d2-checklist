@@ -791,13 +791,11 @@ export class ParseService {
         return returnMe;
     }
 
-
-    public groupBounties(resp: any): BountySet[] {
-        const saleItems = this.parseVendorData(resp);
+    private groupBounties(bounties: SaleItem[]|InventoryItem[]): BountySet[] {
         const tags = this.destinyCacheService.cache.PursuitTags!;
-        const tagSet: {[key: string]: SaleItem[] } = {};
+        const tagSet: {[key: string]: (SaleItem|InventoryItem)[]  } = {};
         const used = {};
-        for (const s of saleItems) {
+        for (const s of bounties) {
             if (!tags[s.hash]) {
                 continue;
             }
@@ -806,7 +804,6 @@ export class ParseService {
                 continue;
             }
             used[s.hash] = true;
-
             const itemTags = tags[s.hash];
             s.tags = itemTags.slice(0);
             for (const t of itemTags) {
@@ -835,6 +832,38 @@ export class ParseService {
         return returnMe;
     }
 
+    public groupCharBounties(player: Player, char: Character): BountySet[] {
+        const bounties = [];
+        for (const i of player.bounties) {
+            if (i.owner.getValue().id === char.id) {
+                bounties.push(i);
+            }
+        }
+        return this.groupBounties(bounties);
+    }
+
+    public groupVendorBounties(resp: any): BountySet[] {
+        const saleItems = this.parseVendorData(resp);
+        return this.groupBounties(saleItems);
+    }
+
+    public applyTags(items: SaleItem[]) {
+        const tags = this.destinyCacheService.cache.PursuitTags!;
+        const used = {};
+        for (const s of items) {
+            if (!tags[s.hash]) {
+                continue;
+            }
+            // don't double count bounties, werner-99 has an issue with this
+            if (used[s.hash]) {
+                continue;
+            }
+            used[s.hash] = true;
+            const itemTags = tags[s.hash];
+            s.tags = itemTags.slice(0);
+        }
+    }
+
     public parseVendorData(resp: any): SaleItem[] {
         if (resp == null || resp.sales == null) { return null; }
         let returnMe = [];
@@ -844,8 +873,12 @@ export class ParseService {
             returnMe = returnMe.concat(items);
 
         }
+
+
+        
         for (const i of returnMe) {
             i.lowLinks = this.lowlineService.buildItemLink(i.hash);
+
         }
         returnMe.sort((a, b) => {
             if (a.tierType < b.tierType) { return 1; }
@@ -2156,7 +2189,8 @@ export class ParseService {
                     items.forEach(itm => {
                         const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
-                            if (parsed.type === ItemType.Chalice) {
+                            // don't deal with chalice if there are no milestones
+                            if (parsed.type === ItemType.Chalice && resp.characterProgressions) {
                                 this.handleChalice(char, parsed, milestoneList, milestonesByKey, currencies);
                             } else if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);

@@ -95,6 +95,8 @@ THE SOFTWARE.
 
 @angular/material/checkbox
 
+@angular/material/chips
+
 @angular/material/core
 
 @angular/material/dialog

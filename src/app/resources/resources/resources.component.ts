@@ -9,6 +9,7 @@ import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import * as moment from 'moment';
 import { IconService } from '@app/service/icon.service';
+import { ParseService } from '@app/service/parse.service';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   ItemType = ItemType;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    public parseService: ParseService,
     public iconService: IconService,
     private route: ActivatedRoute, public router: Router) {
     super(storageService);
@@ -68,6 +70,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       } else {
         this.char = c;
         const data = await this.bungieService.loadVendors(c);
+        this.parseService.applyTags(data);
         this.vendorData.next(data);
       }
     }

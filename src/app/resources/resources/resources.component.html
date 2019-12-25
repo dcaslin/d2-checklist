@@ -73,6 +73,11 @@
                       <div *ngFor="let o of i.objectives">
                         {{o.total}} {{o.units}}
                       </div>
+                      <div *ngIf="i.tags">
+                        <mat-chip-list aria-label="tags">
+                          <mat-chip *ngFor="let t of i.tags">{{t}}</mat-chip>
+                      </mat-chip-list>
+                      </div>
                     </td>
                     <td class="d-none d-sm-table-cell">
                       <div *ngFor="let v of i.value">
