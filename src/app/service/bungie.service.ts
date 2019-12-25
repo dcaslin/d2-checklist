@@ -782,6 +782,18 @@ export class BungieService implements OnDestroy {
         return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
     }
 
+    public async groupBounties(c: Character) {
+        try {
+            const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
+                c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemSockets');
+            const vendorData = this.parseService.groupBounties(resp);
+            return vendorData;
+        } catch (err) {
+            this.handleError(err);
+            return [];
+        }
+    }
+
     public async loadVendors(c: Character): Promise<SaleItem[]> {
         try {
             const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +

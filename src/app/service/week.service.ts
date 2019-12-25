@@ -22,7 +22,6 @@ export class WeekService {
     const altarEpoch = moment.utc([2019, 10, 9, 17, 0]);
     const today = moment(moment.now());
     const numDays = Math.floor(moment.duration(today.diff(altarEpoch)).asDays());
-    console.log(numDays);
     const index = numDays % 3;
     let altarWeaponKey = null;
     if (index == 0) {

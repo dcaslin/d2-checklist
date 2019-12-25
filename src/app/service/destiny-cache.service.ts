@@ -1,15 +1,15 @@
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject } from 'rxjs';
-import { tap, last } from 'rxjs/operators';
+import { last, tap } from 'rxjs/operators';
 
 declare let JSZip: any;
 
 @Injectable()
 export class DestinyCacheService {
-  public cache: any;
+  public cache: Cache;
 
   public readonly ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly checkingCache: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -86,7 +86,7 @@ export class DestinyCacheService {
   }
 
   async load(key: string): Promise<void> {
-    console.log("--- load ---");
+    console.log('--- load ---');
 
     let headers = new HttpHeaders();
     headers = headers
@@ -115,4 +115,124 @@ export class DestinyCacheService {
       this.unzipping.next(false);
     }
   }
+}
+
+export interface Cache {
+  version?: string;
+  Vendor?: any;
+  Race?: any;
+  Gender?: any;
+  EnergyType?: any;
+  Class?: any;
+  Activity?: any;
+  ActivityType?: any;
+  ActivityMode?: any;
+  Milestone?: any;
+  Faction?: any;
+  Progression?: any;
+  InventoryItem?: { [key: string]: InventoryItem };
+  Stat?: any;
+  Objective?: { [key: string]: Objective };
+  ActivityModifier?: any;
+  Perk?: any;
+  SocketType?: any;
+  PlugSet?: any;
+  SocketCategory?: any;
+  Checklist?: any;
+  InventoryBucket?: any;
+  EquipmentSlot?: any;
+  PresentationNode?: any;
+  Record?: any;
+  Collectible?: any;
+  ItemTierType?: any;
+  HistoricalStats?: any;
+  RecordSeasons?: any;
+  PursuitTags?: { [key: string]: string[] };
+}
+
+export interface InventoryItem {
+  displayProperties: DisplayProperties;
+  tooltipNotifications: any[];
+  backgroundColor: any;
+  itemTypeDisplayName: string;
+  uiItemDisplayStyle: string;
+  itemTypeAndTierDisplayName: string;
+  displaySource: string;
+  tooltipStyle: string;
+  inventory: any;
+  stats: any;
+  value: any;
+  objectives: Objectives;
+  acquireRewardSiteHash: number;
+  acquireUnlockHash: number;
+  investmentStats: any[];
+  perks: any[];
+  allowActions: boolean;
+  doesPostmasterPullHaveSideEffects: boolean;
+  nonTransferrable: boolean;
+  itemCategoryHashes: number[];
+  specialItemType: number;
+  itemType: number;
+  itemSubType: number;
+  classType: number;
+  breakerType: number;
+  equippable: boolean;
+  defaultDamageType: number;
+  isWrapper: boolean;
+  hash: number;
+  index: number;
+  redacted: boolean;
+  blacklisted: boolean;
+}
+
+// part of Inventory Item
+interface Objectives {
+  objectiveHashes: number[];
+  displayActivityHashes: number[];
+  requireFullObjectiveCompletion: boolean;
+  questlineItemHash: number;
+  narrative: string;
+  objectiveVerbName: string;
+  questTypeIdentifier: string;
+  questTypeHash: number;
+  completionRewardSiteHash: number;
+  nextQuestStepRewardSiteHash: number;
+  timestampUnlockValueHash: number;
+  isGlobalObjectiveItem: boolean;
+  useOnObjectiveCompletion: boolean;
+  inhibitCompletionUnlockValueHash: number;
+  perObjectiveDisplayProperties: any[];
+}
+
+// an Objective record looked up from an objective-hash
+export interface Objective {
+  displayProperties: DisplayProperties;
+  unlockValueHash: number;
+  completionValue: number;
+  scope: number;
+  locationHash: number;
+  allowNegativeValue: boolean;
+  allowValueChangeWhenCompleted: boolean;
+  isCountingDownward: boolean;
+  valueStyle: number;
+  progressDescription: string;
+  perks: any;
+  stats: any;
+  minimumVisibilityThreshold: number;
+  allowOvercompletion: boolean;
+  showValueOnComplete: boolean;
+  isDisplayOnlyObjective: boolean;
+  completedValueStyle: number;
+  inProgressValueStyle: number;
+  hash: number;
+  index: number;
+  redacted: boolean;
+  blacklisted: boolean;
+}
+
+interface DisplayProperties {
+  description: string;
+  name: string;
+  icon: string;
+  hasIcon: boolean;
 }

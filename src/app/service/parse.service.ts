@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, BountySet } from './model';
 
 
 
@@ -791,6 +791,50 @@ export class ParseService {
         return returnMe;
     }
 
+
+    public groupBounties(resp: any): BountySet[] {
+        const saleItems = this.parseVendorData(resp);
+        const tags = this.destinyCacheService.cache.PursuitTags!;
+        const tagSet: {[key: string]: SaleItem[] } = {};
+        const used = {};
+        for (const s of saleItems) {
+            if (!tags[s.hash]) {
+                continue;
+            }
+            // don't double count bounties, werner-99 has an issue with this
+            if (used[s.hash]) {
+                continue;
+            }
+            used[s.hash] = true;
+
+            const itemTags = tags[s.hash];
+            s.tags = itemTags.slice(0);
+            for (const t of itemTags) {
+                if (!tagSet[t]) {
+                    tagSet[t] = [];
+                }
+                tagSet[t].push(s);
+            }
+        }
+        const returnMe: BountySet[] = [];
+        for (const key of Object.keys(tagSet)) {
+            returnMe.push({
+                tag: key,
+                bounties: tagSet[key]
+            });
+        }
+
+        returnMe.sort((a, b) => {
+            if (a.bounties.length > b.bounties.length) {
+                return -1;
+            } else if (a.bounties.length < b.bounties.length) {
+                return 1;
+            }
+            return 0;
+        });
+        return returnMe;
+    }
+
     public parseVendorData(resp: any): SaleItem[] {
         if (resp == null || resp.sales == null) { return null; }
         let returnMe = [];
@@ -986,6 +1030,7 @@ export class ParseService {
             vendor: vendor,
             hash: i.itemHash,
             name: iDesc.displayProperties.name,
+            desc: iDesc.displayProperties.description,
             icon: iDesc.displayProperties.icon,
             type: itemType,
             tierType: iDesc.customTierType != null ? iDesc.customTierType : -1,

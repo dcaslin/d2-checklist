@@ -189,9 +189,11 @@ export interface NameQuantity {
 }
 
 export interface SaleItem {
+    tags?: string[];
     vendor: Vendor;
     hash: string;
     name: string;
+    desc: string;
     icon: string;
     type: ItemType;
     tierType: number;
@@ -355,6 +357,10 @@ export class BungieMember {
     }
 }
 
+export interface BountySet {
+    tag: string;
+    bounties: SaleItem[];
+}
 
 export class SelectedUser {
     userInfo: UserInfo;

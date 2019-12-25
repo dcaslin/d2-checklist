@@ -58,11 +58,13 @@
                       <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
+                      <span [matTooltip]="i.desc">
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
                       <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
                         {{i.name}}
                         <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>
+                      </span>
                       <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                     </td>
