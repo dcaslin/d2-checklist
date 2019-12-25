@@ -46,6 +46,32 @@
         <div class="center-spinner" *ngIf="(loading|async)===true">
           <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
+
+        <mat-card *ngIf="isSignedOn|async" class="bounties-card">
+          <mat-card-header>
+            <mat-card-title>Bounties <fa-icon *ngIf="(bountiesLoading|async)===true" [icon]="iconService.farSpinner" [pulse]="true"
+              [fixedWidth]="true"></fa-icon></mat-card-title>
+            <mat-card-subtitle>Available bounties grouped by topic</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="bounty-button-row" *ngIf="bountySets|async as bs">
+              <ng-container *ngFor="let b of bs; let i = index">
+                <button mat-stroked-button color="" [matBadgeSize]="(showAllBounties|async)?'small':'medium'" matBadgeColor="" *ngIf="i<4 || (showAllBounties|async)"
+                  [matBadge]="b.bounties.length">
+                  {{b.tag| titlecase}}
+                </button>
+              </ng-container>
+              <button mat-stroked-button *ngIf="!(showAllBounties|async) && bs.length>4" (click)="showAllBounties.next(true)">
+                <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+              </button>
+              <button mat-stroked-button *ngIf="showAllBounties|async" (click)="showAllBounties.next(false)">
+                <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
+              </button>
+
+            </div>
+          </mat-card-content>
+        </mat-card>
+        
         <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
           <div
             *ngIf="today.altarOfSorrowsWeapon || (today.publicMilestones.nightmareHunts && today.publicMilestones.nightmareHunts.length>0)">
@@ -74,8 +100,8 @@
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightmareHunts">
                     <div mat-line>
-                      <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
-                          class="fa-icon"></fa-icon></a>
+                      <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon
+                          [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></a>
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </div>
                     <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span
@@ -98,8 +124,8 @@
                 <mat-list>
                   <mat-list-item>
                     <a href="https://i.imgur.com/QoLRa50.jpg" target="_blank" rel="noopener">
-                      Make Public Events <span style="white-space:nowrap;">Heroic <fa-icon [icon]="iconService.fasInfoCircle"
-                        class="accent-text"></fa-icon></span></a>
+                      Make Public Events <span style="white-space:nowrap;">Heroic <fa-icon
+                          [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></span></a>
                   </mat-list-item>
                 </mat-list>
 
@@ -113,8 +139,8 @@
                 <mat-list role="list">
                   <mat-list-item *ngFor="let n of today.publicMilestones.nightfalls">
                     <div mat-line>
-                      <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
-                          class="fa-icon"></fa-icon></a>
+                      <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon
+                          [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></a>
                       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                     </div>
                     <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span

@@ -11,7 +11,7 @@ import {
   faCrosshairs as falCrosshairs,
   faBolt as falBolt,
   faWheat as falWheat,
-  faPlusSquare as falPlusSquare,
+  faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare
 
 } from '@fortawesome/pro-light-svg-icons';
 import {
@@ -57,6 +57,7 @@ export class IconService {
   public readonly falBolt = falBolt;
   public readonly falWheat = falWheat;
   public readonly falPlusSquare = falPlusSquare;
+  public readonly falMinusSquare = falMinusSquare;
   public readonly falInfoSquare = falInfoSquare;
   public readonly falBars = falBars;
   public readonly fadSort = fadSort;
