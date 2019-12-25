@@ -46,32 +46,71 @@
         <div class="center-spinner" *ngIf="(loading|async)===true">
           <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
-
-        <mat-card *ngIf="isSignedOn|async" class="bounties-card">
-          <mat-card-header>
-            <mat-card-title>Bounties <fa-icon *ngIf="(bountiesLoading|async)===true" [icon]="iconService.farSpinner" [pulse]="true"
-              [fixedWidth]="true"></fa-icon></mat-card-title>
-            <mat-card-subtitle>Available bounties grouped by topic</mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            <div class="bounty-button-row" *ngIf="bountySets|async as bs">
-              <ng-container *ngFor="let b of bs; let i = index">
-                <button mat-stroked-button color="" [matBadgeSize]="(showAllBounties|async)?'small':'medium'" matBadgeColor="" *ngIf="i<4 || (showAllBounties|async)"
-                  [matBadge]="b.bounties.length">
-                  {{b.tag| titlecase}}
+        <div class="grid-parent" *ngIf="isSignedOn|async">
+          <mat-card class="bounties-card">
+            <mat-card-header>
+              <mat-card-title>
+                Bounties Held
+                <fa-icon *ngIf="(playerLoading|async)===true || (playerBountiesLoading|async)===true" 
+                  [icon]="iconService.farSpinner"
+                  [pulse]="true" [fixedWidth]="true">
+                </fa-icon>
+              </mat-card-title>
+              <mat-card-subtitle>Held bounties grouped by topic</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="bounty-button-row" *ngIf="playerBountySets|async as bs">
+                <ng-container *ngFor="let b of bs; let i = index">
+                  <button mat-stroked-button (click)="showBountySet(b)"
+                    [matBadgeSize]="(showAllBounties|async)?'small':'medium'" matBadgeColor=""
+                    *ngIf="i < BOUNTY_CUTOFF || (showAllBounties|async)" [matBadge]="b.bounties.length">
+                    {{b.tag| titlecase}}
+                  </button>
+                </ng-container>
+                <button mat-stroked-button *ngIf="!(showAllBounties|async) && bs.length > BOUNTY_CUTOFF"
+                  (click)="showAllBounties.next(true)">
+                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
                 </button>
-              </ng-container>
-              <button mat-stroked-button *ngIf="!(showAllBounties|async) && bs.length>4" (click)="showAllBounties.next(true)">
-                <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
-              </button>
-              <button mat-stroked-button *ngIf="showAllBounties|async" (click)="showAllBounties.next(false)">
-                <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
-              </button>
+                <button mat-stroked-button *ngIf="showAllBounties|async" (click)="showAllBounties.next(false)">
+                  <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
+                </button>
 
-            </div>
-          </mat-card-content>
-        </mat-card>
-        
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <mat-card class="bounties-card">
+            <mat-card-header>
+              <mat-card-title>
+                Bounties for Sale 
+                <fa-icon *ngIf="(playerLoading|async)===true || (vendorBountiesLoading|async)===true" 
+                  [icon]="iconService.farSpinner"
+                  [pulse]="true" [fixedWidth]="true">
+                </fa-icon>
+              </mat-card-title>
+              <mat-card-subtitle>Available bounties grouped by topic</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="bounty-button-row" *ngIf="vendorBountySets|async as bs">
+                <ng-container *ngFor="let b of bs; let i = index">
+                  <button mat-stroked-button (click)="showBountySet(b)"
+                    [matBadgeSize]="(showAllBounties|async)?'small':'medium'" matBadgeColor=""
+                    *ngIf="i < BOUNTY_CUTOFF || (showAllBounties|async)" [matBadge]="b.bounties.length">
+                    {{b.tag| titlecase}}
+                  </button>
+                </ng-container>
+                <button mat-stroked-button *ngIf="!(showAllBounties|async) && bs.length > BOUNTY_CUTOFF"
+                  (click)="showAllBounties.next(true)">
+                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+                </button>
+                <button mat-stroked-button *ngIf="showAllBounties|async" (click)="showAllBounties.next(false)">
+                  <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
+                </button>
+
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
         <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
           <div
             *ngIf="today.altarOfSorrowsWeapon || (today.publicMilestones.nightmareHunts && today.publicMilestones.nightmareHunts.length>0)">

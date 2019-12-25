@@ -602,6 +602,7 @@ export class Player {
 }
 
 export class InventoryItem {
+    pursuitTags?: string[];
     readonly id: string;
     readonly hash: string;
     readonly name: string;

@@ -1,0 +1,43 @@
+<div mat-dialog-title style="margin-bottom: 0px">
+    {{data.tag|titlecase}}
+    <span class="simple-caption-no-margin hide-mobile-inline">Sorted by vendor</span>
+</div>
+<mat-dialog-content>
+    <div class="grid-parent mat-typography">
+        <div class="dashed-border" *ngFor="let i of data.bounties">
+            <div class="title">
+                <div class="icon-parent">
+                    <div class="icon" *ngIf="i.icon!=null"
+                        [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></div>
+                </div>
+                <div class="icon-parent">
+                    <h4 class="title-text">
+                        <span [matTooltip]="i.desc">
+                            <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}}
+                            </ng-container>
+                            <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                                target="_blank" rel="noopener">
+                                {{i.name}}
+                                <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
+                            </a>
+                        </span>
+                        <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}
+                        </ng-container><br>
+                        <span class="type-caption">{{i.vendor.name}}</span>
+                    </h4>
+                </div>
+            </div>
+            <div>
+                <mat-chip-list aria-label="tags">
+                    <mat-chip *ngFor="let t of i.tags">{{t}}</mat-chip>
+                </mat-chip-list>
+            </div>
+            <div>
+                <small>{{i.desc}}</small>
+                <div class='objective' *ngFor="let o of i.objectives">
+                    - {{o.total}} {{o.units}}
+                </div>
+            </div>
+        </div>
+    </div>
+</mat-dialog-content>
