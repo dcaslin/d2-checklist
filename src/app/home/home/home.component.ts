@@ -9,7 +9,7 @@ import { Today, WeekService } from '@app/service/week.service';
 import { environment as env } from '@env/environment';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { BountySet, Character, Const, MilestoneActivity, Platform, Player, SelectedUser } from '../../service/model';
+import { BountySet, Character, Const, MilestoneActivity, Platform, Player, SelectedUser, UserInfo } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { BountySetsDialogComponent } from './bounty-sets-dialog/bounty-sets-dialog.component';
@@ -50,7 +50,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   constructor(
     private destinyCacheService: DestinyCacheService,
-    private bungieService: BungieService,
+    public bungieService: BungieService,
     private authService: AuthService,
     private parseService: ParseService,
     public iconService: IconService,
@@ -139,7 +139,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   async loadPlayerForBounties(selectedUser: SelectedUser) {
-    if (!selectedUser || !selectedUser.userInfo) {
+    if (!selectedUser) {
       return;
     }
     try {
