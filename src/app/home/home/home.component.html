@@ -47,7 +47,9 @@
           <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
         <p *ngIf="!(isSignedOn|async)">
-          <button mat-stroked-button (click)="logon()"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In</button> to see bounty availabilities (this requires a private endpoint that doesn't work otherwise)
+          <button mat-stroked-button (click)="logon()">
+            <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In
+          </button> to see bounty availabilities (this requires a private endpoint that doesn't work otherwise)
         </p>
         <mat-card *ngIf="isSignedOn|async">
           <mat-card-header>
@@ -56,16 +58,21 @@
             </mat-card-title>
             <mat-card-subtitle>
               Currently held and available bounties for the selected character, grouped by shared objectives.
-              <fa-icon *ngIf="(playerLoading|async)===true" [icon]="iconService.farSpinner" [pulse]="true"
-                [fixedWidth]="true">
-              </fa-icon>
               <div>
-                <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player|async as p"
-                  [value]="currentChar" (change)="char.next($event.value)">
+                <mat-button-toggle-group *ngIf="player|async as p" #chargroup="matButtonToggleGroup" [value]="currentChar"
+                  (change)="char.next($event.value)">
                   <mat-button-toggle *ngFor="let c of p.characters" [value]="c">
                     {{c.className}}<span class="d-none d-md-inline"> - {{c.light}}</span>
                   </mat-button-toggle>
                 </mat-button-toggle-group>
+
+                <a mat-icon-button *ngIf="char|async as c"
+                  [routerLink]="['/',c.membershipType, c.membershipId,'pursuits','bounties']">
+                  <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>
+                </a>
+                <button mat-icon-button (click)="loadPlayerForBounties(bungieService.selectedUser)" >
+                  <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(playerLoading|async)===true"></fa-icon>
+                </button>
               </div>
             </mat-card-subtitle>
           </mat-card-header>
@@ -74,14 +81,13 @@
               <div class="bounty-title-container">
                 <div class="bounty-title">
                   Currently Held
-                  <fa-icon *ngIf="(playerLoading|async)===true || (playerBountiesLoading|async)===true"
-                    [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
                 </div>
-                <!-- <div class="simple-caption-no-margin">
-                  Held bounties grouped by topic
-                </div> -->
+               
               </div>
               <div class="bounty-button-row" *ngIf="playerBountySets|async as bs">
+                <div *ngIf="bs.length==0 && !(playerLoading|async)" class="button-replacement simple-caption-no-margin">
+                  No groups of bounties held right now.
+                </div>
                 <ng-container *ngFor="let b of bs; let i = index">
                   <button mat-stroked-button (click)="showBountySet(b)"
                     [matBadgeSize]="(showAllPlayerBounties|async)?'small':'medium'" matBadgeColor=""
@@ -103,12 +109,11 @@
               <div class="bounty-title-container">
                 <div class="bounty-title">
                   For Sale
-                  <fa-icon *ngIf="(playerLoading|async)===true || (vendorBountiesLoading|async)===true"
-                    [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
                 </div>
-                <!-- <div class="simple-caption-no-margin">
-                  Available bounties grouped by topic
-                </div> -->
+              </div>
+              <div class="bounty-button-row" *ngIf="(vendorBountiesLoading|async)===true">
+                <fa-icon class="button-replacement"
+                    [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
               </div>
               <div class="bounty-button-row" *ngIf="vendorBountySets|async as bs">
                 <ng-container *ngFor="let b of bs; let i = index">
