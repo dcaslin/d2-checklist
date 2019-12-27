@@ -4,7 +4,7 @@
 </div>
 <mat-dialog-content>
     <div class="grid-parent mat-typography">
-        <div class="dashed-border" *ngFor="let i of data.bounties">
+        <div class="dashed-border bounty" *ngFor="let i of data.bounties">
             <div class="title">
                 <div class="icon-parent">
                     <div class="icon" *ngIf="i.icon!=null"
@@ -35,7 +35,7 @@
                     <mat-chip *ngFor="let t of i.tags">{{t}}</mat-chip>
                 </mat-chip-list>
             </div>
-            <div>
+            <div class="bounty-details">
                 <small>{{i.desc}}</small>
                 <div class='objective' *ngFor="let obj of i.objectives">
                     <ng-container *ngIf="obj.total">
@@ -48,7 +48,11 @@
                         {{obj.progressDescription}}
                         <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
                     </ng-container>
-
+                </div>
+            </div>
+            <div class="rewards" *ngIf="i.values && i.values.length>0">
+                <div class='reward' *ngFor="let v of i.values">
+                    {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
                 </div>
             </div>
         </div>

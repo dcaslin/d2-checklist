@@ -621,8 +621,8 @@ export class BungieService implements OnDestroy {
         for (const i of vendorData) {
             if (i.vendor.hash == targetVendorHash) {
                 vendorFound = true;
-                if (i.value != null && i.type == ItemType.Bounty) {
-                    for (const v of i.value) {
+                if (i.values != null && i.type == ItemType.Bounty) {
+                    for (const v of i.values) {
                         // is powerful gear
                         if (v.hash == '4039143015') {
                             powerfulBounties.push(i);

@@ -29,7 +29,7 @@ import {
   faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
   faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
   faCheckSquare as fasCheckSquare, faClock as fasClock, faCog as fasCog, faCogs as fasCogs,
-  faCopy as fasCopy, faEllipsisV as fasEllipsisV, faExclamationSquare as fasExclamationSquare,
+  faCopy as fasCopy, faEllipsisH as fasEllipsisH, faEllipsisV as fasEllipsisV, faExclamationSquare as fasExclamationSquare,
   faEye as fasEye, faEyeSlash as fasEyeSlash, faFilter as fasFilter, faFlag as fasFlag,
   faFlaskPotion as fasFlaskPotion, faForklift as fasForklift, faGem as fasGem, faGift as fasGift,
   faHelmetBattle as fasHelmetBattle, faHistory as fasHistory, faHoodCloak as fasHoodCloak,
@@ -159,6 +159,7 @@ export class IconService {
   public readonly fasChartLine = fasChartLine;
   public readonly fasSyncAlt = fasSyncAlt;
   public readonly fasEllipsisV = fasEllipsisV;
+  public readonly fasEllipsisH = fasEllipsisH;
   public readonly fasForklift = fasForklift;
   public readonly fasCogs = fasCogs;
   public readonly fasHelmetBattle = fasHelmetBattle;
