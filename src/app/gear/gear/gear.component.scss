@@ -62,6 +62,13 @@ div.bottom {
   margin-bottom: 10px;
 }
 
+.item-name{
+  display: inline-block;
+  max-width: 125px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 
 $gear-table-padding: 0.3em;
 table.gear-table {
@@ -145,12 +152,6 @@ table.stat-table {
 .mat-stroked-button{
   line-height: 30px !important;
   padding: 0 10px !important;
-}
-
-
-.item-name {
-  font-weight: bold;
-  font-size: 14px;
 }
 
 .item-option {

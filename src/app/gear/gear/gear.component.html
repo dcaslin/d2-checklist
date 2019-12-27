@@ -314,9 +314,9 @@
                 </td>
                 <td class="limited-gear-width">                  
 
-                  <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.desc"
+                  <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
                     [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
-                    {{i.name}}
+                    <div class="item-name">{{i.name}}</div>
                     <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                   </button>
                   
