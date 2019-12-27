@@ -19,10 +19,13 @@ export class WeekService {
 
   public async  getToday(): Promise<Today> {
 
-    const altarEpoch = moment.utc([2019, 10, 9, 17, 0]);
+    const altarEpoch = moment.utc([2019, 10, 9, 17, 0]); // nov 9 2019
+    console.dir(altarEpoch);
     const today = moment(moment.now());
     const numDays = Math.floor(moment.duration(today.diff(altarEpoch)).asDays());
     const index = numDays % 3;
+
+
     let altarWeaponKey = null;
     if (index == 0) {
       altarWeaponKey = '3067821200'; // heretic
@@ -32,6 +35,30 @@ export class WeekService {
       altarWeaponKey = '2164448701'; // apostate
     }
 
+    const forgeIndex = numDays % 4;
+    // Sat, 11/09: Volundr
+    let forgeDay;
+    if (forgeIndex == 0) { // 1506080581 4185095559
+      forgeDay = {
+        name: 'Volundur',
+        icon: this.destinyCacheService.cache.InventoryItem[4185095559].displayProperties.icon
+      };
+    } else if (forgeIndex == 1) { // 957727787 4185095558
+      forgeDay = {
+        name: 'Gofannon',
+        icon: this.destinyCacheService.cache.InventoryItem[4185095558].displayProperties.icon
+      };
+    } else if (forgeIndex == 2) { // 2656947700 4185095557
+      forgeDay = {
+        name: 'Izanami',
+        icon: this.destinyCacheService.cache.InventoryItem[4185095557].displayProperties.icon
+      };
+    } else if (forgeIndex == 3) { // 1434072700 4185095556
+      forgeDay = {
+        name: 'Bergusia',
+        icon: this.destinyCacheService.cache.InventoryItem[4185095556].displayProperties.icon
+      };
+    }
     const publicMilestones = await this.bungieService.getPublicMilestones();
     let currWeek: Week;
     if (publicMilestones && publicMilestones.weekStart) {
@@ -46,7 +73,8 @@ export class WeekService {
     return {
       week: currWeek,
       publicMilestones: publicMilestones,
-      altarOfSorrowsWeapon:  this.destinyCacheService.cache.InventoryItem[altarWeaponKey]
+      altarOfSorrowsWeapon:  this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
+      forge: forgeDay
     };
   }
 }
@@ -55,6 +83,12 @@ export interface Today {
   week: Week;
   publicMilestones: PublicMilestonesAndActivities;
   altarOfSorrowsWeapon: ItemDisplay;
+  forge: ForgeDay;
+}
+
+export interface ForgeDay {
+  name: string;
+  icon: string;
 }
 
 export interface ReckDay {

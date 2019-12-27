@@ -80,7 +80,7 @@
                       </div>
                     </td>
                     <td class="d-none d-sm-table-cell">
-                      <div *ngFor="let v of i.value">
+                      <div *ngFor="let v of i.values">
                         {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
                         <span *ngIf="debugmode|async"> {{v.hash}}</span>
                       </div>

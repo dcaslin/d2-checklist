@@ -59,7 +59,11 @@
 }
 
 .button-replacement {
-  margin-left: 21px;
+  margin-left: 21px !important;
+}
+
+.loading-spinner {
+  margin: 20px !important;
 }
 
 .bounty-button-row {
@@ -106,7 +110,8 @@
 }
 
 .bounty-subtitle {
-  font-size: 14px;
+  margin-left: 20px;
+  font-size: smaller;
   font-weight: 400;
 
 }
@@ -179,6 +184,10 @@ a.underline:link {
 .list-icon{  
   background-size: cover;
   display: block;
+}
+
+.forge-icon {
+  border-radius: 0px !important;
 }
 
 

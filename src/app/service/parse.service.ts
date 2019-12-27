@@ -1074,7 +1074,7 @@ export class ParseService {
             quantity: i.quantity,
             objectives: objectives,
             rolledPerks: rolledPerks,
-            value: values,
+            values: values,
             costs: costs,
             searchText: searchText.toLowerCase()
         };

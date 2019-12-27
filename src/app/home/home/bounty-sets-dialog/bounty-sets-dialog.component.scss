@@ -3,7 +3,6 @@
   visibility: visible;
 }
 
-
 .grid-parent {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -15,6 +14,26 @@
 .objective {
   font-size: smaller;
   margin-left: 15px;
+}
+
+.rewards {
+}
+
+.bounty {
+  display: flex;
+  flex-direction: column;
+}
+
+.bounty-details {
+  flex-grow: 10;
+}
+
+.reward {
+  font-style: italic;
+  opacity: 0.8;
+  display: inline-block;
+  font-size: 10px;
+  margin: 0px 5px 0px 5px;
 }
 
 .icon {

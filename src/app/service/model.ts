@@ -203,7 +203,7 @@ export interface SaleItem {
     quantity: number;
     objectives: ItemObjective[];
     rolledPerks: ItemPerks[][];
-    value: NameQuantity[];
+    values: NameQuantity[];
     costs: NameQuantity[];
     searchText: string;
     lowLinks?: LowLinks;
@@ -623,7 +623,7 @@ export class InventoryItem {
     readonly classAllowed: ClassAllowed;
     readonly bucketOrder: number;
     readonly aggProgress: number;
-    readonly values: any;
+    readonly values: NameQuantity[];
     readonly expirationDate: string;
     readonly expired: boolean;
     public locked: BehaviorSubject<boolean>;
@@ -669,7 +669,7 @@ export class InventoryItem {
         icon: string, type: ItemType, typeName: string, quantity: number,
         power: number, damageType: DamageType, energyType: EnergyType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
-        bucketOrder: number, aggProgress: number, values: any, expirationDate: string,
+        bucketOrder: number, aggProgress: number, values: NameQuantity[], expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
