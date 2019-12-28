@@ -200,19 +200,14 @@
                         <th>
                             <d2c-horizontal-sort [field]="'stat.'+stat.hash" [currVal]="sortBy"
                             [descending]="sortDesc" (sort)="sort($event)">{{stat.name}}</d2c-horizontal-sort>
-                            <span class="caption" *ngIf="!showAllNames && stat.baseValue!=null">
-                                {{stat.baseValue}}
-                            </span>
                         </th>                       
 
                         <ng-container *ngFor="let i of sortedItems|async">
                             <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                                 <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
-                                    {{targetStat.value}}
-
-                                    <div class="caption" *ngIf="targetStat.value==null">
-                                        {{targetStat.baseValue}}
-                                    </div>
+                                    <span [class.baseonly]="targetStat.value==null">
+                                        {{targetStat.getValue()}}
+                                    </span>
                                     <span *ngIf="targetStat.enhancement"
                                         class="accent-text pad-left">+{{stat.enhancement}}</span>
                                 </ng-container>
