@@ -791,7 +791,7 @@ export class ParseService {
         return returnMe;
     }
 
-    private groupBounties(bounties: SaleItem[] | InventoryItem[]): BountySet[] {
+    private groupBounties(type: string, bounties: SaleItem[] | InventoryItem[]): BountySet[] {
         const tags = this.destinyCacheService.cache.PursuitTags!;
         const tagSet: { [key: string]: (SaleItem | InventoryItem)[] } = {};
         const used = {};
@@ -816,6 +816,7 @@ export class ParseService {
         const returnMe: BountySet[] = [];
         for (const key of Object.keys(tagSet)) {
             returnMe.push({
+                type: type,
                 tag: key,
                 bounties: tagSet[key]
             });
@@ -839,13 +840,13 @@ export class ParseService {
                 bounties.push(i);
             }
         }
-        return this.groupBounties(bounties);
+        return this.groupBounties('held', bounties);
     }
 
     public groupVendorBounties(resp: any): BountySet[] {
         let saleItems = this.parseVendorData(resp);
         saleItems = saleItems.filter(x => x.status != 'Already completed');
-        return this.groupBounties(saleItems);
+        return this.groupBounties('sale', saleItems);
     }
 
     public applyTags(items: SaleItem[]) {

@@ -1,10 +1,14 @@
-<div mat-dialog-title style="margin-bottom: 0px">
-    {{data.tag|titlecase}}
-    <span class="simple-caption-no-margin hide-mobile-inline">Sorted by vendor</span>
+<div mat-dialog-title style="margin-bottom: 0px" *ngIf="name|async as n">
+    {{n|titlecase}}
+    <span class="simple-caption-no-margin">
+        <button mat-icon-button (click)="refreshMe.next()" >
+            <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(loading|async)===true"></fa-icon>
+          </button>
+    </span>
 </div>
-<mat-dialog-content>
+<mat-dialog-content *ngIf="bounties|async as b">
     <div class="grid-parent mat-typography">
-        <div class="dashed-border bounty" *ngFor="let i of data.bounties">
+        <div class="dashed-border bounty" *ngFor="let i of b">
             <div class="title">
                 <div class="icon-parent">
                     <div class="icon" *ngIf="i.icon!=null"

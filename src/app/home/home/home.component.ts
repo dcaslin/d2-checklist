@@ -7,12 +7,12 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { Today, WeekService } from '@app/service/week.service';
 import { environment as env } from '@env/environment';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BountySet, Character, Const, MilestoneActivity, Platform, Player, SelectedUser, UserInfo } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { BountySetsDialogComponent } from './bounty-sets-dialog/bounty-sets-dialog.component';
+import { BountySetsDialogComponent, BountySetInfo } from './bounty-sets-dialog/bounty-sets-dialog.component';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 import { ParseService } from '@app/service/parse.service';
 import { AuthService } from '@app/service/auth.service';
@@ -29,13 +29,15 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly showAllVendorBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly showAllPlayerBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  readonly modalBountySet: BehaviorSubject<BountySet> = new BehaviorSubject(null);
+  readonly refreshMe: Subject<void> = new Subject();
+
   readonly playerLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly player: BehaviorSubject<Player> = new BehaviorSubject(null);
   readonly char: BehaviorSubject<Character> = new BehaviorSubject(null);
   currentChar: Character = null;
 
   readonly vendorBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  readonly playerBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly playerBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
   readonly vendorBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
 
@@ -119,13 +121,22 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.authService.getCurrentMemberId(true);
   }
 
-
   showBountySet(bs: BountySet) {
+    this.modalBountySet.next(bs);
     const dc = new MatDialogConfig();
     dc.disableClose = false;
-    dc.data = bs;
+    const d: BountySetInfo = {
+      modalBountySet: this.modalBountySet,
+      playerLoading: this.playerLoading,
+      vendorBountiesLoading: this.vendorBountiesLoading,
+      refreshMe: this.refreshMe
+    };
+    dc.data = d;
     dc.width = '80%';
-    this.dialog.open(BountySetsDialogComponent, dc);
+    const ref = this.dialog.open(BountySetsDialogComponent, dc);
+    ref.afterClosed().subscribe(result => {
+      this.modalBountySet.next(null);
+    });
   }
 
   async loadMileStones() {
@@ -169,15 +180,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   async loadPlayerBountySets(char: Character) {
-    try {
-      this.playerBountiesLoading.next(true);
-      let bounties = this.parseService.groupCharBounties(this.player.getValue(), char);
-      bounties = bounties.filter(bs => bs.bounties.length > 1);
-      this.playerBountySets.next(bounties);
-    }
-    finally {
-      this.playerBountiesLoading.next(false);
-    }
+    let bounties = this.parseService.groupCharBounties(this.player.getValue(), char);
+    bounties = bounties.filter(bs => bs.bounties.length > 1);
+    this.playerBountySets.next(bounties);
   }
 
 
@@ -185,12 +190,14 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
     this.loading.next(true);
     this.loadMileStones();
-
+    this.refreshMe.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
+      this.loadPlayerForBounties(this.bungieService.selectedUser);
+    });
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.player.next(null);
       this.isSignedOn.next(selectedUser != null);
-      this.loadPlayerForBounties(selectedUser);
+      this.refreshMe.next();
     });
     this.player.pipe(takeUntil(this.unsubscribe$)).pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player) => {
       this.vendorBountySets.next([]);
@@ -201,7 +208,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       }
       this.char.next(player.characters[0]);
     });
-    this.char.pipe(takeUntil(this.unsubscribe$)).pipe(takeUntil(this.unsubscribe$)).subscribe((char: Character) => {
+    this.char.pipe(takeUntil(this.unsubscribe$)).subscribe((char: Character) => {
       this.currentChar = char;
       if (char) {
         console.log(char.label);
@@ -216,6 +223,24 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       this.loadPlayerBountySets(char);
 
     });
+    combineLatest(this.vendorBountySets, this.playerBountySets).pipe(
+      takeUntil(this.unsubscribe$)).subscribe(
+        ([vendorBs, playerBs]) => {
+          const currModal = this.modalBountySet.getValue();
+          if (!currModal) {
+            return;
+          }
+          const checkMe = currModal.type == 'held' ? playerBs : vendorBs;
+          for (const bs of checkMe) {
+            if (bs.tag == currModal.tag) {
+              this.modalBountySet.next(bs);
+              console.dir(bs);
+              return;
+            }
+          }
+
+        }
+      );
 
 
   }

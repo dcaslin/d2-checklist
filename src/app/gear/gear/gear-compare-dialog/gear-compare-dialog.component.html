@@ -175,26 +175,28 @@
                         </td>
                     </ng-container>                
                 </tr>
-                <tr
-                    *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
-                    <th>Sockets</th>
-
-                    <ng-container *ngFor="let i of sortedItems|async">
-
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
-                                <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                                    [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
-                                    matTooltipClass="preserve-white-space">
-                                    <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
-                                        [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
-                                    <ng-container *ngIf="!isLastPlug"><br></ng-container>
-                                </span>
-                            </div>
-                        </td>
-                    </ng-container>
-                </tr>
-
+                <ng-container *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
+                    <tr *ngFor="let item of [].constructor(maxSockets); index as i1">
+                        <th *ngIf="i1==0" [attr.rowspan]="maxSockets">Sockets</th>
+                        <ng-container *ngFor="let i of sortedItems|async">
+                            <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                                <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
+                                    <div *ngIf="i2 == i1">
+                                        <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                                            [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
+                                            matTooltipClass="preserve-white-space">
+                                            <d2c-god-roll-plug style="font-size: smaller" [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
+                                                [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
+                                            <ng-container *ngIf="!isLastPlug"><br></ng-container>
+                                        </span>
+                                    </div>
+                                </ng-container>
+                            </td>
+                        </ng-container>
+                    </tr>
+    
+                </ng-container>
+           
                 <ng-container *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor">
                     <tr *ngFor="let stat of getAllStats(); let cntr = index">
                         <th>

@@ -26,6 +26,7 @@ export class GearCompareDialogComponent {
   sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   parent: GearComponent;
   showAllNames: boolean;
+  maxSockets = 1;
 
   constructor(
     public iconService: IconService,
@@ -33,7 +34,14 @@ export class GearCompareDialogComponent {
     private cacheService: DestinyCacheService,
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+
     this.items = data.items;
+    for (const i of this.items) {
+      if (i.sockets && i.sockets.length>this.maxSockets) {
+        this.maxSockets = i.sockets.length;
+      }
+    }
+
     this.parent = data.parent;
     this.showAllNames = data.showNames;
     this._sort();
