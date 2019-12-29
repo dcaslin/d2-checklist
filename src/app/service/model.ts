@@ -358,6 +358,7 @@ export class BungieMember {
 }
 
 export interface BountySet {
+    type: string;
     tag: string;
     bounties: (SaleItem|InventoryItem)[];
 }
