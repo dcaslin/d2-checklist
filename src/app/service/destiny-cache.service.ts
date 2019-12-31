@@ -148,6 +148,8 @@ export interface Cache {
   HistoricalStats?: any;
   RecordSeasons?: any;
   PursuitTags?: { [key: string]: string[] };
+  Season?: { [key: string]: Season };
+  SeasonPass?: { [key: string]: SeasonPass };
 }
 
 export interface InventoryItem {
@@ -228,6 +230,34 @@ export interface Objective {
   index: number;
   redacted: boolean;
   blacklisted: boolean;
+}
+
+export interface Season {
+  artifactItemHash: string;
+  backgroundImagePath: string;
+  blacklisted: boolean;
+  displayProperties: DisplayProperties;
+  endDate: string;
+  hash: string;
+  index: number;
+  redacted: boolean;
+  sealPresentationNodeHash: number;
+  seasonNumber: number;
+  seasonPassHash: string;
+  seasonPassProgressionHash: string;
+  seasonPassUnlockHash: string;
+  startDate: string;
+  startTimeInSeconds: string;
+}
+
+export interface SeasonPass {
+  blacklisted: boolean;
+  displayProperties: DisplayProperties;
+  hash: string;
+  index: number;
+  prestigeProgressionHash: string;
+  redacted: boolean;
+  rewardProgressionHash: string;
 }
 
 interface DisplayProperties {

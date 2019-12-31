@@ -1,9 +1,9 @@
 
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { DestinyCacheService } from './destiny-cache.service';
+import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, BountySet } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -12,6 +12,8 @@ import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, Bungi
 export class ParseService {
     MAX_LEVEL = 50;
 
+    ARTIFACT_POINT_PROG_HASH = '2691820383';
+    ARTIFACT_POWER_PROG_HASH = '2046159590';
     constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {
         this.lowlineService.init();
     }
@@ -395,8 +397,11 @@ export class ParseService {
 
         // only progression we care about right now are Legend, Glory, Valor, and Season Pass
         if (_prog.progressions) {
+            const sp = this.getSeasonProgression();
             Object.keys(_prog.progressions).forEach((key) => {
-                if (key === '2626549951' || key === '2000925172' || key === '2772425241' || key === '3256821400' || key === '3184735011') {
+                if (key === '2626549951' || key === '2000925172' || key === '2772425241'
+                    || key == sp.rewardProgressionHash
+                    || key == sp.prestigeProgressionHash) {
                     const p: PrivProgression = _prog.progressions[key];
                     let suppProg: PrivProgression = null;
                     if (key === '2626549951') { // VALOR
@@ -407,10 +412,11 @@ export class ParseService {
                         suppProg = _prog.progressions['2679551909'];
                     }
                     let progDesc = this.destinyCacheService.cache.Progression[p.progressionHash];
-                    if (key === '3256821400') { // Season of dawn, Season of Undying 1628407317
+                    // SEE SEASON PASS TABLE FOR THESE
+                    if (key == sp.rewardProgressionHash) { // Season of dawn
                         progDesc = {
                             'displayProperties': {
-                                'description': 'Season of Dawn Progress',
+                                'description': 'Current Season Progress',
                                 'displayUnitsName': '',
                                 'hasIcon': true,
                                 'icon': '/common/destiny2_content/icons/DestinySeasonDefinition_b5a0daa606e06eb6ec2bca66c7572a26.png"',
@@ -418,10 +424,10 @@ export class ParseService {
                             }
                         };
                     }
-                    if (key === '3184735011') { // Season of Undying
+                    if (key == sp.prestigeProgressionHash) { // Season of Dawn prestige
                         progDesc = {
                             'displayProperties': {
-                                'description': 'Season of the Undying Prestige Progress',
+                                'description': 'Season Prestige Progress',
                                 'displayUnitsName': '',
                                 'hasIcon': true,
                                 'icon': '/common/destiny2_content/icons/e9a8cf9f7df5b792d34c67df0fc85fe5.png',
@@ -475,8 +481,12 @@ export class ParseService {
         }
         const resetValue = prog.steps[prog.steps.length - 1].cumulativeTotal;
         prog.completeProgress += prog.lifetimeResetCount * resetValue;
+    }
 
-
+    private getSeasonProgression(): SeasonPass {
+        const s: Season = this.destinyCacheService.cache.Season['2007338097'];
+        const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
+        return sp;
     }
 
 
@@ -1683,7 +1693,6 @@ export class ParseService {
         }
         return null;
     }
-
     private parseArtifactProgressions(resp: any, chars: Character[], accountProgressions: Progression[]): number {
         if (resp.profileProgression == null || resp.profileProgression.data == null
             || resp.profileProgression.data.seasonalArtifact == null) {
@@ -1693,7 +1702,7 @@ export class ParseService {
 
         let pointProg = _art.pointProgression;
         if (pointProg == null) {
-            pointProg = this.getSpecificCharProg(resp, chars, '2691820383');
+            pointProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POINT_PROG_HASH);
             if (pointProg == null) {
                 console.log('doh');
                 return null;
@@ -1701,7 +1710,7 @@ export class ParseService {
         }
         let powerProg = _art.powerBonusProgression;
         if (powerProg == null) {
-            powerProg = this.getSpecificCharProg(resp, chars, '2046159590');
+            powerProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POWER_PROG_HASH);
             if (powerProg == null) {
                 console.log('doh');
                 return null;
@@ -2448,13 +2457,49 @@ export class ParseService {
                 joinability: _transData.joinability
             };
         }
+
+        const specialPgoressions = this.cookSpecialAccountProgression(accountProgressions);
+
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData);
+            transitoryData, specialPgoressions);
     }
 
+    private cookSpecialAccountProgression(accountProgressions: Progression[]): SpecialAccountProgressions {
+        const returnMe = {
+            glory: null,
+            seasonRank: null,
+            valor: null,
+            infamy: null
+        };
+        if (accountProgressions != null) {
+            let prestige: Progression = null;
+            const sp = this.getSeasonProgression();
+            for (const ap of accountProgressions) {
+                // valor
+                if (ap.hash == '2626549951') {
+                    returnMe.valor = ap;
+                } else if (ap.hash == '2772425241') {
+                    returnMe.infamy = ap;
+                } else if (ap.hash == '2000925172') {
+                    returnMe.glory = ap;
+                } else if (ap.hash == sp.rewardProgressionHash) {
+                    returnMe.seasonRank = ap;
+                } else if (ap.hash == sp.prestigeProgressionHash) {
+                    prestige = ap;
+                }
+            }
+            if (prestige != null && returnMe.seasonRank != null) {
+                prestige.level += returnMe.seasonRank.level;
+                prestige.weeklyProgress += returnMe.seasonRank.weeklyProgress;
+                prestige.dailyProgress += returnMe.seasonRank.dailyProgress;
+                returnMe.seasonRank = prestige;
+            }
+        }
+        return returnMe;
+    }
     private getBestPres(aNodes: any[], key: string): any {
         let bestNode = null;
         for (const nodes of aNodes) {
