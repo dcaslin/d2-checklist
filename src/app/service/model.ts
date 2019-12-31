@@ -483,6 +483,13 @@ export interface CharChecklist {
     entries: CharChecklistItem[];
 }
 
+export interface SpecialAccountProgressions {
+    glory: Progression;
+    seasonRank: Progression;
+    valor: Progression;
+    infamy: Progression;
+}
+
 export class Player {
     readonly profile: Profile;
     readonly superprivate: boolean;
@@ -534,7 +541,8 @@ export class Player {
         searchableCollection: TriumphCollectibleNode[],
         seals: Seal[], badges: Badge[],
         title: string, seasons: RecordSeason[], hasHiddenClosest: boolean,
-        accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData) {
+        accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
+        specialAccountProgressions: SpecialAccountProgressions) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -571,30 +579,12 @@ export class Player {
         this.accountProgressions = accountProgressions;
         this.artifactPowerBonus = artifactPowerBonus;
         this.transitoryData = transitoryData;
-        if (accountProgressions != null) {
-            let prestige: Progression = null;
-            for (const ap of accountProgressions) {
-                // valor
-                if (ap.hash == '2626549951') {
-                    this.valor = ap;
-                } else if (ap.hash == '2772425241') {
-                    this.infamy = ap;
-                } else if (ap.hash == '2000925172') {
-                    this.glory = ap;
-                } else if (ap.hash == '3256821400') { // undying 1628407317
-                    this.seasonRank = ap;
-                } else if (ap.hash == '3184735011') {
-                    prestige = ap;
-                }
-            }
-            // if (prestige != null && this.seasonRank != null) {
-            //     prestige.level += this.seasonRank.level;
-            //     prestige.weeklyProgress += this.seasonRank.weeklyProgress;
-            //     prestige.dailyProgress += this.seasonRank.dailyProgress;
-            //     this.seasonRank = prestige;
-            // }
+        if (specialAccountProgressions) {
+            this.glory = specialAccountProgressions.glory;
+            this.infamy = specialAccountProgressions.infamy;
+            this.valor = specialAccountProgressions.valor;
+            this.seasonRank = specialAccountProgressions.seasonRank;
         }
-
     }
 
     public getWeeklyXp(): number {
@@ -1128,6 +1118,7 @@ export class Progression {
     lifetimeResetCount: number;
     title: string;
     nextTitle: string;
+    special: string;
 }
 
 export interface PvpStreak {
