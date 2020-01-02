@@ -83,6 +83,7 @@
               <mat-icon>store</mat-icon>
               <span class="d-none d-xl-inline"> Vendors</span>
             </button>
+           
             <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
               <mat-icon>search</mat-icon>
               <span class="d-none d-xl-inline"> Search</span>
@@ -98,6 +99,10 @@
             <button mat-button class="nav-button" routerLink="about" routerLinkActive="active">
               <mat-icon>info</mat-icon>
               <span class="d-none d-xl-inline"> About</span>
+            </button>
+            <button mat-button class="nav-button" *ngIf="(showInstallButton|async) && (debugmode|async)" (click)="install()">
+              <mat-icon>arrow_downward</mat-icon>
+              <span class="d-none d-xl-inline"> Install</span>
             </button>
           </span>
           <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"

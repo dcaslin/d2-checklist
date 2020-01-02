@@ -143,6 +143,9 @@ MIT
 @angular/router
 MIT
 
+@angular/service-worker
+MIT
+
 @fortawesome/angular-fontawesome
 MIT
 

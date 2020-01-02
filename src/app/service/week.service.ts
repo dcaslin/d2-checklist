@@ -8,19 +8,104 @@ import { ItemDisplay, NameDesc, PublicMilestonesAndActivities } from './model';
   providedIn: 'root'
 })
 export class WeekService {
-  weeks: WeekData = require('../../assets/weeks.json');
+
+
+  readonly CURSE_STRENGTH_ROTATION = [
+    'Strong',
+    'Weak',
+    'Medium'
+  ];
+
+
+  readonly ASCENDENT_CHALLENGE_ROTATION = [
+    'Ouroborea',
+    'Forfeit Shrine',
+    'Shattered Ruins',
+    'Keep of Honed Edges',
+    'Agonarch Abyss',
+    'Cimmerian Garrison'
+  ];
+
+
+  readonly ASCENDANT_VIDEOS = [
+    'https://www.youtube.com/watch?v=dUGLYlS7K7w',
+    'https://www.youtube.com/watch?v=r2tKPUZQkFo',
+    'https://www.youtube.com/watch?v=7T7I7qbusIo',
+    'https://www.youtube.com/watch?v=vV6oWIgSsgU',
+    'https://www.youtube.com/watch?v=ogcNP8CzT0g',
+    'https://www.youtube.com/watch?v=l2O9_2Vkgik'
+  ];
+
+
+  readonly ASCENDENT_LOCATION_ROTATION = [
+    'Aphelion\'s Rest',
+    'Gardens of Esila',
+    'Spine of Keres',
+    'Harbinger\'s Seclude',
+    'Bay of Drowned Wishes',
+    'Chamber of Starlight'
+  ];
+
+  readonly EP_WEAPON_ROTATION = [
+    'Sniper Rifle',
+    'All weapons',
+    'All weapons',
+    'Shotgun',
+    'SMG'
+  ];
+
+  readonly EP_BOSS = [
+    'Damkath: The Mask',
+    'Naksud: The Famine',
+    'Bok Litur: Hunger of Xol',
+    'Nur Abath: Crest of Xol',
+    'Kathok: Roar of Xol'
+  ];
+
+
+  readonly EP_VIDEOS = [
+    'https://www.youtube.com/watch?v=1DGzF9Z_s9w',
+    'https://www.youtube.com/watch?v=7g4So51h1mk',
+    'https://www.youtube.com/watch?v=ONRve7CUnAE',
+    'https://www.youtube.com/watch?v=0tjlwp3n0BE',
+    'https://www.youtube.com/watch?v=nz57z9jgrYU'
+  ];
+
 
   constructor(private bungieService: BungieService, private destinyCacheService: DestinyCacheService) {
-    for (const week of this.weeks.weeks) {
-      week.ascendantVideo = this.weeks.videos[week.ascendantChallenge];
-      week.epVideo = this.weeks.epvideos[week.escalationProtocolBoss];
+  }
+
+  private static getRotation(cntr: number, list: string[]) {
+    const index = cntr % list.length;
+    return list[index];
+  }
+
+  private getCurrWeek(publicMilestones: PublicMilestonesAndActivities): Week {
+    let currWeek: Week;
+    if (publicMilestones && publicMilestones.weekStart) {      
+      const weekEpoch = moment.utc([2019, 3, 2, 17, 0]); //4/2/2019
+      const thisWeek: moment.Moment = publicMilestones.weekStart;
+      const today = moment(moment.now());
+      const numWeeks = Math.floor(moment.duration(thisWeek.diff(weekEpoch)).asWeeks());
+
+      currWeek = {
+        ascendantChallenge: WeekService.getRotation(numWeeks, this.ASCENDENT_CHALLENGE_ROTATION),
+        ascendantVideo: WeekService.getRotation(numWeeks, this.ASCENDANT_VIDEOS),
+        location: WeekService.getRotation(numWeeks, this.ASCENDENT_LOCATION_ROTATION),
+        curseStrength: WeekService.getRotation(numWeeks, this.CURSE_STRENGTH_ROTATION),
+        escalationProtocolWeapon: WeekService.getRotation(numWeeks, this.EP_WEAPON_ROTATION),
+        escalationProtocolBoss: WeekService.getRotation(numWeeks, this.EP_BOSS),
+        epVideo: WeekService.getRotation(numWeeks, this.EP_VIDEOS)
+      };
+
+
     }
+    return currWeek;
   }
 
   public async  getToday(): Promise<Today> {
 
     const altarEpoch = moment.utc([2019, 10, 9, 17, 0]); // nov 9 2019
-    console.dir(altarEpoch);
     const today = moment(moment.now());
     const numDays = Math.floor(moment.duration(today.diff(altarEpoch)).asDays());
     const index = numDays % 3;
@@ -60,20 +145,12 @@ export class WeekService {
       };
     }
     const publicMilestones = await this.bungieService.getPublicMilestones();
-    let currWeek: Week;
-    if (publicMilestones && publicMilestones.weekStart) {
-      const target = publicMilestones.weekStart.format('M/D/YYYY');
-      for (const week of this.weeks.weeks) {
-        if (week.reset == target) {
-          currWeek = week;
-        }
-      }
+    const currWeek = await this.getCurrWeek(publicMilestones);
 
-    }
     return {
       week: currWeek,
       publicMilestones: publicMilestones,
-      altarOfSorrowsWeapon:  this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
+      altarOfSorrowsWeapon: this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
       forge: forgeDay
     };
   }
@@ -105,7 +182,6 @@ interface WeekData {
 }
 
 interface Week {
-  reset: string;
   ascendantChallenge: string;
   ascendantVideo?: string;
   location: string;
