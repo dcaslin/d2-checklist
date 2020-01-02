@@ -48,6 +48,8 @@ import { ClanStateService } from './clan/clan-state.service';
 import { PlayerStateService } from './player/player-state.service';
 import { PreferredStatService } from './service/preferred-stat.service';
 import { WeekService } from './service/week.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
@@ -74,7 +76,9 @@ import { WeekService } from './service/week.service';
     AuthModule,
 
     // app
-    AppRoutingModule
+    AppRoutingModule,
+
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   declarations: [
     AppComponent,

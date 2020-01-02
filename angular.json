@@ -24,7 +24,8 @@
             },
             "assets": [
               "src/assets",
-              { "glob": "**/*", "input": "src/root-assets/", "output": "/" }
+              { "glob": "**/*", "input": "src/root-assets/", "output": "/" },
+              "src/manifest.webmanifest"
             ],
             "styles": [
               "src/styles.scss",
@@ -51,7 +52,9 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "serviceWorker": true,
+              "ngswConfigPath": "ngsw-config.json"
             }
           }
         },
@@ -90,7 +93,8 @@
               "src/assets",
               "src/favicon.ico",
               "src/robots.txt",
-              "src/sitemap.xml"
+              "src/sitemap.xml",
+              "src/manifest.webmanifest"
             ]
           }
         },

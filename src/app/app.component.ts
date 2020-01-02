@@ -1,6 +1,6 @@
 
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, HostListener } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MatSnackBar, MAT_DIALOG_DATA, MAT_SNACK_BAR_DATA } from '@angular/material';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { AuthGuard } from '@app/app-routing.module';
@@ -100,6 +100,9 @@ export class AppComponent implements OnInit, OnDestroy {
   public loggingOn: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public signedOnUser: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
+  public showInstallButton: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   constructor(
     public authGuard: AuthGuard,
     public iconService: IconService,
@@ -135,6 +138,9 @@ export class AppComponent implements OnInit, OnDestroy {
             this.disableads = x.disableads;
             this.ref.markForCheck();
           }
+          if (x.debugmode != null) {
+            this.debugmode.next(x.debugmode);
+        }
         });
 
     this.notificationService.notifyFeed.pipe(
@@ -164,6 +170,39 @@ export class AppComponent implements OnInit, OnDestroy {
             });
           }
         });
+  }
+
+
+  deferredPrompt: any;
+
+  @HostListener('window:beforeinstallprompt', ['$event'])
+  beforeInstall(e) {
+    console.log(e);
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    // Stash the event so it can be triggered later.
+    this.deferredPrompt = e;
+    this.showInstallButton.next(true);
+  }
+
+  install() {
+    // hide our user interface that shows our A2HS button
+    this.showInstallButton.next(false);
+    if (!this.deferredPrompt) {
+      return;
+    }
+    // Show the prompt
+    this.deferredPrompt.prompt();
+    // Wait for the user to respond to the prompt
+    this.deferredPrompt.userChoice
+      .then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        this.deferredPrompt = null;
+      });
   }
 
 
