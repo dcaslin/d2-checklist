@@ -76,11 +76,14 @@
               <div class="bounty-title-container">
                 <div class="bounty-title">
                   Sets Currently Held
-                  <span class="bounty-subtitle" *ngIf="char|async as c">
-                    <a mat-stroked-button
-                      [routerLink]="['/',c.membershipType, c.membershipId,'pursuits','bounties']">See all</a>
-                  </span>
                 </div>
+                <div class="bounty-subtitle" *ngIf="char|async as c">
+                    <a mat-button
+                      [routerLink]="['/',c.membershipType, c.membershipId,'pursuits','bounties']">
+                      <fa-icon [icon]="iconService.farSearch"></fa-icon>
+                      See all
+                    </a>
+                  </div>
               </div>
               <div class="bounty-button-row loading-spinner" *ngIf="(playerLoading|async)===true">
                 <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
@@ -111,9 +114,13 @@
               <div class="bounty-title-container">
                 <div class="bounty-title">
                   Sets For Sale
-                  <span class="bounty-subtitle" *ngIf="char|async as c">
-                    <a mat-stroked-button [routerLink]="['/vendors',c.id,'Bounties']">See all</a>
-                  </span>
+                  
+                </div>
+                <div class="bounty-subtitle" *ngIf="char|async as c">
+                  <a mat-button [routerLink]="['/vendors',c.id,'Bounties']">
+                    <fa-icon [icon]="iconService.farSearch"></fa-icon>
+                    See all
+                  </a>
                 </div>
               </div>
               <div class="bounty-button-row loading-spinner"
@@ -144,6 +151,12 @@
               <div class="bounty-title-container">
                 <div class="bounty-title">
                   Shopping List
+                </div>
+                <div class="bounty-subtitle" *ngIf="(shoppingList|async).length>0">
+                  <a mat-button (click)="clearShoppingItems()">
+                    <fa-icon [icon]="iconService.farTimesSquare"></fa-icon>
+                    Clear All
+                  </a>
                 </div>
               </div>
               <div class="bounty-button-row loading-spinner"

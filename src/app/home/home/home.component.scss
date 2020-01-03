@@ -98,19 +98,24 @@
 }
 
 .bounty-title-container {
+  display: flex;
+  flex-direction: row;
   text-align: left;
+  align-items: center;;
   margin-top: 5px;
   margin-bottom: 10px;
   margin-left: 16px;
+  margin-right: 16px;
 }
 
 .bounty-title {
   font-size: 18px;
   font-weight: 500;
+  flex-grow: 1;
+  flex-shrink: 1;
 }
 
 .bounty-subtitle {
-  margin-left: 20px;
   font-size: smaller;
   font-weight: 400;
 

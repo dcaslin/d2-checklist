@@ -4,6 +4,7 @@
         <button mat-icon-button (click)="input.refreshMe.next()">
             <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(loading|async)===true"></fa-icon>
         </button>
+        <span *ngIf="TAG_WEIGHTS[n]" class="tag-weight warn-text">{{TAG_WEIGHTS[n]|percent}} weighted</span>
     </span>
 
 </div>

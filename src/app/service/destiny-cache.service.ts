@@ -150,6 +150,7 @@ export interface Cache {
   PursuitTags?: { [key: string]: string[] };
   Season?: { [key: string]: Season };
   SeasonPass?: { [key: string]: SeasonPass };
+  TagWeights?:  {[key: string]: number};
 }
 
 export interface InventoryItem {

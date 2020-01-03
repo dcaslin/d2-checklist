@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, TAG_WEIGHTS } from './model';
 
 
 
@@ -829,17 +829,27 @@ export class ParseService {
         }
         const returnMe: BountySet[] = [];
         for (const key of Object.keys(tagSet)) {
+            let score = tagSet[key].length;
+            if (TAG_WEIGHTS[key]) {
+                score *= TAG_WEIGHTS[key];
+            }
             returnMe.push({
                 type: type,
                 tag: key,
-                bounties: tagSet[key]
+                bounties: tagSet[key],
+                score: score
             });
         }
-
         returnMe.sort((a, b) => {
-            if (a.bounties.length > b.bounties.length) {
+            if (a.score > b.score) {
                 return -1;
-            } else if (a.bounties.length < b.bounties.length) {
+            } else if (a.score < b.score) {
+                return 1;
+            }
+            if (a.tag < b.tag) {
+                return -1;
+            }
+            if (b.tag < a.tag) {
                 return 1;
             }
             return 0;
