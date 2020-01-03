@@ -9,7 +9,7 @@ import { Today, WeekService } from '@app/service/week.service';
 import { environment as env } from '@env/environment';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { BountySet, Character, Const, MilestoneActivity, Platform, Player, SelectedUser, UserInfo } from '../../service/model';
+import { BountySet, Character, Const, MilestoneActivity, Platform, Player, SelectedUser, UserInfo, SaleItem } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { BountySetsDialogComponent, BountySetInfo } from './bounty-sets-dialog/bounty-sets-dialog.component';
@@ -39,7 +39,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   readonly vendorBountiesLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly playerBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
+  readonly rawVendorBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
   readonly vendorBountySets: BehaviorSubject<BountySet[]> = new BehaviorSubject([]);
+  readonly shoppingListHashes: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});
+  readonly shoppingList: BehaviorSubject<SaleItem[]> = new BehaviorSubject([]);
 
   readonly version = env.versions.app;
   manifestVersion = '';
@@ -81,9 +84,20 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
             this.ref.markForCheck();
           }
+          const sl = x.shoppinglist as { [key: string]: boolean };
+          this.shoppingListHashes.next(sl);
+        });
+
+    combineLatest(this.shoppingListHashes, this.rawVendorBountySets).pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(
+        ([sl, bs]) => {
+          const built = this.parseService.buildShoppingList(sl, bs);
+          this.shoppingList.next(built);
         });
 
   }
+
 
   private setPlatform(type: number) {
     // already set
@@ -129,7 +143,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       modalBountySet: this.modalBountySet,
       playerLoading: this.playerLoading,
       vendorBountiesLoading: this.vendorBountiesLoading,
-      refreshMe: this.refreshMe
+      refreshMe: this.refreshMe,
+      shoppingList: this.shoppingList,
+      shoppingListHashes: this.shoppingListHashes
     };
     dc.data = d;
     dc.width = '80%';
@@ -171,6 +187,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     try {
       this.vendorBountiesLoading.next(true);
       let bounties = await this.bungieService.groupVendorBounties(char);
+      this.rawVendorBountySets.next(bounties);
       bounties = bounties.filter(bs => bs.bounties.length > 1);
       this.vendorBountySets.next(bounties);
     }
@@ -181,7 +198,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   async loadPlayerBountySets(char: Character) {
     let bounties = this.parseService.groupCharBounties(this.player.getValue(), char);
-    bounties = bounties.filter(bs => bs.bounties.length > 1);
+    //bounties = bounties.filter(bs => bs.bounties.length > 1);
     this.playerBountySets.next(bounties);
   }
 
@@ -200,6 +217,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       this.refreshMe.next();
     });
     this.player.pipe(takeUntil(this.unsubscribe$)).pipe(takeUntil(this.unsubscribe$)).subscribe((player: Player) => {
+      this.rawVendorBountySets.next([]);
       this.vendorBountySets.next([]);
       this.playerBountySets.next([]);
       if (!player || !player.characters || player.characters.length == 0) {
@@ -213,6 +231,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       if (char) {
         console.log(char.label);
       }
+      this.rawVendorBountySets.next([]);
       this.vendorBountySets.next([]);
       this.playerBountySets.next([]);
       if (!char) {

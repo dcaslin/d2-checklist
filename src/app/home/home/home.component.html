@@ -135,6 +135,17 @@
                 </button>
               </div>
             </div>
+            <div class="dashed-border">
+              <div class="bounty-title-container">
+                <div class="bounty-title">
+                  To-Grab List                  
+                </div>
+              </div>
+              <div class="bounty-button-row">
+                <div class="button-replacement simple-caption-no-margin">Click on bounties for sale to add them here.</div>
+                <div *ngFor="let i of shoppingList|async">{{i.name}}</div>
+              </div>
+            </div>
           </mat-card-content>
         </mat-card>
         <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">

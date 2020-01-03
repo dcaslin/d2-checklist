@@ -6,6 +6,7 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { takeUntil } from 'rxjs/operators';
+import { InteractivityChecker } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'd2c-bounty-sets-dialog',
@@ -18,7 +19,7 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
   readonly bounties: BehaviorSubject<(SaleItem | InventoryItem)[]> = new BehaviorSubject(null);
   readonly name: BehaviorSubject<string> = new BehaviorSubject(null);
   readonly loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  refreshMe: Subject<void>;
+  
 
   constructor(
     storageService: StorageService,
@@ -26,8 +27,6 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
     public dialogRef: MatDialogRef<BountySetsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public input: BountySetInfo) {
     super(storageService);
-
-    this.refreshMe = input.refreshMe;
 
     input.modalBountySet.pipe(
       takeUntil(this.unsubscribe$))
@@ -69,6 +68,23 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
       });
   }
 
+  selectVendorBounty(i: SaleItem) {
+    if (!i.vendor) {
+      return;
+    }
+    const x = i as any;
+    const slh = this.input.shoppingListHashes.getValue();
+    let newVal = true;
+    if (slh && slh[i.hash]===true) {
+      newVal = false;
+    }
+    if (!newVal) {
+      this.storageService.untrackHashList("shoppinglist", i.hash);
+    } else {
+      this.storageService.trackHashList("shoppinglist", i.hash);
+    }
+  }
+
   ngOnInit() {
   }
 
@@ -76,8 +92,10 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
 
 
 export interface BountySetInfo {
-  modalBountySet: BehaviorSubject<BountySet>;
-  playerLoading: BehaviorSubject<boolean>;
-  vendorBountiesLoading: BehaviorSubject<boolean>;
-  refreshMe: Subject<void>;
+  readonly modalBountySet: BehaviorSubject<BountySet>;
+  readonly playerLoading: BehaviorSubject<boolean>;
+  readonly vendorBountiesLoading: BehaviorSubject<boolean>;
+  readonly refreshMe: Subject<void>;
+  readonly shoppingList: BehaviorSubject<SaleItem[]>;
+  readonly shoppingListHashes: BehaviorSubject<{ [key: string]: boolean }>;
 }
