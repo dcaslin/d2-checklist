@@ -84,7 +84,8 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
             this.ref.markForCheck();
           }
-          const sl = x.shoppinglist as { [key: string]: boolean };
+          let sl = x.shoppinglist as { [key: string]: boolean };
+          sl = sl? sl : {};
           this.shoppingListHashes.next(sl);
         });
 
@@ -98,6 +99,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   }
 
+  public removeShoppingItem(i: SaleItem) {
+    this.storageService.untrackHashList("shoppinglist", i.hash);
+  }
 
   private setPlatform(type: number) {
     // already set

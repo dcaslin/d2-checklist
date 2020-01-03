@@ -813,6 +813,10 @@ export class ParseService {
             if (used[s.hash]) {
                 continue;
             }
+            // ignore expired bounties
+            if ((s as InventoryItem).expired) {
+                continue;
+            }
             used[s.hash] = true;
             const itemTags = tags[s.hash];
             s.tags = itemTags.slice(0);
@@ -860,6 +864,20 @@ export class ParseService {
                 }
             }
         }
+        returnMe.sort((a, b) => {
+            if (a.vendor.name > b.vendor.name) {
+                return 1;
+            }
+            if (a.vendor.name < b.vendor.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            if (a.name < b.name) {
+                return -1;
+            }
+        });
         // we can use used to prune missing entries
         return returnMe;
     }
@@ -2225,8 +2243,11 @@ export class ParseService {
                             if (parsed.type === ItemType.Chalice && resp.characterProgressions) {
                                 this.handleChalice(char, parsed, milestoneList, milestonesByKey, currencies);
                             } else if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
-                                parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
-                                bounties.push(parsed);
+                                // ignore expired
+                                if (!parsed.expired) {
+                                    parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
+                                    bounties.push(parsed);
+                                }
                             } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
