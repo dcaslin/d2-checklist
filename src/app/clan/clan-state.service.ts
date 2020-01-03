@@ -764,7 +764,7 @@ export class ClanStateService {
 
   public downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
-    let sCsv = 'member,platform,chars,lastPlayed days ago,Triumph Score,Glory,Infamy,Valor,Weekly XP,max LL,';
+    let sCsv = 'member,platform,chars,lastPlayed days ago,Artifact,Season Rank,Triumph Score,Glory,Infamy,Valor,Weekly XP,max LL,';
     this.modelPlayer.getValue().milestoneList.forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
@@ -789,6 +789,13 @@ export class ClanStateService {
       const lastPlayed = moment(member.player.profile.dateLastPlayed);
       const diff = today.diff(lastPlayed, 'days');
       sCsv += diff + ',';
+      sCsv += member.player.artifactPowerBonus + ',';
+      if (member.player.seasonRank) {
+        sCsv += member.player.seasonRank.level + ',';
+      } else {
+        sCsv += '-,';
+      }
+
       sCsv += member.player.triumphScore + ',';
       if (member.player.glory) {
         sCsv += member.player.glory.currentProgress + ',';
@@ -899,6 +906,8 @@ export class ClanStateService {
         return ClanStateService.compareTriumph(a, b, sort.ascending);
       } else if (sort.name === 'artifactPowerBonus') {
         return ClanStateService.compareArtifactPowerBonus(a, b, sort.ascending);
+      } else if (sort.name === 'seasonRank') {
+        return ClanStateService.compareSeasonRank(a, b, sort.ascending);
       } else if (sort.name === 'glory') {
         return ClanStateService.compareGlory(a, b, sort.ascending);
       } else if (sort.name === 'valor') {
@@ -960,6 +969,14 @@ export class ClanStateService {
     let bX = 0;
     if (a.player != null) { aX = a.player.artifactPowerBonus; }
     if (b.player != null) { bX = b.player.artifactPowerBonus; }
+    return ClanStateService.simpleCompare(aX, bX, reverse);
+  }
+
+  private static compareSeasonRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.player && a.player.seasonRank) { aX = a.player.seasonRank.level; }
+    if (b.player && b.player.seasonRank) { bX = b.player.seasonRank.level; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
