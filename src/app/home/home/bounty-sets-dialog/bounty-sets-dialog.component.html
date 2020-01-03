@@ -1,20 +1,21 @@
 <div mat-dialog-title style="margin-bottom: 0px" *ngIf="name|async as n">
     {{n|titlecase}}
     <span class="simple-caption-no-margin">
-        <button mat-icon-button (click)="refreshMe.next()" >
+        <button mat-icon-button (click)="input.refreshMe.next()" >
             <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(loading|async)===true"></fa-icon>
           </button>
     </span>
+    
 </div>
 <mat-dialog-content *ngIf="bounties|async as b">
-    <div class="grid-parent mat-typography">
-        <div class="dashed-border bounty" *ngFor="let i of b">
+    <div class="grid-parent mat-typography" *ngIf="input.shoppingListHashes|async as sl">
+        <div class="dashed-border bounty" *ngFor="let i of b" (click)="selectVendorBounty(i)" [class.vendor-bounty]="i.vendor!=null" [class.selected-dashed-border]="sl[i.hash]">
             <div class="title">
-                <div class="icon-parent">
+                <div class="title-row-parent">
                     <div class="icon" *ngIf="i.icon!=null"
                         [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"></div>
                 </div>
-                <div class="icon-parent">
+                <div class="title-row-parent title-row-center">
                     <h4 class="title-text">
                         <span [matTooltip]="i.desc">
                             <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}}
@@ -32,6 +33,10 @@
                             </span>
                         </span>
                     </h4>
+                </div>
+                <div class="title-row-parent" *ngIf="i.vendor">
+                    <fa-icon *ngIf="sl[i.hash]" [icon]="iconService.fasCheckSquare" size="2x" class="accent-text mat-option.mat-selected"></fa-icon>                
+                    <fa-icon *ngIf="!sl[i.hash]" [icon]="iconService.farSquare" class="inactive-text" size="2x"></fa-icon>  
                 </div>
             </div>
             <div>

@@ -843,6 +843,27 @@ export class ParseService {
         return returnMe;
     }
 
+    public buildShoppingList(tracked: { [key: string]: boolean }, bountySets: BountySet[]): SaleItem[] {
+        if (!tracked) {
+            return [];
+        }
+        if (bountySets.length == 0 || bountySets == null) {
+            return [];
+        }
+        const used = {};
+        const returnMe: SaleItem[] = [];
+        for (const bountySet of bountySets) {
+            for (const bounty of bountySet.bounties) {
+                if (tracked[bounty.hash] && !used[bounty.hash]) {
+                    returnMe.push(bounty as SaleItem);
+                    used[bounty.hash] = true;
+                }
+            }
+        }
+        // we can use used to prune missing entries
+        return returnMe;
+    }
+
     public groupCharBounties(player: Player, char: Character): BountySet[] {
         const bounties = [];
         for (const i of player.bounties) {

@@ -22,6 +22,14 @@
     margin: 2px;
   }
 
+  .selected-dashed-border {
+    border-color: mat-color($accent, 700) !important;
+  }
+
+  .inactive-text {
+    color: mat-color($foreground, divider);
+  }
+
   .divider {
     border-color: mat-color($foreground, divider);
     border-top-style: solid;

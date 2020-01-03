@@ -47,11 +47,24 @@
   padding: 4px;
 }
 
-.icon-parent {
+.title-row-parent {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 4px;
+}
+
+.title-row-center {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.vendor-bounty {
+  cursor: pointer;
+}
+
+.selected-bounty {
+  
 }
 
 .title-text {
