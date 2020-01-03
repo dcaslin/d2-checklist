@@ -236,6 +236,13 @@ table.stat-table {
   display: block;
 }
 
+@media screen and (min-width: 500px) {
+  .show-tablet-table-cell {
+    display: table-cell;
+    visibility: visible;
+  }
+}
+
 @media screen and (min-width: 1019px) {
   .filter-buttons {
     display: inline;
