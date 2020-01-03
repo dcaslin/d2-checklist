@@ -67,6 +67,11 @@
                         </ng-container>
                     </td>
                     <td>
+                        <ng-container *ngIf="!member.player.superprivate && member.player.seasonRank && member.player.seasonRank.level">
+                            {{member.player.seasonRank.level}}
+                        </ng-container>
+                    </td>
+                    <td>
                         <ng-container *ngIf="!member.player.superprivate">
                             {{member.player.triumphScore|number : '1.0-0'}}
                         </ng-container>
@@ -163,6 +168,14 @@
     <th>
         <a href="javascript:void(0)" (click)="state.toggleSort('artifactPowerBonus')">Artifact
             <ng-container *ngIf="state.sort && state.sort.name=='artifactPowerBonus'">
+                <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
+                <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
+            </ng-container>
+        </a>
+    </th>
+    <th>
+        <a href="javascript:void(0)" (click)="state.toggleSort('seasonRank')">Season Rank
+            <ng-container *ngIf="state.sort && state.sort.name=='seasonRank'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
