@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { IconService } from '@app/service/icon.service';
-import { BountySet, SaleItem, InventoryItem } from '@app/service/model';
+import { BountySet, SaleItem, InventoryItem, TAG_WEIGHTS } from '@app/service/model';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
@@ -19,7 +19,8 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
   readonly bounties: BehaviorSubject<(SaleItem | InventoryItem)[]> = new BehaviorSubject(null);
   readonly name: BehaviorSubject<string> = new BehaviorSubject(null);
   readonly loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  
+
+  readonly TAG_WEIGHTS: {[key: string]: number} = TAG_WEIGHTS;
 
   constructor(
     storageService: StorageService,

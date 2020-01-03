@@ -49,6 +49,10 @@ export class StorageService {
     this.setItem(key, trackedDict);
   }
 
+  public clearHashList(key: string) {
+    this.setItem(key, {});
+  }
+
   public untrackHashList(key: string, hash: string) {
     const trackedDict: any = this.getItem(key, {});
     delete trackedDict[hash];

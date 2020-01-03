@@ -4,6 +4,22 @@ import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 import { BehaviorSubject } from 'rxjs';
 import { Moment } from 'moment';
 
+
+export const TAG_WEIGHTS: {[key: string]: number} = {
+    'gambit': 0.25,
+    'crucible': 0.5,
+    'precision': 1.5,
+    'power weapon': 0.75,
+    'lost sector': 2.0,
+    'vex': 2.0,
+    'cabal': 2.0,
+    'fallen': 2.0,
+    'finisher': 3.0,
+    'void': 2.0,
+    'solar': 1.5,
+    'arc': 2.0
+};
+
 export enum ClassAllowed {
     Titan = 0,
     Hunter = 1,
@@ -360,6 +376,7 @@ export class BungieMember {
 export interface BountySet {
     type: string;
     tag: string;
+    score: number;
     bounties: (SaleItem|InventoryItem)[];
 }
 

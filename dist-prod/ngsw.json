@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1577991111970,
+  "timestamp": 1578067908991,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -10,13 +10,13 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main.cf864a9e28bc80122853.js",
+        "/main.6cce929658d57c2756ee.js",
         "/manifest.webmanifest",
         "/polyfills-es5.f4fff41728d46dcec581.js",
         "/polyfills.255bf9360c3e263863e2.js",
         "/runtime.3b1df53b846aa25ed7e6.js",
         "/scripts.639d1102ffe318f070f9.js",
-        "/styles.3af0940eb2212e75ccbe.css"
+        "/styles.7139e4e4d0cc29c40328.css"
       ],
       "patterns": []
     },
@@ -78,7 +78,7 @@
     "/apple-touch-icon-60x60.png": "a8178000af3c9bb9ec207ff2a962d906e97cc01e",
     "/apple-touch-icon-76x76.png": "fbfd0640d608967aaf222bcf8b0fd49951a84f88",
     "/apple-touch-icon.png": "94ac80668ba30425ad9e62a1de3cdbfa285b0df3",
-    "/assets/destiny2.zip": "0409f6b02c46d731faa2df80a2003be3b7820efe",
+    "/assets/destiny2.zip": "c7834f1399e55a1d7f3875b60aa2857c3593dcce",
     "/assets/fonts/icomoon.eot": "5e46751693b85bbdbafddb809b077e32e8f7aab7",
     "/assets/fonts/icomoon.svg": "324bae7319183c043900576cb0963152a390fa31",
     "/assets/fonts/icomoon.ttf": "db0bfbdd9d9b72d0b7bd0b26092941d0e65ed72a",
@@ -103,9 +103,9 @@
     "/icomoon.d720943e30b8cf423bfb.eot": "5e46751693b85bbdbafddb809b077e32e8f7aab7",
     "/icomoon.dfcd048fd3434ec0d186.ttf": "db0bfbdd9d9b72d0b7bd0b26092941d0e65ed72a",
     "/icomoon.f913d56c965a34d4caf9.woff": "7bfca6a937612e8b1e6197d9108a14585ea3f0f7",
-    "/index.html": "0c68f9473bc5f513110ecc42732da3c108a14a5a",
+    "/index.html": "39d50f33161675ef3d9b1dbf3b36a43d19dc1f56",
     "/logo.8762ceefd56d17936d26.svg": "eccea2e1da0eb3a6bb286c219b528248cac076d2",
-    "/main.cf864a9e28bc80122853.js": "331f022a7af10a65d12e3b0cc8a7636870504bc0",
+    "/main.6cce929658d57c2756ee.js": "b773a254e188c0a467bab24bb06361ee22eab43b",
     "/manifest.webmanifest": "9051024de31a845c4b02472ff73058b08dee0dba",
     "/mstile-144x144.png": "28ced498c2f2dd484627cfa16e246492b5c3e56f",
     "/mstile-150x150.png": "b16289b45013f1098c0e9df9c26d5487117e69a4",
@@ -117,7 +117,7 @@
     "/runtime.3b1df53b846aa25ed7e6.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
     "/safari-pinned-tab.svg": "7af1c03343ece704773caf0e0ffe0f9ca34c3120",
     "/scripts.639d1102ffe318f070f9.js": "e87a268250b2863c8e8fcc8bc2c3fb8af39cf8ca",
-    "/styles.3af0940eb2212e75ccbe.css": "6827c7803ffea5ab06b5fa97d7076e7d4f6ad650"
+    "/styles.7139e4e4d0cc29c40328.css": "338987fff5b9a51181238222f4cf8ee20c872afa"
   },
   "navigationUrls": [
     {

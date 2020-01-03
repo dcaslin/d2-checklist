@@ -99,6 +99,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   }
 
+
+  public clearShoppingItems() {
+    this.storageService.clearHashList("shoppinglist");
+  }
+
   public removeShoppingItem(i: SaleItem) {
     this.storageService.untrackHashList("shoppinglist", i.hash);
   }
