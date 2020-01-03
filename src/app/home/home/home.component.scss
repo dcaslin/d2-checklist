@@ -186,6 +186,33 @@ a.underline:link {
   display: block;
 }
 
+.shopping-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center
+
+}
+
+.shopping-cell {
+  padding: 4px;
+}
+
+.shopping-done {
+  text-decoration: line-through;
+}
+
+
+.shopping-icon {
+  width: 24px;
+  height: 24px;
+  background-size: cover;
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 24px;
+  box-sizing: content-box;
+}
+
+
 .forge-icon {
   border-radius: 0px !important;
 }
