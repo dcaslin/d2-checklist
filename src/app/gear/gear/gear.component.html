@@ -252,7 +252,7 @@
                 </a>
 
               </th>
-              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+              <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Armor">
                 <a class="gear-sort" href="javascript:void(0)" (click)="sort('energyCapacity')">Energy
                   <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
@@ -271,7 +271,7 @@
                   </d2c-sort-indicator>
                 </a>
               </th>
-              <th class="hide-mobile-table-cell"
+              <th class="hide-mobile-table-cell show-tablet-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                 Sockets
               </th>
@@ -425,7 +425,7 @@
 
 
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+                <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Armor">
                   <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot">
                     </d2c-season-indicator> </span>
                   <mat-progress-bar mode="determinate" class="mw-progress"
@@ -459,7 +459,7 @@
                   </div>
                 </td>
 
-                <td class="hide-mobile-table-cell"
+                <td class="hide-mobile-table-cell show-tablet-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
