@@ -75,6 +75,10 @@
     color: mat-color($accent, 700);
   }
 
+  .disabled-text {
+    color: mat-color($foreground, disabled);
+  }
+
   .masterworked {
     box-shadow: 0 0 10px mat-color($accent, 700);
   }

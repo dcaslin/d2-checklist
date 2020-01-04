@@ -1,15 +1,15 @@
 
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
 import { Character, ItemType, Player, SaleItem, SelectedUser } from '@app/service/model';
+import { ParseService } from '@app/service/parse.service';
+import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent as observableFromEvent, of as observableOf } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import * as moment from 'moment';
-import { IconService } from '@app/service/icon.service';
-import { ParseService } from '@app/service/parse.service';
 
 
 @Component({
@@ -20,6 +20,7 @@ import { ParseService } from '@app/service/parse.service';
 })
 export class ResourcesComponent extends ChildComponent implements OnInit, OnDestroy {
   public today =  moment(new Date());
+  readonly shoppingListHashes: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});
 
   @ViewChild('filter', {static: true}) filter: ElementRef;
   selectedUser: SelectedUser = null;
@@ -40,6 +41,15 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     private route: ActivatedRoute, public router: Router) {
     super(storageService);
 
+    this.storageService.settingFeed.pipe(
+      takeUntil(this.unsubscribe$))
+      .subscribe(
+        x => {
+          let sl = x.shoppinglist as { [key: string]: boolean };
+          sl = sl ? sl : {};
+          this.shoppingListHashes.next(sl);
+        });
+
     this.loading.next(true);
   }
 
@@ -50,6 +60,19 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   public includeItem(itm: SaleItem, filterText: string): boolean {
     if (filterText == null) { return true; }
     return itm.searchText.indexOf(filterText) >= 0;
+  }
+  selectVendorBounty(i: SaleItem) {
+    const x = i as any;
+    const slh = this.shoppingListHashes.getValue();
+    let newVal = true;
+    if (slh && slh[i.hash] === true) {
+      newVal = false;
+    }
+    if (!newVal) {
+      this.storageService.untrackHashList('shoppinglist', i.hash);
+    } else {
+      this.storageService.trackHashList('shoppinglist', i.hash);
+    }
   }
 
   public async setChar(c: Character, alreadyLoading: boolean) {

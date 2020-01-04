@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { IconService } from '@app/service/icon.service';
-import { BountySet, SaleItem, InventoryItem, TAG_WEIGHTS } from '@app/service/model';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { ChildComponent } from '@app/shared/child.component';
+import { BountySet, InventoryItem, SaleItem, TAG_WEIGHTS } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { InteractivityChecker } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'd2c-bounty-sets-dialog',
@@ -76,13 +75,13 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
     const x = i as any;
     const slh = this.input.shoppingListHashes.getValue();
     let newVal = true;
-    if (slh && slh[i.hash]===true) {
+    if (slh && slh[i.hash] === true) {
       newVal = false;
     }
     if (!newVal) {
-      this.storageService.untrackHashList("shoppinglist", i.hash);
+      this.storageService.untrackHashList('shoppinglist', i.hash);
     } else {
-      this.storageService.trackHashList("shoppinglist", i.hash);
+      this.storageService.trackHashList('shoppinglist', i.hash);
     }
   }
 

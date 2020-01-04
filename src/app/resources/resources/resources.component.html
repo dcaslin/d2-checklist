@@ -11,7 +11,7 @@
             *ngIf="player!=null">{{player.profile.userInfo.displayName}} - {{selectedUser.userInfo.platformName}}</a>
         </h2>
 
-        <div *ngIf="(loading|async)===false && player==null">        
+        <div *ngIf="(loading|async)===false && player==null">
           <d2c-sign-in-required style="display:inline-block"></d2c-sign-in-required>
         </div>
         <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
@@ -38,35 +38,50 @@
           </mat-form-field>
         </div>
 
-        <ng-container>
+        <ng-container *ngIf="!(loading|async)">
 
           <ng-container *ngIf="option=='Bounties'">
-            <table class="tidy-table itemTable" style="margin-top: 1em">
+            <table class="tidy-auto-table itemTable" style="margin-top: 1em">
               <thead>
                 <tr>
                   <th class="item-icon-cell"></th>
                   <th>Name</th>
                   <th>Objectives</th>
                   <th class="d-none d-sm-table-cell">Reward</th>
-                  <th>Vendor</th>
+                  <th class="d-none d-sm-table-cell">Vendor</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody *ngIf="shoppingListHashes|async as sl">
                 <ng-container *ngFor="let i of vendorData|async">
-                  <tr *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i, filterText|async)">
+                  <tr
+                    *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+                      <span *ngIf="i.icon!=null" class="item-icon"
+                        [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
-                      <span [matTooltip]="i.desc">
-                      <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
-                        {{i.name}}
-                        <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-                      </a>
-                      </span>
-                      <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}</ng-container><br>
-                      <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
+                      <div class="dashed-border bounty" [class.selected-dashed-border]="sl[i.hash]"
+                        (click)="selectVendorBounty(i)">
+                        <div class="bounty-title">
+                          <span [matTooltip]="i.desc">
+                            <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}}
+                            </ng-container>
+                            <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                              target="_blank" rel="noopener">
+                              {{i.name}}
+                              <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
+                            </a>
+                          </span>
+                          <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}} Tier: {{i.tierType}}
+                          </ng-container><br>
+                          <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
+                        </div>
+                        <div class="bounty-shopping-cart">
+                          <fa-icon [icon]="iconService.falShoppingCart" 
+                          [class.accent-text]="sl[i.hash]"
+                          [class.disabled-text]="!sl[i.hash]"></fa-icon>
+                        </div>
+                      </div>
                     </td>
 
                     <td>
@@ -75,8 +90,8 @@
                       </div>
                       <div *ngIf="i.tags">
                         <mat-chip-list aria-label="tags">
-                          <mat-chip *ngFor="let t of i.tags">{{t}}</mat-chip>
-                      </mat-chip-list>
+                          <mat-chip class="no-wrap-chip" *ngFor="let t of i.tags">{{t}}</mat-chip>
+                        </mat-chip-list>
                       </div>
                     </td>
                     <td class="d-none d-sm-table-cell">
@@ -85,7 +100,7 @@
                         <span *ngIf="debugmode|async"> {{v.hash}}</span>
                       </div>
                     </td>
-                    <td>
+                    <td class="d-none d-sm-table-cell">
                       {{i.vendor.name}}
                       <span class="type-caption">Resets in {{ i.vendor.nextRefreshDate | amDifference: today |
                         amDuration:'ms'}}</span>
@@ -102,48 +117,33 @@
             </table>
           </ng-container>
           <ng-container *ngIf="option=='Gear'">
-            <table class="tidy-table itemTable" style="margin-top: 1em">
+            <table class="tidy-auto-table itemTable" style="margin-top: 1em">
               <thead>
                 <tr>
-                  <th class="item-icon-cell"></th>
+                  <th class="item-icon-cell hide-mobile-table-cell"></th>
                   <th>Name</th>
-                  <th>Perks</th>
                   <th class="d-none d-md-table-cell">Vendor</th>
                 </tr>
 
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData|async">
-                  <tr *ngIf="(((i.type==ItemType.Armor || i.type==ItemType.Weapon ) && i.rolledPerks!=null && i.rolledPerks.length>0) || i.type==ItemType.GearMod) && includeItem(i, filterText|async)">
+                  <tr
+                    *ngIf="((i.type==ItemType.Armor || i.type==ItemType.Weapon ) || i.type==ItemType.GearMod) && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+                      <span *ngIf="i.icon!=null" class="item-icon"
+                        [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                        target="_blank" rel="noopener">
                         {{i.name}}
                         <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-                      </a>                      
+                      </a>
                       <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
                       <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
                       <div class="d-block d-md-none">{{i.vendor.name}}</div>
-                    </td>
-                    <td>
-                      <ng-container *ngFor="let perks of i.rolledPerks; last as isLast">
-                        <div>
-                          <ng-container *ngFor="let perk of perks; last as isLast2">
-                            <span [matTooltip]="perk.desc" matTooltipClass="preserve-white-space" style="white-space: nowrap;">
-
-                              <span *ngIf="perk.icon!=null" class="small-item-icon transparent-icon"
-                                [style.background-image]="'url(//www.bungie.net' +perk.icon + ')'"></span>
-                              {{perk.name}} 
-                              <ng-container *ngIf="debugmode|async">{{perk.hash}}</ng-container>
-                            </span>
-                            <span style="width: 1em;" *ngIf="!isLast2"></span>
-                          </ng-container>
-                        </div>
-                        <hr class="divider" *ngIf="!isLast">
-                      </ng-container>
                     </td>
                     <td class="d-none d-md-table-cell">
                       {{i.vendor.name}}
@@ -163,7 +163,7 @@
             </table>
           </ng-container>
           <ng-container *ngIf="option=='Cosmetics'">
-            <table class="tidy-table itemTable" style="margin-top: 1em">
+            <table class="tidy-auto-table itemTable" style="margin-top: 1em">
               <thead>
                 <tr>
                   <th class="item-icon-cell"></th>
@@ -173,13 +173,16 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData|async">
-                  <tr *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) && includeItem(i, filterText|async)">
+                  <tr
+                    *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+                      <span *ngIf="i.icon!=null" class="item-icon"
+                        [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                        target="_blank" rel="noopener">
                         {{i.name}}
                         <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>
@@ -203,7 +206,7 @@
             </table>
           </ng-container>
           <ng-container *ngIf="option=='Exchange'">
-            <table class="tidy-table itemTable" style="margin-top: 1em">
+            <table class="tidy-auto-table itemTable" style="margin-top: 1em">
               <thead>
                 <tr>
                   <th class="item-icon-cell"></th>
@@ -215,11 +218,13 @@
                 <ng-container *ngFor="let i of vendorData|async">
                   <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'   && includeItem(i, filterText|async)">
                     <td class="item-icon-cell">
-                      <span *ngIf="i.icon!=null" class="item-icon" [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+                      <span *ngIf="i.icon!=null" class="item-icon"
+                        [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
                     </td>
                     <td>
                       <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
-                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank" rel="noopener">
+                      <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                        target="_blank" rel="noopener">
                         {{i.name}}
                         <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                       </a>
