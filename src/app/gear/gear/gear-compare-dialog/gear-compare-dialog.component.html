@@ -18,16 +18,13 @@
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
                         <th *ngIf="!hideJunk || i.mark!='junk'">
-                            {{i.name}}
-                            <span class="no-wrap">
 
+                            <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
+                                [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
+                                <div class="item-name">{{i.name}}</div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
                                 <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
-                                <a mat-icon-button class="item-menu-button" [matMenuTriggerFor]="itemMenu">
-                                    <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
-                                </a>
-
-                            </span>
+                            </button>                            
                             <mat-menu #itemMenu="matMenu">
                                 <button mat-menu-item *ngIf="i.postmaster"
                                     (click)="parent.pullFromPostmaster(player, i)">

@@ -30,10 +30,19 @@
     color: mat-color($foreground, divider);
   }
 
+  .divider-border {
+    border: 1px solid mat-color($foreground, divider);
+  }
+
   .divider {
     border-color: mat-color($foreground, divider);
     border-top-style: solid;
     border-bottom-style: none;
+  }
+
+
+  div.bottom-divider {
+    border-bottom: 1px solid mat-color($foreground, divider);
   }
 
   code {

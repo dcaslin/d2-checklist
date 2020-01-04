@@ -1,4 +1,4 @@
-<div *ngIf="i.icon!=null" class="item-image" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+<div *ngIf="i.icon!=null" class="item-image divider-border" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
     [class.masterworked]="i.masterworked">
     <div *ngIf="i.power>0" class="primary-stat"
         [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"

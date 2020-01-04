@@ -95,7 +95,7 @@
         <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
           <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
             class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
-          <d2c-reward-desc pl="1" rewards="Powerful Gear" [sort]="state.sort" (sortClick)="sortByRewards()">
+          <d2c-reward-desc pl="3" rewards="Powerful Gear" [sort]="state.sort" (sortClick)="sortByRewards()">
           </d2c-reward-desc>
         </td>
         <td [attr.colspan]="player.characters.length">
@@ -116,6 +116,8 @@
 </ng-container>
 <div class="bottom-note">
   <ul class="left">
+    <li><span class="warn-text">[Known issue]</span> There is a bug in the Bungie API re: Nightfall, Strike and Crucible weekly powerful milestones. They always report as empty. Hopefully this will be fixed soon, until then the rewards will show up as "???"
+    </li>
     <li><span class="warn-text">[Season of Dawn update]</span> Most things have stayed 
       the same, with power level caps jumped by 10 (so Powerful is capped at 960 instead of 950) and Pinnacle is capped at 970 (instead of 960)
     </li>

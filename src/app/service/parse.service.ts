@@ -1430,7 +1430,7 @@ export class ParseService {
                 if (checkMe.indexOf('raid') >= 0) {
                     rewards = 'Legendary Gear';
                 } else {
-                    rewards = 'Unknown';
+                    rewards = '???';
                 }
             }
             // garden of salvation
