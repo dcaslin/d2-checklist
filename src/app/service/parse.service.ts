@@ -932,11 +932,7 @@ export class ParseService {
             const vendor = resp.sales.data[key];
             const items = this.parseIndividualVendor(resp, key, vendor);
             returnMe = returnMe.concat(items);
-
         }
-
-
-
         for (const i of returnMe) {
             i.lowLinks = this.lowlineService.buildItemLink(i.hash);
 

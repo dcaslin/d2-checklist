@@ -9,6 +9,7 @@ import {
   faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow, faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy,
   faInfoSquare as falInfoSquare,
   faCrosshairs as falCrosshairs,
+  faShoppingCart as falShoppingCart,
   faBolt as falBolt,
   faWheat as falWheat,
   faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare
@@ -53,6 +54,7 @@ import {
 export class IconService {
   // NOTE: farSquare is actually falSquare
 
+  public readonly falShoppingCart = falShoppingCart;
   public readonly falCrosshairs = falCrosshairs;
   public readonly falBolt = falBolt;
   public readonly falWheat = falWheat;

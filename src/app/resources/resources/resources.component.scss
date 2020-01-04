@@ -1,19 +1,18 @@
-@import 'styles-variables';
+@import "styles-variables";
 
 .body-text {
-    width: auto;
-    margin-left: auto; 
-    margin-right: auto; 
-  }
-
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .button-row {
-  & button{  
+  & button {
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
   }
-  & a{  
+  & a {
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
@@ -21,11 +20,34 @@
   }
 }
 
-.itemTable{
+.itemTable {
   text-align: left;
 }
 
-.item-icon{
+.bounty {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+}
+
+.bounty-title {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.bounty-shopping-cart {
+  padding: 5px;
+}
+
+.no-wrap-chip {
+  display: inline-block;
+  max-width: 125px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.item-icon {
   width: 48px;
   height: 48px;
   border-radius: 25%;
@@ -34,8 +56,7 @@
   display: inline-block;
 }
 
-.small-item-icon{
-  
+.small-item-icon {
   border-radius: 25%;
   width: 1em;
   height: 1em;
@@ -43,9 +64,8 @@
   display: inline-block;
 }
 
-.item-icon-cell{
-  width: 53px; 
-  padding-left: 5px; 
+.item-icon-cell {
+  width: 53px;
+  padding-left: 5px;
   padding-right: 0em;
 }
-
