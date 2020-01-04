@@ -140,7 +140,7 @@
                                             <td>
                                                 <div class="mod-parent" *ngFor="let r of p.armorMods"
                                                     [matTooltip]="r.mod.desc" matTooltipClass="preserve-white-space">
-                                                    <div *ngIf="r.mod.icon!=null" class="item-image mod-child-icon"
+                                                    <div *ngIf="r.mod.icon!=null" class="item-image divider-border mod-child-icon"
                                                         [style.background-image]="'url(//www.bungie.net' + r.mod.icon + ')'">
                                                     </div>
                                                     <div class="mod-child-label">{{r.mod.name}}
@@ -171,7 +171,7 @@
 </div>
 
 <ng-template #gearIcon let-i="i">
-    <div *ngIf="i.icon!=null" class="item-image"
+    <div *ngIf="i.icon!=null" class="item-image divider-border"
         [style.background-image]="'url(//www.bungie.net' + i.icon + ')'" [class.masterworked]="i.masterworked">
         <div *ngIf="i.power>0" class="primary-stat" [class.void]="i.damageType===DamageType.Void"
             [class.arc]="i.damageType===DamageType.Arc" [class.solar]="i.damageType===DamageType.Thermal">

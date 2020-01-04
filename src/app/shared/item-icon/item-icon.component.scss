@@ -37,18 +37,6 @@
   font-weight: 700;
 }
 
-.void {
-  background: #b184c5;
-}
-
-.solar {
-  background: #f2721b;
-}
-
-.arc {
-  background: #85c5ec;
-}
-
 .item-image {
   position: relative;
   display: inline-block;
@@ -57,6 +45,5 @@
   height: 72px;
   margin-right: 6px;
   background-size: cover;
-  border: 1px solid rgb(221, 221, 221);
   transition: 0.25s;
 }

@@ -433,7 +433,7 @@
                   </mat-progress-bar>
 
                   <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
+                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom-divider]="!isLastMod">
                       {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
                     </div>
                   </ng-container>
@@ -452,7 +452,7 @@
                       [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
                     </mat-progress-bar>
                     <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                      <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom]="!isLastMod">
+                      <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom-divider]="!isLastMod">
                         {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
                       </div>
                     </ng-container>
@@ -461,7 +461,7 @@
 
                 <td class="hide-mobile-table-cell show-tablet-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                  <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom]="!isLastSocket">
+                  <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">

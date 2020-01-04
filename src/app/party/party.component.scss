@@ -39,7 +39,6 @@ table.checklist-table {
   height: 48px;
   margin-right: 6px;
   background-size: cover;
-  border: 1px solid rgb(221, 221, 221);
   transition: 0.25s;
 }
 
@@ -105,16 +104,4 @@ table.checklist-table {
     align-items: center;
     margin: 2px;
   }
-}
-
-.void {
-  background: #b184c5;
-}
-
-.solar {
-  background: #f2721b;
-}
-
-.arc {
-  background: #85c5ec;
 }
