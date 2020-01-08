@@ -150,17 +150,8 @@
                         </ng-container>
                     </tbody>
                 </table>
-
-
-
                 <ng-template #emptyCell>
                     &nbsp;
-                </ng-template>
-
-                <ng-template #playerLabel let-member="member">
-                    <a class="player-link" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
-                        {{member.destinyUserInfo.displayName}}
-                    </a>
                 </ng-template>
             </div>
         </mat-tab>
