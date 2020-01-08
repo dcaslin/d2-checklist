@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, TAG_WEIGHTS } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -1299,7 +1299,7 @@ export class ParseService {
         }
     }
 
-    public parsePublicMilestones(resp: any, resp2: any): PublicMilestonesAndActivities {
+    public parsePublicMilestones(resp: any, profileCharAct: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
@@ -1461,8 +1461,8 @@ export class ParseService {
         }
         // we're still missing nightfalls and heroic menagerie and some other fun stuff we need to get from a character
         let charAct = null;
-        if (sample && resp2 && resp2.characterActivities && resp2.characterActivities.data) {
-            charAct = resp2.characterActivities.data['2305843009264730899'];
+        if (sample && profileCharAct && profileCharAct.characterActivities && profileCharAct.characterActivities.data) {
+            charAct = profileCharAct.characterActivities.data['2305843009264730899'];
         }
         const crucibleCore: MilestoneActivity[] = [];
         const crucibleRotator: MilestoneActivity[] = [];
@@ -1471,10 +1471,11 @@ export class ParseService {
         let herMenag: MilestoneActivity = null;
         let heroicStrikes: MilestoneActivity = null;
         let reckoning: MilestoneActivity = null;
+        let sundialLegend: MilestoneActivity = null;
 
-        if (sample && resp2 && resp2.characterActivities && resp2.characterActivities.data) {
-            for (const key of Object.keys(resp2.characterActivities.data)) {
-                const charAct = resp2.characterActivities.data[key];
+        if (sample && profileCharAct && profileCharAct.characterActivities && profileCharAct.characterActivities.data) {
+            for (const key of Object.keys(profileCharAct.characterActivities.data)) {
+                const charAct = profileCharAct.characterActivities.data[key];
                 if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
                     if (crucibleCore.length == 0) {
                         for (const aa of charAct.availableActivities) {
@@ -1577,6 +1578,17 @@ export class ParseService {
                             }
                         }
                     }
+                    if (sundialLegend == null) {
+                        for (const aa of charAct.availableActivities) {
+                            if ('3611556688' == aa.activityHash) {
+                                const msa = this.buildMilestoneActivity(aa);
+                                if (msa == null) {
+                                    continue;
+                                }
+                                sundialLegend = msa;
+                            }
+                        }
+                    }
                 }
 
             }
@@ -1613,6 +1625,7 @@ export class ParseService {
             herMenag: herMenag,
             heroicStrikes: heroicStrikes,
             reckoning: reckoning,
+            sundial: sundialLegend,
             nightfalls: nightfalls,
             nightmareHunts: nightmareHunts,
             flashpoint: flashpoint,
