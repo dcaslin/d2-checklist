@@ -1430,7 +1430,7 @@ export class ParseService {
                 }
             }
             // garden of salvation
-            if (ms.milestoneHash == 2712317338 && rewards == 'Unknown') {
+            if (ms.milestoneHash == 2712317338 && rewards == '???') {
                 rewards = 'Pinnacle Gear';
             }
             // // weekly pinnacle challenge, not in list yet, but just in case
