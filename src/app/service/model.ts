@@ -1154,8 +1154,8 @@ export class Const {
     public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', faGoogle);
 
     public static readonly PLATFORMS_ARRAY = [
-        Const.XBL_PLATFORM, Const.PSN_PLATFORM, Const.STEAM_PLATFORM, Const.BNET_PLATFORM, Const.STADIA_PLATFORM
-    ];
+        Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM
+    ]; // Const.BNET_PLATFORM
 
     public static readonly PLATFORMS_DICT = {
         '1': Const.XBL_PLATFORM,
