@@ -792,7 +792,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    
+
 
     public async loadVendors(c: Character): Promise<SaleItem[]> {
         try {
@@ -901,6 +901,27 @@ export class BungieService implements OnDestroy {
         }
         return allMatches;
     }
+
+    public async getCharsTryAllPlatforms(membershipType: number, membershipId: string, components: string[], detailedInv?: boolean): Promise<Player> {
+        // try STEAM, then XBL, then PSN then STADIA
+        const alreadyTried = {};
+        for (const p of Const.PLATFORMS_ARRAY) {
+            alreadyTried[p.type + ''] = false;
+        }
+        let returnMe: Player = null;
+        let platformCntr = -1;
+        while (returnMe == null && platformCntr<Const.PLATFORMS_ARRAY.length) {
+            if (!alreadyTried[membershipType + '']) {
+                returnMe = await this.getChars(membershipType, membershipId, components, true, detailedInv);
+                alreadyTried[membershipType + ''] = true;
+            }
+            platformCntr++;
+            membershipType = Const.PLATFORMS_ARRAY[platformCntr].type;
+        }
+        return returnMe;
+
+    }
+
 
     public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
         try {

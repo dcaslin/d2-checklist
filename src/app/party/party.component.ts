@@ -46,9 +46,10 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
         pp.errMsg = null;
         this._party.next(this._party.getValue());
       }
-      const x = await this.bungieService.getChars(likelyMembershipType, pp.searchResult.membershipId,
+
+      const x = await this.bungieService.getCharsTryAllPlatforms(likelyMembershipType, pp.searchResult.membershipId,
         ['Profiles', 'Characters', 'CharacterEquipment', 'CharacterProgressions',
-          'CharacterActivities', 'Records', 'ProfileProgression', 'ItemInstances', 'ItemSockets'], true, true);
+          'CharacterActivities', 'Records', 'ProfileProgression', 'ItemInstances', 'ItemSockets'], true);
 
       if (x == null || x.characters == null || x.characters.length == 0) {
         console.log('Nothing found');
@@ -140,6 +141,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
       this._player.next(x);
       const party: PartyPlayer[] = [];
       if (x.transitoryData != null) {
+        console.dir(x);
         for (const p of x.transitoryData.partyMembers) {
           party.push({
             searchResult: p,
