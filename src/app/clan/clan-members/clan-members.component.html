@@ -53,6 +53,9 @@
                                 </ng-container>
                             </ng-template>
                         </ng-container>
+                        <ng-container *ngIf="member.player.superprivate">
+                            Blocked by privacy settings
+                        </ng-container>
                     </ng-container>
 
                     <ng-container *ngIf="member.player==null">
