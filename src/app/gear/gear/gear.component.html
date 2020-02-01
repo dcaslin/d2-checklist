@@ -252,7 +252,8 @@
                 </a>
 
               </th>
-              <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Armor">
+              <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
+                *ngIf="option.type==ItemType.Armor">
                 <a class="gear-sort" href="javascript:void(0)" (click)="sort('energyCapacity')">Energy
                   <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
@@ -312,14 +313,14 @@
                     </button>
                   </div>
                 </td>
-                <td class="limited-gear-width">                  
+                <td class="limited-gear-width">
 
                   <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
                     [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                     <div class="item-name">{{i.name}}</div>
                     <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                   </button>
-                  
+
 
                   <mat-menu #itemMenu="matMenu">
                     <button mat-menu-item *ngIf="i.postmaster" (click)="pullFromPostmaster(player, i)">
@@ -399,12 +400,21 @@
                         </div>
                       </div>
                     </div>
+                    <div class="mobile-details-parent">
+                      <a class="pointer mobile-details"
+                        *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
+                        (click)="showItem(i)">
+                        Perks
+                      </a>
+                    </div>
+
                   </div>
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
-                  <a href="javascript:void(0)" class="simple-caption" *ngIf="i.isRandomRoll" (click)="showPossibleRolls(i)">Random</a>
+                  <a href="javascript:void(0)" class="simple-caption" *ngIf="i.isRandomRoll"
+                    (click)="showPossibleRolls(i)">Random</a>
                   <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
                   </ng-container>
@@ -425,7 +435,8 @@
 
 
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Armor">
+                <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
+                  *ngIf="option.type==ItemType.Armor">
                   <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot">
                     </d2c-season-indicator> </span>
                   <mat-progress-bar mode="determinate" class="mw-progress"
@@ -433,14 +444,25 @@
                   </mat-progress-bar>
 
                   <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom-divider]="!isLastMod">
+                    <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space"
+                      [class.bottom-divider]="!isLastMod">
                       {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
                     </div>
                   </ng-container>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
                   || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                  {{i.copies}}
+                  <button mat-menu-item (click)="showCopies(i)">
+                    <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}
+                  </button>
+                  <ng-container *ngIf="i.dupesByEnergyAndSeason">
+                    <br>
+                    <button mat-menu-item (click)="showSimilarBySeasonAndBurn(i)">
+                      <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+                      {{i.dupesTaggedToKeep}} / {{i.dupesByEnergyAndSeason}}
+                    </button>
+                  </ng-container>
+
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
@@ -452,7 +474,8 @@
                       [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
                     </mat-progress-bar>
                     <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                      <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom-divider]="!isLastMod">
+                      <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space"
+                        [class.bottom-divider]="!isLastMod">
                         {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
                       </div>
                     </ng-container>

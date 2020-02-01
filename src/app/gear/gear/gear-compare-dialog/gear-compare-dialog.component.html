@@ -20,8 +20,11 @@
                         <th *ngIf="!hideJunk || i.mark!='junk'">
 
                             <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
+                                [color]='i===source?"primary":""'
                                 [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
-                                <div class="item-name">{{i.name}}</div>
+                                <div class="item-name">
+                                    {{i.name}}
+                                </div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
                                 <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                             </button>                            
@@ -45,6 +48,9 @@
                                     </button>
                                 </ng-container>
                             </mat-menu>
+                            <div class="simple-caption-no-margin">
+                               {{(i.owner|async)?.label}}
+                            </div>
                         </th>
                     </ng-container>
                 </tr>

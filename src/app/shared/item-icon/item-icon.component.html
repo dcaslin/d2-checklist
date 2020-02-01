@@ -1,4 +1,6 @@
-<div *ngIf="i.icon!=null" class="item-image divider-border" [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
+<div *ngIf="i.icon!=null" 
+    class="item-image divider-border" 
+    [style.background-image]="'url(//www.bungie.net' + i.icon + ')'"
     [class.masterworked]="i.masterworked">
     <div *ngIf="i.power>0" class="primary-stat"
         [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
@@ -7,9 +9,9 @@
         {{i.power}}
     </div>
     <div class="gear-lock">
-        <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked|async" (click)="toggleLock.emit(false)">
+        <fa-icon [icon]="iconService.fasLockAlt" class="pointer" *ngIf="i.locked|async" (click)="toggleLock.emit(false)">
         </fa-icon>
-        <fa-icon [icon]="iconService.fasLockOpenAlt"
+        <fa-icon [icon]="iconService.fasLockOpenAlt" class="pointer"
             *ngIf="!(i.locked|async) && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option==ItemType.Ghost || option==ItemType.Vehicle)"
             (click)="toggleLock.emit(true)"></fa-icon>
     </div>

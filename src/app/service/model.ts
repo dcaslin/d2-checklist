@@ -662,6 +662,8 @@ export class InventoryItem {
     public noGodRollInfo = false;
     public preferredStatPoints: number;
     public readonly seasonalModSlot: number;
+    public dupesByEnergyAndSeason?: number;
+    public dupesTaggedToKeep?: number;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff

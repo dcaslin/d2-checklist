@@ -5,7 +5,7 @@
 </div>
 <mat-dialog-content>
     <ng-container *ngFor="let socket of item.sockets; last as isLastSocket">
-        <div *ngIf="socket.possiblePlugs!=null && socket.possiblePlugs.length>0" [class.bottom]="!isLastSocket">
+        <div *ngIf="socket.possiblePlugs!=null && socket.possiblePlugs.length>0" [class.bottom-divider]="!isLastSocket">
             <span *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc"
                 class="not-selected-plug" matTooltipClass="preserve-white-space">
                 <mat-checkbox [(ngModel)]="plug.selectedPossible" (change)="generateString()" style="margin-left: 5px">

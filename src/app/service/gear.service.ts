@@ -107,14 +107,28 @@ export class GearService {
                 }
                 gearById[g.hash].push(g);
             }
+            this.bucketService.init(player.characters, player.vault, player.shared, player.gear);
+            this.markService.processItems(player.gear);
             for (const key of Object.keys(gearById)) {
                 const items = gearById[key];
                 for (const item of items) {
                     item.copies = items.length;
+                    if (item.type === ItemType.Armor && item.seasonalModSlot) {
+                        const copies = this.findSimilar(item, player, true, true);
+                        item.dupesByEnergyAndSeason = copies.length;
+                        let taggedToKeep = 0;
+                        for (const i of copies) {
+                            if (i.mark == 'upgrade' || i.mark == 'keep') {
+                                taggedToKeep++;
+                            }
+                        }
+                        item.dupesTaggedToKeep = taggedToKeep;
+                        if (taggedToKeep>1) {
+                            item.searchText += ' is:extratagged ';
+                        }
+                    }
                 }
             }
-            this.bucketService.init(player.characters, player.vault, player.shared, player.gear);
-            this.markService.processItems(player.gear);
             this.wishlistService.processItems(player.gear);
             this.targetPerkService.processGear(player);
             this.preferredStatService.processGear(player);

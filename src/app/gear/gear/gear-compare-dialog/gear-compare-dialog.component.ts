@@ -22,6 +22,7 @@ export class GearCompareDialogComponent {
   EnergyType = EnergyType;
   DamageType = DamageType;
   hideJunk = false;
+  source: InventoryItem;
   items: InventoryItem[];
   sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   parent: GearComponent;
@@ -35,9 +36,10 @@ export class GearCompareDialogComponent {
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
+    this.source = data.source;
     this.items = data.items;
     for (const i of this.items) {
-      if (i.sockets && i.sockets.length>this.maxSockets) {
+      if (i.sockets && i.sockets.length > this.maxSockets) {
         this.maxSockets = i.sockets.length;
       }
     }
