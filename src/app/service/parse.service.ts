@@ -14,6 +14,28 @@ export class ParseService {
 
     ARTIFACT_POINT_PROG_HASH = '2691820383';
     ARTIFACT_POWER_PROG_HASH = '2046159590';
+
+    HIDE_PROGRESSIONS = [
+        '3468066401', // The Nine
+        '1714509342', // Future War Cult
+        '2105209711', // New Monarchy
+        '3398051042', // Dead Orbit
+
+    ];
+
+    ACCOUNT_LEVEL = [
+        '2126988316', // Obelisk: Mars
+        '2468902004', // Obelisk: Nessus
+        '3258748553', // Obelisk: Tangled Shore
+        // '1482334108', // Leviathan
+        '185244751', // Obelisk: EDZ
+        // '3468066401', // The Nine
+        // '1714509342', // Future War Cult
+        // '2105209711', // New Monarchy
+        // '3398051042', // Dead Orbit
+
+    ];
+
     constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {
         this.lowlineService.init();
     }
@@ -126,11 +148,26 @@ export class ParseService {
             if (p.progressionHash === 3759191272) { name = 'Guided Trials'; }
             if (p.progressionHash === 1273404180) { name = 'Guided Nightfall'; }
             if (p.progressionHash === 3381682691) { name = 'Guided Raid'; }
-            if (p.progressionHash === 2084155873) { name = 'Artifact Points'; }
-            if (p.progressionHash === 671558512) { name = 'Artifact Power Bonus'; }
-            prog.name = name;
-            prog.info = info;
+            if (p.progressionHash === +this.ARTIFACT_POINT_PROG_HASH) { name = 'Artifact Points'; }
+            if (p.progressionHash === +this.ARTIFACT_POWER_PROG_HASH) { name = 'Artifact Power Bonus'; }
 
+
+            prog.name = name;
+            if ('Resonance Rank' == prog.name) {
+                try {
+                    if (desc.vendors && desc.vendors.length > 0) {
+                        const vendorHash = desc.vendors[0].vendorHash;
+                        const vDesc: any = this.destinyCacheService.cache.Vendor[vendorHash];
+                        const vName = vDesc.displayProperties.name;
+                        if (vName) {
+                            prog.name = vName;
+                        }
+                    }
+                } catch (x) {
+                    console.dir(x);
+                }
+            }
+            prog.info = info;
             prog.desc = desc.displayProperties.description;
             prog.currentProgress = p.currentProgress;
             prog.dailyLimit = p.dailyLimit;
@@ -388,7 +425,19 @@ export class ParseService {
                 const p: PrivProgression = _prog.factions[key];
                 const prog: Progression = this.parseProgression(p, this.destinyCacheService.cache.Faction[p.factionHash]);
                 if (prog != null) {
-                    factions.push(prog);
+                    if (this.HIDE_PROGRESSIONS.indexOf(prog.hash) >= 0) {
+                        return;
+                    }
+                    if (this.ACCOUNT_LEVEL.indexOf(prog.hash) < 0) {
+                        factions.push(prog);
+                    } else {
+                        const found = accountProgressions.find(x => x.hash == prog.hash);
+                        if (!found) {
+                            ParseService.cookAccountProgression(prog);
+                            accountProgressions.push(prog);
+                        }
+                    }
+
                 }
 
             });
@@ -439,12 +488,7 @@ export class ParseService {
 
                     const prog: Progression = this.parseProgression(p, progDesc, suppProg);
                     if (prog != null) {
-                        let found = false;
-                        for (const a of accountProgressions) {
-                            if (a.hash == prog.hash) {
-                                found = true;
-                            }
-                        }
+                        const found = accountProgressions.find(x => x.hash == prog.hash);
                         if (!found) {
                             ParseService.cookAccountProgression(prog);
                             accountProgressions.push(prog);
@@ -2521,6 +2565,12 @@ export class ParseService {
 
         const specialPgoressions = this.cookSpecialAccountProgression(accountProgressions);
 
+
+        accountProgressions.sort(function (a, b) {
+            if (a.name > b.name) { return 1; }
+            if (a.name < b.name) { return -1; }
+            return 0;
+        });
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
