@@ -16,7 +16,6 @@ export class ItemIconComponent  {
   @Input() i: InventoryItem;
   @Input() option: ItemType;
 
-
   @Output() toggleLock = new EventEmitter<boolean>();
 
   constructor(public iconService: IconService) { }

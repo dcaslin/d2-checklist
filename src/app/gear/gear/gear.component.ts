@@ -89,6 +89,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:hasmod',
     'is:locked',
     'is:unlocked',
+    'is:extratagged',
     'season:undying',
     'season:dawn',
     'season:opulence',
@@ -462,27 +463,27 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   showCopies(i: InventoryItem) {
     const copies = this.gearService.findCopies(i, this._player.getValue());
-    this.openGearDialog(copies, false);
+    this.openGearDialog(i, copies, false);
   }
 
   showSimilarBySeason(i: InventoryItem) {
     const copies = this.gearService.findSimilar(i, this._player.getValue(), true);
-    this.openGearDialog(copies, true);
+    this.openGearDialog(i, copies, true);
   }
 
   showSimilarBySeasonAndBurn(i: InventoryItem) {
     const copies = this.gearService.findSimilar(i, this._player.getValue(), true, true);
-    this.openGearDialog(copies, true);
+    this.openGearDialog(i, copies, true);
   }
 
   showSimilar(i: InventoryItem, season?: boolean) {
     const copies = this.gearService.findSimilar(i, this._player.getValue());
-    this.openGearDialog(copies, true);
+    this.openGearDialog(i, copies, true);
   }
 
 
   showItem(i: InventoryItem) {
-    this.openGearDialog([i], false);
+    this.openGearDialog(i, [i], false);
   }
 
   sort(val: string) {
@@ -883,7 +884,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     const returnMe: Choice[] = [];
     returnMe.push(new Choice('' + DamageType.Kinetic, 'Kinetic'));
     returnMe.push(new Choice('' + DamageType.Arc, 'Arc'));
-    returnMe.push(new Choice('' + DamageType.Thermal, 'Thermal'));
+    returnMe.push(new Choice('' + DamageType.Thermal, 'Solar'));
     returnMe.push(new Choice('' + DamageType.Void, 'Void'));
     return returnMe;
   }
@@ -891,7 +892,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   private generateEnergyTypeChoices(): Choice[] {
     const returnMe: Choice[] = [];
     returnMe.push(new Choice('' + EnergyType.Arc, 'Arc'));
-    returnMe.push(new Choice('' + EnergyType.Thermal, 'Thermal'));
+    returnMe.push(new Choice('' + EnergyType.Thermal, 'Solar'));
     returnMe.push(new Choice('' + EnergyType.Void, 'Void'));
     returnMe.push(new Choice('' + EnergyType.Any, 'Any'));
     return returnMe;
@@ -1171,13 +1172,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.dialog.open(GearUtilitiesDialogComponent, dc);
   }
 
-  public openGearDialog(items: InventoryItem[], showNames: boolean): void {
+  public openGearDialog(source: InventoryItem, items: InventoryItem[], showNames: boolean): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     // dc.autoFocus = true;
     // dc.width = '500px';
     dc.data = {
       parent: this,
+      source,
       items: items,
       showNames: showNames
     };
