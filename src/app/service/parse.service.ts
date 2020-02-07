@@ -3018,11 +3018,17 @@ export class ParseService {
     private parseQuestLine(qli: number, stepHash: number): Questline {
         const qdesc: any = this.destinyCacheService.cache.InventoryItem[qli];
         if (qdesc == null) { return null; }
+        if (qdesc.setData != null) {}
         if (qdesc.setData == null) { return null; }
+        // wtf was this doing anyway?
         const qType = qdesc.setData.setType;
-        if (qType != 'quest_global') {
+        // this is a milestone, don't show it here
+        if ('challenge' == qType) {
             return null;
         }
+        // if (qType != 'quest_global') {
+        //     return null;
+        // }
         const steps = qdesc.setData.itemList;
         let cntr = 0;
         const oSteps = [];
