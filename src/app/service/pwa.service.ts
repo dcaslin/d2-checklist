@@ -19,6 +19,7 @@ export class PwaService {
             const everySixHours$ = interval(6 * 60 * 60 * 1000);
             const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
             if (updates.isEnabled) {
+                console.log("Service worker is enabled");
                 everySixHoursOnceAppIsStable$.subscribe(() => {
                     updates.checkForUpdate();
                 });
