@@ -14,10 +14,7 @@ import { IconService } from './service/icon.service';
 import { ClanRow, Const, SelectedUser, UserInfo } from './service/model';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
-
-
-
-
+import { PwaService } from './service/pwa.service';
 
 @Component({
   selector: 'd2c-success-snack',
@@ -112,6 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
     public overlayContainer: OverlayContainer,
     public destinyCacheService: DestinyCacheService,
     private router: Router, public snackBar: MatSnackBar,
+    private pwaService: PwaService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef) {
