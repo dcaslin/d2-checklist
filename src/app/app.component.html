@@ -100,7 +100,7 @@
               <mat-icon>info</mat-icon>
               <span class="d-none d-xl-inline"> About</span>
             </button>
-            <button mat-button class="nav-button" *ngIf="(showInstallButton|async) && (debugmode|async)" (click)="install()">
+            <button mat-button class="nav-button" *ngIf="(showInstallButton|async)" (click)="install()">
               <mat-icon>arrow_downward</mat-icon>
               <span class="d-none d-xl-inline"> Install</span>
             </button>
