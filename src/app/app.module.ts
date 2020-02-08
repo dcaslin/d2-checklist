@@ -50,6 +50,7 @@ import { PreferredStatService } from './service/preferred-stat.service';
 import { WeekService } from './service/week.service';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { PwaService } from './service/pwa.service';
 
 @NgModule({
   imports: [
@@ -92,6 +93,7 @@ import { environment } from '../environments/environment';
     AuthService,
     BucketService,
     BungieService,
+    PwaService,
     ClanStateService,
     DestinyCacheService,
     GearService,
