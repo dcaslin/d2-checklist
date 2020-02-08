@@ -904,7 +904,7 @@ export class BungieService implements OnDestroy {
 
     public async getCharsTryAllPlatforms(membershipType: number, membershipId: string, components: string[], detailedInv?: boolean): Promise<Player> {
         // try STEAM, then XBL, then PSN then STADIA
-        const alreadyTried = {};
+        const alreadyTried = {}; 
         for (const p of Const.PLATFORMS_ARRAY) {
             alreadyTried[p.type + ''] = false;
         }
