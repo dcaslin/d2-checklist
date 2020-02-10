@@ -16,11 +16,12 @@ export class PwaService {
                 console.log('App is stable: ' + isStable);
                 return isStable === true;
             }));
-            const everySixHours$ = interval(6 * 60 * 60 * 1000);
-            const everySixHoursOnceAppIsStable$ = concat(appIsStable$, everySixHours$);
+            const every10Mins$ = interval(10 * 60 * 1000);
+            const everySixHoursOnceAppIsStable$ = concat(appIsStable$, every10Mins$);
             if (updates.isEnabled) {
-                console.log("Service worker is enabled");
+                console.log('Service worker is enabled');
                 everySixHoursOnceAppIsStable$.subscribe(() => {
+                    console.log('Checking for update...');
                     updates.checkForUpdate();
                 });
                 updates.available.subscribe(event => {
