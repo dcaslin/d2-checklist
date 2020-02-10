@@ -13,14 +13,15 @@
 <div class="body" *ngIf="state.aggHistory|async as history">
 
     <mat-tab-group>
-        <mat-tab label="Nightfalls">
-            <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', history: history}">
-            </ng-container>
-        </mat-tab>
         <mat-tab label="Raids">
             <ng-container *ngTemplateOutlet="aggTable; context: {type: 'raid', history: history}">
             </ng-container>
         </mat-tab>
+        <mat-tab label="Nightfalls">
+            <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', history: history}">
+            </ng-container>
+        </mat-tab>
+        
     </mat-tab-group>
 
 </div>

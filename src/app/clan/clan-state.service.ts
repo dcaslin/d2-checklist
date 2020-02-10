@@ -389,11 +389,11 @@ export class ClanStateService {
 
     const clanSearchableTriumphsDict: any = {};
     for (const m of this.sortedMembers.getValue()) {
-      if (!m.player) {
+      if (!m.currentPlayer()) {
         continue;
       }
-      if (m.player.seals) {
-        for (const s of m.player.seals) {
+      if (m.currentPlayer().seals) {
+        for (const s of m.currentPlayer().seals) {
           let seal: ClanSeal = clanSealsDict[s.hash];
           if (seal == null) {
             seal = {
@@ -419,8 +419,8 @@ export class ClanStateService {
         }
       }
 
-      if (m.player.searchableTriumphs) {
-        for (const s of m.player.searchableTriumphs) {
+      if (m.currentPlayer().searchableTriumphs) {
+        for (const s of m.currentPlayer().searchableTriumphs) {
           let triumph = clanSearchableTriumphsDict[s.hash];
           if (triumph == null) {
             triumph = {
@@ -503,13 +503,13 @@ export class ClanStateService {
 
     // loop through all clan-members to gather badges and collectibles
     for (const m of this.sortedMembers.getValue()) {
-      if (!m.player) {
+      if (!m.currentPlayer()) {
         continue;
       }
 
       // process players badges
-      if (m.player.badges) {
-        for (const b of m.player.badges) {
+      if (m.currentPlayer().badges) {
+        for (const b of m.currentPlayer().badges) {
           // do we have this badge already?
           let badge: ClanBadge = clanBadgesDict[b.hash];
 
@@ -546,8 +546,8 @@ export class ClanStateService {
       }
 
       // process player collectibles
-      if (m.player.searchableCollection) {
-        for (const c of m.player.searchableCollection) {
+      if (m.currentPlayer().searchableCollection) {
+        for (const c of m.currentPlayer().searchableCollection) {
           // do we have a copy of this collectible yet? If not create it
           let collectible = clanSearchableCollectionsDict[c.hash];
           if (collectible == null) {
@@ -775,52 +775,52 @@ export class ClanStateService {
 
     this.members.forEach(member => {
       if (member.destinyUserInfo == null) { return; }
-      if (member.player == null) { return; }
+      if (member.currentPlayer() == null) { return; }
 
       sCsv += member.destinyUserInfo.displayName + ',';
       sCsv += member.destinyUserInfo.platformName + ',';
-      if (member.player.characters != null) {
-        sCsv += member.player.characters.length + ',';
+      if (member.currentPlayer().characters != null) {
+        sCsv += member.currentPlayer().characters.length + ',';
       } else {
         sCsv += '0,';
       }
 
       const today = moment();
-      const lastPlayed = moment(member.player.profile.dateLastPlayed);
+      const lastPlayed = moment(member.currentPlayer().profile.dateLastPlayed);
       const diff = today.diff(lastPlayed, 'days');
       sCsv += diff + ',';
-      sCsv += member.player.artifactPowerBonus + ',';
-      if (member.player.seasonRank) {
-        sCsv += member.player.seasonRank.level + ',';
+      sCsv += member.currentPlayer().artifactPowerBonus + ',';
+      if (member.currentPlayer().seasonRank) {
+        sCsv += member.currentPlayer().seasonRank.level + ',';
       } else {
         sCsv += '-,';
       }
 
-      sCsv += member.player.triumphScore + ',';
-      if (member.player.glory) {
-        sCsv += member.player.glory.currentProgress + ',';
+      sCsv += member.currentPlayer().triumphScore + ',';
+      if (member.currentPlayer().glory) {
+        sCsv += member.currentPlayer().glory.currentProgress + ',';
       } else {
         sCsv += '-,';
       }
-      if (member.player.infamy) {
-        sCsv += member.player.infamy.currentProgress + ',';
+      if (member.currentPlayer().infamy) {
+        sCsv += member.currentPlayer().infamy.currentProgress + ',';
       } else {
         sCsv += '-,';
       }
-      if (member.player.valor) {
-        sCsv += member.player.valor.currentProgress + ',';
+      if (member.currentPlayer().valor) {
+        sCsv += member.currentPlayer().valor.currentProgress + ',';
       } else {
         sCsv += '-,';
       }
-      sCsv += member.player.getWeeklyXp() + ',';
-      sCsv += member.player.maxLL + ',';
+      sCsv += member.currentPlayer().getWeeklyXp() + ',';
+      sCsv += member.currentPlayer().maxLL + ',';
 
-      if (member.player.characters != null) {
+      if (member.currentPlayer().characters != null) {
         this.modelPlayer.getValue().milestoneList.forEach(mileStoneName => {
           let total = 0;
           let pctTotal = 0;
           let possible = 0;
-          member.player.characters.forEach(char => {
+          member.currentPlayer().characters.forEach(char => {
             // handle privacy settings
             if (char.milestones == null) {
               return;
@@ -942,13 +942,13 @@ export class ClanStateService {
   private static compareDate(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aD = 0;
     let bD = 0;
-    if (a.player != null) {
-      aD = Date.parse(a.player.profile.dateLastPlayed);
+    if (a.currentPlayer() != null) {
+      aD = Date.parse(a.currentPlayer().profile.dateLastPlayed);
     } else {
       aD = a.lastOnlineStatusChange * 1000;
     }
-    if (b.player != null) {
-      bD = Date.parse(b.player.profile.dateLastPlayed);
+    if (b.currentPlayer() != null) {
+      bD = Date.parse(b.currentPlayer().profile.dateLastPlayed);
     } else {
       bD = b.lastOnlineStatusChange * 1000;
     }
@@ -958,8 +958,8 @@ export class ClanStateService {
   private static compareXp(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null) { aX = a.player.getWeeklyXp(); }
-    if (b.player != null) { bX = b.player.getWeeklyXp(); }
+    if (a.currentPlayer() != null) { aX = a.currentPlayer().getWeeklyXp(); }
+    if (b.currentPlayer() != null) { bX = b.currentPlayer().getWeeklyXp(); }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
@@ -967,16 +967,16 @@ export class ClanStateService {
   private static compareArtifactPowerBonus(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null) { aX = a.player.artifactPowerBonus; }
-    if (b.player != null) { bX = b.player.artifactPowerBonus; }
+    if (a.currentPlayer() != null) { aX = a.currentPlayer().artifactPowerBonus; }
+    if (b.currentPlayer() != null) { bX = b.currentPlayer().artifactPowerBonus; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareSeasonRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player && a.player.seasonRank) { aX = a.player.seasonRank.level; }
-    if (b.player && b.player.seasonRank) { bX = b.player.seasonRank.level; }
+    if (a.currentPlayer() && a.currentPlayer().seasonRank) { aX = a.currentPlayer().seasonRank.level; }
+    if (b.currentPlayer() && b.currentPlayer().seasonRank) { bX = b.currentPlayer().seasonRank.level; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
@@ -984,43 +984,43 @@ export class ClanStateService {
   private static compareTriumph(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null) { aX = a.player.triumphScore; }
-    if (b.player != null) { bX = b.player.triumphScore; }
+    if (a.currentPlayer() != null) { aX = a.currentPlayer().triumphScore; }
+    if (b.currentPlayer() != null) { bX = b.currentPlayer().triumphScore; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareGlory(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null && a.player.glory != null) { aX = a.player.glory.completeProgress; }
-    if (b.player != null && b.player.glory != null) { bX = b.player.glory.completeProgress; }
+    if (a.currentPlayer() != null && a.currentPlayer().glory != null) { aX = a.currentPlayer().glory.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().glory != null) { bX = b.currentPlayer().glory.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareValor(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null && a.player.valor != null) { aX = a.player.valor.completeProgress; }
-    if (b.player != null && b.player.valor != null) { bX = b.player.valor.completeProgress; }
+    if (a.currentPlayer() != null && a.currentPlayer().valor != null) { aX = a.currentPlayer().valor.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().valor != null) { bX = b.currentPlayer().valor.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareInfamy(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.player != null && a.player.infamy != null) { aX = a.player.infamy.completeProgress; }
-    if (b.player != null && b.player.infamy != null) { bX = b.player.infamy.completeProgress; }
+    if (a.currentPlayer() != null && a.currentPlayer().infamy != null) { aX = a.currentPlayer().infamy.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().infamy != null) { bX = b.currentPlayer().infamy.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
   private static compareLLs(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aPts = -1;
-    if (a.player != null && a.player.maxLL != null) {
-      aPts = a.player.maxLL;
+    if (a.currentPlayer() != null && a.currentPlayer().maxLL != null) {
+      aPts = a.currentPlayer().maxLL;
     }
     let bPts = -1;
-    if (b.player != null && b.player.maxLL != null) {
-      bPts = b.player.maxLL;
+    if (b.currentPlayer() != null && b.currentPlayer().maxLL != null) {
+      bPts = b.currentPlayer().maxLL;
     }
     return ClanStateService.simpleCompare(aPts, bPts, reverse);
   }
@@ -1033,14 +1033,14 @@ export class ClanStateService {
     let loadAggNum = 0;
     for (const m of this.sortedMembers.getValue()) {
       try {
-        if (!m.player) {
+        if (!m.currentPlayer()) {
           continue;
         }
         if (type != 'nf') {
-          await this.bungieService.applyAggHistoryForPlayer(m.player, type);
+          await this.bungieService.applyAggHistoryForPlayer(m.currentPlayer(), type);
         }
         if (type == 'nf') {
-          await this.bungieService.updateNfScores(m.player);
+          await this.bungieService.updateNfScores(m.currentPlayer());
         }
         this.handleAggHistory();
       } catch (err) {
@@ -1082,11 +1082,11 @@ export class ClanStateService {
     const clanAggHistoryDict: { [key: string]: ClanAggHistoryEntry } = {};
     const sortedMembers = this.sortedMembers.getValue();
     for (const m of sortedMembers) {
-      if (!m.player) {
+      if (!m.currentPlayer()) {
         continue;
       }
-      if (m.player.aggHistory) {
-        for (const s of m.player.aggHistory) {
+      if (m.currentPlayer().aggHistory) {
+        for (const s of m.currentPlayer().aggHistory) {
           let entry = clanAggHistoryDict[s.name];
           if (entry == null) {
             entry = {
@@ -1141,19 +1141,20 @@ export class ClanStateService {
   }
 
   public async loadSpecificPlayer(target: BungieGroupMember, reload: boolean): Promise<void> {
-    if (target.player != null && !reload) { return; }
+    if (target.currentPlayer() != null && !reload) { return; }
 
     try {
       const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType,
         target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions', 'ProfileProgression',
         'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true);
-      target.player = x;
+      target.player$.next(x);
       if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
         this.modelPlayer.next(x);
       }
       if (x != null && x.characters != null) {
         // in case this is a retry
         target.errorMsg = null;
+        this.bungieService.loadActivityPsuedoMilestones(target.player$);
       } else {
         target.errorMsg = 'Unabled to load player data';
       }
@@ -1167,7 +1168,7 @@ export class ClanStateService {
     let loadNum = 0;
     let loadDenom = 0;
     for (const t of this.members) {
-      if (t.errorMsg != null || t.player != null) {
+      if (t.errorMsg != null || target.currentPlayer() != null) {
         loadNum++;
       }
       loadDenom++;

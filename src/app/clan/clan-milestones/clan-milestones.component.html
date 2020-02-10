@@ -56,23 +56,26 @@
                     <a style="margin-left:0.25em" href="javascript:void(0)" (click)="state.loadSpecificPlayer(member, true)">
                         &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
                     </a>
-                    <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
-                        {{member.player.title}}
-                    </span>
+                    <ng-container *ngIf="member.player$|async as player">
+                        <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
+                            {{player.title}}
+                        </span>
+                    </ng-container>
                 </td>
-                <ng-container *ngIf="member.player!=null">
-                    <td *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones==null"
+                <ng-container *ngIf="member.player$|async as player">
+                
+                    <td *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones==null"
                         [attr.colspan]="modelPlayer.milestoneList.length">
                         Blocked by privacy settings
                     </td>
                     <ng-container
-                        *ngIf="member.player.characters!=null && member.player.characters.length>0 && member.player.characters[0].milestones!=null && modelPlayer!=null">
+                        *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones!=null && modelPlayer!=null">
 
                         <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
 
                             <td *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1"
                                 class="clan-player-ms-cell" [attr.data-label]="mileStoneName.name">
-                                <ng-container *ngFor="let char of member.player.characters">
+                                <ng-container *ngFor="let char of player.characters">
                                     <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" detailed="false">
                                     </d2c-milestone-check>
                                 </ng-container>
@@ -81,7 +84,7 @@
 
                     </ng-container>
                 </ng-container>
-                <ng-container *ngIf="member.player==null && member.errorMsg==null && modelPlayer!=null">
+                <ng-container *ngIf="(member.player$|async)==null && member.errorMsg==null && modelPlayer!=null">
                     <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
                         <td *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">...</td>
                     </ng-container>

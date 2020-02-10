@@ -61,9 +61,11 @@
                     <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId, 'triumphs','seals']">
                         {{member.destinyUserInfo.displayName}}
                     </a>                   
-                    <span class="simple-caption" *ngIf="member.player.title.trim().length>0">
-                        {{member.player.title}}
-                    </span>
+                    <ng-container *ngIf="member.player$|async as player">
+                        <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
+                            {{player.title}}
+                        </span>
+                    </ng-container>
                 </td>
                 <td>
                     {{s.data.percent|number : '0.0-0'}}%
