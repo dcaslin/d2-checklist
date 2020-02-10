@@ -36,6 +36,9 @@
           <mat-form-field class="searchField">
             <input matInput #filter placeholder="Filter items">
           </mat-form-field>
+          <mat-checkbox class="hide-complete-triumphs" (change)="hideCompleted$.next($event.checked)" >
+            Hide Completed
+          </mat-checkbox>          
         </div>
 
         <ng-container *ngIf="!(loading|async)">
@@ -54,7 +57,7 @@
               <tbody *ngIf="shoppingListHashes|async as sl">
                 <ng-container *ngFor="let i of vendorData|async">
                   <tr
-                    *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i, filterText|async)">
+                    *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i, filterText$|async, hideCompleted$|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon"
                         [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
@@ -129,7 +132,7 @@
               <tbody>
                 <ng-container *ngFor="let i of vendorData|async">
                   <tr
-                    *ngIf="((i.type==ItemType.Armor || i.type==ItemType.Weapon ) || i.type==ItemType.GearMod) && includeItem(i, filterText|async)">
+                    *ngIf="((i.type==ItemType.Armor || i.type==ItemType.Weapon ) || i.type==ItemType.GearMod) && includeItem(i, filterText$|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon"
                         [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
@@ -174,7 +177,7 @@
               <tbody>
                 <ng-container *ngFor="let i of vendorData|async">
                   <tr
-                    *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) && includeItem(i, filterText|async)">
+                    *ngIf="(i.type==ItemType.Ship || i.type==ItemType.Vehicle || i.type==ItemType.Emote  || i.type==ItemType.Ghost) && includeItem(i, filterText$|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon"
                         [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
@@ -216,7 +219,7 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let i of vendorData|async">
-                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'   && includeItem(i, filterText|async)">
+                  <tr *ngIf="(i.type==ItemType.Dummy) && i.vendor.name=='Spider'   && includeItem(i, filterText$|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon"
                         [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
