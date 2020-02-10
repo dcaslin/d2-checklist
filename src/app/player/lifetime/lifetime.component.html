@@ -7,14 +7,15 @@
                     <d2c-player-efficiency-graph *ngIf="player.aggHistory.length>0; else loading">
                     </d2c-player-efficiency-graph>
                 </mat-tab>
-                <mat-tab label="Nightfalls">
-                    <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', player: player}">
-                    </ng-container>
-                </mat-tab>
                 <mat-tab label="Raids">
                     <ng-container *ngTemplateOutlet="aggTable; context: {type: 'raid', player: player}">
                     </ng-container>
                 </mat-tab>
+                <mat-tab label="Nightfalls">
+                    <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', player: player}">
+                    </ng-container>
+                </mat-tab>
+               
             </mat-tab-group>
 
 

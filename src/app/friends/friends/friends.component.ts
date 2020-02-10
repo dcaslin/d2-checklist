@@ -30,13 +30,11 @@ export class FriendsComponent extends ChildComponent implements OnInit {
       takeUntil(this.unsubscribe$))
       .subscribe(
         (x: UserInfo[]) => {
-          const members = [];
+          const members: FriendListEntry[] = [];
           for (const f of x) {
-            members.push({
-              user: f,
-              player: null,
-              errorMsg: null
-            });
+            const member = new FriendListEntry();
+            member.user = f;
+            members.push(member);
           }
           this.members.next(members);
           this.load();
@@ -49,15 +47,16 @@ export class FriendsComponent extends ChildComponent implements OnInit {
     if (this.modelPlayer == null && x != null && x.characters != null) {
       this.modelPlayer = x;
     }
+    friend.player$.next(x);
     if (x != null && x.characters != null) {
       // in case this is a retry
-      friend.errorMsg = null;
+      friend.errorMsg$.next(null);
       // this will operate directly on x.characters
+      this.bungieService.loadActivityPsuedoMilestones(friend.player$);
       // await this.bungieService.updateRaidHistory(x, true);
     } else {
-      friend.errorMsg = 'Unable to load player data';
+      friend.errorMsg$.next('Unable to load player data');
     }
-    friend.player = x;
   }
 
   private async slowlyLoadRest(): Promise<void> {
@@ -95,8 +94,8 @@ export class FriendsComponent extends ChildComponent implements OnInit {
     this.modelPlayer = null;
     this.playerCntr = 0;
     for (const m of this.members.value) {
-      m.player = null;
-      m.errorMsg = null;
+      m.player$.next(null);
+      m.errorMsg$.next(null);
     }
     try {
       this.slowlyLoadRest();

@@ -396,8 +396,12 @@ export class BungieGroupMember {
     destinyUserInfo: UserInfo;
     bungieNetUserInfo: BungieNetUserInfo;
     joinDate: string;
-    player: Player;
+    player$: BehaviorSubject<Player> = new BehaviorSubject(null);
     errorMsg: string;
+
+    currentPlayer(): Player|null {
+        return this.player$.getValue();
+    }
 
     isDefunct(): boolean {
         const current = this.destinyUserInfo.crossSaveOverride == 0 ||
@@ -409,8 +413,12 @@ export class BungieGroupMember {
 
 export class FriendListEntry {
     user: UserInfo;
-    player?: Player;
-    errorMsg?: string;
+    player$: BehaviorSubject<Player> = new BehaviorSubject(null);
+    errorMsg$: BehaviorSubject<string> = new BehaviorSubject(null);
+
+    currentPlayer(): Player|null {
+        return this.player$.getValue();
+    }
 }
 
 export interface BungieNetUserInfo {

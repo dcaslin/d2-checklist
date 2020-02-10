@@ -24,102 +24,99 @@
                         (click)="state.loadSpecificPlayer(member, true)">
                         &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
                     </a>
-                    <span class="simple-caption" *ngIf="member.player!=null && member.player.title.trim().length>0">
-                        {{member.player.title}}
-                    </span>
+                    <ng-container *ngIf="member.player$|async as player">
+                        <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
+                            {{player.title}}
+                        </span>
+                    </ng-container>
+                    
                 </td>
                 <td>
-                    <ng-container *ngIf="member.player!=null">
-                        <ng-container *ngIf="!member.player.superprivate">
+                    <ng-container *ngIf="member.player$|async as player">
+                        <ng-container *ngIf="!player.superprivate">
                             <ng-container
-                                *ngIf="member.isOnline && member.player && member.player.currentActivity; else lastPlayed">
+                                *ngIf="member.isOnline && player && player.currentActivity; else lastPlayed">
                                 <a mat-flat-button color="accent"
                                     [routerLink]="['/','party',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]"
                                     matTooltip="Playing right now!">
                                     <fa-icon [icon]="iconService.falGamepad" size="2x"></fa-icon>
                                 </a>
-                                <div *ngIf="member.player && member.player.currentActivity">
-                                    {{member.player.currentActivity.type}}</div>
+                                <div *ngIf="player && player.currentActivity">
+                                    {{player.currentActivity.type}}</div>
 
                             </ng-container>
 
                             <ng-template #lastPlayed>
-                                <ng-container *ngIf="member.player">
-                                    {{today| amDifference:member.player.profile.dateLastPlayed | amDuration:'ms'}} ago
-                                </ng-container>
-                                <ng-container *ngIf="!member.player">
-                                    {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}}
-                                    ago
-                                </ng-container>
+                                    {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
                             </ng-template>
                         </ng-container>
-                        <ng-container *ngIf="member.player.superprivate">
+                        <ng-container *ngIf="player.superprivate">
                             Blocked by privacy settings
                         </ng-container>
                     </ng-container>
 
-                    <ng-container *ngIf="member.player==null">
+                    <ng-container *ngIf="(member.player$|async)==null">
                         {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
                     </ng-container>
 
                 </td>
-                <ng-container *ngIf="member.player!=null; else noPlayer">
+                <ng-container *ngIf="member.player$|async as player; else noPlayer">
                     <td>
-                        <ng-container *ngIf="!member.player.superprivate">
-                            +{{member.player.artifactPowerBonus}}
+                        <ng-container *ngIf="!player.superprivate">
+                            +{{player.artifactPowerBonus}}
                         </ng-container>
                     </td>
                     <td>
-                        <ng-container *ngIf="!member.player.superprivate && member.player.seasonRank && member.player.seasonRank.level">
-                            {{member.player.seasonRank.level}}
+                        <ng-container *ngIf="!player.superprivate && player.seasonRank && player.seasonRank.level">
+                            {{player.seasonRank.level}}
                         </ng-container>
                     </td>
                     <td>
-                        <ng-container *ngIf="!member.player.superprivate">
-                            {{member.player.triumphScore|number : '1.0-0'}}
+                        <ng-container *ngIf="!player.superprivate">
+                            {{player.triumphScore|number : '1.0-0'}}
                         </ng-container>
                     </td>
                     <td data-label="Glory">
-                        <ng-container *ngIf="!member.player.superprivate && member.player.glory">
-                            {{member.player.glory.currentProgress|number}}
+                        <ng-container *ngIf="!player.superprivate && player.glory">
+                            {{player.glory.currentProgress|number}}
                             <div class="simple-caption">
-                                {{member.player.glory.title}}
+                                {{player.glory.title}}
                             </div>
 
                         </ng-container>
                     </td>
                     <td data-label="Infamy">
-                        <ng-container *ngIf="!member.player.superprivate && member.player.infamy">
-                            {{member.player.infamy.currentProgress|number}}
+                        <ng-container *ngIf="!player.superprivate && player.infamy">
+                            {{player.infamy.currentProgress|number}}
 
-                            <div class="simple-caption" *ngIf="member.player.infamy.lifetimeResetCount">
-                                {{member.player.infamy.lifetimeResetCount}} resets
-                                <div *ngIf="member.player.infamy.currentResetCount">
-                                    {{member.player.infamy.currentResetCount}} current</div>
+                            <div class="simple-caption" *ngIf="player.infamy.lifetimeResetCount">
+                                {{player.infamy.lifetimeResetCount}} resets
+                                <div *ngIf="player.infamy.currentResetCount">
+                                    {{player.infamy.currentResetCount}} current</div>
                             </div>
 
                         </ng-container>
                     </td>
                     <td data-label="Valor">
-                        <ng-container *ngIf="!member.player.superprivate && member.player.valor">
-                            {{member.player.valor.currentProgress|number}}
+                        <ng-container *ngIf="!player.superprivate && player.valor">
+                            {{player.valor.currentProgress|number}}
 
-                            <div class="simple-caption" *ngIf="member.player.valor.lifetimeResetCount">
-                                {{member.player.valor.lifetimeResetCount}} resets
-                                <div *ngIf="member.player.valor.currentResetCount">
-                                    {{member.player.valor.currentResetCount}} current</div>
+                            <div class="simple-caption" *ngIf="player.valor.lifetimeResetCount">
+                                {{player.valor.lifetimeResetCount}} resets
+                                <div *ngIf="player.valor.currentResetCount">
+                                    {{player.valor.currentResetCount}} current</div>
                             </div>
 
                         </ng-container>
                     </td>
                     <td>
-                        <ng-container *ngIf="!member.player.superprivate">
-                            {{member.player.getWeeklyXp()/1000000|number:'1.1-1'}} M
+                        <ng-container *ngIf="!player.superprivate">
+                            {{player.getWeeklyXp()/1000000|number:'1.1-1'}} M
                         </ng-container>
                     </td>
 
                     <td data-label="Max Current Light Level">
-                        <ng-container *ngIf="!member.player.superprivate && member.player.maxLL">{{member.player.maxLL}}
+                        <ng-container *ngIf="!player.superprivate && player.maxLL">{{player.maxLL}}
                         </ng-container>
                     </td>
                 </ng-container>
