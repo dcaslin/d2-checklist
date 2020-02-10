@@ -28,7 +28,8 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   char: Character = null;
 
   public vendorData: BehaviorSubject<SaleItem[]> = new BehaviorSubject([]);
-  public filterText: BehaviorSubject<string> = new BehaviorSubject(null);
+  public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
+  public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   options = ['Bounties', 'Gear', 'Exchange', 'Cosmetics'];
   option = this.options[0];
@@ -57,8 +58,11 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
     this.router.navigate(['vendors', this.char.characterId, val]);
   }
 
-  public includeItem(itm: SaleItem, filterText: string): boolean {
+  public includeItem(itm: SaleItem, filterText: string, hideCompleted?: boolean): boolean {
     if (filterText == null) { return true; }
+    if (hideCompleted && itm.status === 'Already completed') {
+      return false;
+    }
     return itm.searchText.indexOf(filterText) >= 0;
   }
   selectVendorBounty(i: SaleItem) {
@@ -172,9 +176,9 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       .subscribe(() => {
         const val: string = this.filter.nativeElement.value;
         if (val == null || val.trim().length === 0) {
-          this.filterText.next(null);
+          this.filterText$.next(null);
         } else {
-          this.filterText.next(val.toLowerCase());
+          this.filterText$.next(val.toLowerCase());
         }
       });
 
