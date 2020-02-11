@@ -59,10 +59,10 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   }
 
   public includeItem(itm: SaleItem, filterText: string, hideCompleted?: boolean): boolean {
-    if (filterText == null) { return true; }
     if (hideCompleted && itm.status === 'Already completed') {
       return false;
     }
+    if (filterText == null) { return true; }
     return itm.searchText.indexOf(filterText) >= 0;
   }
   selectVendorBounty(i: SaleItem) {
