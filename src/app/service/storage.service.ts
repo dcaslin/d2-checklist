@@ -106,7 +106,9 @@ export class StorageService {
   async toggleFav(userInfo: UserInfo, bungieMembershipId: string): Promise<void> {
     if (bungieMembershipId == null) {
       const bm = await this.bungieService.getBungieMembershipsById(userInfo.membershipId, userInfo.membershipType);
-      bungieMembershipId = bm.bungieId;
+      if (bm) {
+        bungieMembershipId = bm.bungieId;
+      }
     }
     const key = this.getFavKey(userInfo);
     const favorites: { [id: string]: UserInfo } = this.getItem('friends', {});
