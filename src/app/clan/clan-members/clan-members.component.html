@@ -88,11 +88,8 @@
                     <td data-label="Infamy">
                         <ng-container *ngIf="!player.superprivate && player.infamy">
                             {{player.infamy.currentProgress|number}}
-
-                            <div class="simple-caption" *ngIf="player.infamy.lifetimeResetCount">
-                                {{player.infamy.lifetimeResetCount}} resets
-                                <div *ngIf="player.infamy.currentResetCount">
-                                    {{player.infamy.currentResetCount}} current</div>
+                            <div class="simple-caption" *ngIf="player.infamy.currentResetCount">
+                                {{player.infamy.currentResetCount}} resets
                             </div>
 
                         </ng-container>
@@ -101,10 +98,8 @@
                         <ng-container *ngIf="!player.superprivate && player.valor">
                             {{player.valor.currentProgress|number}}
 
-                            <div class="simple-caption" *ngIf="player.valor.lifetimeResetCount">
-                                {{player.valor.lifetimeResetCount}} resets
-                                <div *ngIf="player.valor.currentResetCount">
-                                    {{player.valor.currentResetCount}} current</div>
+                            <div class="simple-caption" *ngIf="player.valor.currentResetCount">
+                                {{player.valor.currentResetCount}} resets                                
                             </div>
 
                         </ng-container>

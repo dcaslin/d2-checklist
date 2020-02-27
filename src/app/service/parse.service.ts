@@ -225,13 +225,7 @@ export class ParseService {
                 if (prog.weeklyProgress == 0) {
                     prog.weeklyProgress = suppProg.weeklyProgress;
                 }
-                prog.currentResetCount = suppProg.currentResetCount;
-                if (suppProg.seasonResets != null) {
-                    prog.lifetimeResetCount = 0;
-                    for (const sr of suppProg.seasonResets) {
-                        prog.lifetimeResetCount += sr.resets;
-                    }
-                }
+                prog.currentResetCount = suppProg.currentResetCount;                
             }
             return prog;
         } else {
@@ -520,11 +514,11 @@ export class ParseService {
         if (!prog.steps || prog.steps.length === 0) {
             return;
         }
-        if (prog.lifetimeResetCount == null || prog.lifetimeResetCount == 0) {
+        if (prog.currentResetCount == null || prog.currentResetCount == 0) {
             return;
         }
         const resetValue = prog.steps[prog.steps.length - 1].cumulativeTotal;
-        prog.completeProgress += prog.lifetimeResetCount * resetValue;
+        prog.completeProgress += prog.currentResetCount * resetValue;
     }
 
     private getSeasonProgression(): SeasonPass {
