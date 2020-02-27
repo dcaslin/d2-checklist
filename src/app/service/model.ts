@@ -1143,7 +1143,6 @@ export class Progression {
     steps: ProgressStep[];
     totalProgress: number;
     currentResetCount: number;
-    lifetimeResetCount: number;
     title: string;
     nextTitle: string;
     special: string;
