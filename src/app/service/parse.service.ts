@@ -326,6 +326,10 @@ export class ParseService {
                 // weekly strikes
                 this.addPsuedoMilestone('1437935813', milestonesByKey, milestoneList);
 
+                // sundial
+                this.addPsuedoMilestone('95049884', milestonesByKey, milestoneList);
+
+
 
                 let total = 0;
                 let complete = 0;
