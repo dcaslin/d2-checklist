@@ -225,7 +225,7 @@ export class ParseService {
                 if (prog.weeklyProgress == 0) {
                     prog.weeklyProgress = suppProg.weeklyProgress;
                 }
-                prog.currentResetCount = suppProg.currentResetCount;                
+                prog.currentResetCount = suppProg.currentResetCount;
             }
             return prog;
         } else {
@@ -3634,9 +3634,13 @@ export class ParseService {
             let questline: Questline = null;
             if (desc.objectives != null && type == ItemType.QuestStep) {
                 const qli = desc.objectives.questlineItemHash;
-                if (qli != null) {
+
+                if (qli != null && qli != 0) {
                     questline = this.parseQuestLine(qli, itm.itemHash);
-                    if (questline == null) { return null; }
+                    if (questline == null) {
+                        console.log('Null questline for ' + desc.displayProperties.name);
+                        return null;
+                    }
                 }
             }
 
