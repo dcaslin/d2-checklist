@@ -29,8 +29,6 @@ export class BungieService implements OnDestroy {
     selectedUser: SelectedUser;
     apiDown = false;
 
-
-    pubilc;
     private async updateSelectedUser(selectedUser: SelectedUser): Promise<void> {
         if (selectedUser != null) {
             // wait until cache is ready
@@ -441,8 +439,9 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
+        // TODO, need detailed?
         const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
-            ['ProfileCurrencies', 'CharacterInventories', 'ItemObjectives', 'ItemSockets'], true);
+            ['ProfileCurrencies', 'ProfileInventories'], true, true);
         if (tempPlayer == null) {
             console.log('No player to apply currencies to');
             return;
