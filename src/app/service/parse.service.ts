@@ -2036,7 +2036,7 @@ export class ParseService {
 
 
 
-    private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, currencies: Currency[]) {
+    private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }) {
 
         let imperials: number;
         let powerfulDropsRemaining: number;
@@ -2263,7 +2263,6 @@ export class ParseService {
         const rankups: Rankup[] = [];
         const bounties: InventoryItem[] = [];
         const quests: InventoryItem[] = [];
-        let privateGear = true;
         const gear: InventoryItem[] = [];
         let checklists: Checklist[] = [];
 
@@ -2277,21 +2276,24 @@ export class ParseService {
             checklists = this.parseProfileChecklists(resp);
             charChecklists = this.parseCharChecklists(resp, chars);
             artifactPowerBonus = this.parseArtifactProgressions(resp, chars, accountProgressions);
+            let gettingCurrencies = false;
             // hit with a hammer
             if (resp.profileCurrencies != null && resp.profileCurrencies.data != null &&
                 resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
-                        currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
+                        //if (desc.displayProperties.name != 'Bright Dust') {
+                            currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
+                        //}
                     }
                 });
+                gettingCurrencies = true;
             }
             vault = new Vault();
             shared = new Shared();
 
             if (resp.characterInventories != null && resp.characterInventories.data != null) {
-                privateGear = false;
                 Object.keys(resp.characterInventories.data).forEach((key) => {
                     const char: Character = charsDict[key];
                     const options: Target[] = chars.filter(c => c !== char);
@@ -2302,7 +2304,7 @@ export class ParseService {
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
                             if (parsed.type === ItemType.Chalice && resp.characterProgressions) {
-                                this.handleChalice(char, parsed, milestoneList, milestonesByKey, currencies);
+                                this.handleChalice(char, parsed, milestoneList, milestonesByKey);
                             } else if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
                                 // ignore expired
                                 if (!parsed.expired) {
@@ -2569,6 +2571,20 @@ export class ParseService {
             if (a.name < b.name) { return -1; }
             return 0;
         });
+        if (currencies.length > 0) {
+            for (const g of gear) {
+                // || g.hash == '4257549984' || g.hash == '4257549985'
+                if (g.hash == '3853748946') {
+                    const curr = currencies.find(x => x.hash === g.hash);
+                    if (curr) {
+                        curr.count += g.quantity;
+                    } else {
+                        currencies.push(new Currency(g.hash, g.name, g.icon, g.quantity));
+                    }
+
+                }
+            }
+        }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -3016,7 +3032,7 @@ export class ParseService {
     private parseQuestLine(qli: number, stepHash: number): Questline {
         const qdesc: any = this.destinyCacheService.cache.InventoryItem[qli];
         if (qdesc == null) { return null; }
-        if (qdesc.setData != null) {}
+        if (qdesc.setData != null) { }
         if (qdesc.setData == null) { return null; }
         // wtf was this doing anyway?
         const qType = qdesc.setData.setType;
@@ -3443,8 +3459,7 @@ export class ParseService {
             let tier = null;
             let isRandomRoll = false;
 
-            // || type === ItemType.Chalice for the future?
-            if (detailedInv || type === ItemType.Chalice) {
+            if (itemComp && (detailedInv || type === ItemType.Chalice)) {
 
                 if (desc.inventory != null) {
                     tier = desc.inventory.tierTypeName;
@@ -3638,7 +3653,6 @@ export class ParseService {
                 if (qli != null && qli != 0) {
                     questline = this.parseQuestLine(qli, itm.itemHash);
                     if (questline == null) {
-                        console.log('Null questline for ' + desc.displayProperties.name);
                         return null;
                     }
                 }
