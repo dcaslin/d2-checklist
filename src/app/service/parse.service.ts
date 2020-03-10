@@ -275,7 +275,7 @@ export class ParseService {
         c.milestones = {};
         c.notReady = false;
         if (_prog.milestones != null) {
-            if (c.light < 900) {
+            if (c.light < 960) {  // TODO UPDATE ME
                 c.notReady = true;
             }
             for (const key of Object.keys(_prog.milestones)) {
@@ -526,7 +526,7 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['2007338097'];
+        const s: Season = this.destinyCacheService.cache.Season['4035491417'];  // TODO UPDATE ME  2007338097
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
