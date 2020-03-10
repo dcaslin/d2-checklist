@@ -10,7 +10,8 @@
         <ng-template #noPhases>
             <ng-container *ngIf="milestone.complete==true else notComplete">
                 <ng-container *ngIf="milestone.indeterminate">
-                    <fa-icon [icon]="iconService.falCheckSquare" class="faint" matTooltip="LL&lt;900, may not be unlocked"></fa-icon>
+                    <!-- TODO UPDATE ME -->
+                    <fa-icon [icon]="iconService.falCheckSquare" class="faint" matTooltip="LL&lt;960, may not be unlocked"></fa-icon>
                 </ng-container>
                 <ng-container *ngIf="!milestone.indeterminate">
                     <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected"></fa-icon>

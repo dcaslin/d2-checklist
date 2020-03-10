@@ -1184,41 +1184,46 @@ export class Const {
     public static readonly MID_BOOST = 3;
     public static readonly HIGH_BOOST = 4;
 
+    // TODO UPDATE ME
+    // 900 -> 950
+    // 950 -> ?
+    // 960 -> 1000
+    // 970 -> 1010
     public static readonly BOOSTS: DropInfo[] = [
         {
             level: Const.UNKNOWN_BOOST,
             min: 0,
             max: 1,
-            softCap: 900,
-            hardCap: 960
+            softCap: 950,
+            hardCap: 1000
         },
         {
             level: Const.NO_BOOST,
             min: -3,
             max: 0,
-            softCap: 900,
-            hardCap: 960
+            softCap: 950,
+            hardCap: 1000
         },
         {
             level: Const.LOW_BOOST,
             min: 3,
             max: 3,
             softCap: 950,
-            hardCap: 960
+            hardCap: 1000
         },
         {
             level: Const.MID_BOOST,
             min: 4,
             max: 4,
             softCap: 950,
-            hardCap: 960
+            hardCap: 1000
         },
         {
             level: Const.HIGH_BOOST,
             min: 2,
             max: 2,
-            softCap: 970,
-            hardCap: 970
+            softCap: 1010,
+            hardCap: 1010
         }
     ];
 }

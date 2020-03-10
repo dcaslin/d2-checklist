@@ -188,10 +188,10 @@
           </mat-card-content>
         </mat-card>
         <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
-          <div>
+          <!-- <div>
             <ng-container *ngTemplateOutlet="simpleBurns; context: {title: 'Sundial: Legend Modifiers', milestone: today.publicMilestones.sundial}"></ng-container>
             
-          </div>
+          </div> -->
           <div>
             <ng-container *ngTemplateOutlet="burnDialogs; context: {title: 'Nightfalls', milestones: today.publicMilestones.nightfalls}"></ng-container>
             <ng-container *ngTemplateOutlet="burnDialogs; context: {title: 'Nightmare Hunts', milestones: today.publicMilestones.nightmareHunts}"></ng-container>
