@@ -88,22 +88,24 @@
               </mat-card-title>
               <mat-card-subtitle class="full-width">
                 <ng-container *ngIf="players|async as ps">
-                  <div class="pad-left" *ngIf="ps[entry.user.membershipId] as player">
-                    Glory 
-                    <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
-                    <ng-container *ngIf="!player.glory">hidden
-                    </ng-container>
+                  <div>
+                    <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}} PL</span>
+                    <span class="pad-left-more" *ngIf="ps[entry.user.membershipId] as player">
+                      Glory: 
+                      <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
+                      <ng-container *ngIf="!player.glory">hidden</ng-container>
+                    </span>
+                    
                   </div>
                 </ng-container>
 
                 <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
                 <div>
-                  <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}}LL</span>
-                  <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}
-                    ({{entry.fireteamSize}} member)</span>
+                  <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+                  <span class="pad-left-more">{{entry.fireteamSize}} members</span>
                 </div>
                 <div>
-                  <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score}}</span>
+                  <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score|number}}</span>
                   <span class="pad-left" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
                   <span class="pad-left" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
                   <span class="pad-left" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
