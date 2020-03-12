@@ -3296,11 +3296,15 @@ export class ParseService {
     private getSeasonalMod(plugDesc: any): number | null {
         if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
             const h = plugDesc.plug.plugCategoryHash;
-            if (h == 1081029832) { // undying
-                return 8;
+           
+            if (h == 426869514) { // worthy
+                return 10;
             }
             if (h == 208760563) { // dawn
                 return 9;
+            }
+            if (h == 1081029832) { // undying
+                return 8;
             }
             if (h == 2149155760 || h == 13646368) { // outlaw
                 return 4;
@@ -3747,6 +3751,9 @@ export class ParseService {
             }
             if (seasonalModSlot) {
                 searchText += 'is:seasonmod';
+                if (seasonalModSlot == 10) {
+                    searchText += 'season:worthy';
+                }
                 if (seasonalModSlot == 9) {
                     searchText += 'season:dawn';
                 }
