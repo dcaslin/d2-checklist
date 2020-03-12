@@ -2,13 +2,14 @@ import { Injectable, ApplicationRef } from '@angular/core';
 import { SwUpdate } from '@angular/service-worker';
 import { first, catchError } from 'rxjs/operators';
 import { interval, concat } from 'rxjs';
+import { NotificationService } from './notification.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PwaService {
 
-    constructor(appRef: ApplicationRef, updates: SwUpdate) {
+    constructor(appRef: ApplicationRef, updates: SwUpdate, private notificationService: NotificationService) {
         console.log('------PwaService-------');
         try {
             // Allow the app to stabilize first, before starting polling for updates with `interval()`.
@@ -27,6 +28,9 @@ export class PwaService {
                 updates.available.subscribe(event => {
                     console.log('current version is', event.current);
                     console.log('available version is', event.available);
+                    this.notificationService.success('A new update is available, refreshing');
+                    window.location.reload(true);
+
                 });
                 updates.activated.subscribe(event => {
                     console.log('old version was', event.previous);

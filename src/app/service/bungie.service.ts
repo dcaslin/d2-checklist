@@ -5,16 +5,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
  */
 import { Injectable, OnDestroy } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { environment as env } from '@env/environment';
+import { get, set } from 'idb-keyval';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, NameDesc, PGCR, Player, PublicMilestone, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault, Mission, AggHistoryCache, PublicMilestonesAndActivities } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, Mission, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
-import { environment as env } from '@env/environment';
-import { del, get, keys, set } from 'idb-keyval';
 
 const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
@@ -621,14 +621,17 @@ export class BungieService implements OnDestroy {
             if (i.vendor.hash == targetVendorHash) {
                 vendorFound = true;
                 if (i.values != null && i.type == ItemType.Bounty) {
-                    for (const v of i.values) {
-                        // is powerful gear
-                        if (v.hash == '4039143015') {
-                            powerfulBounties.push(i);
-                        } else if (v.hash == '3586070587') {
-                            powerfulBounties.push(i);
-                        } // is Firewalll Data Fragment
+                    if (i.itemTypeDisplayName.indexOf('Weekly Bounty') >= 0  ) {
+                        powerfulBounties.push(i);
                     }
+                    // for (const v of i.values) {
+                    //     // is powerful gear
+                    //     if (v.hash == '4039143015') {
+                    //         powerfulBounties.push(i);
+                    //     } else if (v.hash == '3586070587') {
+                    //         powerfulBounties.push(i);
+                    //     } // is Firewalll Data Fragment
+                    // }
                 }
             }
         }
@@ -692,6 +695,8 @@ export class BungieService implements OnDestroy {
         const erisPsuedoMs = this.createVendorMilestone('1616085565', Const.ERIS_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.ERIS_KEY] = erisPsuedoMs;
 
+        const rasputinPsuedoMs = this.createVendorMilestone('73401818', Const.RASPUTIN_KEY, vendorData, p.getValue(), c);
+        c.milestones[Const.RASPUTIN_KEY] = rasputinPsuedoMs;
         // const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData, p.getValue(), c);
         // c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
         // const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData, p.getValue(), c);
@@ -774,12 +779,25 @@ export class BungieService implements OnDestroy {
             hasPartial: false,
             neverDisappears: true
         };
+        const ms2: MileStoneName = {
+            key: Const.RASPUTIN_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear',
+            pl: Const.LOW_BOOST,
+            name: 'Rasputin\'s Weekly Bounties',
+            desc: 'Complete both of Rasputin\'s weekly bounties',
+            hasPartial: false,
+            neverDisappears: true
+        };
         p.milestoneList.push(ms1);
+        p.milestoneList.push(ms2);
         const empty1: MilestoneStatus = new MilestoneStatus(Const.ERIS_KEY, false, 0, null, 'Loading...', null);
+        const empty2: MilestoneStatus = new MilestoneStatus(Const.RASPUTIN_KEY, false, 0, null, 'Loading...', null);
 
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
             c.milestones[Const.ERIS_KEY] = empty1;
+            c.milestones[Const.RASPUTIN_KEY] = empty2;
         }
         playerSubject.next(p);
         for (const c of p.characters) {
