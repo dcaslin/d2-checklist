@@ -90,6 +90,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:locked',
     'is:unlocked',
     'is:extratagged',
+    'season:worthy',
     'season:undying',
     'season:dawn',
     'season:opulence',

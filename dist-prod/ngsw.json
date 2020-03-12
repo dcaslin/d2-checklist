@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1584030444479,
+  "timestamp": 1584043905389,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -10,13 +10,13 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main.fb010fd7fed2dc3a2f72.js",
+        "/main.98f4b77e613444067a82.js",
         "/manifest.webmanifest",
         "/polyfills-es5.f4fff41728d46dcec581.js",
         "/polyfills.255bf9360c3e263863e2.js",
         "/runtime.3b1df53b846aa25ed7e6.js",
         "/scripts.639d1102ffe318f070f9.js",
-        "/styles.f1d931685a7dffec8ba6.css"
+        "/styles.af6d98c6e301cd21fd3d.css"
       ],
       "patterns": []
     },
@@ -53,10 +53,10 @@
         "/assets/share-logo.png",
         "/favicon-16x16.png",
         "/favicon-32x32.png",
-        "/icomoon.788addc622358c584a96.svg",
-        "/icomoon.d720943e30b8cf423bfb.eot",
-        "/icomoon.dfcd048fd3434ec0d186.ttf",
-        "/icomoon.f913d56c965a34d4caf9.woff",
+        "/icomoon.0d8ff36391ccbb386a96.svg",
+        "/icomoon.3d15b101819dd938fff9.ttf",
+        "/icomoon.789cd20d045e7ccf2e86.woff",
+        "/icomoon.e3cf8e39cc5835d5d3a5.eot",
         "/logo.59862c3ad9aee651dfa1.svg",
         "/mstile-144x144.png",
         "/mstile-150x150.png",
@@ -79,11 +79,11 @@
     "/apple-touch-icon-76x76.png": "fbfd0640d608967aaf222bcf8b0fd49951a84f88",
     "/apple-touch-icon.png": "94ac80668ba30425ad9e62a1de3cdbfa285b0df3",
     "/assets/destiny2.zip": "efc0b4341fb7e032e25855af32d44fd58696e6ff",
-    "/assets/fonts/icomoon.eot": "5e46751693b85bbdbafddb809b077e32e8f7aab7",
-    "/assets/fonts/icomoon.svg": "d849f51fd1a98308ce876321534e27318aba60ba",
-    "/assets/fonts/icomoon.ttf": "db0bfbdd9d9b72d0b7bd0b26092941d0e65ed72a",
-    "/assets/fonts/icomoon.woff": "7bfca6a937612e8b1e6197d9108a14585ea3f0f7",
-    "/assets/icomoon.css": "2ad3a918498f7ca9d0ec73120ed84457fdbde0b3",
+    "/assets/fonts/icomoon.eot": "abb492ace87f588e6fb5664c146a25ce9b6b70cc",
+    "/assets/fonts/icomoon.svg": "29b12cd43e2f66785923efddb007a16fc3f308e9",
+    "/assets/fonts/icomoon.ttf": "9502e0b804c93f4ef4f7bcb04405669d033bb7f2",
+    "/assets/fonts/icomoon.woff": "22e19a34a2344c8437d3722813353e6c0291e630",
+    "/assets/icomoon.css": "ddba1a9fb8e1ab82e65421ee52fbf2e696805dff",
     "/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
     "/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
     "/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
@@ -99,13 +99,13 @@
     "/favicon-16x16.png": "078f250a464e94902b51d2c8041c3e5a8cd8ea46",
     "/favicon-32x32.png": "afddc64facb0292e50620253ab49e672f22035e6",
     "/favicon.ico": "501633f5277d872f3bc7066324f625401422039c",
-    "/icomoon.788addc622358c584a96.svg": "d849f51fd1a98308ce876321534e27318aba60ba",
-    "/icomoon.d720943e30b8cf423bfb.eot": "5e46751693b85bbdbafddb809b077e32e8f7aab7",
-    "/icomoon.dfcd048fd3434ec0d186.ttf": "db0bfbdd9d9b72d0b7bd0b26092941d0e65ed72a",
-    "/icomoon.f913d56c965a34d4caf9.woff": "7bfca6a937612e8b1e6197d9108a14585ea3f0f7",
-    "/index.html": "e7d2107cc7a18d613f8be70afb3df11285512ccb",
+    "/icomoon.0d8ff36391ccbb386a96.svg": "29b12cd43e2f66785923efddb007a16fc3f308e9",
+    "/icomoon.3d15b101819dd938fff9.ttf": "9502e0b804c93f4ef4f7bcb04405669d033bb7f2",
+    "/icomoon.789cd20d045e7ccf2e86.woff": "22e19a34a2344c8437d3722813353e6c0291e630",
+    "/icomoon.e3cf8e39cc5835d5d3a5.eot": "abb492ace87f588e6fb5664c146a25ce9b6b70cc",
+    "/index.html": "6287f671532ff0fe9fd55152da892887ae9fdefd",
     "/logo.59862c3ad9aee651dfa1.svg": "10086ba5a9c393e363730785a67ee3b54039c002",
-    "/main.fb010fd7fed2dc3a2f72.js": "1d5dae01d7b3564c4f507b1b8e5817c65817dc15",
+    "/main.98f4b77e613444067a82.js": "5d20340769c91ed51c277a4f8402ffccdb71e7e5",
     "/manifest.webmanifest": "9051024de31a845c4b02472ff73058b08dee0dba",
     "/mstile-144x144.png": "28ced498c2f2dd484627cfa16e246492b5c3e56f",
     "/mstile-150x150.png": "b16289b45013f1098c0e9df9c26d5487117e69a4",
@@ -117,7 +117,7 @@
     "/runtime.3b1df53b846aa25ed7e6.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
     "/safari-pinned-tab.svg": "cc8714ba084d4813b9759c7c3bb16063cc2241ac",
     "/scripts.639d1102ffe318f070f9.js": "e87a268250b2863c8e8fcc8bc2c3fb8af39cf8ca",
-    "/styles.f1d931685a7dffec8ba6.css": "8fda238d47ae82c2052152917ed1e0d3a2e07482"
+    "/styles.af6d98c6e301cd21fd3d.css": "46c1b4958ea8936aca38b766a48189db92d12b0e"
   },
   "navigationUrls": [
     {
