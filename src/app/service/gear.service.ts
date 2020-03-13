@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
-import { BucketService, Bucket } from './bucket.service';
-import { InventoryItem, SelectedUser, Player, ClassAllowed, Character, Target, ItemType } from './model';
-import { WishlistService } from './wishlist.service';
+import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser, Target } from './model';
 import { NotificationService } from './notification.service';
-import { BehaviorSubject } from 'rxjs';
-import { TargetPerkService } from './target-perk.service';
 import { PreferredStatService } from './preferred-stat.service';
+import { TargetPerkService } from './target-perk.service';
+import { WishlistService } from './wishlist.service';
 
 
 
@@ -15,7 +15,7 @@ import { PreferredStatService } from './preferred-stat.service';
 export class GearService {
 
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    
+
     public static sortGear(sortBy: string, sortDesc: boolean, tempGear: InventoryItem[]) {
         if (sortBy.startsWith('masterwork.') || sortBy == 'mods' || sortBy.startsWith('stat.')) {
           tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
@@ -123,7 +123,7 @@ export class GearService {
                             }
                         }
                         item.dupesTaggedToKeep = taggedToKeep;
-                        if (taggedToKeep>1) {
+                        if (taggedToKeep > 1) {
                             item.searchText += ' is:extratagged ';
                         }
                     }
@@ -276,13 +276,13 @@ export class GearService {
                 let iArchetype = null;
                 let gArchetype = null;
                 for (const s of i.sockets) {
-                    if (s.socketCategoryHash == '4241085061') {
+                    if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
                         iArchetype = s.plugs[0].hash;
                         break;
                     }
                 }
                 for (const s of g.sockets) {
-                    if (s.socketCategoryHash == '4241085061') {
+                    if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
                         gArchetype = s.plugs[0].hash;
                         break;
                     }
