@@ -2283,9 +2283,9 @@ export class ParseService {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
-                        //if (desc.displayProperties.name != 'Bright Dust') {
+                        // if (desc.displayProperties.name != 'Bright Dust') {
                             currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
-                        //}
+                        // }
                     }
                 });
                 gettingCurrencies = true;
@@ -2573,8 +2573,8 @@ export class ParseService {
         });
         if (currencies.length > 0) {
             for (const g of gear) {
-                // || g.hash == '4257549984' || g.hash == '4257549985'
-                if (g.hash == '3853748946') {
+                // || g.hash == '4257549984' prism || g.hash == '4257549985' ascendant shard
+                if (g.hash == '3853748946' || g.hash == '535079318') { // enhancement cores and warmind bits asdf
                     const curr = currencies.find(x => x.hash === g.hash);
                     if (curr) {
                         curr.count += g.quantity;
@@ -2583,6 +2583,7 @@ export class ParseService {
                     }
 
                 }
+
             }
         }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
@@ -3296,7 +3297,7 @@ export class ParseService {
     private getSeasonalMod(plugDesc: any): number | null {
         if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
             const h = plugDesc.plug.plugCategoryHash;
-           
+
             if (h == 426869514) { // worthy
                 return 10;
             }
@@ -3375,6 +3376,8 @@ export class ParseService {
                         }
                     }
                 } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
+                    type = ItemType.ExchangeMaterial;
+                } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Currency') >= 0) {
                     type = ItemType.ExchangeMaterial;
                 } else if (desc.itemType === ItemType.Ship) {
                     type = ItemType.Vehicle;
@@ -4181,6 +4184,8 @@ export class ParseService {
         if (mode === 80) { return 'Elimination'; }
         if (mode === 81) { return 'Momentum'; }
         if (mode === 82) { return 'Dungeon'; }
+        if (mode === 83) { return 'Sundial'; }
+        if (mode === 84) { return 'Trials Of Osiris'; }
         return 'Unknown ' + mode;
     }
 
