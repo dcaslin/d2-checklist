@@ -709,7 +709,7 @@ export class BungieService implements OnDestroy {
 
     private async loadActivityPsuedoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
         const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
-        const dungeonActivitiesIncomplete = activities.filter(a => a.mode == 'Dungeon' && !a.success);
+        const dungeonActivitiesIncomplete = activities.filter(a => a.mode == 'Dungeon' && (!a.completed || !a.success));
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon' && a.success && a.completed);
         const done = dungeonActivities.length >= 1;
         const mightHaveCheckpoint = dungeonActivitiesIncomplete.length >= 1;
