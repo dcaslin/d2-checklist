@@ -519,7 +519,9 @@
                           <td>{{stat.baseValue}}</td>
                         </tr> -->
                         <tr
-                          *ngIf="stat.hash==1345609583 || stat.hash==155624089 || stat.hash==4043523819 || stat.hash==1240592695">
+                          *ngIf="stat.hash==1345609583
+                            || stat.hash==4043523819 || stat.hash==1240592695
+                            || stat.hash==4284893193">
                           <td><a class="gear-sort" href="javascript:void(0)"
                               (click)="sort('stat.'+stat.hash)">{{stat.name}}
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
