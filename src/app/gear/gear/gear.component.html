@@ -518,12 +518,21 @@
                           </td>
                           <td>{{stat.baseValue}}</td>
                         </tr> -->
-                        <tr
-                          *ngIf="stat.hash==1345609583
+                        <tr *ngIf="stat.hash==1345609583
                             || stat.hash==4043523819 || stat.hash==1240592695
                             || stat.hash==4284893193">
-                          <td><a class="gear-sort" href="javascript:void(0)"
-                              (click)="sort('stat.'+stat.hash)">{{stat.name}}
+                          <td><a class="gear-sort" href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">
+                              <ng-container *ngIf="stat.name=='Rounds Per Minute'; else notRPM">
+                                RPM
+                              </ng-container>
+                              <ng-template #notRPM>
+                                <ng-container *ngIf="stat.name=='Aim Assistance'; else default">
+                                  Aim Assist
+                                </ng-container>
+                              </ng-template>
+                              <ng-template #default>
+                                {{stat.name}}
+                              </ng-template>
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
                                 [descending]="sortDesc">
                               </d2c-sort-indicator>
