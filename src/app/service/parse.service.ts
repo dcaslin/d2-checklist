@@ -2574,7 +2574,7 @@ export class ParseService {
         if (currencies.length > 0) {
             for (const g of gear) {
                 // || g.hash == '4257549984' prism || g.hash == '4257549985' ascendant shard
-                if (g.hash == '3853748946' || g.hash == '535079318') { // enhancement cores and warmind bits asdf
+                if (g.hash == '3853748946' || g.hash == '535079318') { // enhancement cores and warmind bits
                     const curr = currencies.find(x => x.hash === g.hash);
                     if (curr) {
                         curr.count += g.quantity;
@@ -3294,32 +3294,56 @@ export class ParseService {
         return name;
     }
 
-    private getSeasonalMod(plugDesc: any): number | null {
-        if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
-            const h = plugDesc.plug.plugCategoryHash;
-
-            if (h == 426869514) { // worthy
-                return 10;
-            }
-            if (h == 208760563) { // dawn
-                return 9;
-            }
-            if (h == 1081029832) { // undying
-                return 8;
-            }
-            if (h == 2149155760 || h == 13646368) { // outlaw
-                return 4;
-            }
-            if (h == 1962317640 || h == 2712224971 || h == 1202876185) { // opulence
-                return 7;
-            }
-            if (h == 65589297) { // forge
-                return 5;
-            }
-
+    private checkSeasonalMod(socketHash: number) {
+        // singleInitialItemHash
+        if (socketHash == 2655746324) { // worthy 2655746324
+            return 10;
+        }
+        if (socketHash == 2357307006) { // dawn 2600899007
+            return 9;
+        }
+        if (socketHash == 2620967748) { // undying  2620967748
+            return 8;
+        }
+        if (socketHash == 3625698764) { // outlaw 3625698764
+            return 4;
+        }
+        if (socketHash == 4106547009 ) { // opulence  4106547009
+            return 7;
+        }
+        if (socketHash == 720857) { // forge  720857
+            return 5;
         }
         return null;
     }
+
+    // this doesn't work if you have a dawn perk in an undying slot, etc
+    // private getSeasonalMod(plugDesc: any): number | null {
+    //     if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
+    //         const h = plugDesc.plug.plugCategoryHash;
+
+    //         if (h == 426869514) { // worthy 2655746324
+    //             return 10;
+    //         }
+    //         if (h == 208760563) { // dawn 2357307006
+    //             return 9;
+    //         }
+    //         if (h == 1081029832) { // undying  2620967748
+    //             return 8;
+    //         }
+    //         if (h == 2149155760 || h == 13646368) { // outlaw 3625698764
+    //             return 4;
+    //         }
+    //         if (h == 1962317640 || h == 2712224971 || h == 1202876185) { // opulence  4106547009
+    //             return 7;
+    //         }
+    //         if (h == 65589297) { // forge  720857
+    //             return 5;
+    //         }
+
+    //     }
+    //     return null;
+    // }
 
     private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
@@ -3586,8 +3610,8 @@ export class ParseService {
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
-                                    seasonalModSlot = seasonalModSlot || this.getSeasonalMod(plugDesc);
-
+                                    seasonalModSlot =  this.checkSeasonalMod(socketDesc.singleInitialItemHash)|| seasonalModSlot;
+                                    // seasonalModSlot =  this.getSeasonalMod(plugDesc) || seasonalModSlot; 
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
                                         if (mwInfo != null) {

@@ -74,7 +74,11 @@
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             <d2c-item-icon [i]="i" [option]="i.type"
-                                (toggleLock)="parent.setLock(player, i, $event)">
+                                (toggleLock)="parent.setLock(player, i, $event)"
+                                (pullPostmaster)="parent.pullFromPostmaster(player, i)"
+                                (equip)="parent.equip(player, i)"
+                                (transfer)="parent.transfer(player, i, $event)"
+                                >
                             </d2c-item-icon>
                         </td>
                     </ng-container>
