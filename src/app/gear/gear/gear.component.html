@@ -304,7 +304,12 @@
             <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
               <tr [ngClass]="i.mark">
                 <td class="limited-gear-width">
-                  <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="setLock(player, i, $event)">
+                  <d2c-item-icon [i]="i" [option]="option.type" 
+                    (toggleLock)="setLock(player, i, $event)"
+                    (pullPostmaster)="pullFromPostmaster(player, i)"
+                    (equip)="equip(player, i)"
+                    (transfer)="transfer(player, i, $event)"
+                    >
                   </d2c-item-icon>
                   <br>
                   <div class="mobile-only-block">

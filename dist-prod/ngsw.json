@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1584157749030,
+  "timestamp": 1584312898818,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -10,7 +10,7 @@
       "urls": [
         "/favicon.ico",
         "/index.html",
-        "/main.98abc8e02b1b4160f0a2.js",
+        "/main.bc875609b5e53579b01c.js",
         "/manifest.webmanifest",
         "/polyfills-es5.540e7469b656db291e1f.js",
         "/polyfills.1fde5d41b2d155e906d4.js",
@@ -78,7 +78,7 @@
     "/apple-touch-icon-60x60.png": "a8178000af3c9bb9ec207ff2a962d906e97cc01e",
     "/apple-touch-icon-76x76.png": "fbfd0640d608967aaf222bcf8b0fd49951a84f88",
     "/apple-touch-icon.png": "94ac80668ba30425ad9e62a1de3cdbfa285b0df3",
-    "/assets/destiny2.zip": "efc0b4341fb7e032e25855af32d44fd58696e6ff",
+    "/assets/destiny2.zip": "a1808f3b990b658180d66f392c06f5ad5b004dd1",
     "/assets/fonts/icomoon.eot": "abb492ace87f588e6fb5664c146a25ce9b6b70cc",
     "/assets/fonts/icomoon.svg": "29b12cd43e2f66785923efddb007a16fc3f308e9",
     "/assets/fonts/icomoon.ttf": "9502e0b804c93f4ef4f7bcb04405669d033bb7f2",
@@ -103,9 +103,9 @@
     "/icomoon.3d15b101819dd938fff9.ttf": "9502e0b804c93f4ef4f7bcb04405669d033bb7f2",
     "/icomoon.789cd20d045e7ccf2e86.woff": "22e19a34a2344c8437d3722813353e6c0291e630",
     "/icomoon.e3cf8e39cc5835d5d3a5.eot": "abb492ace87f588e6fb5664c146a25ce9b6b70cc",
-    "/index.html": "6dfc6ca34d83671015a35d009146c2c350716a24",
+    "/index.html": "febf3274abe669682c130fd5fdb72a48d4ca1f1a",
     "/logo.59862c3ad9aee651dfa1.svg": "10086ba5a9c393e363730785a67ee3b54039c002",
-    "/main.98abc8e02b1b4160f0a2.js": "489b0545a1c582c3689dce924e72c45213243ea1",
+    "/main.bc875609b5e53579b01c.js": "ddb7a68e99969b436c9a34b70abcc924648d99a7",
     "/manifest.webmanifest": "9051024de31a845c4b02472ff73058b08dee0dba",
     "/mstile-144x144.png": "28ced498c2f2dd484627cfa16e246492b5c3e56f",
     "/mstile-150x150.png": "b16289b45013f1098c0e9df9c26d5487117e69a4",
