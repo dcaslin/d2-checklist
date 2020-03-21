@@ -4171,7 +4171,7 @@ export class ParseService {
         if (mode === 43) { return 'Iron Banner Control'; }
         if (mode === 44) { return 'Iron Banner Clash'; }
         if (mode === 45) { return 'Iron Banner Supremacy'; }
-        if (mode === 46) { return 'Nightfall (Scored)'; }
+        if (mode === 46) { return 'Legendary Lost Sector'; }
         if (mode === 47) { return 'Heroic NightFall (Scored)'; }
         if (mode === 48) { return 'Rumble'; }
         if (mode === 49) { return 'All Doubles'; }
