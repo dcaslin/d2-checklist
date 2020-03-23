@@ -3,9 +3,11 @@
   <div class="left" style="margin: 10px">
     <mat-form-field style="margin-right: 10px" appearance="standard">
       <!-- <mat-label>Character</mat-label> -->
-      <mat-select [(ngModel)]="state.filterChar" placeholder="Show all characters" (selectionChange)="filterAndSortPursuits()">        
-        <mat-option *ngFor="let char of player.characters" [value]="char">{{char.className}} - {{char.light}}</mat-option>
-        <mat-option [value]="null">All</mat-option>
+      <mat-select [(ngModel)]="state.filterChar" placeholder="Show all characters"
+        (selectionChange)="filterAndSortPursuits()">
+        <mat-option *ngFor="let char of player.characters" [value]="char">{{char.className}} - {{char.light}}
+        </mat-option>
+        <mat-option [value]="'all'">All chars</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field class="searchField">
@@ -15,6 +17,10 @@
         <mat-icon>close</mat-icon>
       </button>
     </mat-form-field>
+    <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompletePursuits"
+      (change)="filterAndSortPursuits()">
+      Hide Completed
+    </mat-checkbox>
   </div>
   <table class="responsive-table">
     <thead>
@@ -24,8 +30,8 @@
         <th class="header-cell">
           <a href="javascript:void(0)" (click)="sortData('name')"> {{getTitle()}}
             <ng-container *ngIf="sort.name=='name'">
-              <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
-              <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
           </a>
 
@@ -33,8 +39,8 @@
         <th class="header-cell">
           <a href="javascript:void(0)" (click)="sortData('player')"> Player
             <ng-container *ngIf="sort.name=='player'">
-              <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
-              <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
           </a>
 
@@ -42,16 +48,16 @@
         <th class="header-cell" *ngIf="mode!='quests'">
           <a href="javascript:void(0)" (click)="sortData('expiration')"> Expiration
             <ng-container *ngIf="sort.name=='expiration'">
-              <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
-              <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
           </a>
         </th>
         <th class="header-cell">
           <a href="javascript:void(0)" (click)="sortData('progress')"> Progress
             <ng-container *ngIf="sort.name=='progress'">
-              <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
-              <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
+              <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
           </a>
         </th>

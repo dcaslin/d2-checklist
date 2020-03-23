@@ -171,8 +171,13 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
 
   private shouldShow(row: InventoryItem): boolean {
 
-    if (this.state.filterChar) {
+    if (this.state.filterChar && this.state.filterChar != 'all') {
       if (row.owner.getValue() != this.state.filterChar) {
+        return false;
+      }
+    }
+    if (this.state.hideCompletePursuits) {
+      if (row.aggProgress >= 100) {
         return false;
       }
     }

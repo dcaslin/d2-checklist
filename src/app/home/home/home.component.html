@@ -75,7 +75,10 @@
             <div class="dashed-border">
               <div class="bounty-title-container">
                 <div class="bounty-title">
-                  Sets Currently Held
+                  Sets Currently Held  
+                  <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="_hideCompletePursuits" (change)="hideCompletePursuits.next($event.checked)">
+                    Hide Completed
+                  </mat-checkbox>
                 </div>
                 <div class="bounty-subtitle" *ngIf="char|async as c">
                   <a mat-button [routerLink]="['/',c.membershipType, c.membershipId,'pursuits','bounties']">

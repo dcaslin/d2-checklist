@@ -69,9 +69,9 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
   }
 
   selectVendorBounty(i: SaleItem) {
-    if (!i.vendor) {
-      return;
-    }
+    // if (!i.vendor) {
+    //   return;
+    // }
     const x = i as any;
     const slh = this.input.shoppingListHashes.getValue();
     let newVal = true;
