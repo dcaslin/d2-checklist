@@ -10,7 +10,7 @@ import { StorageService } from '@app/service/storage.service';
 })
 export class PlayerStateService {
 
-  public filterChar: Character = null;
+  public filterChar: Character|string = null;
 
   public get sort() {
     return this._sort;
@@ -59,6 +59,17 @@ export class PlayerStateService {
     this._hideCompleteTriumphs = b;
     localStorage.setItem('hide-completed-triumphs', '' + this._hideCompleteTriumphs);
   }
+
+
+  public get hideCompletePursuits() {
+    return this._hideCompletePursuits;
+  }
+
+  public set hideCompletePursuits(b: boolean) {
+    this._hideCompletePursuits = b;
+    localStorage.setItem('hide-completed-pursuits', '' + this._hideCompletePursuits);
+  }
+
   private _sort = 'rewardsDesc';
 
   public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
@@ -80,6 +91,7 @@ export class PlayerStateService {
   private _showZeroPtTriumphs = false;
   private _showInvisTriumphs = false;
   private _hideCompleteTriumphs = false;
+  private _hideCompletePursuits = false;
   private _hideCompleteCollectibles = false;
 
 
@@ -128,7 +140,8 @@ export class PlayerStateService {
     this._showZeroPtTriumphs = localStorage.getItem('show-zero-pt-triumphs') === 'true';
     this._showInvisTriumphs = localStorage.getItem('show-invis-triumphs') === 'true';
     this._hideCompleteTriumphs = localStorage.getItem('hide-completed-triumphs') === 'true';
-    this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';    
+    this._hideCompletePursuits = localStorage.getItem('hide-completed-pursuits') === 'true';
+    this._hideCompleteCollectibles = localStorage.getItem('hide-completed-collectibles') === 'true';
     this.storageService.settingFeed.pipe().subscribe(
       x => {
         if (x.trackedtriumphs != null) {

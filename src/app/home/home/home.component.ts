@@ -28,6 +28,8 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly showAllVendorBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
   readonly showAllPlayerBounties: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly hideCompletePursuits: BehaviorSubject<boolean> = new BehaviorSubject(localStorage.getItem('hide-completed-pursuits') === 'true');
+  public _hideCompletePursuits = this.hideCompletePursuits.getValue();
 
   readonly modalBountySet: BehaviorSubject<BountySet> = new BehaviorSubject(null);
   readonly refreshMe: Subject<void> = new Subject();
@@ -206,14 +208,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   async loadPlayerBountySets(char: Character) {
-    let bounties = this.parseService.groupCharBounties(this.player.getValue(), char);
-    //bounties = bounties.filter(bs => bs.bounties.length > 1);
+    const bounties = this.parseService.groupCharBounties(this.player.getValue(), char, this._hideCompletePursuits);
     this.playerBountySets.next(bounties);
   }
 
-
   ngOnInit() {
-
     this.loading.next(true);
     this.loadMileStones();
     this.refreshMe.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
@@ -235,11 +234,15 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       }
       this.char.next(player.characters[0]);
     });
+
+    this.hideCompletePursuits.pipe(takeUntil(this.unsubscribe$)).subscribe((x: boolean) => {
+      this._hideCompletePursuits = x;
+      localStorage.setItem('hide-completed-pursuits', '' + x);
+      this.loadPlayerBountySets(this.char.getValue());
+    });
+
     this.char.pipe(takeUntil(this.unsubscribe$)).subscribe((char: Character) => {
       this.currentChar = char;
-      if (char) {
-        console.log(char.label);
-      }
       this.rawVendorBountySets.next([]);
       this.vendorBountySets.next([]);
       this.playerBountySets.next([]);

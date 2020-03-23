@@ -934,11 +934,16 @@ export class ParseService {
         return returnMe;
     }
 
-    public groupCharBounties(player: Player, char: Character): BountySet[] {
+    public groupCharBounties(player: Player, char: Character, hideCompletePursuits: boolean): BountySet[] {
+        if (!player) {
+            return [];
+        }
         const bounties = [];
         for (const i of player.bounties) {
             if (i.owner.getValue().id === char.id) {
-                bounties.push(i);
+                if (!hideCompletePursuits || (hideCompletePursuits && i.aggProgress < 100)) {
+                    bounties.push(i);
+                }
             }
         }
         return this.groupBounties('held', bounties);
@@ -3610,8 +3615,8 @@ export class ParseService {
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
-                                    seasonalModSlot =  this.checkSeasonalMod(socketDesc.singleInitialItemHash)|| seasonalModSlot;
-                                    // seasonalModSlot =  this.getSeasonalMod(plugDesc) || seasonalModSlot; 
+                                    seasonalModSlot =  this.checkSeasonalMod(socketDesc.singleInitialItemHash) || seasonalModSlot;
+                                    // seasonalModSlot =  this.getSeasonalMod(plugDesc) || seasonalModSlot;
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
                                         if (mwInfo != null) {
