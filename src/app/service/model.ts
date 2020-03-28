@@ -1275,11 +1275,6 @@ export class InventorySocket {
 
 }
 
-export interface PerkCount {
-    perk: InventoryPlug;
-    count: number;
-}
-
 export class InventoryPlug {
     readonly hash: string;
 

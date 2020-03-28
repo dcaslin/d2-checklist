@@ -73,28 +73,46 @@ table.checklist-table {
 }
 
 
-.mod-parent {
+.gear-parent {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.mod-child-label {
-  flex-grow: 1;
-  flex-shrink: 1;
+.mods {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
-.mod-child-icon {
-  flex-grow: 0;
-  flex-shrink: 0;
+
+.hide-mobile-block {
+  display: block;
+  visibility: visible;
+}
+
+.armor {
+  margin: 15px;
+}
+
+.gun {
+  margin: 15px;
 }
 
 @media (max-width: 600px) {
 
-  .mod-parent {
+
+  .hide-mobile-block {
+    display: none;
+    visibility: hidden;
+  }
+  
+  .gear-parent {
     flex-direction: column;
   }
-  .mod-child-label {
+
+  .gear-label {
     text-align: center;
   }
 
@@ -102,6 +120,6 @@ table.checklist-table {
   .gun {
     flex-direction: column;
     align-items: center;
-    margin: 2px;
   }
+
 }

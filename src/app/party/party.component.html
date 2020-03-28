@@ -19,13 +19,7 @@
                             <thead>
                                 <tr>
                                     <th>Activity</th>
-                                    <th>Players</th>
-                                    <th>
-
-                                    </th>
-                                    <th>
-
-                                    </th>
+                                    <th colspan="2">Players</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,91 +59,102 @@
                                             </ng-container>
                                         </ng-container>
                                     </td>
-                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th>Name</th>
                                     <th>Weapons</th>
                                     <th>Exotic Armor</th>
-                                    <th>Armor Perks</th>
                                 </tr>
                                 <ng-container *ngIf="_party|async as party">
-                                    <tr *ngFor="let p of party">
-                                        <ng-container *ngIf="p.player==null else hasPlayer">
-                                            <td colspan="4">
-                                                {{p.searchResult.displayName}}
-                                                <ng-container *ngIf="p.errMsg == null">
-                                                    <fa-icon [icon]="iconService.farSpinner" [pulse]="true"
-                                                        [fixedWidth]="true"></fa-icon>
-                                                </ng-container>
-                                                <ng-container *ngIf="p.errMsg != null">
-                                                    <a style="margin-left:0.25em" href="javascript:void(0)"
-                                                        (click)="loadPlayer(player.profile.userInfo.membershipType, p)">
-                                                        &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
+                                    <ng-container *ngFor="let p of party">
+                                        <tr>
+                                            <ng-container *ngIf="p.player==null else hasPlayer">
+                                                <td colspan="3">
+                                                    {{p.searchResult.displayName}}
+                                                    <ng-container *ngIf="p.errMsg == null">
+                                                        <fa-icon [icon]="iconService.farSpinner" [pulse]="true"
+                                                            [fixedWidth]="true"></fa-icon>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="p.errMsg != null">
+                                                        <a style="margin-left:0.25em" href="javascript:void(0)"
+                                                            (click)="loadPlayer(player.profile.userInfo.membershipType, p)">
+                                                            &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
+                                                        </a>
+                                                        <div class='simple-warn-caption'>{{p.errMsg}}</div>
+                                                    </ng-container>
+                                                </td>
+                                            </ng-container>
+                                            <ng-template #hasPlayer>
+                                                <td>
+
+                                                    <a mat-stroked-button class="player-link"
+                                                        [routerLink]="['/',p.player.profile.userInfo.membershipType, p.player.profile.userInfo.membershipId]">
+                                                        {{p.player.profile.userInfo.displayName}}
                                                     </a>
-                                                    <div class='simple-warn-caption'>{{p.errMsg}}</div>
-                                                </ng-container>
-                                            </td>
+                                                    <div class="player-info">
+                                                        <div *ngIf="p.subClass as g">
+                                                            <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                            </ng-container>
+                                                        </div>
+                                                        <div class="simple-caption">
+                                                            Artifact: +{{p.player.artifactPowerBonus}}
+                                                        </div>
+                                                        <div class="simple-caption">
+                                                            Triumph: {{p.player.triumphScore|number : '1.0-0'}}
+                                                        </div>
+                                                        <div class="simple-caption">
+                                                            Glory: {{p.player.glory.currentProgress|number}}
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                                <td>
+                                                    <div class="gun gear-parent" *ngFor="let g of p.guns" [matTooltip]="g.name">
+                                                        <div>
+                                                            <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                            </ng-container>
+                                                        </div>
+                                                        <div class="gear-label hide-mobile-block">
+                                                            {{g.name}}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="armor gear-parent" *ngIf="p.exoticArmor as g" [matTooltip]="g.name">
+                                                        <div>
+                                                            <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
+                                                            </ng-container>
+                                                        </div>
+                                                        <div class="gear-label hide-mobile-block">
+                                                            {{g.name}}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </ng-template>
+                                        </tr>
+                                        <ng-container *ngIf="p">                                            
+                                            <tr>
+                                                
+                                                <td colspan="3">
+                                                    <h4>Armor Perks</h4>
+                                                    <div class="mods">
+                                                        <div class="gear-parent" *ngFor="let r of p.armorMods"
+                                                            [matTooltip]="r.mod.name +' - '+r.mod.desc"
+                                                            matTooltipClass="preserve-white-space">
+                                                            <div *ngIf="r.mod.icon!=null"
+                                                                class="item-image divider-border mod-child-icon"
+                                                                [style.background-image]="'url(//www.bungie.net' + r.mod.icon + ')'">
+                                                            </div>
+                                                            <div class="gear-label pad-right" *ngIf="r.count>1"> x {{r.count}}</div>
+                                                        </div>
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+
                                         </ng-container>
-                                        <ng-template #hasPlayer>
-                                            <td>
+                                    </ng-container>
 
-                                                <a mat-stroked-button class="player-link"
-                                                    [routerLink]="['/',p.player.profile.userInfo.membershipType, p.player.profile.userInfo.membershipId]">
-                                                    {{p.player.profile.userInfo.displayName}}
-                                                </a>
-                                                <div class="player-info">
-                                                    <div *ngIf="p.subClass as g">
-                                                        <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
-                                                        </ng-container>
-                                                    </div>
-                                                    <div class="simple-caption">
-                                                        Artifact: +{{p.player.artifactPowerBonus}}
-                                                    </div>
-                                                    <div class="simple-caption">
-                                                        Triumph: {{p.player.triumphScore|number : '1.0-0'}}
-                                                    </div>
-                                                    <div class="simple-caption">
-                                                        Glory: {{p.player.glory.currentProgress|number}}
-                                                    </div>
-                                                </div>
-
-                                            </td>
-                                            <td>
-                                                <div class="gun mod-parent" *ngFor="let g of p.guns">
-                                                    <div class="mod-icon">
-                                                        <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
-                                                        </ng-container>
-                                                    </div>
-                                                    <div class="mod-label">
-                                                        {{g.name}}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="mod-parent" *ngIf="p.exoticArmor as g">
-                                                    <div class="mod-icon">
-                                                        <ng-container *ngTemplateOutlet="gearIcon; context: {i: g}">
-                                                        </ng-container>
-                                                    </div>
-                                                    <div class="mod-label">
-                                                        {{g.name}}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="mod-parent" *ngFor="let r of p.armorMods"
-                                                    [matTooltip]="r.mod.desc" matTooltipClass="preserve-white-space">
-                                                    <div *ngIf="r.mod.icon!=null" class="item-image divider-border mod-child-icon"
-                                                        [style.background-image]="'url(//www.bungie.net' + r.mod.icon + ')'">
-                                                    </div>
-                                                    <div class="mod-child-label">{{r.mod.name}}
-                                                        <ng-container *ngIf="r.count>1"> x {{r.count}}</ng-container>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </ng-template>
-                                    </tr>
                                 </ng-container>
                             </tbody>
                         </table>
