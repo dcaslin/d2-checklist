@@ -20,6 +20,7 @@ export class ArmorPerksDialogComponent {
     public iconService: IconService,
     public dialogRef: MatDialogRef<ArmorPerksDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
+      // TODO fixme
     this.parent = data.parent;
   }
 }

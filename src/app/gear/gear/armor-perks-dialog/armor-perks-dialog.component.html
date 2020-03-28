@@ -1,20 +1,19 @@
 <h2 mat-dialog-title>Equipped Armor Perks
 </h2>
-<mat-dialog-content>
+<mat-dialog-content *ngIf="data.parent._player|async as player">
 
     <mat-tab-group>
-        <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of data.parent.player.characters">
+        <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
             <div style="margin: 20px">
-                    <ng-container *ngFor="let p of TargetPerkService.getEquippedPerks(char, data.parent.player.gear)">
-                            <div [title]="p.perk.desc" [class.warn-text]="p.count>1" >
-                                {{p.perk.name}} 
-                                <span *ngIf="p.count>1">
-                                        {{p.count}}
-                                </span>
-                            </div>
-                    </ng-container>
+                <ng-container *ngFor="let p of TargetPerkService.getEquippedPerks(player.gear, char)">
+                    <div [title]="p.perk.desc" [class.warn-text]="p.count>1">
+                        {{p.perk.name}}
+                        <span *ngIf="p.count>1">
+                            {{p.count}}
+                        </span>
+                    </div>
+                </ng-container>
             </div>
-            
         </mat-tab>
     </mat-tab-group>
 </mat-dialog-content>

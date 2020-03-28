@@ -11,6 +11,7 @@ import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 import * as moment from 'moment';
+import { TargetPerkService, PlayerMods } from '@app/service/target-perk.service';
 
 @Component({
   selector: 'd2c-party',
@@ -19,7 +20,7 @@ import * as moment from 'moment';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PartyComponent extends ChildComponent implements OnInit, OnDestroy {
-  public today =  moment(new Date());
+  public today = moment(new Date());
 
   DamageType = DamageType;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -39,6 +40,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
       this.init(params);
     });
   }
+
 
   public async loadPlayer(likelyMembershipType: number, pp: PartyPlayer): Promise<void> {
     try {
@@ -60,20 +62,14 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
         if (x.characters != null && x.characters.length > 0) {
           pp.character = x.characters[0];
         }
-        const gear = [];
-
         pp.guns = [];
-        const armorMods: InventoryPlug[] = [];
         for (const g of x.gear) {
-          if (g.equipped && g.owner.getValue() == pp.character) {
+          if (g.equipped.getValue() && g.owner.getValue().id == pp.character.id) {
             if (g.type == ItemType.Weapon) {
               pp.guns.push(g);
             } else if (g.type == ItemType.Armor) {
               if (g.tier == 'Exotic') {
                 pp.exoticArmor = g;
-              }
-              for (const m of g.mods) {
-                armorMods.push(m);
               }
             } else if (g.type == ItemType.Subclass) {
               pp.subClass = g;
@@ -81,7 +77,8 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             }
           }
         }
-        const mods = this.rollUpMods(armorMods);
+        console.log("xxx");
+        const mods = TargetPerkService.getEquippedPerks(x, pp.character);
         pp.armorMods = mods;
         this._party.next(this._party.getValue());
       }
@@ -91,39 +88,6 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
     }
   }
 
-  private rollUpMods(mods: InventoryPlug[]): PlayerMods[] {
-    const map: { [key: string]: InventoryPlug[] } = {};
-    for (const m of mods) {
-      if (!map[m.hash]) {
-        map[m.hash] = [];
-      }
-      map[m.hash].push(m);
-    }
-    const returnMe: PlayerMods[] = [];
-    for (const key of Object.keys(map)) {
-      const val = map[key];
-      returnMe.push({
-        count: val.length,
-        mod: val[0]
-      });
-    }
-    returnMe.sort((a, b) => {
-      if (a.count > b.count) {
-        return -1;
-      }
-      if (b.count > a.count) {
-        return 1;
-      }
-      if (a.mod.name > b.mod.name) {
-        return 1;
-      }
-      if (b.mod.name > a.mod.name) {
-        return -1;
-      }
-      return 0;
-    });
-    return returnMe;
-  }
 
   private async init(params: Params) {
     try {
@@ -164,7 +128,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
       console.dir(exc);
       this.errorMsg.next(exc.message);
     } finally {
-        this.loading.next(false);
+      this.loading.next(false);
     }
   }
 }
@@ -178,9 +142,4 @@ interface PartyPlayer {
   armorMods: PlayerMods[];
   subClass: InventoryItem;
   errMsg: string;
-}
-
-interface PlayerMods {
-  count: number;
-  mod: InventoryPlug;
 }

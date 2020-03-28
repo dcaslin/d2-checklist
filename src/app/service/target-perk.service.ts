@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Character, InventoryItem, InventoryPlug, ItemType, PerkCount, Player } from './model';
+import { Character, InventoryItem, InventoryPlug, ItemType, Player } from './model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +8,7 @@ import { Character, InventoryItem, InventoryPlug, ItemType, PerkCount, Player } 
 export class TargetPerkService {
   public readonly perks: BehaviorSubject<TargetPerks>;
 
-  private readonly MAPPINGS: {[key: string]: string} = {
+  private readonly MAPPINGS: { [key: string]: string } = {
     'auto rifle': 'auto rifle|^rifle|unflinching rifle|scatter projectile',
     'combat bow': 'bow|precision weapon|oversize weapon|light arms',
     // 'fusion rifle': '(?<!linear )fusion rifle|light reactor|^rifle|unflinching rifle|scatter projectile',
@@ -33,7 +33,7 @@ export class TargetPerkService {
     'ability': 'insulation|perpetuation|absolution'
   };
 
-  private parsedMappings: {[key: string]: RegExp};
+  private parsedMappings: { [key: string]: RegExp };
 
   private alreadyEquipped(itm: InventoryItem, p: InventoryPlug, equippedPerks: { [key: string]: string[] }): boolean {
     // this is actively equipped it doesn't count
@@ -75,7 +75,7 @@ export class TargetPerkService {
     if (t.specialAmmoFinder && n.indexOf('special ammo finder') >= 0) {
       return true;
     }
-     if (t.heavyAmmoFinder && n.indexOf('heavy ammo finder') >= 0) {
+    if (t.heavyAmmoFinder && n.indexOf('heavy ammo finder') >= 0) {
       return true;
     }
     if (this.checkWeapon(t.weapon1, n)) {
@@ -96,10 +96,10 @@ export class TargetPerkService {
     const equippedPerks: { [key: string]: string[] } = {};
     for (const char of player.characters) {
       const perks = [];
-      const perkCounts = TargetPerkService.getEquippedPerks(char, items);
+      const perkCounts = TargetPerkService.getEquippedPerks(player, char);
 
       for (const pc of perkCounts) {
-        perks.push(pc.perk.hash);
+        perks.push(pc.mod.hash);
       }
       equippedPerks[char.classType] = perks;
     }
@@ -203,46 +203,90 @@ export class TargetPerkService {
     };
   }
 
-  public static getEquippedPerks(char: Character, gear: InventoryItem[]): PerkCount[] {
-    const activePerks: InventoryPlug[] = [];
-    for (const g of gear) {
-      if (g.type != ItemType.Armor) { continue; }
-      if (!g.equipped.getValue()) { continue; }
-      if (g.owner.getValue().id != char.id) { continue; }
-      for (const s of g.sockets) {
-        for (const p of s.plugs) {
-          if (!p.active) { continue; }
-          if (p.name.endsWith('Armor')) { continue; }
-          if (p.name.endsWith('Mod')) { continue; }
-          activePerks.push(p);
-        }
+  // public static getEquippedPerks(char: Character, gear: InventoryItem[]): PerkCount[] {
+  //   const activePerks: InventoryPlug[] = [];
+  //   for (const g of gear) {
+  //     if (g.type != ItemType.Armor) { continue; }
+  //     if (!g.equipped.getValue()) { continue; }
+  //     if (g.owner.getValue().id != char.id) { continue; }
+  //     for (const s of g.sockets) {
+  //       for (const p of s.plugs) {
+  //         if (!p.active) { continue; }
+  //         if (p.name.endsWith('Armor')) { continue; }
+  //         if (p.name.endsWith('Mod')) { continue; }
+  //         activePerks.push(p);
+  //       }
+  //     }
+  //   }
+  //   const perkSet = {};
+  //   for (const p of activePerks) {
+  //     if (perkSet[p.name] == null) {
+  //       perkSet[p.name] = {
+  //         perk: p,
+  //         count: 0
+  //       };
+  //     }
+  //     perkSet[p.name].count = perkSet[p.name].count + 1;
+  //   }
+  //   const returnMe = [];
+  //   for (const key of Object.keys(perkSet)) {
+  //     returnMe.push(perkSet[key]);
+  //   }
+  //   returnMe.sort(function (a, b) {
+  //     if (a.perk.name < b.perk.name) {
+  //       return -1;
+  //     }
+  //     if (a.perk.name > b.perk.name) {
+  //       return 1;
+  //     }
+  //     return 0;
+  //   });
+  //   return returnMe;
+  // }
+
+  private static rollUpMods(mods: InventoryPlug[]): PlayerMods[] {
+    const map: { [key: string]: InventoryPlug[] } = {};
+    for (const m of mods) {
+      if (!map[m.hash]) {
+        map[m.hash] = [];
       }
+      map[m.hash].push(m);
     }
-    const perkSet = {};
-    for (const p of activePerks) {
-      if (perkSet[p.name] == null) {
-        perkSet[p.name] = {
-          perk: p,
-          count: 0
-        };
-      }
-      perkSet[p.name].count = perkSet[p.name].count + 1;
+    const returnMe: PlayerMods[] = [];
+    for (const key of Object.keys(map)) {
+      const val = map[key];
+      returnMe.push({
+        count: val.length,
+        mod: val[0]
+      });
     }
-    const returnMe = [];
-    for (const key of Object.keys(perkSet)) {
-      returnMe.push(perkSet[key]);
-    }
-    returnMe.sort(function (a, b) {
-      if (a.perk.name < b.perk.name) {
-        return -1;
-      }
-      if (a.perk.name > b.perk.name) {
+    returnMe.sort((a, b) => {
+      if (a.mod.name > b.mod.name) {
         return 1;
+      }
+      if (b.mod.name > a.mod.name) {
+        return -1;
       }
       return 0;
     });
     return returnMe;
   }
+
+  public static getEquippedPerks(player: Player, char: Character): PlayerMods[] {
+    const armorMods: InventoryPlug[] = [];
+    if (player.gear == null) {
+      return [];
+    }
+    const equippedArmor = player.gear.filter(g => g.equipped.getValue() && g.owner.getValue().id == char.id && g.type == 2);
+    for (const g of equippedArmor) {
+      for (const m of g.mods) {
+        armorMods.push(m);
+      }
+    }
+    const mods = TargetPerkService.rollUpMods(armorMods);
+    return mods;
+  }
+
 }
 
 export interface TargetPerks {
@@ -257,4 +301,9 @@ export interface TargetPerks {
   fastball: boolean; // 3030206832
   distribution: boolean; // 2610215900
   enhanced: boolean;
+}
+
+export interface PlayerMods {
+  count: number;
+  mod: InventoryPlug;
 }

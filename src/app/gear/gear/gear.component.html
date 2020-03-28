@@ -125,10 +125,7 @@
 
           <a mat-button (click)="load()">
             <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
-          </a>
-          <button mat-button *ngIf="option.type==ItemType.Armor" (click)="showTargetArmorStats()">
-            <fa-icon [icon]="iconService.fasSlidersV"></fa-icon><span class="hide-mobile-inline">&nbsp;Stats</span>
-          </button>
+          </a>          
           <button mat-button [matMenuTriggerFor]="menuMoreOptions">
             <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
           </button>
@@ -154,7 +151,12 @@
             </button>
 
 
+
+
             <ng-container *ngIf="option.type==ItemType.Armor">
+              <button mat-menu-item (click)="showTargetArmorStats()">
+                <fa-icon [icon]="iconService.fasSlidersV"></fa-icon>&nbsp;Armor Preferences
+              </button>
               <button mat-menu-item (click)="showArmorPerks()">
                 <fa-icon [icon]="iconService.fasHelmetBattle"></fa-icon>&ensp;Show Armor Perks
               </button>
