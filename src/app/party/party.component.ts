@@ -77,7 +77,6 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             }
           }
         }
-        console.log("xxx");
         const mods = TargetPerkService.getEquippedPerks(x, pp.character);
         pp.armorMods = mods;
         this._party.next(this._party.getValue());

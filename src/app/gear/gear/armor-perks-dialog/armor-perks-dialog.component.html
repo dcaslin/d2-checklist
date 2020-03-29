@@ -5,11 +5,15 @@
     <mat-tab-group>
         <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">
             <div style="margin: 20px">
-                <ng-container *ngFor="let p of TargetPerkService.getEquippedPerks(player.gear, char)">
-                    <div [title]="p.perk.desc" [class.warn-text]="p.count>1">
-                        {{p.perk.name}}
+                <ng-container *ngFor="let p of charPerks[char.id]">
+                    <div [title]="p.mod.desc" [class.warn-text]="p.count>1">
+                        <div *ngIf="p.mod.icon!=null" class="item-image divider-border mod-child-icon"
+                            [style.background-image]="'url(//www.bungie.net' + p.mod.icon + ')'">
+                        </div>
+
+                        {{p.mod.name}}
                         <span *ngIf="p.count>1">
-                            {{p.count}}
+                            x {{p.count}}
                         </span>
                     </div>
                 </ng-container>

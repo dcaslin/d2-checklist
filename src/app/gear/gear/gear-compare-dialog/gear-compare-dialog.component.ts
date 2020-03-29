@@ -45,7 +45,7 @@ export class GearCompareDialogComponent {
     }
 
     this.parent = data.parent;
-    this.showAllNames = data.showNames;
+    this.showAllNames = this.items.length > 1;
     this._sort();
   }
 

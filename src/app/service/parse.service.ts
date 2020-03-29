@@ -2289,7 +2289,7 @@ export class ParseService {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
                         // if (desc.displayProperties.name != 'Bright Dust') {
-                            currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
+                        currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
                         // }
                     }
                 });
@@ -3300,7 +3300,6 @@ export class ParseService {
     }
 
     private checkSeasonalMod(socketHash: number) {
-        // singleInitialItemHash
         if (socketHash == 2655746324) { // worthy 2655746324
             return 10;
         }
@@ -3310,45 +3309,32 @@ export class ParseService {
         if (socketHash == 2620967748) { // undying  2620967748
             return 8;
         }
-        if (socketHash == 3625698764) { // outlaw 3625698764
-            return 4;
-        }
-        if (socketHash == 4106547009 ) { // opulence  4106547009
+        if (socketHash == 4106547009) { // opulence  4106547009
             return 7;
         }
         if (socketHash == 720857) { // forge  720857
             return 5;
         }
+        if (socketHash == 3625698764) { // outlaw 3625698764
+            return 4;
+        } else if (
+            socketHash == 149961592 ||
+            socketHash == 326979294 ||
+            socketHash == 446122123 ||
+            socketHash == 548249507 ||
+            socketHash == 911695907 ||
+            socketHash == 1233336930 ||
+            socketHash == 1263189958 ||
+            socketHash == 4258500190 ||
+            socketHash == 3588389153 ||
+            socketHash == 3047801520 ||
+            socketHash == 2684355120 ||
+            socketHash == 2575042148) {
+            return 6;
+        }
         return null;
     }
 
-    // this doesn't work if you have a dawn perk in an undying slot, etc
-    // private getSeasonalMod(plugDesc: any): number | null {
-    //     if (plugDesc && plugDesc.plug && plugDesc.plug.plugCategoryHash) {
-    //         const h = plugDesc.plug.plugCategoryHash;
-
-    //         if (h == 426869514) { // worthy 2655746324
-    //             return 10;
-    //         }
-    //         if (h == 208760563) { // dawn 2357307006
-    //             return 9;
-    //         }
-    //         if (h == 1081029832) { // undying  2620967748
-    //             return 8;
-    //         }
-    //         if (h == 2149155760 || h == 13646368) { // outlaw 3625698764
-    //             return 4;
-    //         }
-    //         if (h == 1962317640 || h == 2712224971 || h == 1202876185) { // opulence  4106547009
-    //             return 7;
-    //         }
-    //         if (h == 65589297) { // forge  720857
-    //             return 5;
-    //         }
-
-    //     }
-    //     return null;
-    // }
 
     private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
@@ -3598,6 +3584,24 @@ export class ParseService {
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
+                                // if (jCat.socketCategoryHash == 3154740035) {
+                                //     const socketPerkHash = socketDesc.singleInitialItemHash;
+                                //     if (socketPerkHash) {
+                                //         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketPerkHash];
+                                //         console.log("basdf");
+                                //         const oPlug = new InventoryPlug(plugDesc.hash,
+                                //             name, plugDesc.displayProperties.description,
+                                //             plugDesc.displayProperties.icon, true);
+                                //         plugs.push(oPlug);
+                                //     }
+
+
+                                //     if (itm.itemHash == 722344178) {
+                                //     console.dir("hi");
+                                //     }
+                                // }
+
+
                                 // we do !isMod b/c for masterworks the "unselected" perk is actually the next tier (except for masterworks where they're the same and selected)
                                 // for those we just skip down to the socketVal
                                 if (!isMod && reusablePlugs && reusablePlugs[index]) {
@@ -3615,8 +3619,7 @@ export class ParseService {
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
-                                    seasonalModSlot =  this.checkSeasonalMod(socketDesc.singleInitialItemHash) || seasonalModSlot;
-                                    // seasonalModSlot =  this.getSeasonalMod(plugDesc) || seasonalModSlot;
+                                    seasonalModSlot = this.checkSeasonalMod(socketDesc.singleInitialItemHash) || seasonalModSlot;
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
                                         if (mwInfo != null) {
@@ -3794,6 +3797,9 @@ export class ParseService {
                 }
                 if (seasonalModSlot == 7) {
                     searchText += 'season:opulence';
+                }
+                if (seasonalModSlot == 6) {
+                    searchText += 'season:drifter';
                 }
                 if (seasonalModSlot == 5) {
                     searchText += 'season:forge';

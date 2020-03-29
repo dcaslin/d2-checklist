@@ -94,6 +94,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'season:undying',
     'season:dawn',
     'season:opulence',
+    'season:drifter',
     'season:forge',
     'season:outlaw',
 
@@ -107,6 +108,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   armorInventoryBucketChoices: Choice[] = [];
   weaponInventoryBucketChoices: Choice[] = [];
   energyTypeChoices: Choice[] = [];
+  seasonChoices: Choice[] = [];
   damageTypeChoices: Choice[] = [];
 
   vehicleTypeChoices: Choice[] = [];
@@ -134,6 +136,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public weaponInventoryBucketToggle: GearToggleComponent;
   @ViewChild('energyTypeToggle', { static: false })
   public energyTypeToggle: GearToggleComponent;
+  @ViewChild('seasonToggle', { static: false })
+  public seasonToggle: GearToggleComponent;
   @ViewChild('damageTypeToggle', { static: false })
   public damageTypeToggle: GearToggleComponent;
   @ViewChild('vehicleTypeToggle', { static: false })
@@ -635,6 +639,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.appendToggleFilterNote(this.armorInventoryBucketToggle);
     this.appendToggleFilterNote(this.weaponInventoryBucketToggle);
     this.appendToggleFilterNote(this.energyTypeToggle);
+    this.appendToggleFilterNote(this.seasonToggle);
     this.appendToggleFilterNote(this.damageTypeToggle);
     this.appendToggleFilterNote(this.vehicleTypeToggle);
     this.appendToggleFilterNote(this.modTypeToggle);
@@ -690,6 +695,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     if (!this.energyTypeToggle.isChosen(this.option.type, i.energyType)) {
       const key = 'energyType';
+      if (report[key] == null) {
+        report[key] = 0;
+      }
+      report[key] = report[key] + 1;
+      return false;
+    }
+    if (!this.seasonToggle.isChosen(this.option.type, i.seasonalModSlot)) {
+      const key = 'season';
       if (report[key] == null) {
         report[key] = 0;
       }
@@ -779,6 +792,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.armorInventoryBucketToggle.setCurrentItemType(this.option.type);
     this.weaponInventoryBucketToggle.setCurrentItemType(this.option.type);
     this.energyTypeToggle.setCurrentItemType(this.option.type);
+    this.seasonToggle.setCurrentItemType(this.option.type);
     this.damageTypeToggle.setCurrentItemType(this.option.type);
     this.vehicleTypeToggle.setCurrentItemType(this.option.type);
     this.modTypeToggle.setCurrentItemType(this.option.type);
@@ -900,6 +914,22 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
 
+  private generateSeasonChoices(): Choice[] {
+    const returnMe: Choice[] = [];
+
+    returnMe.push(new Choice('10', 'Worthy'));
+    returnMe.push(new Choice('9', 'Dawn'));
+    returnMe.push(new Choice('8', 'Undying'));
+    returnMe.push(new Choice('7', 'Opulence'));
+    returnMe.push(new Choice('6', 'Drifter'));
+    returnMe.push(new Choice('5', 'Forge'));
+    returnMe.push(new Choice('4', 'Outlaw'));
+    return returnMe;
+  }
+
+
+
+
 
   private generateRarityChoices(): Choice[] {
     const tiers = this.cacheService.cache['ItemTierType'];
@@ -1003,6 +1033,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.weaponInventoryBucketChoices = this.generateBucketChoices(ItemType.Weapon);
     this.damageTypeChoices = this.generateDamageTypeChoices();
     this.energyTypeChoices = this.generateEnergyTypeChoices();
+    this.seasonChoices = this.generateSeasonChoices();
     this.armorInventoryBucketChoices = this.generateBucketChoices(ItemType.Armor);
     this.vehicleTypeChoices = this.generateBucketChoices(ItemType.Vehicle);
     this.modTypeChoices = arrays[ItemType.GearMod + ''];
@@ -1052,7 +1083,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
       this.appendMode = rawFilter.endsWith(' and ') || rawFilter.endsWith(' or ');
       const newFilteredOptions = [];
-      if (rawFilter.startsWith('is:')||rawFilter.startsWith('sea')) {
+      if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea')) {
         for (const o of this.autocompleteOptions) {
           if (o.startsWith(rawFilter)) {
             newFilteredOptions.push(o);
@@ -1083,6 +1114,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (this.armorInventoryBucketToggle) { filters.push(this.armorInventoryBucketToggle); }
     if (this.weaponInventoryBucketToggle) { filters.push(this.weaponInventoryBucketToggle); }
     if (this.energyTypeToggle) { filters.push(this.energyTypeToggle); }
+    if (this.seasonToggle) { filters.push(this.seasonToggle); }
     if (this.damageTypeToggle) { filters.push(this.damageTypeToggle); }
 
     if (this.vehicleTypeToggle) { filters.push(this.vehicleTypeToggle); }
@@ -1176,8 +1208,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public openGearDialog(source: InventoryItem, items: InventoryItem[], showNames: boolean): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
-    // dc.autoFocus = true;
-    // dc.width = '500px';
     dc.data = {
       parent: this,
       source,
