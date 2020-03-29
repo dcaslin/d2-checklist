@@ -114,6 +114,31 @@ table.gear-table {
   }
 }
 
+
+// .current-char {
+//   display: inline-block;
+//   height: 34px;
+//   width: 130px;
+//   color: white;
+//   font-size: 20px;
+//   font-weight: 400;
+//   background-size: cover;
+//   background-position: left center;
+//   background-repeat: no-repeat;
+//   text-align: left;
+//   margin-right: 5px;
+//   opacity: 0.8;
+//   border-radius: 1px;
+// }
+
+// .current-char-icon {
+//   display: none;
+// }
+
+.current-class {
+  margin-left: 40px;
+}
+
 .not-selected-plug {
   opacity: 0.5;
 }
@@ -225,7 +250,28 @@ table.stat-table {
   width: 140px !important;
 }
 
+
+.current-char-icon {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  height: 34px;
+  width: 34px;
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  margin-right: 5px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 1019px) {
+
+  // .current-char {
+  //   display: none;
+  // }
+
+
 }
 
 .filter-buttons {
@@ -240,6 +286,7 @@ table.stat-table {
 }
 
 @media screen and (min-width: 1019px) {
+
   .filter-buttons {
     display: inline;
   }
