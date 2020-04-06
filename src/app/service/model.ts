@@ -6,6 +6,7 @@ import { Moment } from 'moment';
 
 
 export const TAG_WEIGHTS: {[key: string]: number} = {
+    'warmind bits': 5.0,
     'gambit': 0.25,
     'crucible': 0.5,
     'precision': 1.5,
