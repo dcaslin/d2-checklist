@@ -34,6 +34,6 @@ jobs:
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSH }}
       with:
-        source: "./dist/d2-checklist/"
+        source: "./dist/"
         target: "/opt/test/d2-checklist/"
-        strip_components: 3 # this is important
+        strip_components: 2 # this is important
