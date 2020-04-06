@@ -1,12 +1,10 @@
-import { bungieProd } from './keys';
-
 const packageJson = require('../../package.json');
 export const environment = {
   bungie:  {
-    apiKey: process.env.API_KEY,
+    apiKey: process.env.PROD_API_KEY,
     authUrl: 'https://www.bungie.net/en/OAuth/Authorize',
     clientId: '21084',
-    clientSecret: process.env.CLIENT_SECRET
+    clientSecret: process.env.PROD_CLIENT_SECRET
   },
   production: true,
   versions: {
