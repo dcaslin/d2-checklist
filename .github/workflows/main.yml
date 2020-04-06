@@ -23,8 +23,8 @@ jobs:
     - run: npm install -g @angular/cli > /dev/null
     - run: ng build --prod
       env:
-        API_KEY: ${{ secrets.API_KEY }}
-        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        PROD_API_KEY: ${{ secrets.API_KEY }}
+        PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
