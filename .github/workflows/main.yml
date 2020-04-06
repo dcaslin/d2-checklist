@@ -1,0 +1,36 @@
+name: CD
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1 #this installs node and npm for us
+      with:
+        node-version: '13.x'
+    - uses: actions/cache@v1 # this allows for re-using node_modules caching, making builds a bit faster.
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+ 
+    - run: npm install
+    - run: npm install -g @angular/cli > /dev/null
+    - run: ng build --prod
+
+    - name: copy file via ssh key
+      uses: appleboy/scp-action@master
+      env:
+        HOST: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.UID }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSH }}
+      with:
+        source: "./dist/d2-checklist/"
+        target: "/opt/test/domain.com/pwa/"
+        strip_components: 3 # this is important
