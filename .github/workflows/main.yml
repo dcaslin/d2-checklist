@@ -18,7 +18,7 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-node-
- 
+    - run: npm config set "@fortawesome:registry" https://npm.fontawesome.com && npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONT }}
     - run: npm install
     - run: npm install -g @angular/cli > /dev/null
     - run: ng build --prod
