@@ -26,11 +26,11 @@ jobs:
     - run: npm config set "@fortawesome:registry" https://npm.fontawesome.com && npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONT }}
     - run: npm install
     - run: npm install -g @angular/cli > /dev/null
-    - run: ng build --prod
+    - run: npm run stage-prod-keys
       env:
         PROD_API_KEY: ${{ secrets.API_KEY }}
-        PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-
+        PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }} 
+    - run: ng build --prod
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       env:
