@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core
 import { ClanStateService, ClanSearchableTriumph } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { MatDialogConfig, MatDialog } from '@angular/material';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { ClanTriumphItemDialogComponent } from '../clan-triumph-item-dialog/clan-triumph-item-dialog.component';
 import { IconService } from '@app/service/icon.service';
 

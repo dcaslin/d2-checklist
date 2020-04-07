@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { MilestoneActivity } from '@app/service/model';
 

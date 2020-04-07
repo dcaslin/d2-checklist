@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { PlayerComponent } from '@app/player';
 import { BehaviorSubject } from 'rxjs';

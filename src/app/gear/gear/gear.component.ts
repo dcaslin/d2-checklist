@@ -1,6 +1,9 @@
 import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { MatAutocompleteSelectedEvent, MatButtonToggleGroup, MatDialog, MatDialogConfig, MatPaginator, PageEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
