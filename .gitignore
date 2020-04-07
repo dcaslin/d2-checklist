@@ -45,3 +45,4 @@ Thumbs.db
 #secrets 
 src/environments/secrets.ts
 src/environments/keys.ts
+src/environments/keys-prod.ts
