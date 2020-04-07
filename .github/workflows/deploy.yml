@@ -1,0 +1,44 @@
+name: deploy
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1 #this installs node and npm for us
+      with:
+        node-version: '13.x'
+    - name: Cache node modules
+      uses: actions/cache@v1
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - run: npm config set "@fortawesome:registry" https://npm.fontawesome.com && npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONT }}
+    - run: npm install
+    - run: npm install -g @angular/cli > /dev/null
+    - run: ng build --prod
+      env:
+        PROD_API_KEY: ${{ secrets.API_KEY }}
+        PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+    - name: copy file via ssh key
+      uses: appleboy/scp-action@master
+      env:
+        HOST: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.UID }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSH }}
+      with:
+        source: "./dist/"
+        target: "/opt/stage/d2-checklist/"
+        strip_components: 2 # this is important
