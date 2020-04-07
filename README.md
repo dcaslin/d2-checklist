@@ -13,4 +13,4 @@
 
 ### Contribution guidelines ###
 
-* If you want to contribute, let me know (or submit a pull request)
+* If you want to contribute, let me know (or submit a pull request) 
