@@ -25,7 +25,11 @@
             },
             "assets": [
               "src/assets",
-              { "glob": "**/*", "input": "src/root-assets/", "output": "/" },
+              {
+                "glob": "**/*",
+                "input": "src/root-assets/",
+                "output": "/"
+              },
               "src/manifest.webmanifest"
             ],
             "styles": [
@@ -127,5 +131,8 @@
     "@schematics/angular:directive": {
       "prefix": "d2c"
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
