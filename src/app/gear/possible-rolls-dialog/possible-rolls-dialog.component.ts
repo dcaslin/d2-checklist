@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { InventoryItem, InventoryPlug } from '@app/service/model';
-import { MatDialogRef, MAT_DIALOG_DATA, MatCheckboxChange } from '@angular/material';
+import { MatCheckboxChange } from '@angular/material/checkbox';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearComponent } from '../gear/gear.component';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';

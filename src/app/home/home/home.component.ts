@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
