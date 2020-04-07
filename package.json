@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
+    "stage-prod-keys": "node stage-prod-config.js",
     "docker-start": "ng serve --host 0.0.0.0 --ssl",
     "buildStats": "ng build --statsJson",
     "analyze": "webpack-bundle-analyzer dist/stats.json",
