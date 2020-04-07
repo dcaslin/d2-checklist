@@ -85,7 +85,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   readonly version = env.versions.app;
   readonly year = new Date().getFullYear();
-  readonly logo = require('../assets/logo.svg');
 
   public readonly const: Const = Const;
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
