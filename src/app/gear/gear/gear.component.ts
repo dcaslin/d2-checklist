@@ -118,43 +118,43 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
 
-  @ViewChild('paginator', { static: false })
+  @ViewChild('paginator')
   public paginator: MatPaginator;
 
-  @ViewChild('optionsgroup', { static: false })
+  @ViewChild('optionsgroup')
   public optionsgroup: MatButtonToggleGroup;
 
-  @ViewChild('markToggle', { static: false })
+  @ViewChild('markToggle')
   public markToggle: GearToggleComponent;
-  @ViewChild('weaponTypeToggle', { static: false })
+  @ViewChild('weaponTypeToggle')
   public weaponTypeToggle: GearToggleComponent;
-  @ViewChild('ammoTypeToggle', { static: false })
+  @ViewChild('ammoTypeToggle')
   public ammoTypeToggle: GearToggleComponent;
-  @ViewChild('armorInventoryBucketToggle', { static: false })
+  @ViewChild('armorInventoryBucketToggle')
   public armorInventoryBucketToggle: GearToggleComponent;
-  @ViewChild('weaponInventoryBucketToggle', { static: false })
+  @ViewChild('weaponInventoryBucketToggle')
   public weaponInventoryBucketToggle: GearToggleComponent;
-  @ViewChild('energyTypeToggle', { static: false })
+  @ViewChild('energyTypeToggle')
   public energyTypeToggle: GearToggleComponent;
-  @ViewChild('seasonToggle', { static: false })
+  @ViewChild('seasonToggle')
   public seasonToggle: GearToggleComponent;
-  @ViewChild('damageTypeToggle', { static: false })
+  @ViewChild('damageTypeToggle')
   public damageTypeToggle: GearToggleComponent;
-  @ViewChild('vehicleTypeToggle', { static: false })
+  @ViewChild('vehicleTypeToggle')
   public vehicleTypeToggle: GearToggleComponent;
-  @ViewChild('modTypeToggle', { static: false })
+  @ViewChild('modTypeToggle')
   public modTypeToggle: GearToggleComponent;
-  @ViewChild('consumableTypeToggle', { static: false })
+  @ViewChild('consumableTypeToggle')
   public consumableTypeToggle: GearToggleComponent;
-  @ViewChild('exchangeTypeToggle', { static: false })
+  @ViewChild('exchangeTypeToggle')
   public exchangeTypeToggle: GearToggleComponent;
-  @ViewChild('classTypeToggle', { static: false })
+  @ViewChild('classTypeToggle')
   public classTypeToggle: GearToggleComponent;
-  @ViewChild('ownerToggle', { static: false })
+  @ViewChild('ownerToggle')
   public ownerToggle: GearToggleComponent;
-  @ViewChild('equippedToggle', { static: false })
+  @ViewChild('equippedToggle')
   public equippedToggle: GearToggleComponent;
-  @ViewChild('rarityToggle', { static: false })
+  @ViewChild('rarityToggle')
   public rarityToggle: GearToggleComponent;
 
   // filters: GearToggleComponent[] = [];
@@ -179,7 +179,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public filterKeyUp: Subject<void> = new Subject();
   visibleFilterText = null;
 
-  @ViewChild('filter', { static: false })
+  @ViewChild('filter')
   filter: ElementRef;
 
   filterTags: string[] = [];
