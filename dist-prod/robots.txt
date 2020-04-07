@@ -1,3 +1,0 @@
-User-Agent: *
-Disallow: /assets/
-SITEMAP: https://www.d2checklist.com/sitemap.xml
