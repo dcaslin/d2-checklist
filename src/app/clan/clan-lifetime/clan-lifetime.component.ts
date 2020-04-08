@@ -3,7 +3,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { ClanStateService, ClanAggHistoryEntry } from '../clan-state.service';
 import { takeUntil } from 'rxjs/operators';
-import { MatDialogConfig, MatDialog } from '@angular/material';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { ClanLifetimeDialogComponent } from './clan-lifetime-dialog/clan-lifetime-dialog.component';
 import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dialog/clan-user-list-dialog.component';
 import { IconService } from '@app/service/icon.service';

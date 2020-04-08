@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { ClanStateService } from '../clan-state.service';
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BungieGroupMember } from '@app/service/model';
 import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-list-dialog.component';
 

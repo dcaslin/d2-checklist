@@ -1,7 +1,7 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { ActivatedRoute } from '@angular/router';
 import { CollectionTreeComponent, TriumphFlatNode } from '@app/player/collections/collection-tree/collection-tree.component';
 import { TriumphNode } from '@app/service/model';

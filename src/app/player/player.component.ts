@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
