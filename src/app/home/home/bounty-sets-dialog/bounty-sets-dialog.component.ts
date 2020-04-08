@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { BountySet, InventoryItem, SaleItem, TAG_WEIGHTS } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';

@@ -3,7 +3,8 @@ import { merge as observableMerge, BehaviorSubject, Observable } from 'rxjs';
 
 import { map } from 'rxjs/operators';
 import { DataSource } from '@angular/cdk/collections';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 export class SortFilterDatabase {
   /** Stream that emits whenever the data has been modified. */

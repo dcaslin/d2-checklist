@@ -11,6 +11,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "aot": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -24,7 +25,11 @@
             },
             "assets": [
               "src/assets",
-              { "glob": "**/*", "input": "src/root-assets/", "output": "/" },
+              {
+                "glob": "**/*",
+                "input": "src/root-assets/",
+                "output": "/"
+              },
               "src/manifest.webmanifest"
             ],
             "styles": [
@@ -38,6 +43,12 @@
           },
           "configurations": {
             "production": {
+              "budgets": [
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -115,10 +126,13 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "d2c",
-      "styleext": "scss"
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "d2c"
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }

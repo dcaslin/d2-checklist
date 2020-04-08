@@ -1,6 +1,7 @@
 
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';

@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BungieGroupMember } from '@app/service/model';
