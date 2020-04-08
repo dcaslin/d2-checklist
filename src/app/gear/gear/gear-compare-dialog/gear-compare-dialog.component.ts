@@ -1,5 +1,5 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatDialogConfig, MatDialog } from '@angular/material';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { InventoryItem, Sort } from '@app/service/model';
