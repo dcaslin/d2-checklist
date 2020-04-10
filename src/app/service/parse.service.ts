@@ -1233,7 +1233,10 @@ export class ParseService {
         let pl = Const.UNKNOWN_BOOST;
         if (rewards) {
             if (rewards.startsWith('Powerful')) {
-                if (rewards.endsWith('2)')) {
+                if (rewards.endsWith('3)')) {
+                    pl = Const.MID_BOOST;
+
+                } else if (rewards.endsWith('2)')) {
                     pl = Const.MID_BOOST;
 
                 } else {
@@ -1364,6 +1367,7 @@ export class ParseService {
             if (ms.milestoneHash == 2712317338 && desc.displayProperties.name.startsWith('###')) {
                 continue;
             }
+            
             let icon = desc.displayProperties.icon;
             const activities: MilestoneActivity[] = [];
             if (ms.activities != null) {
@@ -1499,10 +1503,20 @@ export class ParseService {
                 rewards: rewards,
                 pl: pl,
                 summary: summary,
-                milestoneType: desc.milestoneType
+                milestoneType: desc.milestoneType,
+                dependsOn: []
             };
             if (pushMe.hash == '4253138191') {
                 sample = pushMe;
+            } else if (pushMe.hash == '3628293757') {
+                pushMe.summary = 'Trials - 3 Wins';
+
+            } else if (pushMe.hash == '3628293755') {
+                pushMe.summary = 'Trials - 5 Wins';
+                pushMe.dependsOn = ['3628293757'];
+            } else if (pushMe.hash == '3628293753') {
+                pushMe.summary = 'Trials - 7 Wins';
+                pushMe.dependsOn = ['3628293757', '3628293755'];
             }
             returnMe.push(pushMe);
         }
