@@ -262,6 +262,7 @@ export interface PublicMilestone {
     summary: string;
     milestoneType: number;
     type?: string;
+    dependsOn: string[];
 
 }
 
