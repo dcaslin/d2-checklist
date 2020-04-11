@@ -262,6 +262,7 @@ export interface PublicMilestone {
     summary: string;
     milestoneType: number;
     type?: string;
+    dependsOn: string[];
 
 }
 
@@ -787,6 +788,7 @@ export interface MileStoneName {
     name: string;
     desc: string;
     hasPartial: boolean;
+    dependsOn: string[];
     neverDisappears?: boolean;
     suppInfo?: string;
 }

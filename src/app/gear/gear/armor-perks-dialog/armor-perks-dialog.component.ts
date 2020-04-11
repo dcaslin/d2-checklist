@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { TargetPerkService, PlayerMods } from '@app/service/target-perk.service';
@@ -10,7 +10,8 @@ import { Character } from '@app/service/model';
 @Component({
   selector: 'd2c-armor-perks-dialog',
   templateUrl: './armor-perks-dialog.component.html',
-  styleUrls: ['./armor-perks-dialog.component.scss']
+  styleUrls: ['./armor-perks-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ArmorPerksDialogComponent {
   parent: GearComponent;
