@@ -259,7 +259,8 @@ export class ParseService {
                     pl: this.parseMilestonePl(descRewards),
                     name: name,
                     desc: skipDesc.displayProperties.description,
-                    hasPartial: false
+                    hasPartial: false,
+                    dependsOn: []
                 };
                 milestoneList.push(ms2);
                 milestonesByKey[ms2.key] = ms2;
@@ -1367,7 +1368,7 @@ export class ParseService {
             if (ms.milestoneHash == 2712317338 && desc.displayProperties.name.startsWith('###')) {
                 continue;
             }
-            
+
             let icon = desc.displayProperties.icon;
             const activities: MilestoneActivity[] = [];
             if (ms.activities != null) {
@@ -1509,13 +1510,13 @@ export class ParseService {
             if (pushMe.hash == '4253138191') {
                 sample = pushMe;
             } else if (pushMe.hash == '3628293757') {
-                pushMe.summary = 'Trials - 3 Wins';
+                pushMe.summary = 'Trials Three Wins';
 
             } else if (pushMe.hash == '3628293755') {
-                pushMe.summary = 'Trials - 5 Wins';
+                pushMe.summary = 'Trials Five Wins';
                 pushMe.dependsOn = ['3628293757'];
             } else if (pushMe.hash == '3628293753') {
-                pushMe.summary = 'Trials - 7 Wins';
+                pushMe.summary = 'Trials Seven Wins';
                 pushMe.dependsOn = ['3628293757', '3628293755'];
             }
             returnMe.push(pushMe);
@@ -2089,6 +2090,7 @@ export class ParseService {
                     name: 'Menagerie',
                     desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
                     hasPartial: false,
+                    dependsOn: [],
                     suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
                 };
                 milestoneList.push(ms);
@@ -2151,7 +2153,8 @@ export class ParseService {
                     pl: p.pl,
                     name: p.summary == null ? p.name : p.summary,
                     desc: p.desc,
-                    hasPartial: false
+                    hasPartial: false,
+                    dependsOn: p.dependsOn
                 };
                 // Fix heroic adventures
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
@@ -2160,22 +2163,6 @@ export class ParseService {
                 milestoneList.push(ms);
             }
 
-            // // add crown of sorrows manually
-            // if (milestonesByKey['2590427074'] == null) {
-            //     const raidDesc = this.destinyCacheService.cache.Milestone['2590427074'];
-            //     const ms: MileStoneName = {
-            //         key: raidDesc.hash + '',
-            //         resets: weekEnd,
-            //         rewards: 'Powerful Gear',
-            //         pl: Const.HIGHEST_BOOST,
-            //         name: raidDesc.displayProperties.name,
-            //         neverDisappears: true,
-            //         desc: raidDesc.displayProperties.description,
-            //         hasPartial: false
-            //     };
-            //     milestoneList.push(ms);
-            //     milestonesByKey[ms.key] = ms;
-            // }
             // add Last wish if its missing, as it has been from public milestones for a while
             // if (milestonesByKey['3181387331'] == null) {
             //     const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
@@ -2215,15 +2202,40 @@ export class ParseService {
                     // do a second pass for any missing milestones
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
-                        for (const key of Object.keys(milestonesByKey)) {
-                            if (c.milestones[key] == null) {
-                                const placeholder: MilestoneStatus = new MilestoneStatus(key, true, 1, null, null, [], c.notReady);
-                                c.milestones[key] = placeholder;
+                        for (const missingKey of Object.keys(milestonesByKey)) {
+                            if (c.milestones[missingKey] == null) {
+                                const placeholder: MilestoneStatus = new MilestoneStatus(missingKey, true, 1, null, null, [], c.notReady);
+                                c.milestones[missingKey] = placeholder;
                             }
                         }
                     }
+                    // do a third pass for any dependent milestones
+                    for (const key of Object.keys(oProgs)) {
+                        const c: Character = charsDict[key];
+                        for (const checkKey of Object.keys(milestonesByKey)) {
+                            // if this milestone is missing it appears complete
+                            // but if this milestone depends on other milestones it may
+                            // just be simply missing
+                            // so we have to see if those other miletsones are complete
+                            if (!milestonesByKey[checkKey] || !milestonesByKey[checkKey].dependsOn || milestonesByKey[checkKey].dependsOn.length == 0) {
+                                continue;
+                            }
+                            const checkMe = c.milestones[checkKey];
+                            if (!checkMe.complete) {
+                                continue;
+                            }
 
-
+                            const dependsOn = milestonesByKey[checkKey].dependsOn;
+                            for (const dKey of dependsOn) {
+                                const dependentMilestoneStatus = c.milestones[dKey];
+                                if (!dependentMilestoneStatus.complete) {
+                                    const incompletePlaceholder: MilestoneStatus = new MilestoneStatus(checkKey, false, 0, null, null, []);
+                                    c.milestones[checkKey] = incompletePlaceholder;
+                                    break;
+                                }
+                            }
+                        }
+                    }
 
                 } else {
                     superprivate = true;
@@ -3598,26 +3610,6 @@ export class ParseService {
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
-                                // if (jCat.socketCategoryHash == 3154740035) {
-                                //     const socketPerkHash = socketDesc.singleInitialItemHash;
-                                //     if (socketPerkHash) {
-                                //         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketPerkHash];
-                                //         console.log("basdf");
-                                //         const oPlug = new InventoryPlug(plugDesc.hash,
-                                //             name, plugDesc.displayProperties.description,
-                                //             plugDesc.displayProperties.icon, true);
-                                //         plugs.push(oPlug);
-                                //     }
-
-
-                                //     if (itm.itemHash == 722344178) {
-                                //     console.dir("hi");
-                                //     }
-                                // }
-
-
-                                // we do !isMod b/c for masterworks the "unselected" perk is actually the next tier (except for masterworks where they're the same and selected)
-                                // for those we just skip down to the socketVal
                                 if (!isMod && reusablePlugs && reusablePlugs[index]) {
                                     for (const plug of reusablePlugs[index]) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
 import { ClipboardModule } from 'ngx-clipboard';
 import { GearComponent} from './gear/gear.component';
-import { TargetArmorPerksDialogComponent } from './target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { GodRollPlugComponent } from './god-roll-plug/god-roll-plug.component';
 import { GodRollItemComponent } from './god-roll-item/god-roll-item.component';
 import { PossibleRollsDialogComponent } from './possible-rolls-dialog/possible-rolls-dialog.component';
@@ -20,12 +19,12 @@ import { HorizontalSortComponent } from './gear/gear-compare-dialog/horizontal-s
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, HorizontalSortComponent],
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, HorizontalSortComponent],
   entryComponents: [
     PossibleRollsDialogComponent,
     GearCompareDialogComponent, GearHelpDialogComponent,
     BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorPerksDialogComponent, TargetArmorStatsDialogComponent
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent
   ],
 })
 export class GearModule  { }

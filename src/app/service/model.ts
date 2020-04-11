@@ -788,6 +788,7 @@ export interface MileStoneName {
     name: string;
     desc: string;
     hasPartial: boolean;
+    dependsOn: string[];
     neverDisappears?: boolean;
     suppInfo?: string;
 }

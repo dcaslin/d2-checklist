@@ -10,33 +10,64 @@ export class PreferredStatService {
   public readonly choices: string[];
 
   constructor() {
+    const choices = [];
+    choices.push('Mobility');
+    choices.push('Resilience');
+    choices.push('Recovery');
+
+    choices.push('Discipline');
+    choices.push('Intellect');
+    choices.push('Strength');
+    this.choices = choices;
+
 
     const s = localStorage.getItem('preferred-stats');
-    let pref = PreferredStatService.buildDefault();
+    let pref = this.buildDefault();
     try {
       if (s != null) {
         pref = JSON.parse(s);
+        if (!pref.stats) {
+          // handle old settings
+          const anyPref = {...pref} as any ;
+          pref.stats = this.buildDefault(true).stats;
+          let found = false;
+          if (anyPref.stat1 && pref.stats[anyPref.stat1] != null) {
+            pref.stats[anyPref.stat1] = true;
+            found = true;
+          }
+          if (anyPref.stat2 && pref.stats[anyPref.stat2] != null) {
+            pref.stats[anyPref.stat2] = true;
+            found = true;
+          }
+          if (anyPref.stat3 && pref.stats[anyPref.stat3] != null) {
+            pref.stats[anyPref.stat3] = true;
+            found = true;
+          }
+
+          delete (pref as any).stat1;
+          delete (pref as any).stat2;
+          delete (pref as any).stat3;
+          if (!found) {
+            pref = this.buildDefault();
+          }
+          localStorage.setItem('preferred-stats', JSON.stringify(pref));
+        }
+
       }
     } catch (exc) {
       localStorage.removeItem('preferred-stats');
     }
     this.stats = new BehaviorSubject<PreferredStats>(pref);
-    const choices = [];
-    choices.push('None');
-    choices.push('Discipline');
-    choices.push('Intellect');
-    choices.push('Strength');
-    choices.push('Mobility');
-    choices.push('Recovery');
-    choices.push('Resilience');
-    this.choices = choices;
   }
 
-  static buildDefault(): PreferredStats {
+  private buildDefault(empty?: boolean): PreferredStats {
+    const defaults = ['Intellect', 'Recovery', 'Discipline'];
+    const stats: { [key: string]: boolean } = {};
+    for (const c of this.choices) {
+      stats[c] = empty ? false : defaults.indexOf(c) >= 0;
+    }
     return {
-      stat1: 'Intellect',
-      stat2: 'Recovery',
-      stat3: 'Discipline',
+      stats: stats,
       showAllStats: false
     };
   }
@@ -54,14 +85,8 @@ export class PreferredStatService {
     if (showAllOverride && cur.showAllStats) {
       return true;
     }
-    if (cur.stat1 && cur.stat1 === stat.name) {
-      return true;
-    }
-    if (cur.stat2 && cur.stat2 === stat.name) {
-      return true;
-    }
-    if (cur.stat3 && cur.stat3 === stat.name) {
-      return true;
+    if (cur.stats[stat.name]) {
+      return cur.stats[stat.name];
     }
     return false;
   }
@@ -81,14 +106,9 @@ export class PreferredStatService {
       i.preferredStatPoints = prefPts;
     }
   }
-
-
 }
 
 export interface PreferredStats {
-  stat1: string;
-  stat2: string;
-  stat3: string;
-  // hide modified value?
+  stats: { [key: string]: boolean };
   showAllStats: boolean;
 }
