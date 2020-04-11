@@ -21,7 +21,6 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
-import { TargetArmorPerksDialogComponent } from '../target-armor-perks-dialog/target-armor-perks-dialog.component';
 import { TargetArmorStatsDialogComponent } from '../target-armor-stats-dialog/target-armor-stats-dialog.component';
 import { ArmorPerksDialogComponent } from './armor-perks-dialog/armor-perks-dialog.component';
 import { BulkOperationsHelpDialogComponent } from './bulk-operations-help-dialog/bulk-operations-help-dialog.component';
@@ -1178,15 +1177,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       parent: this,
     };
     this.dialog.open(ArmorPerksDialogComponent, dc);
-  }
-
-  public showTargetArmorPerks(): void {
-    const dc = new MatDialogConfig();
-    dc.disableClose = false;
-    dc.data = {
-      parent: this,
-    };
-    this.dialog.open(TargetArmorPerksDialogComponent, dc);
   }
 
   public showTargetArmorStats(): void {

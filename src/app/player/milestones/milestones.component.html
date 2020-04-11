@@ -83,10 +83,8 @@
 
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
-            <div class="asdf">
-              <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" [detailed]="true">
-              </d2c-milestone-check>
-            </div>
+            <d2c-milestone-check [char]="char" [mileStoneName]="mileStoneName" [detailed]="true">
+            </d2c-milestone-check>
           </td>
         </tr>
       </ng-container>
@@ -115,23 +113,26 @@
   </table>
 </ng-container>
 <div class="bottom-note">
-  <ul class="left">    
+  <ul class="left">
     <!-- TODO UPDATE ME -->
-    <li><span class="warn-text">[Season of Worthy update]</span> New power caps are 1000 and 1010, more to come as we see the season roll out
+    <li><span class="warn-text">[Season of Worthy update]</span> New power caps are 1000 and 1010, more to come as we
+      see the season roll out
     </li>
-    <li><span class="">[Season of Dawn update]</span> Most things have stayed 
-      the same, with power level caps jumped by 10 (so Powerful is capped at 960 instead of 950) and Pinnacle is capped at 970 (instead of 960)
+    <li><span class="">[Season of Dawn update]</span> Most things have stayed
+      the same, with power level caps jumped by 10 (so Powerful is capped at 960 instead of 950) and Pinnacle is capped
+      at 970 (instead of 960)
     </li>
     <li><span class="">[Shadowkeep update]</span> Drop info (i.e. +2 for Pinnacle, +3 for Powerful etc) above
       is <b>estimated</b> based on player reports. Each drop has a tooltip describing soft and hard caps.
       In general, all gear, including blues, will give you gains up to 900.
-      Powerful and pinnacle gear will give you gains to 960. At or above 960, <b>only</b> Pinnacle Gear will raise your light
+      Powerful and pinnacle gear will give you gains to 960. At or above 960, <b>only</b> Pinnacle Gear will raise your
+      light
       level. I attempt to document this with the "soft cap" and "hard cap" notes.
       When in doubt, trust Bungie or (trustworthy) Reddit sources on drop levels, I'm simply guesstimating here.
     </li>
     <li>Milestones disappear on completion, so it's hard to differentiate between complete and
       unavailable milestones. Chars that aren't eligible for milestones may therefore show as complete. Milestones with
-      this icon 
+      this icon
       <fa-icon [icon]="iconService.falCheckSquare" class="faint" matTooltip="LL&lt;900, may not be unlocked"></fa-icon>
       denote players that are below max light level,
       and **may** be ineligible for certain milestones. With the API at the moment it's impossible to tell the
