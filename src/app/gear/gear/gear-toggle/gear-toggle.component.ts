@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { ItemType } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
 import { IconService } from '@app/service/icon.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'd2c-gear-toggle',
@@ -17,7 +18,8 @@ export class GearToggleComponent implements OnInit {
   }
   _currentItemType: ItemType;
   hidden: boolean;
-  isAllSelected = true;
+
+  isAllSelected$: BehaviorSubject<boolean> = new BehaviorSubject(true);
 
   @Input()
   displayOptions: ItemType[];
@@ -79,16 +81,15 @@ export class GearToggleComponent implements OnInit {
   }
 
   setAllSelected() {
-    if (this.choices){
+    if (this.choices) {
       for (const ch of this.choices) {
         if (!ch.value) {
-            this.isAllSelected = false;
+            this.isAllSelected$.next(false);
            return ;
         }
       }
     }
-    
-    this.isAllSelected = true;
+    this.isAllSelected$.next(true);
   }
 
   selectAll(noEmit?: boolean) {
@@ -132,7 +133,7 @@ export class GearToggleComponent implements OnInit {
 
   public isChosen(optionType: ItemType, val: any): boolean {
     if (this.hidden == true) { return true; }
-    if (this.isAllSelected) { return true; }
+    if (this.isAllSelected$.getValue()) { return true; }
     if (optionType != this._currentItemType) {
       console.log('OOPS');
     }
@@ -147,7 +148,7 @@ export class GearToggleComponent implements OnInit {
   public getNotes(): string {
     if (this.hidden == true) { return null; }
     if (this.choices.length == null || this.choices.length == 0) { return null; }
-    if (this.isAllSelected) { return null; }
+    if (this.isAllSelected$.getValue()) { return null; }
     let s = this.title + ': \n';
     for (const c of this.choices) {
       if (c.value == false) {

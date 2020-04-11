@@ -621,7 +621,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (this.filterTags.length > 0) { return true; }
     const filters = this.grabFilters();
     for (const toggle of filters) {
-      if (!toggle.isAllSelected) { return true; }
+      if (!toggle.isAllSelected$.getValue()) { return true; }
     }
     return false;
   }
