@@ -28,7 +28,7 @@
             <tr>
                 <ng-container *ngTemplateOutlet="sortHeader"></ng-container>
                 <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                    <th *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">
+                    <th class="milestone-header" *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">
                         <span [matTooltip]="mileStoneName.desc"
                             matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
                         <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>

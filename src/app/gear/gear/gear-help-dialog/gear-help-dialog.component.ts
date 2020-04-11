@@ -1,11 +1,12 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
   selector: 'd2c-gear-help-dialog',
   templateUrl: './gear-help-dialog.component.html',
-  styleUrls: ['../gear.component.scss']
+  styleUrls: ['../gear.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GearHelpDialogComponent {
 

@@ -2,7 +2,12 @@
 <mat-dialog-content>
   <div class="form-container">
     <p class="simple-caption">Select up to 3 stats which will be added up and used for sorting when ordering your armor by points.</p>
-    <mat-form-field>
+    <ng-container *ngFor="let c of preferredStatService.choices">
+      <div>
+        <mat-slide-toggle [checked]="this.preferred.stats[c]" (change)="toggle($event, c)">{{c}}</mat-slide-toggle>
+      </div>
+    </ng-container>
+    <!-- <mat-form-field>
       <mat-label>Stat 1</mat-label>
       <select matNativeControl [(ngModel)]="preferred.stat1">
         <option *ngFor="let c of preferredStatService.choices" [value]="c">{{c}}</option>
@@ -12,14 +17,13 @@
       <mat-label>Stat 2</mat-label>
       <select matNativeControl [(ngModel)]="preferred.stat2">
         <option *ngFor="let c of preferredStatService.choices" [value]="c">{{c}}</option>
-      </select>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Stat 3</mat-label>
       <select matNativeControl [(ngModel)]="preferred.stat3">
         <option *ngFor="let c of preferredStatService.choices" [value]="c">{{c}}</option>
       </select>
-    </mat-form-field>
+    </mat-form-field> -->
     <mat-checkbox [(ngModel)]="preferred.showAllStats">Show all stats</mat-checkbox>
   </div>
 </mat-dialog-content>

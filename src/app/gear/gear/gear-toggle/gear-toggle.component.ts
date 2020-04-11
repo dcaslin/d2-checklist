@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { ItemType } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
 import { IconService } from '@app/service/icon.service';
@@ -6,7 +6,8 @@ import { IconService } from '@app/service/icon.service';
 @Component({
   selector: 'd2c-gear-toggle',
   templateUrl: './gear-toggle.component.html',
-  styleUrls: ['../gear.component.scss']
+  styleUrls: ['../gear.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GearToggleComponent implements OnInit {
 

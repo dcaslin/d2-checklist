@@ -473,6 +473,7 @@ export class BungieService implements OnDestroy {
             new ActivityMode(0, 'All', 'All'), // None
             new ActivityMode(7, 'All - PvE', 'All PvE'),
             new ActivityMode(5, 'All - PvP', 'All PvP'),
+            new ActivityMode(84, 'Trials', 'Trials'),
             new ActivityMode(69, 'Competitive - PvP', 'Competitive PvP'),
             new ActivityMode(66, 'Forge', 'Forge'),
             new ActivityMode(64, 'Gambit', 'All Gambit'),
@@ -738,6 +739,7 @@ export class BungieService implements OnDestroy {
             name: 'Pit of Heresy',
             desc: 'Complete the Pit of Heresy Dungeon',
             hasPartial: true,
+            dependsOn: [],
             neverDisappears: true
         };
         p.milestoneList.push(ms1);
@@ -776,6 +778,7 @@ export class BungieService implements OnDestroy {
             pl: Const.LOW_BOOST,
             name: 'Eris\'s Weekly Bounties',
             desc: 'Complete Luna\'s Recall and Lunar Spelunker',
+            dependsOn: [],
             hasPartial: false,
             neverDisappears: true
         };
@@ -786,6 +789,7 @@ export class BungieService implements OnDestroy {
             pl: Const.LOW_BOOST,
             name: 'Rasputin\'s Weekly Bounties',
             desc: 'Complete both of Rasputin\'s weekly bounties',
+            dependsOn: [],
             hasPartial: false,
             neverDisappears: true
         };

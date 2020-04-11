@@ -24,6 +24,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -62,6 +63,7 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatCardModule,
     MatDialogModule,
     MatSidenavModule,
+    MatSlideToggleModule,
     MatCheckboxModule,
     MatAutocompleteModule,
     MatListModule,
@@ -111,6 +113,7 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatProgressSpinnerModule,
     MatCheckboxModule,
     MatAutocompleteModule,
+    MatSlideToggleModule,
     MatCardModule,
     MatDialogModule,
     MatSidenavModule,

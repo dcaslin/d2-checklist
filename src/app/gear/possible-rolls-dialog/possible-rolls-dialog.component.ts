@@ -10,7 +10,8 @@ import { IconService } from '@app/service/icon.service';
 @Component({
   selector: 'd2c-possible-rolls-dialog',
   templateUrl: './possible-rolls-dialog.component.html',
-  styleUrls: ['../gear/gear.component.scss']
+  styleUrls: ['../gear/gear.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 
 })
 export class PossibleRollsDialogComponent implements OnInit {
