@@ -25,7 +25,10 @@ import {
   faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
-  faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, faArrowLeft as fasArrowLeft,
+  faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, 
+  faArrowLeft as fasArrowLeft, faArrowRight as fasArrowRight,
+  faChevronLeft as fasChevronLeft, faChevronRight as fasChevronRight,
+
   faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed,
   faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
   faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
@@ -87,6 +90,9 @@ export class IconService {
   public readonly fasEye = fasEye;
   public readonly fasEyeSlash = fasEyeSlash;
   public readonly fasArrowLeft = fasArrowLeft;
+  public readonly fasArrowRight = fasArrowRight;
+  public readonly fasChevronLeft = fasChevronLeft;
+  public readonly fasChevronRight = fasChevronRight;  
   public readonly farProjectDiagram = farProjectDiagram;
   public readonly fasClock = fasClock;
   public readonly farGift = farGift;

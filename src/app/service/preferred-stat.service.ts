@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Player, ItemType, InventoryStat, ClassAllowed, DestinyClasses } from './model';
 
+const PREF_STATS_KEY = 'preferred-armor-stats';
 @Injectable({
   providedIn: 'root'
 })
@@ -19,14 +20,14 @@ export class PreferredStatService {
     choices.push('Intellect');
     choices.push('Strength');
     this.choices = choices;
-    const s = localStorage.getItem('preferred-armor-stats');
+    const s = localStorage.getItem(PREF_STATS_KEY);
     let pref = this.buildDefault();
     try {
       if (s != null) {
         pref = JSON.parse(s);
       }
     } catch (exc) {
-      localStorage.removeItem('preferred-armor-stats');
+      localStorage.removeItem(PREF_STATS_KEY);
     }
     this.stats = new BehaviorSubject<PreferredStats>(pref);
   }
@@ -65,12 +66,12 @@ export class PreferredStatService {
 
   public update(pref: PreferredStats) {
     const s = JSON.stringify(pref);
-    localStorage.setItem('preferred-stats', s);
+    localStorage.setItem(PREF_STATS_KEY, s);
     this.stats.next(pref);
   }
 
   public reset() {
-    localStorage.removeItem('preferred-stats');
+    localStorage.removeItem(PREF_STATS_KEY);
     this.stats.next(this.buildDefault());
   }
 

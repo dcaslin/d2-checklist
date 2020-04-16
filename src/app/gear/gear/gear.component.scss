@@ -360,3 +360,28 @@ table.stat-table {
 .important-note {
   margin-top: 5px;
 }
+
+.tag-page-container {
+  display: flex;
+  flex-direction: row;
+
+}
+
+.tag-page-container-tag {
+  flex-grow: 1;
+  flex-shrink: 1;
+  
+}
+
+.tag-page-container-pages {
+  flex-shrink: 1;
+  margin-right: 10px;
+}
+
+.tag-page-link {
+ // margin-left: 5px;
+}
+
+.page-icon {
+  width: 20px !important;
+}

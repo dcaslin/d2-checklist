@@ -247,7 +247,7 @@
             </fa-stack>
 
           </a>
-          <span class="simple-caption">{{gearToShow.length}} / {{total}}</span>
+          <span class="simple-caption">{{pageStart}} - {{pageEnd}} / {{total}}</span>
         </div>
         <div *ngIf="debugmode|async">
           <h5>Filters</h5>
@@ -312,14 +312,33 @@
 
               <th class="limited-gear-width"
                 *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
-                <a href="javascript:void(0)" (click)="sort('quantity')">Quantity
-                  <d2c-sort-indicator field="quantity" [currVal]="sortBy" [descending]="sortDesc">
-                  </d2c-sort-indicator>
-                </a>
+                
+                <div class="tag-page-container">
+                  <div class="tag-page-container-tag">
+                    <a href="javascript:void(0)" (click)="sort('quantity')">Quantity
+                      <d2c-sort-indicator field="quantity" [currVal]="sortBy" [descending]="sortDesc">
+                      </d2c-sort-indicator>
+                    </a>
+                  </div>
+                  <div class="tag-page-container-pages hide-mobile-inline" >
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null" (click)="paginator.firstPage()"><mat-icon class="page-icon">first_page</mat-icon></a>
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null" (click)="paginator.previousPage()"><mat-icon class="page-icon">navigate_before</mat-icon></a>
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null" (click)="paginator.nextPage()"><mat-icon class="page-icon">navigate_next</mat-icon></a>                    
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null" (click)="paginator.lastPage()"><mat-icon class="page-icon">last_page</mat-icon></a>                    
+                  </div>
+                </div>
               </th>
               <th class="tag-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                Tag
+                <div class="tag-page-container">
+                  <div class="tag-page-container-tag"> Tag </div>
+                  <div class="tag-page-container-pages hide-mobile-inline" >
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null" (click)="paginator.firstPage()"><mat-icon class="page-icon">first_page</mat-icon></a>
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null" (click)="paginator.previousPage()"><mat-icon class="page-icon">navigate_before</mat-icon></a>
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null" (click)="paginator.nextPage()"><mat-icon class="page-icon">navigate_next</mat-icon></a>                    
+                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null" (click)="paginator.lastPage()"><mat-icon class="page-icon">last_page</mat-icon></a>                    
+                  </div>
+                </div>
               </th>
             </tr>
           </thead>
@@ -511,17 +530,9 @@
                   </div>
                 </td>
                 <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-                  <table class="stat-table">
+                  <table class="stat-table" *ngIf="i.type==ItemType.Weapon">
                     <tbody>
                       <ng-container *ngFor="let stat of i.stats">
-                        <!-- <tr *ngIf="stat.hash==1345609583">
-                          <td class="gear-sort"><a href="javascript:void(0)" (click)="sort('stat.base.'+stat.hash)">AA
-                              <d2c-sort-indicator [field]="'stat.base.'+stat.hash" [currVal]="sortBy"
-                                [descending]="sortDesc"></d2c-sort-indicator>
-                            </a>
-                          </td>
-                          <td>{{stat.baseValue}}</td>
-                        </tr> -->
                         <tr *ngIf="stat.hash==1345609583
                             || stat.hash==4043523819 || stat.hash==1240592695
                             || stat.hash==4284893193">
@@ -549,7 +560,7 @@
                   </table>
                 </td>
                 <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                  <table class="stat-table">
+                  <table class="stat-table" *ngIf="i.type==ItemType.Armor">
                     <tbody>
                       <ng-container *ngFor="let stat of i.stats">
 
@@ -623,7 +634,7 @@
             </ng-container>
           </tbody>
         </table>
-        <mat-paginator #paginator [length]="total" [pageIndex]="page" [pageSize]="size" (page)="handlePage($event)"
+        <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page" [pageSize]="size" (page)="handlePage($event)"
           [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
         </mat-paginator>
       </ng-container>
