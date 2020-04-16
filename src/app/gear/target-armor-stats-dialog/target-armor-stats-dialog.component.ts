@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PreferredStats, PreferredStatService } from '@app/service/preferred-stat.service';
 import { GearComponent } from '../gear/gear.component';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { DestinyClasses } from '@app/service/model';
 
 @Component({
   selector: 'd2c-target-armor-stats-dialog',
@@ -14,6 +15,7 @@ export class TargetArmorStatsDialogComponent implements OnInit {
   parent: GearComponent;
   preferred: PreferredStats;
   targetChoices: string[];
+  destinyClasses = DestinyClasses;
 
   constructor(
     public preferredStatService: PreferredStatService,
@@ -22,14 +24,34 @@ export class TargetArmorStatsDialogComponent implements OnInit {
     this.parent = data.parent;
     this.preferred = this.preferredStatService.stats.value;
     dialogRef.afterClosed().subscribe(result => {
-      this.preferredStatService.update(this.preferred);
+      if (!result) {
+        return;
+      }
+      if (result === 'Save') {
+        this.preferredStatService.update(this.preferred);
+      } else if (result === 'Reset') {
+        this.preferredStatService.reset();
+      }
     });
   }
 
+  closeReset() {
+    this.dialogRef.close('Reset');
+  }
+
+  closeSave() {
+    this.dialogRef.close('Save');
+  }
+
+  closeCancel() {
+    this.dialogRef.close(false);
+  }
+
+
   ngOnInit() { }
 
-  toggle(evt: MatSlideToggleChange, statName: string) {
-    this.preferred.stats[statName] = evt.checked;
+  toggle(evt: MatSlideToggleChange, destinyClass: string, statName: string) {
+    this.preferred.stats[destinyClass][statName] = evt.checked;
   }
 }
 

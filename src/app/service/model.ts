@@ -28,6 +28,8 @@ export enum ClassAllowed {
     Any = 3
 }
 
+export const DestinyClasses = ['Titan', 'Hunter', 'Warlock'];
+
 export enum NumComparison {
     gte = 0,
     lte = 1,

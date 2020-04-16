@@ -366,6 +366,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.preferredStatService.stats.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
+        console.dir(x);
         if (this._player.getValue() != null) {
           this.preferredStatService.processGear(this._player.getValue());
           this.load();
