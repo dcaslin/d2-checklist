@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Player, ItemType, InventoryStat } from './model';
+import { Player, ItemType, InventoryStat, ClassAllowed, DestinyClasses } from './model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,53 +19,44 @@ export class PreferredStatService {
     choices.push('Intellect');
     choices.push('Strength');
     this.choices = choices;
-
-
-    const s = localStorage.getItem('preferred-stats');
+    const s = localStorage.getItem('preferred-armor-stats');
     let pref = this.buildDefault();
     try {
       if (s != null) {
         pref = JSON.parse(s);
-        if (!pref.stats) {
-          // handle old settings
-          const anyPref = {...pref} as any ;
-          pref.stats = this.buildDefault(true).stats;
-          let found = false;
-          if (anyPref.stat1 && pref.stats[anyPref.stat1] != null) {
-            pref.stats[anyPref.stat1] = true;
-            found = true;
-          }
-          if (anyPref.stat2 && pref.stats[anyPref.stat2] != null) {
-            pref.stats[anyPref.stat2] = true;
-            found = true;
-          }
-          if (anyPref.stat3 && pref.stats[anyPref.stat3] != null) {
-            pref.stats[anyPref.stat3] = true;
-            found = true;
-          }
-
-          delete (pref as any).stat1;
-          delete (pref as any).stat2;
-          delete (pref as any).stat3;
-          if (!found) {
-            pref = this.buildDefault();
-          }
-          localStorage.setItem('preferred-stats', JSON.stringify(pref));
-        }
-
       }
     } catch (exc) {
-      localStorage.removeItem('preferred-stats');
+      localStorage.removeItem('preferred-armor-stats');
     }
     this.stats = new BehaviorSubject<PreferredStats>(pref);
   }
 
   private buildDefault(empty?: boolean): PreferredStats {
-    const defaults = ['Intellect', 'Recovery', 'Discipline'];
-    const stats: { [key: string]: boolean } = {};
-    for (const c of this.choices) {
-      stats[c] = empty ? false : defaults.indexOf(c) >= 0;
-    }
+    const stats: { [key: string]: { [key: string]: boolean } } = {};
+    stats.Hunter = {
+      Mobility: true,
+      Resilience: false,
+      Recovery: true,
+      Discipline: false,
+      Intellect: true,
+      Strength: false
+    };
+    stats.Titan = {
+      Mobility: false,
+      Resilience: true,
+      Recovery: true,
+      Discipline: false,
+      Intellect: true,
+      Strength: false
+    };
+    stats.Warlock = {
+      Mobility: false,
+      Resilience: false,
+      Recovery: true,
+      Discipline: true,
+      Intellect: true,
+      Strength: false
+    };
     return {
       stats: stats,
       showAllStats: false
@@ -78,15 +69,23 @@ export class PreferredStatService {
     this.stats.next(pref);
   }
 
-  public isPreferred(stat: InventoryStat, showAllOverride: boolean): boolean {
+  public reset() {
+    localStorage.removeItem('preferred-stats');
+    this.stats.next(this.buildDefault());
+  }
+
+  public isPreferred(destinyClass: string, stat: InventoryStat, showAllOverride: boolean): boolean {
+    if (!destinyClass) {
+      return false;
+    }
     const cur = this.stats.getValue();
     if (!cur) { return false; }
 
     if (showAllOverride && cur.showAllStats) {
       return true;
     }
-    if (cur.stats[stat.name]) {
-      return cur.stats[stat.name];
+    if (cur.stats[destinyClass][stat.name]) {
+      return cur.stats[destinyClass][stat.name];
     }
     return false;
   }
@@ -99,7 +98,7 @@ export class PreferredStatService {
       }
       let prefPts = 0;
       for (const stat of i.stats) {
-        if (this.isPreferred(stat, false)) {
+        if (this.isPreferred(ClassAllowed[i.classAllowed], stat, false)) {
           prefPts += stat.value;
         }
       }
@@ -109,6 +108,10 @@ export class PreferredStatService {
 }
 
 export interface PreferredStats {
-  stats: { [key: string]: boolean };
+  // class, stat name, true/false
+  stats: { [key: string]: { [key: string]: boolean } };
   showAllStats: boolean;
 }
+
+
+
