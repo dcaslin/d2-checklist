@@ -201,7 +201,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   sortDesc = true;
   gearToShow: InventoryItem[] = [];
   page = 0;
-  size = 20;
+  pageStart = 0;
+  pageEnd = 0;
+  size = 10;
   total = 0;
 
   ItemType = ItemType;
@@ -329,6 +331,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private ref: ChangeDetectorRef) {
     super(storageService);
     this.loading.next(true);
+
+    const savedSize = parseInt(localStorage.getItem('page-size'), 10);
+    if (savedSize > 2 && savedSize < 800) {
+      this.size = savedSize;
+    }
+
 
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const sTab = params.tab;
@@ -838,6 +846,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.gearToShow = tempGear.slice(start, end);
     }
     this.total = tempGear.length;
+    this.pageStart = this.page * this.size + 1;
+    this.pageEnd = Math.min((this.page+1) * this.size, this.total);
   }
 
   public async shardMode(weaponsOnly?: boolean) {
@@ -1105,7 +1115,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public handlePage(x: PageEvent) {
     this.page = x.pageIndex;
-    this.size = x.pageSize;
+    if (this.size != x.pageSize) {
+      localStorage.setItem('page-size', '' + x.pageSize);
+      this.size = x.pageSize;
+    }
     this.filterChanged();
   }
 
