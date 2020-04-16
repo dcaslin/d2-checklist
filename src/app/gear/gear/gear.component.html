@@ -13,18 +13,19 @@
       </ng-container>
 
       <ng-container *ngIf="_player|async as player">
-        
+
         <div>
 
           <ng-container *ngIf="player.characters && player.characters.length>0">
             <!-- <ng-container *ngFor="let char of player.characters"> -->
-              <ng-container *ngIf="player.characters[0] as char">
+            <ng-container *ngIf="player.characters[0] as char">
               <!--   <div class="current-char"
                 [style.background-image]="'url(//www.bungie.net' + char.emblemBackgroundPath + ')'">
                 <span class="current-class">{{char.className}}</span>
               </div> -->
-              
-              <div [matMenuTriggerFor]="menuBulk" class="current-char-icon" [matTooltip]="char.className+' - '+char.race+' '+char.gender"
+
+              <div [matMenuTriggerFor]="menuBulk" class="current-char-icon"
+                [matTooltip]="char.className+' - '+char.race+' '+char.gender"
                 [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'">
               </div>
             </ng-container>
@@ -175,16 +176,12 @@
 
 
 
-
-            <ng-container *ngIf="option.type==ItemType.Armor">
-              <button mat-menu-item (click)="showTargetArmorStats()">
-                <fa-icon [icon]="iconService.fasSlidersV"></fa-icon>&nbsp;Armor Preferences
-              </button>
-              <button mat-menu-item (click)="showArmorPerks()">
-                <fa-icon [icon]="iconService.fasHelmetBattle"></fa-icon>&ensp;Show Armor Perks
-              </button>
-
-            </ng-container>
+            <button mat-menu-item (click)="showTargetArmorStats()">
+              <fa-icon [icon]="iconService.fasSlidersV"></fa-icon>&nbsp;Armor Stat Prefs
+            </button>
+            <button mat-menu-item (click)="showArmorPerks()">
+              <fa-icon [icon]="iconService.fasHelmetBattle"></fa-icon>&ensp;Show Armor Perks
+            </button>
             <button mat-menu-item (click)="showUtilities()">
               <fa-icon [icon]="iconService.fasCogs"></fa-icon>&ensp;Settings
             </button>
@@ -409,14 +406,15 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
-                  <a href="javascript:void(0)" class="simple-caption" *ngIf="i.isRandomRoll"
-                    (click)="showPossibleRolls(i)">Random</a>
-                  <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
-                  <ng-container *ngIf="option.type == ItemType.Armor"><br>{{ClassAllowed[i.classAllowed]}}
+                  <ng-container *ngIf="option.type==ItemType.Weapon">
+                    <a href="javascript:void(0)" class="simple-caption" *ngIf="i.isRandomRoll"
+                      (click)="showPossibleRolls(i)">Random</a>
+                    <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   </ng-container>
+                  <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
+                  </div>
                   <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]
                   </ng-container>
-
                   <div class="vertical-pad">
                     <button mat-stroked-button [matMenuTriggerFor]="compareMenu"
                       *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
@@ -441,9 +439,8 @@
 
                   <div *ngFor="let socket of i.sockets" class="bottom-divider">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                    <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                      [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
-                      matTooltipClass="preserve-white-space">
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
+                      [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
                       <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
                         [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
@@ -555,7 +552,8 @@
                   <table class="stat-table">
                     <tbody>
                       <ng-container *ngFor="let stat of i.stats">
-                        <tr *ngIf="preferredStatService.isPreferred(stat, true)">
+
+                        <tr *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
                           <td class="gear-sort">
                             <a href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">{{stat.name}}
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"

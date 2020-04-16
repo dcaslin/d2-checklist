@@ -6,3 +6,18 @@
 .form-container > * {
 width: 100%;
 }
+
+.toggles {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    // justify-content: space-evenly;
+}
+
+.toggle { 
+    margin: 10px;
+}
+
+.show-all-stats {
+    margin: 10px;
+}

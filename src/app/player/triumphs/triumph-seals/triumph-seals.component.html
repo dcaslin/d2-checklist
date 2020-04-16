@@ -40,7 +40,7 @@
                       <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                     </a>
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
-                    <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
+                    <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
                       (click)="state.trackTriumph(c)"></fa-icon>
                     <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true"
                       class="accent-text" (click)="state.untrackTriumph(c)"></fa-icon>
