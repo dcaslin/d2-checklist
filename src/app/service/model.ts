@@ -28,7 +28,6 @@ export enum ClassAllowed {
     Any = 3
 }
 
-
 export enum ArmorStat {
     Mobility = 0,
     Resilience = 1,
