@@ -28,6 +28,15 @@ export enum ClassAllowed {
     Any = 3
 }
 
+
+export enum ArmorStat {
+    Mobility = 0,
+    Resilience = 1,
+    Recovery = 2,
+    Discipline = 3,
+    Intellect = 4
+}
+
 export const DestinyClasses = ['Titan', 'Hunter', 'Warlock'];
 
 export enum NumComparison {
