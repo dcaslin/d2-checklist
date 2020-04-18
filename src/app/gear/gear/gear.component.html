@@ -255,7 +255,7 @@
             {{note}}
           </div>
         </div>
-        <table class="gear-table mark-table">
+        <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()" (keydown.ArrowRight)="onRight()">
           <thead>
             <tr>
               <th class="limited-gear-width">
@@ -306,7 +306,21 @@
                 </a>
               </th>
               <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                Stats
+                Stats 
+
+                <ng-container *ngIf="option.type==ItemType.Weapon">
+                  <fa-icon *ngIf="showAllWeaponStats" [icon]="iconService.falMinusSquare"  
+                    matTooltip="Show default weapon stats"
+                    (click)="showAllWeaponStats=false"></fa-icon>
+                  <fa-icon *ngIf="!showAllWeaponStats" [icon]="iconService.falPlusSquare"  
+                    matTooltip="Show all weapon stats"
+                    
+                    (click)="showAllWeaponStats=true"></fa-icon>
+                </ng-container>
+               
+                <!-- <mat-checkbox  [(ngModel)]="showAllWeaponStats" 
+                  class="simple-darker-caption-no-margin"  asdf
+                  matTooltip="Show all weapon stats"></mat-checkbox> -->
               </th>
 
 
@@ -533,9 +547,9 @@
                   <table class="stat-table" *ngIf="i.type==ItemType.Weapon">
                     <tbody>
                       <ng-container *ngFor="let stat of i.stats">
-                        <tr *ngIf="stat.hash==1345609583
+                        <tr *ngIf="showAllWeaponStats || (stat.hash==1345609583
                             || stat.hash==4043523819 || stat.hash==1240592695
-                            || stat.hash==4284893193">
+                            || stat.hash==4284893193)">
                           <td><a class="gear-sort" href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">
                               <ng-container *ngIf="stat.name=='Rounds Per Minute'; else notRPM">
                                 RPM
