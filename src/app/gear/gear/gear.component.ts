@@ -92,6 +92,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:locked',
     'is:unlocked',
     'is:extratagged',
+    'season:none',
     'season:worthy',
     'season:undying',
     'season:dawn',
@@ -162,6 +163,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   // filters: GearToggleComponent[] = [];
   filtersDirty = false;
   filterNotes: string[] = [];
+
+  showAllWeaponStats = false;
 
 
   private static HIGHLIGHT_ALL_PERKS_KEY = 'highlightAllPerks';
@@ -929,7 +932,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   private generateSeasonChoices(): Choice[] {
     const returnMe: Choice[] = [];
-
+    returnMe.push(new Choice(null, 'None'));
     returnMe.push(new Choice('10', 'Worthy'));
     returnMe.push(new Choice('9', 'Dawn'));
     returnMe.push(new Choice('8', 'Undying'));
@@ -1251,6 +1254,17 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       this.load(true);
     });
     this.loadWishlist();
+
+  }
+
+  onLeft() {
+    console.log("left");
+    this.paginator.previousPage();
+  }
+
+  onRight(){
+    console.log("right");
+    this.paginator.nextPage();
 
   }
 }

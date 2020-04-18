@@ -3824,6 +3824,8 @@ export class ParseService {
                 if (seasonalModSlot == 4) {
                     searchText += 'season:outlaw';
                 }
+            } else if (type === ItemType.Armor) {
+                searchText += 'season:none';
             }
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
                 equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,

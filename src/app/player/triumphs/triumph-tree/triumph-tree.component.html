@@ -42,7 +42,7 @@
         </a>
         <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>        
         <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true" (click)="state.trackTriumph(node.data)"></fa-icon>
-        <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="accent-text" (click)="state.untrackTriumph(node.data)"></fa-icon>
+        <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="accent-text" (click)="state.untrackTriumph(node.data)"></fa-icon>
         <br>
         <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
           redeemed.<br></span>
