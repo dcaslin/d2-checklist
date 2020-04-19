@@ -249,8 +249,8 @@
             {{note}}
           </div>
         </div>
-        <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()"
-          (keydown.ArrowRight)="onRight()">
+        
+        <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()" (keydown.ArrowRight)="onRight()">
           <thead>
             <tr>
               <th class="limited-gear-width">
@@ -309,10 +309,6 @@
                   <fa-icon *ngIf="!showAllWeaponStats" [icon]="iconService.falPlusSquare"
                     matTooltip="Show all weapon stats" (click)="showAllWeaponStats=true"></fa-icon>
                 </ng-container>
-
-                <!-- <mat-checkbox  [(ngModel)]="showAllWeaponStats" 
-                  class="simple-darker-caption-no-margin"  asdf
-                  matTooltip="Show all weapon stats"></mat-checkbox> -->
               </th>
 
 
