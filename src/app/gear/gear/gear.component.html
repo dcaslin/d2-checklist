@@ -56,12 +56,7 @@
             </a>
           </mat-menu>
         </div>
-        <div style="margin: 10px" [hidden]="selectedUser==null">
-
-        </div>
-
-        <div style="margin: 10px" [hidden]="selectedUser==null">
-          <div class="filter-buttons">
+          <div class="filter-buttons" [hidden]="selectedUser==null">
             <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
               (change)="filterChanged()"
               [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
@@ -121,7 +116,7 @@
               (change)="filterChanged()">
             </d2c-gear-toggle>
           </div>
-          <div style="display:flex; flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center">
+          <div [hidden]="selectedUser==null" class="filter-container">
             <mat-form-field class="wildcard-filter">
               <mat-label>Wildcard filter</mat-label>
               <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText"
@@ -156,14 +151,11 @@
                   <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
                 </fa-stack>
               </a>
-            </div>
-            <div>
+
               <span class="simple-caption">{{pageStart}} - {{pageEnd}} / {{total}}</span>
-            </div>
-            
+            </div>            
           </div>
 
-        </div>
         <mat-menu #menuMoreOptions="matMenu" xPosition="before">
           <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
             <button mat-menu-item [matMenuTriggerFor]="menuBulkMove">
@@ -195,7 +187,6 @@
           <button mat-menu-item (click)="showUtilities()">
             <fa-icon [icon]="iconService.fasCogs"></fa-icon>&ensp;Settings
           </button>
-
         </mat-menu>
         <mat-menu #menuBulkMove="matMenu">
           <button mat-menu-item *ngFor="let target of player.characters" (click)="moveAllVisible(target)">
@@ -323,21 +314,22 @@
                     </a>
                   </div>
                   <div class="tag-page-container-pages hide-mobile-inline">
-                    <a class="gear-sort tag-page-link"
+                    
+                    <a class="gear-sort "
                       [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.firstPage()">
                       <mat-icon class="page-icon">first_page</mat-icon>
                     </a>
-                    <a class="gear-sort tag-page-link"
+                    <a class="gear-sort "
                       [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.previousPage()">
                       <mat-icon class="page-icon">navigate_before</mat-icon>
                     </a>
-                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
                       (click)="paginator.nextPage()">
                       <mat-icon class="page-icon">navigate_next</mat-icon>
                     </a>
-                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
                       (click)="paginator.lastPage()">
                       <mat-icon class="page-icon">last_page</mat-icon>
                     </a>
@@ -349,21 +341,21 @@
                 <div class="tag-page-container">
                   <div class="tag-page-container-tag"> Tag </div>
                   <div class="tag-page-container-pages hide-mobile-inline">
-                    <a class="gear-sort tag-page-link"
+                    <a class="gear-sort "
                       [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.firstPage()">
                       <mat-icon class="page-icon">first_page</mat-icon>
                     </a>
-                    <a class="gear-sort tag-page-link"
+                    <a class="gear-sort "
                       [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.previousPage()">
                       <mat-icon class="page-icon">navigate_before</mat-icon>
                     </a>
-                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
                       (click)="paginator.nextPage()">
                       <mat-icon class="page-icon">navigate_next</mat-icon>
                     </a>
-                    <a class="gear-sort tag-page-link" [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
                       (click)="paginator.lastPage()">
                       <mat-icon class="page-icon">last_page</mat-icon>
                     </a>
