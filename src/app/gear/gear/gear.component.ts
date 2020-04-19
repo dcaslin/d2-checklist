@@ -196,8 +196,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     { name: 'Armor', type: ItemType.Armor, path: 'armor' },
     { name: 'Ghosts', type: ItemType.Ghost, path: 'ghosts' },
     { name: 'Vehicles', type: ItemType.Vehicle, path: 'vehicles' },
-    { name: 'Mods', type: ItemType.GearMod, path: 'mods' },
-    { name: 'Consumable', type: ItemType.Consumable, path: 'consumable' },
     { name: 'Material', type: ItemType.ExchangeMaterial, path: 'material' }];
   option = this.options[0];
   sortBy = 'power';

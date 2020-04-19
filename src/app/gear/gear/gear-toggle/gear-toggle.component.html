@@ -2,7 +2,7 @@
   <ng-container *ngIf="{ isAllSelected: isAllSelected$ | async } as data">
 
 
-    <button mat-button [matMenuTriggerFor]="menu" [class.warn-text]="!data.isAllSelected">
+    <button mat-button class="toggle-button" [matMenuTriggerFor]="menu" [class.warn-text]="!data.isAllSelected">
       <fa-icon *ngIf="icon" [icon]="icon"></fa-icon>
       <i *ngIf="iconClass" [class]="iconClass"></i>
       <span class="hide-mobile-inline">&ensp;{{title}}</span>
