@@ -28,7 +28,7 @@ import {
   faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, 
   faArrowLeft as fasArrowLeft, faArrowRight as fasArrowRight,
   faChevronLeft as fasChevronLeft, faChevronRight as fasChevronRight,
-
+  faBooks as farBooks,
   faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed,
   faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
   faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
@@ -57,6 +57,7 @@ import {
 export class IconService {
   // NOTE: farSquare is actually falSquare
 
+  public readonly farBooks = farBooks;
   public readonly falShoppingCart = falShoppingCart;
   public readonly falCrosshairs = falCrosshairs;
   public readonly falBolt = falBolt;
