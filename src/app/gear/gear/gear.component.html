@@ -56,10 +56,6 @@
             </a>
           </mat-menu>
         </div>
-        <div style="margin: 10px" [hidden]="selectedUser==null">
-
-        </div>
-
           <div class="filter-buttons" [hidden]="selectedUser==null">
             <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
               (change)="filterChanged()"
@@ -191,7 +187,6 @@
           <button mat-menu-item (click)="showUtilities()">
             <fa-icon [icon]="iconService.fasCogs"></fa-icon>&ensp;Settings
           </button>
-
         </mat-menu>
         <mat-menu #menuBulkMove="matMenu">
           <button mat-menu-item *ngFor="let target of player.characters" (click)="moveAllVisible(target)">
@@ -319,6 +314,7 @@
                     </a>
                   </div>
                   <div class="tag-page-container-pages hide-mobile-inline">
+                    
                     <a class="gear-sort "
                       [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.firstPage()">
