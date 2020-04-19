@@ -68,7 +68,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     new Choice('false', 'Not Equipped')
   ];
 
-  readonly autocompleteOptions: string[] = [
+
+  readonly fixedAutoCompleteOptions: string[] = [
     'is:seasonmod',
     'is:godroll',
     'is:fixme',
@@ -100,9 +101,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'season:drifter',
     'season:forge',
     'season:outlaw',
-
   ];
 
+  public autoCompleteOptions: string[];
 
   public filteredAutoCompleteOptions: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
@@ -333,6 +334,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     super(storageService);
     this.loading.next(true);
 
+    this.autoCompleteOptions = this.fixedAutoCompleteOptions.slice(0);
     const savedSize = parseInt(localStorage.getItem('page-size'), 10);
     if (savedSize > 2 && savedSize < 800) {
       this.size = savedSize;
@@ -848,7 +850,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     this.total = tempGear.length;
     this.pageStart = this.page * this.size + 1;
-    this.pageEnd = Math.min((this.page+1) * this.size, this.total);
+    this.pageEnd = Math.min((this.page + 1) * this.size, this.total);
   }
 
   public async shardMode(weaponsOnly?: boolean) {
@@ -1017,6 +1019,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     const temp: any = {};
     // for each piece of gear, grab a set of its type names, by type
     // and grab the superset of rarity tiers
+
+    const mwChoices: { [key: string]: boolean } = {};
+
     for (const i of this._player.getValue().gear) {
       if (temp[i.type + ''] == null) {
         temp[i.type + ''] = [];
@@ -1024,8 +1029,23 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
       temp[i.type + ''][i.typeName] = true;
       temp[i.type + 'bucket'][i.inventoryBucket.displayProperties.name] = true;
+      if (i.masterwork) {
+        const key = 'mw:' + i.masterwork.name.toLowerCase();
+        mwChoices[key] = true;
+      }
 
     }
+    const amwChoices: string[] = [];
+    for (const mwChoice of Object.keys(mwChoices)) {
+      amwChoices.push(mwChoice);
+    }
+    amwChoices.sort();
+    const newChoices = this.fixedAutoCompleteOptions.slice(0);
+    for (const c of amwChoices) {
+      newChoices.push(c);
+    }
+    this.autoCompleteOptions = newChoices;
+
     const arrays: any = {};
     for (const key of Object.keys(temp)) {
       const arr = [];
@@ -1097,8 +1117,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
       this.appendMode = rawFilter.endsWith(' and ') || rawFilter.endsWith(' or ');
       const newFilteredOptions = [];
-      if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea')) {
-        for (const o of this.autocompleteOptions) {
+      if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea') || rawFilter.startsWith('mw')) {
+        for (const o of this.autoCompleteOptions) {
           if (o.startsWith(rawFilter)) {
             newFilteredOptions.push(o);
           }
@@ -1256,12 +1276,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   onLeft() {
-    console.log("left");
+    console.log('left');
     this.paginator.previousPage();
   }
 
-  onRight(){
-    console.log("right");
+  onRight() {
+    console.log('right');
     this.paginator.nextPage();
 
   }
