@@ -1,5 +1,10 @@
 @import "styles-variables";
 
+
+.main{
+  width: 100%;
+}
+
 .mod-obj {
   font-size: smaller;
 }
@@ -250,6 +255,13 @@ table.stat-table {
   width: 140px !important;
 }
 
+.wildcard-filter {
+  
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 700px;
+  width: 100%;
+}
 
 .current-char-icon {
   display: inline-block;
@@ -384,4 +396,12 @@ table.stat-table {
 
 .page-icon {
   width: 20px !important;
+}
+
+@media screen and (max-width: 600px) {
+  .toggle-button {
+    min-width: 40px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }

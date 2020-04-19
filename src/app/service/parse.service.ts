@@ -3434,16 +3434,22 @@ export class ParseService {
                     return null;
                 }
 
+                // if (type == ItemType.Consumable) {
+                //     if (desc.hash == 3487922223 || // datalattice
+                //         desc.hash == 2014411539 || // alkane dust
+                //         desc.hash == 950899352 || // dusklight shard
+                //         desc.hash == 1305274547 || // phaseglass
+                //         desc.hash == 49145143 || // simulation seeds
+                //         desc.hash == 31293053 || // seraphite
+                //         desc.hash == 1177810185 || // etheric spiral
+                //         desc.hash == 3592324052 || // Helium filament
+                //         desc.hash == 592227263 // Baryon bough
+                //     ) {
+                //         type = ItemType.ExchangeMaterial;
+                //     }
+                // }
                 if (type == ItemType.Consumable) {
-                    if (desc.hash == 3487922223 || // datalattice
-                        desc.hash == 2014411539 || // alkane dust
-                        desc.hash == 950899352 || // dusklight shard
-                        desc.hash == 1305274547 || // phaseglass
-                        desc.hash == 49145143 || // simulation seeds
-                        desc.hash == 31293053 || // seraphite
-                        desc.hash == 1177810185) { // etheric spiral
-                        type = ItemType.ExchangeMaterial;
-                    }
+                    type = ItemType.ExchangeMaterial;
                 }
             }
             const objectives: ItemObjective[] = [];
@@ -3572,7 +3578,7 @@ export class ParseService {
                             stats.sort(function (a, b) {
                                 const ai = ArmorStat[a.name];
                                 const bi = ArmorStat[b.name];
-                                
+
                                 if (bi < ai) { return 1; }
                                 if (bi > ai) { return -1; }
                                 return 0;
