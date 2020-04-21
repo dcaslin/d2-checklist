@@ -276,7 +276,7 @@ export class ParseService {
         c.milestones = {};
         c.notReady = false;
         if (_prog.milestones != null) {
-            if (c.light < 960) {  // TODO UPDATE ME
+            if (c.light < 900) {  // TODO UPDATE ME
                 c.notReady = true;
             }
             for (const key of Object.keys(_prog.milestones)) {
@@ -2202,10 +2202,34 @@ export class ParseService {
                     // do a second pass for any missing milestones
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
+                        const availableActivities: { [key: string]: boolean } = {};
+                        if (resp.characterActivities
+                            && resp.characterActivities.data
+                            && resp.characterActivities.data[key]
+                            && resp.characterActivities.data[key].availableActivities
+                        ) {
+                            for (const aa of resp.characterActivities.data[key].availableActivities) {
+                                availableActivities[aa.activityHash] = true;
+                            }
+                        }
                         for (const missingKey of Object.keys(milestonesByKey)) {
                             if (c.milestones[missingKey] == null) {
-                                const placeholder: MilestoneStatus = new MilestoneStatus(missingKey, true, 1, null, null, [], c.notReady);
-                                c.milestones[missingKey] = placeholder;
+                                const mDesc = this.destinyCacheService.cache.Milestone[missingKey];
+                                let activityAvailable = false;
+                                if (availableActivities && mDesc.activities && mDesc.activities.length > 0) {
+                                    for (const a of mDesc.activities) {
+                                        const activityHash = a.activityHash;
+                                        if (!activityHash) {
+                                            continue;
+                                        }
+                                        if (availableActivities[activityHash]) {
+                                            activityAvailable = true;
+                                        }
+                                    }
+                                } else {
+                                    activityAvailable = !c.notReady;
+                                }
+                                c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable);
                             }
                         }
                     }
@@ -3341,7 +3365,8 @@ export class ParseService {
         if (socketHash == 720857) { // forge  720857
             return 5;
         }
-        if (socketHash == 3625698764) { // outlaw 3625698764
+        if (socketHash == 3625698764 || // outlaw 3625698764
+            socketHash == 2527938402) {
             return 4;
         } else if (
             socketHash == 149961592 ||
