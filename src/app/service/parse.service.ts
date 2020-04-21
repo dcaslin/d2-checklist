@@ -235,7 +235,7 @@ export class ParseService {
 
 
     private addPsuedoMilestone(key: string, milestonesByKey: any, milestoneList: MileStoneName[]) {
-        if (milestonesByKey[key] == null && key != '534869653') {
+        if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = this.destinyCacheService.cache.Milestone[key];
             if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
                 let name = skipDesc.displayProperties.name;
@@ -245,9 +245,8 @@ export class ParseService {
                     if (key == '3881226684') {
                         name = 'Nightmare Hunt: Master';
                         descRewards = 'Pinnacle Gear';
-                    } else if (key == '95049884') { // sundial
-                        descRewards = 'Powerful Gear (Tier 2)';
-
+                    } else if (key == '1437935813') {
+                        descRewards = 'Pinnacle Gear';
                     } else {
                         descRewards = 'Unknown';
                     }
@@ -1478,11 +1477,15 @@ export class ParseService {
                 if (checkMe.indexOf('raid') >= 0) {
                     rewards = 'Legendary Gear';
                 } else {
+                    console.log(desc.displayProperties.name + ' - ' + desc.hash + ' is missing rewards');
                     rewards = '???';
                 }
             }
-            // garden of salvation
-            if (ms.milestoneHash == 2712317338 && rewards == '???') {
+            if (ms.milestoneHash == 2712317338 && rewards == '???') { // Garden of Salvation
+                rewards = 'Pinnacle Gear';
+            } else if (ms.milestoneHash == 2434762343 && rewards == '???') { // Crucible Core
+                rewards = 'Pinnacle Gear';
+            } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
                 rewards = 'Pinnacle Gear';
             }
             // // weekly pinnacle challenge, not in list yet, but just in case
