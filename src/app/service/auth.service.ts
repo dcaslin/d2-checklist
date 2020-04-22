@@ -131,7 +131,7 @@ export class AuthService {
 
     // called by Auth page on redirect from logon
     // returns a msg, not the key
-    public async fetchTokenFromCode(code: string, state: string): Promise<boolean> {
+    public async fetchTokenFromCode(code: string, state: string): Promise<void> {
         const nonce: string = localStorage.getItem('nonce');
         if (nonce != null) {
             if (nonce !== state) {
@@ -157,7 +157,7 @@ export class AuthService {
         try {
             const j = await this.httpClient.post('https://www.bungie.net/platform/app/oauth/token/', params, httpOptions).toPromise();
             this.storeToken(j, true);
-            return true;
+            return;
         } catch (err) {
             const errMsg = AuthService.parseError(err);
             this.notificationService.fail(err);

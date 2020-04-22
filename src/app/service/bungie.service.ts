@@ -638,7 +638,7 @@ export class BungieService implements OnDestroy {
         }
         // no powerful bounties avail
         if (powerfulBounties.length == 0) {
-            const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true);
+            const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true, false);
             return psuedoMs;
         } else if (powerfulBounties.length == 1) {
             const i = powerfulBounties[0];
@@ -661,7 +661,7 @@ export class BungieService implements OnDestroy {
                 }
             }
             const psuedoMs = new MilestoneStatus(key, complete, progress, null,
-                complete ? null : held ? 'Held' : 'Not Held', null);
+                complete ? null : held ? 'Held' : 'Not Held', null, false, false);
             return psuedoMs;
         } else {
             if (!vendorFound) {
@@ -685,7 +685,7 @@ export class BungieService implements OnDestroy {
             }
             const allDone = complete === powerfulBounties.length;
             const psuedoMs = new MilestoneStatus(key, allDone,
-                complete / powerfulBounties.length, null, allDone ? null : info, null);
+                complete / powerfulBounties.length, null, allDone ? null : info, null, false, false);
             return psuedoMs;
         }
     }
@@ -714,7 +714,9 @@ export class BungieService implements OnDestroy {
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon' && a.success && a.completed);
         const done = dungeonActivities.length >= 1;
         const mightHaveCheckpoint = dungeonActivitiesIncomplete.length >= 1;
-        const dungeonPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, mightHaveCheckpoint ? 'May hold checkpoint' : null, null, null, false);
+        const dungeonPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY,
+            done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, 
+            mightHaveCheckpoint ? 'May hold checkpoint' : null, null, null, false, false);
         c.milestones[Const.DUNGEON_KEY] = dungeonPsuedoMs;
         p.next(p.getValue());
     }
@@ -752,7 +754,7 @@ export class BungieService implements OnDestroy {
             if (a.name < b.name) { return -1; }
             return 0;
           });
-        const empty1: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY, false, 0, null, 'Loading...', null);
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.DUNGEON_KEY, false, 0, null, 'Loading...', null, false, false);
 
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
@@ -795,8 +797,8 @@ export class BungieService implements OnDestroy {
         };
         p.milestoneList.push(ms1);
         p.milestoneList.push(ms2);
-        const empty1: MilestoneStatus = new MilestoneStatus(Const.ERIS_KEY, false, 0, null, 'Loading...', null);
-        const empty2: MilestoneStatus = new MilestoneStatus(Const.RASPUTIN_KEY, false, 0, null, 'Loading...', null);
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.ERIS_KEY, false, 0, null, 'Loading...', null, false, false);
+        const empty2: MilestoneStatus = new MilestoneStatus(Const.RASPUTIN_KEY, false, 0, null, 'Loading...', null, false, false);
 
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {

@@ -777,16 +777,19 @@ export class MilestoneStatus {
     readonly info: string;
     readonly suppInfo: string;
     readonly phases: boolean[];
-    readonly indeterminate: boolean;
+    readonly locked: boolean;
+    readonly tooLowPower: boolean;
 
-    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string, phases: boolean[], indeterminate?: boolean) {
+    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string, 
+            phases: boolean[], locked: boolean, tooLowPower: boolean) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
         this.info = info;
         this.suppInfo = suppInfo;
         this.phases = phases;
-        this.indeterminate = indeterminate;
+        this.locked = locked;
+        this.tooLowPower = tooLowPower;
     }
 }
 
@@ -1196,13 +1199,9 @@ export class Const {
     public static readonly NO_BOOST = 1;
     public static readonly LOW_BOOST = 2;
     public static readonly MID_BOOST = 3;
-    public static readonly HIGH_BOOST = 4;
+    public static readonly WEAK_HIGH_BOOST = 4;
+    public static readonly HIGH_BOOST = 5;
 
-    // TODO UPDATE ME
-    // 900 -> 950
-    // 950 -> ?
-    // 960 -> 1000
-    // 970 -> 1010
     public static readonly BOOSTS: DropInfo[] = [
         {
             level: Const.UNKNOWN_BOOST,
@@ -1231,6 +1230,13 @@ export class Const {
             max: 4,
             softCap: 950,
             hardCap: 1000
+        },
+        {
+            level: Const.WEAK_HIGH_BOOST,
+            min: 1,
+            max: 1,
+            softCap: 1010,
+            hardCap: 1010
         },
         {
             level: Const.HIGH_BOOST,
