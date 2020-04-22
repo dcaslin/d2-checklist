@@ -45,6 +45,7 @@
             (click)="hideCompleteChars = null" class="warn-text"
             matTooltip="Stop hiding milestones that this char has completed">
           </fa-icon>
+          <div *ngIf="debugmode|async">{{char.characterId}}</div>
         </th>
       </tr>
     </thead>

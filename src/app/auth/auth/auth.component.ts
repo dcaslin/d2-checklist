@@ -26,11 +26,9 @@ export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
     this.statusMsg = 'Authenticating to Bungie';
     if (code != null) {
       try {
-        const success = await this.authService.fetchTokenFromCode(code, state);
-        this.statusMsg = 'Success: ' + success;
-        if (success) {
-          this.router.navigate(['/home']);
-        }
+        await this.authService.fetchTokenFromCode(code, state);
+        this.statusMsg = 'Successfully logged in...';
+        this.router.navigate(['/home']);
       } catch (x) {
         this.statusMsg = 'Authentication failed';
         this.errMsg = 'Error: ' + JSON.stringify(x);

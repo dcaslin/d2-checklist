@@ -9,11 +9,17 @@
         </ng-container>
         <ng-template #noPhases>
             <ng-container *ngIf="milestone.complete==true else notComplete">
-                <ng-container *ngIf="milestone.indeterminate">
+                <ng-container *ngIf="milestone.locked">
                     <fa-icon [icon]="iconService.falMinusSquare" class="faint" matTooltip="Not unlocked"></fa-icon>
                 </ng-container>
-                <ng-container *ngIf="!milestone.indeterminate">
-                    <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected"></fa-icon>
+                <ng-container *ngIf="!milestone.locked">
+                    <ng-container *ngIf="milestone.tooLowPower">
+                        <fa-icon [icon]="iconService.falMinusSquare" class="faint" matTooltip="Power too low, probably unavailable"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngIf="!milestone.tooLowPower">
+                        <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected"></fa-icon>
+                    </ng-container>
+
                 </ng-container>
             </ng-container>
             <ng-template #notComplete>
