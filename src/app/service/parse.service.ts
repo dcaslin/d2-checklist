@@ -246,7 +246,7 @@ export class ParseService {
                         name = 'Nightmare Hunt: Master';
                         descRewards = 'Pinnacle Gear';
                     } else if (key == '1437935813') {
-                        descRewards = 'Pinnacle Gear';
+                        descRewards = 'Pinnacle Gear (Weak)';
                     } else {
                         descRewards = 'Unknown';
                     }
@@ -325,11 +325,6 @@ export class ParseService {
                 this.addPsuedoMilestone('2246196133', milestonesByKey, milestoneList);
                 // weekly strikes
                 this.addPsuedoMilestone('1437935813', milestonesByKey, milestoneList);
-
-                // sundial
-                this.addPsuedoMilestone('95049884', milestonesByKey, milestoneList);
-
-
 
                 let total = 0;
                 let complete = 0;
@@ -412,7 +407,7 @@ export class ParseService {
                 }
 
                 if (phases.length == 0) { phases = null; }
-                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases);
+                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases, false, false);
                 c.milestones[key] = m;
             }
         }
@@ -1242,6 +1237,8 @@ export class ParseService {
                 } else {
                     pl = Const.LOW_BOOST;
                 }
+            } else if (rewards.startsWith('Pinnacle Gear (Weak)')) {
+                pl = Const.WEAK_HIGH_BOOST;
             } else if (rewards.startsWith('Pinnacle')) {
                 pl = Const.HIGH_BOOST;
 
@@ -1477,16 +1474,20 @@ export class ParseService {
                 if (checkMe.indexOf('raid') >= 0) {
                     rewards = 'Legendary Gear';
                 } else {
-                    console.log(desc.displayProperties.name + ' - ' + desc.hash + ' is missing rewards');
+                    // console.log(desc.displayProperties.name + ' - ' + desc.hash + ' is missing rewards');
                     rewards = '???';
                 }
             }
             if (ms.milestoneHash == 2712317338 && rewards == '???') { // Garden of Salvation
                 rewards = 'Pinnacle Gear';
             } else if (ms.milestoneHash == 2434762343 && rewards == '???') { // Crucible Core
-                rewards = 'Pinnacle Gear';
+                rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
-                rewards = 'Pinnacle Gear';
+                rewards = 'Pinnacle Gear (Weak)';
+            } else if (ms.milestoneHash == 1437935813 && rewards == '???') { // Weekly Vanguard
+                rewards = 'Pinnacle Gear (Weak)';
+            } else if (ms.milestoneHash == 3603098564) { // override clan weekly
+                rewards = 'Pinnacle Gear (Weak)';
             }
             // // weekly pinnacle challenge, not in list yet, but just in case
             // if (ms.milestoneHash == 3881226684) {
@@ -2101,7 +2102,7 @@ export class ParseService {
             }
             // constructor(hash, complete, pct, info, suppInfo, phases) {
             const complete = powerfulDropsRemaining === 0;
-            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null);
+            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
         }
 
     }
@@ -2230,9 +2231,9 @@ export class ParseService {
                                         }
                                     }
                                 } else {
-                                    activityAvailable = !c.notReady;
+                                    activityAvailable = true;
                                 }
-                                c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable);
+                                c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
                             }
                         }
                     }
@@ -2256,7 +2257,7 @@ export class ParseService {
                             for (const dKey of dependsOn) {
                                 const dependentMilestoneStatus = c.milestones[dKey];
                                 if (!dependentMilestoneStatus.complete) {
-                                    const incompletePlaceholder: MilestoneStatus = new MilestoneStatus(checkKey, false, 0, null, null, []);
+                                    const incompletePlaceholder: MilestoneStatus = new MilestoneStatus(checkKey, false, 0, null, null, [], false, false);
                                     c.milestones[checkKey] = incompletePlaceholder;
                                     break;
                                 }
