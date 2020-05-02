@@ -497,16 +497,21 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
                   || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                  <button mat-menu-item (click)="showCopies(i)">
+                  <button mat-button (click)="showCopies(i)">
                     <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}
                   </button>
-                  <ng-container *ngIf="i.dupesByEnergyAndSeason">
-                    <br>
-                    <button mat-menu-item (click)="showSimilarBySeasonAndBurn(i)">
+                  <div class="vertical-pad" *ngIf="i.dupesByEnergyAndSeason">
+                    <button mat-button (click)="showSimilarArmorBySeasonAndBurn(i)">
                       <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
                       {{i.dupesTaggedToKeep}} / {{i.dupesByEnergyAndSeason}}
                     </button>
-                  </ng-container>
+                  </div>
+                  <div class="vertical-pad" *ngIf="i.dupesByFrameSlotAndEnergy">
+                    <button mat-button (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
+                      <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+                      {{i.dupesTaggedToKeep}} / {{i.dupesByFrameSlotAndEnergy}}
+                    </button>
+                  </div>
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -638,18 +643,18 @@
                 <button mat-menu-item (click)="showCopies(i)">
                   <fa-icon [icon]="iconService.falClone"></fa-icon> Copies
                 </button>
-                <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilar(i)">
+                <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrame(i)">
                   <fa-icon [icon]="iconService.falCrosshairs"></fa-icon> By frame
                 </button>
-                <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilar(i)">
+                <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmor(i)">
                   <fa-icon [icon]="iconService.falBolt"></fa-icon> By energy
                 </button>
                 <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
-                  (click)="showSimilarBySeason(i)">
+                  (click)="showSimilarArmorBySeason(i)">
                   <fa-icon [icon]="iconService.falWheat"></fa-icon> By season
                 </button>
                 <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
-                  (click)="showSimilarBySeasonAndBurn(i)">
+                  (click)="showSimilarArmorBySeasonAndBurn(i)">
                   <fa-icon [icon]="iconService.falPlusSquare"></fa-icon> By season & energy
                 </button>
               </mat-menu>
