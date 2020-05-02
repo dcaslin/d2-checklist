@@ -684,6 +684,7 @@ export class InventoryItem {
     public readonly seasonalModSlot: number;
     public dupesByEnergyAndSeason?: number;
     public dupesTaggedToKeep?: number;
+    public dupesByFrameSlotAndEnergy?: number;
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff

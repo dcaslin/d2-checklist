@@ -485,20 +485,31 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.openGearDialog(i, copies, false);
   }
 
-  showSimilarBySeason(i: InventoryItem) {
-    const copies = this.gearService.findSimilar(i, this._player.getValue(), true);
+  showSimilarArmorBySeason(i: InventoryItem) {
+    const copies = this.gearService.findSimilarArmor(i, this._player.getValue(), true);
     this.openGearDialog(i, copies, true);
   }
 
-  showSimilarBySeasonAndBurn(i: InventoryItem) {
-    const copies = this.gearService.findSimilar(i, this._player.getValue(), true, true);
+  showSimilarArmorBySeasonAndBurn(i: InventoryItem) {
+    const copies = this.gearService.findSimilarArmor(i, this._player.getValue(), true, true);
     this.openGearDialog(i, copies, true);
   }
 
-  showSimilar(i: InventoryItem, season?: boolean) {
-    const copies = this.gearService.findSimilar(i, this._player.getValue());
+  showSimilarArmor(i: InventoryItem) {
+    const copies = this.gearService.findSimilarArmor(i, this._player.getValue());
     this.openGearDialog(i, copies, true);
   }
+
+  showSimilarWeaponsByFrame(i: InventoryItem) {
+    const copies = this.gearService.findSimilarWeaponsByFrame(i, this._player.getValue(), false, false);
+    this.openGearDialog(i, copies, true);
+  }
+
+  showSimilarWeaponsByFrameSlotAndEnergy(i: InventoryItem) {
+    const copies = this.gearService.findSimilarWeaponsByFrame(i, this._player.getValue(), true, true);
+    this.openGearDialog(i, copies, true);
+  }
+
 
 
   showItem(i: InventoryItem) {

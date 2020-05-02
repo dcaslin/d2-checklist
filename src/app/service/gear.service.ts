@@ -113,9 +113,16 @@ export class GearService {
                 const items = gearById[key];
                 for (const item of items) {
                     item.copies = items.length;
+                    let copies = null;
                     if (item.type === ItemType.Armor && item.seasonalModSlot) {
-                        const copies = this.findSimilar(item, player, true, true);
+                        copies = this.findSimilarArmor(item, player, true, true);
                         item.dupesByEnergyAndSeason = copies.length;
+                    }
+                    if (item.type === ItemType.Weapon) {
+                        copies = this.findSimilarWeaponsByFrame(item, player, true, true);
+                        item.dupesByFrameSlotAndEnergy = copies.length;
+                    }
+                    if (copies) {
                         let taggedToKeep = 0;
                         for (const i of copies) {
                             if (i.mark == 'upgrade' || i.mark == 'keep') {
@@ -232,8 +239,43 @@ export class GearService {
         }
     }
 
+    public findSimilarWeaponsByFrame(i: InventoryItem, player: Player, bySlot: boolean, byEnergy: boolean): InventoryItem[] {
+        const copies = [i];
+        for (const g of player.gear) {
+            if (g.id == i.id) {
+                continue;
+            }
+            if (i.type == ItemType.Weapon) {
+                if (i.typeName != g.typeName) {
+                    continue;
+                }
+                let iArchetype = null;
+                let gArchetype = null;
+                for (const s of i.sockets) {
+                    if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
+                        iArchetype = s.plugs[0].hash;
+                        break;
+                    }
+                }
+                for (const s of g.sockets) {
+                    if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
+                        gArchetype = s.plugs[0].hash;
+                        break;
+                    }
+                }
+                if (iArchetype && gArchetype && iArchetype == gArchetype) {
+                    if (!bySlot || (g.inventoryBucket.displayProperties.name == i.inventoryBucket.displayProperties.name)){
+                        if (!byEnergy || (g.damageType == i.damageType)) {
+                            copies.push(g);
+                        }
+                    }
+                }
+            }
+        }
+        return copies;
+    }
 
-    public findSimilar(i: InventoryItem, player: Player, season?: boolean, seasonAndBurn?: boolean): InventoryItem[] {
+    public findSimilarArmor(i: InventoryItem, player: Player, season?: boolean, seasonAndBurn?: boolean): InventoryItem[] {
         const copies = [i];
         for (const g of player.gear) {
             if (g.id == i.id) {
@@ -269,30 +311,7 @@ export class GearService {
                     }
                 }
                 copies.push(g);
-            } else if (i.type == ItemType.Weapon) {
-                if (i.typeName != g.typeName) {
-                    continue;
-                }
-                let iArchetype = null;
-                let gArchetype = null;
-                for (const s of i.sockets) {
-                    if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
-                        iArchetype = s.plugs[0].hash;
-                        break;
-                    }
-                }
-                for (const s of g.sockets) {
-                    if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
-                        gArchetype = s.plugs[0].hash;
-                        break;
-                    }
-                }
-                if (iArchetype && gArchetype && iArchetype == gArchetype) {
-                    copies.push(g);
-
-                }
             }
-
         }
         return copies;
     }
