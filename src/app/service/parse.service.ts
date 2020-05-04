@@ -1034,7 +1034,10 @@ export class ParseService {
                     hash: cost.itemHash,
                     quantity: cost.quantity
                 });
-                searchText += cDesc.displayProperties.name + ' ';
+                // don't add glimmer, it's not worth searching on 
+                if (cDesc.displayProperties.name != 'Glimmer') {
+                    searchText += cDesc.displayProperties.name + ' ';
+                }
             }
         }
 
