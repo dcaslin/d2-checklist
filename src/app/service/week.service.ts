@@ -62,6 +62,12 @@ export class WeekService {
     'Kathok: Roar of Xol'
   ];
 
+  readonly MENAGERIE_BOSS_ROTATION = [
+    'Hasapiko - Minotaur',
+    'Arunak - Ogre (Truth quest)',
+    'Pagouri - Hydra'
+  ];
+
 
   readonly EP_VIDEOS = [
     'https://www.youtube.com/watch?v=1DGzF9Z_s9w',
@@ -85,7 +91,6 @@ export class WeekService {
     if (publicMilestones && publicMilestones.weekStart) {      
       const weekEpoch = moment.utc([2019, 3, 2, 17, 0]); //4/2/2019
       const thisWeek: moment.Moment = publicMilestones.weekStart;
-      const today = moment(moment.now());
       const numWeeks = Math.floor(moment.duration(thisWeek.diff(weekEpoch)).asWeeks());
 
       currWeek = {
@@ -95,6 +100,7 @@ export class WeekService {
         curseStrength: WeekService.getRotation(numWeeks, this.CURSE_STRENGTH_ROTATION),
         escalationProtocolWeapon: WeekService.getRotation(numWeeks, this.EP_WEAPON_ROTATION),
         escalationProtocolBoss: WeekService.getRotation(numWeeks, this.EP_BOSS),
+        menagerieBoss: WeekService.getRotation(numWeeks, this.MENAGERIE_BOSS_ROTATION),
         epVideo: WeekService.getRotation(numWeeks, this.EP_VIDEOS)
       };
 
@@ -188,5 +194,6 @@ interface Week {
   curseStrength: string;
   escalationProtocolWeapon: string;
   escalationProtocolBoss: string;
+  menagerieBoss: string;
   epVideo?: string;
 }

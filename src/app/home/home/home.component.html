@@ -219,6 +219,19 @@
 
               </mat-card-content>
             </mat-card>
+            <mat-card *ngIf="today.week && today.week.menagerieBoss">
+              <mat-card-header>
+                <mat-card-title><i class="icon-flashpoint lighter"></i> Menagerie Boss
+                </mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <mat-list>
+                  <mat-list-item>                    
+                    {{today.week.menagerieBoss}}                    
+                  </mat-list-item>
+                </mat-list>
+              </mat-card-content>
+            </mat-card>
             <ng-container *ngTemplateOutlet="simpleBurns; context: {title: 'Heroic Menagerie Modifiers', milestone: today.publicMilestones.herMenag}"></ng-container>
           </div>
           <div>
