@@ -26,6 +26,12 @@ export class WeekService {
     'Cimmerian Garrison'
   ];
 
+  readonly MENAGERIE_BOSS_ROTATION = [
+    'Hasapiko - Minotaur',
+    'Arunak - Ogre (Truth quest)',
+    'Pagouri - Hydra'
+  ];
+
 
   readonly ASCENDANT_VIDEOS = [
     'https://www.youtube.com/watch?v=dUGLYlS7K7w',
@@ -85,7 +91,6 @@ export class WeekService {
     if (publicMilestones && publicMilestones.weekStart) {      
       const weekEpoch = moment.utc([2019, 3, 2, 17, 0]); //4/2/2019
       const thisWeek: moment.Moment = publicMilestones.weekStart;
-      const today = moment(moment.now());
       const numWeeks = Math.floor(moment.duration(thisWeek.diff(weekEpoch)).asWeeks());
 
       currWeek = {
@@ -93,6 +98,7 @@ export class WeekService {
         ascendantVideo: WeekService.getRotation(numWeeks, this.ASCENDANT_VIDEOS),
         location: WeekService.getRotation(numWeeks, this.ASCENDENT_LOCATION_ROTATION),
         curseStrength: WeekService.getRotation(numWeeks, this.CURSE_STRENGTH_ROTATION),
+        menagerieBoss: WeekService.getRotation(numWeeks, this.MENAGERIE_BOSS_ROTATION),
         escalationProtocolWeapon: WeekService.getRotation(numWeeks, this.EP_WEAPON_ROTATION),
         escalationProtocolBoss: WeekService.getRotation(numWeeks, this.EP_BOSS),
         epVideo: WeekService.getRotation(numWeeks, this.EP_VIDEOS)
@@ -186,6 +192,7 @@ interface Week {
   ascendantVideo?: string;
   location: string;
   curseStrength: string;
+  menagerieBoss: string;
   escalationProtocolWeapon: string;
   escalationProtocolBoss: string;
   epVideo?: string;
