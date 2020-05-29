@@ -1,14 +1,18 @@
-<span *ngIf="item.godRollPve && item.godRollPvp" class="godroll">
-  <fa-icon [icon]="iconService.fasStar"
-    matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these." class="accent-text">
-  </fa-icon>&ensp;
-</span>
-<span *ngIf="item.godRollPve && !item.godRollPvp" class="godroll">
-  <i matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
-    class="icon-strike accent-text"></i>&ensp;
-</span>
-<span *ngIf="item.godRollPvp && !item.godRollPve" class="godroll">
+<span *ngIf="item.pandaPvp>1" class="godroll">
   <fa-icon [icon]="iconService.fasSwords"
     matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
     class="accent-text"></fa-icon>&ensp;
+</span>
+<span *ngIf="item.pandaPve>1" class="godroll">
+  <i matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
+    class="icon-strike accent-text"></i>&ensp;
+</span>
+<span *ngIf="item.pandaPvp==1" class="godroll">
+  <fa-icon [icon]="iconService.fasSwords"
+    matTooltip="PVP Good (not god) roll! Search 'goodrollpvp' or 'goodroll' in the filter to find more of these."
+    class="accent-text"></fa-icon>&ensp;
+</span>
+<span *ngIf="item.pandaPve==1" class="godroll">
+  <i matTooltip="PVE Good (not god) roll! Search 'goodrollpve' or 'goodroll' in the filter to find more of these."
+    class="icon-strike accent-text"></i>&ensp;
 </span>

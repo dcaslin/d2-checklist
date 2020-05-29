@@ -38,9 +38,9 @@ import { PreferredStatService } from './service/preferred-stat.service';
 import { StorageService } from './service/storage.service';
 import { TargetPerkService } from './service/target-perk.service';
 import { WeekService } from './service/week.service';
-import { WishlistService } from './service/wishlist.service';
 import { SettingsModule } from './settings';
 import { ChildComponent } from './shared/child.component';
+import { PandaGodrollsService } from './service/panda-godrolls.service';
 
 
 
@@ -97,12 +97,12 @@ import { ChildComponent } from './shared/child.component';
     MarkService,
     NotificationService,
     ParseService,
+    PandaGodrollsService,
     PlayerStateService,
     PreferredStatService,
     StorageService,
     TargetPerkService,
-    WeekService,
-    WishlistService
+    WeekService
   ],
   bootstrap: [AppComponent]
 })

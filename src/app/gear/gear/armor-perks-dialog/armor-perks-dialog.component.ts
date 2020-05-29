@@ -2,7 +2,6 @@ import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { TargetPerkService, PlayerMods } from '@app/service/target-perk.service';
-import { WishlistService } from '@app/service/wishlist.service';
 import { GearComponent } from '../gear.component';
 import { Character } from '@app/service/model';
 
@@ -17,7 +16,6 @@ export class ArmorPerksDialogComponent {
   parent: GearComponent;
   charPerks: { [key: string]: PlayerMods[] };
   tempWishlistOverrideUrl: string;
-  WishlistService = WishlistService;
   TargetPerkService = TargetPerkService;
 
   constructor(

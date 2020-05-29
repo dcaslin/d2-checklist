@@ -113,6 +113,8 @@ export interface MastworkInfo {
     desc: string;
     icon: string;
     tier: number;
+    godTierPve: boolean;
+    godTierPvp: boolean;
 }
 
 export interface RecordSeason {
@@ -676,9 +678,8 @@ export class InventoryItem {
     public postmaster: boolean;
     public canReallyEquip: boolean;
     public copies = 1;
-    public godRoll = false;
-    public godRollPve = false;
-    public godRollPvp = false;
+    public pandaPve = 0;
+    public pandaPvp = 0;
     public noGodRollInfo = false;
     public preferredStatPoints: number;
     public readonly seasonalModSlot: number;
@@ -1303,9 +1304,9 @@ export class InventoryPlug {
     readonly active: boolean;
     readonly enabled: boolean;
     readonly objectives: ItemObjective[];
-    public godRoll = false;
-    public godRollPve = false;
-    public godRollPvp = false;
+    public pandaPve = 0;
+    public pandaPvp = 0;
+
     public targetArmorPerk = false;
     public alreadyEquipped = false;
     public desc: string;

@@ -659,11 +659,16 @@
                 </button>
               </mat-menu>
             </ng-container>
+            <tr>
+              <td colspan="100%">
+                <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page" [pageSize]="size"
+                (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
+              </mat-paginator>
+              </td>
+            </tr>
           </tbody>
         </table>
-        <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page" [pageSize]="size"
-          (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
-        </mat-paginator>
+        
       </ng-container>
     </div>
     <div *ngIf="(disableAds|async)!==true" class="adRight">

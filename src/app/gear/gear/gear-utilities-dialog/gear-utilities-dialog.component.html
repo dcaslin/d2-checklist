@@ -5,22 +5,6 @@
     </div>
     <hr>
     <div>
-        <mat-form-field class="gist-url-container">
-            <input matInput name="override-wishlist-url" [(ngModel)]="tempWishlistPveOverrideUrl"
-                placeholder="PvE Wishlist URL">
-        </mat-form-field><br>
-        <mat-form-field class="gist-url-container">
-            <input matInput name="override-wishlist-url" [(ngModel)]="tempWishlistPvpOverrideUrl"
-                placeholder="PvP Wishlist URL">
-        </mat-form-field>
-        <button
-            [disabled]="parent.wishlistOverridePveUrl==tempWishlistPveOverrideUrl && parent.wishlistOverridePvpUrl==tempWishlistPvpOverrideUrl"
-            (click)="parent.updateWishlistOverrideUrl(tempWishlistPveOverrideUrl, tempWishlistPvpOverrideUrl)"
-            mat-button>Apply</button>
-        <button [disabled]="parent.wishlistOverridePveUrl==null && parent.wishlistOverridePvpUrl==null"
-            (click)="parent.updateWishlistOverrideUrl(null, null)" mat-button>Reset</button>
-        <div class="simple-caption">
-            You can add multiple URLs by seperating with a | symbol. Page will refresh on successful change.
-        </div>
+       TODO select MnK vs Controller
     </div>
 </mat-dialog-content>

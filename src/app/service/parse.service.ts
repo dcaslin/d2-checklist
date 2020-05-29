@@ -3200,7 +3200,10 @@ export class ParseService {
             name: name,
             desc: desc,
             icon: plugDesc.displayProperties.icon,
-            tier: tier
+            tier: tier,
+            godTierPve: false,
+            godTierPvp: false
+            
         };
     }
 

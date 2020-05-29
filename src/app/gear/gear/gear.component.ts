@@ -14,7 +14,6 @@ import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyA
 import { NotificationService } from '@app/service/notification.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { TargetPerkService } from '@app/service/target-perk.service';
-import { WishlistService } from '@app/service/wishlist.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -28,6 +27,7 @@ import { GearCompareDialogComponent } from './gear-compare-dialog/gear-compare-d
 import { GearHelpDialogComponent } from './gear-help-dialog/gear-help-dialog.component';
 import { Choice, GearToggleComponent } from './gear-toggle/gear-toggle.component';
 import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
+import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 
 
 @Component({
@@ -169,10 +169,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
   private static HIGHLIGHT_ALL_PERKS_KEY = 'highlightAllPerks';
-  private static WISHLIST_OVERRIDE_PVE_URL_KEY = 'wishlistOverridePveUrl';
-  private static WISHLIST_OVERRIDE_PVP_URL_KEY = 'wishlistOverridePvpUrl';
-  public wishlistOverridePveUrl;
-  public wishlistOverridePvpUrl;
 
 
   public highlightAllPerks = true;
@@ -321,7 +317,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     public iconService: IconService,
     public markService: MarkService,
     public gearService: GearService,
-    private wishlistService: WishlistService,
+    private pandaGodRollsService: PandaGodrollsService,
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
     public dialog: MatDialog,
@@ -356,16 +352,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == 'false') {
       this.highlightAllPerks = false;
     }
-
-    const wishlistOverridePveUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY);
-    if (wishlistOverridePveUrl != null) {
-      this.wishlistOverridePveUrl = wishlistOverridePveUrl;
-    }
-
-    const wishlistOverridePvpUrl = localStorage.getItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY);
-    if (wishlistOverridePvpUrl != null) {
-      this.wishlistOverridePvpUrl = wishlistOverridePvpUrl;
-    }
     this.targetPerkService.perks.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
@@ -390,40 +376,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, 'false');
     } else {
       localStorage.removeItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY);
-    }
-  }
-
-
-
-  public async updateWishlistOverrideUrl(newPveVal: string, newPvpVal: string) {
-    // just reload the page if this works, easier then worrying about it
-    if (newPveVal == null) {
-      localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY);
-    }
-    if (newPvpVal == null) {
-      localStorage.removeItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY);
-    }
-    if (newPveVal == null && newPvpVal == null) {
-      window.location.reload();
-      return;
-    }
-    let reloadMe = false;
-    if (newPveVal != this.wishlistOverridePveUrl) {
-      const tempRolls = await this.wishlistService.loadSingle('testPve', newPveVal, null);
-      if (tempRolls.length > 0) {
-        localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVE_URL_KEY, newPveVal);
-        reloadMe = true;
-      }
-    }
-    if (newPvpVal != this.wishlistOverridePvpUrl) {
-      const tempRolls = await this.wishlistService.loadSingle('testPvp', newPvpVal, null);
-      if (tempRolls.length > 0) {
-        localStorage.setItem(GearComponent.WISHLIST_OVERRIDE_PVP_URL_KEY, newPvpVal);
-        reloadMe = true;
-      }
-    }
-    if (reloadMe) {
-      window.location.reload();
     }
   }
 
@@ -1098,9 +1050,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadWishlist() {
-    await this.wishlistService.init(this.wishlistOverridePveUrl, this.wishlistOverridePvpUrl);
+    // TODO figure out controller vs MnK
+    await this.pandaGodRollsService.init(true);
     if (this._player.getValue() != null) {
-      this.wishlistService.processItems(this._player.getValue().gear);
+      this.pandaGodRollsService.processItems(this._player.getValue().gear);
     }
     this.filterChanged();
   }

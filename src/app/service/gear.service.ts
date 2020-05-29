@@ -7,7 +7,7 @@ import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser,
 import { NotificationService } from './notification.service';
 import { PreferredStatService } from './preferred-stat.service';
 import { TargetPerkService } from './target-perk.service';
-import { WishlistService } from './wishlist.service';
+import { PandaGodrollsService } from './panda-godrolls.service';
 
 
 
@@ -86,7 +86,7 @@ export class GearService {
         public markService: MarkService,
         private notificationService: NotificationService,
         private bucketService: BucketService,
-        private wishlistService: WishlistService,
+        private pandaService: PandaGodrollsService,
         private targetPerkService: TargetPerkService,
         private preferredStatService: PreferredStatService) {
     }
@@ -136,7 +136,7 @@ export class GearService {
                     }
                 }
             }
-            this.wishlistService.processItems(player.gear);
+            this.pandaService.processItems(player.gear);
             this.targetPerkService.processGear(player);
             this.preferredStatService.processGear(player);
             return player;
