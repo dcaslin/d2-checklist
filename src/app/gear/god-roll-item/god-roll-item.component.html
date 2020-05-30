@@ -1,14 +1,16 @@
-<span *ngIf="item.godRollPve && item.godRollPvp" class="godroll">
-  <fa-icon [icon]="iconService.fasStar"
-    matTooltip="PVP & PVE God roll! Search 'godroll' in the filter to find more of these." class="accent-text">
-  </fa-icon>&ensp;
-</span>
-<span *ngIf="item.godRollPve && !item.godRollPvp" class="godroll">
-  <i matTooltip="PVE God roll! Search 'godrollpve' or 'godroll' in the filter to find more of these."
-    class="icon-strike accent-text"></i>&ensp;
-</span>
-<span *ngIf="item.godRollPvp && !item.godRollPve" class="godroll">
+<span *ngIf="item.pandaPvp>0" class="godroll">
   <fa-icon [icon]="iconService.fasSwords"
-    matTooltip="PVP God roll! Search 'godrollpvp' or 'godroll' in the filter to find more of these."
-    class="accent-text"></fa-icon>&ensp;
+    matTooltip="Every slot on this gun has a perk that is either good or great for PVP"
+    [class.accent-text]="item.pandaPvp>1"></fa-icon>&ensp;
 </span>
+<span *ngIf="item.pandaPve>0" class="godroll">
+  <i matTooltip="Every slot on this gun has a perk that is either good or great for PVE"
+    class="icon-strike"
+    [class.accent-text]="item.pandaPve>1"
+    ></i>&ensp;
+</span>
+
+<ng-container *ngIf="debugmode"> 
+  <div>Pve: {{item.pandaPve}}</div> 
+  <div>Pvp: {{item.pandaPvp}}</div>
+</ng-container>

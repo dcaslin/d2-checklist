@@ -1,26 +1,44 @@
 <div mat-dialog-title style="margin-bottom: 0px">
     {{item.name}}
-    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{item.typeName}}</span><br><span
-        class="simple-caption-no-margin">Possible random rolls. Use checkboxes for wishlist gists</span>
+    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{item.typeName}}</span>
+
 </div>
 <mat-dialog-content>
-    <ng-container *ngFor="let socket of item.sockets; last as isLastSocket">
-        <div *ngIf="socket.possiblePlugs!=null && socket.possiblePlugs.length>0" [class.bottom-divider]="!isLastSocket">
-            <span *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc"
-                class="" matTooltipClass="preserve-white-space">
-                <mat-checkbox [(ngModel)]="plug.selectedPossible" (change)="generateString()" style="margin-left: 5px">
-                    <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="parent.highlightAllPerks"
-                        [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
-                </mat-checkbox>
 
-                <span class="pad-left pad-right hide-mobile-inline" *ngIf="!isLastPlug"> </span>
-            </span>
-        </div>
-    </ng-container>
-    <ng-container *ngIf="godrolls.length>0">
-        <hr>
-        <button mat-button (click)="copyToClipboard()"><fa-icon [icon]="iconService.farCopy"></fa-icon> Copy Gist Text </button>
-        <div *ngFor="let g of godrolls">{{g}}</div>
-    </ng-container>
-    
+    <table class="tidy-auto-table">
+        <tr>
+            <th [attr.colspan]="maxPlugs">
+                PVP Masterwork:
+                <span class="pad-right" *ngFor="let mw of item.masterwork.recommendedPvpMws; last as isLast">
+                    {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
+                </span>
+            </th>
+        </tr>
+        <tr>
+            <th [attr.colspan]="maxPlugs">
+                PVE Masterwork:
+                <span class="pad-right" *ngFor="let mw of item.masterwork.recommendedPveMws; last as isLast">
+                    {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
+                </span>
+            </th>
+        </tr>
+
+        <ng-container *ngFor="let socket of item.sockets">
+            <tr *ngIf="socket.possiblePlugs.length>0">
+                <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug">
+                    <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
+                        <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)">
+                        </d2c-god-roll-plug>
+                    </span>
+                </td>
+                <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
+                    &nbsp;
+                </td>
+            </tr>
+        </ng-container>
+
+
+    </table>
+
+
 </mat-dialog-content>

@@ -13,9 +13,6 @@ import { IconService } from '@app/service/icon.service';
 export class GodRollPlugComponent implements OnInit {
 
   @Input()
-  highlightAllPerks: boolean;
-
-  @Input()
   plug: InventoryPlug;
 
   @Input()
