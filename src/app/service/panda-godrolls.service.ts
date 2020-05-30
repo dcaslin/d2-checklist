@@ -178,9 +178,12 @@ export class PandaGodrollsService {
             }
           }
         }
-        goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
-        greatRollFound = greatPerkFound && greatRollFound;
+        if (i.hash=="1982711279" && !pve) {
+          console.log("hi");
+        }
       }
+      goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
+      greatRollFound = greatPerkFound && greatRollFound;
       for (const p of s.possiblePlugs) {
         const name = p.name.toLowerCase();
         for (const goodPerk of roll.goodPerks) {

@@ -3,10 +3,8 @@
     matTooltip="Every slot on this gun has a perk that is either good or great for PVP"
     [class.accent-text]="item.pandaPvp>1"></fa-icon>&ensp;
 </span>
-<span *ngIf="item.pandaPve>1" class="godroll">
-  <i 
-
-    matTooltip="Every slot on this gun has a perk that is either good or great for PVE"
+<span *ngIf="item.pandaPve>0" class="godroll">
+  <i matTooltip="Every slot on this gun has a perk that is either good or great for PVE"
     class="icon-strike"
     [class.accent-text]="item.pandaPve>1"
     ></i>&ensp;
