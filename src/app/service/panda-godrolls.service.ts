@@ -51,12 +51,16 @@ export class PandaGodrollsService {
       if (i.type !== ItemType.Weapon) {
         continue;
       }
+      // skip fixed rolls
+      if (!i.isRandomRoll) {
+        continue;
+      }
 
       const name = i.name.toLowerCase();
       const info = this.data[name];
       if (info == null) {
         i.noGodRollInfo = true;
-        if (i.isRandomRoll && i.tier == 'Legendary') {
+        if (i.tier == 'Legendary') {
           i.searchText = i.searchText + ' is:nodata';
           console.log('No panda for: ' + i.name);
         }
@@ -89,6 +93,9 @@ export class PandaGodrollsService {
       i.searchText = i.searchText + ' is:goodrollpve';
     }
     let needsFixing = false;
+    if (i.hash == '4166221755') {
+      console.log('hi');
+    }
     let first = true;
     for (const s of i.sockets) {
       if (first) {
@@ -107,9 +114,9 @@ export class PandaGodrollsService {
         if (p.active && (p.pandaPve > bestPerkSelected || p.pandaPvp > bestPerkSelected)) {
           bestPerkSelected = Math.max(p.pandaPve, p.pandaPvp);
         }
-        if (bestPerkSelected < bestPerkHad) {
-          needsFixing = true;
-        }
+      }
+      if (bestPerkSelected == 0 && bestPerkHad > 0) {
+        needsFixing = true;
       }
     }
     if (needsFixing) {
@@ -177,9 +184,6 @@ export class PandaGodrollsService {
               p.pandaPvp = 2;
             }
           }
-        }
-        if (i.hash=="1982711279" && !pve) {
-          console.log("hi");
         }
       }
       goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
