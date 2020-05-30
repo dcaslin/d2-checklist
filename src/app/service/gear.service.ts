@@ -6,8 +6,7 @@ import { MarkService } from './mark.service';
 import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser, Target } from './model';
 import { NotificationService } from './notification.service';
 import { PreferredStatService } from './preferred-stat.service';
-import { TargetPerkService } from './target-perk.service';
-import { WishlistService } from './wishlist.service';
+import { PandaGodrollsService } from './panda-godrolls.service';
 
 
 
@@ -86,8 +85,7 @@ export class GearService {
         public markService: MarkService,
         private notificationService: NotificationService,
         private bucketService: BucketService,
-        private wishlistService: WishlistService,
-        private targetPerkService: TargetPerkService,
+        private pandaService: PandaGodrollsService,
         private preferredStatService: PreferredStatService) {
     }
 
@@ -136,8 +134,7 @@ export class GearService {
                     }
                 }
             }
-            this.wishlistService.processItems(player.gear);
-            this.targetPerkService.processGear(player);
+            this.pandaService.processItems(player.gear);
             this.preferredStatService.processGear(player);
             return player;
         } finally {
@@ -554,11 +551,6 @@ export class GearService {
                 itm.equipped.next(true);
                 this.canEquip(itm);
                 this.canEquip(oldEquipped);
-                // any time we change equips we need to revisit current perks
-                // this is b/c we differentiate between currently equipped perks
-                if (itm.type === ItemType.Armor) {
-                    this.targetPerkService.processGear(player);
-                }
                 return true;
             }
             return false;

@@ -31,7 +31,7 @@
                                     {{i.name}}
                                 </div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                                <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
+                                <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
                             </button>
                             <mat-menu #itemMenu="matMenu">
                                 <button mat-menu-item *ngIf="i.postmaster"
@@ -157,7 +157,17 @@
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
                                 matTooltipClass="preserve-white-space">
-                                {{i.masterwork.name}} {{i.masterwork.tier}}
+                                {{i.masterwork.name}} {{i.masterwork.tier}} 
+
+                                <ng-container *ngIf="i.masterwork.godTierPve">
+                                    <fa-icon [icon]="iconService.fasSwords"
+                                    class="accent-text god-tier-mw" 
+                                    matTooltip="This is the best PVE masterwork for this weapon"></fa-icon>
+                                  </ng-container>
+                                  <ng-container *ngIf="i.masterwork.godTierPvp">
+                                    <i matTooltip="This is the best PVP masterwork for this weapon" 
+                                    class="icon-strike accent-text god-tier-mw"></i>
+                                  </ng-container>
 
                                 <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
                                     [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
@@ -196,7 +206,6 @@
                                             [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
                                             matTooltipClass="preserve-white-space">
                                             <d2c-god-roll-plug style="font-size: smaller" [plug]="plug"
-                                                [highlightAllPerks]="parent.highlightAllPerks"
                                                 [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
                                         </span>

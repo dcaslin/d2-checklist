@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import {MatRadioModule} from '@angular/material/radio';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -60,6 +61,7 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatInputModule,
     MatProgressSpinnerModule,
     MatChipsModule,
+    MatRadioModule,
     MatCardModule,
     MatDialogModule,
     MatSidenavModule,
@@ -109,6 +111,7 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatTreeModule,
     MatTabsModule,
     MatChipsModule,
+    MatRadioModule,
     MatInputModule,
     MatProgressSpinnerModule,
     MatCheckboxModule,

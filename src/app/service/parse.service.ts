@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MastworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, ArmorStat } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MasterworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, ArmorStat } from './model';
 
 
 
@@ -1034,7 +1034,7 @@ export class ParseService {
                     hash: cost.itemHash,
                     quantity: cost.quantity
                 });
-                // don't add glimmer, it's not worth searching on 
+                // don't add glimmer, it's not worth searching on
                 if (cDesc.displayProperties.name != 'Glimmer') {
                     searchText += cDesc.displayProperties.name + ' ';
                 }
@@ -3173,7 +3173,7 @@ export class ParseService {
     }
 
 
-    private parseMasterwork(plugDesc: any): MastworkInfo {
+    private parseMasterwork(plugDesc: any): MasterworkInfo {
         if (plugDesc.plug == null) { return null; }
         if (plugDesc.plug.plugCategoryIdentifier == null) { return null; }
         if (plugDesc.plug.plugCategoryIdentifier.indexOf('masterworks.stat.') < 0) {
@@ -3200,7 +3200,11 @@ export class ParseService {
             name: name,
             desc: desc,
             icon: plugDesc.displayProperties.icon,
-            tier: tier
+            tier: tier,
+            godTierPve: false,
+            godTierPvp: false,
+            recommendedPvpMws: [],
+            recommendedPveMws: []
         };
     }
 
@@ -3538,7 +3542,7 @@ export class ParseService {
             let seasonalModSlot = null;
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
-            let mw: MastworkInfo = null;
+            let mw: MasterworkInfo = null;
             const mods: InventoryPlug[] = [];
 
             let inventoryBucket: ApiInventoryBucket = null;
@@ -3937,7 +3941,7 @@ export class ParseService {
         return returnMe;
     }
 
-    private camelKebab(prefix: string, s: string): string {
+    public static camelKebab(prefix: string, s: string): string {
         if (prefix != null) {
             s = s.replace(prefix, '');
         }
@@ -3981,7 +3985,7 @@ export class ParseService {
                         const basicVal = ParseService.getBasicValue(val);
                         if (key.startsWith('weaponKills')) {
                             if (basicVal > 0) {
-                                const name = this.camelKebab('weaponKills', key);
+                                const name = ParseService.camelKebab('weaponKills', key);
                                 const data = new PGCRWeaponData();
                                 data.hash = '-1';
                                 data.kills = basicVal;
@@ -3993,7 +3997,7 @@ export class ParseService {
                             const desc: any = this.destinyCacheService.cache.HistoricalStats[key];
                             if (key.startsWith('medal')) {
 
-                                const name = this.camelKebab('medal', key);
+                                const name = ParseService.camelKebab('medal', key);
                                 const extraEntry = new PGCRExtraData();
                                 extraEntry.name = name;
                                 extraEntry.value = basicVal;
@@ -4001,7 +4005,7 @@ export class ParseService {
                                 r.extra.push(extraEntry);
                             } else {
                                 const extraEntry = new PGCRExtraData();
-                                const name = this.camelKebab(null, key);
+                                const name = ParseService.camelKebab(null, key);
                                 extraEntry.name = name;
                                 extraEntry.value = basicVal;
                                 extraEntry.desc = desc;

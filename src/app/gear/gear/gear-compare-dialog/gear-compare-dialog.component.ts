@@ -7,6 +7,8 @@ import { GearComponent } from '../gear.component';
 import { GearService } from '@app/service/gear.service';
 import { SortEvent } from './horizontal-sort/horizontal-sort.component';
 import { BehaviorSubject } from 'rxjs';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
   selector: 'd2c-gear-compare-dialog',
@@ -14,7 +16,7 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['../gear.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GearCompareDialogComponent {
+export class GearCompareDialogComponent extends ChildComponent {
   sortBy = 'power';
   sortDesc = true;
 
@@ -30,12 +32,14 @@ export class GearCompareDialogComponent {
   maxSockets = 1;
 
   constructor(
+    storageService: StorageService,
     public iconService: IconService,
     public gearService: GearService,
     private cacheService: DestinyCacheService,
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
+    super(storageService);
     this.source = data.source;
     this.items = data.items;
     for (const i of this.items) {

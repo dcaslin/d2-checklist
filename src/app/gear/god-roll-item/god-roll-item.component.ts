@@ -14,6 +14,9 @@ export class GodRollItemComponent implements OnInit {
   item: InventoryItem;
 
 
+  @Input()
+  debugmode: boolean;
+
   constructor(public iconService: IconService) { }
 
   ngOnInit() {

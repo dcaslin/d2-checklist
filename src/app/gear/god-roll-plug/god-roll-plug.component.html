@@ -1,13 +1,7 @@
-<fa-icon [icon]="iconService.fasStar" *ngIf="plug.godRollPve && plug.godRollPvp && (plug.godRoll || highlightAllPerks)"
-  class="perk" [class.accent-text]="plug.godRoll"></fa-icon>
-<i *ngIf="plug.godRollPve && !plug.godRollPvp && (plug.godRollPve || highlightAllPerks)" class="icon-strike perk"
-  [class.accent-text]="plug.godRoll"></i>
-<fa-icon [icon]="iconService.fasSwords"
-  *ngIf="plug.godRollPvp && !plug.godRollPve && (plug.godRollPvp || highlightAllPerks)" class="perk"
-  [class.accent-text]="plug.godRoll"></fa-icon>
-<fa-icon [icon]="iconService.fasBullseyePointer" *ngIf="plug.targetArmorPerk" class="perk"
-  [class.accent-text]="!plug.alreadyEquipped" [class.already-equipped]="plug.alreadyEquipped"></fa-icon>
-{{plug.name}} <ng-container *ngIf="debugmode"> {{plug.hash}}
+<fa-icon [icon]="iconService.fasSwords" *ngIf="plug.pandaPvp>0" class="perk" [class.accent-text]="plug.pandaPvp>1"></fa-icon>
+<i *ngIf="plug.pandaPve>0" class="icon-strike perk" [class.accent-text]="plug.pandaPve>1"></i>
+{{plug.name}} 
+<ng-container *ngIf="debugmode"> {{plug.hash}}
   <button mat-icon-button (click)="copyToClipboard()">
     <fa-icon [icon]="iconService.farCopy"></fa-icon>
   </button>
