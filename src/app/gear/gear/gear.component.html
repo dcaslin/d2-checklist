@@ -47,9 +47,9 @@
               <fa-icon [icon]="iconService.falInfoSquare"></fa-icon> Important notes about god rolls
             </a>
             <a mat-menu-item
-              href="https://old.reddit.com/r/sharditkeepit/comments/dhihw1/so_you_think_you_have_a_god_roll/"
+              href="https://www.reddit.com/r/sharditkeepit/comments/gh8vv5/new_breakdown_of_every_weapon/"
               class="header-link" target="_blank" rel="noopener">
-              <fa-icon [icon]="iconService.farBooks"></fa-icon> Pandapaxxy's guides
+              <fa-icon [icon]="iconService.farBooks"></fa-icon> Pandapaxxy's guides (06/2020)
             </a>
             <a mat-menu-item href="https://twitter.com/D2Checklist" class="header-link" target="_blank" rel="noopener">
               <fa-icon [icon]="iconService.fabTwitter"></fa-icon> D2Checklist Twitter updates
@@ -384,7 +384,6 @@
                   <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
                     [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                     <div class="item-name">{{i.name}}</div>
-                    <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
                   </button>
 
 
@@ -401,7 +400,7 @@
                     </button>
                     <button mat-menu-item *ngIf="option.type == ItemType.Weapon && i.isRandomRoll"
                       (click)="showPossibleRolls(i)">
-                      <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show possible rolls
+                      <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show recommended rolls
                     </button>
 
                   </mat-menu>
@@ -412,6 +411,7 @@
                     <span *ngIf="i.postmaster" class="margin-left warn-text">
                       <fa-icon [icon]="iconService.falMailbox"></fa-icon>
                     </span>
+                    <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
                     <span class="mobile-only-block">
                       <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
                     </span>
@@ -482,7 +482,7 @@
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                      <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
+                      <d2c-god-roll-plug [plug]="plug"
                         [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
@@ -517,9 +517,20 @@
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                   <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
                     matTooltipClass="preserve-white-space">
-                    {{i.masterwork.name}} {{i.masterwork.tier}} <ng-container *ngIf="debugmode|async">
+                    {{i.masterwork.name}} {{i.masterwork.tier}}
+                    <ng-container *ngIf="debugmode|async">
                       [{{i.masterwork.hash}}]
                     </ng-container>
+                    <ng-container *ngIf="i.masterwork.godTierPve">
+                      <fa-icon [icon]="iconService.fasSwords"
+                      class="accent-text god-tier-mw" 
+                      matTooltip="This is the best PVE masterwork for this weapon"></fa-icon>
+                    </ng-container>
+                    <ng-container *ngIf="i.masterwork.godTierPvp">
+                      <i matTooltip="This is the best PVP masterwork for this weapon" 
+                      class="icon-strike accent-text god-tier-mw"></i>
+                    </ng-container>
+                   
                     <mat-progress-bar mode="determinate" class="mw-progress"
                       [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
                     </mat-progress-bar>
@@ -538,7 +549,7 @@
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
                       [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                      <d2c-god-roll-plug [plug]="plug" [highlightAllPerks]="highlightAllPerks"
+                      <d2c-god-roll-plug [plug]="plug" 
                         [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>

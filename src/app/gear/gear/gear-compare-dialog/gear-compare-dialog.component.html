@@ -31,7 +31,7 @@
                                     {{i.name}}
                                 </div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                                <d2c-god-roll-item [item]="i"></d2c-god-roll-item>
+                                <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
                             </button>
                             <mat-menu #itemMenu="matMenu">
                                 <button mat-menu-item *ngIf="i.postmaster"
@@ -196,7 +196,6 @@
                                             [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
                                             matTooltipClass="preserve-white-space">
                                             <d2c-god-roll-plug style="font-size: smaller" [plug]="plug"
-                                                [highlightAllPerks]="parent.highlightAllPerks"
                                                 [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
                                         </span>

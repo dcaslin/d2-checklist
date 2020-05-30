@@ -36,7 +36,6 @@ import { NotificationService } from './service/notification.service';
 import { ParseService } from './service/parse.service';
 import { PreferredStatService } from './service/preferred-stat.service';
 import { StorageService } from './service/storage.service';
-import { TargetPerkService } from './service/target-perk.service';
 import { WeekService } from './service/week.service';
 import { SettingsModule } from './settings';
 import { ChildComponent } from './shared/child.component';
@@ -101,7 +100,6 @@ import { PandaGodrollsService } from './service/panda-godrolls.service';
     PlayerStateService,
     PreferredStatService,
     StorageService,
-    TargetPerkService,
     WeekService
   ],
   bootstrap: [AppComponent]

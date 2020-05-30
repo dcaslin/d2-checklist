@@ -107,7 +107,7 @@ export enum EnergyType {
     Void = 3
 }
 
-export interface MastworkInfo {
+export interface MasterworkInfo {
     hash: string;
     name: string;
     desc: string;
@@ -115,6 +115,8 @@ export interface MastworkInfo {
     tier: number;
     godTierPve: boolean;
     godTierPvp: boolean;
+    recommendedPvpMws: string[];
+    recommendedPveMws: string[];
 }
 
 export interface RecordSeason {
@@ -659,7 +661,7 @@ export class InventoryItem {
     readonly expired: boolean;
     public locked: BehaviorSubject<boolean>;
     readonly masterworked: boolean;
-    readonly masterwork: MastworkInfo;
+    readonly masterwork: MasterworkInfo;
     readonly mods: InventoryPlug[];
     readonly tracked: boolean;
     readonly questline: Questline;
@@ -703,7 +705,7 @@ export class InventoryItem {
         power: number, damageType: DamageType, energyType: EnergyType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: NameQuantity[], expirationDate: string,
-        locked: boolean, masterworked: boolean, masterwork: MastworkInfo, mods: InventoryPlug[], tracked: boolean,
+        locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
         energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number
@@ -1308,7 +1310,6 @@ export class InventoryPlug {
     public pandaPvp = 0;
 
     public targetArmorPerk = false;
-    public alreadyEquipped = false;
     public desc: string;
     public selectedPossible = false; // used for possible roll screen only
     public inventoryStats: InventoryStat[] = [];

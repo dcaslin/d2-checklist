@@ -1,9 +1,8 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
-import { TargetPerkService, PlayerMods } from '@app/service/target-perk.service';
 import { GearComponent } from '../gear.component';
-import { Character } from '@app/service/model';
+import { Character, InventoryPlug, Player } from '@app/service/model';
 
 
 @Component({
@@ -16,7 +15,6 @@ export class ArmorPerksDialogComponent {
   parent: GearComponent;
   charPerks: { [key: string]: PlayerMods[] };
   tempWishlistOverrideUrl: string;
-  TargetPerkService = TargetPerkService;
 
   constructor(
     public iconService: IconService,
@@ -27,9 +25,57 @@ export class ArmorPerksDialogComponent {
     this.charPerks = {};
     if (player) {
       for (const char of player.characters) {
-        const perks = TargetPerkService.getEquippedPerks(player, char);
+        const perks = ArmorPerksDialogComponent.getEquippedPerks(player, char);
         this.charPerks[char.id] = perks;
       }
     }
   }
+
+  public static getEquippedPerks(player: Player, char: Character): PlayerMods[] {
+    const armorMods: InventoryPlug[] = [];
+    if (player.gear == null) {
+      return [];
+    }
+    const equippedArmor = player.gear.filter(g => g.equipped.getValue() && g.owner.getValue().id == char.id && g.type == 2);
+    for (const g of equippedArmor) {
+      for (const m of g.mods) {
+        armorMods.push(m);
+      }
+    }
+    const mods = ArmorPerksDialogComponent.rollUpMods(armorMods);
+    return mods;
+  }
+
+  private static rollUpMods(mods: InventoryPlug[]): PlayerMods[] {
+    const map: { [key: string]: InventoryPlug[] } = {};
+    for (const m of mods) {
+      if (!map[m.hash]) {
+        map[m.hash] = [];
+      }
+      map[m.hash].push(m);
+    }
+    const returnMe: PlayerMods[] = [];
+    for (const key of Object.keys(map)) {
+      const val = map[key];
+      returnMe.push({
+        count: val.length,
+        mod: val[0]
+      });
+    }
+    returnMe.sort((a, b) => {
+      if (a.mod.name > b.mod.name) {
+        return 1;
+      }
+      if (b.mod.name > a.mod.name) {
+        return -1;
+      }
+      return 0;
+    });
+    return returnMe;
+  }
+}
+
+export interface PlayerMods {
+  count: number;
+  mod: InventoryPlug;
 }

@@ -11,7 +11,7 @@ import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 import * as moment from 'moment';
-import { TargetPerkService, PlayerMods } from '@app/service/target-perk.service';
+import { PlayerMods, ArmorPerksDialogComponent } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
 
 @Component({
   selector: 'd2c-party',
@@ -77,7 +77,7 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
             }
           }
         }
-        const mods = TargetPerkService.getEquippedPerks(x, pp.character);
+        const mods = ArmorPerksDialogComponent.getEquippedPerks(x, pp.character);
         pp.armorMods = mods;
         this._party.next(this._party.getValue());
       }

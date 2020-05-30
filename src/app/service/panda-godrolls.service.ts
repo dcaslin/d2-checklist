@@ -1,11 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
-import { DestinyCacheService } from './destiny-cache.service';
-import { InventoryItem } from './model';
+import { InventoryItem, ItemType } from './model';
 import { NotificationService } from './notification.service';
 import { del, get, keys, set } from 'idb-keyval';
 import { environment as env } from '@env/environment';
+import { ParseService } from './parse.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +13,6 @@ export class PandaGodrollsService {
 
   private data: { [name: string]: GunInfo; };
   private isController = true;
-
-  // TODO ignore frame socket
-  // TODO show masterworks
-  // TODO test more
-  // TODO Mnk vs controller toggle
-  // TODO handle wild card searches
-
-
   constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
 
   }
@@ -57,6 +48,10 @@ export class PandaGodrollsService {
       return;
     }
     for (const i of items) {
+      if (i.type !== ItemType.Weapon) {
+        continue;
+      }
+
       const name = i.name.toLowerCase();
       const info = this.data[name];
       if (info == null) {
@@ -65,7 +60,6 @@ export class PandaGodrollsService {
           i.searchText = i.searchText + ' is:nodata';
           console.log('No panda for: ' + i.name);
         }
-
         continue;
       }
       let rolls: GunRolls = null;
@@ -90,12 +84,17 @@ export class PandaGodrollsService {
       i.searchText = i.searchText + ' is:goodrollpvp';
     }
     if (i.pandaPve > 1) {
-      i.searchText = i.searchText + ' is:godrollpvp';
+      i.searchText = i.searchText + ' is:godrollpve';
     } else if (i.pandaPve > 0) {
-      i.searchText = i.searchText + ' is:goodrollpvp';
+      i.searchText = i.searchText + ' is:goodrollpve';
     }
     let needsFixing = false;
+    let first = true;
     for (const s of i.sockets) {
+      if (first) {
+        first = false;
+        continue;
+      }
       let bestPerkHad = 0;
       let bestPerkSelected = 0;
       for (const p of s.plugs) {
@@ -118,21 +117,43 @@ export class PandaGodrollsService {
     }
   }
 
-
+  private static toTitleCase(phrase: string) {
+    return phrase
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
 
   private processGunRoll(i: InventoryItem, roll: GunRoll, pve: boolean): number {
     let goodRollFound = true;
     let greatRollFound = true;
-    for (const pm of roll.masterwork) {
-      if (i.masterwork && (i.masterwork.name.toLowerCase() == pm)) {
-        if (pve) {
-          i.masterwork.godTierPve = true;
-        } else {
-          i.masterwork.godTierPvp = true;
+    if (i.masterwork) {
+      const target = [];
+      for (const pm of roll.masterwork) {
+        if (i.masterwork.name.toLowerCase() == pm) {
+          if (pve) {
+            i.masterwork.godTierPve = true;
+          } else {
+            i.masterwork.godTierPvp = true;
+          }
         }
+        target.push(PandaGodrollsService.toTitleCase(pm));
+
+      }
+      if (pve) {
+        i.masterwork.recommendedPveMws = target;
+      } else {
+        i.masterwork.recommendedPvpMws = target;
       }
     }
+
+    let first = true;
     for (const s of i.sockets) {
+      if (first) {
+        first = false;
+        continue;
+      }
       let goodPerkFound = false;
       let greatPerkFound = false;
       for (const p of s.plugs) {
@@ -145,21 +166,41 @@ export class PandaGodrollsService {
             } else {
               p.pandaPvp = 1;
             }
-
           }
-          for (const greatPerk of roll.greatPerks) {
-            if (greatPerk == name) {
-              greatPerkFound = true;
-              if (pve) {
-                p.pandaPve = 2;
-              } else {
-                p.pandaPvp = 2;
-              }
+        }
+        for (const greatPerk of roll.greatPerks) {
+          if (greatPerk == name) {
+            greatPerkFound = true;
+            if (pve) {
+              p.pandaPve = 2;
+            } else {
+              p.pandaPvp = 2;
             }
           }
         }
         goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
         greatRollFound = greatPerkFound && greatRollFound;
+      }
+      for (const p of s.possiblePlugs) {
+        const name = p.name.toLowerCase();
+        for (const goodPerk of roll.goodPerks) {
+          if (goodPerk == name) {
+            if (pve) {
+              p.pandaPve = 1;
+            } else {
+              p.pandaPvp = 1;
+            }
+          }
+        }
+        for (const greatPerk of roll.greatPerks) {
+          if (greatPerk == name) {
+            if (pve) {
+              p.pandaPve = 2;
+            } else {
+              p.pandaPvp = 2;
+            }
+          }
+        }
       }
     }
     return greatRollFound ? 2 : goodRollFound ? 1 : 0;

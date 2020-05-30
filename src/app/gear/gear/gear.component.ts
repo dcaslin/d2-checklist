@@ -10,10 +10,9 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, ItemType, NumComparison, Player, SelectedUser, Target } from '@app/service/model';
+import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, ItemType, NumComparison, Player, SelectedUser, Target, Const } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
-import { TargetPerkService } from '@app/service/target-perk.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -166,12 +165,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   filterNotes: string[] = [];
 
   showAllWeaponStats = false;
-
-
-  private static HIGHLIGHT_ALL_PERKS_KEY = 'highlightAllPerks';
-
-
-  public highlightAllPerks = true;
+  controller = true;
 
   private filterChangedSubject: Subject<void> = new Subject<void>();
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
@@ -321,7 +315,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
     public dialog: MatDialog,
-    private targetPerkService: TargetPerkService,
     public preferredStatService: PreferredStatService,
     private route: ActivatedRoute,
     public router: Router,
@@ -348,18 +341,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
       this.filterChanged();
     });
-
-    if (localStorage.getItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY) == 'false') {
-      this.highlightAllPerks = false;
-    }
-    this.targetPerkService.perks.pipe(
-      takeUntil(this.unsubscribe$))
-      .subscribe(x => {
-        if (this._player.getValue() != null) {
-          this.targetPerkService.processGear(this._player.getValue());
-          this.load();
-        }
-      });
     this.preferredStatService.stats.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
@@ -369,14 +350,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           this.load();
         }
       });
-  }
-
-  public updateHighlightAllPerks() {
-    if (this.highlightAllPerks == false) {
-      localStorage.setItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY, 'false');
-    } else {
-      localStorage.removeItem(GearComponent.HIGHLIGHT_ALL_PERKS_KEY);
-    }
   }
 
   public async syncLocks() {
@@ -1050,12 +1023,11 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   async loadWishlist() {
-    // TODO figure out controller vs MnK
-    await this.pandaGodRollsService.init(true);
+    await this.pandaGodRollsService.init(this.controller);
     if (this._player.getValue() != null) {
       this.pandaGodRollsService.processItems(this._player.getValue().gear);
     }
-    this.filterChanged();
+    this.load(true);
   }
 
   parseWildcardFilter() {
@@ -1194,7 +1166,14 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     dc.data = {
       parent: this,
     };
-    this.dialog.open(GearUtilitiesDialogComponent, dc);
+    const previousController = this.controller;
+    const dialogRef = this.dialog.open(GearUtilitiesDialogComponent, dc);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (this.controller != previousController) {
+        this.updateMnkVsController(this.controller);
+      }
+    });
   }
 
   public openGearDialog(source: InventoryItem, items: InventoryItem[], showNames: boolean): void {
@@ -1232,21 +1211,38 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     // selected user changed
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.selectedUser = selectedUser;
+      const controllerPref = localStorage.getItem('mnk-vs-controller');
+      if (controllerPref != null) {
+        this.controller = 'true' == controllerPref;
+      } else {
+        // if no explicit prep, assume MnK on steam, controller otherwise
+        if (this.selectedUser != null && this.selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type) {
+          this.controller = false;
+        } else {
+          this.controller = true;
+        }
+      }
+      console.log(`--- Controller: ${this.controller}`);
       this.loadMarks();
-      this.load(true);
+      this.loadWishlist();
     });
-    this.loadWishlist();
+  }
+
+  async updateSelectedUser(selectedUser: SelectedUser) {
 
   }
 
   onLeft() {
-    console.log('left');
     this.paginator.previousPage();
   }
 
   onRight() {
-    console.log('right');
     this.paginator.nextPage();
+  }
 
+  public async updateMnkVsController(controller: boolean) {
+    localStorage.setItem('mnk-vs-controller', controller ? 'true' : 'false');
+    this.controller = controller;
+    this.loadWishlist();
   }
 }

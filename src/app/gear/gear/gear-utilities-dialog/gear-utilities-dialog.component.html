@@ -1,10 +1,10 @@
 <h2 mat-dialog-title>Settings</h2>
 <mat-dialog-content>
+    <p>Show god rolls for:</p>
     <div>
-        <mat-checkbox [(ngModel)]="parent.highlightAllPerks" (change)="parent.updateHighlightAllPerks()">Always highlight god-roll perks</mat-checkbox>
-    </div>
-    <hr>
-    <div>
-       TODO select MnK vs Controller
+        <mat-radio-group class="radio-group" [(ngModel)]="parent.controller">
+            <mat-radio-button class="radio-button" [value]="true">Controller</mat-radio-button>
+            <mat-radio-button class="radio-button" [value]="false">Mouse and Keyboard</mat-radio-button>
+        </mat-radio-group>
     </div>
 </mat-dialog-content>
