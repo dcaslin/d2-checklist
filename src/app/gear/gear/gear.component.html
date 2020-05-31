@@ -515,32 +515,7 @@
 
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-                  <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
-                    matTooltipClass="preserve-white-space">
-                    {{i.masterwork.name}} {{i.masterwork.tier}}
-                    <ng-container *ngIf="debugmode|async">
-                      [{{i.masterwork.hash}}]
-                    </ng-container>
-                    <ng-container *ngIf="i.masterwork.godTierPve">
-                      <fa-icon [icon]="iconService.fasSwords"
-                      class="accent-text god-tier-mw" 
-                      matTooltip="This is the best PVE masterwork for this weapon"></fa-icon>
-                    </ng-container>
-                    <ng-container *ngIf="i.masterwork.godTierPvp">
-                      <i matTooltip="This is the best PVP masterwork for this weapon" 
-                      class="icon-strike accent-text god-tier-mw"></i>
-                    </ng-container>
-                   
-                    <mat-progress-bar mode="determinate" class="mw-progress"
-                      [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
-                    </mat-progress-bar>
-                    <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                      <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space"
-                        [class.bottom-divider]="!isLastMod">
-                        {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
-                      </div>
-                    </ng-container>
-                  </div>
+                  <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
                 </td>
 
                 <td class="hide-mobile-table-cell show-tablet-table-cell"

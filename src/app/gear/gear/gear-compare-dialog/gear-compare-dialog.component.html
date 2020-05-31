@@ -31,7 +31,6 @@
                                     {{i.name}}
                                 </div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                                <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
                             </button>
                             <mat-menu #itemMenu="matMenu">
                                 <button mat-menu-item *ngIf="i.postmaster"
@@ -78,10 +77,13 @@
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <d2c-item-icon [i]="i" [option]="i.type" (toggleLock)="parent.setLock(player, i, $event)"
-                                (pullPostmaster)="parent.pullFromPostmaster(player, i)"
-                                (equip)="parent.equip(player, i)" (transfer)="parent.transfer(player, i, $event)">
-                            </d2c-item-icon>
+                            <div class="compare-icon-cell">
+                                <d2c-god-roll-item vertical="true" [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
+                                <d2c-item-icon [i]="i" [option]="i.type" (toggleLock)="parent.setLock(player, i, $event)"
+                                    (pullPostmaster)="parent.pullFromPostmaster(player, i)"
+                                    (equip)="parent.equip(player, i)" (transfer)="parent.transfer(player, i, $event)">
+                                </d2c-item-icon>
+                            </div>
                         </td>
                     </ng-container>
                 </tr>
@@ -155,27 +157,7 @@
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
-                                matTooltipClass="preserve-white-space">
-                                {{i.masterwork.name}} {{i.masterwork.tier}} 
-
-                                <ng-container *ngIf="i.masterwork.godTierPve">
-                                    <fa-icon [icon]="iconService.fasSwords"
-                                    class="accent-text god-tier-mw" 
-                                    matTooltip="This is the best PVE masterwork for this weapon"></fa-icon>
-                                  </ng-container>
-                                  <ng-container *ngIf="i.masterwork.godTierPvp">
-                                    <i matTooltip="This is the best PVP masterwork for this weapon" 
-                                    class="icon-strike accent-text god-tier-mw"></i>
-                                  </ng-container>
-
-                                <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
-                                    [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
-                                </mat-progress-bar>
-                                <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
-                                    [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
-                                </mat-progress-bar>
-                            </div>
+                            <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
                         </td>
                     </ng-container>
                 </tr>

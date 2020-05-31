@@ -372,10 +372,6 @@ table.stat-table {
   width: 100%;
 }
 
-.god-tier-mw {
-  margin-left: 5px;
-}
-
 .radio-group {
   display: flex;
   flex-direction: column;
@@ -384,4 +380,9 @@ table.stat-table {
 
 .radio-button {
   margin: 5px;
+}
+
+.compare-icon-cell {
+  display: flex;
+  flex-direction: row;
 }
