@@ -13,13 +13,14 @@ import { GearUtilitiesDialogComponent } from './gear/gear-utilities-dialog/gear-
 import { ArmorPerksDialogComponent } from './gear/armor-perks-dialog/armor-perks-dialog.component';
 import { GearToggleComponent } from './gear/gear-toggle/gear-toggle.component';
 import { HorizontalSortComponent } from './gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
+import { GodRollMwComponent } from './god-roll-mw/god-roll-mw.component';
 
 @NgModule({
   imports: [
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, HorizontalSortComponent],
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, HorizontalSortComponent, GodRollMwComponent],
   entryComponents: [
     PossibleRollsDialogComponent,
     GearCompareDialogComponent, GearHelpDialogComponent,
