@@ -1,14 +1,21 @@
-<span *ngIf="item.pandaPvp>0" class="godroll">
-  <fa-icon [icon]="iconService.fasSwords"
-    matTooltip="Every slot on this gun has a perk that is either good or great for PVP"
-    [class.accent-text]="item.pandaPvp>1"></fa-icon>&ensp;
-</span>
-<span *ngIf="item.pandaPve>0" class="godroll">
-  <i matTooltip="Every slot on this gun has a perk that is either good or great for PVE"
-    class="icon-strike"
-    [class.accent-text]="item.pandaPve>1"
-    ></i>&ensp;
-</span>
+<div 
+[ngStyle]="{
+  'display': vertical?'flex':'flex',
+  'flex-direction': vertical?'column': 'row'}"
+>
+  <div *ngIf="item.pandaPvp>0" class="godroll">
+    <fa-icon [icon]="iconService.fasSwords" size="2x"
+      matTooltip="Every slot on this gun has a perk that is either good or great for PVP"
+      [class.accent-text]="item.pandaPvp>1"></fa-icon>&ensp;
+  </div>
+  <div *ngIf="item.pandaPve>0" class="godroll">
+    <i matTooltip="Every slot on this gun has a perk that is either good or great for PVE"
+      class="icon-strike svg-inline--fa fa-w-16 fa-2x"
+      [class.accent-text]="item.pandaPve>1"
+      ></i>&ensp;
+  </div>  
+
+</div>
 
 <ng-container *ngIf="debugmode"> 
   <div>Pve: {{item.pandaPve}}</div> 

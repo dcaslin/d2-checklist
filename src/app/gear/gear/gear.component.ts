@@ -85,6 +85,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:light>',
     'is:light<',
     'is:light=',
+    'is:copies>',
+    'is:copies>=',
+    'is:copies<',
+    'is:copies<=',
     'is:stattotal<=',
     'is:stattotal>',
     'is:stattotal<',
@@ -518,6 +522,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       return !i.locked.getValue();
     }
     let compResult = GearComponent._processComparison('is:light', actual, i.power);
+    if (compResult != null) {
+      return compResult;
+    }
+    compResult = GearComponent._processComparison('is:copies', actual, i.copies);
     if (compResult != null) {
       return compResult;
     }

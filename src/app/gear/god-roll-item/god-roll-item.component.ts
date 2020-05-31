@@ -11,6 +11,9 @@ import { IconService } from '@app/service/icon.service';
 export class GodRollItemComponent implements OnInit {
 
   @Input()
+  vertical = false;
+
+  @Input()
   item: InventoryItem;
 
 
