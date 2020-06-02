@@ -480,10 +480,8 @@
 
                   <div *ngFor="let socket of i.sockets" class="bottom-divider">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
-                      [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                      <d2c-god-roll-plug [plug]="plug"
-                        [debugmode]="debugmode|async"></d2c-god-roll-plug>
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
+                      <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
                   </div>
@@ -522,10 +520,8 @@
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active"
-                      [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                      <d2c-god-roll-plug [plug]="plug" 
-                        [debugmode]="debugmode|async"></d2c-god-roll-plug>
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
+                      <d2c-god-roll-plug [plug]="plug"  [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
                   </div>

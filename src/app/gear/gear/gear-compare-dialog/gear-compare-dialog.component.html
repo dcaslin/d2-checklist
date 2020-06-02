@@ -184,9 +184,7 @@
                             <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
-                                        <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                                            [class.not-selected-plug]="!plug.active" [matTooltip]="plug.desc"
-                                            matTooltipClass="preserve-white-space">
+                                        <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
                                             <d2c-god-roll-plug style="font-size: smaller" [plug]="plug"
                                                 [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
