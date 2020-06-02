@@ -1,4 +1,4 @@
-<div *ngIf="item.masterwork!=null" [matTooltip]="item.masterwork.desc" matTooltipClass="preserve-white-space">
+<div *ngIf="item.masterwork!=null">
     <ng-container *ngIf="item.masterwork.godTierPve">
         <fa-icon [icon]="iconService.fasSwords" class="accent-text god-tier-mw"
             matTooltip="This is the best PVE masterwork for this weapon"></fa-icon>
@@ -7,7 +7,11 @@
         <i matTooltip="This is the best PVP masterwork for this weapon"
             class="icon-strike accent-text god-tier-mw"></i>
     </ng-container>
-    {{item.masterwork.name}} {{item.masterwork.tier}}
+    
+    <span [matTooltip]="item.masterwork.desc" matTooltipClass="preserve-white-space">
+        <ng-container *ngIf="item.masterwork.name=='Reload Speed'">Reload</ng-container>
+        <ng-container *ngIf="item.masterwork.name!='Reload Speed'">{{item.masterwork.name}}</ng-container>
+        {{item.masterwork.tier}}</span>
     <mat-progress-bar *ngIf="item.type == ItemType.Weapon" mode="determinate"
         [color]="item.masterwork.tier>=10?'accent':'primary'" [value]="item.masterwork.tier*10">
     </mat-progress-bar>
