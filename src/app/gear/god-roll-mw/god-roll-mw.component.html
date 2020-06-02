@@ -1,10 +1,10 @@
 <div *ngIf="item.masterwork!=null">
-    <ng-container *ngIf="item.masterwork.godTierPve">
-        <fa-icon [icon]="iconService.fasSwords" class="accent-text god-tier-mw"
-            matTooltip="This is the best PVE masterwork for this weapon"></fa-icon>
-    </ng-container>
     <ng-container *ngIf="item.masterwork.godTierPvp">
-        <i matTooltip="This is the best PVP masterwork for this weapon"
+        <fa-icon [icon]="iconService.fasSwords" class="accent-text god-tier-mw"
+            matTooltip="This is the best PVP masterwork for this weapon"></fa-icon>
+    </ng-container>
+    <ng-container *ngIf="item.masterwork.godTierPve">
+        <i matTooltip="This is the best PVE masterwork for this weapon"
             class="icon-strike accent-text god-tier-mw"></i>
     </ng-container>
     
