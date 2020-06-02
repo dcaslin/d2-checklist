@@ -26,10 +26,7 @@
         <ng-container *ngFor="let socket of item.sockets">
             <tr *ngIf="socket.possiblePlugs.length>0">
                 <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug">
-                    <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
-                        <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)">
-                        </d2c-god-roll-plug>
-                    </span>
+                    <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                 </td>
                 <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
                     &nbsp;
