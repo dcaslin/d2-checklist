@@ -105,6 +105,39 @@ export class GearCompareDialogComponent extends ChildComponent {
     return stats;
   }
 
+  getColor(targetStat: InventoryStat): string {
+    const percentile = this.getPercentile(targetStat);
+    if (percentile <= 20) {
+      return 'junk-color';
+    } else if (percentile <= 40) {
+      return 'infuse-color';
+    } else if (percentile <= 60) {
+      return '';
+    } else if (percentile <= 80) {
+      return 'keep-color';
+    } else {
+      return 'upgrade-color';
+    }
+
+  }
+
+  getPercentile(i: InventoryStat): number {
+    const population = this.getComparableStats(i);
+    const target = i.getValue();
+    let x = 0;
+    let y = 0;
+    for (const a of population) {
+      if (a.getValue() < target) {
+        x++;
+      }
+      if (a.getValue() == target) {
+        y++;
+      }
+    }
+    const z = 100 * (x + (y / 2)) / population.length;
+    return Math.round(z);
+  }
+
   getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
     if (i.stats == null) {
       return null;
@@ -115,6 +148,21 @@ export class GearCompareDialogComponent extends ChildComponent {
       }
     }
     return null;
+  }
+
+  getComparableStats(originalStat: InventoryStat): InventoryStat[] {
+    const returnMe: InventoryStat[] = [];
+    for (const i of this.items) {
+      if (i.stats == null) {
+        continue;
+      }
+      for (const s of i.stats) {
+        if (s.name == originalStat.name) {
+          returnMe.push(s);
+        }
+      }
+    }
+    return returnMe;
   }
 }
 
