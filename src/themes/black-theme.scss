@@ -9,6 +9,25 @@ $d2c-black-theme: mat-dark-theme(
 );
 
 @mixin black-gear-tags {
+
+    .upgrade-color {
+        color: hsl(200, 65%, 45%);
+        font-weight: bold;;
+    }
+    .keep-color {
+        color: hsl(103, 44%, 43%);
+        font-weight: bold;;
+    }
+    .infuse-color {
+        color: hsla(40, 81%, 48%, 1);
+        font-weight: bold;;
+    }
+    .junk-color {
+        color: hsla(0, 76%, 36%, 1);
+        font-weight: bold;;
+    }
+
+
     button.upgrade{
         background-color: hsl(200, 65%, 35%);;
     }
