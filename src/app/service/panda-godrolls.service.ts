@@ -93,9 +93,6 @@ export class PandaGodrollsService {
       i.searchText = i.searchText + ' is:goodrollpve';
     }
     let needsFixing = false;
-    if (i.hash == '4166221755') {
-      console.log('hi');
-    }
     let first = true;
     for (const s of i.sockets) {
       if (first) {

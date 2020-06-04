@@ -8,9 +8,26 @@ $d2c-theme: mat-light-theme(
 
 
 @mixin default-gear-tags {
+    .upgrade-color {
+        color: hsl(200, 65%, 45%);
+        font-weight: bold;;
+    }
+    .keep-color {
+        color: hsl(103, 44%, 43%);
+        font-weight: bold;
+    }
+    .infuse-color {
+        color: hsla(40, 81%, 48%, 1);
+        font-weight: bold;;
+    }
+    .junk-color {
+        color: hsla(0, 76%, 36%, 1);
+        font-weight: bold;;
+    }
+    
     button.upgrade{
         //background-color: hsl(211, 100%, 50%);
-        background-color: hsl(200, 65%, 71%);;
+        background-color: hsl(200, 65%, 71%);
     }
     .mark-table>tbody>tr.upgrade>td, .mark-table>tbody>tr>td.upgrade{
 

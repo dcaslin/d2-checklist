@@ -7,10 +7,10 @@
         <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{model.typeName}}</span><br><span
             class="simple-caption-no-margin hide-mobile-inline">{{model.desc}}</span>
     </div>
-    <div *ngIf="showAllNames" >
-        <span style="margin-right: 25px; vertical-align: middle" >{{model.typeName}}</span>
+    <div *ngIf="showAllNames">
+        <span style="margin-right: 25px; vertical-align: middle">{{model.typeName}}</span>
         <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk</mat-checkbox>
-        
+
     </div>
     <mat-dialog-content *ngIf="parent._player|async as player">
         <table class="gear-table mark-table">
@@ -78,8 +78,10 @@
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             <div class="compare-icon-cell">
-                                <d2c-god-roll-item vertical="true" [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
-                                <d2c-item-icon [i]="i" [option]="i.type" (toggleLock)="parent.setLock(player, i, $event)"
+                                <d2c-god-roll-item vertical="true" [item]="i" [debugmode]="debugmode|async">
+                                </d2c-god-roll-item>
+                                <d2c-item-icon [i]="i" [option]="i.type"
+                                    (toggleLock)="parent.setLock(player, i, $event)"
                                     (pullPostmaster)="parent.pullFromPostmaster(player, i)"
                                     (equip)="parent.equip(player, i)" (transfer)="parent.transfer(player, i, $event)">
                                 </d2c-item-icon>
@@ -184,7 +186,8 @@
                             <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
-                                        <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
+                                        <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                                            [class.not-selected-plug]="!plug.active">
                                             <d2c-god-roll-plug style="font-size: smaller" [plug]="plug"
                                                 [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
@@ -203,12 +206,15 @@
                             <d2c-horizontal-sort [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc"
                                 (sort)="sort($event)">{{stat.name}}</d2c-horizontal-sort>
                         </th>
-
                         <ng-container *ngFor="let i of sortedItems|async">
+
                             <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                                 <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                                     <span [class.baseonly]="targetStat.value==null">
-                                        {{targetStat.getValue()}}
+                                        <span [ngClass]="getColor(targetStat)">
+                                            {{targetStat.getValue()}} 
+                                            <!-- - {{getPercentile(targetStat)}}% -->
+                                        </span>
                                     </span>
                                     <span *ngIf="targetStat.enhancement"
                                         class="accent-text pad-left">+{{stat.enhancement}}</span>
