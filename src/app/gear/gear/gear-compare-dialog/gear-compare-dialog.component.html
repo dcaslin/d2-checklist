@@ -16,19 +16,19 @@
         <table class="gear-table mark-table">
             <thead>
                 <tr *ngIf="showAllNames">
-                    <th>
+                    <th class="sticky">
                         <d2c-horizontal-sort field="name" [currVal]="sortBy" [descending]="sortDesc"
                             (sort)="sort($event)">Name
                         </d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <th *ngIf="!hideJunk || i.mark!='junk'">
+                        <th class="sticky" *ngIf="!hideJunk || i.mark!='junk'">
 
                             <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
-                                [color]='i===source?"primary":""' [matMenuTriggerFor]="itemMenu"
+                                [matMenuTriggerFor]="itemMenu"
                                 matTooltipClass="preserve-white-space">
                                 <div class="item-name">
-                                    {{i.name}}
+                                    {{i.name}} <span class="accent-text" *ngIf="i===source">*</span>
                                 </div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
                             </button>

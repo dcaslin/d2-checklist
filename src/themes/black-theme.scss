@@ -1,56 +1,61 @@
-$d2c-black-primary: mat-palette($mat-grey, 900, 500, 900);
-$d2c-black-accent: mat-palette($mat-green, A200);
+$d2c-black-primary: mat-palette($mat-grey, 900);
+$d2c-black-accent: mat-palette($mat-amber, 600);
 $d2c-black-warn: mat-palette($mat-red, A200);
 
-$d2c-black-theme: mat-dark-theme(
-    $d2c-black-primary,
-    $d2c-black-accent,
-    $d2c-black-warn
-);
+$d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-black-warn);
 
 @mixin black-gear-tags {
-
     .upgrade-color {
         color: hsl(200, 65%, 45%);
-        font-weight: bold;;
+        font-weight: bold;
     }
     .keep-color {
         color: hsl(103, 44%, 43%);
-        font-weight: bold;;
+        font-weight: bold;
     }
     .infuse-color {
         color: hsla(40, 81%, 48%, 1);
-        font-weight: bold;;
+        font-weight: bold;
     }
     .junk-color {
         color: hsla(0, 76%, 36%, 1);
-        font-weight: bold;;
+        font-weight: bold;
     }
 
+    .mark-table > tbody > tr.upgrade > td,
+    .mark-table > tbody > tr > td.upgrade {
+        //background-color: hsl(200, 65%, 15%);
+        background-color: rgba(13, 72, 160, 0.52);
+    }
+    .mark-table > tbody > tr.keep > td,
+    .mark-table > tbody > tr > td.keep {
+        //background-color: hsl(103, 44%, 15%);
+        background-color: rgba(28, 95, 32, 0.65);
+    }
 
-    button.upgrade{
-        background-color: hsl(200, 65%, 35%);;
+    .mark-table > tbody > tr.infuse > td,
+    ,
+    .mark-table > tbody > tr > td.infuse {
+        //background-color: hsl(50, 81%, 15%);
+        background-color: rgba(220, 145, 9, 0.64);
     }
-    .mark-table>tbody>tr.upgrade>td, .mark-table>tbody>tr>td.upgrade{
-        background-color: hsl(200, 65%, 15%);
+
+    .mark-table > tbody > tr.junk > td,
+    .mark-table > tbody > tr > td.junk {
+        background-color: rgba(181, 28, 28, 0.57);
     }
-    button.keep{
-        background-color: hsl(103, 44%, 35%);
+
+    button.upgrade {
+        background-color: #2C4674;
     }
-    .mark-table>tbody>tr.keep>td, .mark-table>tbody>tr>td.keep
-    {
-        background-color: hsl(103, 44%, 15%); 
+    button.keep {
+        background-color: #2C552D;
     }
-    button.infuse{
-        background-color: hsl(50, 81%, 35%);
+
+    button.infuse {
+        background-color: #A6752C;
     }
-    .mark-table>tbody>tr.infuse>td, , .mark-table>tbody>tr>td.infuse{
-        background-color: hsl(50, 81%, 15%);
-    }
-    button.junk{
-        background-color: hsl(0, 43%, 35%);
-    }
-    .mark-table>tbody>tr.junk>td, .mark-table>tbody>tr>td.junk{
-        background-color: hsl(0, 43%, 15%);
+    button.junk {
+        background-color: #84302F;
     }
 }

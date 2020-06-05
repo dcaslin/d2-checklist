@@ -22,7 +22,7 @@ import {
 
 import { faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp } from '@fortawesome/pro-duotone-svg-icons';
 import {
-  faSort as fasSort, faPlusSquare as fasPlusSquare,
+  faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
   faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, 
@@ -210,6 +210,7 @@ export class IconService {
 
   public readonly farMinusSquare = farMinusSquare;
   public readonly farHeart = farHeart;
+  public readonly fasHeart = fasHeart;
   public readonly farMapMarkerAlt = farMapMarkerAlt;
 
   constructor() {
