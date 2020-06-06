@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MasterworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor, ArmorStat } from './model';
+import { Activity, AggHistoryEntry, ApiInventoryBucket, ArmorStat, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MasterworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 
 
@@ -3258,35 +3258,6 @@ export class ParseService {
 
             return null;
         }
-        // if (plugDesc.displayProperties.name.indexOf('Upgrade Masterwork') >= 0) {
-        //     let plugObjectives = null;
-        //     if (itemComp.plugObjectives && itemComp.plugObjectives.data && itemComp.plugObjectives.data[id]) {
-        //         const itemObj = itemComp.plugObjectives.data[id];
-        //         console.log('Objectives');
-        //         console.dir(itemObj);
-        //         if (itemObj.objectivesPerPlug && itemObj.objectivesPerPlug[plugDesc.hash]){
-        //             plugObjectives = itemObj.objectivesPerPlug[plugDesc.hash];
-        //         }
-        //     }
-        //     const itemObjs: ItemObjective[] = [];
-        //     for (const o of plugObjectives) {
-        //         const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
-        //         if (oDesc == null) { continue; }
-        //         const iObj: ItemObjective = {
-        //             hash: o.objectiveHash,
-        //             completionValue: oDesc.completionValue,
-        //             progressDescription: oDesc.progressDescription,
-        //             progress: o.progress == null ? 0 : o.progress,
-        //             complete: o.complete,
-        //             percent: 0
-        //         };
-        //         itemObjs.push(iObj);
-        //     }
-        //     return new InventoryPlug(plugDesc.hash,
-        //         'Catalyst in-progress', plugDesc.displayProperties.description,
-        //         plugDesc.displayProperties.icon, true, false, itemObjs);
-
-        // }
         if (plugDesc.hash == 3786277607) { // legacy MW armor slot
             return null;
         }
@@ -3469,21 +3440,6 @@ export class ParseService {
                     && type != ItemType.Consumable) {
                     return null;
                 }
-
-                // if (type == ItemType.Consumable) {
-                //     if (desc.hash == 3487922223 || // datalattice
-                //         desc.hash == 2014411539 || // alkane dust
-                //         desc.hash == 950899352 || // dusklight shard
-                //         desc.hash == 1305274547 || // phaseglass
-                //         desc.hash == 49145143 || // simulation seeds
-                //         desc.hash == 31293053 || // seraphite
-                //         desc.hash == 1177810185 || // etheric spiral
-                //         desc.hash == 3592324052 || // Helium filament
-                //         desc.hash == 592227263 // Baryon bough
-                //     ) {
-                //         type = ItemType.ExchangeMaterial;
-                //     }
-                // }
                 if (type == ItemType.Consumable) {
                     type = ItemType.ExchangeMaterial;
                 }
@@ -3869,8 +3825,22 @@ export class ParseService {
             } else if (type === ItemType.Armor) {
                 searchText += 'season:none';
             }
+
+            let icon = desc.displayProperties.icon;
+            if (itm.overrideStyleItemHash != null ) {
+                if (!(itm.overrideStyleItemHash == 2931483505
+                    || itm.overrideStyleItemHash == 702981643
+                    || itm.overrideStyleItemHash == 1959648454)) {
+                        console.dir(`${desc.displayProperties.name} ${itm.overrideStyleItemHash}`);
+                        const overrideDesc: any = this.destinyCacheService.cache.InventoryItem[itm.overrideStyleItemHash];
+                        if (overrideDesc != null) {
+                            icon = overrideDesc.displayProperties.icon;
+                        }
+                    }
+            }
+
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
-                equipped, canEquip, owner, desc.displayProperties.icon, type, desc.itemTypeDisplayName,
+                equipped, canEquip, owner, icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
                 power, damageType, energyType, stats, sockets, objectives,
                 description,
@@ -4463,6 +4433,7 @@ interface PrivInventoryItem {
     itemHash: number;
     itemInstanceId: string;
     quantity: number;
+    overrideStyleItemHash: number;
     bindStatus: number;
     location: number;
     bucketHash: number;
