@@ -77,8 +77,8 @@
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
         {{node.data.name}} <span *ngIf="debugmode|async">{{node.data.hash}}</span>
         <span class="simple-caption">
-          {{node.data.progress}}/{{node.data.completionValue}} |
-          {{node.data.pts}}/{{node.data.totalPts}} pts
+          <span style="margin-right:5px; margin-left: 5px">{{node.data.progress}}/{{node.data.completionValue}}</span>
+          <span style="margin-right:5px; margin-left: 5px">{{node.data.pts|number}} / {{node.data.totalPts|number}} pts</span>
         </span>
         <ng-container *ngIf="node.data.unredeemedCount>0">
           <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>

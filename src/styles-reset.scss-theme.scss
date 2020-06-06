@@ -291,6 +291,15 @@
     border-collapse: collapse;
   }
 
+
+th.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: mat-color($background, card);
+}
+
   table.tidy-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;
