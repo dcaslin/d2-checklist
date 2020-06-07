@@ -18,19 +18,19 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         font-weight: bold;
     }
     .junk-color {
-        color: #6d0202;
+        color: #d60505;
         font-weight: bold;
     }
 
     .mark-table > tbody > tr.upgrade > td,
     .mark-table > tbody > tr > td.upgrade {
         //background-color: hsl(200, 65%, 15%);
-        background-color: rgba(13, 72, 160, 0.52);
+        background-color: rgba(13, 72, 160, 0.22);
     }
     .mark-table > tbody > tr.keep > td,
     .mark-table > tbody > tr > td.keep {
         //background-color: hsl(103, 44%, 15%);
-        background-color: rgba(28, 95, 32, 0.65);
+        background-color: rgba(28, 95, 32, 0.35);
     }
 
     .mark-table > tbody > tr.infuse > td,
@@ -38,12 +38,12 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
     .mark-table > tbody > tr > td.infuse {
         //background-color: hsl(50, 81%, 15%);
         // background-color: rgba(220, 145, 9, 0.64);
-        background-color: rgba(210, 100, 7, 0.64);
+        background-color: rgba(210, 100, 7, 0.34);
     }
 
     .mark-table > tbody > tr.junk > td,
     .mark-table > tbody > tr > td.junk {
-        background-color: rgba(181, 28, 28, 0.57);
+        background-color: rgba(181, 28, 28, 0.27);
     }
 
     button.upgrade {
