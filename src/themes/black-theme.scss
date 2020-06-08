@@ -4,7 +4,14 @@ $d2c-black-warn: mat-palette($mat-red, A200);
 
 $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-black-warn);
 
-@mixin black-gear-tags {
+@mixin black-gear-tags($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+    
+    .mat-input-element {
+        caret-color: white;
+    }
+
     .upgrade-color {
         color: hsl(200, 65%, 45%);
         font-weight: bold;
@@ -60,4 +67,20 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
     button.junk {
         background-color: #84302F;
     }
+
+    
+    .footer {
+        color: mat-color($primary, lighter);
+        background-color: mat-color($primary, 900);
+  
+        .links, .signature {
+          color: mat-color($primary, 400);
+          a {
+            color: mat-color($primary, 300);
+            &:hover {
+              color: mat-color($accent);
+            }
+          }
+        }
+      }
 }
