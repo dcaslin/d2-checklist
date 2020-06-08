@@ -7,7 +7,10 @@ $d2c-theme: mat-light-theme(
 );
 
 
-@mixin default-gear-tags {
+@mixin default-gear-tags($theme) {
+    $primary: map-get($theme, primary);
+    $accent: map-get($theme, accent);
+
     .upgrade-color {
         color: hsl(200, 65%, 45%);
         font-weight: bold;;
@@ -55,4 +58,20 @@ $d2c-theme: mat-light-theme(
     .mark-table>tbody>tr.junk>td, .mark-table>tbody>tr>td.junk{
         background-color: hsl(0, 43%, 91%);
     }
+
+    
+    .footer {
+        color: mat-color($primary, lighter);
+        background-color: mat-color($primary, darker);
+  
+        .links, .signature {
+         color: mat-color($primary, lighter);
+          a {
+            color: mat-color($primary, lighter);
+            &:hover {
+              color: mat-color($accent);
+            }
+          }
+        }
+      }
 }
