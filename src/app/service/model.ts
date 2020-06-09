@@ -685,6 +685,7 @@ export class InventoryItem {
     public noGodRollInfo = false;
     public preferredStatPoints: number;
     public readonly seasonalModSlot: number;
+    public readonly powerCap: number;
     public dupesByEnergyAndSeason?: number;
     public dupesTaggedToKeep?: number;
     public dupesByFrameSlotAndEnergy?: number;
@@ -708,7 +709,7 @@ export class InventoryItem {
         locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
-        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number
+        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number, powerCap?: number
     ) {
         this.id = id;
         this.hash = hash;
@@ -758,6 +759,7 @@ export class InventoryItem {
         this.energyCapacity = energyCapacity;
         this.totalStatPoints = totalStatPoints;
         this.seasonalModSlot = seasonalModSlot;
+        this.powerCap = powerCap;
     }
 }
 

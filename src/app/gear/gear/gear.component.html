@@ -254,6 +254,12 @@
                   <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
                 </a>
               </th>
+              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" >
+                <a class="gear-sort" href="javascript:void(0)" (click)="sort('powerCap')">Cap
+                  <d2c-sort-indicator field="powerCap" [currVal]="sortBy" [descending]="sortDesc">
+                  </d2c-sort-indicator>
+                </a>
+              </th>
               <th class="limited-gear-width hide-mobile-table-cell">
                 <a class="gear-sort" href="javascript:void(0)" (click)="sort('typeName')">Type
                   <d2c-sort-indicator field="typeName" [currVal]="sortBy" [descending]="sortDesc">
@@ -407,13 +413,21 @@
                   <span *ngIf="debugmode|async">[{{i.hash}}]</span>
 
                   <div>
-                    <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}</span>
+                    <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}
+                      <span *ngIf="i.powerCap">
+                        <span class="mobile-only-inline" *ngIf="i.powerCap<10000; else highCap">
+                        |  {{i.powerCap|number: '1.0-0'}} cap
+                        </span>
+                      </span>
+                    </span>
                     <span *ngIf="i.postmaster" class="margin-left warn-text">
                       <fa-icon [icon]="iconService.falMailbox"></fa-icon>
                     </span>
+                    
                     <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
                     <span class="mobile-only-block">
                       <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
+                      
                     </span>
                   </div>
                   <div class="mobile-only-block">
@@ -444,6 +458,11 @@
                       </div>
                     </div>
                   </div>
+                </td>
+                <td class="limited-gear-width hide-mobile-table-cell"  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" >                  
+                  <ng-container *ngIf="i.powerCap<10000; else highCap">
+                    {{i.powerCap|number: '1.0-0'}}
+                  </ng-container>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
@@ -664,3 +683,4 @@
     <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
   </div>
 </div>
+<ng-template #highCap>None</ng-template>
