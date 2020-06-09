@@ -89,6 +89,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:copies>=',
     'is:copies<',
     'is:copies<=',
+    'is:cap<=',
+    'is:cap>=',
+    'is:cap<',
+    'is:cap>',
     'is:stattotal<=',
     'is:stattotal>',
     'is:stattotal<',
@@ -530,6 +534,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       return compResult;
     }
     compResult = GearComponent._processComparison('is:stattotal', actual, i.totalStatPoints);
+    if (compResult != null) {
+      return compResult;
+    }
+    compResult = GearComponent._processComparison('is:cap', actual, i.powerCap);
     if (compResult != null) {
       return compResult;
     }

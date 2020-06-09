@@ -130,6 +130,7 @@ export interface Cache {
   Milestone?: any;
   Faction?: any;
   Progression?: any;
+  PowerCap?: any;
   InventoryItem?: { [key: string]: InventoryItem };
   Stat?: any;
   Objective?: { [key: string]: Objective };
@@ -186,6 +187,23 @@ export interface InventoryItem {
   index: number;
   redacted: boolean;
   blacklisted: boolean;
+  quality: Quality;
+}
+
+interface Quality {
+  currentVersion: number;
+  displayVersionWatermarkIcons: string[];
+  infusionCategoryHash: number;
+  infusionCategoryHashes: number[];
+  infusionCategoryName: string;
+  itemLevels: any[];
+  progressionLevelRequirementHash: number;
+  qualityLevel: number;
+  versions: Version[];
+}
+
+interface Version {
+  powerCapHash: number;
 }
 
 // part of Inventory Item
