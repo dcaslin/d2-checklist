@@ -1367,6 +1367,11 @@ export class ParseService {
             if (ms.milestoneHash == 2712317338 && desc.displayProperties.name.startsWith('###')) {
                 continue;
             }
+            // skip weird old master class milestone
+            if (ms.milestoneHash == 480262465 ) {
+                continue;
+            }
+
 
             let icon = desc.displayProperties.icon;
             const activities: MilestoneActivity[] = [];
@@ -3827,16 +3832,28 @@ export class ParseService {
             }
 
             let icon = desc.displayProperties.icon;
-            if (itm.overrideStyleItemHash != null ) {
+            if (itm.overrideStyleItemHash != null) {
                 if (!(itm.overrideStyleItemHash == 2931483505
                     || itm.overrideStyleItemHash == 702981643
                     || itm.overrideStyleItemHash == 1959648454)) {
-                        console.dir(`${desc.displayProperties.name} ${itm.overrideStyleItemHash}`);
-                        const overrideDesc: any = this.destinyCacheService.cache.InventoryItem[itm.overrideStyleItemHash];
-                        if (overrideDesc != null) {
-                            icon = overrideDesc.displayProperties.icon;
+                    const overrideDesc: any = this.destinyCacheService.cache.InventoryItem[itm.overrideStyleItemHash];
+                    if (overrideDesc != null) {
+                        icon = overrideDesc.displayProperties.icon;
+                    }
+                }
+            }
+            let powerCap = null;
+
+            if (itm.versionNumber != null) {
+                if (desc.quality && desc.quality.versions && desc.quality.versions.length > itm.versionNumber && desc.quality.versions[itm.versionNumber]) {
+                    const pCapHash = desc.quality.versions[itm.versionNumber].powerCapHash;
+                    if (pCapHash) {
+                        const pCapDesc = this.destinyCacheService.cache.PowerCap[pCapHash];
+                        if (pCapDesc) {
+                            powerCap = pCapDesc.powerCap;
                         }
                     }
+                }
             }
 
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
@@ -3847,7 +3864,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
-                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot
+                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, powerCap
             );
         } catch (exc) {
             console.dir(itemComp);
@@ -4441,6 +4458,7 @@ interface PrivInventoryItem {
     lockable: boolean;
     state: number;
     expirationDate: string;
+    versionNumber?: number;
 }
 
 interface PrivProfileTransitoryData {
