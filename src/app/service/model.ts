@@ -1200,6 +1200,7 @@ export class Const {
     public static readonly RASPUTIN_KEY = '12121212';
     // public static readonly DUNGEON_KEY = '33333333';
     public static readonly CHALICE_KEY = '22222222';
+    public static readonly CONTACT_KEY = '44444444';
 
     public static readonly UNKNOWN_BOOST = 0;
     public static readonly NO_BOOST = 1;
@@ -1208,48 +1209,50 @@ export class Const {
     public static readonly WEAK_HIGH_BOOST = 4;
     public static readonly HIGH_BOOST = 5;
 
+    public static readonly LIGHT_TOO_LOW = 976;
+
     public static readonly BOOSTS: DropInfo[] = [
         {
             level: Const.UNKNOWN_BOOST,
             min: 0,
             max: 1,
-            softCap: 950,
-            hardCap: 1000
+            softCap: 1000,
+            hardCap: 1050
         },
         {
             level: Const.NO_BOOST,
             min: -3,
             max: 0,
-            softCap: 950,
-            hardCap: 1000
+            softCap: 1000,
+            hardCap: 1050
         },
         {
             level: Const.LOW_BOOST,
             min: 3,
             max: 3,
-            softCap: 950,
-            hardCap: 1000
+            softCap: 1000,
+            hardCap: 1050
         },
         {
             level: Const.MID_BOOST,
             min: 4,
             max: 4,
-            softCap: 950,
-            hardCap: 1000
+            softCap: 1000,
+            hardCap: 1050
         },
         {
             level: Const.WEAK_HIGH_BOOST,
             min: 1,
             max: 1,
-            softCap: 1010,
-            hardCap: 1010
+            softCap: 1060,
+            hardCap: 1060
         },
         {
             level: Const.HIGH_BOOST,
             min: 2,
             max: 2,
-            softCap: 1010,
-            hardCap: 1010
+            softCap: 1060,
+            hardCap: 1060
         }
     ];
 }
