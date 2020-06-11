@@ -825,7 +825,10 @@ export class ClanStateService {
             if (char.milestones == null) {
               return;
             }
-            if (char.milestones[mileStoneName.key] != null) {
+            if (char.milestones[mileStoneName.key] != null
+              && !char.milestones[mileStoneName.key].locked
+              && !char.milestones[mileStoneName.key].tooLowPower
+              ) {
               if (char.milestones[mileStoneName.key].pct != null) {
                 pctTotal += char.milestones[mileStoneName.key].pct;
                 possible++;
@@ -1154,7 +1157,7 @@ export class ClanStateService {
       if (x != null && x.characters != null) {
         // in case this is a retry
         target.errorMsg = null;
-        this.bungieService.loadActivityPsuedoMilestones(target.player$);
+        // this.bungieService.loadActivityPsuedoMilestones(target.player$);
       } else {
         target.errorMsg = 'Unabled to load player data';
       }

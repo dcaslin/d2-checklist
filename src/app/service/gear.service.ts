@@ -17,69 +17,69 @@ export class GearService {
 
     public static sortGear(sortBy: string, sortDesc: boolean, tempGear: InventoryItem[]) {
         if (sortBy.startsWith('masterwork.') || sortBy == 'mods' || sortBy.startsWith('stat.')) {
-          tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
-            let aV: any = '';
-            let bV: any = '';
-            if (sortBy.startsWith('stat.')) {
-              const hash = +sortBy.substr('stat.'.length);
-              for (const s of a.stats) {
-                if (s.hash == hash) {
-                  aV = s.getValue();
+            tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
+                let aV: any = '';
+                let bV: any = '';
+                if (sortBy.startsWith('stat.')) {
+                    const hash = +sortBy.substr('stat.'.length);
+                    for (const s of a.stats) {
+                        if (s.hash == hash) {
+                            aV = s.getValue();
+                        }
+                    }
+                    for (const s of b.stats) {
+                        if (s.hash == hash) {
+                            bV = s.getValue();
+                        }
+                    }
+                } else if (sortBy == 'masterwork.tier') {
+                    aV = a.masterwork != null ? a.masterwork.tier : -1;
+                    bV = b.masterwork != null ? b.masterwork.tier : -1;
+                } else if (sortBy == 'masterwork.name') {
+                    aV = a.masterwork != null ? a.masterwork.name : '';
+                    bV = b.masterwork != null ? b.masterwork.name : '';
+                } else if (sortBy == 'mods') {
+                    aV = a[sortBy] != null && a[sortBy].length > 0 ? a[sortBy][0].name : '';
+                    bV = b[sortBy] != null && b[sortBy].length > 0 ? b[sortBy][0].name : '';
                 }
-              }
-              for (const s of b.stats) {
-                if (s.hash == hash) {
-                  bV = s.getValue();
-                }
-              }
-            }  else if (sortBy == 'masterwork.tier') {
-              aV = a.masterwork != null ? a.masterwork.tier : -1;
-              bV = b.masterwork != null ? b.masterwork.tier : -1;
-            } else if (sortBy == 'masterwork.name') {
-              aV = a.masterwork != null ? a.masterwork.name : '';
-              bV = b.masterwork != null ? b.masterwork.name : '';
-            } else if (sortBy == 'mods') {
-              aV = a[sortBy] != null && a[sortBy].length > 0 ? a[sortBy][0].name : '';
-              bV = b[sortBy] != null && b[sortBy].length > 0 ? b[sortBy][0].name : '';
-            }
 
-            if (aV < bV) {
-              return sortDesc ? 1 : -1;
-            } else if (aV > bV) {
-              return sortDesc ? -1 : 1;
-            } else {
-              if (sortBy != 'mods') {
-                aV = a[sortBy] != null ? a[sortBy].name : '';
-                bV = b[sortBy] != null ? b[sortBy].name : '';
                 if (aV < bV) {
-                  return sortDesc ? 1 : -1;
+                    return sortDesc ? 1 : -1;
                 } else if (aV > bV) {
-                  return sortDesc ? -1 : 1;
+                    return sortDesc ? -1 : 1;
+                } else {
+                    if (sortBy != 'mods') {
+                        aV = a[sortBy] != null ? a[sortBy].name : '';
+                        bV = b[sortBy] != null ? b[sortBy].name : '';
+                        if (aV < bV) {
+                            return sortDesc ? 1 : -1;
+                        } else if (aV > bV) {
+                            return sortDesc ? -1 : 1;
+                        }
+                    }
+                    return 0;
                 }
-              }
-              return 0;
-            }
-          });
+            });
         } else {
-          tempGear.sort((a: any, b: any): number => {
-            try {
-              const aV = a[sortBy] != null ? a[sortBy] : '';
-              const bV = b[sortBy] != null ? b[sortBy] : '';
+            tempGear.sort((a: any, b: any): number => {
+                try {
+                    const aV = a[sortBy] != null ? a[sortBy] : '';
+                    const bV = b[sortBy] != null ? b[sortBy] : '';
 
-              if (aV < bV) {
-                return sortDesc ? 1 : -1;
-              } else if (aV > bV) {
-                return sortDesc ? -1 : 1;
-              } else {
-                return 0;
-              }
-            } catch (e) {
-              console.log('Error sorting: ' + e);
-              return 0;
-            }
-          });
+                    if (aV < bV) {
+                        return sortDesc ? 1 : -1;
+                    } else if (aV > bV) {
+                        return sortDesc ? -1 : 1;
+                    } else {
+                        return 0;
+                    }
+                } catch (e) {
+                    console.log('Error sorting: ' + e);
+                    return 0;
+                }
+            });
         }
-      }
+    }
 
     constructor(private bungieService: BungieService,
         public markService: MarkService,
@@ -154,7 +154,7 @@ export class GearService {
         }
     }
 
-    private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], weaponsOnly: Boolean): Promise<number> {
+    private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], itemType: ItemType): Promise<number> {
         console.log('Clearing inventory ahead of a mode.');
         this.notificationService.info('Clearing inventory ahead of time...');
         const buckets = this.bucketService.getBuckets(target);
@@ -165,11 +165,14 @@ export class GearService {
             const items = bucket.items.slice();
             for (const i of items) {
                 if (i.equipped.getValue() == false && (ignoreMark.indexOf(i.mark) === -1)) {
-                    if (i.type == ItemType.Weapon || !weaponsOnly) {
+                    if (itemType == null || i.type == itemType) {
                         if (i.type == ItemType.Weapon
                             || i.type == ItemType.Armor
                             || i.type == ItemType.Ghost
                             || i.type == ItemType.Vehicle) {
+                            if (i.postmaster === true) {
+                                continue;
+                            }
                             try {
                                 this.notificationService.info('Moving ' + i.name + ' to vault');
                                 await this.transfer(player, i, player.vault);
@@ -194,19 +197,20 @@ export class GearService {
         return totalErr;
     }
 
-    public async shardMode(player: Player, weaponsOnly?: boolean) {
+    public async shardMode(player: Player, itemType?: ItemType) {
         const target = player.characters[0];
-        const totalErr = await this.clearInvForMode(target, player, ['junk'], weaponsOnly);
+        const totalErr = await this.clearInvForMode(target, player, ['junk'], itemType);
         let moved = 0;
         for (const i of player.gear) {
             // might we move it?
-            if (i.mark == 'junk' && i.owner.getValue().id != target.id && (i.type == ItemType.Weapon || !weaponsOnly)) {
+            if (i.mark == 'junk' && i.owner.getValue().id != target.id &&
+                (itemType == null || i.type == itemType)) {
                 // is bucket full?
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if (targetBucket.items.length < 10) {
                     console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
                     try {
-                        if (i.postmaster) {
+                        if (i.postmaster === true) {
                             const owner = i.owner.getValue();
                             await this.transfer(player, i, owner);
                             if (owner.id === target.characterId) {
@@ -261,7 +265,7 @@ export class GearService {
                     }
                 }
                 if (iArchetype && gArchetype && iArchetype == gArchetype) {
-                    if (!bySlot || (g.inventoryBucket.displayProperties.name == i.inventoryBucket.displayProperties.name)){
+                    if (!bySlot || (g.inventoryBucket.displayProperties.name == i.inventoryBucket.displayProperties.name)) {
                         if (!byEnergy || (g.damageType == i.damageType)) {
                             copies.push(g);
                         }
@@ -325,7 +329,6 @@ export class GearService {
 
     public async bulkMove(player: Player, items: InventoryItem[], target: Target) {
         console.log('Moving ' + items.length + ' items.');
-        const buckets = this.bucketService.getBuckets(target);
         for (const i of items) {
             try {
                 if (target.id !== i.owner.getValue().id) {
@@ -339,9 +342,9 @@ export class GearService {
         }
     }
 
-    public async clearInv(player: Player, weaponsOnly?: boolean) {
+    public async clearInv(player: Player, itemType?: ItemType) {
         const target = player.characters[0];
-        const totalErr = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], weaponsOnly);
+        const totalErr = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], itemType);
         if (totalErr > 0) {
             this.notificationService.info('Inventory was cleared of all junk/infuse except for ' + totalErr + ' items that failed and were skipped.');
         } else {
@@ -351,13 +354,13 @@ export class GearService {
     }
 
 
-    public async upgradeMode(player: Player, weaponsOnly?: boolean) {
+    public async upgradeMode(player: Player, itemType?: ItemType) {
         const target = player.characters[0];
-        let totalErr = await this.clearInvForMode(target, player, [], weaponsOnly);
+        let totalErr = await this.clearInvForMode(target, player, [], itemType);
         let moved = 0;
         for (const i of player.gear) {
             // is it marked for upgrade
-            if (i.mark == 'upgrade' && (i.type == ItemType.Weapon || !weaponsOnly)) {
+            if (i.mark == 'upgrade' && (itemType == null || i.type == itemType)) {
                 let copies = this.findCopies(i, player);
                 copies = copies.filter(copy => copy.mark == 'infuse');
                 copies = copies.filter(copy => copy.power > i.power);
@@ -366,8 +369,10 @@ export class GearService {
                     continue;
                 }
                 copies.push(i);
+                console.dir(copies);
+                copies = copies.filter(copy => (copy.owner.getValue().id != target.id) || copy.postmaster);
 
-                copies = copies.filter(copy => copy.owner.getValue().id != target.id);
+                console.dir(copies);
                 // nothing to infuse
                 if (copies.length == 0) {
                     continue;
@@ -380,7 +385,17 @@ export class GearService {
                     for (const moveMe of copies) {
                         console.log('    From ' + moveMe.owner.getValue().label);
                         try {
-                            await this.transfer(player, moveMe, target);
+                            if (moveMe.postmaster === true) {
+                                const owner = moveMe.owner.getValue();
+                                await this.transfer(player, moveMe, owner);
+                                if (owner.id === target.characterId) {
+                                    moved++;
+                                    continue;
+                                }
+                            }
+                            if (moveMe.owner.getValue().id != target.id) {
+                                await this.transfer(player, moveMe, target);
+                            }
                             moved++;
                         } catch (e) {
                             console.log('Couldn\'t move ' + moveMe.name);
@@ -432,7 +447,7 @@ export class GearService {
                         this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.getValue().label);
                         unlockedCnt++;
                     } catch (e) {
-                        this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.getValue(). label);
+                        this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.getValue().label);
                         errCnt++;
                     }
                 }
@@ -489,7 +504,7 @@ export class GearService {
                 }
                 await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     tempTarget, itm, false, player.vault, this.bucketService, itm.postmaster);
-                if (itm.postmaster) {
+                if (itm.postmaster === true) {
                     itm.postmaster = false;
                 } else {
                     itm.options.push(itm.owner.getValue());

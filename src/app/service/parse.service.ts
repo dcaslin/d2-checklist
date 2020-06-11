@@ -521,7 +521,7 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['4035491417'];  // TODO UPDATE ME  2007338097
+        const s: Season = this.destinyCacheService.cache.Season['248573323'];  // TODO UPDATE ME  2007338097
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
@@ -3337,6 +3337,9 @@ export class ParseService {
     }
 
     private checkSeasonalMod(socketHash: number) {
+        if (socketHash == 4153634494) { // arrivals 4153634494
+            return 11;
+        }
         if (socketHash == 2655746324) { // worthy 2655746324
             return 10;
         }
