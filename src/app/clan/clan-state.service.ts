@@ -1148,7 +1148,7 @@ export class ClanStateService {
 
     try {
       const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType,
-        target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions', 'ProfileProgression',
+        target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions', 'ProfileProgression', 'ItemObjectives',
         'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true);
       target.player$.next(x);
       if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
