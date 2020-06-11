@@ -104,6 +104,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     'is:unlocked',
     'is:extratagged',
     'season:none',
+    'season:arrivals',
     'season:worthy',
     'season:undying',
     'season:dawn',
@@ -808,21 +809,22 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.pageEnd = Math.min((this.page + 1) * this.size, this.total);
   }
 
-  public async shardMode(weaponsOnly?: boolean) {
+  public async shardMode(itemType?: ItemType) {
     await this.load(true);
-    await this.gearService.shardMode(this._player.getValue(), weaponsOnly);
+    await this.gearService.shardMode(this._player.getValue(), itemType);
     await this.load(true);
     await this.syncLocks();
   }
 
-  public async clearInv(weaponsOnly?: boolean) {
+  public async clearInv(itemType?: ItemType) {
     await this.load(true);
-    await this.gearService.clearInv(this._player.getValue(), weaponsOnly);
+    await this.gearService.clearInv(this._player.getValue(), itemType);
+    this.filterChanged();
   }
 
-  public async upgradeMode(weaponsOnly?: boolean) {
+  public async upgradeMode(itemType?: ItemType) {
     await this.load(true);
-    await this.gearService.upgradeMode(this._player.getValue(), weaponsOnly);
+    await this.gearService.upgradeMode(this._player.getValue(), itemType);
     await this.load(true);
     await this.syncLocks();
   }
@@ -888,6 +890,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   private generateSeasonChoices(): Choice[] {
     const returnMe: Choice[] = [];
     returnMe.push(new Choice(null, 'None'));
+    returnMe.push(new Choice('11', 'Arrivals'));
     returnMe.push(new Choice('10', 'Worthy'));
     returnMe.push(new Choice('9', 'Dawn'));
     returnMe.push(new Choice('8', 'Undying'));

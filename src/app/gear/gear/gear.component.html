@@ -168,15 +168,9 @@
               <fa-icon [icon]="iconService.fasTags"></fa-icon>&ensp;Tag Current rows
             </button>
           </ng-container>
-          <button mat-menu-item [matMenuTriggerFor]="menuBulk">
-            <fa-icon [icon]="iconService.fasForklift"></fa-icon>&ensp;Bulk Operations
-          </button>
-
           <button mat-menu-item (click)="copyAllVisibleToClipboard()">
             <fa-icon [icon]="iconService.fasCopy"></fa-icon>&ensp;Copy current rows for Reddit
           </button>
-
-
 
           <button mat-menu-item (click)="showTargetArmorStats()">
             <fa-icon [icon]="iconService.fasSlidersV"></fa-icon>&nbsp;Armor Stat Prefs
@@ -206,6 +200,41 @@
             Remove Mark
           </button>
         </mat-menu>
+
+        <mat-menu #menuBulkClear="matMenu">
+          <button mat-menu-item (click)="clearInv()">
+            All
+          </button>
+          <button mat-menu-item (click)="clearInv(ItemType.Weapon)">
+            Weapons Only
+          </button>
+          <button mat-menu-item (click)="clearInv(ItemType.Armor)">
+            Armor Only
+          </button>
+        </mat-menu>
+        <mat-menu #menuBulkShard="matMenu">
+          <button mat-menu-item (click)="shardMode()">
+            All
+          </button>
+          <button mat-menu-item (click)="shardMode(ItemType.Weapon)">
+           Weapons Only
+          </button>
+          <button mat-menu-item (click)="shardMode(ItemType.Armor)">
+            Armor Only
+          </button>
+        </mat-menu>
+        <mat-menu #menuBulkUpgrade="matMenu">
+          <button mat-menu-item (click)="upgradeMode()">
+            All
+          </button>
+          <button mat-menu-item (click)="upgradeMode(ItemType.Weapon)">
+           Weapons Only
+          </button>
+          <button mat-menu-item (click)="upgradeMode(ItemType.Armor)">
+            Armor Only
+          </button>
+        </mat-menu>
+
         <mat-menu #menuBulk="matMenu">
           <button mat-menu-item (click)="showBulkOperationHelp()">
             <span class="warn-text">
@@ -215,23 +244,14 @@
           <button mat-menu-item (click)="syncLocks()">
             <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
           </button>
-          <button mat-menu-item (click)="clearInv()">
-            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Clear Inv
-          </button>
-          <button mat-menu-item (click)="clearInv(true)">
-            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Clear Inv (Weapons Only)
-          </button>
-          <button mat-menu-item (click)="shardMode()">
+          <button mat-menu-item [matMenuTriggerFor]="menuBulkShard">
             <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode
           </button>
-          <button mat-menu-item (click)="shardMode(true)">
-            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode (Weapons Only)
-          </button>
-          <button mat-menu-item (click)="upgradeMode()">
+          <button mat-menu-item [matMenuTriggerFor]="menuBulkUpgrade">
             <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode
           </button>
-          <button mat-menu-item (click)="upgradeMode(true)">
-            <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode (Weapons Only)
+          <button mat-menu-item [matMenuTriggerFor]="menuBulkClear">
+            <fa-icon [icon]="iconService.fasForklift"></fa-icon>&ensp;Clear Inv
           </button>
         </mat-menu>
         <div *ngIf="debugmode|async">

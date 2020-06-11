@@ -16,11 +16,14 @@ import {
 
 } from '@fortawesome/pro-light-svg-icons';
 import {
+
+  faAlien as farAlien,
   faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
   faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy
 } from '@fortawesome/pro-regular-svg-icons';
 
-import { faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp } from '@fortawesome/pro-duotone-svg-icons';
+import { 
+  faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp } from '@fortawesome/pro-duotone-svg-icons';
 import {
   faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
@@ -207,6 +210,7 @@ export class IconService {
   public readonly farBadgeCheck = farBadgeCheck;
   public readonly farMedal = farMedal;
   public readonly farThumbtack = farThumbtack;
+  public readonly farAlien = farAlien;
 
   public readonly farMinusSquare = farMinusSquare;
   public readonly farHeart = farHeart;

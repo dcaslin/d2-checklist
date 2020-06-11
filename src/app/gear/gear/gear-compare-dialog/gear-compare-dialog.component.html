@@ -25,10 +25,10 @@
                         <th class="sticky" *ngIf="!hideJunk || i.mark!='junk'">
 
                             <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
-                                [matMenuTriggerFor]="itemMenu"
-                                matTooltipClass="preserve-white-space">
+                                [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                                 <div class="item-name">
-                                    {{i.name}} <span class="accent-text" *ngIf="i===source">*</span>
+                                    {{i.name}}
+                                    <!-- <span class="accent-text" *ngIf="i===source">*</span> -->
                                 </div>
                                 <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
                             </button>
@@ -54,6 +54,10 @@
                             </mat-menu>
                             <div class="simple-caption-no-margin">
                                 {{(i.owner|async)?.label}}
+
+                                <span *ngIf="i.postmaster" class="margin-left warn-text">
+                                    <fa-icon [icon]="iconService.falMailbox"></fa-icon>
+                                </span>
                             </div>
                         </th>
                     </ng-container>
@@ -212,7 +216,7 @@
                                 <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                                     <span [class.baseonly]="targetStat.value==null">
                                         <span [ngClass]="getColor(targetStat)">
-                                            {{targetStat.getValue()}} 
+                                            {{targetStat.getValue()}}
                                             <!-- - {{getPercentile(targetStat)}}% -->
                                         </span>
                                     </span>
