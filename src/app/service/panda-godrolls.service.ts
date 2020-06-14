@@ -73,7 +73,7 @@ export class PandaGodrollsService {
         rolls = info.mnk;
       }
       if (rolls == null) {
-        return;
+        continue;
       }
       this.processGunRolls(i, rolls);
     }
