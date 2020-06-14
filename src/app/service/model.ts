@@ -567,6 +567,7 @@ export class Player {
     readonly infamy: Progression;
     readonly artifactPowerBonus: number;
     readonly transitoryData: ProfileTransitoryData;
+    readonly minsPlayed: number;
     maxLL = 0;
     pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = [];
@@ -601,13 +602,16 @@ export class Player {
         this.records = records;
         this.collections = collections;
         this.gear = gear;
+        let minsPlayed = 0;
         if (characters != null && characters.length > 0) {
             for (const char of characters) {
                 if (char.light > this.maxLL) {
                     this.maxLL = char.light;
                 }
+                minsPlayed += char.minutesPlayedTotal;
             }
         }
+        this.minsPlayed = minsPlayed;
         this.vault = vault;
         this.shared = shared;
         this.lowHangingTriumphs = lowHangingTriumphs;
@@ -845,7 +849,7 @@ export class Character extends Target {
 
     dateLastPlayed: string;
     minutesPlayedThisSession: string;
-    minutesPlayedTotal: string;
+    minutesPlayedTotal: number;
     emblemBackgroundPath: string;
     emblemPath: string;
     baseCharacterLevel: number;

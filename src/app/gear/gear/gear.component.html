@@ -436,7 +436,7 @@
                     <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}
                       <span *ngIf="i.powerCap">
                         <span class="mobile-only-inline" *ngIf="i.powerCap<10000; else highCap">
-                        |  {{i.powerCap|number: '1.0-0'}} cap
+                        |  {{i.powerCap}} cap
                         </span>
                       </span>
                     </span>
@@ -481,7 +481,7 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" >                  
                   <ng-container *ngIf="i.powerCap<10000; else highCap">
-                    {{i.powerCap|number: '1.0-0'}}
+                    <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
                   </ng-container>
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell">
@@ -703,4 +703,6 @@
     <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
   </div>
 </div>
-<ng-template #highCap>None</ng-template>
+<ng-template #highCap>
+  <span class="simple-darker-caption-no-margin">None</span>
+</ng-template>
