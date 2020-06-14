@@ -114,9 +114,14 @@
                         <ng-container *ngIf="!player.superprivate && player.maxLL">{{player.maxLL}}
                         </ng-container>
                     </td>
+                    <td data-label="Time played">
+                        <span *ngIf="!player.superprivate && player.minsPlayed" [matTooltip]="player.minsPlayed + ' mins'">
+                            {{ player.minsPlayed * 60 | amDuration:'seconds' }}
+                        </span>
+                    </td>
                 </ng-container>
                 <ng-template #noPlayer>
-                    <td colspan="7">
+                    <td colspan="9">
                         <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"
                             *ngIf="!member.errorMsg"></fa-icon>
                         <span class="simple-caption" *ngIf="member.errorMsg">{{member.errorMsg}}</span>
@@ -219,6 +224,14 @@
     <th matTooltip="Max LL of current chars (actual max could be higher)">
         <a href="javascript:void(0)" (click)="state.toggleSort('ll')">Max LL
             <ng-container *ngIf="state.sort && state.sort.name=='ll'">
+                <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
+                <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
+            </ng-container>
+        </a>
+    </th>
+    <th matTooltip="Total time played (does not include deleted chars)">
+        <a href="javascript:void(0)" (click)="state.toggleSort('minsPlayed')">Time Played
+            <ng-container *ngIf="state.sort && state.sort.name=='minsPlayed'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>

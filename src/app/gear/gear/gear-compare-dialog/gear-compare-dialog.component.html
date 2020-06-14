@@ -169,6 +169,22 @@
                 </tr>
                 <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
                     <th>
+                        <d2c-horizontal-sort field="powerCap" [currVal]="sortBy" [descending]="sortDesc"
+                            (sort)="sort($event)">Cap</d2c-horizontal-sort>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <ng-container *ngIf="i.powerCap<10000; else highCap">
+                                <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
+                            </ng-container>
+                            <ng-template #highCap>
+                                <span class="simple-darker-caption-no-margin">None</span>
+                            </ng-template>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
+                    <th>
                         <d2c-horizontal-sort field="mods" [currVal]="sortBy" [descending]="sortDesc"
                             (sort)="sort($event)">Mod</d2c-horizontal-sort>
                     </th>

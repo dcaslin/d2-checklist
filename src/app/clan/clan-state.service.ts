@@ -919,6 +919,8 @@ export class ClanStateService {
         return ClanStateService.compareInfamy(a, b, sort.ascending);
       } else if (sort.name === 'll') {
         return ClanStateService.compareLLs(a, b, sort.ascending);
+      } else if (sort.name === 'minsPlayed') {
+        return ClanStateService.compareMinsPlayed(a, b, sort.ascending);
       }
     };
   }
@@ -1016,6 +1018,14 @@ export class ClanStateService {
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
+  private static compareMinsPlayed(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.currentPlayer() != null) { aX = a.currentPlayer().minsPlayed; }
+    if (b.currentPlayer() != null) { bX = b.currentPlayer().minsPlayed; }
+    return ClanStateService.simpleCompare(aX, bX, reverse);
+  }
+  
   private static compareLLs(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aPts = -1;
     if (a.currentPlayer() != null && a.currentPlayer().maxLL != null) {

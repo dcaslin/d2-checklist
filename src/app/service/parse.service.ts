@@ -51,7 +51,7 @@ export class ParseService {
 
         char.dateLastPlayed = c.dateLastPlayed;
         char.minutesPlayedThisSession = c.minutesPlayedThisSession;
-        char.minutesPlayedTotal = c.minutesPlayedTotal;
+        char.minutesPlayedTotal = +c.minutesPlayedTotal;
 
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
