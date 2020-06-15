@@ -55,6 +55,9 @@ export class ParseService {
 
         char.emblemBackgroundPath = c.emblemBackgroundPath;
         char.emblemPath = c.emblemPath;
+        if (char.emblemPath == '/img/misc/missing_icon_d2.png') {
+            char.emblemPath = null;
+        }
         char.title = '';
         if (c.titleRecordHash != null) {
             const rDesc = this.destinyCacheService.cache.Record[c.titleRecordHash];
