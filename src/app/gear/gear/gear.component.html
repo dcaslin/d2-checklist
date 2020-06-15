@@ -14,10 +14,19 @@
         <div>
           <ng-container *ngIf="player.characters && player.characters.length>0">
             <ng-container *ngIf="player.characters[0] as char">
-              <div [matMenuTriggerFor]="menuBulk" class="current-char-icon"
-                [matTooltip]="char.className+' - '+char.race+' '+char.gender"
-                [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'">
-              </div>
+              <span [matMenuTriggerFor]="menuBulk" [matTooltip]="char.className+' - '+char.race+' '+char.gender">
+                <span *ngIf="char.emblemPath!=null; else noEmblem" class="current-char-icon"
+                  [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'">
+                </span>
+                <ng-template #noEmblem>
+                  <mat-button-toggle-group style="margin-right:5px">
+                    <mat-button-toggle>
+                      <fa-icon class="accent-text" [icon]="iconService.fasForklift"></fa-icon>
+                    </mat-button-toggle>
+                  </mat-button-toggle-group>
+                </ng-template>
+              </span>
+
             </ng-container>
           </ng-container>
 
@@ -56,105 +65,103 @@
             </a>
           </mat-menu>
         </div>
-          <div class="filter-buttons" [hidden]="selectedUser==null">
-            <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
-              (change)="filterChanged()"
-              [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #weaponInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
-              [choices]="weaponInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #energyTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="energyTypeChoices"
-              (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #seasonToggle [icon]="iconService.fasWheat" title="Season" [choices]="seasonChoices"
-              (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #damageTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="damageTypeChoices"
-              (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
-              (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #ammoTypeToggle iconClass="icon-ammo_heavy_mono" title="Ammo" [choices]="ammoTypeChoices"
-              (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #armorInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
-              [choices]="armorInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasHelmetBattle" title="Slot"
-              [choices]="vehicleTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #modTypeToggle [icon]="iconService.fasBookSpells" title="Type" [choices]="modTypeChoices"
-              (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #consumableTypeToggle [icon]="iconService.fasFlaskPotion" title="Type"
-              [choices]="consumableTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #exchangeTypeToggle [icon]="iconService.fasGem" title="Type"
-              [choices]="exchangeTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #classTypeToggle [icon]="iconService.fasHoodCloak" title="Class"
-              [choices]="classTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #ownerToggle [icon]="iconService.fasUsers" title="Owner" [choices]="ownerChoices"
-              (change)="filterChanged()">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #equippedToggle [icon]="iconService.fasTShirt" title="Equipped" [choices]="equippedChoices"
-              (change)="filterChanged()"
-              [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
-              [currentItemType]="option.type">
-            </d2c-gear-toggle>
-            <d2c-gear-toggle #rarityToggle [icon]="iconService.fasBalanceScale" title="Rarity" [choices]="rarityChoices"
-              (change)="filterChanged()">
-            </d2c-gear-toggle>
-          </div>
-          <div [hidden]="selectedUser==null" class="filter-container">
-            <mat-form-field class="wildcard-filter">
-              <mat-label>Wildcard filter</mat-label>
-              <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText"
-                placeholder="Name, perk or is:godroll" (keyup)="filterKeyUp.next()">
-              <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
-                (click)="visibleFilterText=null;parseWildcardFilter()">
-                <mat-icon>close</mat-icon>
-              </button>
-              <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
-                <mat-icon>help_outline</mat-icon>
-              </button>
-              <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
-                (optionSelected)="autoCompleteSelected($event)">
-                <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option">
-                  {{option}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <div>
-              <a mat-button (click)="load()">
-                <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
-              </a>
-              <button mat-button [matMenuTriggerFor]="menuMoreOptions">
-                <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
-              </button>
-              <a mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
-                <fa-icon [icon]="iconService.fasSave"></fa-icon>
-              </a>
-              <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
-                <fa-stack>
-                  <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
-                  <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
-                </fa-stack>
-              </a>
+        <div class="filter-buttons" [hidden]="selectedUser==null">
+          <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
+            (change)="filterChanged()"
+            [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #weaponInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
+            [choices]="weaponInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #energyTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="energyTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #seasonToggle [icon]="iconService.fasWheat" title="Season" [choices]="seasonChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #damageTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="damageTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #ammoTypeToggle iconClass="icon-ammo_heavy_mono" title="Ammo" [choices]="ammoTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #armorInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
+            [choices]="armorInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasHelmetBattle" title="Slot"
+            [choices]="vehicleTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #modTypeToggle [icon]="iconService.fasBookSpells" title="Type" [choices]="modTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #consumableTypeToggle [icon]="iconService.fasFlaskPotion" title="Type"
+            [choices]="consumableTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #exchangeTypeToggle [icon]="iconService.fasGem" title="Type" [choices]="exchangeTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #classTypeToggle [icon]="iconService.fasHoodCloak" title="Class" [choices]="classTypeChoices"
+            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #ownerToggle [icon]="iconService.fasUsers" title="Owner" [choices]="ownerChoices"
+            (change)="filterChanged()">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #equippedToggle [icon]="iconService.fasTShirt" title="Equipped" [choices]="equippedChoices"
+            (change)="filterChanged()"
+            [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
+            [currentItemType]="option.type">
+          </d2c-gear-toggle>
+          <d2c-gear-toggle #rarityToggle [icon]="iconService.fasBalanceScale" title="Rarity" [choices]="rarityChoices"
+            (change)="filterChanged()">
+          </d2c-gear-toggle>
+        </div>
+        <div [hidden]="selectedUser==null" class="filter-container">
+          <mat-form-field class="wildcard-filter">
+            <mat-label>Wildcard filter</mat-label>
+            <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText"
+              placeholder="Name, perk or is:godroll" (keyup)="filterKeyUp.next()">
+            <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
+              (click)="visibleFilterText=null;parseWildcardFilter()">
+              <mat-icon>close</mat-icon>
+            </button>
+            <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
+              <mat-icon>help_outline</mat-icon>
+            </button>
+            <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
+              (optionSelected)="autoCompleteSelected($event)">
+              <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option">
+                {{option}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+          <div>
+            <a mat-button (click)="load()">
+              <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
+            </a>
+            <button mat-button [matMenuTriggerFor]="menuMoreOptions">
+              <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
+            </button>
+            <a mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
+              <fa-icon [icon]="iconService.fasSave"></fa-icon>
+            </a>
+            <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
+              <fa-stack>
+                <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
+                <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
+              </fa-stack>
+            </a>
 
-              <span class="simple-caption">{{pageStart}} - {{pageEnd}} / {{total}}</span>
-            </div>            
+            <span class="simple-caption">{{pageStart}} - {{pageEnd}} / {{total}}</span>
           </div>
+        </div>
 
         <mat-menu #menuMoreOptions="matMenu" xPosition="before">
           <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
@@ -217,7 +224,7 @@
             All
           </button>
           <button mat-menu-item (click)="shardMode(ItemType.Weapon)">
-           Weapons Only
+            Weapons Only
           </button>
           <button mat-menu-item (click)="shardMode(ItemType.Armor)">
             Armor Only
@@ -228,7 +235,7 @@
             All
           </button>
           <button mat-menu-item (click)="upgradeMode(ItemType.Weapon)">
-           Weapons Only
+            Weapons Only
           </button>
           <button mat-menu-item (click)="upgradeMode(ItemType.Armor)">
             Armor Only
@@ -260,8 +267,9 @@
             {{note}}
           </div>
         </div>
-        
-        <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()" (keydown.ArrowRight)="onRight()">
+
+        <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()"
+          (keydown.ArrowRight)="onRight()">
           <thead>
             <tr>
               <th class="limited-gear-width">
@@ -274,7 +282,8 @@
                   <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
                 </a>
               </th>
-              <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" >
+              <th class="limited-gear-width hide-mobile-table-cell"
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 <a class="gear-sort" href="javascript:void(0)" (click)="sort('powerCap')">Cap
                   <d2c-sort-indicator field="powerCap" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
@@ -340,14 +349,12 @@
                     </a>
                   </div>
                   <div class="tag-page-container-pages hide-mobile-inline">
-                    
-                    <a class="gear-sort "
-                      [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
+
+                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.firstPage()">
                       <mat-icon class="page-icon">first_page</mat-icon>
                     </a>
-                    <a class="gear-sort "
-                      [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.previousPage()">
                       <mat-icon class="page-icon">navigate_before</mat-icon>
                     </a>
@@ -367,13 +374,11 @@
                 <div class="tag-page-container">
                   <div class="tag-page-container-tag"> Tag </div>
                   <div class="tag-page-container-pages hide-mobile-inline">
-                    <a class="gear-sort "
-                      [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.firstPage()">
                       <mat-icon class="page-icon">first_page</mat-icon>
                     </a>
-                    <a class="gear-sort "
-                      [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
+                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
                       (click)="paginator.previousPage()">
                       <mat-icon class="page-icon">navigate_before</mat-icon>
                     </a>
@@ -435,19 +440,21 @@
                   <div>
                     <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}
                       <span *ngIf="i.powerCap">
-                        <span class="mobile-only-inline" *ngIf="i.powerCap<10000; else highCap">
-                        |  {{i.powerCap}} cap
+                        <span class="mobile-only-inline">
+                          <ng-container *ngIf="i.powerCap<10000; else highCap">
+                            | {{i.powerCap}} cap
+                          </ng-container>
                         </span>
                       </span>
                     </span>
                     <span *ngIf="i.postmaster" class="margin-left warn-text">
                       <fa-icon [icon]="iconService.falMailbox"></fa-icon>
                     </span>
-                    
+
                     <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
                     <span class="mobile-only-block">
                       <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
-                      
+
                     </span>
                   </div>
                   <div class="mobile-only-block">
@@ -479,7 +486,8 @@
                     </div>
                   </div>
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell"  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor" >                  
+                <td class="limited-gear-width hide-mobile-table-cell"
+                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                   <ng-container *ngIf="i.powerCap<10000; else highCap">
                     <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
                   </ng-container>
@@ -519,7 +527,8 @@
 
                   <div *ngFor="let socket of i.sockets" class="bottom-divider">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                      [class.not-selected-plug]="!plug.active">
                       <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
@@ -559,8 +568,9 @@
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                   <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
                     <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
-                      <d2c-god-roll-plug [plug]="plug"  [debugmode]="debugmode|async"></d2c-god-roll-plug>
+                    <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                      [class.not-selected-plug]="!plug.active">
+                      <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
                       <ng-container *ngIf="!isLastPlug">|</ng-container>
                     </span>
                   </div>
@@ -682,14 +692,14 @@
             </ng-container>
             <tr>
               <td colspan="100%">
-                <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page" [pageSize]="size"
-                (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
-              </mat-paginator>
+                <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page"
+                  [pageSize]="size" (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
+                </mat-paginator>
               </td>
             </tr>
           </tbody>
         </table>
-        
+
       </ng-container>
     </div>
     <div *ngIf="(disableAds|async)!==true" class="adRight">
