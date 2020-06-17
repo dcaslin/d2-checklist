@@ -3919,6 +3919,17 @@ export class ParseService {
                         const pCapDesc = this.destinyCacheService.cache.PowerCap[pCapHash];
                         if (pCapDesc) {
                             powerCap = pCapDesc.powerCap;
+                            // check for GoS and LW overrides
+                            if (powerCap == 1060) {
+                                if (desc.collectibleHash) {
+                                    const cDesc = this.destinyCacheService.cache.Collectible[desc.collectibleHash];
+                                    if (cDesc) {
+                                        if (cDesc.sourceHash == 1491707941 || cDesc.sourceHash == 2455011338) {
+                                            powerCap = 1360;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
