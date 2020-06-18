@@ -208,8 +208,6 @@ export class PlayerStateService {
         this.filterChar = null;
       }
       this._player.next(x);
-      this.bungieService.loadWeeklyPowerfulBounties(this._player);
-      // this.bungieService.loadActivityPsuedoMilestones(this._player);
       this.bungieService.loadClans(this._player);
       this.bungieService.observeUpdatePvpStreak(this._player);
       this.bungieService.observeUpdateAggHistoryAndScores(this._player, this.storageService.isDebug());
