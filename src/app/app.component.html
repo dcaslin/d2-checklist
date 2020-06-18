@@ -71,39 +71,43 @@
               mat-button color="accent">#BlackLivesMatter</a>
           </span>
           <span class="d-none d-md-inline">
-            <button mat-button class="nav-button" routerLink="home" routerLinkActive="active">
+            <a mat-button class="nav-button" routerLink="home" routerLinkActive="active">
               <mat-icon>home</mat-icon>
               <span class="d-none d-xl-inline"> Home</span>
-            </button>
-            <button mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
+            </a>
+            <a mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
               <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>
               <span class="d-none d-xl-inline"> Gear</span>
-            </button>
-            <button mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
+            </a>
+            <a *ngIf="debugmode | async" mat-button class="nav-button" routerLink="todo-list" routerLinkActive="active">
+              <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>
+              <span class="d-none d-xl-inline"> Todo-List</span>
+            </a>
+            <a mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
               <mat-icon>favorite</mat-icon>
               <span class="d-none d-xl-inline"> Friends</span>
-            </button>
-            <button mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
+            </a>
+            <a mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
               <mat-icon>store</mat-icon>
               <span class="d-none d-xl-inline"> Vendors</span>
-            </button>
+            </a>
            
             <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
               <mat-icon>search</mat-icon>
               <span class="d-none d-xl-inline"> Search</span>
             </button>
             <mat-menu #searchMenu="matMenu">
-              <button mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
+              <a mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
                 Search Users
-              </button>
-              <button mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
+              </a>
+              <a mat-menu-item class="nav-button" routerLink="searchClans" routerLinkActive="active">
                 Search Clans
-              </button>
+              </a>
             </mat-menu>
-            <button mat-button class="nav-button" routerLink="about" routerLinkActive="active">
+            <a mat-button class="nav-button" routerLink="about" routerLinkActive="active">
               <mat-icon>info</mat-icon>
               <span class="d-none d-xl-inline"> About</span>
-            </button>
+            </a>
             <button mat-button class="nav-button" *ngIf="(showInstallButton|async)" (click)="install()">
               <mat-icon>arrow_downward</mat-icon>
               <span class="d-none d-xl-inline"> Install</span>
@@ -134,9 +138,9 @@
               <span>Logout</span>
             </button>
           </mat-menu>
-          <button mat-icon-button routerLink="settings" class="d-none d-md-inline">
+          <a mat-icon-button routerLink="settings" class="d-none d-md-inline">
             <mat-icon>settings</mat-icon>
-          </button>
+          </a>
         </mat-toolbar-row>
         <mat-toolbar-row *ngIf="(signedOnUser|async)!=null" class="sub-row">
           <span class="d-none d-md-inline"
@@ -168,12 +172,12 @@
             </mat-menu>
           </ng-container>
 
-          <button mat-button class="d-none d-md-inline nav-button" 
+          <a mat-button class="d-none d-md-inline nav-button" 
             [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"          
             *ngIf="(signedOnUser|async)!=null">            
             <fa-icon [icon]="PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].icon"></fa-icon>
             My Info
-          </button>
+          </a>
 
 
         </mat-toolbar-row>
