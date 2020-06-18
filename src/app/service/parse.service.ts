@@ -2669,9 +2669,7 @@ export class ParseService {
                 break;
             }
         }
-
         let transitoryData: ProfileTransitoryData = null;
-
         // enhance current activity with transitory profile data
         if (resp.profileTransitoryData != null && resp.profileTransitoryData.data != null) {
             const _transData: PrivProfileTransitoryData = resp.profileTransitoryData.data;
@@ -2694,10 +2692,7 @@ export class ParseService {
                 joinability: _transData.joinability
             };
         }
-
         const specialPgoressions = this.cookSpecialAccountProgression(accountProgressions);
-
-
         accountProgressions.sort(function (a, b) {
             if (a.name > b.name) { return 1; }
             if (a.name < b.name) { return -1; }
@@ -2718,11 +2713,78 @@ export class ParseService {
 
             }
         }
+        this.handleChallengeMilestones(chars, quests, milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus,
             transitoryData, specialPgoressions);
+    }
+
+    private handleChallengeMilestones(chars: Character[], quests: InventoryItem[], milestoneList: MileStoneName[]) {
+        if (quests == null || quests.length == 0) {
+            return;
+        }
+        // we're not loading milestones
+        if (chars[0].endWeek == null) {
+            return;
+        }
+        const lunaHash = '2701029102';
+        const lunaDesc = this.destinyCacheService.cache.InventoryItem[lunaHash];
+        const darkTimesHash = '2743269252';
+        const darkTimesDesc = this.destinyCacheService.cache.InventoryItem[darkTimesHash];
+
+        const ms1: MileStoneName = {
+            key: lunaHash,
+            resets: chars[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear (Tier 1)',
+            pl: Const.LOW_BOOST,
+            name: lunaDesc.displayProperties.name,
+            desc: lunaDesc.displayProperties.description,
+            dependsOn: [],
+            hasPartial: true,
+            neverDisappears: false
+        };
+        milestoneList.push(ms1);
+        const ms2: MileStoneName = {
+            key: darkTimesHash,
+            resets: chars[0].endWeek.toISOString(),
+            rewards: 'Pinnacle Gear',
+            pl: Const.HIGH_BOOST,
+            name: darkTimesDesc.displayProperties.name,
+            desc: darkTimesDesc.displayProperties.description,
+            dependsOn: [],
+            hasPartial: false,
+            neverDisappears: false
+        };
+        milestoneList.push(ms2);
+
+        for (const c of chars) {
+
+            // show Luna's as not available if missing b/c it often is on alts
+            c.milestones[lunaHash] = new MilestoneStatus(lunaHash, false, 0, null, 'Not available', null, true, false);
+            // c.milestones[lunaHash] = new MilestoneStatus(lunaHash, true, 1, null, null, [], false, false);
+            // Dark times is de facto done if missing
+            c.milestones[darkTimesHash] = new MilestoneStatus(darkTimesHash, true, 1, null, null, [], false, false);
+        }
+
+        // const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true, false);
+        for (const q of quests) { // luna's calling
+            // luna's calling or dark times
+            if (q.hash == lunaHash || q.hash == darkTimesHash) {
+                const c = q.owner.getValue() as Character;
+
+                const obj = q.objectives[0];
+                const total = obj.completionValue ? obj.completionValue : 1;
+                const pct = obj.progress / total;
+                let info = null;
+                if (pct > 0 && pct < 1) {
+                    info = Math.floor(100 * pct) + '% complete';
+                }
+                const suppInfo = obj.progress + ' / ' + obj.completionValue;
+                c.milestones[q.hash] =  new MilestoneStatus(q.hash, obj.complete, pct, info, suppInfo, [], false, false);
+            }
+        }
     }
 
     private cookSpecialAccountProgression(accountProgressions: Progression[]): SpecialAccountProgressions {
@@ -3170,12 +3232,24 @@ export class ParseService {
         // wtf was this doing anyway?
         const qType = qdesc.setData.setType;
         // this is a milestone, don't show it here
+
         if ('challenge' == qType) {
-            return null;
+            let skip = true;
+            if (qdesc.displayProperties && qdesc.displayProperties.name) {
+                const name = qdesc.displayProperties.name;
+                // 2743269252 and 314306447 respectively
+                // check by name so that other quests aren't filtered out in pursuits
+                // these 2 challenges are special in that they're basically milestones but
+                // only show up in the inv as challenges
+                if (name == 'Dark Times' || name == 'Luna\'s Calling') {
+                    skip = false;
+                }
+            }
+            if (skip) {
+                // log('Skipping quest/milestone thing: ' + qdesc.displayProperties.name);
+                return null;
+            }
         }
-        // if (qType != 'quest_global') {
-        //     return null;
-        // }
         const steps = qdesc.setData.itemList;
         let cntr = 0;
         const oSteps = [];
