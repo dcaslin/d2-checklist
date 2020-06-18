@@ -1201,7 +1201,6 @@ export class Const {
     };
 
     public static readonly ERIS_KEY = '11111111';
-    public static readonly RASPUTIN_KEY = '12121212';
     // public static readonly DUNGEON_KEY = '33333333';
     public static readonly CHALICE_KEY = '22222222';
     public static readonly CONTACT_KEY = '44444444';

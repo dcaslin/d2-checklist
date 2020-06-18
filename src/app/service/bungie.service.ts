@@ -696,8 +696,8 @@ export class BungieService implements OnDestroy {
         const erisPsuedoMs = this.createVendorMilestone('1616085565', Const.ERIS_KEY, vendorData, p.getValue(), c);
         c.milestones[Const.ERIS_KEY] = erisPsuedoMs;
 
-        const rasputinPsuedoMs = this.createVendorMilestone('73401818', Const.RASPUTIN_KEY, vendorData, p.getValue(), c);
-        c.milestones[Const.RASPUTIN_KEY] = rasputinPsuedoMs;
+        // const rasputinPsuedoMs = this.createVendorMilestone('73401818', Const.RASPUTIN_KEY, vendorData, p.getValue(), c);
+        // c.milestones[Const.RASPUTIN_KEY] = rasputinPsuedoMs;
         // const spiderPsuedoMs = this.createVendorMilestone('863940356', Const.SPIDER_KEY, vendorData, p.getValue(), c);
         // c.milestones[Const.SPIDER_KEY] = spiderPsuedoMs;
         // const drifterPsuedoMs = this.createVendorMilestone('248695599', Const.DRIFTER_KEY, vendorData, p.getValue(), c);
@@ -776,34 +776,20 @@ export class BungieService implements OnDestroy {
         const ms1: MileStoneName = {
             key: Const.ERIS_KEY,
             resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear',
+            rewards: 'Powerful Gear (Tier 1)',
             pl: Const.LOW_BOOST,
             name: 'Eris\'s Weekly Bounties',
             desc: 'Complete Luna\'s Recall and Lunar Spelunker',
             dependsOn: [],
             hasPartial: false,
             neverDisappears: true
-        };
-        const ms2: MileStoneName = {
-            key: Const.RASPUTIN_KEY,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear',
-            pl: Const.LOW_BOOST,
-            name: 'Rasputin\'s Weekly Bounties',
-            desc: 'Complete both of Rasputin\'s weekly bounties',
-            dependsOn: [],
-            hasPartial: false,
-            neverDisappears: true
-        };
+        };        
         p.milestoneList.push(ms1);
-        p.milestoneList.push(ms2);
         const empty1: MilestoneStatus = new MilestoneStatus(Const.ERIS_KEY, false, 0, null, 'Loading...', null, false, false);
-        const empty2: MilestoneStatus = new MilestoneStatus(Const.RASPUTIN_KEY, false, 0, null, 'Loading...', null, false, false);
 
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
             c.milestones[Const.ERIS_KEY] = empty1;
-            c.milestones[Const.RASPUTIN_KEY] = empty2;
         }
         playerSubject.next(p);
         for (const c of p.characters) {
