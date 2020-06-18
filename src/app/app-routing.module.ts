@@ -386,6 +386,12 @@ export class AuthGuard implements CanActivate {
       ]
     },
     {
+      path: 'todo-list',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      loadChildren: () => import('./todo-list/todo-list.module').then(m => m.TodoListModule)
+    },
+    {
       path: '**',
       redirectTo: 'home'
     }
