@@ -1200,8 +1200,6 @@ export class Const {
         '5': Const.STADIA_PLATFORM
     };
 
-    public static readonly ERIS_KEY = '11111111';
-    // public static readonly DUNGEON_KEY = '33333333';
     public static readonly CHALICE_KEY = '22222222';
     public static readonly CONTACT_KEY = '44444444';
 
