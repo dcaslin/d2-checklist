@@ -2729,60 +2729,84 @@ export class ParseService {
         if (chars[0].endWeek == null) {
             return;
         }
-        const lunaHash = '2701029102';
-        const lunaDesc = this.destinyCacheService.cache.InventoryItem[lunaHash];
-        const darkTimesHash = '2743269252';
-        const darkTimesDesc = this.destinyCacheService.cache.InventoryItem[darkTimesHash];
+        // extra luna's '1257909267', '1652224118', '2256060246'
 
-        const ms1: MileStoneName = {
-            key: lunaHash,
-            resets: chars[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear (Tier 1)',
-            pl: Const.LOW_BOOST,
-            name: lunaDesc.displayProperties.name,
-            desc: lunaDesc.displayProperties.description,
-            dependsOn: [],
-            hasPartial: true,
-            neverDisappears: false
-        };
-        milestoneList.push(ms1);
-        const ms2: MileStoneName = {
-            key: darkTimesHash,
-            resets: chars[0].endWeek.toISOString(),
-            rewards: 'Pinnacle Gear',
-            pl: Const.HIGH_BOOST,
-            name: darkTimesDesc.displayProperties.name,
-            desc: darkTimesDesc.displayProperties.description,
-            dependsOn: [],
-            hasPartial: false,
-            neverDisappears: false
-        };
-        milestoneList.push(ms2);
+        const challengeMilestones = ['247878674', '2743269252', '2701029102'];
 
+        const foundMilestones = [];
+        // is the char sitting on Mysterious Disturbance or In Search of Answers?
+        const hasErisWorkToDo = {};
         for (const c of chars) {
-
-            // show Luna's as not available if missing b/c it often is on alts
-            c.milestones[lunaHash] = new MilestoneStatus(lunaHash, false, 0, null, 'Not available', null, true, false);
-            // c.milestones[lunaHash] = new MilestoneStatus(lunaHash, true, 1, null, null, [], false, false);
-            // Dark times is de facto done if missing
-            c.milestones[darkTimesHash] = new MilestoneStatus(darkTimesHash, true, 1, null, null, [], false, false);
+            hasErisWorkToDo[c.characterId] = false;
         }
 
-        // const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true, false);
         for (const q of quests) { // luna's calling
-            // luna's calling or dark times
-            if (q.hash == lunaHash || q.hash == darkTimesHash) {
-                const c = q.owner.getValue() as Character;
-
-                const obj = q.objectives[0];
-                const total = obj.completionValue ? obj.completionValue : 1;
-                const pct = obj.progress / total;
-                let info = null;
-                if (pct > 0 && pct < 1) {
-                    info = Math.floor(100 * pct) + '% complete';
+            if (q.hash == '2178015352' || q.hash == '4039893890') {
+                hasErisWorkToDo[(q.owner.getValue() as Character).characterId] = true;
+            }
+            for (const cHash of challengeMilestones) {
+                if (q.hash == cHash ||
+                    (cHash == '2701029102' &&
+                        (q.hash == '1257909267' ||
+                            q.hash == '1652224118' ||
+                            q.hash == '2256060246'
+                        ))
+                ) {
+                    if (foundMilestones.indexOf(cHash) < 0) {
+                        foundMilestones.push(cHash);
+                    }
+                    const c = q.owner.getValue() as Character;
+                    const obj = q.objectives[0];
+                    const total = obj.completionValue ? obj.completionValue : 1;
+                    const pct = obj.progress / total;
+                    let info = null;
+                    if (pct > 0 && pct < 1) {
+                        info = Math.floor(100 * pct) + '% complete';
+                    }
+                    const suppInfo = obj.progress + ' / ' + obj.completionValue;
+                    c.milestones[cHash] = new MilestoneStatus(cHash, obj.complete, pct, info, suppInfo, [], false, false);
                 }
-                const suppInfo = obj.progress + ' / ' + obj.completionValue;
-                c.milestones[q.hash] =  new MilestoneStatus(q.hash, obj.complete, pct, info, suppInfo, [], false, false);
+            }
+
+        }
+        for (const f of foundMilestones) {
+
+            const fDesc = this.destinyCacheService.cache.InventoryItem[f];
+            const qHash = fDesc.objectives.questlineItemHash;
+            const qDesc = this.destinyCacheService.cache.InventoryItem[qHash];
+            let rewardName = null;
+            if (qDesc.value != null && qDesc.value.itemValue != null) {
+                for (const val of qDesc.value.itemValue) {
+                    if (val.itemHash === 0) { continue; }
+                    const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+                    if (valDesc != null) {
+                        rewardName = valDesc.displayProperties.name;
+                        break;
+                    }
+                }
+            }
+            const ms: MileStoneName = {
+                key: f,
+                resets: chars[0].endWeek.toISOString(),
+                rewards: rewardName,
+                pl: this.parseMilestonePl(rewardName),
+                name: qDesc.displayProperties.name,
+                desc: fDesc.displayProperties.description,
+                dependsOn: [],
+                hasPartial: true,
+                neverDisappears: false
+            };
+            milestoneList.push(ms);
+
+            for (const c of chars) {
+                if (c.milestones[f] != null) {
+                    continue;
+                }
+                if (f == '2701029102' && hasErisWorkToDo[c.characterId]) {
+                    c.milestones[f] = new MilestoneStatus(f, true, 0, null, null, null, true, false);
+                } else {
+                    c.milestones[f] = new MilestoneStatus(f, true, 1, null, null, [], false, c.notReady);
+                }
             }
         }
     }
@@ -3241,12 +3265,12 @@ export class ParseService {
                 // check by name so that other quests aren't filtered out in pursuits
                 // these 2 challenges are special in that they're basically milestones but
                 // only show up in the inv as challenges
-                if (name == 'Dark Times' || name == 'Luna\'s Calling') {
+                if (name == 'Dark Times' || name == 'Luna\'s Calling' || name == 'Nightmare Slayer') {
                     skip = false;
                 }
             }
             if (skip) {
-                // log('Skipping quest/milestone thing: ' + qdesc.displayProperties.name);
+                console.log('Skipping quest/milestone thing: ' + qdesc.displayProperties.name);
                 return null;
             }
         }
