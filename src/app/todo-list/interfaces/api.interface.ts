@@ -6,3 +6,9 @@ export interface ApiResponse<T> {
   Response: T; // Payload
   ThrottleSeconds: number
 }
+
+export interface DisplayProperties {
+  description: string;
+  icon: string;
+  name: string;
+}

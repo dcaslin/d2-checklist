@@ -3,6 +3,7 @@ import { DestinyCacheService, Cache } from '@app/service/destiny-cache.service';
 import { Destroyable } from '../util/destroyable';
 import { takeUntil, first } from 'rxjs/operators';
 import { Vendor, InventoryItem } from '../interfaces/vendor.interface';
+import { ManifestMilestone } from '../interfaces/milestone.interface';
 
 /**
  * This module's version of ParseService
@@ -30,6 +31,11 @@ export class DictionaryService extends Destroyable {
   public findVendor(hash: number | string): Vendor {
     if (!this.cache) { return null; }
     return this.cache.Vendor[hash];
+  }
+
+  public findMilestone(hash: number | string): ManifestMilestone {
+    if (!this.cache) { return null; }
+    return this.cache.Milestone[hash];
   }
 
   /**
