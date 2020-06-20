@@ -1,4 +1,5 @@
 import { ItemType } from '@app/service/model';
+import { DisplayProperties } from './api.interface';
 
 /**
  * Represents the `vendors` endpoint with the `vendorSales` component
@@ -19,7 +20,7 @@ export interface VendorsSalesList {
 }
 
 export interface VendorSales {
-  saleItems: { [key: string]: SaleItem; } // key is an arbitrary number
+  [key: string]: SaleItem; // key is an arbitrary number
 }
 
 export interface SaleItem {
@@ -45,12 +46,6 @@ export interface Reward {
 export interface Vendor {
   hash: number;
   displayProperties: DisplayProperties;
-}
-
-export interface DisplayProperties {
-  description: string;
-  icon: string;
-  name: string;
 }
 
 /**

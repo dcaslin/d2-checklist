@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MilestoneStatus, NameQuantity } from '@app/service/model';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { BountyCatalogService } from '../services/bounty-catalog.service';
+import { MilestoneCatalogService } from '../services/milestone-catalog.service';
 import { Destroyable } from '../util/destroyable';
 
 @Component({
@@ -14,6 +14,7 @@ export class TodoListComponent extends Destroyable implements OnInit {
 
   constructor(
     private bountyService: BountyCatalogService,
+    private milestoneService: MilestoneCatalogService
   ) {
     super()
   }
@@ -24,6 +25,13 @@ export class TodoListComponent extends Destroyable implements OnInit {
       takeUntil(this.destroy$)
     ).subscribe((bounties) => {
       console.log('Account bounties with possesion/completion statuses', bounties);
+    })
+
+    this.milestoneService.milestoneCatalog.pipe(
+      filter(x => !!x),
+      takeUntil(this.destroy$)
+    ).subscribe((milestones) => {
+      console.log('Account milestones', milestones);
     })
   }
 }

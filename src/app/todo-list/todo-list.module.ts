@@ -8,6 +8,7 @@ import { BountyCatalogService } from './services/bounty-catalog.service';
 import { ContextService } from './services/context-service';
 import { HttpService } from './services/http.service';
 import { DictionaryService } from './services/dictionary.service';
+import { MilestoneCatalogService } from './services/milestone-catalog.service';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { DictionaryService } from './services/dictionary.service';
     ContextService,
     DictionaryService,
     HttpService,
+    MilestoneCatalogService,
   ],
   exports: [
     TodoListComponent,
