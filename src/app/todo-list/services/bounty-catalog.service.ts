@@ -3,7 +3,7 @@ import { ItemType } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';
 import { API_ROOT } from '../constants/constants';
@@ -48,6 +48,14 @@ export class BountyCatalogService extends Destroyable {
   private fetchBountiesForChars() {
     this.context.characters.pipe(
       filter((x) => !!x),
+      tap((chars: Character[]) => {
+        // This could technically be done in the switchmap, but I want to separate the logic a bit
+        // Some bounties are in character inventories, but are no longer sold by the vendor
+        // These are "orphaned" bounties, but still have relevant info and expirations that we can track
+        // Also things like Werner-99 treasure maps will always be this way, since he doesn't sell the treasure maps,
+        // but you actually get a new bounty when you complete the one that he sold you.
+        chars.forEach(char => this.extractInventoryBounties(char));
+      }),
       switchMap((chars) => {
         this.chars = chars;
         const dataStream = this.createVendorsStream(chars);
@@ -55,9 +63,9 @@ export class BountyCatalogService extends Destroyable {
       }),
       takeUntil(this.destroy$)
     ).subscribe(([sales0, sales1, sales2]) => {
-      this.extractBounties(sales0, this.chars[0]);
-      this.extractBounties(sales1, this.chars[1]);
-      this.extractBounties(sales2, this.chars[2]);
+      this.extractVendorBounties(sales0, this.chars[0]);
+      this.extractVendorBounties(sales1, this.chars[1]);
+      this.extractVendorBounties(sales2, this.chars[2]);
       this.bountyCatalog.next(Object.values(this.uniqueBounties));
     },
     // error
@@ -85,7 +93,7 @@ export class BountyCatalogService extends Destroyable {
     return this.http.get(url, options)
   }
 
-  private extractBounties(resp: ApiResponse<VendorResponse>, char: Character) {
+  private extractVendorBounties(resp: ApiResponse<VendorResponse>, char: Character) {
     if (!resp || !char) { return; }
     // get the sale items map
     const salesData: VendorsSalesList = resp.Response.sales.data;
@@ -97,27 +105,51 @@ export class BountyCatalogService extends Destroyable {
       Object.keys(vendorSales).forEach((key) => { // key is arbitrary
         const rawItem: SaleItem = vendorSales[key];
         const manifestItem: InventoryItem = this.dictionary.findItem(rawItem.itemHash);
-        if (manifestItem.itemType === ItemType.Bounty) {
+        if (this.isBounty(manifestItem)) {
           vendor = vendor || this.dictionary.findVendor(vendorHash);
-          this.addToBounties(rawItem, manifestItem, char, vendor);
+          const vendorName = vendor.displayProperties.name;
+          this.addToBounties(rawItem, manifestItem, char, vendorName, true);
         }
       });
     });
   }
 
+  private extractInventoryBounties(char: Character): void {
+    if (!char) { return; }
+    char.inventory.forEach(item => {
+      const manifestItem: InventoryItem = this.dictionary.findItem(item.itemHash);
+      // check expired before calling addToBounties UNLIKE the process for adding a vendor bounty
+      // this is because if you have an expired vendor bounty, that means that yours will expire
+      // and the vendor will be selling a new one.
+      // HOWEVER, this method only searches for bounties in the inventory. If a bounty has expired,
+      // that does not mean that it's in the vendor shop, so treat it like it's not there
+      if (this.isBounty(manifestItem) && !this.isExpired(item.expirationDate)) {
+        // need to get the vendor for the bounty
+        const vendorName = this.tryToGetVendorName(manifestItem);
+        // spoof data to make it look like it's been bought
+        // we could change the logic in the progression renderer to not use this,
+        // but instead see if the bounty is in the character inventory?
+        const tempItem: Partial<SaleItem> = { ...item, saleStatus: SaleStatus.ALREADY_HELD }
+        this.addToBounties(tempItem, manifestItem, char, vendorName, false);
+      }
+    });
+  }
+
   private addToBounties(
-    characterBounty: SaleItem,
+    characterBounty: Partial<SaleItem>, // This is either a legit sale item from the api or an inventory bounty
     manifestBounty: InventoryItem,
     char: Character,
-    vendor: Vendor
+    vendorName: string,
+    fromVendor: boolean
   ): void {
     let bounty: Bounty = this.uniqueBounties[manifestBounty.hash]
     if (!bounty) {
-      // if the bounty doesn't exist, create that bitch
+      // if the bounty doesn't exist, create it and add it to the unique map
       bounty = {
         ...manifestBounty,
-        costs: characterBounty.costs,
-        vendorName: vendor.displayProperties.name,
+        costs: characterBounty.costs || [],
+        vendorName,
+        inVendorStock: fromVendor,
         chars: { }
       }
       this.uniqueBounties[manifestBounty.hash] = bounty;
@@ -125,6 +157,15 @@ export class BountyCatalogService extends Destroyable {
     // then add the character specific data to the bounty
     const expiration = this.getExpiration(bounty, char);
     const isExpired = this.isExpired(expiration);
+    // INV_ITEM is a filler because we don't have vendor data for bounties
+    // that are sitting in an inventory. So if we find better data, then replace it.
+    // I'm thinking about in the future taking vendor off the column list,
+    // especially because milestones don't have vendors. 'Rewards' would be a much better column
+    if (bounty.inVendorStock === false) {
+      bounty.vendorName = vendorName;
+      bounty.inVendorStock = fromVendor;
+      bounty.costs = characterBounty.costs;
+    }
     // NOTE: If a character is holding an expired bounty,
     // that bounty will stay in their inventory until they log in, at which time
     // the bounty will be cleared from their inventory, so for all realistic purposes,
@@ -135,10 +176,14 @@ export class BountyCatalogService extends Destroyable {
     };
   }
 
+  private isBounty(manifestItem: InventoryItem) {
+    return manifestItem.itemType === ItemType.Bounty;
+  }
+
   /**
    * returns undefined if there is no expiration
    */
-  private getExpiration(bounty: InventoryItem, char: Character): string {
+  private getExpiration(bounty: Bounty, char: Character): string {
     const bountyHash = bounty.hash;
     // TODO: look into performance of this. Might be worth storing inventory
     // as a hash keyed by the itemHash to get O(1) lookups, giving the bounty
@@ -152,6 +197,17 @@ export class BountyCatalogService extends Destroyable {
     return moment(expiration).diff(moment()) <= 0;
   }
 
+  // Meant to help some of the weirdness around only-in-inventory bounties
+  // this isn't trying to do a reverse lookup for all weird cases.
+  // if you bought a bounty from a vendor and then it rotated out of stock,
+  // there's no way we're realistically going to find that vendor name
+  private tryToGetVendorName(item: InventoryItem): string {
+    if (item.displayProperties.name === TREASURE_MAP) {
+      return 'Werner 99-40'
+    }
+    return INV_ITEM;
+  }
+
   /**
    * constructs the piece of the request URL that relates to the character
    * @param char the character in question
@@ -160,3 +216,6 @@ export class BountyCatalogService extends Destroyable {
     return `destiny2/${char.membershipType}/profile/${char.membershipId}/character/${char.characterId}`
   }
 }
+
+const INV_ITEM = 'Inventory';
+const TREASURE_MAP = 'Imperial Treasure Map'

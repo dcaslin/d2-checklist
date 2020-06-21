@@ -7,7 +7,7 @@ import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';
 import { API_ROOT } from '../constants/constants';
-import { Character } from '../interfaces/player.interface';
+import { Character, InventoryMap } from '../interfaces/player.interface';
 import { DictionaryService } from './dictionary.service';
 import { HttpService } from './http.service';
 
@@ -20,6 +20,10 @@ export class ContextService extends Destroyable {
 
   public user: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
   public characters: BehaviorSubject<Character[]> = new BehaviorSubject(null);
+  /**
+   * the keys are character Ids
+   */
+  public inventoryMaps: { [key: string]: InventoryMap }
 
   public get currentUser(): SelectedUser { return this.user.getValue(); }
   public get currentCharacters(): Character[] { return this.characters.getValue(); }

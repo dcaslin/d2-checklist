@@ -24,6 +24,7 @@ export class CountdownDirective extends Destroyable {
     this.dateFeed$.pipe(
       switchMap((dateString) => {
         let seconds = this.getSecondsUntilDate(dateString);
+        this.newSecondValue.emit(seconds);
         return this.secondService.seconds.pipe(
           take(seconds),
           takeUntil(this.destroy$),

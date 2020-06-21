@@ -1,5 +1,6 @@
 import { ItemType } from '@app/service/model';
 import { DisplayProperties } from './api.interface';
+import { ApiInventoryItem } from './player.interface';
 
 /**
  * Represents the `vendors` endpoint with the `vendorSales` component
@@ -23,7 +24,7 @@ export interface VendorSales {
   [key: string]: SaleItem; // key is an arbitrary number
 }
 
-export interface SaleItem {
+export interface SaleItem extends ApiInventoryItem {
   augments: number;
   costs: CostReward[];
   failureIndexes: any[];
@@ -80,6 +81,7 @@ export interface Privacy {
 export interface Bounty extends InventoryItem {
   costs: CostReward[]; // assuming that it's the same cost for each character
   vendorName: string;
+  inVendorStock: boolean // if it's not in vendor stock, then it's only in inventories
   chars: { [key: string]: BountyCharInfo; }
 }
 
