@@ -14,7 +14,7 @@ import {
   MilestoneResponse,
   MilestoneSet,
 } from '../interfaces/milestone.interface';
-import { Destroyable } from '../util/destroyable';
+import { Destroyable } from '../../util/destroyable';
 import { ContextService } from './context-service';
 import { DictionaryService } from './dictionary.service';
 import { HttpService } from './http.service';

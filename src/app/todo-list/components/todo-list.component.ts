@@ -3,7 +3,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { BountyCatalogService } from '../services/bounty-catalog.service';
 import { MilestoneCatalogService } from '../services/milestone-catalog.service';
-import { Destroyable } from '../util/destroyable';
+import { Destroyable } from '../../util/destroyable';
 
 @Component({
   selector: 'd2c-todo-list',

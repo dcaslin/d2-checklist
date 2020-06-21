@@ -8,7 +8,7 @@ export interface ApiResponse<T> {
 }
 
 export interface DisplayProperties {
-  description: string;
+  description?: string;
   icon: string;
   name: string;
 }

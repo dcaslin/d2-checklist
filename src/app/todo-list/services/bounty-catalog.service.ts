@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ItemType } from '@app/service/model';
+import { NotificationService } from '@app/service/notification.service';
+import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
+import { Destroyable } from '../../util/destroyable';
 import { API_ROOT } from '../constants/constants';
 import { ApiResponse } from '../interfaces/api.interface';
 import { Character } from '../interfaces/player.interface';
@@ -10,12 +13,12 @@ import {
   Bounty,
   InventoryItem,
   SaleItem,
+  SaleStatus,
   Vendor,
   VendorResponse,
   VendorSales,
   VendorsSalesList,
 } from '../interfaces/vendor.interface';
-import { Destroyable } from '../util/destroyable';
 import { ContextService } from './context-service';
 import { DictionaryService } from './dictionary.service';
 import { HttpService } from './http.service';
@@ -35,7 +38,8 @@ export class BountyCatalogService extends Destroyable {
   constructor(
     private http: HttpService,
     private context: ContextService,
-    private dictionary: DictionaryService
+    private dictionary: DictionaryService,
+    private notifications: NotificationService
   ) {
     super();
     this.fetchBountiesForChars();
@@ -55,6 +59,10 @@ export class BountyCatalogService extends Destroyable {
       this.extractBounties(sales1, this.chars[1]);
       this.extractBounties(sales2, this.chars[2]);
       this.bountyCatalog.next(Object.values(this.uniqueBounties));
+    },
+    // error
+    () => {
+      this.notifications.fail('Unable to load bounty data, please try again later.');
     });
   }
 
@@ -71,6 +79,7 @@ export class BountyCatalogService extends Destroyable {
   }
 
   private getVendorInfoForChar(char: Character): Observable<ApiResponse<VendorResponse>> {
+    // vendor sales gives us the bounties (in addition to other things)
     const options = { params: { components: 'vendorSales' } };
     const url = `${API_ROOT}/${this.charUrl(char)}/vendors/`;
     return this.http.get(url, options)
@@ -114,7 +123,33 @@ export class BountyCatalogService extends Destroyable {
       this.uniqueBounties[manifestBounty.hash] = bounty;
     }
     // then add the character specific data to the bounty
-    bounty.chars[char.characterId] = { saleStatus: characterBounty.saleStatus };
+    const expiration = this.getExpiration(bounty, char);
+    const isExpired = this.isExpired(expiration);
+    // NOTE: If a character is holding an expired bounty,
+    // that bounty will stay in their inventory until they log in, at which time
+    // the bounty will be cleared from their inventory, so for all realistic purposes,
+    // the saleStatus should be "Available" for that character
+    bounty.chars[char.characterId] = {
+      saleStatus: isExpired ? SaleStatus.AVAILABLE : characterBounty.saleStatus,
+      expirationDate: isExpired ? undefined : expiration
+    };
+  }
+
+  /**
+   * returns undefined if there is no expiration
+   */
+  private getExpiration(bounty: InventoryItem, char: Character): string {
+    const bountyHash = bounty.hash;
+    // TODO: look into performance of this. Might be worth storing inventory
+    // as a hash keyed by the itemHash to get O(1) lookups, giving the bounty
+    // parse process O(N) time instead of O(N^2) time. N is still relatively small (~100)
+    const item = char.inventory.find(item => item.itemHash === bountyHash);
+    return item ? item.expirationDate : undefined;
+  }
+
+  private isExpired(expiration: string) {
+    if (!expiration) { return false; } // not expired if there is no expiration
+    return moment(expiration).diff(moment()) <= 0;
   }
 
   /**
@@ -122,7 +157,6 @@ export class BountyCatalogService extends Destroyable {
    * @param char the character in question
    */
   private charUrl(char: Character) {
-    // TODO: define a different character object? We're going to be adding more fields to it at least, and there's a lot of other fields we don't care about in this context
     return `destiny2/${char.membershipType}/profile/${char.membershipId}/character/${char.characterId}`
   }
 }
