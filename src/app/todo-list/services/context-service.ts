@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '@app/service/auth.service';
 import { BungieService } from '@app/service/bungie.service';
 import { SelectedUser } from '@app/service/model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
+import { Destroyable } from '../../util/destroyable';
 import { API_ROOT } from '../constants/constants';
 import { Character } from '../interfaces/player.interface';
-import { Destroyable } from '../util/destroyable';
+import { DictionaryService } from './dictionary.service';
 import { HttpService } from './http.service';
 
 /**
@@ -26,7 +27,9 @@ export class ContextService extends Destroyable {
   // TODO: define a model for the rows to follow
   constructor(
     private http: HttpService,
-    private bungieService: BungieService
+    private bungieService: BungieService,
+    private auth: AuthService,
+    private dictionary: DictionaryService
   ) {
     super();
     // does a one-time load of the auth key into the service.
@@ -45,11 +48,7 @@ export class ContextService extends Destroyable {
    * Loads the logged in user which triggers a fetch for the characters
    */
   private loadLoggedInUserAndCharacters() {
-    this.bungieService.selectedUserFeed.pipe(
-      filter((x) => !!x), // only trigger when it emits truthy
-      tap((user) => {
-        this.user.next(user); // lol I know this is basically the same thing as the selected user feed
-      }),
+    combineLatest([this.userFeed(), this.authFeed()]).pipe(
       switchMap(() => this.fetchCharacters()),
       takeUntil(this.destroy$)
     ).subscribe(
@@ -59,14 +58,38 @@ export class ContextService extends Destroyable {
     );
   }
 
+  private userFeed(): Observable<any> {
+    return this.bungieService.selectedUserFeed.pipe(
+      filter((x) => !!x), // only trigger when it emits truthy
+      tap((user) => {
+        this.user.next(user); // lol I know this is basically the same thing as the selected user feed
+      }));
+  }
+
+  private authFeed(): Observable<any> {
+    return this.auth.authFeed.pipe(
+      filter(x => !!x),
+      takeUntil(this.destroy$)
+    );
+  }
+
   private fetchCharacters(): Observable<any> {
-    const options = { params: { components: 'characters' } };
+    // characters component to get basic character info (light level, classType, etc)
+    // characterInventories gets us bounty progression
+    const options = { params: { components: 'characters,characterInventories' } };
     const url = `${API_ROOT}/${this.userUrlSegment(this.currentUser)}/`;
     return this.http.get(url, options);
   }
 
   private parseCharacterResponse(resp: any): Character[] {
+    console.log('resp', resp);
     const charObj = resp.Response.characters.data;
-    return Object.values(charObj);
+    const inventories = resp.Response.characterInventories.data;
+    console.log('inventories:', inventories);
+    return Object.values(charObj).map((char: Character) => {
+      char.className = this.dictionary.findClass(char.classHash).displayProperties.name;
+      char.inventory = inventories[char.characterId].items;
+      return char;
+    });
   }
 }

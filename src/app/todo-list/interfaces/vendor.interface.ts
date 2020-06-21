@@ -85,6 +85,7 @@ export interface Bounty extends InventoryItem {
 
 export interface BountyCharInfo {
   saleStatus: SaleStatus;
+  expirationDate?: string;
   progress?: any; // TODO: track progress and define a better interface
 }
 

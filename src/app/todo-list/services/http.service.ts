@@ -1,8 +1,8 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { AuthInfo, AuthService } from '@app/service/auth.service';
 import { bungieDev } from '@env/keys';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { AuthService } from '@app/service/auth.service';
+import { Observable } from 'rxjs';
 
 /**
  * Responsible for adding auth headers to outbound requests
@@ -10,7 +10,7 @@ import { AuthService } from '@app/service/auth.service';
 @Injectable()
 export class HttpService {
 
-  private authKey: string;
+  private authHeader: string;
 
   constructor(private http: HttpClient,
     private auth: AuthService) {
@@ -23,15 +23,15 @@ export class HttpService {
       .set('x-api-key', bungieDev.apiKey);
 
     // add the auth header if we have an auth key
-    headers = this.authKey ? headers.set('authorization', `Bearer ${this.authKey}`) : headers;
+    headers = this.authHeader ? headers.set('authorization', this.authHeader) : headers;
 
     const withHeaders = { ...options, headers };
     return this.http.get(url, withHeaders);
   }
 
   private loadAuthKey() {
-    from(this.auth.getKey()).subscribe((key: string) => {
-      this.authKey = key;
+    this.auth.authFeed.subscribe((info: AuthInfo) => {
+      this.authHeader = info.header;
     });
   }
 

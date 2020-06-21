@@ -1,6 +1,16 @@
+
 <div class="main">
-  <!-- temporary WIP message in case someone happens to stumble onto this page -->
-  <img src="https://webstockreview.net/images/cone-clipart-construction-zone-19.png" width="586" height="282">
-  <h1>We're cooking up some ~spicy~ content</h1>
-  <h1>Look for an update post, or just come back later</h1>
+  <div class="filter-wrapper">
+    <d2c-bounty-filters></d2c-bounty-filters>
+    <d2c-bounty-filters></d2c-bounty-filters>
+  </div>
+  <div class="grid-wrapper">
+    <p class="type-caption">
+      WIP! To sort by a column, click the header. To sort by multiple columns,
+      hold shift and click the headers in the order you want to sort by.
+      The <strong>Activity Details</strong> column will sort by weekly vs daily bounties.
+      The <strong>Character</strong> columns will sort by completion state, prioritizing in-progress bounties.
+    </p>
+    <d2c-todo-table></d2c-todo-table>
+  </div>
 </div>

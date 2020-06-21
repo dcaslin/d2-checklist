@@ -34,6 +34,7 @@
             ],
             "styles": [
               "src/styles.scss",
+              "src/ag-grid-styles.scss",
               "src/assets/icomoon.css"
             ],
             "scripts": [
@@ -98,7 +99,8 @@
               "node_modules/jszip-utils/dist/jszip-utils.js"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/ag-grid-styles.scss"
             ],
             "assets": [
               "src/assets",
