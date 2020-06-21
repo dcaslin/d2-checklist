@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DestinyCacheService, Cache } from '@app/service/destiny-cache.service';
-import { Destroyable } from '../util/destroyable';
+import { Destroyable } from '../../util/destroyable';
 import { takeUntil, first } from 'rxjs/operators';
 import { Vendor, InventoryItem } from '../interfaces/vendor.interface';
 import { ManifestMilestone } from '../interfaces/milestone.interface';
+import { ManifestClass } from '../interfaces/player.interface';
 
 /**
  * This module's version of ParseService
@@ -36,6 +37,11 @@ export class DictionaryService extends Destroyable {
   public findMilestone(hash: number | string): ManifestMilestone {
     if (!this.cache) { return null; }
     return this.cache.Milestone[hash];
+  }
+
+  public findClass(hash: number | string): ManifestClass {
+    if (!this.cache) { return null; }
+    return this.cache.Class[hash];
   }
 
   /**

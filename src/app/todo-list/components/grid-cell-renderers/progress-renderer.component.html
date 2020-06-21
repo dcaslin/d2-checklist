@@ -1,0 +1,18 @@
+
+<div class="progress-cell">
+  <div [ngSwitch]="state">
+    <d2c-icon *ngSwitchCase="states.COMPLETE" class="accent-text" icon="fasCheckSquare"></d2c-icon>
+    <d2c-icon *ngSwitchCase="states.INCOMPLETE" icon="farSquare"></d2c-icon>
+    <d2c-icon *ngSwitchCase="states.IN_PROGRESS" class="accent-text" icon="farMinusSquare"></d2c-icon>
+    <!-- This covers the unknown progress cases -->
+    <d2c-icon *ngSwitchDefault class="faint" icon="farMinusSquare"></d2c-icon>
+  </div>
+  <div
+    *ngIf="info.expirationDate; else showStatusText"
+    class="warn-text"
+    [expDateToSeconds]="info.expirationDate"
+    (newSecondValue)="count = $event">Expires in {{ count | timeUntil }}</div>
+  <ng-template #showStatusText>
+    <div *ngIf="statusText" class="type-caption">{{statusText}}</div>
+  </ng-template>
+</div>

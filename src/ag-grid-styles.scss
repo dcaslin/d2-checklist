@@ -1,0 +1,28 @@
+
+@import "./node_modules/@ag-grid-community/core/dist/styles/ag-grid.scss";
+@import "./node_modules/@ag-grid-community/core/dist/styles/ag-theme-alpine-dark/sass/ag-theme-alpine-dark.scss";
+
+// for overriding themes and stuff, it would be best to use the mixins file
+// but these are small things unrelated to themes that I wanted to tweak
+.ag-theme-alpine-dark {
+
+  .ag-cell {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  // hide the sort precedence order when multi-sorting
+  span.ag-header-icon.ag-header-label-icon.ag-sort-order {
+    display: none;
+  }
+
+  // center headers
+  .ag-header-group-cell-label, .ag-header-cell-label {
+    justify-content: center;
+  }
+
+}
+
+.multi-line-cell {
+  line-height: 20px;
+}
