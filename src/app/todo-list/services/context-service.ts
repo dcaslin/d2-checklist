@@ -37,6 +37,10 @@ export class ContextService extends Destroyable {
     this.loadLoggedInUserAndCharacters();
   }
 
+  public userUrlSegment(user): string {
+    return `destiny2/${user.userInfo.membershipType}/profile/${user.userInfo.membershipId}`;
+  }
+
   /**
    * Loads the logged in user which triggers a fetch for the characters
    */
@@ -57,16 +61,12 @@ export class ContextService extends Destroyable {
 
   private fetchCharacters(): Observable<any> {
     const options = { params: { components: 'characters' } };
-    const url = `${API_ROOT}/${this.userUrlSegment}/`;
+    const url = `${API_ROOT}/${this.userUrlSegment(this.currentUser)}/`;
     return this.http.get(url, options);
   }
 
   private parseCharacterResponse(resp: any): Character[] {
     const charObj = resp.Response.characters.data;
     return Object.values(charObj);
-  }
-
-  private get userUrlSegment(): string {
-    return `destiny2/${this.currentUser.userInfo.membershipType}/profile/${this.currentUser.userInfo.membershipId}`;
   }
 }
