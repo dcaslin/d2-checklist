@@ -2220,7 +2220,7 @@ export class ParseService {
                 }
                 milestoneList.push(ms);
             }
-            // add Last wish if its missing, as it has been from public milestones for a while
+
             if (milestonesByKey[Const.CONTACT_KEY] == null) {
                 const ms: MileStoneName = {
                     key: Const.CONTACT_KEY,
@@ -2235,6 +2235,42 @@ export class ParseService {
                 milestoneList.push(ms);
                 milestonesByKey[ms.key] = ms;
             }
+            const missingMilestones = ['2770934901'];
+            let msAdded = false;
+            for (const m of missingMilestones) {
+                if (milestonesByKey[m] != null) {
+                    continue;
+                }
+                const msDesc = this.destinyCacheService.cache.Milestone[m];
+                const rewards = this.parseMilestoneRewards(msDesc);
+                const ms: MileStoneName = {
+                    key: msDesc.hash + '',
+                    resets: weekEnd,
+                    rewards: rewards,
+                    pl: this.parseMilestonePl(rewards),
+                    name: msDesc.displayProperties.name,
+                    desc: msDesc.displayProperties.description,
+                    hasPartial: false,
+                    dependsOn: []
+                };
+                milestoneList.push(ms);
+                milestonesByKey[ms.key] = ms;
+                msAdded = true;
+            }
+            if (msAdded) {
+
+                milestoneList.sort((a, b) => {
+                    if (a.pl < b.pl) { return 1; }
+                    if (a.pl > b.pl) { return -1; }
+                    if (a.rewards < b.rewards) { return 1; }
+                    if (a.rewards > b.rewards) { return -1; }
+                    if (a.name < b.name) { return -1; }
+                    if (a.name > b.name) { return 1; }
+                    return 0;
+                });
+
+            }
+
             // add Last wish if its missing, as it has been from public milestones for a while
             // if (milestonesByKey['3181387331'] == null) {
             //     const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
