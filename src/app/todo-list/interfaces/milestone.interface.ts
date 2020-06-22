@@ -3,6 +3,7 @@
  */
 
 import { DisplayProperties } from "./api.interface"
+import { Progress } from "./activity.interface";
 
 export interface MilestoneResponse {
   characterProgressions: CharacterProgressionsSet;
@@ -59,12 +60,12 @@ export interface QuestStatus {
 }
 
 export interface Objective extends Progress {
-  activityHash: number;
   complete: boolean;
   completionValue: number; // 100 represents the total # required to complete
-  destinationHash: number; // the name of the location on the planet
   progress: number; // represents progress towards the total
   visible: boolean;
+  activityHash?: number;
+  destinationHash?: number; // the name of the location on the planet
 }
 
 /**
@@ -96,18 +97,4 @@ export interface Milestone extends ManifestMilestone {
 export interface MilestoneCharInfo {
   available?: boolean;
   progress?: Progress; // TODO: track progress and define a better interface
-}
-
-export interface Progress {
-  progress: number;
-  completionValue: number;
-  progressType?: ProgressType
-}
-
-export enum ProgressType {
-  AUTOMATIC = 0,
-  FRACTION = 1,
-  CHECKBOX = 2,
-  PERCENTAGE = 3,
-  INTEGER = 6
 }

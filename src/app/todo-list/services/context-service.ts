@@ -28,7 +28,6 @@ export class ContextService extends Destroyable {
   public get currentUser(): SelectedUser { return this.user.getValue(); }
   public get currentCharacters(): Character[] { return this.characters.getValue(); }
 
-  // TODO: define a model for the rows to follow
   constructor(
     private http: HttpService,
     private bungieService: BungieService,

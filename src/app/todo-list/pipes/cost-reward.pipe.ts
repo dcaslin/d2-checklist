@@ -7,12 +7,19 @@ export class CostRewardPipe implements PipeTransform {
 
   constructor(private dictionary: DictionaryService) {}
 
-  transform(values: CostReward[], ...args: string[]): string[] {
-    const output = [];
+  transform(values: CostReward[], ...args: string[]): ManifestCostReward[] {
+    const output: ManifestCostReward[] = [];
     values.forEach(value => {
-      const manifestItem: InventoryItem = this.dictionary.findItem(value.itemHash);
-      output.push(`${manifestItem.displayProperties.name} ${value.quantity}`);
+      const item: InventoryItem = this.dictionary.findItem(value.itemHash);
+      if (!!item) { // reward arrays often have empty elements, but a set length of 6
+        output.push( { item, quantity: value.quantity } );
+      }
     });
     return output;
   }
+}
+
+export interface ManifestCostReward {
+  item: InventoryItem;
+  quantity: number;
 }

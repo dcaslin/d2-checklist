@@ -1,0 +1,12 @@
+<div class="multi-line-cell">
+  <div class="rewards-wrapper">
+    <div class="reward" *ngFor="let reward of data.rewards | costReward">
+      <d2c-bungie-icon
+        iconClass="icon size-22"
+        [icon]="reward.item.displayProperties.icon"
+        matTooltip="{{reward.item.displayProperties.name}}&#13;&#13;{{reward.item.displayProperties.description}}"
+        matTooltipClass="multi-line-tooltip">
+      </d2c-bungie-icon>
+    </div>
+  </div>
+</div>

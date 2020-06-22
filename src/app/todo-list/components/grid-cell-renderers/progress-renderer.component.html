@@ -1,18 +1,24 @@
 
 <div class="progress-cell">
-  <div [ngSwitch]="state">
-    <d2c-icon *ngSwitchCase="states.COMPLETE" class="accent-text" icon="fasCheckSquare"></d2c-icon>
-    <d2c-icon *ngSwitchCase="states.INCOMPLETE" icon="farSquare"></d2c-icon>
-    <d2c-icon *ngSwitchCase="states.IN_PROGRESS" class="accent-text" icon="farMinusSquare"></d2c-icon>
-    <!-- This covers the unknown progress cases -->
+
+  <!-- Progress Visual -->
+
+  <!-- Progress Visual: Single-checkbox style progress -->
+  <div *ngIf="data.progress.style === ProgressStyle.SINGLE_BOX" [ngSwitch]="data.progress.status">
+    <d2c-icon *ngSwitchCase="ActivityStatus.COMPLETE" class="accent-text" icon="fasCheckSquare"></d2c-icon>
+    <d2c-icon *ngSwitchCase="ActivityStatus.NOT_STARTED" icon="farSquare"></d2c-icon>
+    <d2c-icon *ngSwitchCase="ActivityStatus.IN_PROGRESS" class="accent-text" icon="farMinusSquare"></d2c-icon>
+    <!-- This covers the unknown progress cases and not available -->
     <d2c-icon *ngSwitchDefault class="faint" icon="farMinusSquare"></d2c-icon>
   </div>
+
+  <!-- Sub-text section -->
   <div
-    *ngIf="info.expirationDate; else showStatusText"
+    *ngIf="data.expirationDate; else showStatusText"
     class="warn-text"
-    [expDateToSeconds]="info.expirationDate"
+    [expDateToSeconds]="data.expirationDate"
     (newSecondValue)="count = $event">Expires in {{ count | timeUntil }}</div>
   <ng-template #showStatusText>
-    <div *ngIf="statusText" class="type-caption">{{statusText}}</div>
+    <div *ngIf="data.subText" class="type-caption">{{ data.subText }}</div>
   </ng-template>
 </div>

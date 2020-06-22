@@ -1,0 +1,13 @@
+
+.rewards-wrapper {
+  white-space: break-spaces;
+  align-self: center;
+
+  .reward {
+    display: inline-block;
+  }
+
+  .reward:not(:last-child) {
+    margin-right: 7px;
+  }
+}

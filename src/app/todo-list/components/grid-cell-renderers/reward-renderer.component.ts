@@ -4,30 +4,20 @@ import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
   selector: 'details-cell',
-  template: `
-  <div class="multi-line-cell" [matTooltip]="data.detailTooltip">
-    <div class="text-wrapper">
-      <div>{{ data.detailTitle }}</div>
-      <div class="type-caption">{{ data.detailSubText }}</div>
-    </div>
-  </div>
-  `,
-  styles: [`
-    .text-wrapper {
-      align-self: center;
-    }
-  `]
+  templateUrl: './reward-renderer.component.html',
+  styleUrls: ['./reward-renderer.component.scss']
 })
-export class DetailsRenderer implements ICellRendererAngularComp {
+export class RewardRenderer implements ICellRendererAngularComp {
   public params: any;
   public data: ActivityRow;
 
   /**
-   * Takes in the whole ActivityRow object
+   * should pass in a whole bounty/milestone object
    * @param params
    */
   agInit(params: any): void {
     this.params = params;
+    // If the status is for a bounty, set the status
     this.data = params.value;
   }
 

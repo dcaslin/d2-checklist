@@ -1,22 +1,23 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { GridOptions, ColDef, ValueGetterParams, GridReadyEvent, GridApi } from '@ag-grid-community/core';
-import { BountyCatalogService } from '@app/todo-list/services/bounty-catalog.service';
-import { Destroyable } from '@app/util/destroyable';
-import { takeUntil, filter } from 'rxjs/operators';
-import { Bounty, BountyCharInfo, SaleStatus } from '@app/todo-list/interfaces/vendor.interface';
-import { IconRenderer } from '../grid-cell-renderers/icon-renderer.component';
+import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Character } from '@app/todo-list/interfaces/player.interface';
+import { BountyCharInfo, SaleStatus } from '@app/todo-list/interfaces/vendor.interface';
+import { ActivityCatalogService } from '@app/todo-list/services/activity-catalog.service';
 import { ContextService } from '@app/todo-list/services/context-service';
-import { ProgressRenderer } from '../grid-cell-renderers/progress-renderer.component';
+import { Destroyable } from '@app/util/destroyable';
+import { filter, takeUntil } from 'rxjs/operators';
+
 import { DetailsRenderer } from '../grid-cell-renderers/details-renderer.component';
-import { VendorRenderer } from '../grid-cell-renderers/vendor-renderer.component';
+import { IconRenderer } from '../grid-cell-renderers/icon-renderer.component';
+import { ProgressRenderer } from '../grid-cell-renderers/progress-renderer.component';
+import { RewardRenderer } from '../grid-cell-renderers/reward-renderer.component';
+import { ActivityCharInfo, ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
   selector: 'd2c-todo-table',
   templateUrl: './todo-table.component.html',
-  styleUrls: ['./todo-table.component.scss']
+  styleUrls: ['./todo-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TodoTableComponent extends Destroyable implements OnInit {
 
@@ -30,10 +31,10 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   private chars: Character[];
 
   constructor(
-    public bountyService: BountyCatalogService,
+    public activityService: ActivityCatalogService,
     private context: ContextService,
     private cdRef: ChangeDetectorRef
-    ) {
+  ) {
     super();
     this.subToChars();
     this.initializeGridOptions();
@@ -49,20 +50,20 @@ export class TodoTableComponent extends Destroyable implements OnInit {
 
   private subToChars() {
     this.context.characters.pipe(
-        filter(x => !!x),
-        takeUntil(this.destroy$)
-      ).subscribe( chars => {
-        this.chars = chars;
-        // since the grid columns depend on the characters, we can't initialize
-        // the grid before we have the characters
-        this.initColumnDefs();
-        this.cdRef.markForCheck();
-      });
+      filter(x => !!x),
+      takeUntil(this.destroy$)
+    ).subscribe(chars => {
+      this.chars = chars;
+      // since the grid columns depend on the characters, we can't initialize
+      // the grid before we have the characters
+      this.initColumnDefs();
+      this.cdRef.markForCheck();
+    });
   }
 
   private applyInitialSort() {
     const defaultSortModel = [
-      { colId: 'vendor', sort: 'asc' }, // sort by vendor
+      { colId: 'reward', sort: 'asc' }, // sort by vendor
       { colId: 'details', sort: 'asc' }, // subsort by bounty type
     ];
     this.api.setSortModel(defaultSortModel);
@@ -71,9 +72,8 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   private initColumnDefs() {
     this.colDefs = [
       {
-        valueGetter: (params: ValueGetterParams) => params.data.displayProperties.icon,
+        field: 'icon',
         cellRenderer: 'iconRenderer',
-        colId: 'icon',
         width: 84, // 48 (icon) + 17 * 2 (padding) + 1 * 2 (border)
         filter: false,
         sortable: false,
@@ -85,16 +85,17 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         cellRenderer: 'detailsRenderer',
         headerName: 'Activity Details',
         colId: 'details',
-        comparator: (a, b) => a.itemTypeDisplayName.localeCompare(b.itemTypeDisplayName)
+        comparator: (a, b) => a.detailSubText.localeCompare(b.detailSubText) * -1 // want weekly on top
       },
       {
         valueGetter: (params: ValueGetterParams) => params.data,
-        cellRenderer: 'vendorRenderer',
-        headerName: 'Vendor',
-        colId: 'vendor',
-        width: 156,
+        cellRenderer: 'rewardRenderer',
+        headerName: 'Reward(s)',
+        colId: 'reward',
+        width: 124,
         suppressSizeToFit: true,
-        comparator: (a, b) => a.vendorName.localeCompare(b.vendorName)
+        resizable: false,
+        comparator: (a, b) => a.rewardSort.localeCompare(b.rewardSort)
       }
     ];
 
@@ -104,7 +105,6 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   private initializeGridOptions() {
     this.gridOptions = {
       defaultColDef: {
-        filter: true, // set filtering on for all columns
         sortable: true,
         resizable: true,
       },
@@ -112,7 +112,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         iconRenderer: IconRenderer,
         progressRenderer: ProgressRenderer,
         detailsRenderer: DetailsRenderer,
-        vendorRenderer: VendorRenderer
+        rewardRenderer: RewardRenderer
       },
       rowHeight: 70, // icons = 48px + 2 cell border + 20 padding (10 on top and bottom)
       onFirstDataRendered: () => {
@@ -124,44 +124,27 @@ export class TodoTableComponent extends Destroyable implements OnInit {
 
   private addCharacterColumns() {
     this.chars.forEach((char: Character) => {
-      console.log('character:', char);
       const charColumn: ColDef = {
         headerName: `${char.className} - ${char.light}`,
         colId: char.characterId,
-        valueGetter: params => {
-          const charData = params.data.chars[char.characterId];
-          return charData;
-        },
+        valueGetter: params => params.data.charInfo[char.characterId],
         cellRenderer: 'progressRenderer',
-        // Sort by expiration time
-        // I could also see wanting to sort by progress (complete/incomplete/in_progress)
-        comparator: (a: BountyCharInfo, b: BountyCharInfo) => this.charColComparator(a, b)
+        comparator: (a, b) => this.charColComparator(a, b)
       };
       this.colDefs.push(charColumn);
     });
   }
 
   /**
-   * Sort by expiration date, subsort by sale status
+   * When sorted, `expirationDate` is top priority, then completion `status`
    */
-  private charColComparator(a: BountyCharInfo, b: BountyCharInfo): number {
-    a = a || {} as BountyCharInfo;
-    b = b || {} as BountyCharInfo;
+  private charColComparator(a: ActivityCharInfo, b: ActivityCharInfo): number {
     const aExp = a.expirationDate;
     const bExp = b.expirationDate;
-    if (!aExp && !!bExp) { return 1 } // if a has no expiration and b has an expiration
-    if (!!aExp && !bExp) { return -1 } // if b has no expiration and a has an expiration
-    if (!aExp && !bExp) { // neither one has an expiration date, sub-sort by saleStatus
-      const aSale = a.saleStatus;
-      const bSale = b.saleStatus;
-      if (aSale === SaleStatus.NOT_AVAILABLE && b.saleStatus === SaleStatus.NOT_AVAILABLE) { return 0 }
-      if (aSale === SaleStatus.NOT_AVAILABLE) { return 1 }
-      if (bSale === SaleStatus.NOT_AVAILABLE) { return -1 }
-      if (aSale === undefined && bSale !== undefined) { return 1 }
-      if (bSale === undefined && aSale !== undefined) { return -1 }
-      return aSale - bSale;
+    if (aExp && bExp) {
+      return aExp.localeCompare(bExp);
     }
-    return aExp.localeCompare(bExp);
+    return a.progress.status - b.progress.status;
   }
 
 }

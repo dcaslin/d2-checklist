@@ -46,7 +46,7 @@ export interface Inventory {
 export interface ApiInventoryItem {
   itemHash: number; // 568515759
   expirationDate: string; // "2020-06-24T01:55:35Z"
-  itemInstanceId: string; // "6917529194608561468"
+  itemInstanceId: string; // "6917529194608561468" this is how to look up bounty progress
 }
 
 export interface InventoryMap {

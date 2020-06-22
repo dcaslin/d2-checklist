@@ -23,6 +23,9 @@
 
 }
 
+// By multi-line, I mean 2 lines.
 .multi-line-cell {
   line-height: 20px;
+  height: 100%;
+  display: flex;
 }
