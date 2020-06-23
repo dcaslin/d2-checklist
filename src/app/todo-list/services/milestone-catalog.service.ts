@@ -3,6 +3,7 @@ import { SelectedUser } from '@app/service/model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
+import { Destroyable } from '../../util/destroyable';
 import { API_ROOT } from '../constants/constants';
 import { ApiResponse } from '../interfaces/api.interface';
 import {
@@ -13,8 +14,8 @@ import {
   MilestoneCharInfo,
   MilestoneResponse,
   MilestoneSet,
+  MilestoneType,
 } from '../interfaces/milestone.interface';
-import { Destroyable } from '../../util/destroyable';
 import { ContextService } from './context-service';
 import { DictionaryService } from './dictionary.service';
 import { HttpService } from './http.service';
@@ -67,7 +68,9 @@ export class MilestoneCatalogService extends Destroyable {
     Object.keys(milestones).forEach((milestoneHash) => { // keyed by milestone hash
       const manifestMilestone: ManifestMilestone = this.dictionary.findMilestone(milestoneHash);
       const charMilestone: MilestoneApiData = milestones[milestoneHash];
-      this.addToMilestones(charMilestone, manifestMilestone, charId);
+      if (manifestMilestone.milestoneType === MilestoneType.WEEKLY) {
+        this.addToMilestones(charMilestone, manifestMilestone, charId);
+      }
     });
   }
 

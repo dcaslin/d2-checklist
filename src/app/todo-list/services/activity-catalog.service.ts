@@ -1,14 +1,33 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { BountyCatalogService } from './bounty-catalog.service';
-import { MilestoneCatalogService } from './milestone-catalog.service';
 import { Destroyable } from '@app/util/destroyable';
-import { takeUntil, filter } from 'rxjs/operators';
-import { Bounty, SaleStatus, BountyCharInfo } from '../interfaces/vendor.interface';
-import { Milestone } from '../interfaces/milestone.interface';
-import { ActivityRow, ActivityType, ActivityCharInfo, ProgressType, ProgressStyle, ActivityStatus } from '../interfaces/activity.interface';
-import { ContextService } from './context-service';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
+
+import {
+  ActivityCharInfo,
+  ActivityRow,
+  ActivityStatus,
+  ActivityType,
+  ProgressStyle,
+  ProgressType,
+} from '../interfaces/activity.interface';
+import {
+  BANSHEE_ICON,
+  CRUCIBLE_WEEKLY_BOUNTIES,
+  DRIFTER_ICON,
+  GAMBIT_WEEKLY_BOUNTIES,
+  GUNSMITH_WEEKLY_BOUNTIES,
+  Milestone,
+  RewardEntriesKeyed,
+  SHAXX_ICON,
+  VANGUARD_WEEKLY_BOUNTIES,
+  ZAVALA_ICON,
+} from '../interfaces/milestone.interface';
 import { Character } from '../interfaces/player.interface';
+import { Bounty, BountyCharInfo, CostReward, SaleStatus } from '../interfaces/vendor.interface';
+import { BountyCatalogService } from './bounty-catalog.service';
+import { ContextService } from './context-service';
+import { MilestoneCatalogService } from './milestone-catalog.service';
 
 /**
  * The service that drives the todo-list page.
@@ -27,13 +46,17 @@ export class ActivityCatalogService extends Destroyable {
   constructor(
     private bountyService: BountyCatalogService,
     private milestoneService: MilestoneCatalogService,
+    // private playerService: PlayerStateService,
     private context: ContextService
   ) {
     super();
-    this.initRowsCache();
+    this.initRows();
+    // this.playerService.player.subscribe((player) => {
+    //   console.log('got player', player); // got player null (output)
+    // });
   }
 
-  private initRowsCache() {
+  private initRows() {
     combineLatest([
       this.bountyService.bountyCatalog,
       this.milestoneService.milestoneCatalog
@@ -59,11 +82,20 @@ export class ActivityCatalogService extends Destroyable {
    */
   private convertToRowModel(b: Bounty[], m: Milestone[]): ActivityRow[] {
     const output: ActivityRow[] = [];
+    
+    m.forEach((milestone: Milestone, index) => {
+      output.push(this.convertMilestone(milestone, index));
+    });
     b.forEach((bounty: Bounty) => {
       output.push(this.convertBounty(bounty));
     });
     return output;
   }
+
+  /**
+   * BOUNTY FUNCTIONS
+   * ================
+   */
 
   private convertBounty(b: Bounty): ActivityRow {
     // If we're parsing bounties, it's safe to assume that the characters
@@ -115,6 +147,88 @@ export class ActivityCatalogService extends Destroyable {
     return charInfo;
   }
 
+  /**
+   * MILESTONE FUNCTIONS
+   * ===================
+   */
+
+   // TODO remove index
+   private convertMilestone(m: Milestone, index: number) {
+    // If we're parsing milestones, it's safe to assume that the characters
+    // will be initialized
+    const chars = this.context.currentCharacters;
+    const row: ActivityRow = {
+      icon: this.milestoneIcon(m),
+      detailTitle: m.displayProperties.name,
+      detailSubText: `${m.hash} [${index}]`, // TODO put something meaningful here
+      detailTooltip: m.displayProperties.description,
+      rewards: this.milestoneReward(m),
+      rewardSort: this.milestoneRewardSortText(m),
+      charInfo: { },
+      type: ActivityType.BOUNTY,
+      subType: '',
+      hash: m.hash
+    };
+    chars.forEach(char => {
+      row.charInfo[char.characterId] = this.extractMilestoneCharInfo(m, char);
+    });
+    return row;
+  }
+
+  private milestoneReward(m: Milestone): CostReward[] {
+    const output: CostReward[] = [];
+    if (m.rewards) {
+      const rewards = m.rewards;
+
+      Object.keys(m.rewards).forEach(categoryHash => {
+        const keyedRewards: RewardEntriesKeyed = rewards[categoryHash].rewardEntries;
+
+        Object.keys(keyedRewards).forEach(rewardEntryHash => {
+          output.push(...keyedRewards[rewardEntryHash].items);
+        });
+      });
+    }
+    return output;
+  }
+
+  private milestoneRewardSortText(m: Milestone): string {
+    return '';
+    // return m.inventory.stackUniqueLabel.split('.weekly')[0].split('.daily')[0];
+  }
+
+  private milestoneIcon(m: Milestone): string {
+    return m.displayProperties.icon || MILESTONE_ICON[m.hash];
+  }
+
+  private extractMilestoneCharInfo(m: Milestone, c: Character): any {
+    const mci = m.chars[c.characterId] || {} as BountyCharInfo; // bounty char info
+    // clean up data if a character doesn't have any info for the bounty
+    // if (mci.saleStatus === undefined) { mci.saleStatus = SaleStatus.NOT_AVAILABLE }
+    // const charInfo: ActivityCharInfo = {
+    //   progress: {
+    //     complete: mci.saleStatus === SaleStatus.COMPLETED,
+    //     progressType: ProgressType.PARTIAL_CHECK,
+    //     style: ProgressStyle.SINGLE_BOX,
+    //     status: BOUNTY_STATUSES[mci.saleStatus]
+    //   },
+    //   expirationDate: mci.expirationDate || '',
+    //   subText: BOUNTY_STATUSES[mci.saleStatus] === ActivityStatus.NOT_AVAILABLE ? 'Not Available' : ''
+    // };
+    // return charInfo;
+    return { progress: {} };
+  }
+
+}
+
+/**
+ * Use this to get an icon if there isn't usually an icon associated with the milestone
+ * Keys are the milestone hash
+ */
+const MILESTONE_ICON = {
+  [CRUCIBLE_WEEKLY_BOUNTIES]: SHAXX_ICON,
+  [GUNSMITH_WEEKLY_BOUNTIES]: BANSHEE_ICON,
+  [VANGUARD_WEEKLY_BOUNTIES]: ZAVALA_ICON,
+  [GAMBIT_WEEKLY_BOUNTIES]: DRIFTER_ICON
 }
 
 const BOUNTY_STATUSES = {

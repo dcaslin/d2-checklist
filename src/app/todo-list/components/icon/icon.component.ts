@@ -1,11 +1,12 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 
 @Component({
   selector: 'd2c-icon',
   template: `<fa-icon [icon]="iconObject"></fa-icon>`,
-  styleUrls: ['./icon.component.scss']
+  styleUrls: ['./icon.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconComponent {
 

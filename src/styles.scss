@@ -398,3 +398,11 @@ mat-form-field.full-width .mat-form-field-infix{
   white-space: pre-line;
 }
 
+// put this on text to give it a `...` at the end before it overflows
+// the parent container needs to have a static width
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+

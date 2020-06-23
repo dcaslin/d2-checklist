@@ -1,11 +1,12 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { Component } from '@angular/core';
-import { ActivityCharInfo, ProgressStyle, ActivityStatus } from '@app/todo-list/interfaces/activity.interface';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivityCharInfo, ActivityStatus, ProgressStyle } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
   selector: 'progress-cell',
   templateUrl: './progress-renderer.component.html',
-  styleUrls: ['./progress-renderer.component.scss']
+  styleUrls: ['./progress-renderer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProgressRenderer implements ICellRendererAngularComp {
   public params: any;

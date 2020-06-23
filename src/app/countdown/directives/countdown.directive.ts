@@ -1,6 +1,6 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import * as moment from 'moment';
-import { Subject, timer } from 'rxjs';
+import { Subject } from 'rxjs';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';

@@ -1,4 +1,4 @@
-import { CostReward } from "./vendor.interface";
+import { CostReward } from './vendor.interface';
 
 export interface ActivityRow {
   icon: string;
@@ -9,7 +9,10 @@ export interface ActivityRow {
   rewardSort: string; // used to sort the rewards column
   charInfo: { [key: string]: ActivityCharInfo }; // key is character ID
   type: ActivityType;
-  subType: string; // information like 'Daily' vs 'Weekly' Potentially will be used for filtering/sorting
+  /**
+   * information like 'Daily' vs 'Weekly' Potentially will be used for filtering/sorting
+   */
+  subType: string;
   hash: number; // this is for debug purposes only
 }
 

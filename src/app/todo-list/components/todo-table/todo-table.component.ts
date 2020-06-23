@@ -1,7 +1,7 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivityCharInfo } from '@app/todo-list/interfaces/activity.interface';
 import { Character } from '@app/todo-list/interfaces/player.interface';
-import { BountyCharInfo, SaleStatus } from '@app/todo-list/interfaces/vendor.interface';
 import { ActivityCatalogService } from '@app/todo-list/services/activity-catalog.service';
 import { ContextService } from '@app/todo-list/services/context-service';
 import { Destroyable } from '@app/util/destroyable';
@@ -11,7 +11,6 @@ import { DetailsRenderer } from '../grid-cell-renderers/details-renderer.compone
 import { IconRenderer } from '../grid-cell-renderers/icon-renderer.component';
 import { ProgressRenderer } from '../grid-cell-renderers/progress-renderer.component';
 import { RewardRenderer } from '../grid-cell-renderers/reward-renderer.component';
-import { ActivityCharInfo, ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
   selector: 'd2c-todo-table',
@@ -21,11 +20,9 @@ import { ActivityCharInfo, ActivityRow } from '@app/todo-list/interfaces/activit
 })
 export class TodoTableComponent extends Destroyable implements OnInit {
 
-  // ag grid shittttt
+  // ag grid variables
   public gridOptions: GridOptions = {};
   public colDefs: ColDef[];
-  // public rowData: Bounty[];
-
   private api: GridApi;
 
   private chars: Character[];
@@ -62,11 +59,12 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   }
 
   private applyInitialSort() {
-    const defaultSortModel = [
-      { colId: 'reward', sort: 'asc' }, // sort by vendor
-      { colId: 'details', sort: 'asc' }, // subsort by bounty type
-    ];
-    this.api.setSortModel(defaultSortModel);
+    // TODO
+    // const defaultSortModel = [
+    //   { colId: 'reward', sort: 'asc' }, // sort by vendor
+    //   { colId: 'details', sort: 'asc' }, // subsort by bounty type
+    // ];
+    // this.api.setSortModel(defaultSortModel);
   }
 
   private initColumnDefs() {
@@ -87,7 +85,13 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         colId: 'details',
         comparator: (a, b) => a.detailSubText.localeCompare(b.detailSubText) * -1 // want weekly on top
       },
-      {
+      { // TODO: performance is stutter-y when scrolling, probably due to the large amount of icons
+        // add an option to toggle off icon rendering? Would need to replace with something more performance-friendly
+        //
+        // Another option could be to disable viewport-rendering. Ag-grid by default only renders (and initializes)
+        // rows in and immediately around the current visible window. If we force it to render all the rows initially,
+        // then the performance hit would be worse up-front, but scrolling would be smoother because it
+        // wouldn't be destroying and initializing these expensive-to-initialize components
         valueGetter: (params: ValueGetterParams) => params.data,
         cellRenderer: 'rewardRenderer',
         headerName: 'Reward(s)',

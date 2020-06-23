@@ -1,11 +1,12 @@
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
   selector: 'details-cell',
   templateUrl: './reward-renderer.component.html',
-  styleUrls: ['./reward-renderer.component.scss']
+  styleUrls: ['./reward-renderer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RewardRenderer implements ICellRendererAngularComp {
   public params: any;
