@@ -105,6 +105,10 @@ export class BountyCatalogService extends Destroyable {
       Object.keys(vendorSales).forEach((key) => { // key is arbitrary
         const rawItem: SaleItem = vendorSales[key];
         const manifestItem: InventoryItem = this.dictionary.findItem(rawItem.itemHash);
+        if (!manifestItem) {
+          console.log(`Skipping unknown inventory item: ${rawItem.itemHash}. If you see this message, tell me to update the manifest! reddit.com/r/destinychecklistnet/`);
+          return;
+        }
         if (this.isBounty(manifestItem)) {
           vendor = vendor || this.dictionary.findVendor(vendorHash);
           const vendorName = vendor.displayProperties.name;

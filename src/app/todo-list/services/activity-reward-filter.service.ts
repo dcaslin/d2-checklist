@@ -161,7 +161,11 @@ export class ActivityRewardFilterService extends Destroyable {
    */
   private applyFilterSettings(rewards: InventoryItem[]): TogglableItem[] {
     const output: TogglableItem[] = [];
-    const settings: RewardSettings = this.storage.getItem(REWARD_KEY);
+    let settings: RewardSettings = this.storage.getItem(REWARD_KEY);
+    if (!!settings && Object.keys(settings).length === 0) {
+      // filter object saved, but there were no active filters. Assume it was a bug
+      settings = undefined;
+    }
     rewards.forEach((reward: InventoryItem) => {
       output.push({
         ...reward,

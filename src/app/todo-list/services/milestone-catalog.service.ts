@@ -68,6 +68,10 @@ export class MilestoneCatalogService extends Destroyable {
     Object.keys(milestones).forEach((milestoneHash) => { // keyed by milestone hash
       const manifestMilestone: ManifestMilestone = this.dictionary.findMilestone(milestoneHash);
       const charMilestone: MilestoneApiData = milestones[milestoneHash];
+      if (!manifestMilestone) {
+        console.log(`Skipping unknown milestone: ${milestoneHash}. If you see this message, tell me to update the manifest! reddit.com/r/destinychecklistnet/`);
+        return; // acts like `continue` in a forEach
+      }
       if (manifestMilestone.milestoneType === MilestoneType.WEEKLY) {
         this.addToMilestones(charMilestone, manifestMilestone, charId);
       }

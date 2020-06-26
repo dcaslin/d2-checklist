@@ -65,7 +65,12 @@ export class ActivityTypeFilterService extends Destroyable {
   }
 
   public loadFilterSettings() {
-    this.settings = this.storage.getItem(TYPE_KEY);
+    let settings = this.storage.getItem(TYPE_KEY);
+    if (!!settings && Object.keys(settings).length === 0) {
+      // filter object saved, but there were no active filters. Assume it was a bug
+      settings = undefined;
+    }
+    this.settings = settings;
   }
 
   /**
