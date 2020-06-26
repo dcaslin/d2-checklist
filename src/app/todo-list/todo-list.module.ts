@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BungieIconModule } from '@app/bungie-icon/bungie-icon.module';
 import { CountdownModule } from '@app/countdown/countdown.module';
+import { SignInRequiredModule } from '@app/shared/sign-in-required/sign-in-required.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ActivityFiltersComponent } from './components/filters/activity-filters/activity-filters.component';
@@ -35,7 +36,7 @@ import { MilestoneCatalogService } from './services/milestone-catalog.service';
 import { TodoListRoutingModule } from './todo-list-routing.module';
 
 ModuleRegistry.registerModules([
-    ClientSideRowModelModule
+  ClientSideRowModelModule
 ]);
 
 @NgModule({
@@ -53,7 +54,8 @@ ModuleRegistry.registerModules([
     CountdownModule,
     BungieIconModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    SignInRequiredModule
   ],
   declarations: [
     TodoListComponent,

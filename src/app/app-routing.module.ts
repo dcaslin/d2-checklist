@@ -25,7 +25,6 @@ import { ClanTriumphsComponent } from './clan/clan-triumphs/clan-triumphs.compon
 import { FriendsComponent } from './friends';
 import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 import { GearComponent } from './gear';
-import { LoggedInGuard } from './guards/logged-in.guard';
 import { HistoryComponent } from './history';
 import { HomeComponent } from './home';
 import { PartyComponent } from './party/party.component';
@@ -392,7 +391,7 @@ export class AuthGuard implements CanActivate {
     {
       path: 'todo-list',
       pathMatch: 'full',
-      canActivate: [AuthGuard, LoggedInGuard],
+      canActivate: [AuthGuard],
       loadChildren: () => import('./todo-list/todo-list.module').then(m => m.TodoListModule)
     },
     {

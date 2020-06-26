@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '@app/service/auth.service';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';
@@ -16,10 +17,11 @@ export class TodoListComponent extends Destroyable implements OnInit {
   public filterButtonText: string = 'Edit Filters';
 
   constructor(
+    public auth: AuthService,
     private bountyService: BountyCatalogService,
     private milestoneService: MilestoneCatalogService
   ) {
-    super()
+    super();
   }
 
   ngOnInit(): void {
