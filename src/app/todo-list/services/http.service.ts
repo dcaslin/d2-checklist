@@ -31,7 +31,7 @@ export class HttpService {
 
   private loadAuthKey() {
     this.auth.authFeed.subscribe((info: AuthInfo) => {
-      this.authHeader = info.header;
+      this.authHeader = info?.header;
     });
   }
 
