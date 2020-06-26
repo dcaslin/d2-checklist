@@ -3,12 +3,18 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BungieIconModule } from '@app/bungie-icon/bungie-icon.module';
 import { CountdownModule } from '@app/countdown/countdown.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { BountyFiltersComponent } from './components/bounty-filters/bounty-filters.component';
+import { ActivityFiltersComponent } from './components/filters/activity-filters/activity-filters.component';
+import {
+  ActivityRewardFiltersComponent,
+} from './components/filters/activity-reward-filters/activity-reward-filters.component';
+import { ActivityTypeFiltersComponent } from './components/filters/activity-type-filters/activity-type-filters.component';
 import { DetailsRenderer } from './components/grid-cell-renderers/details-renderer.component';
 import { IconRenderer } from './components/grid-cell-renderers/icon-renderer.component';
 import { ProgressRenderer } from './components/grid-cell-renderers/progress-renderer.component';
@@ -18,6 +24,9 @@ import { TodoListComponent } from './components/todo-list.component';
 import { TodoTableComponent } from './components/todo-table/todo-table.component';
 import { CostRewardPipe } from './pipes/cost-reward.pipe';
 import { ActivityCatalogService } from './services/activity-catalog.service';
+import { ActivityFilterService } from './services/activity-filter.service';
+import { ActivityRewardFilterService } from './services/activity-reward-filter.service';
+import { ActivityTypeFilterService } from './services/activity-type-filter.service';
 import { BountyCatalogService } from './services/bounty-catalog.service';
 import { ContextService } from './services/context-service';
 import { DictionaryService } from './services/dictionary.service';
@@ -42,7 +51,9 @@ ModuleRegistry.registerModules([
     MatTooltipModule,
     FontAwesomeModule,
     CountdownModule,
-    BungieIconModule
+    BungieIconModule,
+    MatCardModule,
+    MatButtonModule
   ],
   declarations: [
     TodoListComponent,
@@ -53,7 +64,9 @@ ModuleRegistry.registerModules([
     RewardRenderer,
     CostRewardPipe,
     IconComponent,
-    BountyFiltersComponent,
+    ActivityRewardFiltersComponent,
+    ActivityFiltersComponent,
+    ActivityTypeFiltersComponent
   ],
   providers: [
     ActivityCatalogService,
@@ -62,6 +75,9 @@ ModuleRegistry.registerModules([
     DictionaryService,
     HttpService,
     MilestoneCatalogService,
+    ActivityFilterService,
+    ActivityTypeFilterService,
+    ActivityRewardFilterService
   ],
   exports: [
     TodoListComponent,

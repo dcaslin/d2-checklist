@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { Destroyable } from '../../util/destroyable';
 import { BountyCatalogService } from '../services/bounty-catalog.service';
 import { MilestoneCatalogService } from '../services/milestone-catalog.service';
-import { Destroyable } from '../../util/destroyable';
 
 @Component({
   selector: 'd2c-todo-list',
@@ -11,6 +11,9 @@ import { Destroyable } from '../../util/destroyable';
   styleUrls: ['./todo-list.component.scss']
 })
 export class TodoListComponent extends Destroyable implements OnInit {
+
+  public filterPanelOpen: boolean = false;
+  public filterButtonText: string = 'Edit Filters';
 
   constructor(
     private bountyService: BountyCatalogService,
@@ -33,5 +36,10 @@ export class TodoListComponent extends Destroyable implements OnInit {
     ).subscribe((milestones) => {
       console.log('Account milestones', milestones);
     })
+  }
+
+  public toggleFilterPanel() {
+    this.filterPanelOpen = !this.filterPanelOpen;
+    this.filterButtonText = this.filterPanelOpen ? 'Hide Filters' : 'Edit Filters';
   }
 }

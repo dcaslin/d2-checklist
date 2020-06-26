@@ -1,16 +1,21 @@
 
-<div class="main">
-  <!-- <div class="filter-wrapper">
-    <d2c-bounty-filters></d2c-bounty-filters>
-    <d2c-bounty-filters></d2c-bounty-filters>
-  </div> -->
-  <div class="grid-wrapper">
-    <p class="type-caption">
+<div class="main left">
+  <button
+    mat-button
+    class="mat-accent mat-raised-button"
+    (click)="toggleFilterPanel()">
+    {{ filterButtonText }}
+  </button>
+  <div [hidden]="!filterPanelOpen" class="filter-wrapper margin-top-20">
+    <d2c-activity-filters></d2c-activity-filters>
+  </div>
+  <div class="grid-wrapper margin-top-20">
+    <!-- <p class="type-caption">
       WIP! To sort by a column, click the header. To sort by multiple columns,
       hold shift and click the headers in the order you want to sort by.
       The <strong>Activity Details</strong> column will sort by weekly vs daily bounties.
       The <strong>Character</strong> columns will sort by completion state, prioritizing in-progress bounties.
-    </p>
+    </p> -->
     <d2c-todo-table></d2c-todo-table>
   </div>
 </div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ItemType } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import * as moment from 'moment';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';
@@ -30,7 +30,7 @@ import { HttpService } from './http.service';
 @Injectable()
 export class BountyCatalogService extends Destroyable {
 
-  public bountyCatalog: BehaviorSubject<Bounty[]> = new BehaviorSubject(null);
+  public bountyCatalog: ReplaySubject<Bounty[]> = new ReplaySubject(null);
 
   private chars: Character[];
   private uniqueBounties: { [key: string]: Bounty } = {};

@@ -16,6 +16,7 @@
 
 @import 'styles-reset.scss-theme';
 @import 'app/app.component.scss-theme';
+@import '_util.scss';
 
 @mixin custom-components-theme($theme) {
   @include d2c-styles-reset-theme($theme);
@@ -391,6 +392,11 @@ mat-form-field.full-width .mat-form-field-infix{
     width: 22px;
     height: 22px;
   }
+
+  &.size-40 {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 // add &#13; between your strings to break them into different lines
@@ -406,3 +412,32 @@ mat-form-field.full-width .mat-form-field-infix{
   text-overflow: ellipsis;
 }
 
+.grid-parent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  grid-auto-flow: row dense;
+
+  .mat-card {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .mat-card-header {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+  }
+  
+  .mat-card-actions {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+  }
+  
+  .mat-card-content{
+    flex-grow: 1;
+    // outline: 1px solid red; // uncomment to see test outlines
+  }
+}

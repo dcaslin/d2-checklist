@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 
 @Component({
   selector: 'd2c-icon',
-  template: `<fa-icon [icon]="iconObject"></fa-icon>`,
+  template: `<fa-icon [size]="size" [icon]="iconObject"></fa-icon>`,
   styleUrls: ['./icon.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -18,6 +19,11 @@ export class IconComponent {
   @Input() set icon(value: string) {
     this.iconObject = this.iconService[value];
   }
+
+  /**
+   * If you want an icon that isn't the default size
+   */
+  @Input() size: SizeProp;
 
   constructor(private iconService: IconService) { }
 

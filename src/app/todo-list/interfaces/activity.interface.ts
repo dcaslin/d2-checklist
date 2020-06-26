@@ -1,7 +1,15 @@
-import { CostReward } from './vendor.interface';
+import { Milestone } from './milestone.interface';
+import { Bounty, CostReward } from './vendor.interface';
 
+/**
+ * Represents "cooked" values for displaying rows in the
+ * todo-list table
+ */
 export interface ActivityRow {
   icon: string;
+  iconSort: string; // the icon column will use this to sort
+  iconTooltip: string;
+  timespan: Timespan;
   detailTitle: string; // ususally the name
   detailSubText: string;
   detailTooltip?: string;
@@ -14,6 +22,7 @@ export interface ActivityRow {
    */
   subType: string;
   hash: number; // this is for debug purposes only
+  originalItem: Bounty | Milestone // debug purposes only
 }
 
 export interface ActivityCharInfo {
@@ -71,4 +80,9 @@ export enum ActivityStatus {
   IN_PROGRESS = 1,
   COMPLETE = 3,
   NOT_AVAILABLE = 4,
+}
+
+export enum Timespan {
+  WEEKLY = 'Weekly',
+  DAILY = 'Daily'
 }

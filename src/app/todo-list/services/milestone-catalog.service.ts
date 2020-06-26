@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SelectedUser } from '@app/service/model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';
@@ -27,7 +27,7 @@ import { HttpService } from './http.service';
 @Injectable()
 export class MilestoneCatalogService extends Destroyable {
 
-  public milestoneCatalog: BehaviorSubject<Milestone[]> = new BehaviorSubject(null);
+  public milestoneCatalog: ReplaySubject<Milestone[]> = new ReplaySubject(1);
 
   private uniqueMilestones: { [key: string]: Milestone } = {};
 
@@ -48,7 +48,7 @@ export class MilestoneCatalogService extends Destroyable {
     ).subscribe((resp: ApiResponse<MilestoneResponse>) => {
       const charProgressions = resp.Response.characterProgressions.data;
       Object.keys(resp.Response.characterProgressions.data).forEach(charId => {
-        this.extractMilestones(charProgressions[charId], charId);
+        // this.extractMilestones(charProgressions[charId], charId);
       });
       this.milestoneCatalog.next(Object.values(this.uniqueMilestones));
     });

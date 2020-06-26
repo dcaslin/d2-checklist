@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Destroyable } from '@app/util/destroyable';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { combineLatest, ReplaySubject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import {
@@ -10,6 +10,7 @@ import {
   ActivityType,
   ProgressStyle,
   ProgressType,
+  Timespan,
 } from '../interfaces/activity.interface';
 import {
   BANSHEE_ICON,
@@ -41,7 +42,7 @@ import { MilestoneCatalogService } from './milestone-catalog.service';
 @Injectable()
 export class ActivityCatalogService extends Destroyable {
 
-  public activityRows: BehaviorSubject<ActivityRow[]> = new BehaviorSubject(null);
+  public activityRows: ReplaySubject<ActivityRow[]> = new ReplaySubject(1);
 
   constructor(
     private bountyService: BountyCatalogService,
@@ -82,7 +83,7 @@ export class ActivityCatalogService extends Destroyable {
    */
   private convertToRowModel(b: Bounty[], m: Milestone[]): ActivityRow[] {
     const output: ActivityRow[] = [];
-    
+
     m.forEach((milestone: Milestone, index) => {
       output.push(this.convertMilestone(milestone, index));
     });
@@ -103,15 +104,19 @@ export class ActivityCatalogService extends Destroyable {
     const chars = this.context.currentCharacters;
     const row: ActivityRow = {
       icon: b.displayProperties.icon,
+      iconSort: this.bountyVendorSortText(b),
+      iconTooltip: b.vendorName || NO_VENDOR_TEXT,
+      timespan: this.getBountyTimespan(b),
       detailTitle: b.displayProperties.name,
       detailSubText: b.itemTypeDisplayName,
       detailTooltip: b.displayProperties.description,
       rewards: b.value.itemValue,
-      rewardSort: this.bountyRewardSortText(b),
-      charInfo: { },
+      rewardSort: '',
+      charInfo: {},
       type: ActivityType.BOUNTY,
       subType: b.itemTypeDisplayName,
-      hash: b.hash
+      hash: b.hash,
+      originalItem: b,
     };
     chars.forEach(char => {
       row.charInfo[char.characterId] = this.extractBountyCharInfo(b, char);
@@ -119,7 +124,15 @@ export class ActivityCatalogService extends Destroyable {
     return row;
   }
 
-  private bountyRewardSortText(b: Bounty): string {
+  private getBountyTimespan(b: Bounty): Timespan {
+    const label = b.inventory.stackUniqueLabel;
+    return label.includes('.weekly') // most vendor's weekly bounties have this keyword
+      || label.includes('.outlaws') // spider's weeklies have the outlaws keyword
+      || label.includes('.penumbra') // werner only has weeklies
+      ? Timespan.WEEKLY : Timespan.DAILY;
+  }
+
+  private bountyVendorSortText(b: Bounty): string {
     // by default, the stackUniqueLabel also has daily/weekly identifiers in it
     // so if we want to be able to sort by the rewards col and not have that
     // be weekly/daily dependent, we need to remove those identifiers
@@ -152,22 +165,26 @@ export class ActivityCatalogService extends Destroyable {
    * ===================
    */
 
-   // TODO remove index
-   private convertMilestone(m: Milestone, index: number) {
+  // TODO remove index
+  private convertMilestone(m: Milestone, index: number) {
     // If we're parsing milestones, it's safe to assume that the characters
     // will be initialized
     const chars = this.context.currentCharacters;
     const row: ActivityRow = {
       icon: this.milestoneIcon(m),
+      iconSort: 'milestone', // TODO more meaningful
+      iconTooltip: 'a milestone', // TODO more meaningful
+      timespan: Timespan.WEEKLY,
       detailTitle: m.displayProperties.name,
       detailSubText: `${m.hash} [${index}]`, // TODO put something meaningful here
       detailTooltip: m.displayProperties.description,
       rewards: this.milestoneReward(m),
       rewardSort: this.milestoneRewardSortText(m),
-      charInfo: { },
+      charInfo: {},
       type: ActivityType.BOUNTY,
       subType: '',
-      hash: m.hash
+      hash: m.hash,
+      originalItem: m,
     };
     chars.forEach(char => {
       row.charInfo[char.characterId] = this.extractMilestoneCharInfo(m, char);
@@ -202,19 +219,6 @@ export class ActivityCatalogService extends Destroyable {
 
   private extractMilestoneCharInfo(m: Milestone, c: Character): any {
     const mci = m.chars[c.characterId] || {} as BountyCharInfo; // bounty char info
-    // clean up data if a character doesn't have any info for the bounty
-    // if (mci.saleStatus === undefined) { mci.saleStatus = SaleStatus.NOT_AVAILABLE }
-    // const charInfo: ActivityCharInfo = {
-    //   progress: {
-    //     complete: mci.saleStatus === SaleStatus.COMPLETED,
-    //     progressType: ProgressType.PARTIAL_CHECK,
-    //     style: ProgressStyle.SINGLE_BOX,
-    //     status: BOUNTY_STATUSES[mci.saleStatus]
-    //   },
-    //   expirationDate: mci.expirationDate || '',
-    //   subText: BOUNTY_STATUSES[mci.saleStatus] === ActivityStatus.NOT_AVAILABLE ? 'Not Available' : ''
-    // };
-    // return charInfo;
     return { progress: {} };
   }
 
@@ -238,3 +242,5 @@ const BOUNTY_STATUSES = {
   [SaleStatus.NOT_AVAILABLE]: ActivityStatus.NOT_AVAILABLE,
   [SaleStatus.ALREADY_HELD]: ActivityStatus.IN_PROGRESS
 }
+
+const NO_VENDOR_TEXT = 'This bounty is already in your inventory, so it\'s not technically linked to a vendor!'

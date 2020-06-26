@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@
 import { ActivityCharInfo } from '@app/todo-list/interfaces/activity.interface';
 import { Character } from '@app/todo-list/interfaces/player.interface';
 import { ActivityCatalogService } from '@app/todo-list/services/activity-catalog.service';
+import { ActivityFilterService } from '@app/todo-list/services/activity-filter.service';
 import { ContextService } from '@app/todo-list/services/context-service';
 import { Destroyable } from '@app/util/destroyable';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -29,6 +30,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
 
   constructor(
     public activityService: ActivityCatalogService,
+    private filterService: ActivityFilterService,
     private context: ContextService,
     private cdRef: ChangeDetectorRef
   ) {
@@ -42,6 +44,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
 
   public onGridReady(event: GridReadyEvent) {
     this.api = event.api;
+    this.filterService.registerGrid(event.api);
     this.applyInitialSort();
   }
 
@@ -60,23 +63,24 @@ export class TodoTableComponent extends Destroyable implements OnInit {
 
   private applyInitialSort() {
     // TODO
-    // const defaultSortModel = [
-    //   { colId: 'reward', sort: 'asc' }, // sort by vendor
-    //   { colId: 'details', sort: 'asc' }, // subsort by bounty type
-    // ];
-    // this.api.setSortModel(defaultSortModel);
+    const defaultSortModel = [
+      { colId: 'icon', sort: 'asc' }, // sort by vendor
+      { colId: 'details', sort: 'asc' }, // subsort by bounty type
+    ];
+    this.api.setSortModel(defaultSortModel);
   }
 
   private initColumnDefs() {
     this.colDefs = [
       {
-        field: 'icon',
+        valueGetter: (params: ValueGetterParams) => params.data,
         cellRenderer: 'iconRenderer',
+        colId: 'icon',
         width: 84, // 48 (icon) + 17 * 2 (padding) + 1 * 2 (border)
         filter: false,
-        sortable: false,
         resizable: false,
         suppressSizeToFit: true,
+        comparator: (a, b) => a.iconSort.localeCompare(b.iconSort)
       },
       {
         valueGetter: (params: ValueGetterParams) => params.data,
@@ -122,7 +126,9 @@ export class TodoTableComponent extends Destroyable implements OnInit {
       onFirstDataRendered: () => {
         this.applyInitialSort();
         this.api.sizeColumnsToFit();
-      }
+      },
+      isExternalFilterPresent: () => true,
+      doesExternalFilterPass: (node) => this.filterService.doesRowPassFilters(node.data)
     }
   }
 
