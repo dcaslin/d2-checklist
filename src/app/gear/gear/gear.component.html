@@ -127,7 +127,7 @@
           <mat-form-field class="wildcard-filter">
             <mat-label>Wildcard filter</mat-label>
             <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="visibleFilterText"
-              placeholder="Name, perk or is:godroll" (keyup)="filterKeyUp.next()">
+              placeholder="Name, perk or is:goodroll" (keyup)="filterKeyUp.next()">
             <button mat-button *ngIf="visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
               (click)="visibleFilterText=null;parseWildcardFilter()">
               <mat-icon>close</mat-icon>
@@ -137,8 +137,8 @@
             </button>
             <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
               (optionSelected)="autoCompleteSelected($event)">
-              <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option">
-                {{option}}
+              <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option.value">                
+                {{option.value}} <span *ngIf="option.desc" class="simple-caption">{{option.desc}}</span>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>

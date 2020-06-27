@@ -3885,7 +3885,7 @@ export class ParseService {
 
             searchText = desc.displayProperties.name;
             if (mw != null) {
-                searchText += ' mw:' + mw.name;
+                searchText += ' is:mw:' + mw.name;
             }
             if (masterworked) {
                 searchText += ' is:masterwork';
