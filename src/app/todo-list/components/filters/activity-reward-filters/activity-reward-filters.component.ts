@@ -45,4 +45,11 @@ export class ActivityRewardFiltersComponent extends Destroyable {
     });
     this.activityFilter.pushUpdatesToTable();
   }
+
+  public showGear() {
+    this.rewards.forEach((reward) => {
+      reward.d2cActive = reward.displayProperties.name.toLowerCase().includes('gear');
+    });
+    this.activityFilter.pushUpdatesToTable();
+  }
 }

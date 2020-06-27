@@ -13,6 +13,8 @@
         <ng-container *ngTemplateOutlet="itemList;context:{state: true}"></ng-container>
       </mat-card-content>
       <mat-card-actions align="end">
+        <button mat-raised-button (click)="showType(ActivityType.MILESTONE)">Only Milestones</button>
+        <button mat-raised-button (click)="showType(ActivityType.BOUNTY)">Only Bounties</button>
         <button mat-raised-button (click)="showTimespan(Timespan.WEEKLY)">Only Weekly</button>
         <button mat-raised-button (click)="showTimespan(Timespan.DAILY)">Only Daily</button>
         <button mat-raised-button (click)="ignoreAll()">Hide All</button>

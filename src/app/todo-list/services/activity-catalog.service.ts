@@ -181,7 +181,7 @@ export class ActivityCatalogService extends Destroyable {
       rewards: this.milestoneReward(m),
       rewardSort: this.milestoneRewardSortText(m),
       charInfo: {},
-      type: ActivityType.BOUNTY,
+      type: ActivityType.MILESTONE,
       subType: '',
       hash: m.hash,
       originalItem: m,

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Timespan } from '@app/todo-list/interfaces/activity.interface';
+import { ActivityType, Timespan } from '@app/todo-list/interfaces/activity.interface';
 import { TogglableRowItem } from '@app/todo-list/interfaces/filter.interface';
 import { ActivityTypeFilterService } from '@app/todo-list/services/activity-type-filter.service';
 import { Destroyable } from '@app/util/destroyable';
@@ -14,6 +14,7 @@ export class ActivityTypeFiltersComponent extends Destroyable {
 
   public types: TogglableRowItem[] = [];
   public Timespan = Timespan; // for template
+  public ActivityType = ActivityType; // for template
 
   constructor(
     private activityFilter: ActivityTypeFilterService
@@ -51,6 +52,13 @@ export class ActivityTypeFiltersComponent extends Destroyable {
   public showTimespan(timespan: Timespan) {
     this.types.forEach((type) => {
       type.d2cActive = type.timespan === timespan;
+    });
+    this.activityFilter.pushUpdatesToTable();
+  }
+
+  public showType(type: ActivityType) {
+    this.types.forEach((item) => {
+      item.d2cActive = item.type === type;
     });
     this.activityFilter.pushUpdatesToTable();
   }

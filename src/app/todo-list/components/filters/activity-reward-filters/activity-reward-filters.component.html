@@ -13,6 +13,7 @@
         <ng-container *ngTemplateOutlet="itemList;context:{state: true}"></ng-container>
       </mat-card-content>
       <mat-card-actions align="end">
+        <button mat-raised-button (click)="showGear()">Only Gear</button>
         <button mat-raised-button (click)="ignoreAll()">Ignore All</button>
       </mat-card-actions>
     </mat-card>
