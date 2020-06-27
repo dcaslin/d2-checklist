@@ -1,15 +1,15 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'd2c-bungie-icon',
   template: `
-    <span [ngClass]="iconClass" [style.background-image]="iconUrl"></span>
+    <img class="bungie-icon" [ngClass]="iconClass" [src]="iconUrl">
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BungieIconComponent {
 
-  @Input() set icon(path: string) { this.iconUrl = `url(//www.bungie.net${path})`; }
+  @Input() set icon(path: string) { this.iconUrl = `http://www.bungie.net${path}`; }
   @Input() iconClass: string = 'icon';
 
   public iconUrl: string;
