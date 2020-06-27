@@ -136,6 +136,7 @@ export class GearService {
             }
             this.pandaService.processItems(player.gear);
             this.preferredStatService.processGear(player);
+            this.bucketService.markHighest();
             return player;
         } finally {
             this.loading.next(false);
