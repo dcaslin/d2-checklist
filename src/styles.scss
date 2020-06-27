@@ -18,12 +18,16 @@
 @import 'app/app.component.scss-theme';
 @import '_util.scss';
 
+@import './node_modules/@ag-grid-community/core/dist/styles/ag-theme-alpine/sass/_ag-theme-alpine-mixin.scss';
+@import './node_modules/@ag-grid-community/core/dist/styles/ag-theme-alpine-dark/sass/_ag-theme-alpine-dark-mixin.scss';
+
 @mixin custom-components-theme($theme) {
   @include d2c-styles-reset-theme($theme);
   @include d2c-app-component-theme($theme);
 }
 
 .default-theme {
+  @include ag-theme-alpine();
   @include angular-material-theme($d2c-theme);
   @include custom-components-theme($d2c-theme);
   @include default-gear-tags($d2c-theme);
@@ -31,16 +35,17 @@
 }
 
 .light-theme {
+  @include ag-theme-alpine();
   @include angular-material-theme($d2c-light-theme);
   @include custom-components-theme($d2c-light-theme);
   @include default-gear-tags($d2c-light-theme);
 }
 
 .black-theme {
+  @include ag-theme-alpine-dark();
   @include angular-material-theme($d2c-black-theme);
   @include custom-components-theme($d2c-black-theme);
   @include black-gear-tags($d2c-black-theme);
-
 }
 
 .break-easy{
