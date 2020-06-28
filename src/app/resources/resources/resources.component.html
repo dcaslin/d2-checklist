@@ -12,7 +12,7 @@
         </h2>
 
         <div *ngIf="(loading|async)===false && player==null">
-          <d2c-sign-in-required style="display:inline-block"></d2c-sign-in-required>
+          <d2c-sign-in-required></d2c-sign-in-required>
         </div>
         <mat-button-toggle-group #chargroup="matButtonToggleGroup" *ngIf="player!=null && player.characters!=null"
           [value]="char" (change)="router.navigate(['vendors',chargroup.value.characterId])">

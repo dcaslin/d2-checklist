@@ -68,55 +68,56 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   ];
 
 
-  readonly fixedAutoCompleteOptions: string[] = [
-    'is:seasonmod',
-    'is:godroll',
-    'is:goodroll',
-    'is:fixme',
-    'is:light>=',
-    'is:stattotal>=',
-    'is:postmaster',
-    'is:godrollpve',
-    'is:godrollpvp',
-    'is:goodrollpve',
-    'is:goodrollpvp',
-    'is:masterwork',
-    'is:light<=',
-    'is:light>',
-    'is:light<',
-    'is:light=',
-    'is:copies>',
-    'is:copies>=',
-    'is:copies<',
-    'is:copies<=',
-    'is:cap<=',
-    'is:cap>=',
-    'is:cap<',
-    'is:cap>',
-    'is:stattotal<=',
-    'is:stattotal>',
-    'is:stattotal<',
-    'is:stattotal=',
-    'is:random',
-    'is:fixed',
-    'is:hasmod',
-    'is:locked',
-    'is:unlocked',
-    'is:extratagged',
-    'season:none',
-    'season:arrivals',
-    'season:worthy',
-    'season:undying',
-    'season:dawn',
-    'season:opulence',
-    'season:drifter',
-    'season:forge',
-    'season:outlaw',
+  readonly fixedAutoCompleteOptions: AutoCompleteOption[] = [
+    {value: 'is:highest', desc: 'Highest PL for each slot'},
+    {value: 'is:goodroll', desc: 'At least a good roll in each slot'},
+    {value: 'is:godroll', desc: 'A god roll in EVERY slot'},
+    {value: 'is:fixme', desc: 'Best perk unselected'},
+    {value: 'is:light>=', desc: 'Filter by PL'},
+    {value: 'is:stattotal>=', desc: 'Total of ALL stat pts'},
+    {value: 'is:postmaster'},
+    {value: 'is:godrollpve', desc: 'Only PVE god rolls'},
+    {value: 'is:godrollpvp', desc: 'Only PVP god rolls'},
+    {value: 'is:goodrollpve'},
+    {value: 'is:goodrollpvp'},
+    {value: 'is:masterwork', desc: 'Fully MW\'d'},
+    {value: 'is:light<='},
+    {value: 'is:light>'},
+    {value: 'is:light<'},
+    {value: 'is:light='},
+    {value: 'is:copies>', desc: 'Duplicate counts'},
+    {value: 'is:copies>='},
+    {value: 'is:copies<'},
+    {value: 'is:copies<='},
+    {value: 'is:cap<=', desc: 'PL cap'},
+    {value: 'is:cap>='},
+    {value: 'is:cap<'},
+    {value: 'is:cap>'},
+    {value: 'is:stattotal<='},
+    {value: 'is:stattotal>'},
+    {value: 'is:stattotal<'},
+    {value: 'is:stattotal='},
+    {value: 'is:random', desc: 'Random'},
+    {value: 'is:fixed'},
+    {value: 'is:hasmod'},
+    {value: 'is:locked'},
+    {value: 'is:unlocked'},
+    {value: 'is:extratagged', desc: 'It\'s complicated. See help button'},
+    {value: 'season:none', desc: 'No season mod slot'},
+    {value: 'season:arrivals', desc: 'Arrivals mode slot'},
+    {value: 'season:worthy'},
+    {value: 'season:undying'},
+    {value: 'season:dawn'},
+    {value: 'season:opulence'},
+    {value: 'season:drifter'},
+    {value: 'season:forge'},
+    {value: 'season:outlaw'},
+    {value: 'is:seasonmod', desc: 'Has a seasonal mod slot'}
   ];
 
-  public autoCompleteOptions: string[];
+  public autoCompleteOptions: AutoCompleteOption[];
 
-  public filteredAutoCompleteOptions: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public filteredAutoCompleteOptions: BehaviorSubject<AutoCompleteOption[]> = new BehaviorSubject([]);
 
   weaponTypeChoices: Choice[] = [];
   // armorTypeChoices: Choice[] = [];
@@ -356,7 +357,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.preferredStatService.stats.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
-        console.dir(x);
         if (this._player.getValue() != null) {
           this.preferredStatService.processGear(this._player.getValue());
           this.load();
@@ -988,7 +988,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       temp[i.type + ''][i.typeName] = true;
       temp[i.type + 'bucket'][i.inventoryBucket.displayProperties.name] = true;
       if (i.masterwork) {
-        const key = 'mw:' + i.masterwork.name.toLowerCase();
+        const key = 'is:mw:' + i.masterwork.name.toLowerCase();
         mwChoices[key] = true;
       }
 
@@ -1000,7 +1000,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     amwChoices.sort();
     const newChoices = this.fixedAutoCompleteOptions.slice(0);
     for (const c of amwChoices) {
-      newChoices.push(c);
+      newChoices.push({
+        value: c
+      });
     }
     this.autoCompleteOptions = newChoices;
 
@@ -1077,7 +1079,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       const newFilteredOptions = [];
       if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea') || rawFilter.startsWith('mw')) {
         for (const o of this.autoCompleteOptions) {
-          if (o.startsWith(rawFilter)) {
+          if (o.value.startsWith(rawFilter)) {
             newFilteredOptions.push(o);
           }
         }
@@ -1267,4 +1269,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.controller = controller;
     this.loadWishlist();
   }
+}
+
+interface AutoCompleteOption {
+  value: string;
+  desc?: string;
 }
