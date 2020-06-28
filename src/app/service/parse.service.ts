@@ -3,10 +3,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, ArmorStat, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MasterworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
-
-
-
+import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MasterworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
 
 @Injectable()
 export class ParseService {
@@ -3477,7 +3474,7 @@ export class ParseService {
                     continue;
                 }
                 const stat = new InventoryStat(statHash, statDesc.displayProperties.name,
-                    statDesc.displayProperties.description, invStat.value, null);
+                    statDesc.displayProperties.description, invStat.value, null, statDesc.index);
                 returnMe.inventoryStats.push(stat);
             }
         }
@@ -3714,7 +3711,7 @@ export class ParseService {
                             const val: any = instanceData.stats[key];
                             const jDesc: any = this.destinyCacheService.cache.Stat[key];
                             statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
-                                jDesc.displayProperties.description, val.value, null);
+                                jDesc.displayProperties.description, val.value, null, jDesc.index);
                         });
                         const ostats = desc.stats.stats;
                         Object.keys(ostats).forEach(key => {
@@ -3723,40 +3720,43 @@ export class ParseService {
                             if (statDict[key] == null) {
                                 const jDesc: any = this.destinyCacheService.cache.Stat[key];
                                 statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
-                                    jDesc.displayProperties.description, null, baseValue);
+                                    jDesc.displayProperties.description, null, baseValue, jDesc.index);
                             } else {
                                 statDict[key].baseValue = baseValue;
                             }
                         });
                         Object.keys(statDict).forEach(key => {
                             const val = statDict[key];
-                            if (val.baseValue > 0 || val.value > 0) {
+                            // armor with a stat penalty can be zero for a meaningful stat
+                            if (val.baseValue > 0 || val.value > 0 || (val.value == 0 && type == ItemType.Armor)) {
                                 if (val.name != 'Defense' && val.name != 'Power' && val.name.length > 0) {
                                     stats.push(val);
                                 }
                             }
                         });
 
-                        if (type === ItemType.Armor) {
-                            stats.sort(function (a, b) {
-                                const ai = ArmorStat[a.name];
-                                const bi = ArmorStat[b.name];
+                        stats.sort((a, b) => {
+                            return a.index > b.index ? 1 : a.index < b.index ? -1 : 0;
+                        });
 
-                                if (bi < ai) { return 1; }
-                                if (bi > ai) { return -1; }
-                                return 0;
-                            });
-                        } else {
-                            stats.sort(function (a, b) {
-                                const bs: string = b.name;
-                                const as: string = a.name;
-                                if (bs < as) { return 1; }
-                                if (bs > as) { return -1; }
-                                return 0;
-                            });
-                        }
+                        // if (type === ItemType.Armor) {
+                        //     stats.sort(function (a, b) {
+                        //         const ai = ArmorStat[a.name];
+                        //         const bi = ArmorStat[b.name];
 
-
+                        //         if (bi < ai) { return 1; }
+                        //         if (bi > ai) { return -1; }
+                        //         return 0;
+                        //     });
+                        // } else {
+                        //     stats.sort(function (a, b) {
+                        //         const bs: string = b.name;
+                        //         const as: string = a.name;
+                        //         if (bs < as) { return 1; }
+                        //         if (bs > as) { return -1; }
+                        //         return 0;
+                        //     });
+                        // }
                     }
                 }
 
@@ -3956,16 +3956,23 @@ export class ParseService {
             if (type === ItemType.Armor) {
                 for (const s of stats) {
                     for (const m of mods) {
-                        if (m.name.startsWith(s.name)) {
-                            if (m.inventoryStats && m.inventoryStats.length > 0) {
-                                for (const stat of m.inventoryStats) {
-                                    if (stat.name == s.name && stat.value > 0) {
-                                        s.enhancement = stat.value;
-                                        s.value -= s.enhancement;
-                                    }
+                        if (m.inventoryStats) {
+                            const modStat = m.inventoryStats.find(x => (x.hash == s.hash));
+                            if (modStat) {
+                                if (s.enhancement == null) {
+                                    s.enhancement = 0;
                                 }
+                                s.enhancement += modStat.value;
+                                s.value -= modStat.value;
                             }
                         }
+                    }
+                    if (masterworked) {
+                        if (s.enhancement == null) {
+                            s.enhancement = 0;
+                        }
+                        s.enhancement += 2;
+                        s.value -= 2;
                     }
                     totalStatPoints += s.value;
                 }

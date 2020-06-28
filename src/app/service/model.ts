@@ -28,14 +28,6 @@ export enum ClassAllowed {
     Any = 3
 }
 
-export enum ArmorStat {
-    Mobility = 0,
-    Resilience = 1,
-    Recovery = 2,
-    Discipline = 3,
-    Intellect = 4
-}
-
 export const DestinyClasses = ['Titan', 'Hunter', 'Warlock'];
 
 export enum NumComparison {
@@ -1273,13 +1265,15 @@ export class InventoryStat {
     value: number;
     baseValue: number;
     enhancement: number;
+    index: number;
 
-    constructor(hash, name, desc, value, baseValue) {
+    constructor(hash, name, desc, value, baseValue, index) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.value = value;
         this.baseValue = baseValue;
+        this.index = index;
     }
 
     getValue(): number {
