@@ -1193,8 +1193,6 @@ export class Const {
     };
 
     public static readonly CHALICE_KEY = '22222222';
-    public static readonly CONTACT_KEY = '44444444';
-
     public static readonly UNKNOWN_BOOST = 0;
     public static readonly NO_BOOST = 1;
     public static readonly LOW_BOOST = 2;

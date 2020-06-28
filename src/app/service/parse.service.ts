@@ -271,47 +271,6 @@ export class ParseService {
         }
     }
 
-    private generateContactMilestone(char: Character, _prog: any, uninstancedItemComps: any, milestonesByKey: any): MilestoneStatus {
-
-        if (!uninstancedItemComps.objectives || !uninstancedItemComps.objectives.data) {
-            return null;
-        }
-        const INTERESTING_QUESTS = [
-            '1614427899', // siren's watch
-            '2371830167',  // lost oasis
-            '2489141150', // rupture
-            '14756925', // rig
-        ];
-        const data = uninstancedItemComps.objectives.data;
-        for (const hash of INTERESTING_QUESTS) {
-            if (data[hash]) {
-                if (data[hash].objectives && data[hash].objectives.length >= 1) {
-                    const obj = data[hash].objectives[0];
-                    if (milestonesByKey[Const.CONTACT_KEY] != null) {
-                        const qDesc = this.destinyCacheService.cache.InventoryItem[hash];
-                        if (qDesc) {
-                            const sDesc = qDesc.displayProperties.description;
-                            const SEARCH_STRING = 'Contact made near ';
-                            if (sDesc && sDesc.indexOf(SEARCH_STRING) >= 0) {
-                                const location = sDesc.substr(SEARCH_STRING.length).replace('.', '');
-                                milestonesByKey[Const.CONTACT_KEY].name = 'Contact: ' + location;
-                            }
-
-                        }
-                    }
-                    const total = obj.completionValue ? obj.completionValue : 1;
-                    const pct = obj.progress / total;
-                    let info = null;
-                    if (pct > 0 && pct < 1) {
-                        info = Math.floor(100 * pct) + '% complete';
-                    }
-                    const suppInfo = obj.progress + ' / ' + obj.completionValue;
-                    return new MilestoneStatus(Const.CONTACT_KEY, obj.complete, pct, info, suppInfo, [], false, false);
-                }
-            }
-        }
-        return new MilestoneStatus(Const.CONTACT_KEY, true, 1, null, null, [], false, char.notReady);
-    }
 
     private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
         c.milestones = {};
@@ -1414,8 +1373,6 @@ export class ParseService {
             if (ms.milestoneHash == 480262465) {
                 continue;
             }
-
-
             let icon = desc.displayProperties.icon;
             const activities: MilestoneActivity[] = [];
             if (ms.activities != null) {
@@ -2217,21 +2174,6 @@ export class ParseService {
                 }
                 milestoneList.push(ms);
             }
-
-            if (milestonesByKey[Const.CONTACT_KEY] == null) {
-                const ms: MileStoneName = {
-                    key: Const.CONTACT_KEY,
-                    resets: weekEnd,
-                    rewards: 'Powerful Gear (Tier 2)',
-                    pl: Const.MID_BOOST,
-                    name: 'Contact',
-                    desc: 'Complete the Contact Public event',
-                    hasPartial: true,
-                    dependsOn: []
-                };
-                milestoneList.push(ms);
-                milestonesByKey[ms.key] = ms;
-            }
             const missingMilestones = ['2770934901'];
             let msAdded = false;
             for (const m of missingMilestones) {
@@ -2301,9 +2243,6 @@ export class ParseService {
                     for (const key of Object.keys(oProgs)) {
                         const curChar: Character = charsDict[key];
                         this.populateProgressions(curChar, oProgs[key], milestonesByKey, milestoneList, accountProgressions);
-                        if (resp.characterUninstancedItemComponents && resp.characterUninstancedItemComponents[key]) {
-                            curChar.milestones[Const.CONTACT_KEY] = this.generateContactMilestone(curChar, oProgs[key], resp.characterUninstancedItemComponents[key], milestonesByKey);
-                        }
                         hasWellRested = curChar.wellRested || hasWellRested;
                     }
 
@@ -2338,6 +2277,9 @@ export class ParseService {
                                     } else {
                                         activityAvailable = true;
                                     }
+                                    if (mDesc.displayProperties.name=='Contact') {
+                                        console.log("zzz: "+missingKey);
+                                    }
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
                                 }
                             }
@@ -2370,6 +2312,7 @@ export class ParseService {
                             }
                         }
                     }
+                    // TODO if contact is completely done for all 3 chars then remove it entirely.
 
                 } else {
                     superprivate = true;
@@ -2764,7 +2707,8 @@ export class ParseService {
         }
         // extra luna's '1257909267', '1652224118', '2256060246'
 
-        const challengeMilestones = ['247878674', '2743269252', '2701029102'];
+        // remove dark times 2743269252
+        const challengeMilestones = ['247878674', '2701029102'];
 
         const foundMilestones = [];
         // is the char sitting on Mysterious Disturbance or In Search of Answers?
