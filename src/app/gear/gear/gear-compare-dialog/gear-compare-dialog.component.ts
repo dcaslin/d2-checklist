@@ -82,26 +82,10 @@ export class GearCompareDialogComponent extends ChildComponent {
         }
       }
     }
-    const statDb = this.cacheService.cache.Stat;
-    stats.sort(function (a, b) {
-      const aDesc = statDb[a.hash];
-      const bDesc = statDb[b.hash];
-      if (aDesc && bDesc) {
-        if (aDesc.index > bDesc.index) {
-          return 1;
-        } else if (aDesc.index < bDesc.index) {
-          return -1;
-        } else {
-          return 0;
-        }
-      }
-      const bs: string = b.name;
-      const as: string = a.name;
-      if (bs < as) { return 1; }
-      if (bs > as) { return -1; }
-      return 0;
+    // resort just in case
+    stats.sort((a, b) => {
+      return a.index > b.index ? 1 : a.index < b.index ? -1 : 0;
     });
-
     return stats;
   }
 
