@@ -30,6 +30,8 @@ import { BountyCatalogService } from './bounty-catalog.service';
 import { ContextService } from './context-service';
 import { MilestoneCatalogService } from './milestone-catalog.service';
 
+
+
 /**
  * The service that drives the todo-list page.
  * The rows shown in the todo table will ultimately be drawn from this service.
@@ -47,14 +49,10 @@ export class ActivityCatalogService extends Destroyable {
   constructor(
     private bountyService: BountyCatalogService,
     private milestoneService: MilestoneCatalogService,
-    // private playerService: PlayerStateService,
     private context: ContextService
   ) {
     super();
     this.initRows();
-    // this.playerService.player.subscribe((player) => {
-    //   console.log('got player', player); // got player null (output)
-    // });
   }
 
   private initRows() {
@@ -65,7 +63,9 @@ export class ActivityCatalogService extends Destroyable {
       filter(([bounties, milestones]) => !!bounties && !!milestones),
       takeUntil(this.destroy$)
     ).subscribe(([bounties, milestones]) => {
-      const genericRows = this.convertToRowModel(bounties, milestones);
+      // milestones are converted to activityRows in the milestone service.
+      let genericRows = this.convertToRowModel(bounties);
+      // genericRows = [...genericRows, ...milestones];
       console.log('Generic Rows:', genericRows);
       this.activityRows.next(genericRows);
     });
@@ -81,12 +81,8 @@ export class ActivityCatalogService extends Destroyable {
    * that we make here. If a renderer needs to display something more complex like an icon
    * or a progress bar, then the info for that should be included in the ActivityRow object
    */
-  private convertToRowModel(b: Bounty[], m: Milestone[]): ActivityRow[] {
+  private convertToRowModel(b: Bounty[]): ActivityRow[] {
     const output: ActivityRow[] = [];
-
-    m.forEach((milestone: Milestone, index) => {
-      output.push(this.convertMilestone(milestone, index));
-    });
     b.forEach((bounty: Bounty) => {
       output.push(this.convertBounty(bounty));
     });
@@ -184,7 +180,7 @@ export class ActivityCatalogService extends Destroyable {
       type: ActivityType.MILESTONE,
       subType: '',
       hash: m.hash,
-      originalItem: m,
+      originalItem: null,
     };
     chars.forEach(char => {
       row.charInfo[char.characterId] = this.extractMilestoneCharInfo(m, char);

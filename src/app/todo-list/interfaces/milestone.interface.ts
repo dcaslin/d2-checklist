@@ -1,6 +1,8 @@
 /**
  * Interfaces that mostly make sense of the API response
  */
+import { MileStoneName } from '@app/service/model';
+
 import { Progress } from './activity.interface';
 import { DisplayProperties } from './api.interface';
 import { CostReward } from './vendor.interface';
@@ -133,12 +135,13 @@ export interface Milestone extends ManifestMilestone {
   endDate: string; // when the milestone expires (UTC ISO String)
   availableQuests?: AvailableQuests; // present on flashpoint
   activities?: Activity[];
-  chars: { [key: string]: MilestoneCharInfo; }
+  chars: { [key: string]: MilestoneCharInfo; };
+  original: MileStoneName;
 }
 
 export interface MilestoneCharInfo {
   available?: boolean;
-  progress?: Progress; // TODO: track progress and define a better interface
+  progress?: Progress;
 }
 
 // hopefully hashes don't change

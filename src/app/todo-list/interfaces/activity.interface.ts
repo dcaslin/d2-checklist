@@ -19,7 +19,7 @@ export interface ActivityRow {
   charInfo: { [key: string]: ActivityCharInfo }; // key is character ID
   type: ActivityType;
   /**
-   * information like 'Daily' vs 'Weekly' Potentially will be used for filtering/sorting
+   * information like 'Raid' or 'Flashpoint' or 'Quest'
    */
   subType: string;
   hash: number | string; // this is for debug purposes only

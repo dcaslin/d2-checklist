@@ -1,25 +1,17 @@
 import { Injectable } from '@angular/core';
-import { SelectedUser } from '@app/service/model';
-import { Observable, ReplaySubject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { PlayerStateService } from '@app/player/player-state.service';
+import { Const, MileStoneName, Player, SelectedUser } from '@app/service/model';
+import { from, ReplaySubject } from 'rxjs';
+import { distinctUntilChanged, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { Destroyable } from '../../util/destroyable';
-import { API_ROOT } from '../constants/constants';
-import { ApiResponse } from '../interfaces/api.interface';
-import {
-  CharacterProgressions,
-  ManifestMilestone,
-  Milestone,
-  MilestoneApiData,
-  MilestoneCharInfo,
-  MilestoneResponse,
-  MilestoneSet,
-  MilestoneType,
-} from '../interfaces/milestone.interface';
+import { ActivityRow, ActivityType, Timespan } from '../interfaces/activity.interface';
+import { ManifestMilestone } from '../interfaces/milestone.interface';
 import { ContextService } from './context-service';
 import { DictionaryService } from './dictionary.service';
 import { HttpService } from './http.service';
 
+var isEqual = require('lodash.isequal');
 
 /**
  * Provides a catalog of bounties
@@ -27,81 +19,88 @@ import { HttpService } from './http.service';
 @Injectable()
 export class MilestoneCatalogService extends Destroyable {
 
-  public milestoneCatalog: ReplaySubject<Milestone[]> = new ReplaySubject(1);
-
-  private uniqueMilestones: { [key: string]: Milestone } = {};
+  /**
+   * This pulls the milestonelist off of the player object form the player state service
+   */
+  public milestoneCatalog: ReplaySubject<ActivityRow[]> = new ReplaySubject(1);
 
   constructor(
     private http: HttpService,
     private context: ContextService,
-    private dictionary: DictionaryService
+    private dictionary: DictionaryService,
+    private playerService: PlayerStateService
   ) {
     super();
-    this.fetchMilestonesForChars();
+    this.initPlayerMilestones();
+    // this.fetchMilestonesForChars();
   }
 
-  private fetchMilestonesForChars() {
+  private initPlayerMilestones() {
     this.context.user.pipe(
-      filter((x) => !!x),
-      switchMap((user) => this.fetchMilestones(user)),
+      filter(x => !!x),
+      switchMap((user: SelectedUser) => {
+        return from(this.playerService.loadPlayer(
+          Const.PLATFORMS_DICT[user.userInfo.membershipType],
+          user.userInfo.membershipId,
+          false));
+      }),
       takeUntil(this.destroy$)
-    ).subscribe((resp: ApiResponse<MilestoneResponse>) => {
-      const charProgressions = resp.Response.characterProgressions.data;
-      Object.keys(resp.Response.characterProgressions.data).forEach(charId => {
-        // this.extractMilestones(charProgressions[charId], charId);
-      });
-      this.milestoneCatalog.next(Object.values(this.uniqueMilestones));
+    ).subscribe();
+    this.playerService.player.pipe(
+      filter(x => !!x),
+      distinctUntilChanged((a, b) =>
+        // we really only care about updates to the milestones.
+        // The characters also have milestone data, but that _should_
+        // be applied at the same time (I'm going to regret this assumption, aren't I)
+        isEqual(a.milestoneList, b.milestoneList)
+      ),
+      takeUntil(this.destroy$)
+    ).subscribe((player) => {
+      this.extractMilestones(player);
     });
   }
 
-  private fetchMilestones(user: SelectedUser): Observable<ApiResponse<MilestoneResponse>> {
-    const options = { params: { components: 'characterProgressions' } };
-    const url = `${API_ROOT}/${this.context.userUrlSegment(user)}/`;
-    return this.http.get(url, options);
-  }
-
-  private extractMilestones(progressions: CharacterProgressions, charId: string) {
-    if (!progressions || !charId) { return; }
-    // get the sale items map
-    const milestones: MilestoneSet = progressions.milestones;
-
-    Object.keys(milestones).forEach((milestoneHash) => { // keyed by milestone hash
-      const manifestMilestone: ManifestMilestone = this.dictionary.findMilestone(milestoneHash);
-      const charMilestone: MilestoneApiData = milestones[milestoneHash];
-      if (!manifestMilestone) {
-        console.log(`Skipping unknown milestone: ${milestoneHash}. If you see this message, tell me to update the manifest! reddit.com/r/destinychecklistnet/`);
-        return; // acts like `continue` in a forEach
-      }
-      if (manifestMilestone.milestoneType === MilestoneType.WEEKLY) {
-        this.addToMilestones(charMilestone, manifestMilestone, charId);
-      }
+  private extractMilestones(player: Player) {
+    const output = [];
+    player.milestoneList.forEach((m: MileStoneName) => {
+      const milestone = this.transformMilestone(m);
+      if (milestone) { output.push(milestone); }
     });
+    this.milestoneCatalog.next(output);
   }
 
-  private addToMilestones(
-    charMS: MilestoneApiData,
-    manifestMS: ManifestMilestone,
-    charId: string,
-  ): void {
-    let milestone: Milestone = this.uniqueMilestones[manifestMS.hash]
-    if (!milestone) {
-      // if the milestone doesn't exist, create that bitch
-      milestone = {
-        ...manifestMS,
-        startDate: charMS.startDate,
-        endDate: charMS.endDate,
-        chars: {}
-      }
-      this.uniqueMilestones[manifestMS.hash] = milestone;
+  /**
+   * turns a `MileStoneName` (rest of app) into the `Milestone`.
+   * The key difference is that `Milestone` has some more display
+   * data in it than `MileStoneName`, and also has character progressions
+   * as part of the milestone.
+   */
+  private transformMilestone(m: MileStoneName): any { //TODO don't type this any
+    const manifestMilestone = this.dictionary.findMilestone(m.key);
+    if (!manifestMilestone) {
+      console.log('unknown milestone:', m);
+      return;
     }
-    // then add the character specific data to the milestone
-    milestone.chars[charId] = this.getMilestoneCharInfo(charMS, manifestMS);
+    const mergedMilestone: ActivityRow = {
+      icon: manifestMilestone.displayProperties.icon,
+      iconSort: 'temp', // want to make this sortable by activity type?
+      iconTooltip: manifestMilestone.displayProperties.name, // TODO make better/less redundant
+      timespan: Timespan.WEEKLY,
+      detailTitle: manifestMilestone.displayProperties.name,
+      detailSubText: m.key, // TODO
+      detailTooltip: null, // TODO
+      rewards: [], // TODO either change the way rewards are stored (don't store by hash, but store by name) or do a reverse map of string names back to hashes (loses tier data)
+      rewardSort: `${m.pl}`,
+      charInfo: this.extractCharInfo(m, manifestMilestone),
+      type: ActivityType.MILESTONE,
+      subType: '', // TODO we might be able to remove this property.
+      hash: `${m.key}`,
+      originalItem: m
+    }
+    return mergedMilestone;
   }
 
-  private getMilestoneCharInfo(
-    charMS: MilestoneApiData,
-    manifestMS: ManifestMilestone
-  ): MilestoneCharInfo {
-    return null;
+  private extractCharInfo(m: MileStoneName, manifest: ManifestMilestone) {
+    return {};
   }
 }

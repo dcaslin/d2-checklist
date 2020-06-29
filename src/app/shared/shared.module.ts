@@ -132,7 +132,8 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatPaginatorModule,
     MatTableModule,
     CdkTableModule,
-    ScrollingModule
+    ScrollingModule,
+    SignInRequiredModule
   ]
 })
 export class SharedModule {
