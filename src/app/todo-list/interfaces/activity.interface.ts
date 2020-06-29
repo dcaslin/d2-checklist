@@ -1,4 +1,5 @@
-import { Milestone } from './milestone.interface';
+import { MileStoneName } from '@app/service/model';
+
 import { Bounty, CostReward } from './vendor.interface';
 
 /**
@@ -21,8 +22,8 @@ export interface ActivityRow {
    * information like 'Daily' vs 'Weekly' Potentially will be used for filtering/sorting
    */
   subType: string;
-  hash: number; // this is for debug purposes only
-  originalItem: Bounty | Milestone // debug purposes only
+  hash: number | string; // this is for debug purposes only
+  originalItem: Bounty | MileStoneName // debug purposes only
 }
 
 export interface ActivityCharInfo {
@@ -36,14 +37,36 @@ export enum ActivityType {
   BOUNTY = 'Bounty'
 }
 
-// Progress is by character, so that's why it's in this file.
-// It's a stretch, I know.
 export interface Progress {
-  progress?: number; // not really needed if doing single box progress style
+  /**
+   * What is already complete? if the objective is 100 kills and the player has 40,
+   * then the progress value is 40.
+   * If the objective doesn't have traditional progress i.e. completing a lost sector,
+   * then the progress value will be 0 until it is completed, which would then make it 1.
+   */
+  progress?: number;
+  /**
+   * Tf the objective is 100 kills and the player has 40,
+   * then the completionValue is 100
+   */
   completionValue?: number;
+  /**
+   * true or false. Can help if for some reason progress/completion don't match.
+   * This should be the real source of truth for if an activity is done.
+   * I might remove this in favor of referring to activityStatus instead
+   */
   complete: boolean;
+  /**
+   * How should progress and/or partial progress be represented in number form
+   */
   progressType?: ProgressType;
+  /**
+   * How visually to represent progress
+   */
   style?: ProgressStyle;
+  /**
+   * a more in-depth value than just yes or no for completion status
+   */
   status: ActivityStatus;
 }
 
@@ -52,7 +75,7 @@ export enum ProgressType {
   FRACTION = 1, // 1/3
   CHECKBOX = 2, // boolean, it's either done or it's not
   PERCENTAGE = 3, // 33%
-  INTEGER = 6, // 
+  INTEGER = 6, // this seems like a hack bungie uses to display high scores or totals
   PARTIAL_CHECK = 7 // whether a partial checkbox can be used
 }
 
