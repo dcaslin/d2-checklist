@@ -1351,7 +1351,7 @@ export class ParseService {
         }
     }
 
-    public parsePublicMilestones(resp: any, profileCharAct: any): PublicMilestonesAndActivities {
+    public parsePublicMilestones(resp: any, sampleProfile: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
@@ -1534,10 +1534,6 @@ export class ParseService {
             returnMe.push(pushMe);
         }
         // we're still missing nightfalls and heroic menagerie and some other fun stuff we need to get from a character
-        let charAct = null;
-        if (sample && profileCharAct && profileCharAct.characterActivities && profileCharAct.characterActivities.data) {
-            charAct = profileCharAct.characterActivities.data['2305843009264730899'];
-        }
         const crucibleCore: MilestoneActivity[] = [];
         const crucibleRotator: MilestoneActivity[] = [];
         const nightfalls: MilestoneActivity[] = [];
@@ -1545,11 +1541,10 @@ export class ParseService {
         let herMenag: MilestoneActivity = null;
         let heroicStrikes: MilestoneActivity = null;
         let reckoning: MilestoneActivity = null;
-        let sundialLegend: MilestoneActivity = null;
 
-        if (sample && profileCharAct && profileCharAct.characterActivities && profileCharAct.characterActivities.data) {
-            for (const key of Object.keys(profileCharAct.characterActivities.data)) {
-                const charAct = profileCharAct.characterActivities.data[key];
+        if (sample && sampleProfile && sampleProfile.characterActivities && sampleProfile.characterActivities.data) {
+            for (const key of Object.keys(sampleProfile.characterActivities.data)) {
+                const charAct = sampleProfile.characterActivities.data[key];
                 if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
                     if (crucibleCore.length == 0) {
                         for (const aa of charAct.availableActivities) {
@@ -1652,20 +1647,38 @@ export class ParseService {
                             }
                         }
                     }
-                    if (sundialLegend == null) {
-                        for (const aa of charAct.availableActivities) {
-                            if ('3611556688' == aa.activityHash) {
-                                const msa = this.buildMilestoneActivity(aa);
-                                if (msa == null) {
-                                    continue;
-                                }
-                                sundialLegend = msa;
-                            }
-                        }
-                    }
                 }
 
             }
+        }
+        // so Bungie is showing 4 milestones on the public list for Contact, but only one of them is real
+        // I'm just going to promise that I'll never complete Contact on all three chars right now
+        if (sample && sampleProfile && sampleProfile.characterProgressions && sampleProfile.characterProgressions.data) {
+            const CONTACT_CANDIDATES = ['725935997', '1586382136', '3657936059', '332644611'];
+            let foundContactMs = null;
+            // repeat for each char
+            for (const key of Object.keys(sampleProfile.characterProgressions.data)) {
+                const charProg = sampleProfile.characterProgressions.data[key];
+                console.dir(charProg);
+                for (const hash of CONTACT_CANDIDATES) {
+                    if (charProg.milestones[hash]) {
+                        foundContactMs = hash;
+                        break;
+                    }
+                }
+            }
+            // we found our real contact ms, remove all the others
+            for (const key of CONTACT_CANDIDATES) {
+                // if this isn't the real one, remove it
+                if (key != foundContactMs) {
+                    const removeMe = returnMe.find((x) => {
+                        return x.hash == key;
+                    });
+                    const index = returnMe.indexOf(removeMe);
+                    returnMe.splice(index, 1);
+                }
+            }
+
         }
         returnMe.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
@@ -1699,7 +1712,6 @@ export class ParseService {
             herMenag: herMenag,
             heroicStrikes: heroicStrikes,
             reckoning: reckoning,
-            sundial: sundialLegend,
             nightfalls: nightfalls,
             nightmareHunts: nightmareHunts,
             flashpoint: flashpoint,
@@ -2209,22 +2221,6 @@ export class ParseService {
                 });
 
             }
-
-            // add Last wish if its missing, as it has been from public milestones for a while
-            // if (milestonesByKey['3181387331'] == null) {
-            //     const raidDesc = this.destinyCacheService.cache.Milestone['3181387331'];
-            //     const ms: MileStoneName = {
-            //         key: raidDesc.hash + '',
-            //         resets: weekEnd,
-            //         rewards: 'Powerful Gear',
-            //         pl: Const.LOW_BOOST,
-            //         name: raidDesc.displayProperties.name,
-            //         desc: raidDesc.displayProperties.description,
-            //         hasPartial: false
-            //     };
-            //     milestoneList.push(ms);
-            //     milestonesByKey[ms.key] = ms;
-            // }
             for (const milestone of milestoneList) {
                 milestonesByKey[milestone.key] = milestone;
             }
@@ -2277,9 +2273,6 @@ export class ParseService {
                                     } else {
                                         activityAvailable = true;
                                     }
-                                    if (mDesc.displayProperties.name=='Contact') {
-                                        console.log("zzz: "+missingKey);
-                                    }
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
                                 }
                             }
@@ -2300,7 +2293,6 @@ export class ParseService {
                             if (!checkMe.complete) {
                                 continue;
                             }
-
                             const dependsOn = milestonesByKey[checkKey].dependsOn;
                             for (const dKey of dependsOn) {
                                 const dependentMilestoneStatus = c.milestones[dKey];
@@ -2312,7 +2304,6 @@ export class ParseService {
                             }
                         }
                     }
-                    // TODO if contact is completely done for all 3 chars then remove it entirely.
 
                 } else {
                     superprivate = true;
@@ -3247,7 +3238,7 @@ export class ParseService {
                 }
             }
             if (skip) {
-                console.log('Skipping quest/milestone thing: ' + qdesc.displayProperties.name);
+                // console.log('Skipping quest/milestone thing: ' + qdesc.displayProperties.name);
                 return null;
             }
         }

@@ -244,7 +244,6 @@ export interface PublicMilestonesAndActivities {
     crucibleCore: MilestoneActivity[];
     crucibleRotator: MilestoneActivity[];
     herMenag: MilestoneActivity;
-    sundial: MilestoneActivity;
     heroicStrikes: MilestoneActivity;
     reckoning: MilestoneActivity;
     nightfalls: MilestoneActivity[];
