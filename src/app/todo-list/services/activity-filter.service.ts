@@ -1,8 +1,8 @@
 import { GridApi } from '@ag-grid-community/core';
 import { Injectable } from '@angular/core';
 import { Destroyable } from '@app/util/destroyable';
-import { Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import { ActivityRow } from '../interfaces/activity.interface';
 
@@ -19,11 +19,18 @@ export class ActivityFilterService extends Destroyable {
    */
   public filterFunctions: ((row: ActivityRow) => boolean)[] = [];
   public saveSettingsFunctions: (() => void)[] = [];
+  /**
+   * Whether or not there are items that have been ignored/filtered
+   */
+  public filtersActive: Observable<boolean>;
   private update: Subject<void> = new Subject();
   private api: GridApi;
+  private filtersActiveSource = new BehaviorSubject(undefined);
 
   constructor() {
     super();
+    this.filtersActive = this.filtersActiveSource
+      .pipe(distinctUntilChanged((a, b) => a === b));
     /**
      * If we get a bunch of rapid-fire requests to change the filters,
      * this will ease the load and send at MAX 1 request every debounce period
@@ -57,6 +64,14 @@ export class ActivityFilterService extends Destroyable {
   }
 
   /**
+   * Child services should call this to indicate that they have active filters
+   * or do not have active filters.
+   */
+  public updateFilterStatus(hasFilters: boolean) {
+    this.filtersActiveSource.next(hasFilters);
+  }
+
+  /**
    * Tell AG-Grid that we have new filters so that it re-checks the grid rows
    */
   private updateTableFilters() {
@@ -69,6 +84,7 @@ export class ActivityFilterService extends Destroyable {
    * only if it passes ALL filters
    */
   public doesRowPassFilters(row: ActivityRow): boolean {
+    // return true; // TODO put filters back in before merge!!!
     for (let filterPasses of this.filterFunctions) {
       if (!filterPasses(row)) {
         return false;

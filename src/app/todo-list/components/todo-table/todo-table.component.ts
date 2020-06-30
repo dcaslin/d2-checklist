@@ -63,11 +63,11 @@ export class TodoTableComponent extends Destroyable implements OnInit {
 
   private applyInitialSort() {
     // TODO
-    const defaultSortModel = [
-      { colId: 'icon', sort: 'asc' }, // sort by vendor
-      { colId: 'details', sort: 'asc' }, // subsort by bounty type
-    ];
-    this.api.setSortModel(defaultSortModel);
+    // const defaultSortModel = [
+    //   { colId: 'icon', sort: 'asc' }, // sort by vendor
+    //   { colId: 'details', sort: 'asc' }, // subsort by bounty type
+    // ];
+    // this.api.setSortModel(defaultSortModel);
   }
 
   private initColumnDefs() {
@@ -102,8 +102,8 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         colId: 'reward',
         width: 124,
         suppressSizeToFit: true,
-        resizable: false,
-        comparator: (a, b) => a.rewardSort.localeCompare(b.rewardSort)
+        resizable: true,
+        comparator: (a, b) => a.rewardSort.localeCompare(b.rewardSort) * -1 // want pinnacles on top
       }
     ];
 

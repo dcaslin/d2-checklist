@@ -37,7 +37,7 @@ import { MomentModule } from 'ngx-moment';
 
 import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energy-indicator.component';
 import { ItemIconComponent } from './item-icon/item-icon.component';
-import { MilestoneCheckComponent } from './milestone-check/milestone-check.component';
+import { MilestoneCheckModule } from './milestone-check/milestone-check.module';
 import { PipeModule } from './pipe';
 import { SeasonIndicatorComponent } from './season-indicator/season-indicator.component';
 import { SignInRequiredModule } from './sign-in-required/sign-in-required.module';
@@ -82,17 +82,16 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatTableModule,
     CdkTableModule,
     ScrollingModule,
-    SignInRequiredModule
+    SignInRequiredModule,
+    MilestoneCheckModule
   ],
   declarations: [
-  MilestoneCheckComponent,
   SortIndicatorComponent,
   SeasonIndicatorComponent,
   SortIndicatorComponent,
   ItemEnergyIndicatorComponent,
   ItemIconComponent],
   exports: [
-    MilestoneCheckComponent,
     SortIndicatorComponent,
     ItemIconComponent,
     SeasonIndicatorComponent,
@@ -133,7 +132,8 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
     MatTableModule,
     CdkTableModule,
     ScrollingModule,
-    SignInRequiredModule
+    SignInRequiredModule,
+    MilestoneCheckModule
   ]
 })
 export class SharedModule {

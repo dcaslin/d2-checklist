@@ -24,6 +24,8 @@ export class ActivityTypeFilterService extends Destroyable {
 
   /**
    * the key is the icon URL (lol it works though)
+   * TODO this falls apart with Spider, who has different icons for various weekly
+   * bounties he has. Find a way to preserve filter status for spider
    */
   private typesMap: { [key: string]: TogglableRowItem } = {};
   private settings: TypeSettings;
@@ -40,7 +42,7 @@ export class ActivityTypeFilterService extends Destroyable {
     ).subscribe((rows: ActivityRow[]) => {
       this.extractTypesFromRowData(rows);
       this.types.next(Object.values(this.typesMap));
-      this.filterService.pushUpdatesToTable(); // apply filters initially when loaded
+      this.pushUpdatesToTable(); // apply filters initially when loaded
     });
     this.loadFilterSettings();
 
@@ -54,6 +56,9 @@ export class ActivityTypeFilterService extends Destroyable {
    * Call this when you want the filters to take effect.
    */
   public pushUpdatesToTable() {
+    const filtering = Object.values(this.typesMap)
+      .some(item => item.d2cActive === false);
+    this.filterService.updateFilterStatus(filtering);
     this.filterService.pushUpdatesToTable();
   }
 

@@ -1,7 +1,7 @@
 /**
  * Interfaces that mostly make sense of the API response
  */
-import { MileStoneName } from '@app/service/model';
+import { Const, MileStoneName } from '@app/service/model';
 
 import { Progress } from './activity.interface';
 import { DisplayProperties } from './api.interface';
@@ -149,9 +149,17 @@ export const CRUCIBLE_WEEKLY_BOUNTIES = 2594202463;
 export const GUNSMITH_WEEKLY_BOUNTIES = 3899487295;
 export const VANGUARD_WEEKLY_BOUNTIES = 2709491520;
 export const GAMBIT_WEEKLY_BOUNTIES = 3802603984;
+export const MENAGERIE_HASH = Const.CHALICE_KEY;
 
 // these are large transparent icons to match the other milestone icon styles
 export const SHAXX_ICON = '/common/destiny2_content/icons/8a7eb56950435db546a4d9422a959391.png';
 export const BANSHEE_ICON = '/common/destiny2_content/icons/9b50d3abf88970e3ceb54e508b84c911.png';
 export const ZAVALA_ICON = '/common/destiny2_content/icons/8969c17c353d8ea402f7418093569ba2.png';
 export const DRIFTER_ICON = '/common/destiny2_content/icons/877b2424e8a52751e5b36fcf80b80f6c.png';
+// other icons that we had to manually get
+export const CONTACT_ICON = '/common/destiny2_content/icons/DestinyMilestoneDefinition_e18307b0e02cef447934f4a8af404448.png';
+export const CHALICE_ICON = '/common/destiny2_content/icons/a97556e4cc3dc4af5504710da27052b3.jpg';
+export const LEGENDARY_GEAR_ICON = '/common/destiny2_content/icons/7eea47cc31d9b065213f85169e668b6e.png';
+// same as pinnacle right now, but that could change in the future
+export const POWERFUL_GEAR_ICON = '/common/destiny2_content/icons/330b67ab92b271c67f5ab2ca36298924.png';
+export const PINNACLE_GEAR_ICON = '/common/destiny2_content/icons/330b67ab92b271c67f5ab2ca36298924.png';

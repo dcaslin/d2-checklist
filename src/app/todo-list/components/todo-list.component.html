@@ -8,6 +8,10 @@
       (click)="toggleFilterPanel()">
       {{ filterButtonText }}
     </button>
+    <span
+      *ngIf="filters.filtersActive | async">
+      &nbsp;&nbsp;*You have filters active
+    </span>
     <div [hidden]="!filterPanelOpen" class="filter-wrapper margin-top-20">
       <d2c-activity-filters></d2c-activity-filters>
     </div>

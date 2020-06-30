@@ -85,10 +85,8 @@ export class ContextService extends Destroyable {
   }
 
   private parseCharacterResponse(resp: any): Character[] {
-    console.log('resp', resp);
     const charObj = resp.Response.characters.data;
     const inventories = resp.Response.characterInventories.data;
-    console.log('inventories:', inventories);
     return Object.values(charObj).map((char: Character) => {
       char.className = this.dictionary.findClass(char.classHash).displayProperties.name;
       char.inventory = inventories[char.characterId].items;

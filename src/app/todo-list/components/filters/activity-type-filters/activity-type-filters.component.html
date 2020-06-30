@@ -48,9 +48,13 @@
           matTooltipClass="multi-line-tooltip"
           (click)="toggleActivityType(type)">
           <d2c-bungie-icon
+            *ngIf="type.icon; else unknownIcon"
             iconClass="icon size-40"
             [icon]="type.icon">
           </d2c-bungie-icon>
+          <ng-template #unknownIcon>
+            <d2c-icon icon="fasQuestionCircle"></d2c-icon>
+          </ng-template>
           <!-- Overlay is put over the icon when the icon is not an active filter -->
           <div class="overlay"></div>
         </div>

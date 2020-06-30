@@ -1,24 +1,31 @@
 
-<div class="progress-cell">
+<div *ngIf="data" class="progress-cell">
 
-  <!-- Progress Visual -->
+  <!-- Milestone Visual -->
+  <d2c-milestone-check
+    *ngIf="data.isMilestone; else bountyProgress"
+    [milestoneStatus]="data.originalInfo"
+    [detailed]="true">
+  </d2c-milestone-check>
 
-  <!-- Progress Visual: Single-checkbox style progress -->
-  <div *ngIf="data.progress.style === ProgressStyle.SINGLE_BOX" [ngSwitch]="data.progress.status">
-    <d2c-icon *ngSwitchCase="ActivityStatus.COMPLETE" class="accent-text" icon="fasCheckSquare"></d2c-icon>
-    <d2c-icon *ngSwitchCase="ActivityStatus.NOT_STARTED" icon="farSquare"></d2c-icon>
-    <d2c-icon *ngSwitchCase="ActivityStatus.IN_PROGRESS" class="accent-text" icon="farMinusSquare"></d2c-icon>
-    <!-- This covers the unknown progress cases and not available -->
-    <d2c-icon *ngSwitchDefault class="faint" icon="farMinusSquare"></d2c-icon>
-  </div>
+  <ng-template #bountyProgress>
+    <!-- Progress Visual: Single-checkbox style progress -->
+    <div *ngIf="data.progress.style === ProgressStyle.SINGLE_BOX" [ngSwitch]="data.progress.status">
+      <d2c-icon *ngSwitchCase="ActivityStatus.COMPLETE" class="accent-text" icon="fasCheckSquare"></d2c-icon>
+      <d2c-icon *ngSwitchCase="ActivityStatus.NOT_STARTED" icon="farSquare"></d2c-icon>
+      <d2c-icon *ngSwitchCase="ActivityStatus.IN_PROGRESS" class="accent-text" icon="farMinusSquare"></d2c-icon>
+      <!-- This covers the unknown progress cases and not available -->
+      <d2c-icon *ngSwitchDefault class="faint" icon="farMinusSquare"></d2c-icon>
+    </div>
 
-  <!-- Sub-text section -->
-  <div
-    *ngIf="data.expirationDate; else showStatusText"
-    class="warn-text"
-    [expDateToSeconds]="data.expirationDate"
-    (newSecondValue)="count = $event">Expires in {{ count | timeUntil }}</div>
-  <ng-template #showStatusText>
-    <div *ngIf="data.subText" class="type-caption">{{ data.subText }}</div>
+    <!-- Sub-text section -->
+    <div
+      *ngIf="data.expirationDate; else showStatusText"
+      class="warn-text"
+      [expDateToSeconds]="data.expirationDate"
+      (newSecondValue)="count = $event">Expires in {{ count | timeUntil }}</div>
+    <ng-template #showStatusText>
+      <div *ngIf="data.subText" class="type-caption">{{ data.subText }}</div>
+    </ng-template>
   </ng-template>
 </div>

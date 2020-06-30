@@ -1,6 +1,6 @@
-import { MileStoneName } from '@app/service/model';
+import { MileStoneName, MilestoneStatus } from '@app/service/model';
 
-import { Bounty, CostReward } from './vendor.interface';
+import { Bounty } from './vendor.interface';
 
 /**
  * Represents "cooked" values for displaying rows in the
@@ -14,7 +14,7 @@ export interface ActivityRow {
   detailTitle: string; // ususally the name
   detailSubText: string;
   detailTooltip?: string;
-  rewards: CostReward[]; // CostReward might be bounty-specific
+  rewards: CookedReward[]; // CostReward might be bounty-specific
   rewardSort: string; // used to sort the rewards column
   charInfo: { [key: string]: ActivityCharInfo }; // key is character ID
   type: ActivityType;
@@ -26,10 +26,25 @@ export interface ActivityRow {
   originalItem: Bounty | MileStoneName // debug purposes only
 }
 
+/**
+ * Milestone rewards don't come to us with hashes, but comes with extra tier info
+ * Use the cooked-reward to let us still use that data
+ */
+export interface CookedReward {
+  name: string;
+  icon: string;
+  quantity?: number;
+  hash?: number | string;
+  description?: string;
+  subText?: string;
+}
+
 export interface ActivityCharInfo {
   progress?: Progress;
   subText?: string; // if this is defined and not '', it will be shown under the progress visual
   expirationDate?: string; // this is the highest priority (over subText)
+  isMilestone: boolean; // this unfortunately is to let us use one renderer vs another for status
+  originalInfo?: MilestoneStatus;
 }
 
 export enum ActivityType {
