@@ -62,12 +62,11 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   }
 
   private applyInitialSort() {
-    // TODO
-    // const defaultSortModel = [
-    //   { colId: 'icon', sort: 'asc' }, // sort by vendor
-    //   { colId: 'details', sort: 'asc' }, // subsort by bounty type
-    // ];
-    // this.api.setSortModel(defaultSortModel);
+    const defaultSortModel = [
+      { colId: 'icon', sort: 'asc' }, // sort by vendor
+      { colId: 'details', sort: 'asc' }, // subsort by bounty type
+    ];
+    this.api.setSortModel(defaultSortModel);
   }
 
   private initColumnDefs() {

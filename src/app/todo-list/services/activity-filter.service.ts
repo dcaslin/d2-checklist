@@ -84,7 +84,6 @@ export class ActivityFilterService extends Destroyable {
    * only if it passes ALL filters
    */
   public doesRowPassFilters(row: ActivityRow): boolean {
-    // return true; // TODO put filters back in before merge!!!
     for (let filterPasses of this.filterFunctions) {
       if (!filterPasses(row)) {
         return false;

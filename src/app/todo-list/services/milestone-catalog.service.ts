@@ -33,6 +33,7 @@ import {
   LEGENDARY_GEAR_ICON,
   ManifestMilestone,
   MENAGERIE_HASH,
+  Milestone,
   PINNACLE_GEAR_ICON,
   POWERFUL_GEAR_ICON,
   SHAXX_ICON,
@@ -105,21 +106,22 @@ export class MilestoneCatalogService extends Destroyable {
    * data in it than `MileStoneName`, and also has character progressions
    * as part of the milestone.
    */
-  private transformMilestone(m: MileStoneName, p: Player, index: number): any { // TODO don't type this any
+  private transformMilestone(m: MileStoneName, p: Player, index: number): ActivityRow {
     let manifest = this.dictionary.findMilestone(m.key) as any;
     if (!manifest) {
       // this should cover quest steps that are "milestones"
       manifest = this.dictionary.findItem(m.key);
     }
     const mergedMilestone: ActivityRow = {
-      icon: manifest?.displayProperties?.icon || MORE_INFO[m.key]?.icon,
-      iconSort: 'temp', // want to make this sortable by activity type?
-      iconTooltip: manifest?.displayProperties?.name || m.name, // TODO make better/less redundant
+      icon: this.milestoneIcon(manifest, m),
+      iconSort: `_${this.milestoneIcon(manifest, m)}`, // _ in front of the icon gives it top priority. Icon URL is a rough sort
+      iconTooltip: manifest?.displayProperties?.name || m.name,
       timespan: Timespan.WEEKLY,
       detailTitle: m.name,
-      detailSubText: `${m.key} [${index}]`, // TODO
-      detailTooltip: m.desc, // TODO
-      rewards: [this.rewardFromMilestone(m)], // TODO either change the way rewards are stored (don't store by hash, but store by name) or do a reverse map of string names back to hashes (loses tier data)
+      // detailSubText: `${m.key} [${index}]`, // For debug purposes
+      detailSubText: '',
+      detailTooltip: m.desc,
+      rewards: [this.rewardFromMilestone(m)],
       rewardSort: `${m.pl}`,
       charInfo: this.extractCharInfo(m, p, manifest),
       type: ActivityType.MILESTONE,
@@ -128,6 +130,10 @@ export class MilestoneCatalogService extends Destroyable {
       originalItem: m
     }
     return mergedMilestone;
+  }
+
+  private milestoneIcon(manifest: Milestone, m: MileStoneName): string {
+    return manifest?.displayProperties?.icon || MORE_INFO[m.key]?.icon
   }
 
   private rewardFromMilestone(m: MileStoneName): CookedReward {

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { DestinyCacheService, Cache } from '@app/service/destiny-cache.service';
+import { Cache, DestinyCacheService } from '@app/service/destiny-cache.service';
+import { first, takeUntil } from 'rxjs/operators';
+
 import { Destroyable } from '../../util/destroyable';
-import { takeUntil, first } from 'rxjs/operators';
-import { Vendor, InventoryItem } from '../interfaces/vendor.interface';
 import { ManifestMilestone } from '../interfaces/milestone.interface';
 import { ManifestClass } from '../interfaces/player.interface';
+import { InventoryItem, Vendor } from '../interfaces/vendor.interface';
 
 /**
  * This module's version of ParseService
@@ -53,7 +54,7 @@ export class DictionaryService extends Destroyable {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       this.cache = this.cacheService.cache;
-      console.log(this.cache);
+      // console.log(this.cache);
     });
   }
 

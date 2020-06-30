@@ -73,6 +73,9 @@ export class ActivityTypeFilterService extends Destroyable {
     let settings = this.storage.getItem(TYPE_KEY);
     if (!!settings && Object.keys(settings).length === 0) {
       // filter object saved, but there were no active filters. Assume it was a bug
+      // this is no longer needed with the current strategy of only saving hidden state filters
+      // ideally, we would want to ignore the settings if EVERYTHING is set to hidden, which
+      // was the original purpose of this logic. TODO
       settings = undefined;
     }
     this.settings = settings;
@@ -88,12 +91,12 @@ export class ActivityTypeFilterService extends Destroyable {
       const activityTypeObj = {
         ...row,
         // do this to prevent setting everything to false by default when no settings were loaded 
-        d2cActive: this.settings ? !!this.settings[row.icon] : true
+        d2cActive: this.settings ? !this.settings[row.icon] : true
       };
       tempArr.push(activityTypeObj);
     });
     tempArr = this.sortActivityTypeFilters(tempArr);
-    tempArr.forEach(item => this.typesMap[item.icon] = item)
+    tempArr.forEach(item => this.typesMap[item.icon] = item);
   }
 
   private sortActivityTypeFilters(unsorted: TogglableRowItem[]): TogglableRowItem[] {
@@ -116,7 +119,10 @@ export class ActivityTypeFilterService extends Destroyable {
   private saveTypesFilters() {
     const compressedMap = {};
     Object.values(this.typesMap).forEach(item => {
-      if (item.d2cActive) {
+      // save filters that are NOT active. This is a better experience if new rewards/types
+      // become available. By default, we want those new things to be shown, not hidden.
+      // so by specifying all the things we want hidden, then everything else will be shown
+      if (!item.d2cActive) {
         compressedMap[item.icon] = true;
       };
     })

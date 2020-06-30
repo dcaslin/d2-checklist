@@ -7,7 +7,11 @@ import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
   template: `
   <div class="multi-line-cell" [matTooltip]="data.detailTooltip">
     <div class="text-wrapper">
-      <div class="truncate">{{ data.detailTitle }}</div>
+      <div 
+        [class.truncate]="data.detailSubText"
+        [class.break-word]="!data.detailSubText">
+        {{ data.detailTitle }}
+      </div>
       <div class="type-caption truncate">{{ data.detailSubText }}</div>
     </div>
   </div>

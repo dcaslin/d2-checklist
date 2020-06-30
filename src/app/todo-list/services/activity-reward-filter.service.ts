@@ -84,10 +84,6 @@ export class ActivityRewardFilterService extends Destroyable {
       this.buildRewardNameMap(togglableItems);
       this.rewards.next(togglableItems);
       this.pushUpdatesToTable(); // apply filters initially when loaded
-      console.log('rewardsMap', this.rewardsMap);
-      console.log('togglable items (sent to filter component)', togglableItems);
-      console.log('tableRewardNameMap', this.tableRewardNameMap);
-      console.log('mapRewardByName', this.mapRewardByName);
     });
 
     // register filter method with the main filter service
@@ -112,7 +108,7 @@ export class ActivityRewardFilterService extends Destroyable {
   private doesRowPassRewardFilters(row: ActivityRow): boolean {
     for (const reward of row.rewards) {
       if (!this.mapRewardByName[reward.name]) {
-        console.log('couldn\'t find filter for', reward.name)
+        console.log('That\'s weird! couldn\'t find filter for', reward.name)
       }
       if (this.mapRewardByName[reward.name].d2cActive) {
         return true;
@@ -203,7 +199,7 @@ export class ActivityRewardFilterService extends Destroyable {
     rewards.forEach((reward: InventoryItem) => {
       output.push({
         ...reward,
-        d2cActive: settings ? !!settings[reward.displayProperties.name] : true
+        d2cActive: settings ? !settings[reward.displayProperties.name] : true
       });
     });
     return output;
@@ -232,7 +228,10 @@ export class ActivityRewardFilterService extends Destroyable {
   private saveRewardFilters() {
     const compressedMap = {};
     Object.values(this.mapRewardByName).forEach(item => {
-      if (item.d2cActive) {
+      // After a while of use, I realized that it was better to save only what has been
+      // filtered out, because if new items appear (because of new activities or rewards),
+      // we want those to default to on (visible) (more discoverable to the user).
+      if (!item.d2cActive) {
         compressedMap[item.displayProperties.name] = true;
       };
     })

@@ -49,7 +49,6 @@ export class ActivityCatalogService extends Destroyable {
   private initRows() {
     combineLatest([
       this.bountyService.bountyCatalog,
-      // of([]), // TODO don't ship
       this.milestoneService.milestoneCatalog
     ]).pipe(
       filter(([bounties, milestones]) => !!bounties && !!milestones),
@@ -58,9 +57,6 @@ export class ActivityCatalogService extends Destroyable {
       // milestones are converted to activityRows in the milestone service.
       let genericRows = this.convertToRowModel(bounties);
       genericRows = [...genericRows, ...milestones];
-      console.log('Generic Rows:', genericRows);
-      // console.log('milestones:', milestones);
-      // this.activityRows.next(milestones);
       this.activityRows.next(genericRows);
     });
   }
