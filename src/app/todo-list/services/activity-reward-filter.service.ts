@@ -89,6 +89,7 @@ export class ActivityRewardFilterService extends Destroyable {
     // register filter method with the main filter service
     this.filterService.filterFunctions.push((row) => this.doesRowPassRewardFilters(row));
     this.filterService.saveSettingsFunctions.push(() => this.saveRewardFilters());
+    this.filterService.clearFilterFunctions.push(() => this.clearFilters());
   }
 
   /**
@@ -98,7 +99,7 @@ export class ActivityRewardFilterService extends Destroyable {
   public pushUpdatesToTable() {
     const filtering = Object.values(this.mapRewardByName)
       .some(reward => reward.d2cActive === false);
-    this.filterService.updateFilterStatus(filtering);
+    this.filterService.updateFilterStatus(filtering, 'rewards');
     this.filterService.pushUpdatesToTable();
   }
 
@@ -236,6 +237,11 @@ export class ActivityRewardFilterService extends Destroyable {
       };
     })
     this.storage.setItem(REWARD_KEY, compressedMap);
+  }
+
+  private clearFilters() {
+    Object.values(this.mapRewardByName).forEach(item => item.d2cActive = true);
+    this.pushUpdatesToTable();
   }
 }
 

@@ -49,6 +49,7 @@ export class ActivityTypeFilterService extends Destroyable {
     // register filter method with the main filter service
     this.filterService.filterFunctions.push((row) => this.doesRowPassTypeFilters(row));
     this.filterService.saveSettingsFunctions.push(() => this.saveTypesFilters());
+    this.filterService.clearFilterFunctions.push(() => this.clearFilters());
   }
 
   /**
@@ -58,7 +59,8 @@ export class ActivityTypeFilterService extends Destroyable {
   public pushUpdatesToTable() {
     const filtering = Object.values(this.typesMap)
       .some(item => item.d2cActive === false);
-    this.filterService.updateFilterStatus(filtering);
+      console.log('are we filtering?:', filtering);
+    this.filterService.updateFilterStatus(filtering, 'activityTypes');
     this.filterService.pushUpdatesToTable();
   }
 
@@ -127,6 +129,11 @@ export class ActivityTypeFilterService extends Destroyable {
       };
     })
     this.storage.setItem(TYPE_KEY, compressedMap);
+  }
+
+  private clearFilters() {
+    Object.values(this.typesMap).forEach(item => item.d2cActive = true);
+    this.pushUpdatesToTable();
   }
 }
 

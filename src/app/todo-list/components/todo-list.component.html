@@ -10,8 +10,15 @@
     </button>
     <span
       *ngIf="filters.filtersActive | async">
+      <button
+        mat-button
+        class="mat-accent mat-raised-button margin-left-10"
+        (click)="clearFilters()">
+        Clear Filters
+      </button>
       &nbsp;&nbsp;*You have filters active
     </span>
+    
     <div [hidden]="!filterPanelOpen" class="filter-wrapper margin-top-20">
       <d2c-activity-filters></d2c-activity-filters>
     </div>
@@ -23,6 +30,35 @@
         The <strong>Character</strong> columns will sort by completion state, prioritizing in-progress bounties.
       </p> -->
       <d2c-todo-table></d2c-todo-table>
+      <br>
+      <div>
+        This table features filtering and sorting.
+        <ul>
+          <li>
+            Filters can be accessed by pressing the "Edit Filters"
+            button at the top of the screen. To toggle a filter on or off,
+            click on the filter icon. To move large groups of filters,
+            you can use some of the quick-filters at the bottom of each card.
+          </li>
+          <li>
+            Sorting is done by clicking on the header of each column.
+            <ul>
+              <li>Icon Column - Sorts roughly by activity type.
+                It will group bounties by vendor and organize milestones roughly by type</li>
+              <li>Activity Details - Sorts by a more general type.
+                Bounties are sorted by weekly vs daily. Milestones
+                don't have a sort among other milestones, but are
+                prioritized higher than bounties.</li>
+              <li>
+                Rewards Column - Sorts by gear power level drop. For bounties, this doesn't apply
+              </li>
+              <li>
+                Character Column - Sorts by completion state. In-progress items are first, followed by not started items, then completed, and finally not available.
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
   <ng-template #notLoggedIn>

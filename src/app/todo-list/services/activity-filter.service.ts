@@ -19,6 +19,7 @@ export class ActivityFilterService extends Destroyable {
    */
   public filterFunctions: ((row: ActivityRow) => boolean)[] = [];
   public saveSettingsFunctions: (() => void)[] = [];
+  public clearFilterFunctions: (() => void)[] = [];
   /**
    * Whether or not there are items that have been ignored/filtered
    */
@@ -26,6 +27,7 @@ export class ActivityFilterService extends Destroyable {
   private update: Subject<void> = new Subject();
   private api: GridApi;
   private filtersActiveSource = new BehaviorSubject(undefined);
+  private filterStates: { [key: string]: boolean } = {};
 
   constructor() {
     super();
@@ -67,8 +69,15 @@ export class ActivityFilterService extends Destroyable {
    * Child services should call this to indicate that they have active filters
    * or do not have active filters.
    */
-  public updateFilterStatus(hasFilters: boolean) {
-    this.filtersActiveSource.next(hasFilters);
+  public updateFilterStatus(hasFilters: boolean, source: string) {
+    this.filterStates[source] = hasFilters;
+    // if any of the filter sources are filtering
+    const filtering = Object.values(this.filterStates).some(x => !!x)
+    this.filtersActiveSource.next(filtering);
+  }
+
+  public clearFilters() {
+    this.clearFilterFunctions.forEach(clear => clear());
   }
 
   /**

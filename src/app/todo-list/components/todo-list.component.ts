@@ -22,4 +22,8 @@ export class TodoListComponent {
     this.filterPanelOpen = !this.filterPanelOpen;
     this.filterButtonText = this.filterPanelOpen ? 'Hide Filters' : 'Edit Filters';
   }
+
+  public clearFilters() {
+    this.filters.clearFilters();
+  }
 }
