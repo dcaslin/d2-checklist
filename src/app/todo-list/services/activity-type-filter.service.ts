@@ -59,7 +59,6 @@ export class ActivityTypeFilterService extends Destroyable {
   public pushUpdatesToTable() {
     const filtering = Object.values(this.typesMap)
       .some(item => item.d2cActive === false);
-      console.log('are we filtering?:', filtering);
     this.filterService.updateFilterStatus(filtering, 'activityTypes');
     this.filterService.pushUpdatesToTable();
   }
