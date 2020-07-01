@@ -1,6 +1,8 @@
 .main {
   height: 100%;
-  width: 1200px;
+  max-width: 1200px; // The grid just doesn't look that good when it gets too thicc
+  min-width: 850px; // hey, it's not pretty, but it's the minimal width that makes the grid work
+  width: 90%; 
   display: flex;
   justify-content: center;
 }

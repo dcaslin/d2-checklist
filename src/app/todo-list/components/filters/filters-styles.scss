@@ -12,7 +12,6 @@ $border-size: 1px;
     width: calc(#{$icon-size} + #{$border-size} * 2);
     border: $border-size solid #181818; // border color helps the icons pop
     position: relative;
-    font-size: calc($icon-size - 10); // something weird with the way icons are rendered
 
     -webkit-box-shadow: 1px 1px 2px 0px #181818;
     -moz-box-shadow: 1px 1px 2px 0px #181818;
