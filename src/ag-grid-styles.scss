@@ -1,5 +1,17 @@
 
 @import "./node_modules/@ag-grid-community/core/dist/styles/ag-grid.scss";
+@import './node_modules/@ag-grid-community/core/dist/styles/ag-theme-alpine/sass/_ag-theme-alpine-mixin.scss';
+@import './node_modules/@ag-grid-community/core/dist/styles/ag-theme-alpine-dark/sass/_ag-theme-alpine-dark-mixin.scss';
+
+// if the mixin is used in default and light separately, it increases styles bundle size from 261 to 418 (157kB)
+// when it's included here, it only increased to 383 (122kB)
+.default-theme, .light-theme {
+  @include ag-theme-alpine();
+}
+
+.black-theme {
+  @include ag-theme-alpine-dark();
+}
 
 // for overriding themes and stuff, it would be best to use the mixins file
 // but these are small things unrelated to themes that I wanted to tweak
