@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AuthService } from '@app/service/auth.service';
 
 import { ActivityFilterService } from '../services/activity-filter.service';
+import { ContextService } from '../services/context-service';
 
 @Component({
   selector: 'd2c-todo-list',
@@ -15,7 +16,8 @@ export class TodoListComponent {
 
   constructor(
     public auth: AuthService,
-    public filters: ActivityFilterService
+    public filters: ActivityFilterService,
+    private context: ContextService
   ) { }
 
   public toggleFilterPanel() {
@@ -25,5 +27,12 @@ export class TodoListComponent {
 
   public clearFilters() {
     this.filters.clearFilters();
+  }
+
+  /**
+   * Not currently used, but this will be used eventually for refresh
+   */
+  public refresh() {
+    this.context.refresh();
   }
 }

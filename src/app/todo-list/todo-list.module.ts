@@ -28,6 +28,7 @@ import { CostRewardPipe } from './pipes/cost-reward.pipe';
 import { ActivityCatalogService } from './services/activity-catalog.service';
 import { ActivityFilterService } from './services/activity-filter.service';
 import { ActivityRewardFilterService } from './services/activity-reward-filter.service';
+import { ActivitySortService } from './services/activity-sort-service';
 import { ActivityTypeFilterService } from './services/activity-type-filter.service';
 import { BountyCatalogService } from './services/bounty-catalog.service';
 import { ContextService } from './services/context-service';
@@ -81,7 +82,8 @@ ModuleRegistry.registerModules([
     MilestoneCatalogService,
     ActivityFilterService,
     ActivityTypeFilterService,
-    ActivityRewardFilterService
+    ActivityRewardFilterService,
+    ActivitySortService
   ],
   exports: [
     TodoListComponent,

@@ -48,6 +48,14 @@ export class ContextService extends Destroyable {
   }
 
   /**
+   * Forces a refresh that will bubble up any services listening to this
+   * This will hit characters, bounties, and milestones.
+   */
+  public refresh(): void {
+    this.user.next(this.user.getValue());
+  }
+
+  /**
    * Loads the logged in user which triggers a fetch for the characters
    */
   private loadLoggedInUserAndCharacters() {

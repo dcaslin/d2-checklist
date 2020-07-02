@@ -4,6 +4,7 @@ import { ActivityCharInfo } from '@app/todo-list/interfaces/activity.interface';
 import { Character } from '@app/todo-list/interfaces/player.interface';
 import { ActivityCatalogService } from '@app/todo-list/services/activity-catalog.service';
 import { ActivityFilterService } from '@app/todo-list/services/activity-filter.service';
+import { ActivitySortService } from '@app/todo-list/services/activity-sort-service';
 import { ContextService } from '@app/todo-list/services/context-service';
 import { Destroyable } from '@app/util/destroyable';
 import { filter, takeUntil } from 'rxjs/operators';
@@ -31,6 +32,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   constructor(
     public activityService: ActivityCatalogService,
     private filterService: ActivityFilterService,
+    private sortService: ActivitySortService,
     private context: ContextService,
     private cdRef: ChangeDetectorRef
   ) {
@@ -45,7 +47,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   public onGridReady(event: GridReadyEvent) {
     this.api = event.api;
     this.filterService.registerGrid(event.api);
-    this.applyInitialSort();
+    this.sortService.registerGrid(event.api);
   }
 
   private subToChars() {
@@ -62,11 +64,14 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   }
 
   private applyInitialSort() {
-    const defaultSortModel = [
-      { colId: 'icon', sort: 'asc' }, // sort by vendor
-      { colId: 'details', sort: 'asc' }, // subsort by bounty type
-    ];
-    this.api.setSortModel(defaultSortModel);
+    const customSettingsApplied = this.sortService.loadSortSettings();
+    if (!customSettingsApplied) {
+      const defaultSortModel = [
+        { colId: 'icon', sort: 'asc' }, // sort by vendor
+        { colId: 'details', sort: 'asc' }, // subsort by bounty type
+      ];
+      this.api.setSortModel(defaultSortModel);
+    }
   }
 
   private initColumnDefs() {
@@ -127,7 +132,8 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         this.api.sizeColumnsToFit();
       },
       isExternalFilterPresent: () => true,
-      doesExternalFilterPass: (node) => this.filterService.doesRowPassFilters(node.data)
+      doesExternalFilterPass: (node) => this.filterService.doesRowPassFilters(node.data),
+      postSort: () => this.sortService.onSortChange()
     }
   }
 
