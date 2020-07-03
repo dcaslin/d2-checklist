@@ -1,0 +1,10 @@
+<ag-grid-angular
+  style="width: 100%;" 
+  class="ag-theme-alpine-dark"
+  [class.compact]="isCompact"
+  [gridOptions]="gridOptions"
+  [rowData]="activityService.activityRows | async"
+  [columnDefs]="colDefs"
+  (gridReady)="onGridReady($event)"
+>
+</ag-grid-angular>

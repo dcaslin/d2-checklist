@@ -1,0 +1,57 @@
+<div class="left">
+  <div class="grid-parent">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Active Reward Filters
+        </mat-card-title>
+        <mat-card-subtitle>
+          Activities that reward ANY of these items will be shown in the table below.
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ng-container *ngTemplateOutlet="itemList;context:{state: true}"></ng-container>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-raised-button (click)="showGear()">Only Gear</button>
+        <button mat-raised-button (click)="ignoreAll()">Ignore All</button>
+      </mat-card-actions>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>
+          Ignored Reward Filters
+        </mat-card-title>
+        <mat-card-subtitle>
+          Rewards you don't necessarily care about.
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <ng-container *ngTemplateOutlet="itemList;context:{state: false}"></ng-container>
+      </mat-card-content>
+      <mat-card-actions align="start">
+        <button mat-raised-button (click)="enableAll()">Enable All</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <ng-template #itemList let-state="state">
+    <div class="icons-container">
+      <ng-container *ngFor="let reward of rewards; let i = index">
+        <div
+          *ngIf="reward.d2cActive === state"
+          class="filter-item pointer"
+          matTooltip="{{reward.displayProperties.name}}&#13;Click to {{reward.d2cActive ? 'ignore' : 'enable'}}&#13;&#13;{{reward.displayProperties.description}}"
+          matTooltipClass="multi-line-tooltip"
+          (click)="toggleReward(reward)">
+          <d2c-bungie-icon
+            iconClass="icon size-40"
+            [icon]="reward.displayProperties.icon">
+          </d2c-bungie-icon>
+          <!-- Overlay is put over the icon when the icon is not an active filter -->
+          <div class="overlay"></div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
+</div>

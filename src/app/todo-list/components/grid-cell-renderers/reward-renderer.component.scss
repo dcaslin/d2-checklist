@@ -1,0 +1,16 @@
+
+.rewards-wrapper {
+  white-space: break-spaces;
+  align-self: center;
+  margin-top: -6px; // weird hack from SO for applying top margin only to wrapped items
+  // also 6 looks slightly more centered than 5
+
+  .reward {
+    display: inline-block;
+    margin-top: 5px; // bc of the negative margin above, this will only appear on wrapped items
+  }
+
+  .reward:not(:last-child) {
+    margin-right: 7px;
+  }
+}

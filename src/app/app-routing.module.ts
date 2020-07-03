@@ -2,13 +2,16 @@ import { Injectable, NgModule } from '@angular/core';
 import { CanActivate, RouterModule } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
+
 import { AboutComponent } from './about';
 import { AuthComponent } from './auth';
 import { BungieSearchComponent } from './bungie-search';
 import { ClanComponent } from './clan';
 import { ClanSearchComponent } from './clan-search';
 import { ClanBadgesComponent } from './clan/clan-collections/clan-badges/clan-badges.component';
-import { ClanCollectionSearchComponent } from './clan/clan-collections/clan-collection-search/clan-collection-search.component';
+import {
+  ClanCollectionSearchComponent,
+} from './clan/clan-collections/clan-collection-search/clan-collection-search.component';
 import { ClanCollectionsComponent } from './clan/clan-collections/clan-collections.component';
 import { ClanInfoComponent } from './clan/clan-info/clan-info.component';
 import { ClanLifetimeComponent } from './clan/clan-lifetime/clan-lifetime.component';
@@ -24,6 +27,7 @@ import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.com
 import { GearComponent } from './gear';
 import { HistoryComponent } from './history';
 import { HomeComponent } from './home';
+import { PartyComponent } from './party/party.component';
 import { PGCRComponent } from './pgcr';
 import { PlayerComponent } from './player';
 import { CharsComponent } from './player/chars/chars.component';
@@ -50,7 +54,6 @@ import { RecentPlayersComponent } from './recent-players';
 import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
-import { PartyComponent } from './party/party.component';
 
 
 @Injectable()
@@ -384,6 +387,12 @@ export class AuthGuard implements CanActivate {
           ]
         }
       ]
+    },
+    {
+      path: 'todo-list',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      loadChildren: () => import('./todo-list/todo-list.module').then(m => m.TodoListModule)
     },
     {
       path: '**',
