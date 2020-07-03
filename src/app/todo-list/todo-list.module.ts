@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BungieIconModule } from '@app/bungie-icon/bungie-icon.module';
 import { CountdownModule } from '@app/countdown/countdown.module';
@@ -33,6 +34,7 @@ import { ActivityTypeFilterService } from './services/activity-type-filter.servi
 import { BountyCatalogService } from './services/bounty-catalog.service';
 import { ContextService } from './services/context-service';
 import { DictionaryService } from './services/dictionary.service';
+import { GridSettingsService } from './services/grid-settings.service';
 import { HttpService } from './services/http.service';
 import { MilestoneCatalogService } from './services/milestone-catalog.service';
 import { TodoListRoutingModule } from './todo-list-routing.module';
@@ -58,7 +60,8 @@ ModuleRegistry.registerModules([
     MatCardModule,
     MatButtonModule,
     SignInRequiredModule,
-    MilestoneCheckModule
+    MilestoneCheckModule,
+    MatSlideToggleModule
   ],
   declarations: [
     TodoListComponent,
@@ -83,7 +86,8 @@ ModuleRegistry.registerModules([
     ActivityFilterService,
     ActivityTypeFilterService,
     ActivityRewardFilterService,
-    ActivitySortService
+    ActivitySortService,
+    GridSettingsService
   ],
   exports: [
     TodoListComponent,

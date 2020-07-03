@@ -6,6 +6,7 @@ import { ActivityCatalogService } from '@app/todo-list/services/activity-catalog
 import { ActivityFilterService } from '@app/todo-list/services/activity-filter.service';
 import { ActivitySortService } from '@app/todo-list/services/activity-sort-service';
 import { ContextService } from '@app/todo-list/services/context-service';
+import { GridSettingsService } from '@app/todo-list/services/grid-settings.service';
 import { Destroyable } from '@app/util/destroyable';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -25,6 +26,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
   // ag grid variables
   public gridOptions: GridOptions = {};
   public colDefs: ColDef[];
+  public isCompact: boolean = false;
   private api: GridApi;
 
   private chars: Character[];
@@ -33,6 +35,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
     public activityService: ActivityCatalogService,
     private filterService: ActivityFilterService,
     private sortService: ActivitySortService,
+    private gridSettings: GridSettingsService,
     private context: ContextService,
     private cdRef: ChangeDetectorRef
   ) {
@@ -48,6 +51,12 @@ export class TodoTableComponent extends Destroyable implements OnInit {
     this.api = event.api;
     this.filterService.registerGrid(event.api);
     this.sortService.registerGrid(event.api);
+    this.gridSettings.compact.pipe(takeUntil(this.destroy$))
+      .subscribe(isCompact => {
+        this.gridOptions.rowHeight = isCompact ? 50 : 70;
+        this.isCompact = isCompact;
+        this.api.resetRowHeights();
+      });
   }
 
   private subToChars() {
@@ -126,7 +135,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         detailsRenderer: DetailsRenderer,
         rewardRenderer: RewardRenderer
       },
-      rowHeight: 70, // icons = 48px + 2 cell border + 20 padding (10 on top and bottom)
+      rowHeight: 50, // icons = 48px + 2 cell border + 20 padding (10 on top and bottom)
       domLayout: 'autoHeight',
       onFirstDataRendered: () => {
         this.applyInitialSort();

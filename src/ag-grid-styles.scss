@@ -32,6 +32,13 @@
     justify-content: center;
   }
 
+  &.compact {
+    .ag-cell {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+  }
+
 }
 
 // By multi-line, I mean 2 lines.

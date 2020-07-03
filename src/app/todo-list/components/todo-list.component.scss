@@ -7,6 +7,11 @@
   justify-content: center;
 }
 
+.controls-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
 .filter-wrapper {
   line-height: normal;
   box-sizing: border-box;

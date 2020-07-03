@@ -2,22 +2,30 @@
 <div class="main left">
   <div style="width: 100%" *ngIf="auth.authFeed | async; else notLoggedIn">
   <!-- <div *ngIf="false; else notLoggedIn"> -->
-    <button
-      mat-button
-      class="mat-accent mat-raised-button"
-      (click)="toggleFilterPanel()">
-      {{ filterButtonText }}
-    </button>
-    <span
-      *ngIf="filters.filtersActive | async">
-      <button
-        mat-button
-        class="mat-accent mat-raised-button margin-left-10"
-        (click)="clearFilters()">
-        Clear Filters
-      </button>
-      &nbsp;&nbsp;*You have filters active
-    </span>
+    <div class="controls-wrapper">
+      <div>
+        <button
+          mat-button
+          class="mat-accent mat-raised-button"
+          (click)="toggleFilterPanel()">
+          {{ filterButtonText }}
+        </button>
+        <span
+          *ngIf="filters.filtersActive | async">
+          <button
+            mat-button
+            class="mat-accent mat-raised-button margin-left-10"
+            (click)="clearFilters()">
+            Clear Filters
+          </button>
+          &nbsp;&nbsp;*You have filters active
+        </span>
+      </div>
+      <div>
+        <mat-slide-toggle (change)="onCompactToggleChange($event)"></mat-slide-toggle>
+        <b>&nbsp;&nbsp;View:&nbsp;{{ viewMode }}</b>
+      </div>
+    </div>
     
     <div [hidden]="!filterPanelOpen" class="filter-wrapper margin-top-20">
       <d2c-activity-filters></d2c-activity-filters>
