@@ -127,13 +127,14 @@ export class TodoTableComponent extends Destroyable implements OnInit {
         rewardRenderer: RewardRenderer
       },
       rowHeight: 70, // icons = 48px + 2 cell border + 20 padding (10 on top and bottom)
+      domLayout: 'autoHeight',
       onFirstDataRendered: () => {
         this.applyInitialSort();
         this.api.sizeColumnsToFit();
       },
       isExternalFilterPresent: () => true,
       doesExternalFilterPass: (node) => this.filterService.doesRowPassFilters(node.data),
-      postSort: () => this.sortService.onSortChange()
+      postSort: () => this.sortService.onSortChange(),
     }
   }
 
