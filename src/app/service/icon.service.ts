@@ -13,13 +13,12 @@ import {
   faBolt as falBolt,
   faWheat as falWheat,
   faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare
-
 } from '@fortawesome/pro-light-svg-icons';
 import {
 
   faAlien as farAlien,
   faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
-  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy
+  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy, faClipboardCheck as farClipboardCheck
 } from '@fortawesome/pro-regular-svg-icons';
 
 import { 
@@ -87,6 +86,7 @@ export class IconService {
   public readonly fasBurn = fasBurn;
   public readonly fasBolt = fasBolt;
   public readonly fasSlidersV = fasSlidersV;
+  public readonly farClipboardCheck = farClipboardCheck;
 
   // public readonly  = ;
   public readonly fasBed = fasBed;
@@ -179,7 +179,6 @@ export class IconService {
   public readonly fasQuestionCircle = fasQuestionCircle;
   public readonly fasTrash = fasTrash;
   public readonly fasLevelUp = fasLevelUp;
-
 
   public readonly fasBowArrow = fasBowArrow;
   public readonly fabPaypal = fabPaypal;

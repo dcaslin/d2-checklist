@@ -1,13 +1,14 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, ReplaySubject } from 'rxjs';
+
 import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
 
 
 @Injectable()
 export class AuthService {
-    private authSub = new Subject();
+    private authSub = new ReplaySubject(null);
     public authFeed: Observable<AuthInfo>;
 
     token: Token;

@@ -59,6 +59,11 @@ $d2c-theme: mat-light-theme(
         background-color: hsl(0, 43%, 91%);
     }
 
+    // transparent icons are impossible to see on a light theme
+    .bungie-icon {
+      background-color: #636363
+    }
+
     
     .footer {
         color: mat-color($primary, lighter);

@@ -1,0 +1,24 @@
+.main {
+  height: 100%;
+  max-width: 1200px; // The grid just doesn't look that good when it gets too thicc
+  min-width: 850px; // hey, it's not pretty, but it's the minimal width that makes the grid work
+  width: 90%; 
+  display: flex;
+  justify-content: center;
+}
+
+.controls-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter-wrapper {
+  line-height: normal;
+  box-sizing: border-box;
+}
+
+.grid-wrapper {
+  height: 100%;
+  width: 100%;
+  text-align: left;
+}
