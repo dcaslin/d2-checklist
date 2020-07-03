@@ -135,6 +135,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
       isExternalFilterPresent: () => true,
       doesExternalFilterPass: (node) => this.filterService.doesRowPassFilters(node.data),
       postSort: () => this.sortService.onSortChange(),
+      onGridSizeChanged: this.onGridSizeChange
     }
   }
 
@@ -161,6 +162,10 @@ export class TodoTableComponent extends Destroyable implements OnInit {
       return aExp.localeCompare(bExp);
     }
     return a.progress.status - b.progress.status;
+  }
+
+  private onGridSizeChange(params) {
+    params.api.sizeColumnsToFit();
   }
 
 }
