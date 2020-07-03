@@ -1,9 +1,81 @@
-
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
+
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
-import { Activity, AggHistoryEntry, ApiInventoryBucket, Badge, BadgeClass, BountySet, BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership, Character, CharacterStat, CharChecklist, CharChecklistItem, Checklist, ChecklistItem, ClanInfo, ClanMilestoneResult, Const, Currency, CurrentActivity, CurrentPartyActivity, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryPlug, InventorySocket, InventoryStat, ItemObjective, ItemState, ItemType, Joinability, MasterworkInfo, MilestoneActivity, MileStoneName, MilestoneStatus, Mission, NameDesc, NameQuantity, PathEntry, PGCR, PGCREntry, PGCRExtraData, PGCRTeam, PGCRWeaponData, Player, PrivPublicMilestone, Profile, ProfileTransitoryData, Progression, PublicMilestone, PublicMilestonesAndActivities, Questline, QuestlineStep, Rankup, RecordSeason, SaleItem, Seal, SearchResult, Shared, SpecialAccountProgressions, TAG_WEIGHTS, Target, TriumphCollectibleNode, TriumphNode, TriumphPresentationNode, TriumphRecordNode, UserInfo, Vault, Vendor } from './model';
+import {
+  Activity,
+  AggHistoryEntry,
+  ApiInventoryBucket,
+  Badge,
+  BadgeClass,
+  BountySet,
+  BungieGroupMember,
+  BungieMember,
+  BungieMemberPlatform,
+  BungieMembership,
+  Character,
+  CharacterStat,
+  CharChecklist,
+  CharChecklistItem,
+  Checklist,
+  ChecklistItem,
+  ClanInfo,
+  ClanMilestoneResult,
+  Const,
+  Currency,
+  CurrentActivity,
+  CurrentPartyActivity,
+  DamageType,
+  DestinyAmmunitionType,
+  EnergyType,
+  InventoryItem,
+  InventoryPlug,
+  InventorySocket,
+  InventoryStat,
+  ItemObjective,
+  ItemState,
+  ItemType,
+  Joinability,
+  MasterworkInfo,
+  MilestoneActivity,
+  MileStoneName,
+  MilestoneStatus,
+  Mission,
+  NameDesc,
+  NameQuantity,
+  PathEntry,
+  PGCR,
+  PGCREntry,
+  PGCRExtraData,
+  PGCRTeam,
+  PGCRWeaponData,
+  Player,
+  PrivPublicMilestone,
+  Profile,
+  ProfileTransitoryData,
+  Progression,
+  PublicMilestone,
+  PublicMilestonesAndActivities,
+  Questline,
+  QuestlineStep,
+  Rankup,
+  RecordSeason,
+  SaleItem,
+  Seal,
+  SearchResult,
+  Shared,
+  SpecialAccountProgressions,
+  TAG_WEIGHTS,
+  Target,
+  TriumphCollectibleNode,
+  TriumphNode,
+  TriumphPresentationNode,
+  TriumphRecordNode,
+  UserInfo,
+  Vault,
+  Vendor,
+} from './model';
 
 @Injectable()
 export class ParseService {
@@ -266,7 +338,7 @@ export class ParseService {
             } else if (skipDesc != null) {
 
             } else {
-                console.log('Skipping unknown milestone: ' + key);
+                // console.log('Skipping unknown milestone: ' + key);
             }
         }
     }
@@ -1848,7 +1920,7 @@ export class ParseService {
         if (pointProg == null) {
             pointProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POINT_PROG_HASH);
             if (pointProg == null) {
-                console.log('doh');
+                // console.log('doh');
                 return null;
             }
         }
@@ -1856,7 +1928,7 @@ export class ParseService {
         if (powerProg == null) {
             powerProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POWER_PROG_HASH);
             if (powerProg == null) {
-                console.log('doh');
+                // console.log('doh');
                 return null;
             }
         }
@@ -2929,7 +3001,7 @@ export class ParseService {
             searchText += ' interval';
         }
         if (!iterateMe) {
-            console.log('Missing objs');
+            // console.log('Missing objs');
             console.dir(val);
             return null;
         }
@@ -3317,7 +3389,7 @@ export class ParseService {
         }
         // from here on out we know its MW
         if (plugDesc.investmentStats == null || plugDesc.investmentStats.length == 0) {
-            console.log('Missing investment stats?');
+            // console.log('Missing investment stats?');
             return null;
         }
         const invStats = plugDesc.investmentStats[0];
@@ -3325,7 +3397,7 @@ export class ParseService {
         const statHash = invStats.statTypeHash;
         const statDesc: any = this.destinyCacheService.cache.Stat[statHash];
         if (statDesc == null) {
-            console.log('Missing statsDesc for ' + statHash);
+            // console.log('Missing statsDesc for ' + statHash);
             return null;
         }
         const name = statDesc.displayProperties.name;

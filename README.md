@@ -8,12 +8,15 @@
 
 * Install node and npm and the Angular CLI (cli.angular.io)
 * Clone this repository
+* Get yourself an API key and setup a keys.ts file to match keys.example.ts
+* Setup a proper fake test domain (I like to use www.testd2checklist.com:8080 via NGINX and an entry in my hosts file)
 * npm install
-* ng serve
+* run ./serve.bat (Windows) or ./serve.sh (Mac or *nix)
 
 ### Contribution guidelines ###
 
-* If you want to contribute, let me know (or submit a pull request **to the development branch**)
+* If you want to contribute, let me know (or submit a pull request)
+* This application uses FontAwesome Pro's private repo, so running your own development environment requires stubbing those out. 
 
 #### Notes
 

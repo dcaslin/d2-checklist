@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "14.8.0",
+  "version": "15.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -23,6 +23,8 @@
   },
   "private": true,
   "dependencies": {
+    "@ag-grid-community/angular": "^23.2.1",
+    "@ag-grid-community/client-side-row-model": "^23.2.1",
     "@angular/animations": "^9.1.0",
     "@angular/cdk": "^9.2.0",
     "@angular/common": "^9.1.0",
@@ -47,6 +49,7 @@
     "idb-keyval": "^3.2.0",
     "jszip": "^3.3.0",
     "jszip-utils": "^0.1.0",
+    "lodash.isequal": "^4.5.0",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
     "ng2-adsense": "^6.0.3",
