@@ -20,6 +20,10 @@
   .ag-cell {
     padding-top: 10px;
     padding-bottom: 10px;
+
+    &.ag-cell-value {
+      text-overflow: unset;
+    }
   }
 
   // hide the sort precedence order when multi-sorting
