@@ -170,7 +170,7 @@ export class MilestoneCatalogService extends Destroyable {
   }
 
   private getStatus(charInfo: MilestoneStatus, m: MileStoneName, progress: string): ActivityStatus {
-    if (charInfo.locked || charInfo.tooLowPower) {
+    if (!charInfo || charInfo.locked || charInfo.tooLowPower) {
       return ActivityStatus.NOT_AVAILABLE;
     } else if (charInfo.complete) {
       return ActivityStatus.COMPLETE;
