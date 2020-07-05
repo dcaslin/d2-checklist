@@ -32,7 +32,6 @@ export class ActivitySortService extends Destroyable {
    * Tells the service that the sort has been changed. External facing method
    */
   public onSortChange() {
-    console.log('onSortChange called');
     this.update.next();
   }
 
@@ -46,7 +45,6 @@ export class ActivitySortService extends Destroyable {
    */
   public loadSortSettings(): boolean {
     const settings = this.storage.getItem(SORT_KEY);
-    console.log('loaded sort settings', settings);
     if (settings?.length > 0) {
       this.api.setSortModel(settings);
     }
@@ -59,7 +57,6 @@ export class ActivitySortService extends Destroyable {
   private saveSortSettings() {
     const settings = this.api.getSortModel();
     if (settings?.length > 0) {
-      console.log('saving sort settings', this.api.getSortModel());
       this.storage.setItem(SORT_KEY, settings); 
     }
   }
