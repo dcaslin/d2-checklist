@@ -26,7 +26,7 @@ export class DestinyCacheService {
     const t0 = performance.now();
     console.log('Loading cache');
     try {
-      const key = 'manifest-' + env.versions.app;
+      const key = 'manifest-' + env.versions.manifest;
       const manifest = await get(key);
       this.checkingCache.next(false);
       // if nothing found, perhaps version has changed, clear old values
@@ -94,7 +94,7 @@ export class DestinyCacheService {
     const httpOptions = {
         headers: headers};
 
-    const req = new HttpRequest<Blob>('GET', '/assets/destiny2.zip?v=' + env.versions.app, {
+    const req = new HttpRequest<Blob>('GET', '/assets/destiny2.zip?v=' + env.versions.manifest, {
       reportProgress: true,
       responseType: 'blob'
     });
