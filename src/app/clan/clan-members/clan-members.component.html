@@ -36,10 +36,10 @@
                         <ng-container *ngIf="!player.superprivate">
                             <ng-container
                                 *ngIf="member.isOnline && player && player.currentActivity; else lastPlayed">
-                                <a mat-flat-button color="accent"
+                                <a mat-button
                                     [routerLink]="['/','party',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]"
                                     matTooltip="Playing right now!">
-                                    <fa-icon [icon]="iconService.falGamepad" size="2x"></fa-icon>
+                                    <fa-icon [icon]="iconService.fasGamepadAlt" size="2x"></fa-icon>
                                 </a>
                                 <div *ngIf="player && player.currentActivity">
                                     {{player.currentActivity.type}}</div>

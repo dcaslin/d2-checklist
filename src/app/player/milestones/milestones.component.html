@@ -101,7 +101,7 @@
           <div class="clanMsRow">
             <span style="margin-right: 0.5em" *ngFor="let clanMs of player.characters[0].clanMilestones">
               {{clanMs.name}}
-              <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="clanMs.earned==true && !clanMs.redeemed==true"
+              <fa-icon [icon]="iconService.fasStar" matTooltip='Collect reward' *ngIf="clanMs.earned==true && !clanMs.redeemed==true"
                 class="warn-text mat-option.mat-selected"></fa-icon>
               <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="clanMs.earned==true && clanMs.redeemed==true"
                 class="accent-text mat-option.mat-selected"></fa-icon>

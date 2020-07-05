@@ -12,8 +12,9 @@ import { Const, MilestoneStatus } from '@app/service/model';
 export class MilestoneCheckComponent implements OnInit {
   public Const = Const;
 
-  @Input('milestoneStatus') milestone: MilestoneStatus
-  @Input() detailed: boolean = false;
+  // tslint:disable-next-line: no-input-rename
+  @Input('milestoneStatus') milestone: MilestoneStatus;
+  @Input() detailed = false;
 
   constructor(public iconService: IconService) { }
 

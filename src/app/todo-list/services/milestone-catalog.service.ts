@@ -146,16 +146,16 @@ export class MilestoneCatalogService extends Destroyable {
   private extractCharInfo(m: MileStoneName, p: Player, manifest: ManifestMilestone): { [key: string]: ActivityCharInfo } {
     const output = {};
     p.characters.forEach((c: Character) => {
-      const info: MilestoneStatus = c.milestones[m.key];
+      const info: MilestoneStatus = c?.milestones[m.key];
       let progress, completionValue;
-      if (info.suppInfo) {
-        [progress, completionValue] = info.suppInfo.split('/').map(str => str.trim())
+      if (info?.suppInfo) {
+        [progress, completionValue] = info?.suppInfo?.split('/')?.map(str => str?.trim());
       }
       const charInfo: ActivityCharInfo = {
         progress: {
           progress: Number(progress),
           completionValue: Number(completionValue),
-          complete: info.complete,
+          complete: info?.complete,
           progressType: ProgressType.CHECKBOX,
           style: ProgressStyle.SINGLE_BOX,
           status: this.getStatus(info, m, progress)
