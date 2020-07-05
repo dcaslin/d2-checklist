@@ -17,6 +17,17 @@
   box-sizing: border-box;
 }
 
+.quick-actions {
+  display: flex;
+  align-items: center;
+}
+
+.action {
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+}
+
 .grid-wrapper {
   height: 100%;
   width: 100%;
