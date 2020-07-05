@@ -6,6 +6,7 @@ export const environment = {
   production: true,
   versions: {
     app: packageJson.version,
+    manifest: packageJson.manifest,
     angular: packageJson.dependencies['@angular/core'],
     material: packageJson.dependencies['@angular/material'],
     bootstrap: packageJson.dependencies.bootstrap,
