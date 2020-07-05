@@ -780,9 +780,10 @@ export class MilestoneStatus {
     readonly phases: boolean[];
     readonly locked: boolean;
     readonly tooLowPower: boolean;
+    readonly readyToCollect: boolean;
 
     constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string, 
-            phases: boolean[], locked: boolean, tooLowPower: boolean) {
+            phases: boolean[], locked: boolean, tooLowPower: boolean, readyToCollect?: boolean) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
@@ -791,6 +792,7 @@ export class MilestoneStatus {
         this.phases = phases;
         this.locked = locked;
         this.tooLowPower = tooLowPower;
+        this.readyToCollect = readyToCollect;
     }
 }
 
@@ -805,6 +807,7 @@ export interface MileStoneName {
     dependsOn: string[];
     neverDisappears?: boolean;
     suppInfo?: string;
+    publicInfo?: PublicMilestone;
 }
 
 export abstract class Target {
@@ -997,8 +1000,6 @@ export class CurrentActivity {
     dateActivityStarted: string;
     name: string;
     type: string;
-    activityLevel: number;
-    activityLightLevel: number;
 }
 
 // export interface SuppCurrentActivityInfo{

@@ -1,81 +1,81 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
-  Activity,
-  AggHistoryEntry,
-  ApiInventoryBucket,
-  Badge,
-  BadgeClass,
-  BountySet,
-  BungieGroupMember,
-  BungieMember,
-  BungieMemberPlatform,
-  BungieMembership,
-  Character,
-  CharacterStat,
-  CharChecklist,
-  CharChecklistItem,
-  Checklist,
-  ChecklistItem,
-  ClanInfo,
-  ClanMilestoneResult,
-  Const,
-  Currency,
-  CurrentActivity,
-  CurrentPartyActivity,
-  DamageType,
-  DestinyAmmunitionType,
-  EnergyType,
-  InventoryItem,
-  InventoryPlug,
-  InventorySocket,
-  InventoryStat,
-  ItemObjective,
-  ItemState,
-  ItemType,
-  Joinability,
-  MasterworkInfo,
-  MilestoneActivity,
-  MileStoneName,
-  MilestoneStatus,
-  Mission,
-  NameDesc,
-  NameQuantity,
-  PathEntry,
-  PGCR,
-  PGCREntry,
-  PGCRExtraData,
-  PGCRTeam,
-  PGCRWeaponData,
-  Player,
-  PrivPublicMilestone,
-  Profile,
-  ProfileTransitoryData,
-  Progression,
-  PublicMilestone,
-  PublicMilestonesAndActivities,
-  Questline,
-  QuestlineStep,
-  Rankup,
-  RecordSeason,
-  SaleItem,
-  Seal,
-  SearchResult,
-  Shared,
-  SpecialAccountProgressions,
-  TAG_WEIGHTS,
-  Target,
-  TriumphCollectibleNode,
-  TriumphNode,
-  TriumphPresentationNode,
-  TriumphRecordNode,
-  UserInfo,
-  Vault,
-  Vendor,
+    Activity,
+    AggHistoryEntry,
+    ApiInventoryBucket,
+    Badge,
+    BadgeClass,
+    BountySet,
+    BungieGroupMember,
+    BungieMember,
+    BungieMemberPlatform,
+    BungieMembership,
+    Character,
+    CharacterStat,
+    CharChecklist,
+    CharChecklistItem,
+    Checklist,
+    ChecklistItem,
+    ClanInfo,
+    ClanMilestoneResult,
+    Const,
+    Currency,
+    CurrentActivity,
+    CurrentPartyActivity,
+    DamageType,
+    DestinyAmmunitionType,
+    EnergyType,
+    InventoryItem,
+    InventoryPlug,
+    InventorySocket,
+    InventoryStat,
+    ItemObjective,
+    ItemState,
+    ItemType,
+    Joinability,
+    MasterworkInfo,
+    MilestoneActivity,
+    MileStoneName,
+    MilestoneStatus,
+    Mission,
+    NameDesc,
+    NameQuantity,
+    PathEntry,
+    PGCR,
+    PGCREntry,
+    PGCRExtraData,
+    PGCRTeam,
+    PGCRWeaponData,
+    Player,
+    PrivPublicMilestone,
+    Profile,
+    ProfileTransitoryData,
+    Progression,
+    PublicMilestone,
+    PublicMilestonesAndActivities,
+    Questline,
+    QuestlineStep,
+    Rankup,
+    RecordSeason,
+    SaleItem,
+    Seal,
+    SearchResult,
+    Shared,
+    SpecialAccountProgressions,
+    TAG_WEIGHTS,
+    Target,
+    TriumphCollectibleNode,
+    TriumphNode,
+    TriumphPresentationNode,
+    TriumphRecordNode,
+    UserInfo,
+    Vault,
+    Vendor
 } from './model';
+
 
 @Injectable()
 export class ParseService {
@@ -157,6 +157,7 @@ export class ParseService {
 
     private populateActivities(c: Character, _act: any): void {
         const hash: number = _act.currentActivityHash;
+        const modeHash: number = _act.currentActivityModeHash;
 
         if (hash !== 0) {
             const act: CurrentActivity = new CurrentActivity();
@@ -165,14 +166,12 @@ export class ParseService {
             const desc: any = this.destinyCacheService.cache.Activity[hash];
             if (desc) {
                 act.name = desc.displayProperties.name;
-                if (desc.activityTypeHash) {
-                    const typeDesc: any = this.destinyCacheService.cache.ActivityType[desc.activityTypeHash];
-                    if (typeDesc != null) {
-                        act.type = typeDesc.displayProperties.name;
-                    }
+            }
+            if (modeHash) {
+                const modeDesc: any = this.destinyCacheService.cache.ActivityMode[modeHash];
+                if (modeDesc) {
+                    act.type = modeDesc.displayProperties.name;
                 }
-                act.activityLevel = desc.activityLevel;
-                act.activityLightLevel = desc.activityLightLevel;
             }
             if (act.name != null && act.name.trim().length > 0) {
                 c.currentActivity = act;
@@ -349,11 +348,15 @@ export class ParseService {
         c.notReady = false;
 
         if (_prog.milestones != null) {
-            if (c.light < Const.LIGHT_TOO_LOW) {  // TODO UPDATE ME
+            // milestones don't work properly when PL's are too low, try to account for this
+            // specifically they tend to not show up, which makes it look like they're complete (rather than actually locked)
+            if (c.light < Const.LIGHT_TOO_LOW) {
                 c.notReady = true;
             }
+            // repeat for each character
             for (const key of Object.keys(_prog.milestones)) {
                 const ms: PrivMilestone = _prog.milestones[key];
+
                 // special case for clan rewards
                 if (key === '4253138191') {
                     const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
@@ -365,15 +368,12 @@ export class ParseService {
                     ms.rewards.forEach(r => {
                         // last week, for testing
                         // if (r.rewardCategoryHash == 4258746474) {
-                        // this week
+                        // this week's clan rewards
                         if (r.rewardCategoryHash === 1064137897) {
                             const rewEntryDescs = desc.rewards[r.rewardCategoryHash].rewardEntries;
-
                             r.entries.forEach(rewEnt => {
-
                                 const rewEntKey = rewEnt.rewardEntryHash;
                                 const name = rewEntryDescs[rewEntKey].displayProperties.name;
-
                                 const earned: boolean = rewEnt.earned;
                                 const redeemed: boolean = rewEnt.redeemed;
                                 clanMilestones.push({
@@ -384,15 +384,13 @@ export class ParseService {
                             });
                         }
                     });
-
                     c.clanMilestones = clanMilestones;
                 } else {
                     // add this milestone if not already there
                     this.addPsuedoMilestone(key, milestonesByKey, milestoneList);
                 }
 
-                // if they finished all, then force them in anyway
-
+                // if they finished all, then force them in anyway, if the public milestones exist already this will do nothing
                 // nightmare hunt pinnacle
                 this.addPsuedoMilestone('3881226684', milestonesByKey, milestoneList);
                 // weekly nightmare hunt
@@ -405,9 +403,11 @@ export class ParseService {
                 let phases = [];
                 let info: string = null;
                 let suppInfo: string = null;
+                let readyToCollect = false;
                 let oPct = 0;
                 if (ms.availableQuests != null) {
-                    ms.availableQuests.forEach((q: PrivAvailableQuest) => {
+
+                    for (const q of ms.availableQuests) {
                         total++;
                         if (key === '466653501') {
                             if (q.status.stepHash != null && q.status.stepHash > 0) {
@@ -419,22 +419,27 @@ export class ParseService {
                             }
                         }
                         if (q.status.completed) { complete++; }
-
                         if (q.status.completed === false && q.status.started === true) {
                             if (q.status.stepObjectives != null) {
-                                q.status.stepObjectives.forEach(o => {
+                                for (const o of q.status.stepObjectives) {
                                     const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
                                     if (oDesc.completionValue != null && oDesc.completionValue > 0) {
                                         oPct = o.progress / oDesc.completionValue;
                                         if (suppInfo == null && oDesc.completionValue > 1) {
                                             suppInfo = o.progress + ' / ' + oDesc.completionValue;
+                                        } else if (oDesc.completionValue == 1) {
+                                            if (oDesc.progressDescription) {
+                                                if (oDesc.progressDescription.toLowerCase().startsWith('speak with')
+                                                || oDesc.progressDescription.toLowerCase().startsWith('reward collected')) {
+                                                    readyToCollect = true;
+                                                }
+                                            }
                                         }
                                     }
-                                });
+                                }
                             }
                         }
-
-                    });
+                    }
                 } else if (ms.activities != null && ms.activities.length > 0) {
                     const act = ms.activities[0];
                     if (act.challenges != null && act.challenges.length > 0) {
@@ -448,7 +453,6 @@ export class ParseService {
 
                                 } else {
                                     oPct = obj.progress / oDesc.completionValue;
-
                                 }
                                 if (suppInfo == null && oDesc.completionValue > 1) {
                                     suppInfo = obj.progress + ' / ' + oDesc.completionValue;
@@ -481,7 +485,7 @@ export class ParseService {
                 }
 
                 if (phases.length == 0) { phases = null; }
-                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases, false, false);
+                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases, false, false, readyToCollect);
                 c.milestones[key] = m;
             }
         }
@@ -1731,7 +1735,6 @@ export class ParseService {
             // repeat for each char
             for (const key of Object.keys(sampleProfile.characterProgressions.data)) {
                 const charProg = sampleProfile.characterProgressions.data[key];
-                console.dir(charProg);
                 for (const hash of CONTACT_CANDIDATES) {
                     if (charProg.milestones[hash]) {
                         foundContactMs = hash;
@@ -1920,7 +1923,6 @@ export class ParseService {
         if (pointProg == null) {
             pointProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POINT_PROG_HASH);
             if (pointProg == null) {
-                // console.log('doh');
                 return null;
             }
         }
@@ -1928,7 +1930,6 @@ export class ParseService {
         if (powerProg == null) {
             powerProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POWER_PROG_HASH);
             if (powerProg == null) {
-                // console.log('doh');
                 return null;
             }
         }
@@ -2250,7 +2251,8 @@ export class ParseService {
                     name: p.summary == null ? p.name : p.summary,
                     desc: p.desc,
                     hasPartial: false,
-                    dependsOn: p.dependsOn
+                    dependsOn: p.dependsOn,
+                    publicInfo: p
                 };
                 // Fix heroic adventures
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
@@ -3001,8 +3003,6 @@ export class ParseService {
             searchText += ' interval';
         }
         if (!iterateMe) {
-            // console.log('Missing objs');
-            console.dir(val);
             return null;
         }
         let objs: ItemObjective[] = [];
@@ -3310,7 +3310,6 @@ export class ParseService {
                 }
             }
             if (skip) {
-                // console.log('Skipping quest/milestone thing: ' + qdesc.displayProperties.name);
                 return null;
             }
         }
@@ -3389,7 +3388,6 @@ export class ParseService {
         }
         // from here on out we know its MW
         if (plugDesc.investmentStats == null || plugDesc.investmentStats.length == 0) {
-            // console.log('Missing investment stats?');
             return null;
         }
         const invStats = plugDesc.investmentStats[0];
@@ -3397,7 +3395,6 @@ export class ParseService {
         const statHash = invStats.statTypeHash;
         const statDesc: any = this.destinyCacheService.cache.Stat[statHash];
         if (statDesc == null) {
-            // console.log('Missing statsDesc for ' + statHash);
             return null;
         }
         const name = statDesc.displayProperties.name;

@@ -24,7 +24,8 @@
             </ng-container>
             <ng-template #notComplete>
                 <ng-container *ngIf="milestone.pct==0 else nonZero">
-                    <fa-icon [icon]="iconService.farSquare"></fa-icon>
+                    <ng-container *ngIf="milestone.readyToCollect"><fa-icon class="warn-text"  matTooltip='Reward waiting to be collected' [icon]="iconService.fasStar"></fa-icon></ng-container>
+                    <ng-container *ngIf="!milestone.readyToCollect"><fa-icon [icon]="iconService.farSquare"></fa-icon></ng-container>
                 </ng-container>
                 <ng-template #nonZero>
                     <fa-icon [icon]="iconService.farMinusSquare" class="accent-text" [matTooltip]="milestone.info"></fa-icon>
