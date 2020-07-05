@@ -21,9 +21,22 @@
           &nbsp;&nbsp;*You have filters active
         </span>
       </div>
-      <div>
-        <mat-slide-toggle (change)="onCompactToggleChange($event)"></mat-slide-toggle>
-        <b>&nbsp;&nbsp;View:&nbsp;{{ viewMode }}</b>
+      <div class="quick-actions">
+        <div class="action"
+        matTooltip="If hiding completed, activities in the table will be hidden if all characters have completed it.">
+          <mat-checkbox
+            [checked]="gridSettings.hideComplete | async"
+            (change)="hideCompleteToggle($event)">
+          </mat-checkbox>
+          <b>&nbsp;&nbsp;{{ (gridSettings.hideComplete | async) ? 'Show all' : 'Hide completed' }}</b>
+        </div>
+        <div class="action">
+          <mat-slide-toggle
+            [checked]="gridSettings.compact | async"
+            (change)="onCompactToggleChange($event)">
+          </mat-slide-toggle>
+          <b>&nbsp;&nbsp;View:&nbsp;{{ (gridSettings.compact | async) ? 'Compact' : 'Normal' }}</b>
+        </div>
       </div>
     </div>
     

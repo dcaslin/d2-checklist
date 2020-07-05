@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { AuthService } from '@app/service/auth.service';
 
@@ -15,12 +16,11 @@ export class TodoListComponent {
 
   public filterPanelOpen: boolean = false;
   public filterButtonText: string = 'Edit Filters';
-  public viewMode: string = 'Normal';
 
   constructor(
     public auth: AuthService,
     public filters: ActivityFilterService,
-    private gridSettings: GridSettingsService,
+    public gridSettings: GridSettingsService,
     private context: ContextService
   ) { }
 
@@ -42,6 +42,9 @@ export class TodoListComponent {
 
   public onCompactToggleChange(event: MatSlideToggleChange) {
     this.gridSettings.changeCompactMode(event.checked);
-    this.viewMode = event.checked ? 'Compact' : 'Normal';
+  }
+
+  public hideCompleteToggle(event: MatCheckboxChange) {
+    this.gridSettings.changeCompleteHide(event.checked);
   }
 }
