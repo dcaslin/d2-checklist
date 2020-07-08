@@ -430,7 +430,9 @@ export class ParseService {
                                         } else if (oDesc.completionValue == 1) {
                                             if (oDesc.progressDescription) {
                                                 if (oDesc.progressDescription.toLowerCase().startsWith('speak with')
-                                                || oDesc.progressDescription.toLowerCase().startsWith('reward collected')) {
+                                                || oDesc.progressDescription.toLowerCase().startsWith('reward collected')
+                                                || oDesc.progressDescription.toLowerCase().endsWith('for a reward.')
+                                                ) {
                                                     readyToCollect = true;
                                                 }
                                             }
