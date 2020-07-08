@@ -4,10 +4,10 @@
     <h2>Privacy</h2>
     <h4>This user has blocked access to this information via their Bungie.net privacy settings.</h4>
   </div>
-  <mat-accordion [multi]="debugmode|async"
-    *ngIf="player.checklists!=null && player.checklists.length>0">
+  <mat-accordion [multi]="debugmode|async" *ngIf="player.checklists!=null && player.checklists.length>0">
     <ng-container *ngFor="let checklist of player.checklists">
-      <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0" [expanded]="debugmode|async">
+      <mat-expansion-panel *ngIf="checklist.entries!=null && checklist.entries.length>0"
+        (opened)="opened(checklist.hash)" [expanded]="debugmode|async">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{checklist.name}}
@@ -17,7 +17,7 @@
             {{checklist.complete}} / {{checklist.total}}
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <div class="checklist-body">
+        <div class="checklist-body" *ngIf="checklist.hash==openEntryId ||  (debugmode|async)">
           <div class="hide-complete">
             <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide
               Completed</mat-checkbox>
@@ -38,20 +38,22 @@
                     <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
                       {{check.name}}</ng-container>
                     <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
-                      target="_blank" rel="noopener">{{check.name}}                      
+                      target="_blank" rel="noopener">{{check.name}}
                       <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon>
                     </a>
 
                     <span *ngIf="debugmode|async">
                       &ensp;[{{check.hash}}] &ensp;
-                      <a href="javascript:void(0)" (click)="state.requestRefresh()">                        
-                        <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true"></fa-icon>
+                      <a href="javascript:void(0)" (click)="state.requestRefresh()">
+                        <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true">
+                        </fa-icon>
                       </a>
                     </span>
                   </td>
                   <td>
                     <span>
-                      <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected" *ngIf="check.checked"></fa-icon>                                            
+                      <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected"
+                        *ngIf="check.checked"></fa-icon>
                       <fa-icon [icon]="iconService.farSquare" *ngIf="!check.checked"></fa-icon>
                     </span>
                   </td>
@@ -66,7 +68,8 @@
 
       </mat-expansion-panel>
     </ng-container>
-    <mat-expansion-panel *ngFor="let checklist of player.charChecklists" [expanded]="debugmode|async">
+    <mat-expansion-panel *ngFor="let checklist of player.charChecklists" (opened)="opened(checklist.hash)"
+      [expanded]="debugmode|async">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{checklist.name}}
@@ -77,7 +80,7 @@
             {{t.complete}}/{{t.total}}&emsp;</span>
         </mat-panel-description>
       </mat-expansion-panel-header>
-      <div class="checklist-body">
+      <div class="checklist-body" *ngIf="checklist.hash==openEntryId ||  (debugmode|async)">
         <div class="hide-complete">
           <mat-checkbox [(ngModel)]="hideComplete" (ngModelChange)="hideCompleteChange()">Hide All
             Completed</mat-checkbox>
@@ -97,22 +100,24 @@
                     {{check.name}}</ng-container>
                   <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
                     target="_blank" rel="noopener">{{check.name}}
-                    <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon>                    
+                    <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon>
                   </a>
 
                   <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                   <span *ngIf="debugmode|async">
                     &ensp;[{{check.hash}}] &ensp;
-                    <a href="javascript:void(0)" (click)="state.requestRefresh()">                      
-                      <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true"></fa-icon>
+                    <a href="javascript:void(0)" (click)="state.requestRefresh()">
+                      <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true">
+                      </fa-icon>
                     </a>
                   </span>
                 </td>
                 <td>
                   <span class="space-right" *ngFor="let c of check.checked">
-                    
-                    <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected" *ngIf="c.checked"></fa-icon>
-                    <fa-icon [icon]="iconService.farSquare" *ngIf="!c.checked && !check.oncePerAccount"></fa-icon>                    
+
+                    <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected"
+                      *ngIf="c.checked"></fa-icon>
+                    <fa-icon [icon]="iconService.farSquare" *ngIf="!c.checked && !check.oncePerAccount"></fa-icon>
                     <fa-icon [icon]="iconService.farMinusSquare" *ngIf="!c.checked && check.oncePerAccount"></fa-icon>
                   </span>
                 </td>
@@ -127,7 +132,7 @@
 
   <div class="bottom-note">
     <br>
-    <ul>      
+    <ul>
       <li>Only 4 of Cayde's Journals are completable in game, thus the other 16 are pre-filtered.</li>
       <li>2 Adventures are account only</li>
     </ul>
