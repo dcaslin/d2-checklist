@@ -63,7 +63,6 @@ export class MilestoneCatalogService extends Destroyable {
   ) {
     super();
     this.initPlayerMilestones();
-    // this.fetchMilestonesForChars();
   }
 
   private initPlayerMilestones() {

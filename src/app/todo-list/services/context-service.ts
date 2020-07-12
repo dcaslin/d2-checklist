@@ -52,7 +52,7 @@ export class ContextService extends Destroyable {
    * This will hit characters, bounties, and milestones.
    */
   public refresh(): void {
-    this.user.next(this.user.getValue());
+    this.bungieService.refreshUserFeed();
   }
 
   /**

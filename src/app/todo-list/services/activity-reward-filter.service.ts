@@ -7,6 +7,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { ActivityRow, CookedReward } from '../interfaces/activity.interface';
 import {
   BRIGHT_DUST,
+  EXODUS_UMBRAL,
   GLIMMER,
   INFAMY_POINTS,
   LEGENDARY_GEAR,
@@ -154,12 +155,13 @@ export class ActivityRewardFilterService extends Destroyable {
         [POWERFUL_GEAR_2]:    4,
         [POWERFUL_GEAR_1]:    5,
         [LEGENDARY_GEAR]:     6,
-        [RUNES]:              7,
-        [BRIGHT_DUST]:        8,
-        [XP]:                 9,
-        [GLIMMER]:            10,
-        [INFAMY_POINTS]:      11,
-        [VALOR_POINTS]:       12,
+        [EXODUS_UMBRAL]:      7,
+        [RUNES]:              8,
+        [BRIGHT_DUST]:        9,
+        [XP]:                 10,
+        [GLIMMER]:            11,
+        [INFAMY_POINTS]:      12,
+        [VALOR_POINTS]:       13,
       };
       const aTier = transparentIcons[a.hash];
       const bTier = transparentIcons[b.hash];

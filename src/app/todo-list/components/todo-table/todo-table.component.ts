@@ -1,5 +1,5 @@
 import { ColDef, GridApi, GridOptions, GridReadyEvent, ValueGetterParams } from '@ag-grid-community/core';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivityCharInfo } from '@app/todo-list/interfaces/activity.interface';
 import { Character } from '@app/todo-list/interfaces/player.interface';
 import { ActivityCatalogService } from '@app/todo-list/services/activity-catalog.service';
@@ -23,6 +23,8 @@ import { RewardRenderer } from '../grid-cell-renderers/reward-renderer.component
 })
 export class TodoTableComponent extends Destroyable implements OnInit {
 
+  @Output() dataLoaded: EventEmitter<void> = new EventEmitter();
+
   // ag grid variables
   public gridOptions: GridOptions = {};
   public colDefs: ColDef[];
@@ -42,6 +44,7 @@ export class TodoTableComponent extends Destroyable implements OnInit {
     super();
     this.subToChars();
     this.initializeGridOptions();
+    this.subToGridData();
   }
 
   ngOnInit(): void {
@@ -144,7 +147,10 @@ export class TodoTableComponent extends Destroyable implements OnInit {
       isExternalFilterPresent: () => true,
       doesExternalFilterPass: (node) => this.filterService.doesRowPassFilters(node.data),
       postSort: () => this.sortService.onSortChange(),
-      onGridSizeChanged: this.onGridSizeChange
+      onGridSizeChanged: this.onGridSizeChange,
+      // this lets us update rows instead of redrawing them when the grid updates
+      immutableData: true,
+      getRowNodeId: (data) => data.hash
     }
   }
 
@@ -177,4 +183,13 @@ export class TodoTableComponent extends Destroyable implements OnInit {
     params.api.sizeColumnsToFit();
   }
 
+  /**
+   * We don't really care about the info, we just want to know that we got info
+   */
+  private subToGridData() {
+    this.activityService.activityRows.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.dataLoaded.emit();
+      });
+  }
 }

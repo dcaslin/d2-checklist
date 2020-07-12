@@ -1,21 +1,50 @@
-
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-/**
- * Created by Dave on 12/21/2016.
- */
 import { Injectable, OnDestroy } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { environment as env } from '@env/environment';
 import { get, set } from 'idb-keyval';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, first, takeUntil } from 'rxjs/operators';
+
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, Mission, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import {
+  Activity,
+  ActivityMode,
+  AggHistoryCache,
+  AggHistoryEntry,
+  BungieGroupMember,
+  BungieMember,
+  BungieMembership,
+  Character,
+  ClanInfo,
+  ClanRow,
+  Const,
+  Currency,
+  InventoryItem,
+  ItemType,
+  MilestoneStatus,
+  Mission,
+  PGCR,
+  Player,
+  PublicMilestone,
+  PublicMilestonesAndActivities,
+  PvpStreak,
+  SaleItem,
+  SearchResult,
+  SelectedUser,
+  Target,
+  UserInfo,
+  Vault,
+} from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
+
+/**
+ * Created by Dave on 12/21/2016.
+ */
 const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
 
@@ -462,6 +491,13 @@ export class BungieService implements OnDestroy {
         this.selectedUser.userInfo = u;
         localStorage.setItem('D2STATE-preferredPlatform', '' + u.membershipType);
         this.emitUsers();
+    }
+
+    /**
+     * Call to trigger a refresh of the selected user.
+     */
+    public refreshUserFeed() {
+      this.selectedUserSub.next(this.selectedUser);
     }
 
     private emitUsers() {

@@ -63,6 +63,7 @@ export class BountyCatalogService extends Destroyable {
       }),
       takeUntil(this.destroy$)
     ).subscribe(([sales0, sales1, sales2]) => {
+      this.uniqueBounties = {};
       this.extractVendorBounties(sales0, this.chars[0]);
       this.extractVendorBounties(sales1, this.chars[1]);
       this.extractVendorBounties(sales2, this.chars[2]);

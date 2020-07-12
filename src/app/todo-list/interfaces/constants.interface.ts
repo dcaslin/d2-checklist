@@ -11,6 +11,7 @@ export const POWERFUL_GEAR_1 = 3114385605;
 export const POWERFUL_GEAR_2 = 3114385606;
 export const POWERFUL_GEAR_3 = 3114385607;
 export const LEGENDARY_GEAR = 2127149322; // Note: this isn't the only hash for legendary gear
+export const EXODUS_UMBRAL = 4099020041;
 export const RUNES = 1772646107;
 export const BRIGHT_DUST = 3168101969;
 export const XP = 2211488305;

@@ -48,7 +48,8 @@ export class ActivityRewardFiltersComponent extends Destroyable {
 
   public showGear() {
     this.rewards.forEach((reward) => {
-      reward.d2cActive = reward.displayProperties.name.toLowerCase().includes('gear');
+      const rewardName = reward.displayProperties.name.toLowerCase();
+      reward.d2cActive = rewardName.includes('gear') || rewardName.includes('engram');
     });
     this.activityFilter.pushUpdatesToTable();
   }

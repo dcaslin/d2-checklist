@@ -22,8 +22,10 @@
         </span>
       </div>
       <div class="quick-actions">
+        <div class="action">
+        </div>
         <div class="action"
-        matTooltip="If hiding completed, activities in the table will be hidden if all characters have completed it.">
+          matTooltip="If hiding completed, activities in the table will be hidden if all characters have completed it.">
           <mat-checkbox
             [checked]="gridSettings.hideComplete | async"
             (change)="hideCompleteToggle($event)">
@@ -39,18 +41,32 @@
         </div>
       </div>
     </div>
+
+    <div class="loading-wrapper">
+      <!-- Bar that has a little animation that should line up with auto-refresh timer -->
+      <div class="loading-background">
+        <div [class.bar]="!loading && initialLoaded"></div>
+      </div>
+      <d2c-icon
+        class="pointer refresh-icon"
+        [class.loading]="loading"
+        (click)="refresh()"
+        icon="farSync"
+        matTooltip="Force-refresh the data in the table. By default, data is auto-refreshed every minute.">
+      </d2c-icon>
+    </div>
     
     <div [hidden]="!filterPanelOpen" class="filter-wrapper margin-top-20">
       <d2c-activity-filters></d2c-activity-filters>
     </div>
-    <div class="grid-wrapper margin-top-20">
+    <div class="grid-wrapper margin-top-10">
       <!-- <p class="type-caption">
         WIP! To sort by a column, click the header. To sort by multiple columns,
         hold shift and click the headers in the order you want to sort by.
         The <strong>Activity Details</strong> column will sort by weekly vs daily bounties.
         The <strong>Character</strong> columns will sort by completion state, prioritizing in-progress bounties.
       </p> -->
-      <d2c-todo-table></d2c-todo-table>
+      <d2c-todo-table (dataLoaded)="onDataLoad()"></d2c-todo-table>
       <br>
       <div>
         This table features filtering and sorting.
