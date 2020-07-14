@@ -17,7 +17,7 @@ import {
 import {
 
   faAlien as farAlien,
-  faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
+  faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBookmark as farBookmark, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
   faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy, faClipboardCheck as farClipboardCheck
 } from '@fortawesome/pro-regular-svg-icons';
 
@@ -31,7 +31,8 @@ import {
   faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, 
   faArrowLeft as fasArrowLeft, faArrowRight as fasArrowRight,
   faChevronLeft as fasChevronLeft, faChevronRight as fasChevronRight,
-  faBooks as farBooks,
+  faBooks as farBooks,  
+  faBookmark as fasBookmark,
   faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed,
   faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
   faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
@@ -217,6 +218,9 @@ export class IconService {
   public readonly farHeart = farHeart;
   public readonly fasHeart = fasHeart;
   public readonly farMapMarkerAlt = farMapMarkerAlt;
+
+  public readonly farBookmark = farBookmark;
+  public readonly fasBookmark = fasBookmark;
 
   constructor() {
 

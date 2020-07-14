@@ -951,6 +951,23 @@ export class BungieService implements OnDestroy {
         }
     }
 
+    // TODO use this once it works on enough things to be worthwhile
+    
+    // public async setTrackedState(membershipType: number, item: InventoryItem, tracked: boolean): Promise<boolean> {
+    //     try {
+    //         await this.postReq('Destiny2/Actions/Items/SetTrackedState/', {
+    //             state: tracked,
+    //             itemId: item.id,
+    //             characterId: item.owner.getValue().id,
+    //             membershipType: membershipType
+    //         });
+    //         item.tracked = tracked;
+    //         return true;
+    //     } catch (err) {
+    //         this.handleError(err);
+    //         return false;
+    //     }
+    // }
 
     public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
         try {
