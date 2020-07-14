@@ -85,6 +85,15 @@
                 <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">
                   <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
                 </button>
+                <!-- <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">
+                  <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
+                </button>
+                <button mat-icon-button *ngIf="!g.tracked"  matTooltip="Click to track this in game." (click)="state.gameTrackPursuit(g, true)">
+                  <fa-icon [icon]="iconService.farBookmark"></fa-icon>
+                </button>
+                <button mat-icon-button *ngIf="g.tracked" matTooltip="This is tracked in game, click to untrack." (click)="state.gameTrackPursuit(g, false)">
+                  <fa-icon [icon]="iconService.fasBookmark" class="accent-text"></fa-icon>
+                </button> -->
                 <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
                 <div *ngIf="g.questline">
                   <a mat-stroked-button (click)="openQuestDialog(g.questline)">

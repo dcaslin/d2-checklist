@@ -103,7 +103,7 @@ export class PlayerStateService {
   }
 
   public requestRefresh() {
-    const p = this.currPlayer();
+    const p = this.currPlayer();    
     const platform = Const.PLATFORMS_DICT['' + p.profile.userInfo.membershipType];
     this.loadPlayer(platform, p.profile.userInfo.membershipId, true);
 
@@ -183,7 +183,7 @@ export class PlayerStateService {
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
           'CharacterEquipment', 'CharacterInventories',
           'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives'
-          //, '1000'
+          // , '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
           // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
         ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
@@ -202,7 +202,7 @@ export class PlayerStateService {
         if (a.name < b.name) { return -1; }
         return 0;
       });
-      if (x.characters && x.characters.length>0) {
+      if (x.characters && x.characters.length > 0) {
         this.filterChar = x.characters[0];
       } else {
         this.filterChar = null;
@@ -293,6 +293,13 @@ export class PlayerStateService {
   public untrackPursuit(n: InventoryItem) {
     this.storageService.untrackHashList('trackedpursuits', n.hash);
   }
+
+  // TODO use this once it works on enough things to be worthwhile
+  // public async gameTrackPursuit(n: InventoryItem, tracked: boolean) {
+  //   console.log(`GameTrack ${n.name} ${tracked}`);
+  //   const membershipType = this.currPlayer().profile.userInfo.membershipType;
+  //   await this.bungieService.setTrackedState(membershipType, n, tracked);
+  // }
 
   private applyTrackedPursuits(player: Player) {
     if (player == null) {

@@ -658,7 +658,7 @@ export class InventoryItem {
     readonly masterworked: boolean;
     readonly masterwork: MasterworkInfo;
     readonly mods: InventoryPlug[];
-    readonly tracked: boolean;
+    public tracked: boolean;
     readonly questline: Questline;
     readonly energyCapacity: number;
     readonly energyUsed: number;
@@ -1335,6 +1335,7 @@ export interface Questline {
 }
 
 export interface QuestlineStep {
+    hash: number;
     name: string;
     desc: string;
     objectives: ItemObjective[];

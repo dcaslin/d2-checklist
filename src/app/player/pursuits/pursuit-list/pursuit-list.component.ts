@@ -108,9 +108,6 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
   }
 
   getPursuitName(g: InventoryItem) {
-    if (g.questline != null) {
-      return g.questline.name + ': ' + g.name;
-    }
     return g.name;
   }
 
