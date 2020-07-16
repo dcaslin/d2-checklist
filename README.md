@@ -16,7 +16,7 @@
 ### Contribution guidelines ###
 
 * If you want to contribute, let me know (or submit a pull request)
-* This application uses FontAwesome Pro's private repo, so running your own development environment requires stubbing those out. 
+* This application uses FontAwesome Pro's private repo, so running your own development environment requires stubbing those out. This can be a pain. 
 
 #### Notes
 
