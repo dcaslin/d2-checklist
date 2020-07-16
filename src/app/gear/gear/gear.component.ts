@@ -364,6 +364,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       });
   }
 
+  public async shardBlues() {
+    await this.load(true);
+    await this.gearService.shardBlues(this._player.getValue());
+    await this.load(true);
+    await this.syncLocks();
+  }
+
   public async syncLocks() {
     await this.load();
     await this.gearService.processGearLocks(this._player.getValue());
@@ -402,7 +409,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   markCurrentRows(marking: string) {
-    const items = this.gearToShow;
     for (const item of this.gearToShow) {
       item.mark = marking;
       this.markService.updateItem(item);
