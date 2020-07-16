@@ -197,31 +197,47 @@ export class GearService {
         return totalErr;
     }
 
-    public async shardMode(player: Player, itemType?: ItemType) {
+    public async shardBlues(player: Player) {
+        // tag all unmarked blues as junk
+        let tagCount = 0;
+        for (const item of player.gear) {
+            if (item.tier == 'Rare' && item.mark == null && (item.type == ItemType.Weapon || item.type == ItemType.Armor)) {
+                item.mark = 'junk';
+                this.markService.updateItem(item);
+                tagCount++;
+            }
+        }
+        this.notificationService.success(`Tagged ${tagCount} unmarked blues as junk. Starting blue shard mode.`);
+        this.shardMode(player, null, true);
+    }
+
+    public async shardMode(player: Player, itemType?: ItemType, bluesOnly?: boolean) {
         const target = player.characters[0];
         const totalErr = await this.clearInvForMode(target, player, ['junk'], itemType);
         let moved = 0;
         for (const i of player.gear) {
             // might we move it?
-            if (i.mark == 'junk' && i.owner.getValue().id != target.id &&
-                (itemType == null || i.type == itemType)) {
-                // is bucket full?
-                const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
-                if (targetBucket.items.length < 10) {
-                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
-                    try {
-                        if (i.postmaster === true) {
-                            const owner = i.owner.getValue();
-                            await this.transfer(player, i, owner);
-                            if (owner.id === target.characterId) {
-                                moved++;
-                                continue;
+            if (!bluesOnly || i.tier === 'Rare') {
+                if (i.mark == 'junk' && i.owner.getValue().id != target.id &&
+                    (itemType == null || i.type == itemType)) {
+                    // is bucket full?
+                    const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
+                    if (targetBucket.items.length < 10) {
+                        console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
+                        try {
+                            if (i.postmaster === true) {
+                                const owner = i.owner.getValue();
+                                await this.transfer(player, i, owner);
+                                if (owner.id === target.characterId) {
+                                    moved++;
+                                    continue;
+                                }
                             }
+                            await this.transfer(player, i, target);
+                            moved++;
+                        } catch (e) {
+                            console.log('Error on move: ' + e);
                         }
-                        await this.transfer(player, i, target);
-                        moved++;
-                    } catch (e) {
-                        console.log('Error on move: ' + e);
                     }
                 }
             }
