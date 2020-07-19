@@ -24,7 +24,7 @@
                     <ng-container *ngFor="let i of sortedItems|async">
                         <th class="sticky" *ngIf="!hideJunk || i.mark!='junk'">
 
-                            <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
+                            <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc"
                                 [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                                 <div class="item-name">
                                     {{i.name}}

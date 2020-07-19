@@ -440,3 +440,11 @@ mat-form-field.full-width .mat-form-field-infix{
     // outline: 1px solid red; // uncomment to see test outlines
   }
 }
+
+.fake-link {
+  cursor: pointer;
+}
+
+.fake-link-disabled {
+  cursor: default;
+}
