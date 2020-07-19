@@ -200,8 +200,18 @@
                 </tr>
                 <ng-container
                     *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
-                    <tr *ngFor="let item of [].constructor(maxSockets); index as i1">
-                        <th *ngIf="i1==0" [attr.rowspan]="maxSockets">Sockets</th>
+                    <tr *ngFor="let mp of maxPlugs; index as i1">
+                        <th *ngIf="i1==0">
+                            Sockets
+                        </th>
+                        <th *ngIf="i1>0">
+                            <div *ngFor="let item of [].constructor(mp); index as plugIndex" >
+                                <d2c-horizontal-sort
+                                [field]="'plug.'+i1+'.'+plugIndex" [currVal]="sortBy" [descending]="sortDesc"
+                                (sort)="sort($event)"></d2c-horizontal-sort>
+                            </div>
+                            
+                        </th>
                         <ng-container *ngFor="let i of sortedItems|async">
                             <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">

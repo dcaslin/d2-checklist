@@ -7,6 +7,7 @@ import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser,
 import { NotificationService } from './notification.service';
 import { PreferredStatService } from './preferred-stat.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 
 
 
@@ -42,7 +43,6 @@ export class GearService {
                     aV = a[sortBy] != null && a[sortBy].length > 0 ? a[sortBy][0].name : '';
                     bV = b[sortBy] != null && b[sortBy].length > 0 ? b[sortBy][0].name : '';
                 }
-
                 if (aV < bV) {
                     return sortDesc ? 1 : -1;
                 } else if (aV > bV) {
@@ -57,6 +57,39 @@ export class GearService {
                             return sortDesc ? -1 : 1;
                         }
                     }
+                    return 0;
+                }
+            });
+        } else if (sortBy.startsWith('plug.')) {
+            const suffix = sortBy.substr('plug.'.length);
+            const as = suffix.split('.');
+            const socket = +as[0];
+            const plug = +as[1];
+
+
+            tempGear.sort((a: InventoryItem, b: InventoryItem): number => {
+                try {
+                    let aV = '';
+                    let bV = '';
+                    if (a.sockets && a.sockets.length > socket) {
+                        if (a.sockets[socket].plugs && a.sockets[socket].plugs.length > plug) {
+                            aV = a.sockets[socket].plugs[plug].name;
+                        }
+                    }
+                    if (b.sockets && b.sockets.length > socket) {
+                        if (b.sockets[socket].plugs && b.sockets[socket].plugs.length > plug) {
+                            bV = b.sockets[socket].plugs[plug].name;
+                        }
+                    }
+                    if (aV < bV) {
+                        return sortDesc ? -1 : 1;
+                    } else if (aV > bV) {
+                        return sortDesc ? 1 : -1;
+                    } else {
+                        return 0;
+                    }
+                } catch (e) {
+                    console.log('Error sorting: ' + e);
                     return 0;
                 }
             });
