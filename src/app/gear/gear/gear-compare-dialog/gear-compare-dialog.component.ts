@@ -29,7 +29,7 @@ export class GearCompareDialogComponent extends ChildComponent {
   sortedItems: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   parent: GearComponent;
   showAllNames: boolean;
-  maxSockets = 1;
+  maxPlugs: number[] = [];
 
   constructor(
     storageService: StorageService,
@@ -42,12 +42,21 @@ export class GearCompareDialogComponent extends ChildComponent {
     super(storageService);
     this.source = data.source;
     this.items = data.items;
+    let maxSockets = 0;
     for (const i of this.items) {
-      if (i.sockets && i.sockets.length > this.maxSockets) {
-        this.maxSockets = i.sockets.length;
+      if (i.sockets && i.sockets.length > maxSockets) {
+        maxSockets = i.sockets.length;
       }
     }
 
+    this.maxPlugs = new Array(maxSockets).fill(0);
+    for (const i of this.items) {
+      for (const index in i.sockets) {
+        if (this.maxPlugs[index] < i.sockets[index].plugs.length) {
+          this.maxPlugs[index] = i.sockets[index].plugs.length;
+        }
+      }
+    }
     this.parent = data.parent;
     this.showAllNames = this.items.length > 1;
     this._sort();

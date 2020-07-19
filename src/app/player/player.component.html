@@ -18,14 +18,13 @@
             <h1>
               <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
               {{player.profile.userInfo.displayName}}
-              <a mat-icon-button
-                [ngClass]="(favoritesMap|async)[storageService.getFavKey(player.profile.userInfo)]!==undefined?'warn-text':''"
-                (click)="storageService.toggleFav(player.profile.userInfo, null)" href="javascript:void(0)"> 
-                <fa-icon [icon]="(favoritesMap|async)[storageService.getFavKey(player.profile.userInfo)]!==undefined?iconService.fasHeart:iconService.farHeart"></fa-icon>
-              </a>
-              <a mat-icon-button href="javascript:void(0)" (click)="state.requestRefresh()"> 
+              <d2c-friend-star 
+                title="true"
+                [userInfo]="player.profile.userInfo"
+                [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+              <button mat-icon-button (click)="state.requestRefresh()"> 
                 <fa-icon [icon]="iconService.farSync"></fa-icon>
-              </a>
+              </button>
             </h1>
             <h4 *ngIf="player.title">
               <ng-container *ngIf="player.title.trim().length>0"> {{player.title}} |</ng-container>

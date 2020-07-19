@@ -58,9 +58,9 @@
                             <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
                         </div>
                         <div class="pgcr-link" *ngIf="a.notDone.users.length>0">
-                            <a href="javascript:void(0)" (click)="openIncompleteDialog(a)">
+                            <span class="fake-link" (click)="openIncompleteDialog(a)">
                                 {{a.notDone.users.length}} incomplete
-                            </a>
+                            </span>
                         </div>
 
                     </td>

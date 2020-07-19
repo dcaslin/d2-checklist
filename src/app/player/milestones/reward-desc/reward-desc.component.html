@@ -1,6 +1,6 @@
 <br>
 <span class="simple-caption">
-  <a *ngIf="pl!=null && Const.BOOSTS[pl]!=null" href="javascript:void(0)" style="opacity: 0.75"
+  <span class="fake-link" *ngIf="pl!=null && Const.BOOSTS[pl]!=null" style="opacity: 0.75"
     (click)="sortClick.emit()"
     [matTooltip]="pl>0?Const.BOOSTS[pl].softCap+' soft cap. '+Const.BOOSTS[pl].hardCap+' hard cap.':'Problem with milestone'">
     {{rewards}}
@@ -15,5 +15,5 @@
     </ng-container>
     <fa-icon *ngIf="sort=='rewardsDesc'" [icon]="iconService.falSortDown"></fa-icon>
     <fa-icon *ngIf="sort=='rewardsAsc'" [icon]="iconService.falSortUp"></fa-icon>
-  </a>
+  </span>
 </span>

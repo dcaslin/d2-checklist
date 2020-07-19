@@ -1,6 +1,6 @@
-<a class="no-wrap" [class.unselected]="field!=currVal" [class.accent-text]="field==currVal" href="javascript:void(0)" (click)="sortClicked()">
+<span class="fake-link no-wrap" [class.unselected]="field!=currVal" [class.accent-text]="field==currVal" (click)="sortClicked()">
     <span class="break-word space"><ng-content></ng-content></span>
     <fa-icon *ngIf="field==currVal && descending" [icon]="iconService.fadSortDown" rotate="270"></fa-icon>
     <fa-icon *ngIf="field==currVal && !descending" [icon]="iconService.fadSortUp" rotate="270"></fa-icon>
     <fa-icon *ngIf="field!=currVal" [icon]="iconService.fadSort" rotate="270"></fa-icon>    
-</a>
+</span>

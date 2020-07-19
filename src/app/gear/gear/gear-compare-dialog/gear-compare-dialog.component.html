@@ -24,7 +24,7 @@
                     <ng-container *ngFor="let i of sortedItems|async">
                         <th class="sticky" *ngIf="!hideJunk || i.mark!='junk'">
 
-                            <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
+                            <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc"
                                 [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                                 <div class="item-name">
                                     {{i.name}}
@@ -200,8 +200,18 @@
                 </tr>
                 <ng-container
                     *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
-                    <tr *ngFor="let item of [].constructor(maxSockets); index as i1">
-                        <th *ngIf="i1==0" [attr.rowspan]="maxSockets">Sockets</th>
+                    <tr *ngFor="let mp of maxPlugs; index as i1">
+                        <th *ngIf="i1==0">
+                            Sockets
+                        </th>
+                        <th *ngIf="i1>0">
+                            <div *ngFor="let item of [].constructor(mp); index as plugIndex" >
+                                <d2c-horizontal-sort
+                                [field]="'plug.'+i1+'.'+plugIndex" [currVal]="sortBy" [descending]="sortDesc"
+                                (sort)="sort($event)"></d2c-horizontal-sort>
+                            </div>
+                            
+                        </th>
                         <ng-container *ngFor="let i of sortedItems|async">
                             <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">

@@ -75,12 +75,8 @@
                 <b>
                   <a [routerLink]="['/'+entry.user.membershipType, entry.user.membershipId]"
                     color="accent">{{entry.user.displayName}}</a>
-                  <a style="margin-left:0.25em"
-                    [ngClass]="(favoritesMap|async)[storageService.getFavKey(entry.user)]!==undefined?'warn-text':''"
-                    (click)="storageService.toggleFav(entry.user, null)"
-                    href="javascript:void(0)">
-                    <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
-                  </a>
+                  
+                  <d2c-friend-star [userInfo]="entry.user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
                 </b>
                 <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD
                   <br>

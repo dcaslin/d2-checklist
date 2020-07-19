@@ -1,0 +1,27 @@
+<ng-container *ngIf="loading|async; else notLoading">
+    <button mat-icon-button disabled>
+        <fa-icon [icon]="iconService.farSpinner" [pulse]="true"></fa-icon>
+    </button>
+</ng-container>
+<ng-template #notLoading>
+    <ng-container *ngIf="title; else notTitle">
+        <button mat-icon-button (click)="toggleFav()">
+            <fa-icon *ngIf="favoritesMap[storageService.getFavKey(userInfo)]!==undefined; else notFav"
+                [icon]="iconService.fasHeart" class="warn-text" style="font-weight: normal !important"></fa-icon>
+            <ng-template #notFav>
+                <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
+            </ng-template>
+        </button>
+    </ng-container>
+
+    <ng-template #notTitle>
+        <span class="fake-link leftMargin" (click)="toggleFav()">
+            <fa-icon *ngIf="favoritesMap[storageService.getFavKey(userInfo)]!==undefined; else notFav"
+                [icon]="iconService.fasHeart" class="warn-text" style="font-weight: normal !important"></fa-icon>
+            <ng-template #notFav>
+                <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
+            </ng-template>
+        </span>
+    </ng-template>
+
+</ng-template>

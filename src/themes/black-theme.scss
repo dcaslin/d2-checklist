@@ -12,6 +12,14 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         caret-color: white;
     }
 
+    .fake-link {
+        color: #fff;
+    }
+
+    .fake-link:hover {
+        color: #ffb300;
+    }
+
     .upgrade-color {
         color: hsl(200, 65%, 45%);
         font-weight: bold;

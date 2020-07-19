@@ -42,6 +42,7 @@ import { PipeModule } from './pipe';
 import { SeasonIndicatorComponent } from './season-indicator/season-indicator.component';
 import { SignInRequiredModule } from './sign-in-required/sign-in-required.module';
 import { SortIndicatorComponent } from './sort-indicator/sort-indicator.component';
+import { FriendStarComponent } from './friend-star/friend-star.component';
 
 @NgModule({
   imports: [
@@ -90,10 +91,13 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
   SeasonIndicatorComponent,
   SortIndicatorComponent,
   ItemEnergyIndicatorComponent,
-  ItemIconComponent],
+  ItemIconComponent,
+  FriendStarComponent,
+  FriendStarComponent],
   exports: [
     SortIndicatorComponent,
     ItemIconComponent,
+    FriendStarComponent,
     SeasonIndicatorComponent,
     ItemEnergyIndicatorComponent,
     RouterModule,

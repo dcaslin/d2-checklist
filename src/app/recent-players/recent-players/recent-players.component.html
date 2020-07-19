@@ -67,10 +67,7 @@
                 <td>
                   <a [routerLink]="['/'+friend.user.membershipType, friend.user.membershipId]"
                     color="accent">{{friend.user.displayName}}</a>
-                  
-                  <a style="margin-left:0.5em" [ngClass]="(favoritesMap|async)[storageService.getFavKey(friend.user)]!==undefined?'warn-text':''" (click)="storageService.toggleFav(friend.user, friend.bungieNetUserInfo.membershipId)" href="javascript:void(0)">
-                    <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
-                  </a>
+                  <d2c-friend-star [userInfo]="friend.user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
                   <div *ngIf="friend.user.bungieInfo!=null && friend.user.bungieInfo.clans!=null">
                     <div class="clans" *ngFor="let clan of friend.user.bungieInfo.clans">  
                       Clan: <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>

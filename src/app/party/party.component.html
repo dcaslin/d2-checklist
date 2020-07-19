@@ -76,10 +76,10 @@
                                                             [fixedWidth]="true"></fa-icon>
                                                     </ng-container>
                                                     <ng-container *ngIf="p.errMsg != null">
-                                                        <a style="margin-left:0.25em" href="javascript:void(0)"
+                                                        <span class="fake-link" style="margin-left:0.25em"
                                                             (click)="loadPlayer(player.profile.userInfo.membershipType, p)">
                                                             &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
-                                                        </a>
+                                                        </span>
                                                         <div class='simple-warn-caption'>{{p.errMsg}}</div>
                                                     </ng-container>
                                                 </td>

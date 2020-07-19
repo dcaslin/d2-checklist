@@ -31,9 +31,9 @@
           <fa-icon *ngIf="hideCompleteChars=='ALL'" [icon]="iconService.falEye"
             matTooltip="Hide milestones where all chars are complete" (click)="hideCompleteChars = null"
             class="warn-text" matTooltip="Stop hiding milestones where all chars are complete"></fa-icon>
-          <a *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null" href="javascript:void(0)"
-            matTooltip="Show all hidden milestones" class="milestoneVisibilityButton" (click)="showAllMilestones()">show
-            all</a>
+          <span *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null"
+            matTooltip="Show all hidden milestones" class="fake-link milestoneVisibilityButton" (click)="showAllMilestones()">show
+            all</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           {{char.className}} - {{char.light}} {{char.title}}
@@ -54,24 +54,24 @@
         <tr *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
           <td class="lead">
             <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
-              <a href="javascript:void(0)" (click)="sortByName()">
+              <span class="fake-link" (click)="sortByName()">
                 {{mileStoneName.name}} <span *ngIf="debugmode|async">PL({{mileStoneName.pl}})</span>
                 <fa-icon *ngIf="state.sort=='nameDesc'" [icon]="iconService.falSortDown"></fa-icon>
                 <fa-icon *ngIf="state.sort=='nameAsc'" [icon]="iconService.falSortUp"></fa-icon>
-              </a>
+              </span>
             </span>
             <span *ngIf="debugmode|async"> {{mileStoneName.key}} </span>
-            <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
+            <span class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
               class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
               <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-            </a>
+            </span>
 
             <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
-              <a href="javascript:void(0)" style="opacity: 0.75" (click)="sortByReset()">
+              <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
                 Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
                 <fa-icon *ngIf="state.sort=='resetDesc'" [icon]="iconService.falSortDown"></fa-icon>
                 <fa-icon *ngIf="state.sort=='resetAsc'" [icon]="iconService.falSortUp"></fa-icon>
-              </a>
+              </span>
               <ng-container *ngIf="debugmode|async">
                 <br> {{mileStoneName.resets|date:'short'}}
               </ng-container>
@@ -92,8 +92,8 @@
       <tr
         *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && (hiddenMilestones|async).indexOf('1')===-1">
         <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-          <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
-            class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</a>
+          <span class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
+            class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</span>
           <d2c-reward-desc pl="3" rewards="Powerful Gear" [sort]="state.sort" (sortClick)="sortByRewards()">
           </d2c-reward-desc>
         </td>

@@ -393,8 +393,8 @@
       <mat-list role="list">
         <mat-list-item *ngFor="let n of milestones">
           <div mat-line>
-            <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon
-                [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></a>
+            <span class="fake-link underline" (click)="showBurns(n)">{{n.name}} <fa-icon
+                [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span>
             <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
           </div>
           <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span

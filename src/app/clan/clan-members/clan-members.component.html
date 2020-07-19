@@ -14,16 +14,11 @@
                     <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                     </a>
-                    <a style="margin-left:0.25em"
-                        [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
-                        (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
-                        href="javascript:void(0)">
-                        <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
-                    </a>
-                    <a style="margin-left:0.25em" href="javascript:void(0)"
+                    <d2c-friend-star [userInfo]="member.destinyUserInfo" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+                    <span class="fake-link" style="margin-left:0.25em"
                         (click)="state.loadSpecificPlayer(member, true)">
                         &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
-                    </a>
+                    </span>
                     <ng-container *ngIf="member.player$|async as player">
                         <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
                             {{player.title}}
@@ -150,92 +145,91 @@
 
 <ng-template #sortHeader>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('member')">Member
+        <span class="fake-link" (click)="state.toggleSort('member')">Member
             <ng-container *ngIf="state.sort && state.sort.name=='member'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('date')">Last Played
+        <span class="fake-link" (click)="state.toggleSort('date')">Last Played
             <ng-container *ngIf="state.sort && state.sort.name=='date'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('artifactPowerBonus')">Artifact
+        <span class="fake-link" (click)="state.toggleSort('artifactPowerBonus')">Artifact
             <ng-container *ngIf="state.sort && state.sort.name=='artifactPowerBonus'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('seasonRank')">Season Rank
+        <span class="fake-link" (click)="state.toggleSort('seasonRank')">Season Rank
             <ng-container *ngIf="state.sort && state.sort.name=='seasonRank'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('triumph')">Triumph Score
+        <span class="fake-link" (click)="state.toggleSort('triumph')">Triumph Score
             <ng-container *ngIf="state.sort && state.sort.name=='triumph'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('glory')">Glory
+        <span class="fake-link" (click)="state.toggleSort('glory')">Glory
             <ng-container *ngIf="state.sort && state.sort.name=='glory'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('infamy')">Infamy
+        <span class="fake-link" (click)="state.toggleSort('infamy')">Infamy
             <ng-container *ngIf="state.sort && state.sort.name=='infamy'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('valor')">Valor
+        <span class="fake-link" (click)="state.toggleSort('valor')">Valor
             <ng-container *ngIf="state.sort && state.sort.name=='valor'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('xp')">Weekly XP
+        <span class="fake-link" (click)="state.toggleSort('xp')">Weekly XP
             <ng-container *ngIf="state.sort && state.sort.name=='xp'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th matTooltip="Max LL of current chars (actual max could be higher)">
-        <a href="javascript:void(0)" (click)="state.toggleSort('ll')">Max LL
+        <span class="fake-link" (click)="state.toggleSort('ll')">Max LL
             <ng-container *ngIf="state.sort && state.sort.name=='ll'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
     <th matTooltip="Total time played (does not include deleted chars)">
-        <a href="javascript:void(0)" (click)="state.toggleSort('minsPlayed')">Time Played
+        <span class="fake-link" (click)="state.toggleSort('minsPlayed')">Time Played
             <ng-container *ngIf="state.sort && state.sort.name=='minsPlayed'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
     </th>
-
 </ng-template>

@@ -28,38 +28,38 @@
 
 
         <th class="header-cell">
-          <a href="javascript:void(0)" (click)="sortData('name')"> {{getTitle()}}
+          <span class="fake-link" (click)="sortData('name')"> {{getTitle()}}
             <ng-container *ngIf="sort.name=='name'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
 
         </th>
         <th class="header-cell">
-          <a href="javascript:void(0)" (click)="sortData('player')"> Player
+          <span class="fake-link" (click)="sortData('player')"> Player
             <ng-container *ngIf="sort.name=='player'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
 
         </th>
         <th class="header-cell" *ngIf="mode!='quests'">
-          <a href="javascript:void(0)" (click)="sortData('expiration')"> Expiration
+          <span class="fake-link" (click)="sortData('expiration')"> Expiration
             <ng-container *ngIf="sort.name=='expiration'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
         </th>
         <th class="header-cell">
-          <a href="javascript:void(0)" (click)="sortData('progress')"> Progress
+          <span class="fake-link" (click)="sortData('progress')"> Progress
             <ng-container *ngIf="sort.name=='progress'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
         </th>
         <th class="header-cell">Rewards</th>
       </tr>
