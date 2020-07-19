@@ -39,20 +39,20 @@
         <thead>
             <tr>
                 <th>
-                    <a href="javascript:void(0)" (click)="sortData('name')"> Player
+                    <span class="fake-link" (click)="sortData('name')"> Player
                         <ng-container *ngIf="sort.name=='name'">
                             <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
                             <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
                         </ng-container>
-                    </a>
+                    </span>
                 </th>
                 <th>
-                    <a href="javascript:void(0)" (click)="sortData('pct')"> Progress
+                    <span class="fake-link" (click)="sortData('pct')"> Progress
                         <ng-container *ngIf="sort.name=='pct'">
                             <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
                             <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
                         </ng-container>
-                    </a>
+                    </span>
                 </th>
             </tr>
         </thead>

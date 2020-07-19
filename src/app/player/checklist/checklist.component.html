@@ -44,10 +44,10 @@
 
                     <span *ngIf="debugmode|async">
                       &ensp;[{{check.hash}}] &ensp;
-                      <a href="javascript:void(0)" (click)="state.requestRefresh()">
+                      <span class="fake-link" (click)="state.requestRefresh()">
                         <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true">
                         </fa-icon>
-                      </a>
+                      </span>
                     </span>
                   </td>
                   <td>
@@ -106,10 +106,10 @@
                   <ng-container *ngIf="check.oncePerAccount==true">*</ng-container>
                   <span *ngIf="debugmode|async">
                     &ensp;[{{check.hash}}] &ensp;
-                    <a href="javascript:void(0)" (click)="state.requestRefresh()">
+                    <span class="fake-link" (click)="state.requestRefresh()">
                       <fa-icon [icon]="iconService.fasSync" [spin]="state.loading|async" [fixedWidth]="true">
                       </fa-icon>
-                    </a>
+                    </span>
                   </span>
                 </td>
                 <td>

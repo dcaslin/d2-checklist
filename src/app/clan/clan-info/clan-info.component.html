@@ -42,31 +42,31 @@
         <table class="checklist-table">
             <thead>
                 <th>
-                    <a href="javascript:void(0)" (click)="sortData('name')">
+                    <span class="fake-link" (click)="sortData('name')">
                         Player
                         <ng-container *ngIf="sort.name=='name'">
                             <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
                             <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
                         </ng-container>
-                    </a>
+                    </span>
                 </th>
                 <th>
-                    <a href="javascript:void(0)" (click)="sortData('lastOnlineStatusChange')">
+                    <span class="fake-link" (click)="sortData('lastOnlineStatusChange')">
                         Last Played
                         <ng-container *ngIf="sort.name=='lastOnlineStatusChange'">
                             <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
                             <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
                         </ng-container>
-                    </a>
+                    </span>
                 </th>
                 <th>
-                    <a href="javascript:void(0)" (click)="sortData('joinDate')">
+                    <span class="fake-link" (click)="sortData('joinDate')">
                         Date Joined Clan
                         <ng-container *ngIf="sort.name=='joinDate'">
                             <fa-icon [icon]="iconService.fasSortUp" *ngIf="!sort.ascending"></fa-icon>
                             <fa-icon [icon]="iconService.fasSortDown" *ngIf="sort.ascending"></fa-icon>
                         </ng-container>
-                    </a>
+                    </span>
                 </th>
             </thead>
             <tbody>
