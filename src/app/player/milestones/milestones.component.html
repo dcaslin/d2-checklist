@@ -17,7 +17,7 @@
 
 
   <div *ngIf="(hiddenMilestones|async).length>0" class="mobile-button-row" style="margin-top: 5px">
-    <span class="mat-caption" (click)="showAllMilestones()">Show hidden milestones</span>
+    <span class="mat-caption warn-text" (click)="showAllMilestones()">Show hidden milestones</span>
   </div>
 
   <table class="responsive-table" *ngIf="(player.milestoneList).length>0">
@@ -32,8 +32,7 @@
             matTooltip="Hide milestones where all chars are complete" (click)="hideCompleteChars = null"
             class="warn-text" matTooltip="Stop hiding milestones where all chars are complete"></fa-icon>
           <span *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null"
-            matTooltip="Show all hidden milestones" class="fake-link milestoneVisibilityButton" (click)="showAllMilestones()">show
-            all</span>
+            matTooltip="Show all hidden milestones" class="warn-text fake-link milestoneVisibilityButton" (click)="showAllMilestones()">Restore Hidden</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           {{char.className}} - {{char.light}} {{char.title}}
@@ -53,35 +52,36 @@
       <ng-container *ngFor="let mileStoneName of player.milestoneList">
         <tr *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1 && !hideRow(mileStoneName)">
           <td class="lead">
-            <span [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
-              <span class="fake-link" (click)="sortByName()">
-                {{mileStoneName.name}} <span *ngIf="debugmode|async">PL({{mileStoneName.pl}})</span>
-                <fa-icon *ngIf="state.sort=='nameDesc'" [icon]="iconService.falSortDown"></fa-icon>
-                <fa-icon *ngIf="state.sort=='nameAsc'" [icon]="iconService.falSortUp"></fa-icon>
-              </span>
-            </span>
-            <span *ngIf="debugmode|async"> {{mileStoneName.key}} </span>
-            <span class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
-              class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
-              <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-            </span>
-
-            <span class="caption" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
-              <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
-                Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
-                <fa-icon *ngIf="state.sort=='resetDesc'" [icon]="iconService.falSortDown"></fa-icon>
-                <fa-icon *ngIf="state.sort=='resetAsc'" [icon]="iconService.falSortUp"></fa-icon>
-              </span>
-              <ng-container *ngIf="debugmode|async">
-                <br> {{mileStoneName.resets|date:'short'}}
-              </ng-container>
-              <div class="accent-text ms-supp-info" *ngIf="mileStoneName.suppInfo!=null">{{mileStoneName.suppInfo}}
+            <div class="milestone-row">
+              <div [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
+                <span class="fake-link" (click)="sortByName()">
+                  {{mileStoneName.name}} <span *ngIf="debugmode|async">PL({{mileStoneName.pl}})</span>
+                  <fa-icon *ngIf="state.sort=='nameDesc'" [icon]="iconService.falSortDown"></fa-icon>
+                  <fa-icon *ngIf="state.sort=='nameAsc'" [icon]="iconService.falSortUp"></fa-icon>
+                </span>
               </div>
-
-            </span>
-            <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="state.sort"
+              <div *ngIf="debugmode|async"> {{mileStoneName.key}} </div>
+              <div class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
+                class="hideMilestoneButton" (click)="hideMilestone(mileStoneName.key)">
+                <fa-icon [icon]="iconService.farTimes"></fa-icon>
+              </div>
+            </div>
+            <div class="milestone-row">
+              <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="state.sort"
               (sortClick)="sortByRewards()"></d2c-reward-desc>
-
+              <div class="caption milestone-resets" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
+                <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
+                  Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
+                  <fa-icon *ngIf="state.sort=='resetDesc'" [icon]="iconService.falSortDown"></fa-icon>
+                  <fa-icon *ngIf="state.sort=='resetAsc'" [icon]="iconService.falSortUp"></fa-icon>
+                </span>
+                <ng-container *ngIf="debugmode|async">
+                  <br> {{mileStoneName.resets|date:'short'}}
+                </ng-container>
+                <div class="accent-text ms-supp-info" *ngIf="mileStoneName.suppInfo!=null">{{mileStoneName.suppInfo}}
+                </div>
+              </div>
+            </div>
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
             <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" [detailed]="true">

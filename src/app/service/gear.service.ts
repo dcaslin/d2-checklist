@@ -200,9 +200,7 @@ export class GearService {
                 if (i.equipped.getValue() == false && (ignoreMark.indexOf(i.mark) === -1)) {
                     if (itemType == null || i.type == itemType) {
                         if (i.type == ItemType.Weapon
-                            || i.type == ItemType.Armor
-                            || i.type == ItemType.Ghost
-                            || i.type == ItemType.Vehicle) {
+                            || i.type == ItemType.Armor) {
                             if (i.postmaster === true) {
                                 continue;
                             }

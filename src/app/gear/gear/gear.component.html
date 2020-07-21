@@ -164,7 +164,7 @@
         </div>
 
         <mat-menu #menuMoreOptions="matMenu" xPosition="before">
-          <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+          <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <button mat-menu-item [matMenuTriggerFor]="menuBulkMove">
               <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to:
             </button>

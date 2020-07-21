@@ -84,7 +84,7 @@
   }
 
   .warn-text {
-    color: mat-color($warn);
+    color: mat-color($warn) !important;
   }
 
   .primary-text {
