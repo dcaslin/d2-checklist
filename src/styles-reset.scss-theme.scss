@@ -102,6 +102,13 @@
     color: mat-color($foreground, secondary-text);
   }
 
+  .simple-caption-darker {
+    margin: 0.5em 0 0.75em;
+    font-size: smaller;
+    color: mat-color($foreground, secondary-text);
+  }
+
+
   .simple-darker-larger-caption {
     margin: 0.5em 0 0.75em;
     color: mat-color($foreground, secondary-text);
@@ -133,6 +140,12 @@
   .type-caption {
     font-size: smaller;
     color: mat-color($foreground, secondary-text);
+  }
+
+  .check-progress-bar {
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   table.responsive-table {
@@ -223,6 +236,13 @@
   @media screen and (max-width: map-get($grid-breakpoints, sm)) {
     .responsive-table-inline-mobile-only {
       display: inline;
+    }
+
+    .check-progress-bar {
+
+      margin-top: unset;
+      margin-right: unset;
+      // margin-left: auto;
     }
 
     table.responsive-table {

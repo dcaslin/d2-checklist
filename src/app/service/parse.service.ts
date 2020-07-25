@@ -3925,8 +3925,6 @@ export class ParseService {
                     }
                 }
             }
-
-            searchText = desc.displayProperties.name;
             if (mw != null) {
                 searchText += ' is:mw:' + mw.name;
             }
@@ -3994,7 +3992,6 @@ export class ParseService {
             if (desc.itemTypeDisplayName) {
                 searchText += desc.itemTypeDisplayName;
             }
-            searchText = searchText.toLowerCase();
 
             if (type === ItemType.Armor) {
                 for (const s of stats) {
@@ -4088,12 +4085,12 @@ export class ParseService {
                 if (desc.setData && desc.setData.questLineName) {
                    name = desc.setData.questLineName + ': ' + name;
                    questline.name = desc.setData.questLineName;
-                   searchText += desc.setData.questLineName;
                 } else {
                     name = questline.name + ': ' + name;
-                    searchText += questline.name;
                 }
             }
+            searchText += name;
+            searchText = searchText.toLowerCase();
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
                 equipped, canEquip, owner, icon, type, desc.itemTypeDisplayName,
                 itm.quantity,

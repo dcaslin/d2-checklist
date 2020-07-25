@@ -31,8 +31,9 @@
           <fa-icon *ngIf="hideCompleteChars=='ALL'" [icon]="iconService.falEye"
             matTooltip="Hide milestones where all chars are complete" (click)="hideCompleteChars = null"
             class="warn-text" matTooltip="Stop hiding milestones where all chars are complete"></fa-icon>
-          <span *ngIf="(hiddenMilestones|async).length>0 || hideCompleteChars!=null"
-            matTooltip="Show all hidden milestones" class="warn-text fake-link milestoneVisibilityButton" (click)="showAllMilestones()">Restore Hidden</span>
+          <span *ngIf="(hiddenMilestones|async).length>0"
+            matTooltip="Show all hidden milestones" class="warn-text pad-left fake-link pad-left-more" 
+            (click)="showAllMilestones()">Restore Hidden</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           {{char.className}} - {{char.light}} {{char.title}}
