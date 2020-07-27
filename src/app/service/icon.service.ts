@@ -24,7 +24,7 @@ import {
 import { 
   faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp } from '@fortawesome/pro-duotone-svg-icons';
 import {
-  faGamepadAlt as fasGamepadAlt,
+  faGamepadAlt as fasGamepadAlt, faMinus as fasMinus,
   faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
@@ -215,6 +215,8 @@ export class IconService {
   public readonly farAlien = farAlien;
 
   public readonly farMinusSquare = farMinusSquare;
+
+  public readonly fasMinus = fasMinus;
   public readonly farHeart = farHeart;
   public readonly fasHeart = fasHeart;
   public readonly farMapMarkerAlt = farMapMarkerAlt;

@@ -74,10 +74,10 @@
                   [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
               </div>
               <div class="img-body">
-                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null"> {{getPursuitName(g)}}</ng-container>
+                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null"> {{g.name}}</ng-container>
                 <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null" target="_blank"
                   rel="noopener">
-                  {{getPursuitName(g)}} <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
+                  {{g.name}} <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                 </a>
                 <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]!=true" (click)="state.trackPursuit(g)">
                   <fa-icon [icon]="iconService.farStar"></fa-icon>

@@ -96,7 +96,7 @@
                           <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                         </span>
                       <ng-container *ngFor="let char of player.characters">
-                        <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" detailed="false">
+                        <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]">
                         </d2c-milestone-check>
                       </ng-container>
                     </td>
