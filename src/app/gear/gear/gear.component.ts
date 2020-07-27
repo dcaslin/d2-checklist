@@ -364,6 +364,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       });
   }
 
+  public async shardBlues() {
+    await this.load(true);
+    await this.gearService.shardBlues(this._player.getValue());
+    await this.load(true);
+    await this.syncLocks();
+  }
+
   public async syncLocks() {
     await this.load();
     await this.gearService.processGearLocks(this._player.getValue());
@@ -373,8 +380,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async pullFromPostmaster(player: Player, itm: InventoryItem) {
     try {
       const owner = itm.owner.getValue();
-      await this.gearService.transfer(player, itm, owner);
-      this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + owner.label);
+      const success = await this.gearService.transfer(player, itm, owner, {isFull: false});
+      if (success) {
+        this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + owner.label);
+      } else {
+        this.notificationService.info('Could not pull ' + itm.name + ' from postmaster to ' + owner.label + '. Target was full.');
+      }
     } catch (e) {
       this.notificationService.fail(e);
     }
@@ -383,8 +394,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async transfer(player: Player, itm: InventoryItem, target: Target) {
     try {
-      await this.gearService.transfer(player, itm, target);
+      const success = await this.gearService.transfer(player, itm, target, {isFull: false});
+      if (success) {
       this.notificationService.success('Transferred ' + itm.name + ' to ' + target.label);
+      } else {
+        this.notificationService.info('Could not transfer ' + itm.name + ' to ' + target.label + '. Target was full.');
+      }
     } catch (e) {
       this.notificationService.fail(e);
     }
@@ -402,7 +417,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   markCurrentRows(marking: string) {
-    const items = this.gearToShow;
     for (const item of this.gearToShow) {
       item.mark = marking;
       this.markService.updateItem(item);
@@ -812,8 +826,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async shardMode(itemType?: ItemType) {
     await this.load(true);
     await this.gearService.shardMode(this._player.getValue(), itemType);
-    await this.load(true);
-    await this.syncLocks();
+    this.filterChanged();
   }
 
   public async clearInv(itemType?: ItemType) {

@@ -27,6 +27,14 @@ $d2c-theme: mat-light-theme(
         color: hsla(0, 76%, 36%, 1);
         font-weight: bold;;
     }
+
+    .fake-link {
+        color: rgba(0,0,0,.87);
+    }
+
+    .fake-link:hover {
+        color: #ffc400;
+    }
     
     button.upgrade{
         //background-color: hsl(211, 100%, 50%);

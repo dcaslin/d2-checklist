@@ -35,8 +35,8 @@
         </div>
 
         <div class="home-button-row">
-          <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2q4Ofiw">
-            <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Destiny Grimoire Anthology, Vol II
+          <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2CwNvcz">
+            <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Grimoire Anthology, Vol III (pre-order)
           </a>
           <div class="spacer"></div>
           <a mat-raised-button class="home-button" color="primary" target="_blank" href="https://imgur.com/a/dUlLzny">
@@ -393,8 +393,8 @@
       <mat-list role="list">
         <mat-list-item *ngFor="let n of milestones">
           <div mat-line>
-            <a class="underline" href="javascript:void()" (click)="showBurns(n)">{{n.name}} <fa-icon
-                [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></a>
+            <span class="fake-link underline" (click)="showBurns(n)">{{n.name}} <fa-icon
+                [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span>
             <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
           </div>
           <div *ngIf="n.specialLoot" mat-line class="nf-sub"> {{n.specialLoot.displayProperties.name}} <span

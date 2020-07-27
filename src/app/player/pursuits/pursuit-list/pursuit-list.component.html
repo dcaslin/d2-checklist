@@ -28,38 +28,38 @@
 
 
         <th class="header-cell">
-          <a href="javascript:void(0)" (click)="sortData('name')"> {{getTitle()}}
+          <span class="fake-link" (click)="sortData('name')"> {{getTitle()}}
             <ng-container *ngIf="sort.name=='name'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
 
         </th>
         <th class="header-cell">
-          <a href="javascript:void(0)" (click)="sortData('player')"> Player
+          <span class="fake-link" (click)="sortData('player')"> Player
             <ng-container *ngIf="sort.name=='player'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
 
         </th>
         <th class="header-cell" *ngIf="mode!='quests'">
-          <a href="javascript:void(0)" (click)="sortData('expiration')"> Expiration
+          <span class="fake-link" (click)="sortData('expiration')"> Expiration
             <ng-container *ngIf="sort.name=='expiration'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
         </th>
         <th class="header-cell">
-          <a href="javascript:void(0)" (click)="sortData('progress')"> Progress
+          <span class="fake-link" (click)="sortData('progress')"> Progress
             <ng-container *ngIf="sort.name=='progress'">
               <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
               <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
             </ng-container>
-          </a>
+          </span>
         </th>
         <th class="header-cell">Rewards</th>
       </tr>
@@ -74,10 +74,10 @@
                   [style.background-image]="'url(//www.bungie.net' + g.icon + ')'"></span>
               </div>
               <div class="img-body">
-                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null"> {{getPursuitName(g)}}</ng-container>
+                <ng-container *ngIf="g.lowLinks==null || g.lowLinks.mapLink==null"> {{g.name}}</ng-container>
                 <a [href]="g.lowLinks.mapLink" *ngIf="g.lowLinks!=null && g.lowLinks.mapLink!=null" target="_blank"
                   rel="noopener">
-                  {{getPursuitName(g)}} <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
+                  {{g.name}} <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
                 </a>
                 <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]!=true" (click)="state.trackPursuit(g)">
                   <fa-icon [icon]="iconService.farStar"></fa-icon>
@@ -85,6 +85,15 @@
                 <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">
                   <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
                 </button>
+                <!-- <button mat-icon-button *ngIf="state.dTrackedPursuits[g.hash]==true" (click)="state.untrackPursuit(g)">
+                  <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
+                </button>
+                <button mat-icon-button *ngIf="!g.tracked"  matTooltip="Click to track this in game." (click)="state.gameTrackPursuit(g, true)">
+                  <fa-icon [icon]="iconService.farBookmark"></fa-icon>
+                </button>
+                <button mat-icon-button *ngIf="g.tracked" matTooltip="This is tracked in game, click to untrack." (click)="state.gameTrackPursuit(g, false)">
+                  <fa-icon [icon]="iconService.fasBookmark" class="accent-text"></fa-icon>
+                </button> -->
                 <span *ngIf="debugmode|async">&ensp;[{{g.hash}}]</span>
                 <div *ngIf="g.questline">
                   <a mat-stroked-button (click)="openQuestDialog(g.questline)">

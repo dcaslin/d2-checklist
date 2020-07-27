@@ -36,11 +36,10 @@
                     *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">
                     {{mileStoneName.name}}
                     <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
-                    <a href="javascript:void(0)" matTooltip="Hide this milestone, click Show All to restore it later"
-                      class="milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
+                    <span matTooltip="Hide this milestone, click Show All to restore it later"
+                      class="fake-link milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
                       <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-                    </a>
-
+                    </span>
                   </th>
                 </ng-container>
               </ng-container>
@@ -53,16 +52,14 @@
                   {{member.user.displayName}}
                 </a>
                 
-                <a style="margin-left:0.25em" *ngIf="(member.player$|async)==null" href="javascript:void(0)"
+                <span class="fake-link" style="margin-left:0.25em" *ngIf="(member.player$|async)==null"
                   (click)="loadPlayer(member)">
                   &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
-                </a>
-                <a style="margin-left:0.25em"
-                  [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.user)]!==undefined?'warn-text':''"
-                  (click)="storageService.toggleFav(member.user, member.bungieMembershipId)" href="javascript:void(0)">
+                </span>
+                <span style="margin-left:0.25em" class="warn-text fake-link"
+                  (click)="storageService.toggleFav(member.user, member.bungieMembershipId)">
                   <fa-icon [icon]="iconService.farTimes" style="font-weight: normal !important"></fa-icon>
-                </a>
-
+                </span>
 
                 <ng-container *ngIf="member.player$|async as player">
                   <ng-container *ngIf="!player.superprivate">
@@ -92,16 +89,14 @@
                     <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
                       [attr.data-label]="mileStoneName.name">
 
-                      <span>
-                        <a style="float: left" href="javascript:void(0)"
+                        <span class="fake-link" style="float: left"
                           matTooltip="Hide this milestone, click Show All to restore it later"
                           class="mobileVisibilityButton responsive-table-inline-mobile-only"
                           (click)="hideMilestone(mileStoneName.key)">
                           <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-                        </a>
-                      </span>
+                        </span>
                       <ng-container *ngFor="let char of player.characters">
-                        <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" detailed="false">
+                        <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]">
                         </d2c-milestone-check>
                       </ng-container>
                     </td>

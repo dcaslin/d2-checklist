@@ -32,11 +32,11 @@
                         <span [matTooltip]="mileStoneName.desc"
                             matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
                         <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
-                        <a href="javascript:void(0)"
+                        <span class="fake-link"
                             matTooltip="Hide this milestone, click Show All to restore it later"
                             class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
                             <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-                        </a>
+                    </span>
                     </th>
                 </ng-container>
             </tr>
@@ -47,15 +47,12 @@
                     <a [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
                         {{member.destinyUserInfo.displayName}} {{member.destinyUserInfo.platformName}}
                     </a>
-                    <a style="margin-left:0.25em"
-                        [ngClass]="(favoritesMap|async)[storageService.getFavKey(member.destinyUserInfo)]!==undefined?'warn-text':''"
-                        (click)="storageService.toggleFav(member.destinyUserInfo, member.bungieNetUserInfo.membershipId)"
-                        href="javascript:void(0)">
-                        <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
-                    </a>
-                    <a style="margin-left:0.25em" href="javascript:void(0)" (click)="state.loadSpecificPlayer(member, true)">
+
+                    <d2c-friend-star [userInfo]="member.destinyUserInfo" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+                    <span class="fake-link" style="margin-left:0.25em"
+                        (click)="state.loadSpecificPlayer(member, true)">
                         &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
-                    </a>
+                    </span>
                     <ng-container *ngIf="member.player$|async as player">
                         <span class="simple-caption" *ngIf="player!=null && player.title.trim().length>0">
                             {{player.title}}
@@ -76,7 +73,7 @@
                             <td *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1"
                                 class="clan-player-ms-cell" [attr.data-label]="mileStoneName.name">
                                 <ng-container *ngFor="let char of player.characters">
-                                    <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" detailed="false">
+                                    <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]">
                                     </d2c-milestone-check>
                                 </ng-container>
                             </td>
@@ -106,11 +103,11 @@
                             <span [matTooltip]="mileStoneName.desc"
                                 matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
                             <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
-                            <a href="javascript:void(0)"
+                            <span class="fake-link"
                                 matTooltip="Hide this milestone, click Show All to restore it later"
                                 class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
                                 <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-                            </a>
+                            </span>
                         </th>
                     </ng-container>
 
@@ -144,12 +141,12 @@
 
 <ng-template #sortHeader>
     <th>
-        <a href="javascript:void(0)" (click)="state.toggleSort('member')">Member
+        <span class="fake-link" (click)="state.toggleSort('member')">Member
             <ng-container *ngIf="state.sort && state.sort.name=='member'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
-        </a>
+        </span>
         <div class="d-none d-md-inline">
             <button class="d-none d-md-inline" mat-button (click)="showAllClanMilestones()"
                 *ngIf="(hiddenClanMilestones|async).length>0">

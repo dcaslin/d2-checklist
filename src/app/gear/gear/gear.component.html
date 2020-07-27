@@ -56,9 +56,9 @@
               <fa-icon [icon]="iconService.falInfoSquare"></fa-icon> Important notes about god rolls
             </a>
             <a mat-menu-item
-              href="https://www.reddit.com/r/sharditkeepit/comments/gh8vv5/new_breakdown_of_every_weapon/"
+              href="https://www.reddit.com/r/destinychecklistnet/comments/huouu7/pandapaxxy_god_roll_post_hub/"
               class="header-link" target="_blank" rel="noopener">
-              <fa-icon [icon]="iconService.farBooks"></fa-icon> Pandapaxxy's guides (06/2020)
+              <fa-icon [icon]="iconService.farBooks"></fa-icon> Pandapaxxy's hub post (07/2020)
             </a>
             <a mat-menu-item href="https://twitter.com/D2Checklist" class="header-link" target="_blank" rel="noopener">
               <fa-icon [icon]="iconService.fabTwitter"></fa-icon> D2Checklist Twitter updates
@@ -137,34 +137,34 @@
             </button>
             <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
               (optionSelected)="autoCompleteSelected($event)">
-              <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option.value">                
+              <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option.value">
                 {{option.value}} <span *ngIf="option.desc" class="simple-caption">{{option.desc}}</span>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
           <div>
-            <a mat-button (click)="load()">
+            <button mat-button (click)="load()">
               <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
-            </a>
+            </button>
             <button mat-button [matMenuTriggerFor]="menuMoreOptions">
               <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
             </button>
-            <a mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
+            <button mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
               <fa-icon [icon]="iconService.fasSave"></fa-icon>
-            </a>
-            <a mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
+            </button>
+            <button mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
               <fa-stack>
                 <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
                 <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
               </fa-stack>
-            </a>
+            </button>
 
             <span class="simple-caption">{{pageStart}} - {{pageEnd}} / {{total}}</span>
           </div>
         </div>
 
         <mat-menu #menuMoreOptions="matMenu" xPosition="before">
-          <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+          <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <button mat-menu-item [matMenuTriggerFor]="menuBulkMove">
               <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to:
             </button>
@@ -251,6 +251,9 @@
           <button mat-menu-item (click)="syncLocks()">
             <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
           </button>
+          <button mat-menu-item (click)="shardBlues()">
+            <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Blues
+          </button>
           <button mat-menu-item [matMenuTriggerFor]="menuBulkShard">
             <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode
           </button>
@@ -273,58 +276,58 @@
           <thead>
             <tr>
               <th class="limited-gear-width">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('power')">Light
+                <span class="fake-link gear-sort" (click)="sort('power')">Light
                   <d2c-sort-indicator field="power" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="limited-gear-width">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('name')">Name
+                <span class="fake-link gear-sort" (click)="sort('name')">Name
                   <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('powerCap')">Cap
+                <span class="fake-link gear-sort" (click)="sort('powerCap')">Cap
                   <d2c-sort-indicator field="powerCap" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('typeName')">Type
+                <span class="fake-link gear-sort" (click)="sort('typeName')">Type
                   <d2c-sort-indicator field="typeName" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
-                </a>
+                </span>
 
               </th>
               <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
                 *ngIf="option.type==ItemType.Armor">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('energyCapacity')">Energy
+                <span class="fake-link gear-sort" (click)="sort('energyCapacity')">Energy
                   <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('copies')">
+                <span class="fake-link gear-sort" (click)="sort('copies')">
                   Copies
                   <d2c-sort-indicator field="copies" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('masterwork.tier')">MW
+                <span class="fake-link gear-sort" (click)="sort('masterwork.tier')">MW
                   <d2c-sort-indicator field="mw.tier" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="hide-mobile-table-cell show-tablet-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                 Sockets
               </th>
               <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
-                <a class="gear-sort" href="javascript:void(0)" (click)="sort('preferredStatPoints')">Stat Pts
+                <span class="fake-link gear-sort" (click)="sort('preferredStatPoints')">Stat Pts
                   <d2c-sort-indicator field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
-                </a>
+                </span>
               </th>
               <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
                 Stats
@@ -343,54 +346,21 @@
 
                 <div class="tag-page-container">
                   <div class="tag-page-container-tag">
-                    <a href="javascript:void(0)" (click)="sort('quantity')">Quantity
+                    <span class="fake-link" (click)="sort('quantity')">Quantity
                       <d2c-sort-indicator field="quantity" [currVal]="sortBy" [descending]="sortDesc">
                       </d2c-sort-indicator>
-                    </a>
+                    </span>
                   </div>
-                  <div class="tag-page-container-pages hide-mobile-inline">
-
-                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
-                      (click)="paginator.firstPage()">
-                      <mat-icon class="page-icon">first_page</mat-icon>
-                    </a>
-                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
-                      (click)="paginator.previousPage()">
-                      <mat-icon class="page-icon">navigate_before</mat-icon>
-                    </a>
-                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
-                      (click)="paginator.nextPage()">
-                      <mat-icon class="page-icon">navigate_next</mat-icon>
-                    </a>
-                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
-                      (click)="paginator.lastPage()">
-                      <mat-icon class="page-icon">last_page</mat-icon>
-                    </a>
-                  </div>
+                  <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
                 </div>
+
+
               </th>
               <th class="tag-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                 <div class="tag-page-container">
                   <div class="tag-page-container-tag"> Tag </div>
-                  <div class="tag-page-container-pages hide-mobile-inline">
-                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
-                      (click)="paginator.firstPage()">
-                      <mat-icon class="page-icon">first_page</mat-icon>
-                    </a>
-                    <a class="gear-sort " [attr.href]="paginator.hasPreviousPage()?'javascript:void(0)':null"
-                      (click)="paginator.previousPage()">
-                      <mat-icon class="page-icon">navigate_before</mat-icon>
-                    </a>
-                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
-                      (click)="paginator.nextPage()">
-                      <mat-icon class="page-icon">navigate_next</mat-icon>
-                    </a>
-                    <a class="gear-sort " [attr.href]="paginator.hasNextPage()?'javascript:void(0)':null"
-                      (click)="paginator.lastPage()">
-                      <mat-icon class="page-icon">last_page</mat-icon>
-                    </a>
-                  </div>
+                  <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
                 </div>
               </th>
             </tr>
@@ -412,7 +382,7 @@
                 </td>
                 <td class="limited-gear-width">
 
-                  <button mat-stroked-button href="javascript:void(0)" [matTooltip]="i.name+'\n'+i.desc"
+                  <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc"
                     [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
                     <div class="item-name">{{i.name}}</div>
                   </button>
@@ -495,8 +465,8 @@
                 <td class="limited-gear-width hide-mobile-table-cell">
                   {{i.typeName}}
                   <ng-container *ngIf="option.type==ItemType.Weapon">
-                    <a href="javascript:void(0)" class="simple-caption" *ngIf="i.isRandomRoll"
-                      (click)="showPossibleRolls(i)">Random</a>
+                    <span class="fake-link" class="simple-caption" *ngIf="i.isRandomRoll"
+                      (click)="showPossibleRolls(i)">Random</span>
                     <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
                   </ng-container>
                   <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
@@ -580,11 +550,11 @@
                   <ng-container *ngIf="i.preferredStatPoints">{{i.preferredStatPoints}}</ng-container>
 
                   <div class="total-pts" *ngIf="i.totalStatPoints">
-                    <a class="gear-sort" href="javascript:void(0)" (click)="sort('totalStatPoints')">
+                    <span class="fake-link gear-sort" (click)="sort('totalStatPoints')">
                       {{i.totalStatPoints}}
                       <d2c-sort-indicator field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc">
                       </d2c-sort-indicator>
-                    </a>
+                    </span>
                   </div>
                 </td>
                 <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -594,7 +564,7 @@
                         <tr *ngIf="showAllWeaponStats || (stat.hash==1345609583
                             || stat.hash==4043523819 || stat.hash==1240592695
                             || stat.hash==4284893193)">
-                          <td><a class="gear-sort" href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">
+                          <td><span class="fake-link gear-sort" (click)="sort('stat.'+stat.hash)">
                               <ng-container *ngIf="stat.name=='Rounds Per Minute'; else notRPM">
                                 RPM
                               </ng-container>
@@ -609,7 +579,7 @@
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
                                 [descending]="sortDesc">
                               </d2c-sort-indicator>
-                            </a>
+                            </span>
                           </td>
                           <td>{{stat.getValue()}}</td>
                         </tr>
@@ -624,11 +594,11 @@
 
                         <tr *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
                           <td class="gear-sort">
-                            <a href="javascript:void(0)" (click)="sort('stat.'+stat.hash)">{{stat.name}}
+                            <span class="fake-link" (click)="sort('stat.'+stat.hash)">{{stat.name}}
                               <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
                                 [descending]="sortDesc">
                               </d2c-sort-indicator>
-                            </a>
+                            </span>
                           </td>
                           <td>{{stat.value}}
                             <span *ngIf="stat.enhancement>0" class="accent-text pad-left">+{{stat.enhancement}}</span>
@@ -717,4 +687,25 @@
 </div>
 <ng-template #highCap>
   <span class="simple-darker-caption-no-margin">None</span>
+</ng-template>
+
+<ng-template #upperPaging let-paginator="paginator">
+  <div class="tag-page-container-pages hide-mobile-inline">
+    <span class="gear-sort" [class.fake-link]="paginator.hasPreviousPage()"
+      [class.fake-link-disabled]="!paginator.hasPreviousPage()" (click)="paginator.firstPage()">
+      <mat-icon class="page-icon">first_page</mat-icon>
+    </span>
+    <span class="gear-sort" [class.fake-link]="paginator.hasPreviousPage()"
+      [class.fake-link-disabled]="!paginator.hasPreviousPage()" (click)="paginator.previousPage()">
+      <mat-icon class="page-icon">navigate_before</mat-icon>
+    </span>
+    <span class="gear-sort" [class.fake-link]="paginator.hasNextPage()"
+      [class.fake-link-disabled]="!paginator.hasNextPage()" (click)="paginator.nextPage()">
+      <mat-icon class="page-icon">navigate_next</mat-icon>
+    </span>
+    <span class="gear-sort" [class.fake-link]="paginator.hasNextPage()"
+      [class.fake-link-disabled]="!paginator.hasNextPage()" (click)="paginator.lastPage()">
+      <mat-icon class="page-icon">last_page</mat-icon>
+    </span>
+  </div>
 </ng-template>

@@ -948,7 +948,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService, pullFromPostmaster?: boolean): Promise<void> {
+    public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService, pullFromPostmaster?: boolean): Promise<boolean> {
         try {
             if (pullFromPostmaster) {
                 await this.postReq('Destiny2/Actions/Items/PullFromPostmaster/', {
@@ -981,12 +981,38 @@ export class BungieService implements OnDestroy {
             const toBucket: Bucket = bucketService.getBucket(to, item.inventoryBucket);
             fromBucket.remove(item);
             toBucket.items.push(item);
+            return true;
         } catch (err) {
+            if (err.error && err.error.ErrorCode == 1642) {
+                if (isVault) {
+                    console.log(`Count not transfer ${item.name} to ${vault.label}: no space.`);
+                } else {
+                    console.log(`Count not transfer ${item.name} to ${target.label}: no space.`);
+                }
+                return false;
+            }
             this.handleError(err);
             throw new Error('Failed to transfer ' + item.name);
         }
     }
 
+    // TODO use this once it works on enough things to be worthwhile
+    
+    // public async setTrackedState(membershipType: number, item: InventoryItem, tracked: boolean): Promise<boolean> {
+    //     try {
+    //         await this.postReq('Destiny2/Actions/Items/SetTrackedState/', {
+    //             state: tracked,
+    //             itemId: item.id,
+    //             characterId: item.owner.getValue().id,
+    //             membershipType: membershipType
+    //         });
+    //         item.tracked = tracked;
+    //         return true;
+    //     } catch (err) {
+    //         this.handleError(err);
+    //         return false;
+    //     }
+    // }
 
     public async equip(membershipType: number, item: InventoryItem): Promise<boolean> {
         try {

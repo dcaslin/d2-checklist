@@ -3282,7 +3282,8 @@ export class ParseService {
             }
         }
         return {
-            name: desc.displayProperties.displayName,
+            hash: stepHash,
+            name: desc.displayProperties.name,
             desc: desc.displayProperties.description,
             objectives: objectives,
             values: values,
@@ -3924,8 +3925,6 @@ export class ParseService {
                     }
                 }
             }
-
-            searchText = desc.displayProperties.name;
             if (mw != null) {
                 searchText += ' is:mw:' + mw.name;
             }
@@ -3993,7 +3992,6 @@ export class ParseService {
             if (desc.itemTypeDisplayName) {
                 searchText += desc.itemTypeDisplayName;
             }
-            searchText = searchText.toLowerCase();
 
             if (type === ItemType.Armor) {
                 for (const s of stats) {
@@ -4082,7 +4080,18 @@ export class ParseService {
                 }
             }
 
-            return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, desc.displayProperties.name,
+            let name = desc.displayProperties.name;
+            if (questline != null) {
+                if (desc.setData && desc.setData.questLineName) {
+                   name = desc.setData.questLineName + ': ' + name;
+                   questline.name = desc.setData.questLineName;
+                } else {
+                    name = questline.name + ': ' + name;
+                }
+            }
+            searchText += name;
+            searchText = searchText.toLowerCase();
+            return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
                 equipped, canEquip, owner, icon, type, desc.itemTypeDisplayName,
                 itm.quantity,
                 power, damageType, energyType, stats, sockets, objectives,
