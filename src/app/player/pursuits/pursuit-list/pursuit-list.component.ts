@@ -107,9 +107,6 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
     }
   }
 
-  getPursuitName(g: InventoryItem) {
-    return g.name;
-  }
 
   public openQuestDialog(quest: any): void {
     const dc = new MatDialogConfig();

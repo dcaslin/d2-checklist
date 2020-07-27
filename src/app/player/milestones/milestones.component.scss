@@ -1,19 +1,27 @@
-.milestoneVisibilityButton{
-    font-size: smaller;
-    font-weight: lighter;
-    margin-left: 0.5em;
-  }
+.milestone-row {
+  margin: 2px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 
+.hideMilestoneButton {
+  opacity: 0.5;
+}
 
-.check{
+.milestone-resets {
+
+}
+
+.check {
   font-size: large;
 }
 
-.clanMsRow{
+.clanMsRow {
   text-align: left;
 }
 
-.lifetime{
+.lifetime {
   font-size: small;
   font-weight: lighter;
   text-align: left;
@@ -21,25 +29,24 @@
   max-width: 125px;
 }
 
-.trophy{
+.trophy {
   opacity: 0.7;
   padding-left: 0.25em;
 }
 
-.percent{
+.percent {
   font-size: smaller;
   font-weight: lighter;
 }
 
-.bottom-note{
-  margin-left: 1.0em;
+.bottom-note {
+  margin-left: 1em;
   text-align: left;
   max-width: 900px;
 }
 
-
-.ms-supp-info{
-  margin-top: 5px;  
+.ms-supp-info {
+  margin-top: 5px;
 }
 
 a:link.recipes {

@@ -28,12 +28,15 @@
                     <ng-container *ngIf="!milestone.readyToCollect"><fa-icon [icon]="iconService.farSquare"></fa-icon></ng-container>
                 </ng-container>
                 <ng-template #nonZero>
-                    <fa-icon [icon]="iconService.farMinusSquare" class="accent-text" [matTooltip]="milestone.info"></fa-icon>
+                    <fa-icon  *ngIf="detailed!=true" [icon]="iconService.farMinusSquare" class="accent-text" [matTooltip]="milestone.info"></fa-icon>
+                    <div class="check-progress-bar" *ngIf="detailed==true">
+                        <mat-progress-bar [matTooltip]="milestone.info" mode="determinate" color="" [value]="100 * milestone.pct"></mat-progress-bar>
+                    </div>
                 </ng-template>
             </ng-template>
         </ng-template>
 
-        <div class="simple-caption margin-bottom-0" *ngIf="detailed==true && milestone.suppInfo!=null">
+        <div class="simple-caption-darker margin-bottom-0" *ngIf="detailed==true && milestone.suppInfo!=null">
             {{milestone.suppInfo}}
         </div>
 
