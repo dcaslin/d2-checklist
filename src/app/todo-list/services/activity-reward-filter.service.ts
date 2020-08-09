@@ -111,7 +111,7 @@ export class ActivityRewardFilterService extends Destroyable {
       if (!this.mapRewardByName[reward.name]) {
         console.log('That\'s weird! couldn\'t find filter for', reward.name)
       }
-      if (this.mapRewardByName[reward.name].d2cActive) {
+      if (this.mapRewardByName[reward.name]?.d2cActive) {
         return true;
       }
     }
