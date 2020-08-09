@@ -408,6 +408,7 @@ export class GearService {
     public async bulkMove(player: Player, items: InventoryItem[], target: Target) {
         console.log('Moving ' + items.length + ' items.');
         const vaultStatus = {isFull: false};
+        let successCnt = 0;
         for (const i of items) {
             try {
                 if (target.id !== i.owner.getValue().id) {
@@ -420,13 +421,27 @@ export class GearService {
                             this.notificationService.info(`Vault is full, ending prematurely`);
                             break;
                         }
+                    } else {
+                        successCnt++;
                     }
+                } else if (i.postmaster) {
+                    this.notificationService.info('Pulling ' + i.name + ' from postmaster.');
+                    const success = await this.transfer(player, i, target, vaultStatus);
+                    if (!success) {
+                        console.log(`${i.name} could not be moved to ${target.label} b/c bucket was full.`);
+                        this.notificationService.info(`${i.name} could not be moved to ${target.label} b/c target was full.`);
+                    } else {
+                        successCnt++;
+                    }
+
                 }
             } catch (e) {
                 // ignore
                 console.log('Error moving ' + i.name + ': ' + e);
             }
         }
+        this.notificationService.info(`Done bulk move. Moved ${successCnt} / ${items.length} successfully.`);
+
     }
 
     public async clearInv(player: Player, itemType?: ItemType) {

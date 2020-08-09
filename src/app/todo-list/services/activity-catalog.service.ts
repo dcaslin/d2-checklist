@@ -96,7 +96,7 @@ export class ActivityCatalogService extends Destroyable {
       detailTitle: b.displayProperties.name,
       detailSubText: b.itemTypeDisplayName,
       detailTooltip: b.displayProperties.description,
-      rewards: this.cookRewards(b.value.itemValue),
+      rewards: this.cookRewards(b.value?.itemValue),
       rewardSort: '',
       charInfo: {},
       type: ActivityType.BOUNTY,
@@ -111,6 +111,7 @@ export class ActivityCatalogService extends Destroyable {
   }
 
   private cookRewards(rewards: CostReward[]): CookedReward[] {
+    if (!rewards) { return []; }
     const output: CookedReward[] = [];
     rewards.forEach(reward => {
       const item: InventoryItem = this.dictionary.findItem(reward.itemHash);
