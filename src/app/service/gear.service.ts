@@ -448,7 +448,7 @@ export class GearService {
         const target = player.characters[0];
         const vaultStatus = {isFull: false};
         const clearSuccess = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], itemType, vaultStatus);
-        if (clearSuccess) {
+        if (!clearSuccess) {
             this.notificationService.info('Inventory could not be fully cleared, your vault ran out of space');
         } else {
             this.notificationService.success('Inventory was cleared of all junk/infuse');
