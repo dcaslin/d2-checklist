@@ -104,7 +104,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     {value: 'is:unlocked'},
     {value: 'is:extratagged', desc: 'It\'s complicated. See help button'},
     {value: 'season:none', desc: 'No season mod slot'},
-    {value: 'season:arrivals', desc: 'Arrivals mode slot'},
+    {value: 'season:arrivals', desc: 'Arrivals mod slot'},
     {value: 'season:worthy'},
     {value: 'season:undying'},
     {value: 'season:dawn'},

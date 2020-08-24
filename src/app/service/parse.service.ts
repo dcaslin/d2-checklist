@@ -430,8 +430,8 @@ export class ParseService {
                                         } else if (oDesc.completionValue == 1) {
                                             if (oDesc.progressDescription) {
                                                 if (oDesc.progressDescription.toLowerCase().startsWith('speak with')
-                                                || oDesc.progressDescription.toLowerCase().startsWith('reward collected')
-                                                || oDesc.progressDescription.toLowerCase().endsWith('for a reward.')
+                                                    || oDesc.progressDescription.toLowerCase().startsWith('reward collected')
+                                                    || oDesc.progressDescription.toLowerCase().endsWith('for a reward.')
                                                 ) {
                                                     readyToCollect = true;
                                                 }
@@ -3539,6 +3539,56 @@ export class ParseService {
         return name;
     }
 
+    private getSeasonName(seasonalModSlot: number): string|null {
+        if (seasonalModSlot == 11) {
+            return 'arrivals';
+        }
+        if (seasonalModSlot == 10) {
+            return 'worthy';
+        }
+        if (seasonalModSlot == 9) {
+            return 'dawn';
+        }
+        if (seasonalModSlot == 8) {
+            return 'undying';
+        }
+        if (seasonalModSlot == 7) {
+            return 'opulence';
+        }
+        if (seasonalModSlot == 6) {
+            return 'drifter';
+        }
+        if (seasonalModSlot == 5) {
+            return 'forge';
+        }
+        if (seasonalModSlot == 4) {
+            return 'outlaw';
+        }
+        return null;
+    }
+
+    private genCoveredMods(season: number | null): number[] {
+        if (season == 11) {
+            return [9, 10, 11];
+        } else if (season == 10) {
+            return [9, 10, 11];
+        } else if (season == 9) {
+            return [8, 9, 10];
+        } else if (season == 8) {
+            return [7, 8, 9];
+        } else if (season == 7) {
+            return [7, 8];
+        } else if (season == 6) {
+            return [6];
+        } else if (season == 5) {
+            return [4, 5];
+        } else if (season == 4) {
+            return [4, 5];
+        } else {
+            return [];
+        }
+    }
+
     private checkSeasonalMod(socketHash: number) {
         if (socketHash == 4153634494) { // arrivals 4153634494
             return 11;
@@ -3561,7 +3611,7 @@ export class ParseService {
         if (socketHash == 3625698764 || // outlaw 3625698764
             socketHash == 2527938402) {
             return 4;
-        } else if (
+        } else if ( // drifter sentry/invader/reaper/collector
             socketHash == 149961592 ||
             socketHash == 326979294 ||
             socketHash == 446122123 ||
@@ -3707,6 +3757,7 @@ export class ParseService {
             let canEquip = false;
             let searchText = '';
             let seasonalModSlot = null;
+            let coveredSeasons = [];
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
             let mw: MasterworkInfo = null;
@@ -4019,26 +4070,16 @@ export class ParseService {
             }
             if (seasonalModSlot) {
                 searchText += 'is:seasonmod';
-                if (seasonalModSlot == 10) {
-                    searchText += 'season:worthy';
+                coveredSeasons = this.genCoveredMods(seasonalModSlot);
+                const seasonText = this.getSeasonName(seasonalModSlot);
+                if (seasonText) {
+                    searchText += 'season:' + seasonText;
                 }
-                if (seasonalModSlot == 9) {
-                    searchText += 'season:dawn';
-                }
-                if (seasonalModSlot == 8) {
-                    searchText += 'season:undying';
-                }
-                if (seasonalModSlot == 7) {
-                    searchText += 'season:opulence';
-                }
-                if (seasonalModSlot == 6) {
-                    searchText += 'season:drifter';
-                }
-                if (seasonalModSlot == 5) {
-                    searchText += 'season:forge';
-                }
-                if (seasonalModSlot == 4) {
-                    searchText += 'season:outlaw';
+                for (const seasonNumber of coveredSeasons) {
+                    const seasonName  = this.getSeasonName(seasonNumber);
+                    if (seasonName) {
+                        searchText += 'has:' + seasonName;
+                    }
                 }
             } else if (type === ItemType.Armor) {
                 searchText += 'season:none';
@@ -4083,8 +4124,8 @@ export class ParseService {
             let name = desc.displayProperties.name;
             if (questline != null) {
                 if (desc.setData && desc.setData.questLineName) {
-                   name = desc.setData.questLineName + ': ' + name;
-                   questline.name = desc.setData.questLineName;
+                    name = desc.setData.questLineName + ': ' + name;
+                    questline.name = desc.setData.questLineName;
                 } else {
                     name = questline.name + ': ' + name;
                 }
@@ -4099,7 +4140,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
-                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, powerCap
+                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, coveredSeasons, powerCap
             );
         } catch (exc) {
             console.dir(itemComp);
