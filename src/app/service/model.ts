@@ -684,6 +684,7 @@ export class InventoryItem {
     public dupesByEnergyAndSeason?: number;
     public dupesTaggedToKeep?: number;
     public dupesByFrameSlotAndEnergy?: number;
+    public coveredSeasons?: number[];
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -754,6 +755,7 @@ export class InventoryItem {
         this.energyCapacity = energyCapacity;
         this.totalStatPoints = totalStatPoints;
         this.seasonalModSlot = seasonalModSlot;
+        this.coveredSeasons = coveredSeasons;
         this.powerCap = powerCap;
     }
 }

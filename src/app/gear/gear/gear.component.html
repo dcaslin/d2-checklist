@@ -263,6 +263,9 @@
           <button mat-menu-item [matMenuTriggerFor]="menuBulkClear">
             <fa-icon [icon]="iconService.fasForklift"></fa-icon>&ensp;Clear Inv
           </button>
+          <button mat-menu-item (click)="showSeasonBreakdown()">
+            <fa-icon [icon]="iconService.fasWheat"></fa-icon>&ensp;Season Breakdown
+          </button>
         </mat-menu>
         <div *ngIf="debugmode|async">
           <h5>Filters</h5>
