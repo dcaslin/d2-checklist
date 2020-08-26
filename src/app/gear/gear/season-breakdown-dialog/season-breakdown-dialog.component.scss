@@ -1,7 +1,6 @@
 .bucket-body {
     display: flex;
     flex-direction: column;
-    // align-items: center;;
 }
 
 .bucket-total {
@@ -13,7 +12,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     margin-top: 5px;
-    // justify-content: space-between;
+    justify-content: flex-end;
 }
 
 .bucket-energy {

@@ -5,7 +5,11 @@
                 <table class="responsive-table">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th>
+                                <a href="https://www.google.com" target="_blank" rel="noopener">
+                                    <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>
+                                </a>
+                            </th>
                             <th>Helmet</th>
                             <th>Arms</th>
                             <th>Chest</th>
@@ -16,7 +20,8 @@
                     <tbody>
                         <ng-container *ngIf="char._seasons|async as seasons">
                             <tr *ngFor="let season of seasons">
-                                <td>{{season.name}}<div *ngIf="season.note" class="simple-caption">{{season.note}}</div>
+                                <td>
+                                    {{season.name}}<div *ngIf="season.note" class="simple-caption">{{season.note}}</div>
                                 </td>
                                 <td *ngFor="let bucket of season.buckets" [attr.data-label]="bucket.name">
                                     <div class="bucket-body">
@@ -26,27 +31,27 @@
                                         </div>
                                         <div class="bucket-energies">
                                             <div class="bucket-energy">
-                                                <fa-icon [icon]="iconService.fasBolt" class="arc-text"
+                                                <!-- <fa-icon [icon]="iconService.fasBolt" class="arc-text"
                                                     [fixedWidth]="true">
-                                                </fa-icon>
+                                                </fa-icon> -->
                                                 <span (click)="showBundle(bucket.arc)"
-                                                    class="fake-link">{{bucket.arc.keep}} /
+                                                    class="arc-text fake-link">{{bucket.arc.keep}} /
                                                     {{bucket.arc.items.length}}</span>
                                             </div>
                                             <div class="bucket-energy">
-                                                <fa-icon [icon]="iconService.fasBolt" class="solar-text"
+                                                <!-- <fa-icon [icon]="iconService.fasBolt" class="solar-text"
                                                     [fixedWidth]="true">
-                                                </fa-icon>
+                                                </fa-icon> -->
                                                 <span (click)="showBundle(bucket.solar)"
-                                                    class="fake-link">{{bucket.solar.keep}} /
+                                                    class="solar-text fake-link">{{bucket.solar.keep}} /
                                                     {{bucket.solar.items.length}}</span>
                                             </div>
                                             <div class="bucket-energy">
-                                                <fa-icon [icon]="iconService.fasBolt" class="void-text"
+                                                <!-- <fa-icon [icon]="iconService.fasBolt" class="void-text"
                                                     [fixedWidth]="true">
-                                                </fa-icon>
+                                                </fa-icon> -->
                                                 <span (click)="showBundle(bucket.void)"
-                                                    class="fake-link">{{bucket.void.keep}} /
+                                                    class="void-text fake-link">{{bucket.void.keep}} /
                                                     {{bucket.void.items.length}}</span>
                                             </div>
                                         </div>
@@ -57,6 +62,6 @@
                     </tbody>
                 </table>
             </div>
-        </mat-tab>
+        </mat-tab>        
     </mat-tab-group>
 </mat-dialog-content>
