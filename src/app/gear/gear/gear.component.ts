@@ -2,7 +2,7 @@ import { Location } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
@@ -27,6 +27,7 @@ import { GearHelpDialogComponent } from './gear-help-dialog/gear-help-dialog.com
 import { Choice, GearToggleComponent } from './gear-toggle/gear-toggle.component';
 import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
+import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
 
 
 @Component({
@@ -104,7 +105,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     {value: 'is:unlocked'},
     {value: 'is:extratagged', desc: 'It\'s complicated. See help button'},
     {value: 'season:none', desc: 'No season mod slot'},
-    {value: 'season:arrivals', desc: 'Arrivals mode slot'},
+    {value: 'season:arrivals', desc: 'Arrivals mod slot'},
     {value: 'season:worthy'},
     {value: 'season:undying'},
     {value: 'season:dawn'},
@@ -1178,6 +1179,20 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       });
   }
 
+
+  public showSeasonBreakdown(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    // dc.height = '95vh';
+    // dc.width = '95vw';
+    // dc.maxWidth = '95vw';
+    // dc.maxHeight = '95vh';
+    dc.data = {
+      parent: this
+    };
+    this.dialog.open(SeasonBreakdownDialogComponent, dc);
+  }
+
   public showArmorPerks(): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
@@ -1213,7 +1228,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     });
   }
 
-  public openGearDialog(source: InventoryItem, items: InventoryItem[], showNames: boolean): void {
+  public openGearDialog(source: InventoryItem, items: InventoryItem[], showNames: boolean): MatDialogRef<GearCompareDialogComponent> {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.data = {
@@ -1222,7 +1237,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       items: items,
       showNames: showNames
     };
-    this.dialog.open(GearCompareDialogComponent, dc);
+    return this.dialog.open(GearCompareDialogComponent, dc);
   }
 
 
