@@ -17,7 +17,7 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
     }
 
     .fake-link:hover {
-        color: #ffb300;
+        color: #ffb300 !important;
     }
 
     .upgrade-color {
@@ -39,21 +39,16 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
 
     .mark-table > tbody > tr.upgrade > td,
     .mark-table > tbody > tr > td.upgrade {
-        //background-color: hsl(200, 65%, 15%);
         background-color: #303D4D;
     }
     .mark-table > tbody > tr.keep > td,
     .mark-table > tbody > tr > td.keep {
-        //background-color: hsl(103, 44%, 15%);
         background-color: #344235;
     }
 
     .mark-table > tbody > tr.infuse > td,
     ,
     .mark-table > tbody > tr > td.infuse {
-        //background-color: hsl(50, 81%, 15%);
-        // background-color: rgba(220, 145, 9, 0.64);
-        // background-color: rgba(210, 100, 7, 0.34);
         background-color: #604532;
     }
 
@@ -76,7 +71,6 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         background-color: #84302F;
     }
 
-    
     .footer {
         color: mat-color($primary, lighter);
         background-color: mat-color($primary, 900);

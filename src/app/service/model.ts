@@ -684,6 +684,7 @@ export class InventoryItem {
     public dupesByEnergyAndSeason?: number;
     public dupesTaggedToKeep?: number;
     public dupesByFrameSlotAndEnergy?: number;
+    public coveredSeasons?: number[];
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -704,7 +705,7 @@ export class InventoryItem {
         locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
-        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number, powerCap?: number
+        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number, coveredSeasons?: number[], powerCap?: number
     ) {
         this.id = id;
         this.hash = hash;
@@ -754,6 +755,7 @@ export class InventoryItem {
         this.energyCapacity = energyCapacity;
         this.totalStatPoints = totalStatPoints;
         this.seasonalModSlot = seasonalModSlot;
+        this.coveredSeasons = coveredSeasons;
         this.powerCap = powerCap;
     }
 }

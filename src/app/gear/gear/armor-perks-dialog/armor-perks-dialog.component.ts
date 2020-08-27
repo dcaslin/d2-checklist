@@ -14,7 +14,6 @@ import { Character, InventoryPlug, Player } from '@app/service/model';
 export class ArmorPerksDialogComponent {
   parent: GearComponent;
   charPerks: { [key: string]: PlayerMods[] };
-  tempWishlistOverrideUrl: string;
 
   constructor(
     public iconService: IconService,

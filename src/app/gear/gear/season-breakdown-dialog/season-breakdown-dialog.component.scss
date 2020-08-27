@@ -1,0 +1,25 @@
+.bucket-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.bucket-total {
+    font-size: 1.3em;
+}
+
+.bucket-energies {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 5px;
+    justify-content: flex-end;
+}
+
+.bucket-energy {
+    font-size: 1.0em;
+    margin: 5px;
+}
+
+.mat-dialog-content {
+    max-height: 95vh;
+}

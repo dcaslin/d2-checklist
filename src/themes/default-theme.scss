@@ -33,25 +33,21 @@ $d2c-theme: mat-light-theme(
     }
 
     .fake-link:hover {
-        color: #ffc400;
+        color: #ffc400 !important;
     }
     
     button.upgrade{
-        //background-color: hsl(211, 100%, 50%);
         background-color: hsl(200, 65%, 71%);
     }
     .mark-table>tbody>tr.upgrade>td, .mark-table>tbody>tr>td.upgrade{
 
-        //background-color: hsl(211, 100%, 70%);
         background-color: hsl(200, 65%, 91%); 
     }
     button.keep{
-        //background-color: hsl(134, 61%, 41%);
         background-color: hsl(103, 44%, 69%);
     }
     .mark-table>tbody>tr.keep>td, .mark-table>tbody>tr>td.keep
     {
-        //background-color: hsl(134, 61%, 81%);
         background-color: hsl(103, 44%, 89%);
     }
     button.infuse{
