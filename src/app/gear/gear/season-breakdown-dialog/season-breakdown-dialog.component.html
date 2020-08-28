@@ -6,7 +6,8 @@
                     <thead>
                         <tr>
                             <th>
-                                <a href="https://www.google.com" target="_blank" rel="noopener">
+                                <a href="https://www.reddit.com/r/destinychecklistnet/comments/ihku2a/d2checklist_new_feature_armor_season_mod_breakdown/"
+                                    matTooltip="User guide" target="_blank" rel="noopener">
                                     <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>
                                 </a>
                             </th>
@@ -62,6 +63,40 @@
                     </tbody>
                 </table>
             </div>
-        </mat-tab>        
+
+        </mat-tab>
+        <mat-tab label="Materials">
+            <div class="mats-layout">
+                <table class="simple-table mats-table" *ngIf="mats">
+                    <tr>
+                        <th colspan="3">Mats Held</th>
+                    </tr>
+                    <tr *ngFor="let mat of mats">
+                        <td>
+                            <span *ngIf="mat.displayProperties.icon!=null" class="mat-icon" 
+                                [style.background-image]="'url(//www.bungie.net' + mat.displayProperties.icon + ')'">
+                            </span>
+                        </td>
+                        <td>
+                            {{mat.displayProperties.name}} 
+                        </td>
+                        <td>
+                            {{mat.total}}
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="simple-table mats-table" >
+                    <tr>
+                        <th>Lvl</th><th>Cost</th>                        
+                    </tr>
+                    <tr><td>6</td><td>1 core</td></tr>
+                    <tr><td>7</td><td>2 cores</td></tr>
+                    <tr><td>8</td><td>1 prism</td></tr>
+                    <tr><td>9</td><td>2 prisms</td></tr>
+                    <tr><td>10</td><td>1 asc shard (3 exotic)</td></tr>
+                </table>
+            </div>
+        </mat-tab>
     </mat-tab-group>
 </mat-dialog-content>

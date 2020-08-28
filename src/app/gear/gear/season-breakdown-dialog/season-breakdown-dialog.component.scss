@@ -23,3 +23,29 @@
 .mat-dialog-content {
     max-height: 95vh;
 }
+
+.mat-icon {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    height: 34px;
+    width: 34px;
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+    margin-right: 5px;
+    border-radius: 3px;
+  }
+  
+.mats-table {
+    max-width: 250px;    
+    margin: 10px;
+}
+
+
+.mats-layout {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 5px;    
+}

@@ -312,13 +312,37 @@
   }
 
 
-th.sticky {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background-color: mat-color($background, card);
-}
+  th.sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: mat-color($background, card);
+  }
+
+  table.simple-table {
+    border: 1px solid mat-color($background, disabled-list-option);
+    border-collapse: collapse;
+
+    & tr {
+      background: mat-color($background, card);
+      border: 1px solid mat-color($background, unselected-chip);
+      padding: 0.35em;
+    }
+
+    & td {
+      padding: 0.625em;
+      text-align: left;
+    }
+
+    & th {
+      padding: 0.625em;
+      text-align: left;
+      font-size: 0.85em;
+      letter-spacing: 0.1em;
+      color: mat-color($foreground, secondary-text);
+    }
+  }
 
   table.tidy-table {
     border: 1px solid mat-color($background, disabled-list-option);
