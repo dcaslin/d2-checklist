@@ -1,11 +1,10 @@
-import { Component, Inject, ChangeDetectionStrategy, OnInit, ɵSWITCH_CHANGE_DETECTOR_REF_FACTORY__POST_R3__ } from '@angular/core';
+import { Component, Inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { GearComponent } from '../gear.component';
 import { Character, InventoryPlug, Player, InventoryItem, EnergyType } from '@app/service/model';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { BehaviorSubject } from 'rxjs';
-import { faCalendarExclamation } from '@fortawesome/pro-light-svg-icons';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { DisplayProperties } from '@app/todo-list/interfaces/api.interface';
 
@@ -87,6 +86,7 @@ export class SeasonBreakdownDialogComponent {
     ];
   }
 
+
   private generateMats(player: Player): Mat[] {
     const mats = [];
     const cores = this.calcMat(player.gear, '3853748946');
@@ -110,7 +110,6 @@ export class SeasonBreakdownDialogComponent {
       total: sum
     };
   }
-}
 
 interface CharSeasons {
   char: Character;
