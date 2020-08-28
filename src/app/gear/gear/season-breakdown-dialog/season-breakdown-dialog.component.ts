@@ -110,7 +110,7 @@ export class SeasonBreakdownDialogComponent {
       total: sum
     };
   }
-
+}
 interface CharSeasons {
   char: Character;
   _seasons: BehaviorSubject<SeasonRow[]>;
