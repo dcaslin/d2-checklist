@@ -104,11 +104,19 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     {value: 'is:locked'},
     {value: 'is:unlocked'},
     {value: 'is:extratagged', desc: 'It\'s complicated. See help button'},
+    {value: 'has:arrivals', desc: 'Armor can load mods from Arrivals'},
+    {value: 'has:worthy'},
+    {value: 'has:dawn'},
+    {value: 'has:undying'},
+    {value: 'has:opulence'},
+    {value: 'has:drifter'},
+    {value: 'has:forge'},
+    {value: 'has:outlaw'},
     {value: 'season:none', desc: 'No season mod slot'},
     {value: 'season:arrivals', desc: 'Arrivals mod slot'},
     {value: 'season:worthy'},
-    {value: 'season:undying'},
     {value: 'season:dawn'},
+    {value: 'season:undying'},
     {value: 'season:opulence'},
     {value: 'season:drifter'},
     {value: 'season:forge'},
@@ -1091,7 +1099,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       }
       this.appendMode = rawFilter.endsWith(' and ') || rawFilter.endsWith(' or ');
       const newFilteredOptions = [];
-      if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea') || rawFilter.startsWith('mw')) {
+      if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea') || rawFilter.startsWith('mw') || rawFilter.startsWith('has')) {
         for (const o of this.autoCompleteOptions) {
           if (o.value.startsWith(rawFilter)) {
             newFilteredOptions.push(o);

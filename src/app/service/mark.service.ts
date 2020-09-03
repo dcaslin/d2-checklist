@@ -16,7 +16,7 @@ export class MarkService implements OnDestroy {
     private marksChanged: Subject<boolean> = new Subject<boolean>();
     public dirty: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     public markChoices: MarkChoice[];
-    public markDict: {[id: string]: MarkChoice};
+    public markDict: { [id: string]: MarkChoice };
     private currentMarks: Marks = null;
     private badState = false;
 
@@ -38,6 +38,15 @@ export class MarkService implements OnDestroy {
                 }
             });
     }
+    public async loadPlayer(platform: number, memberId: string): Promise<void> {
+        // Don't step on D1 Marks
+        platform = 20 + platform;
+        let marks = await this.load(platform, memberId);
+        if (marks.memberId == null) {
+            marks = MarkService.buildEmptyMarks(platform, memberId);
+        }
+        this.currentMarks = marks;
+    }
 
     public async saveMarks(): Promise<void> {
         if (this.badState) {
@@ -45,6 +54,7 @@ export class MarkService implements OnDestroy {
             return;
         }
         this.currentMarks.magic = 'this is magic!';
+        this.currentMarks.modified = new Date().toJSON();
         const s = JSON.stringify(this.currentMarks);
         const lzSaveMe: string = LZString.compressToBase64(s);
         const postMe = {
@@ -58,6 +68,39 @@ export class MarkService implements OnDestroy {
             });
     }
 
+    public async restoreMarksFromFile(file: File): Promise<boolean> {
+        const sText = await MarkService.readFileAsString(file);
+        try {
+            const marks: Marks = JSON.parse(sText);
+            if (marks.memberId == null) {
+                throw new Error('File is invalid, no memberId included');
+            }
+            if (marks.marked == null || Object.keys(marks.marked).length == 0) {
+                throw new Error('File is invalid, no marks included');
+            }
+            if (marks.memberId != this.currentMarks.memberId) {
+                throw new Error('Marks don\'t match. Current member id: ' + this.currentMarks.memberId + ' but file used ' + marks.memberId);
+            }
+            this.currentMarks = marks;
+            this.notificationService.success(`Successfully imported ${Object.keys(this.currentMarks.marked).length} marks from ${file.name}`);
+            // await this.saveMarks();
+            return true;
+        } catch (x) {
+            this.notificationService.fail('Failed to parse input file: ' + x);
+            return false;
+        }
+    }
+
+    public downloadMarks() {
+        const anch: HTMLAnchorElement = document.createElement('a');
+        const sMarks = JSON.stringify(this.currentMarks, null, 2);
+        anch.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(sMarks));
+        anch.setAttribute('download', 'd2checklist-tags.json');
+        anch.setAttribute('visibility', 'hidden');
+        document.body.appendChild(anch);
+        anch.click();
+    }
+
     private async load(platform: number, memberId: string): Promise<Marks> {
         const requestUrl = 'https://www.destinychecklist.net/api/mark/' + platform + '/' + memberId;
         return this.httpClient.get<Marks>(requestUrl).toPromise();
@@ -68,7 +111,7 @@ export class MarkService implements OnDestroy {
         a.push({
             label: 'Upgrade',
             value: 'upgrade',
-            icon:  fasLevelUpAlt
+            icon: fasLevelUpAlt
         });
         a.push({
             label: 'Keep',
@@ -218,19 +261,24 @@ export class MarkService implements OnDestroy {
         this.marksChanged.next(true);
     }
 
-
-    public async loadPlayer(platform: number, memberId: string): Promise<void> {
-        platform = 20 + platform;
-        let marks = await this.load(platform, memberId);
-        if (marks.memberId == null) {
-            marks = MarkService.buildEmptyMarks(platform, memberId);
-        }
-        this.currentMarks = marks;
-    }
-
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+    }
+
+
+    private static readFileAsString(file: File): Promise<string | null> {
+        return new Promise<string>((resolve, reject) => {
+            if (!file) {
+                resolve(null);
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = reader.result.toString();
+                resolve(text);
+            };
+            reader.readAsText(file);
+        });
     }
 
 
@@ -244,6 +292,7 @@ export interface Marks {
     magic: string;
     platform: number;
     memberId: string;
+    modified?: string;
 }
 
 export interface MarkChoice {

@@ -309,7 +309,7 @@
                   </d2c-sort-indicator>
                 </span>
               </th>
-              <th class="limited-gear-width hide-mobile-table-cell"
+              <th class="limited-gear-width sorta-hide-mobile-table-cell"
                 *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                 <span class="fake-link gear-sort" (click)="sort('copies')">
                   Copies
@@ -377,7 +377,7 @@
                     (transfer)="transfer(player, i, $event)">
                   </d2c-item-icon>
                   <br>
-                  <div class="mobile-only-block">
+                  <div class="sorta-mobile-only-block">
                     <button mat-button [matMenuTriggerFor]="compareMenu">
                       {{i.copies}} <fa-icon [icon]="iconService.falClone"></fa-icon>
                     </button>
@@ -514,7 +514,7 @@
                     </div>
                   </ng-container>
                 </td>
-                <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
+                <td class="limited-gear-width sorta-hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
                   || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
                   <button mat-button (click)="showCopies(i)">
                     <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}

@@ -12,7 +12,7 @@ import {
   faShoppingCart as falShoppingCart,
   faBolt as falBolt,
   faWheat as falWheat,
-  faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare
+  faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare, faUpload as falUpload
 } from '@fortawesome/pro-light-svg-icons';
 import {
 
@@ -191,6 +191,7 @@ export class IconService {
   public readonly fabGithub = fabGithub;
   public readonly falEnvelope = falEnvelope;
   public readonly falDownload = falDownload;
+  public readonly falUpload = falUpload;
   public readonly falEye = falEye;
   public readonly falEyeSlash = falEyeSlash;
   public readonly falEnvelopeOpen = falEnvelopeOpen;

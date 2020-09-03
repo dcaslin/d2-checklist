@@ -201,6 +201,12 @@ table.stat-table {
   visibility: hidden;
 }
 
+.sorta-hide-mobile-table-cell {
+  display: none;
+  visibility: hidden;
+}
+
+
 .mobile-only-inline {
   display: inline;
   visibility: visible;
@@ -263,6 +269,17 @@ table.stat-table {
   }
 }
 
+@media screen and (min-width: 410px) {
+  .sorta-hide-mobile-table-cell {
+    display: table-cell;
+    visibility: visible;
+  }
+  .sorta-mobile-only-block {
+    display: none;
+    visibility: hidden;
+  }
+}
+
 @media screen and (min-width: 1019px) {
   .filter-buttons {
     display: inline;
@@ -282,6 +299,10 @@ table.stat-table {
     visibility: hidden;
   }
   .mobile-only-block {
+    display: none;
+    visibility: hidden;
+  }
+  .sorta-mobile-only-block {
     display: none;
     visibility: hidden;
   }
@@ -386,3 +407,18 @@ table.stat-table {
   display: flex;
   flex-direction: row;
 }
+
+.utility-body {
+  margin: 10px;
+}
+
+.utility-download {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  button {
+    margin: 5px;
+  }
+}
+
