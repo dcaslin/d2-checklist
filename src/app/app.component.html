@@ -81,20 +81,20 @@
             </a>
             <a mat-button class="nav-button" routerLink="todo-list" routerLinkActive="active">
               <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>
-              <span class="d-none d-xl-inline"> Todo</span>
+              <span class="d-none d-xxl-inline"> Todo</span>
             </a>
             <a mat-button class="nav-button" routerLink="friends" routerLinkActive="active">
               <mat-icon>favorite</mat-icon>
-              <span class="d-none d-xl-inline"> Friends</span>
+              <span class="d-none d-xxl-inline"> Friends</span>
             </a>
             <a mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
               <mat-icon>store</mat-icon>
-              <span class="d-none d-xl-inline"> Vendors</span>
+              <span class="d-none d-xxl-inline"> Vendors</span>
             </a>
            
             <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
               <mat-icon>search</mat-icon>
-              <span class="d-none d-xl-inline"> Search</span>
+              <span class="d-none d-xxl-inline"> Search</span>
             </button>
             <mat-menu #searchMenu="matMenu">
               <a mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
@@ -106,11 +106,11 @@
             </mat-menu>
             <a mat-button class="nav-button" routerLink="about" routerLinkActive="active">
               <mat-icon>info</mat-icon>
-              <span class="d-none d-xl-inline"> About</span>
+              <span class="d-none d-xxl-inline"> About</span>
             </a>
             <button mat-button class="nav-button" *ngIf="(showInstallButton|async)" (click)="install()">
               <mat-icon>arrow_downward</mat-icon>
-              <span class="d-none d-xl-inline"> Install</span>
+              <span class="d-none d-xxl-inline"> Install</span>
             </button>
           </span>
           <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"
@@ -143,9 +143,10 @@
           </a>
         </mat-toolbar-row>
         <mat-toolbar-row *ngIf="(signedOnUser|async)!=null" class="sub-row">
-          <span class="d-none d-md-inline"
+          
+          <a mat-button class="d-none d-md-inline" [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]" 
             *ngIf="(signedOnUser|async).userInfo!=null">{{(signedOnUser|async).userInfo.displayName}} -
-            {{(signedOnUser|async).userInfo.platformName}}</span>
+            {{(signedOnUser|async).userInfo.platformName}}</a>
           <span class="spacer"></span>
           <div class="currency-icons">
             <ng-container *ngFor="let c of (signedOnUser|async).selectedUserCurrencies|async">
