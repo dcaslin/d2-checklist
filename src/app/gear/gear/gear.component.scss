@@ -386,3 +386,18 @@ table.stat-table {
   display: flex;
   flex-direction: row;
 }
+
+.utility-body {
+  margin: 10px;
+}
+
+.utility-download {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  button {
+    margin: 5px;
+  }
+}
+
