@@ -2138,7 +2138,17 @@ export class ParseService {
                 }
             }
         }
-        const percent = Math.floor((100 * progress) / node.children.length);
+        let completeValue = node.children.length;
+        if (cDesc.objectiveHashes && cDesc.objectiveHashes.length==1) {
+            const oDesc = this.destinyCacheService.cache.Objective[cDesc.objectiveHashes[0]];
+            if (oDesc && oDesc.completionValue) {
+                // MMXIX shows 25 even though there are only 24
+                if (oDesc.completionValue< completeValue) {
+                    completeValue = oDesc.completionValue;
+                }
+            }
+        }
+        const percent = Math.floor((100 * progress) / completeValue);
         return {
             hash: node.hash,
             name: node.name,
@@ -2148,8 +2158,8 @@ export class ParseService {
             title: title,
             percent: percent,
             progress: progress,
-            complete: progress >= node.children.length,
-            completionValue: node.children.length
+            complete: progress >= completeValue,
+            completionValue: completeValue
         };
     }
 
