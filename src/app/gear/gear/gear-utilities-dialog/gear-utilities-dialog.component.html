@@ -2,6 +2,7 @@
     <mat-tab-group>
         <mat-tab label="Tag Sync & Backup">
             <div class="utility-body">
+                <p>Warning, importing tags will overwrite your exsting tags and notes</p>
                 <div class="utility-download">
                     <button mat-stroked-button (click)="exportTagsToFile()">
                         <fa-icon [icon]="iconService.falDownload"></fa-icon> 
@@ -14,7 +15,7 @@
                         <fa-icon [icon]="iconService.falUpload"></fa-icon> 
                         Import tags from file</button>
                 </div>
-                <hr>
+                <!-- <hr>
                 <div class="utility-download">
                     <button mat-stroked-button (click)="exportTagsToDIM()">
                         <fa-icon [icon]="iconService.falDownload"></fa-icon> 
@@ -23,7 +24,7 @@
                     <button mat-stroked-button (click)="importTagsFromDIM()">
                         <fa-icon [icon]="iconService.falUpload"></fa-icon> 
                         Import tags from DIM</button>
-                </div>
+                </div> -->
                 
             </div>
         </mat-tab>
