@@ -21,7 +21,7 @@
           <ng-container *ngFor="let t of player.seasons[seasonIndex].records">
 
             <tr *ngIf="t==null">
-              <td>Triumph missing for now</td>
+              <td colspan="4" class="lead" data-label="" ><span class="triumph-hidden">Triumph hidden for now</span></td>
             </tr>
             <tr *ngIf="t!=null && (!state.hideCompleteTriumphs || !t.complete)">
               <td class="lead" data-label="">
