@@ -1,10 +1,44 @@
-<h2 mat-dialog-title>Settings</h2>
 <mat-dialog-content>
-    <p>Show god rolls for:</p>
-    <div>
-        <mat-radio-group class="radio-group" [(ngModel)]="parent.controller">
-            <mat-radio-button class="radio-button" [value]="true">Controller</mat-radio-button>
-            <mat-radio-button class="radio-button" [value]="false">Mouse and Keyboard</mat-radio-button>
-        </mat-radio-group>
-    </div>
+    <mat-tab-group>
+        <mat-tab label="Tag Sync & Backup">
+            <div class="utility-body">
+                <p>Warning, importing tags will overwrite your exsting tags and notes</p>
+                <div class="utility-download">
+                    <button mat-stroked-button (click)="exportTagsToFile()">
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon> 
+                        Backup tags to file</button>
+                    
+                    <input #importInput hidden="true" type="file" 
+                        onclick="this.value=null" 
+                        (change)="importTagsFromFile($event)" accept=".json"/>
+                    <button mat-stroked-button (click)="importInput.click()">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon> 
+                        Import tags from file</button>
+                </div>
+                <!-- <hr>
+                <div class="utility-download">
+                    <button mat-stroked-button (click)="exportTagsToDIM()">
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon> 
+                        Export tags to DIM</button>
+                    
+                    <button mat-stroked-button (click)="importTagsFromDIM()">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon> 
+                        Import tags from DIM</button>
+                </div> -->
+                
+            </div>
+        </mat-tab>
+        <mat-tab label="God rolls">
+            <div class="utility-body">
+                <p>Show god rolls for:</p>
+                <div>
+                    <mat-radio-group class="radio-group" [(ngModel)]="parent.controller">
+                        <mat-radio-button class="radio-button" [value]="true">Controller</mat-radio-button>
+                        <mat-radio-button class="radio-button" [value]="false">Mouse and Keyboard</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
 </mat-dialog-content>
