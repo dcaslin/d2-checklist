@@ -55,6 +55,7 @@ import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
 import { ContentVaultComponent } from './content-vault/content-vault.component';
+import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
 
 
 @Injectable()
@@ -251,6 +252,12 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: GamerTagSearchComponent
+    },
+    {
+      path: 'content-vault',
+      pathMatch: 'full',
+      canActivate: [AuthGuard],
+      component: ContentVaultSearchComponent,
     },
     {
       path: 'content-vault/:platform/:memberId',

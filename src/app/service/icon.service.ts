@@ -54,6 +54,7 @@ import {
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
   faWheat as fasWheat, 
+  faSignOutAlt as fasSignOutAlt,
   // faAlarmExclamation as fasExclamationCircle, 
   // faDatabase as fasExclamationCircle, 
   // faWatch as fasExclamationCircle,
@@ -68,6 +69,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fasSignOutAlt = fasSignOutAlt;
   public readonly fasCheckCircle = fasCheckCircle;
   public readonly fasExclamationCircle = fasExclamationCircle;
   public readonly fadArchive = fadArchive;

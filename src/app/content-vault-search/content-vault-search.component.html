@@ -1,0 +1,47 @@
+<div class="childComponent">
+    <div class="childVert">
+        <div class="main">
+            <div class="fixed-spinner">
+                <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+            </div>
+            <div class="body-text">
+                <div class="searchRow">
+                    <form [formGroup]="searchForm"  (ngSubmit)="onSubmit()">
+                        <mat-form-field class="searchField searchPlatform">
+                            <mat-select placeholder="Platform" formControlName="platform">
+                                <mat-select-trigger>
+                                    <ng-container *ngIf="platform.value">
+                                        <fa-icon [icon]="platform.value.icon"></fa-icon>
+                                        <span class="d-none d-md-inline pad-left">{{platform.value.name }}</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="!platform.value">
+                                        ???
+                                    </ng-container>
+                                </mat-select-trigger>
+                                <mat-option *ngFor="let p of platforms" [value]="p">
+                                    <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="searchField searchGt" class="gt">
+                            <input matInput placeholder="Gamer tag" formControlName="gt">
+                        </mat-form-field>
+                        <button mat-mini-fab class="searchField" [disabled]="!searchForm.valid" type="submit" color="primary">
+                            <mat-icon>search</mat-icon>
+                        </button>
+                    </form>
+                    
+                </div>
+
+            </div>
+        </div>
+        <div *ngIf="(disableAds|async)!==true" class="adRight">
+            <small class="adText">Advertisement</small>
+            <ng-adsense adFormat="vertical"></ng-adsense>
+        </div>
+    </div>
+    <div *ngIf="(disableAds|async)!==true" class="adBottom">
+        <small class="adText">Advertisement</small>
+        <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+    </div>
+</div>

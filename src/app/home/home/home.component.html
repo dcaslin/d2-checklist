@@ -16,8 +16,8 @@
             <mat-form-field class="searchField searchPlatform">
               <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
                 <mat-select-trigger>
-
-                  <fa-icon [icon]="selectedPlatform.icon"></fa-icon>&ensp;{{selectedPlatform.name }}
+                  <fa-icon [icon]="selectedPlatform.icon"></fa-icon>
+                  <span class="d-none d-md-inline pad-left">{{selectedPlatform.name }}</span>
                 </mat-select-trigger>
                 <mat-option *ngFor="let p of platforms" [value]="p">
                   <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
