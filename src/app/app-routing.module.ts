@@ -54,6 +54,7 @@ import { RecentPlayersComponent } from './recent-players';
 import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
+import { ContentVaultComponent } from './content-vault/content-vault.component';
 
 
 @Injectable()
@@ -250,6 +251,61 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: GamerTagSearchComponent
+    },
+    {
+      path: 'content-vault/:platform/:memberId',
+      pathMatch: 'prefix',
+      canActivate: [AuthGuard],
+      component: ContentVaultComponent,
+      children: [
+        {
+          path: '',
+          redirectTo: 'triumphs',
+          pathMatch: 'full'
+        },
+        {
+          path: 'checklist',
+          component: ChecklistComponent,
+        },
+        {
+          path: 'triumphs',
+          component: TriumphsComponent,
+          children: [
+            {
+              path: '',
+              redirectTo: 'tree',
+              pathMatch: 'full'
+            },
+            {
+              path: 'tree/:node',
+              component: TriumphTreeComponent,
+            },
+            {
+              path: 'tree',
+              component: TriumphTreeComponent,
+            },
+            {
+              path: 'seals',
+              component: TriumphSealsComponent,
+            },
+            {
+              path: 'closest',
+              component: TriumphClosestComponent,
+            },
+            {
+              path: 'search',
+              component: TriumphSearchComponent,
+            },
+            {
+              path: 'tracked',
+              component: TriumphTrackedComponent,
+            }, {
+              path: 'seasons',
+              component: TriumphSeasonsComponent,
+            },
+          ]
+        }
+      ]
     },
     {
       path: ':platform/:memberId',

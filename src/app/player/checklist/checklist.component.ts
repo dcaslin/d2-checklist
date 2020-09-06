@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
 })
 export class ChecklistComponent extends ChildComponent implements OnInit {
   hideComplete: boolean;
-  openEntryId: string|null = null;
+  openEntryId: string | null = null;
 
   constructor(
     storageService: StorageService,
@@ -26,7 +26,6 @@ export class ChecklistComponent extends ChildComponent implements OnInit {
   ngOnInit() {
   }
 
-  
   public opened(hash: string) {
     this.openEntryId = hash;
   }
@@ -34,7 +33,4 @@ export class ChecklistComponent extends ChildComponent implements OnInit {
   public hideCompleteChange() {
     localStorage.setItem('hide-completed-checklists', '' + this.hideComplete);
   }
-
-
-
 }

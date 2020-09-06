@@ -19,7 +19,7 @@ import { IconService } from '@app/service/icon.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
-  public today =  moment(new Date());
+  public today = moment(new Date());
   public const: Const = Const;
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -86,7 +86,9 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (player != null) {
         const ui = player.profile.userInfo;
         if (ui.membershipType == platform.type && ui.membershipId == memberId) {
-          return;
+          if (this.state._contentVaultOnly.value != true) {
+            return;
+          }
         }
       }
       await this.state.loadPlayer(platform, memberId, false);

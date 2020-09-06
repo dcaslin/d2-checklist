@@ -12,6 +12,7 @@ import { ClanTriumphSealDialogComponent } from '../clan-triumph-seal-dialog/clan
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClanSealsComponent extends ChildComponent implements OnInit {
+  openEntryId: string|null = null;
 
   constructor(storageService: StorageService,
     public state: ClanStateService,
@@ -20,6 +21,10 @@ export class ClanSealsComponent extends ChildComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  public opened(hash: string) {
+    this.openEntryId = hash;
   }
 
   public openSealDialog(triumph: ClanSeal, event: MouseEvent): void {

@@ -1,7 +1,7 @@
 <ng-container *ngIf="state.seals|async as seals">
     <mat-accordion>
         <ng-container *ngFor="let s of seals">
-            <mat-expansion-panel>
+            <mat-expansion-panel  (opened)="opened(s.hash)">
                 <mat-expansion-panel-header>
                     <mat-panel-title>
                         <div *ngIf="s.data.icon!=null" class="seal-icon"
@@ -15,7 +15,7 @@
                         </button>
                     </mat-panel-description>
                 </mat-expansion-panel-header>
-                <div class="seal-body">
+                <div class="seal-body" *ngIf="s.hash==openEntryId">
                     <p style="margin-bottom: 20px">{{s.data.desc}}</p>
                     <table class="checklist-table">
                         <tbody>

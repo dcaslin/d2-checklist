@@ -48,6 +48,7 @@ import { StorageService } from './service/storage.service';
 import { WeekService } from './service/week.service';
 import { SettingsModule } from './settings';
 import { ChildComponent } from './shared/child.component';
+import { ContentVaultComponent } from './content-vault/content-vault.component';
 
 
 
@@ -87,7 +88,7 @@ import { ChildComponent } from './shared/child.component';
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent
   ],
   entryComponents: [
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent

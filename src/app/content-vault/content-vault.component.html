@@ -1,0 +1,64 @@
+<div class="childComponent">
+    <div class="childVert">
+      <div class="main">
+        <div class="fixed-spinner">
+          <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true"></mat-spinner>
+        </div>
+        <div class="body-text">
+          <div *ngIf="errorMsg|async as msg">{{msg}}</div>
+          <ng-container *ngIf="state.player|async as player">
+            <ng-container *ngIf="player!=null && player.superprivate">
+              <h4>              
+                <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
+                {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
+            </ng-container>
+  
+            <ng-container *ngIf="player!=null && !player.superprivate">
+              <h1>
+                <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
+                {{player.profile.userInfo.displayName}}
+                <d2c-friend-star 
+                  title="true"
+                  [userInfo]="player.profile.userInfo"
+                  [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+                <button mat-icon-button (click)="state.requestRefresh()"> 
+                  <fa-icon [icon]="iconService.farSync"></fa-icon>
+                </button>
+              </h1>
+              <h4 *ngIf="player.title">
+                <ng-container *ngIf="player.title.trim().length>0"> {{player.title}} |</ng-container>
+                <ng-container *ngIf="player.artifactPowerBonus"> +{{player.artifactPowerBonus}} Artifact</ng-container>
+                <ng-container *ngIf="player.seasonRank!=null && player.seasonRank.level"> | Season Rank: {{player.seasonRank.level}} </ng-container>
+              </h4>
+              <ng-container
+                *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
+                <ng-container class="clans"
+                  *ngFor="let clan of player.profile.userInfo.bungieInfo.clans; first as isFirst; last as isLast">
+                  <ng-container *ngIf="isFirst">Clan: </ng-container>
+                  <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
+                  <ng-container *ngIf="!isLast">, </ng-container>
+                </ng-container>
+              </ng-container>              
+              <nav mat-tab-nav-bar color="accent">
+                <a mat-tab-link routerLink="triumphs" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
+                    <fa-icon [icon]="iconService.fasTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
+                </a>
+                <a mat-tab-link routerLink="checklist" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
+                  <fa-icon [icon]="iconService.fasCheckSquare"></fa-icon><span class="d-none d-md-inline">&ensp;Checklist</span>
+                </a>  
+              </nav>
+              <router-outlet></router-outlet>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div *ngIf="(disableAds|async)!==true" class="adRight">
+        <small class="adText">Advertisement</small>
+        <ng-adsense adFormat="vertical"></ng-adsense>
+      </div>
+    </div>
+    <div *ngIf="(disableAds|async)!==true" class="adBottom">
+      <small class="adText">Advertisement</small>
+      <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+    </div>
+  </div>

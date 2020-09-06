@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
 })
 export class TriumphsComponent extends ChildComponent implements OnInit {
 
-  constructor(    
+  constructor(
     storageService: StorageService,
     public iconService: IconService,
     public state: PlayerStateService) {

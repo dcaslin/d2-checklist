@@ -7,18 +7,20 @@
         <span>D2 Checklist</span>
       </div>
       <mat-nav-list>
-        <ng-container *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null">
-          <a mat-list-item [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]" (click)="sidenav.close();">
-            <mat-icon>account_circle</mat-icon>&ensp;{{(signedOnUser|async).userInfo.displayName}} -
-            {{(signedOnUser|async).userInfo.platformName}}
-          </a>
-          <ng-container *ngIf="(signedOnUser|async).membership.clans!=null">
-            <a *ngFor="let clan of (signedOnUser|async).membership.clans" mat-list-item
-              (click)="sidenav.close();loadClan(clan)">
-              <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
+        <ng-container *ngIf="signedOnUser|async as currUser">
+          <ng-container *ngIf="currUser.userInfo!=null">
+            <a mat-list-item [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]"
+              (click)="sidenav.close();">
+              <mat-icon>account_circle</mat-icon>&ensp;{{currUser.userInfo.displayName}} -
+              {{currUser.userInfo.platformName}}
             </a>
+            <ng-container *ngIf="currUser.clans|async as clans">
+              <a *ngFor="let clan of clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
+                <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
+              </a>
+            </ng-container>
+            <mat-divider></mat-divider>
           </ng-container>
-          <mat-divider></mat-divider>
         </ng-container>
 
         <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
@@ -66,8 +68,7 @@
             <img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
           <span routerLink="" class="branding spacer d-none d-md-inline">
             <img class="logo" src="/assets/logo.svg" /> D2 Checklist
-            <a  style="margin-left:15px" target="_blank" 
-              rel="noopener" href="https://blacklivesmatters.carrd.co/"
+            <a style="margin-left:15px" target="_blank" rel="noopener" href="https://blacklivesmatters.carrd.co/"
               mat-button color="accent">#BlackLivesMatter</a>
           </span>
           <span class="d-none d-md-inline">
@@ -91,7 +92,7 @@
               <mat-icon>store</mat-icon>
               <span class="d-none d-xxl-inline"> Vendors</span>
             </a>
-           
+
             <button mat-button class="nav-button" [matMenuTriggerFor]="searchMenu">
               <mat-icon>search</mat-icon>
               <span class="d-none d-xxl-inline"> Search</span>
@@ -117,66 +118,68 @@
             matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
             <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
           </button>
-          <button *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).userInfo!=null"
-            matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">
+          <ng-container *ngIf="signedOnUser|async as currUser">
+            <button *ngIf="currUser.userInfo!=null"
+              matTooltip="Sign out or change selected platform" mat-button [matMenuTriggerFor]="toolbarUserMenu">
 
-            <mat-icon *ngIf="(signedOnUser|async).membership.destinyMemberships.length==1">person</mat-icon>
-            <mat-icon *ngIf="(signedOnUser|async).membership.destinyMemberships.length>1">supervisor_account</mat-icon>
-            &ensp;{{(signedOnUser|async).userInfo.platformName}}
-          </button>
-          <mat-menu #toolbarUserMenu="matMenu">
-            <ng-container
-              *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.destinyMemberships.length>1">
-              <button mat-menu-item *ngFor="let avail of (signedOnUser|async).membership.destinyMemberships"
-                [disabled]="avail == (signedOnUser|async).userInfo" (click)="selectUser(avail)">
-                <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon><span
-                  style="margin-left: 1em">{{avail.platformName}}</span>
-              </button>
-            </ng-container>
-            <button mat-menu-item (click)="onLogoutClick()">
-              <mat-icon>power_settings_new</mat-icon>
-              <span>Logout</span>
+              <mat-icon *ngIf="currUser.membership.destinyMemberships.length==1">person</mat-icon>
+              <mat-icon *ngIf="currUser.membership.destinyMemberships.length>1">supervisor_account
+              </mat-icon>
+              &ensp;{{currUser.userInfo.platformName}}
             </button>
-          </mat-menu>
+            <mat-menu #toolbarUserMenu="matMenu">
+              <ng-container
+                *ngIf="currUser.membership.destinyMemberships.length>1">
+                <button mat-menu-item *ngFor="let avail of currUser.membership.destinyMemberships"
+                  [disabled]="avail ==currUser.userInfo" (click)="selectUser(avail)">
+                  <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon><span
+                    style="margin-left: 1em">{{avail.platformName}}</span>
+                </button>
+              </ng-container>
+              <button mat-menu-item (click)="onLogoutClick()">
+                <mat-icon>power_settings_new</mat-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+          </ng-container>
           <a mat-icon-button routerLink="settings" class="d-none d-md-inline">
             <mat-icon>settings</mat-icon>
           </a>
         </mat-toolbar-row>
-        <mat-toolbar-row *ngIf="(signedOnUser|async)!=null" class="sub-row">
-          
-          <a mat-button class="d-none d-md-inline" [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]" 
-            *ngIf="(signedOnUser|async).userInfo!=null">{{(signedOnUser|async).userInfo.displayName}} -
-            {{(signedOnUser|async).userInfo.platformName}}</a>
+        <mat-toolbar-row *ngIf="(signedOnUser|async) as currUser" class="sub-row">
+
+          <a mat-button class="d-none d-md-inline"
+            [routerLink]="[currUser.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"
+            *ngIf="currUser.userInfo!=null">{{currUser.userInfo.displayName}} -
+            {{currUser.userInfo.platformName}}</a>
           <span class="spacer"></span>
           <div class="currency-icons">
-            <ng-container *ngFor="let c of (signedOnUser|async).selectedUserCurrencies|async">
-              <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip" [matTooltip]="c.count+' '+c.name">
+            <ng-container *ngFor="let c of currUser.selectedUserCurrencies|async">
+              <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
+                [matTooltip]="c.count+' '+c.name">
                 <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
                 <span> {{c.count|number}}</span>
               </span>
             </ng-container>
           </div>
-          <button mat-button class="d-none d-md-inline nav-button"
-            (click)="loadClan(signedOnUser.value.membership.clans[0])"
-            *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length==1">
-            <i class="icon-clan"></i> My Clan
-          </button>
-          <ng-container
-            *ngIf="(signedOnUser|async)!=null && (signedOnUser|async).membership.clans!=null && (signedOnUser|async).membership.clans.length>1">
-            <button mat-button [matMenuTriggerFor]="toolbarClanMenu">
-              <mat-icon>flag</mat-icon> My Clans
+          <ng-container *ngIf="currUser.clans|async as clans">
+            <button *ngIf="clans.length==1" mat-button class="d-none d-md-inline nav-button"
+              (click)="loadClan(clans[0])">
+              <i class="icon-clan"></i> My Clan
             </button>
-            <mat-menu #toolbarClanMenu="matMenu">
-              <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of (signedOnUser|async).membership.clans">
-                <span>{{clan.name}}</span>
+            <ng-container *ngIf="clans.length>1">
+              <button mat-button [matMenuTriggerFor]="toolbarClanMenu">
+                <mat-icon>flag</mat-icon> My Clans
               </button>
-            </mat-menu>
+              <mat-menu #toolbarClanMenu="matMenu">
+                <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of clans">
+                  <span>{{clan.name}}</span>
+                </button>
+              </mat-menu>
+            </ng-container>
           </ng-container>
-
-          <a mat-button class="d-none d-md-inline nav-button" 
-            [routerLink]="[signedOnUser.value.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"          
-            *ngIf="(signedOnUser|async)!=null">            
-            <fa-icon [icon]="PLATFORMS_DICT[(signedOnUser|async).userInfo.membershipType+''].icon"></fa-icon>
+          <a mat-button class="d-none d-md-inline nav-button" [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]">
+            <fa-icon [icon]="PLATFORMS_DICT[currUser.userInfo.membershipType+''].icon"></fa-icon>
             My Info
           </a>
 
@@ -233,7 +236,7 @@
       <div class="row">
         <div class="col-sm-12 links">
           <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">
-            <fa-icon [icon]="iconService.fabReddit" size="2x"></fa-icon>            
+            <fa-icon [icon]="iconService.fabReddit" size="2x"></fa-icon>
             <span>Reddit</span>
           </a>
           <a href="https://github.com/dcaslin/d2-checklist/" target="_blank" rel="noopener">
@@ -246,7 +249,7 @@
           </a>
 
           <a matTooltip="destinychecklistnet at gmail.com" matTooltipPosition="above">
-              <fa-icon [icon]="iconService.falEnvelope" size="2x"></fa-icon>
+            <fa-icon [icon]="iconService.falEnvelope" size="2x"></fa-icon>
             <span>Email</span>
           </a>
           <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank"
