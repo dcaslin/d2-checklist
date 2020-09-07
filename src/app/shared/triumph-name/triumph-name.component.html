@@ -17,13 +17,12 @@
             <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
         </a>
         <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
-        <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true"
-            (click)="state.trackTriumph(t)"></fa-icon>
-        <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="accent-text"
-            (click)="state.untrackTriumph(t)"></fa-icon>
-        <button *ngIf="hideOption" mat-icon-button (click)="state.hideClosestTriumph(t)" matTooltip="Hide this triumph from list">
-            <fa-icon [icon]="iconService.fasEyeSlash"></fa-icon>
-        </button>
+        
+        <fa-icon class="triumph-icon" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true" (click)="state.trackTriumph(t)"></fa-icon>
+        <fa-icon class="triumph-icon accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" (click)="state.untrackTriumph(t)"></fa-icon>        
+        <fa-icon class="triumph-icon" *ngIf="hideOption" (click)="state.hideClosestTriumph(t)" matTooltip="Hide this triumph from list" [icon]="iconService.fasEyeSlash"></fa-icon>        
+        <fa-icon class="triumph-icon warn-text" *ngIf="t.contentVault && !t.complete" matTooltip="This Triumph will be vaulted next season, complete it now or never!" [icon]="iconService.fadHourGlassHalf" ></fa-icon>
+        <fa-icon class="triumph-icon half-opacity" *ngIf="t.contentVault && t.complete" matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!" [icon]="iconService.fasCheckCircle"></fa-icon>
         <br>
         <span class="simple-caption">
             <ng-container *ngFor="let p of t.path; index as i; last as isLast">
@@ -36,14 +35,5 @@
                 </ng-container>
             </ng-container>
         </span>
-    </div>
-
-    <div class="cv" *ngIf="t.contentVault && !t.complete"
-        matTooltip="This Triumph will be vaulted next season, complete it now or never!">
-        <fa-icon size="2x" [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
-    </div>
-    <div class="cv" *ngIf="t.contentVault && t.complete"
-        matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
-        <fa-icon size="2x" [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
     </div>
 </div>

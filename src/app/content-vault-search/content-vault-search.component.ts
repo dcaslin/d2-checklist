@@ -3,9 +3,12 @@ import { ChildComponent } from '@app/shared/child.component';
 import { BungieService } from '@app/service/bungie.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StorageService } from '@app/service/storage.service';
-import { Platform, Const } from '@app/service/model';
+import { Platform, Const, Player, SelectedUser } from '@app/service/model';
 import { takeUntil } from 'rxjs/operators';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { IconService } from '@app/service/icon.service';
+import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '@app/service/auth.service';
 
 @Component({
   selector: 'd2c-content-vault-search',
@@ -17,10 +20,14 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
   searchForm: FormGroup;
+  readonly _selectedUser: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
+  readonly _failedSearch: BehaviorSubject<FailedSearch> = new BehaviorSubject(null);
 
   constructor(storageService: StorageService,
+    public iconService: IconService,
     private formBuilder: FormBuilder,
     private bungieService: BungieService,
+    private authService: AuthService,
     private route: ActivatedRoute,
     public router: Router,
     private ref: ChangeDetectorRef) {
@@ -29,7 +36,9 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
       platform: [this.platforms[0], [Validators.required]],
       gt: ['', [Validators.required]]
     });
-
+    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+      this._selectedUser.next(selectedUser);
+    });
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
@@ -49,6 +58,10 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
   ngOnInit(): void {
   }
 
+  logon() {
+    this.authService.getCurrentMemberId(true);
+  }
+
   get gt(): FormControl {
     return this.searchForm.get('gt') as FormControl;
   }
@@ -59,12 +72,17 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
 
   public async onSubmit() {
     this.loading.next(true);
+    this._failedSearch.next(null);
     try {
       const pl = this.platform.value.type;
       const gt = this.gt.value;
       const p = await this.bungieService.searchPlayer(pl, gt);
       if (p == null) {
         console.log('Player not found');
+        this._failedSearch.next({
+          gt,
+          platform: this.platform.value
+        });
       } else {
         console.dir(p);
         this.storageService.setItem('defaultplatform', pl);
@@ -77,4 +95,9 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
     }
   }
 
+}
+
+interface FailedSearch {
+  gt: string;
+  platform: Platform;
 }

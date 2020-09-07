@@ -272,11 +272,14 @@ export class AuthGuard implements CanActivate {
         },
         {
           path: 'checklist',
-          component: ChecklistComponent,
+          component: ChecklistComponent
         },
         {
           path: 'triumphs',
           component: TriumphsComponent,
+          data : {
+            contentVaultOnly: true
+          },
           children: [
             {
               path: '',

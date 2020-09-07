@@ -148,6 +148,10 @@
     margin-right: auto;
   }
 
+  .light-border {
+    border: 1px solid mat-color($background, unselected-chip);
+  }
+
   table.responsive-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;

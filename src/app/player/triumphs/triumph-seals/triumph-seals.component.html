@@ -20,7 +20,7 @@
               <span class="pad-left" *ngIf="s.complete"
                 matTooltip="This Seal will be vaulted next season, but you got it already! Nice!">
                 <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
-            </span>
+              </span>
             </ng-container>
             <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
           </mat-panel-title>
