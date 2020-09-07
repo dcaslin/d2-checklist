@@ -33,17 +33,17 @@
           class="warn-text mat-option.mat-selected"></fa-icon>
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
 
-        <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null">
-          {{node.data.name}} </ng-container>
-        <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null"
-          target="_blank" rel="noopener">
-          {{node.data.name}}
-          <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-        </a>
+        {{node.data.name}}
+        <span *ngIf="node.data.lowLinks!=null" class="low-links">
+          <a [href]="node.data.lowLinks.mapLink" class="pad-left" *ngIf="node.data.lowLinks.mapLink!=null && node.data.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
+          <a [href]="node.data.lowLinks.loreLink" class="pad-left" *ngIf="node.data.lowLinks.loreLink!=null && node.data.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+          <a [href]="node.data.lowLinks.videoLink" class="pad-left" *ngIf="node.data.lowLinks.videoLink!=null && node.data.lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+        </span>
+        
         <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
-        <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true"
+        <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true"
           (click)="state.trackTriumph(node.data)"></fa-icon>
-        <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="accent-text"
+        <fa-icon class="pad-left" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="accent-text"
           (click)="state.untrackTriumph(node.data)"></fa-icon>
 
         <span class="pad-left" *ngIf="node.data.contentVault && !node.data.complete"

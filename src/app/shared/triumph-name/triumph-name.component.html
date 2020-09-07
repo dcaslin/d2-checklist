@@ -9,17 +9,18 @@
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="t.complete && !t.redeemed"
             class="warn-text mat-option.mat-selected"></fa-icon>
         <fa-icon [icon]="iconService.farSquare" *ngIf="!t.complete"></fa-icon>
-        <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
-            {{t.name}} </ng-container>
-        <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null" target="_blank"
-            rel="noopener">
-            {{t.name}}
-            <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-        </a>
+        {{t.name}}
+        <ng-container *ngIf="t.lowLinks!=null">                      
+            <a [href]="t.lowLinks.mapLink" class="triumph-icon" *ngIf="t.lowLinks.mapLink!=null && t.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
+            <a [href]="t.lowLinks.loreLink" class="triumph-icon" *ngIf="t.lowLinks.loreLink!=null && t.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+            <a [href]="t.lowLinks.videoLink" class="triumph-icon" *ngIf="t.lowLinks.videoLink!=null && t.lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+          </ng-container>
+
+
         <ng-container *ngIf="debugmode">{{t.hash}}</ng-container>
         
-        <fa-icon class="triumph-icon" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true" (click)="state.trackTriumph(t)"></fa-icon>
-        <fa-icon class="triumph-icon accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" (click)="state.untrackTriumph(t)"></fa-icon>        
+        <fa-icon class="triumph-icon fake-link" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true" (click)="state.trackTriumph(t)"></fa-icon>
+        <fa-icon class="triumph-icon accent-text pointer" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" (click)="state.untrackTriumph(t)"></fa-icon>        
         <fa-icon class="triumph-icon" *ngIf="hideOption" (click)="state.hideClosestTriumph(t)" matTooltip="Hide this triumph from list" [icon]="iconService.fasEyeSlash"></fa-icon>        
         <fa-icon class="triumph-icon warn-text" *ngIf="t.contentVault && !t.complete" matTooltip="This Triumph will be vaulted next season, complete it now or never!" [icon]="iconService.fadHourGlassHalf" ></fa-icon>
         <fa-icon class="triumph-icon half-opacity" *ngIf="t.contentVault && t.complete" matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!" [icon]="iconService.fasCheckCircle"></fa-icon>

@@ -42,18 +42,18 @@
                       class="warn-text mat-option.mat-selected"></fa-icon>
                     <fa-icon [icon]="iconService.farSquare" *ngIf="!c.complete"></fa-icon>
 
-                    <ng-container *ngIf="c.lowLinks==null || c.lowLinks.mapLink==null">
-                      {{c.name}} </ng-container>
-                    <a [href]="c.lowLinks.mapLink" *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null" target="_blank"
-                      rel="noopener">
-                      {{c.name}}
-                      <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-                    </a>
+                    
+                    {{c.name}}
+                    <ng-container *ngIf="c.lowLinks!=null">                      
+                      <a [href]="c.lowLinks.mapLink" class="pad-left" *ngIf="c.lowLinks.mapLink!=null && c.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
+                      <a [href]="c.lowLinks.loreLink" class="pad-left" *ngIf="c.lowLinks.loreLink!=null && c.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+                      <a [href]="c.lowLinks.videoLink" class="pad-left" *ngIf="c.lowLinks.videoLink!=null && c.lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+                    </ng-container>
+                    
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
-                    <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
+                    <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
                       (click)="state.trackTriumph(c)"></fa-icon>
-                    <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true"
-                      class="accent-text" (click)="state.untrackTriumph(c)"></fa-icon>
+                    <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph(c)"></fa-icon>
                     <span class="pad-left" *ngIf="c.contentVault && !c.complete"
                       matTooltip="This Triumph will be vaulted next season, complete it now or never!">
                       <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
