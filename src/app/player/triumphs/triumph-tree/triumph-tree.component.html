@@ -48,7 +48,7 @@
 
         <span class="pad-left" *ngIf="node.data.contentVault && !node.data.complete"
           matTooltip="This Triumph will be vaulted next season, complete it now or never!">
-          <fa-icon [icon]="iconService.fasExclamationCircle" class="warn-text"></fa-icon>
+          <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
         </span>
         <span class="pad-left" *ngIf="node.data.contentVault && node.data.complete"
           matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
@@ -97,7 +97,7 @@
           <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
         </ng-container>
         <span class="cv-caption" [class.cv-complete]="node.data.vaultedChildrenComplete==node.data.vaultedChildren" *ngIf="node.data.vaultedChildren" matTooltip="Includes triumphs that will be vaulted next season">
-            {{node.data.vaultedChildrenComplete}} / {{node.data.vaultedChildren}} <fa-icon class="pad-left" [class.warn-text]="node.data.vaultedChildrenComplete<node.data.vaultedChildren" [icon]="iconService.fasExclamationCircle"></fa-icon>
+            {{node.data.vaultedChildrenComplete}} / {{node.data.vaultedChildren}} <fa-icon class="pad-left" [class.warn-text]="node.data.vaultedChildrenComplete<node.data.vaultedChildren" [icon]="iconService.fadHourGlassHalf"></fa-icon>
         </span>
         <br>
 

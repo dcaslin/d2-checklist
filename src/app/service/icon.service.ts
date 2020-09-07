@@ -24,8 +24,7 @@ import {
 
 import { 
   faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp, faArchive as fadArchive,
-  faHourglassHalf as fasExclamationCircle
-  // faCabinetFiling as fasExclamationCircle
+  faHourglassHalf as fadHourGlassHalf
  } from '@fortawesome/pro-duotone-svg-icons';
 import {
   faGamepadAlt as fasGamepadAlt, faMinus as fasMinus,
@@ -53,11 +52,8 @@ import {
   faSyncAlt as fasSyncAlt, faSyringe as fasSyringe, faTags as fasTags, faTimes as fasTimes,
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
-  faWheat as fasWheat, 
+  faWheat as fasWheat,
   faSignOutAlt as fasSignOutAlt,
-  // faAlarmExclamation as fasExclamationCircle, 
-  // faDatabase as fasExclamationCircle, 
-  // faWatch as fasExclamationCircle,
   faCheckCircle as fasCheckCircle
 } from '@fortawesome/pro-solid-svg-icons';
 
@@ -71,7 +67,7 @@ export class IconService {
   // NOTE: farSquare is actually falSquare
   public readonly fasSignOutAlt = fasSignOutAlt;
   public readonly fasCheckCircle = fasCheckCircle;
-  public readonly fasExclamationCircle = fasExclamationCircle;
+  public readonly fadHourGlassHalf = fadHourGlassHalf;
   public readonly fadArchive = fadArchive;
   public readonly farBooks = farBooks;
   public readonly falShoppingCart = falShoppingCart;

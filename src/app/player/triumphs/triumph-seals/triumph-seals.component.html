@@ -15,7 +15,7 @@
             <ng-container *ngIf="s.contentVault">
               <span class="pad-left" *ngIf="!s.complete"
                 matTooltip="This Seal will be vaulted next season, complete it now or never!">
-                <fa-icon [icon]="iconService.fasExclamationCircle" class="warn-text"></fa-icon>
+                <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
               </span>
               <span class="pad-left" *ngIf="s.complete"
                 matTooltip="This Seal will be vaulted next season, but you got it already! Nice!">
@@ -56,7 +56,7 @@
                       class="accent-text" (click)="state.untrackTriumph(c)"></fa-icon>
                     <span class="pad-left" *ngIf="c.contentVault && !c.complete"
                       matTooltip="This Triumph will be vaulted next season, complete it now or never!">
-                      <fa-icon [icon]="iconService.fasExclamationCircle" class="warn-text"></fa-icon>
+                      <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
                     </span>
                     <span class="pad-left" *ngIf="c.contentVault && c.complete"
                       matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">

@@ -520,6 +520,7 @@ export interface CharChecklist {
     hash: string;
     name: string;
     contentVault: boolean;
+    maxComplete: number;
     totals: CharTotal[];
     entries: CharChecklistItem[];
 }

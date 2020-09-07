@@ -15,8 +15,10 @@
   
             <ng-container *ngIf="player!=null && !player.superprivate">
               <h1>
-                <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
-                {{player.profile.userInfo.displayName}}
+                <span class="fake-link" [routerLink]="['/', player.characters[0].membershipType, player.characters[0].membershipId]">
+                  <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
+                  {{player.profile.userInfo.displayName}}
+                </span>
                 <d2c-friend-star 
                   title="true"
                   [userInfo]="player.profile.userInfo"

@@ -14,7 +14,7 @@
             <ng-container *ngIf="checklist.contentVault">
               <span class="pad-left" *ngIf="checklist.complete<checklist.total"
                 matTooltip="This checklist will be vaulted next season, complete it now or never!">
-                <fa-icon [icon]="iconService.fasExclamationCircle" class="warn-text"></fa-icon>
+                <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
               </span>
               <span class="pad-left" *ngIf="checklist.complete >= checklist.total"
                 matTooltip="This checklist will be vaulted next season, but you got it already! Nice!">
@@ -84,6 +84,16 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{checklist.name}}
+          <ng-container *ngIf="checklist.contentVault">
+            <span class="pad-left" *ngIf="checklist.maxComplete < checklist.entries.length"
+              matTooltip="This checklist will be vaulted next season, complete it now or never!">
+              <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
+            </span>
+            <span class="pad-left" *ngIf="checklist.maxComplete >= checklist.entries.length"
+              matTooltip="This checklist will be vaulted next season, but you got it already! Nice!">
+              <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
+            </span>
+          </ng-container>
           <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
         </mat-panel-title>
         <mat-panel-description>

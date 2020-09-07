@@ -1989,6 +1989,7 @@ export class ParseService {
                             checklist = {
                                 hash: key,
                                 name: checklistName,
+                                maxComplete: 0,
                                 contentVault: desc.contentVault,
                                 totals: [],
                                 entries: []
@@ -2073,6 +2074,9 @@ export class ParseService {
                             total.complete++;
                         }
                     }
+                }
+                if (entry.allDone) {
+                    checklist.maxComplete++;
                 }
             }
         }

@@ -18,7 +18,6 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
 
   searchForm: FormGroup;
 
-
   constructor(storageService: StorageService,
     private formBuilder: FormBuilder,
     private bungieService: BungieService,
@@ -61,11 +60,16 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
   public async onSubmit() {
     this.loading.next(true);
     try {
-      const p = await this.bungieService.searchPlayer(this.platform.value.type, this.gt.value);
+      const pl = this.platform.value.type;
+      const gt = this.gt.value;
+      const p = await this.bungieService.searchPlayer(pl, gt);
       if (p == null) {
         console.log('Player not found');
       } else {
         console.dir(p);
+        this.storageService.setItem('defaultplatform', pl);
+        this.storageService.setItem('defaultgt', gt);
+        this.router.navigate(['content-vault', pl, p.membershipId]);
       }
     }
     finally {
