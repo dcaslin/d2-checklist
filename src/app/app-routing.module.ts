@@ -283,7 +283,7 @@ export class AuthGuard implements CanActivate {
           children: [
             {
               path: '',
-              redirectTo: 'tree',
+              redirectTo: 'closest',
               pathMatch: 'full'
             },
             {

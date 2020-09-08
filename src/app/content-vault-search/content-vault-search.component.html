@@ -42,7 +42,7 @@
                     <button mat-stroked-button (click)="logon()"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In </button> to link directly to your player's info and skip searching.
                 </div>
                 <div class="searchRow" *ngIf="(_selectedUser|async) as selectedUser">
-                    <button mat-stroked-button [routerLink]="['/content-vault', selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId]"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> My Content Vault Info </button>
+                    <button mat-raised-button color="accent" [routerLink]="['/content-vault', selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId]"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> My Content Vault Info </button>
                 </div>
                 <div class="help-text-parent">
                     <p class="help-text"><a target="_blank" rel="noopener"
