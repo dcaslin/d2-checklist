@@ -6,19 +6,29 @@
   </h4>
   <mat-accordion>
     <ng-container *ngFor="let s of player.seals">
-      <mat-expansion-panel *ngIf="!state.hideCompleteTriumphs || !s.complete">
+      <mat-expansion-panel *ngIf="!state.hideCompleteTriumphs || !s.complete" (opened)="opened(s.hash)">
         <mat-expansion-panel-header>
           <mat-panel-title [class.accent-text]="s.complete">
             <div *ngIf="s.icon!=null" class="seal-icon"
               [style.background-image]="'url(//www.bungie.net' + s.icon + ')'"></div>
             {{s.title}}
+            <ng-container *ngIf="s.contentVault">
+              <span class="pad-left" *ngIf="!s.complete"
+                matTooltip="This Seal will be vaulted next season, complete it now or never!">
+                <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
+              </span>
+              <span class="pad-left" *ngIf="s.complete"
+                matTooltip="This Seal will be vaulted next season, but you got it already! Nice!">
+                <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
+              </span>
+            </ng-container>
             <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
           </mat-panel-title>
           <mat-panel-description [class.accent-text]="s.complete">
             {{s.progress}} / {{s.completionValue}}
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <div class="seal-body">
+        <div class="seal-body" *ngIf="s.hash==openEntryId">
           <p style="margin-bottom: 20px">{{s.desc}}</p>
           <table class="checklist-table">
             <tbody>
@@ -32,18 +42,26 @@
                       class="warn-text mat-option.mat-selected"></fa-icon>
                     <fa-icon [icon]="iconService.farSquare" *ngIf="!c.complete"></fa-icon>
 
-                    <ng-container *ngIf="c.lowLinks==null || c.lowLinks.mapLink==null">
-                      {{c.name}} </ng-container>
-                    <a [href]="c.lowLinks.mapLink" *ngIf="c.lowLinks!=null && c.lowLinks.mapLink!=null" target="_blank"
-                      rel="noopener">
-                      {{c.name}}
-                      <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-                    </a>
+                    
+                    {{c.name}}
+                    <ng-container *ngIf="c.lowLinks!=null">                      
+                      <a [href]="c.lowLinks.mapLink" class="pad-left" *ngIf="c.lowLinks.mapLink!=null && c.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
+                      <a [href]="c.lowLinks.loreLink" class="pad-left" *ngIf="c.lowLinks.loreLink!=null && c.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+                      <a [href]="c.lowLinks.videoLink" class="pad-left" *ngIf="c.lowLinks.videoLink!=null && c.lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+                    </ng-container>
+                    
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
-                    <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
+                    <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
                       (click)="state.trackTriumph(c)"></fa-icon>
-                    <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true"
-                      class="accent-text" (click)="state.untrackTriumph(c)"></fa-icon>
+                    <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph(c)"></fa-icon>
+                    <span class="pad-left" *ngIf="c.contentVault && !c.complete"
+                      matTooltip="This Triumph will be vaulted next season, complete it now or never!">
+                      <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
+                    </span>
+                    <span class="pad-left" *ngIf="c.contentVault && c.complete"
+                      matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
+                      <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
+                    </span>
                     <br>
                     <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
                       redeemed.<br></span>

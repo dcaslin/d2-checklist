@@ -18,11 +18,14 @@ import {
 
   faAlien as farAlien,
   faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBookmark as farBookmark, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
-  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy, faClipboardCheck as farClipboardCheck
+  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy, faClipboardCheck as farClipboardCheck, faPercent as farPercent, faAward as farAward
+
 } from '@fortawesome/pro-regular-svg-icons';
 
 import { 
-  faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp } from '@fortawesome/pro-duotone-svg-icons';
+  faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp, faArchive as fadArchive,
+  faHourglassHalf as fadHourGlassHalf
+ } from '@fortawesome/pro-duotone-svg-icons';
 import {
   faGamepadAlt as fasGamepadAlt, faMinus as fasMinus,
   faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
@@ -49,7 +52,9 @@ import {
   faSyncAlt as fasSyncAlt, faSyringe as fasSyringe, faTags as fasTags, faTimes as fasTimes,
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
-  faWheat as fasWheat
+  faWheat as fasWheat,
+  faSignOutAlt as fasSignOutAlt,
+  faCheckCircle as fasCheckCircle
 } from '@fortawesome/pro-solid-svg-icons';
 
 
@@ -60,7 +65,12 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
-
+  public readonly farAward = farAward;
+  public readonly farPercent = farPercent;
+  public readonly fasSignOutAlt = fasSignOutAlt;
+  public readonly fasCheckCircle = fasCheckCircle;
+  public readonly fadHourGlassHalf = fadHourGlassHalf;
+  public readonly fadArchive = fadArchive;
   public readonly farBooks = farBooks;
   public readonly falShoppingCart = falShoppingCart;
   public readonly falCrosshairs = falCrosshairs;

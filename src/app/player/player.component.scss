@@ -1,13 +1,5 @@
 @import "styles-variables";
 
-a.underline:link {
-  text-decoration: underline;
-}
-
-.mat-select {
-  margin-top: -7px;
-}
-
 .button-row {
   & button {
     margin-bottom: 10px;
@@ -21,23 +13,6 @@ a.underline:link {
   letter-spacing: 0.01px;
   overflow-wrap: break-word;
   z-index: 1;
-}
-
-.searchRow {
-  display: inline-block;
-  margin-left: 20px;
-  text-align: left;
-}
-
-
-.searchPlatform {
-  width: 75px;
-  margin-right: 10px;
-}
-
-.searchGt {
-  width: 125px;
-  margin-right: 10px;
 }
 
 @media (max-width: map-get($grid-breakpoints, md)) {

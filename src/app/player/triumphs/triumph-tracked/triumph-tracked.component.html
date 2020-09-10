@@ -8,36 +8,8 @@
             <tbody>
                 <ng-container *ngFor="let t of state.trackedTriumphs|async">
                     <tr>
-                        <td class="lead" data-label="">                         
-                            <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="t.complete && t.redeemed"
-                            class="accent-text mat-option.mat-selected"></fa-icon>
-                            
-                                <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="t.complete && !t.redeemed"
-                                class="warn-text mat-option.mat-selected"></fa-icon>                            
-                            <fa-icon [icon]="iconService.farSquare" *ngIf="!t.complete"></fa-icon>
-                            <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
-                                {{t.name}} </ng-container>
-                            <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
-                                target="_blank" rel="noopener">
-                                {{t.name}}
-                                <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-                            </a>
-                            <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
-                            <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true" (click)="state.trackTriumph(t)"></fa-icon>
-                            <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" class="accent-text" (click)="state.untrackTriumph(t)"></fa-icon>
-
-                            <br>
-                            <span class="simple-caption">
-                                <ng-container *ngFor="let p of t.path; index as i; last as isLast">
-                                    <ng-container *ngIf="i>0">
-                                        <span class="fake-link" [routerLink]="['..','tree', p.hash]">{{p.path}}</span>
-                                        <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
-                                        <ng-container *ngIf="!isLast">
-                                            /
-                                        </ng-container>
-                                    </ng-container>
-                                </ng-container>
-                            </span>
+                        <td class="lead" data-label="">                            
+                            <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)"></d2c-triumph-name>
                         </td>
                         <td class="left" data-label="">
                             {{t.percent}}%

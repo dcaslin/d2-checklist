@@ -11,11 +11,16 @@ import { IconService } from '@app/service/icon.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TriumphSealsComponent extends ChildComponent implements OnInit {
+  openEntryId: string|null = null;
 
   constructor(storageService: StorageService,
     public iconService: IconService,
     public state: PlayerStateService) {
     super(storageService);
+  }
+
+  public opened(hash: string) {
+    this.openEntryId = hash;
   }
 
   ngOnInit() {
