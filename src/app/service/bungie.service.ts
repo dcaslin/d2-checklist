@@ -33,7 +33,7 @@ export class BungieService implements OnDestroy {
         if (selectedUser != null) {
             // wait until cache is ready
             this.destinyCacheService.ready.asObservable().pipe(filter(x => x === true), first()).subscribe(() => {
-                this.setClans(this.selectedUser.membership);
+                this.applyClans(this.selectedUser);
                 this.applyCurrencies(this.selectedUser);
             });
         }
@@ -439,7 +439,6 @@ export class BungieService implements OnDestroy {
     }
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
-        // TODO, need detailed?
         const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
             ['ProfileCurrencies', 'ProfileInventories'], true, true);
         if (tempPlayer == null) {
@@ -450,12 +449,17 @@ export class BungieService implements OnDestroy {
 
     }
 
-    private setClans(membership: BungieMembership) {
-        this.getClans(membership.bungieId).then(c => {
-            if (c != null) {
-                membership.clans = c;
-            }
-        });
+
+    private async applyClans(s: SelectedUser) {
+        const c = await this.getClans(s.membership.bungieId);
+        s.clans.next(c);
+    }
+
+    private async setClans(membership: BungieMembership) {
+        const c = await this.getClans(membership.bungieId);
+        if (c != null) {
+            membership.clans = c;
+        }
     }
 
     public selectUser(u: UserInfo) {
@@ -851,7 +855,7 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
+    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean, contentVaultOnly?: boolean): Promise<Player> {
         try {
             const sComp = components.join();
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' +
@@ -863,7 +867,7 @@ export class BungieService implements OnDestroy {
                     ms = publicInfo.publicMilestones;
                 }
             }
-            return this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
+            return this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
         } catch (err) {
             if (err.error != null && err.error.ErrorStatus == 'DestinyAccountNotFound') {
                 return null;

@@ -23,26 +23,38 @@
       matTreeNodePadding
       (click)="selectedTreeNodeHash=node.data.hash; location.go(state.getPlayerRouteString(['triumphs','tree',node.data.hash]))">
       <button mat-icon-button disabled></button>
-      <div style="text-align: left; margin-bottom: 20px" [class.warn-text]="node.data.hash == selectedTreeNodeHash"
+      <div class="record" [class.warn-text]="node.data.hash == selectedTreeNodeHash"
         [id]="'tree-node-'+node.data.hash">
 
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.complete && node.data.redeemed"
           class="accent-text mat-option.mat-selected"></fa-icon>
 
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.complete && !node.data.redeemed"
-          class="warn-text mat-option.mat-selected"></fa-icon>        
+          class="warn-text mat-option.mat-selected"></fa-icon>
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
 
-        <ng-container *ngIf="node.data.lowLinks==null || node.data.lowLinks.mapLink==null">
-          {{node.data.name}} </ng-container>
-        <a [href]="node.data.lowLinks.mapLink" *ngIf="node.data.lowLinks!=null && node.data.lowLinks.mapLink!=null"
-          target="_blank" rel="noopener">
-          {{node.data.name}}
-          <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-        </a>
-        <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>        
-        <fa-icon [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true" (click)="state.trackTriumph(node.data)"></fa-icon>
-        <fa-icon [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="accent-text" (click)="state.untrackTriumph(node.data)"></fa-icon>
+        {{node.data.name}}
+        <span *ngIf="node.data.lowLinks!=null" class="low-links">
+          <a [href]="node.data.lowLinks.mapLink" class="pad-left" *ngIf="node.data.lowLinks.mapLink!=null && node.data.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
+          <a [href]="node.data.lowLinks.loreLink" class="pad-left" *ngIf="node.data.lowLinks.loreLink!=null && node.data.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+          <a [href]="node.data.lowLinks.videoLink" class="pad-left" *ngIf="node.data.lowLinks.videoLink!=null && node.data.lowLinks.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+        </span>
+        
+        <ng-container *ngIf="debugmode|async">{{node.data.hash}}</ng-container>
+        <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]!=true"
+          (click)="state.trackTriumph(node.data)"></fa-icon>
+        <fa-icon class="pad-left" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true" class="accent-text"
+          (click)="state.untrackTriumph(node.data)"></fa-icon>
+
+        <span class="pad-left" *ngIf="node.data.contentVault && !node.data.complete"
+          matTooltip="This Triumph will be vaulted next season, complete it now or never!">
+          <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
+        </span>
+        <span class="pad-left" *ngIf="node.data.contentVault && node.data.complete"
+          matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
+          <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
+        </span>
+
         <br>
         <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
           redeemed.<br></span>
@@ -52,7 +64,7 @@
         <div *ngFor="let o of node.data.objectives">
           <span class="simple-caption">
             <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="o.complete" class="accent-text mat-option.mat-selected">
-            </fa-icon>            
+            </fa-icon>
             <fa-icon [icon]="iconService.farSquare" *ngIf="!o.complete"></fa-icon>
             {{o.progress}}/{{o.completionValue}} {{o.progressDescription}} <span *ngIf="o.score"> - {{o.score}}
               pts</span>
@@ -71,18 +83,22 @@
           {{triumphTreeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
         </mat-icon>
       </button>
-      <div style="text-align: left">
+      <div class="left">
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.complete"
-          class="accent-text mat-option.mat-selected"></fa-icon>        
+          class="accent-text mat-option.mat-selected"></fa-icon>
         <fa-icon [icon]="iconService.farSquare" *ngIf="!node.data.complete"></fa-icon>
         {{node.data.name}} <span *ngIf="debugmode|async">{{node.data.hash}}</span>
         <span class="simple-caption">
-          <span style="margin-right:5px; margin-left: 5px">{{node.data.progress}}/{{node.data.completionValue}}</span>
-          <span style="margin-right:5px; margin-left: 5px">{{node.data.pts|number}} / {{node.data.totalPts|number}} pts</span>
+          <span class="padded">{{node.data.progress}}/{{node.data.completionValue}}</span>
+          <span class="padded d-none d-xl-inline">{{node.data.pts|number}} / {{node.data.totalPts|number}}
+            pts</span>
         </span>
         <ng-container *ngIf="node.data.unredeemedCount>0">
           <span class="simple-warn-caption">+{{node.data.unredeemedCount}} to redeem</span>
         </ng-container>
+        <span class="cv-caption" [class.cv-complete]="node.data.vaultedChildrenComplete==node.data.vaultedChildren" *ngIf="node.data.vaultedChildren" matTooltip="Includes triumphs that will be vaulted next season">
+            {{node.data.vaultedChildrenComplete}} / {{node.data.vaultedChildren}} <fa-icon class="pad-left" [class.warn-text]="node.data.vaultedChildrenComplete<node.data.vaultedChildren" [icon]="iconService.fadHourGlassHalf"></fa-icon>
+        </span>
         <br>
 
         <mat-progress-bar [color]="node.data.hash == selectedTreeNodeHash?'warn':'primary'" class="pres-node-prog"

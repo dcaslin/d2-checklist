@@ -5,31 +5,33 @@
         <mat-spinner class="loading" class="center-spinner" *ngIf="(state.loading|async)===true"></mat-spinner>
       </div>
       <div class="body-text">
-        
+
         <div *ngIf="errorMsg|async as msg">{{msg}}</div>
         <ng-container *ngIf="state.player|async as player">
           <ng-container *ngIf="player!=null && player.superprivate">
-            <h4>              
-              <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
-              {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings</h4>
+            <h4>
+              <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon"
+                style="font-weight: normal !important"></fa-icon>
+              {{player.profile.userInfo.displayName}} - Hidden by Privacy Settings
+            </h4>
           </ng-container>
 
           <ng-container *ngIf="player!=null && !player.superprivate">
             <h1>
-              <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon" style="font-weight: normal !important"></fa-icon>
+              <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon"
+                style="font-weight: normal !important"></fa-icon>
               {{player.profile.userInfo.displayName}}
-              <d2c-friend-star 
-                title="true"
-                [userInfo]="player.profile.userInfo"
-                [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
-              <button mat-icon-button (click)="state.requestRefresh()"> 
+              <d2c-friend-star title="true" [userInfo]="player.profile.userInfo" [favoritesMap]=(favoritesMap|async)>
+              </d2c-friend-star>
+              <button mat-icon-button (click)="state.requestRefresh()">
                 <fa-icon [icon]="iconService.farSync"></fa-icon>
               </button>
             </h1>
             <h4 *ngIf="player.title">
               <ng-container *ngIf="player.title.trim().length>0"> {{player.title}} |</ng-container>
               <ng-container *ngIf="player.artifactPowerBonus"> +{{player.artifactPowerBonus}} Artifact</ng-container>
-              <ng-container *ngIf="player.seasonRank!=null && player.seasonRank.level"> | Season Rank: {{player.seasonRank.level}} </ng-container>
+              <ng-container *ngIf="player.seasonRank!=null && player.seasonRank.level"> | Season Rank:
+                {{player.seasonRank.level}} </ng-container>
             </h4>
             <ng-container
               *ngIf="player.profile.userInfo!=null && player.profile.userInfo.bungieInfo!=null && player.profile.userInfo.bungieInfo.clans!=null">
@@ -43,8 +45,7 @@
             </ng-container>
 
             <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
-              <ng-container
-                *ngIf="player.currentActivity==null">
+              <ng-container *ngIf="player.currentActivity==null">
                 Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
               </ng-container>
               <span *ngIf="player.currentActivity!=null">
@@ -55,33 +56,35 @@
             </div>
 
             <div class="button-row">
-              <a mat-button href="https://destiny2utils.com/" rel="noopener" target="_blank"
-              rel="noopener">
-                <fa-icon [icon]="iconService.farExternalLink" class="menu-icon"></fa-icon>
-                <span class="d-none d-md-inline">Max Light Guide</span>
+              <a mat-button [routerLink]="['/content-vault', player.characters[0].membershipType, player.characters[0].membershipId]">
+                <fa-icon class="menu-icon" [icon]="iconService.fadHourGlassHalf"></fa-icon>
+                <span class="d-none d-md-inline">Content Vault</span>
               </a>
-              <a mat-button
-                [routerLink]="['/party', player.characters[0].membershipType, player.characters[0].membershipId]">
-                <fa-icon class="menu-icon" [icon]="iconService.falGamepad" [class.accent-text]="player.currentActivity!=null"></fa-icon>                    
+              <a mat-button [routerLink]="['/party', player.characters[0].membershipType, player.characters[0].membershipId]">
+                <fa-icon class="menu-icon" [icon]="iconService.falGamepad"
+                  [class.accent-text]="player.currentActivity!=null"></fa-icon>
                 <span class="d-none d-md-inline">Current Party</span>
               </a>
               <a mat-button
-                [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">                
+                [routerLink]="['/history', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
                 <fa-icon [icon]="iconService.fasHistory" class="menu-icon"></fa-icon>
                 <span class="d-none d-md-inline">Activity History</span>
               </a>
               <a mat-button
                 [routerLink]="['/recent-players', player.characters[0].membershipType, player.characters[0].membershipId, player.characters[0].characterId]">
-                <fa-icon [icon]="iconService.fasUserFriends" class="menu-icon"></fa-icon>                
+                <fa-icon [icon]="iconService.fasUserFriends" class="menu-icon"></fa-icon>
                 <span class="d-none d-md-inline">Recent Teammates</span>
               </a>
               <button mat-button [matMenuTriggerFor]="menu">
-                <fa-icon [icon]="iconService.fasEllipsisV" class="menu-icon"></fa-icon>                
+                <fa-icon [icon]="iconService.fasEllipsisV" class="menu-icon"></fa-icon>
                 <span class="d-none d-md-inline">External Links</span>
               </button>
               <mat-menu #menu="matMenu">
-                <a mat-menu-item href="https://app.destinyitemmanager.com/"  target="_blank"
-                  rel="noopener">
+                <a mat-menu-item href="https://destiny2utils.com/" rel="noopener" target="_blank" rel="noopener">
+                  <mat-icon>upgrade</mat-icon>
+                  Destiny 2 Utils
+                </a>
+                <a mat-menu-item href="https://app.destinyitemmanager.com/" target="_blank" rel="noopener">
                   <mat-icon>bookmark</mat-icon>
                   <span>DIM</span>
                 </a>
@@ -94,21 +97,22 @@
 
             <nav mat-tab-nav-bar color="accent">
               <a mat-tab-link routerLink="milestones" routerLinkActive #rla1="routerLinkActive"
-                [active]="rla1.isActive">                
+                [active]="rla1.isActive">
                 <fa-icon [icon]="iconService.fasFlag"></fa-icon><span class="d-none d-md-inline">&ensp;Milestones</span>
               </a>
               <a mat-tab-link routerLink="pursuits" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-                  <fa-icon [icon]="iconService.fasGift"></fa-icon><span class="d-none d-md-inline">&ensp;Pursuits</span>
+                <fa-icon [icon]="iconService.fasGift"></fa-icon><span class="d-none d-md-inline">&ensp;Pursuits</span>
               </a>
               <a mat-tab-link routerLink="triumphs" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
-                  <fa-icon [icon]="iconService.fasTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
+                <fa-icon [icon]="iconService.fasTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
               </a>
               <a mat-tab-link routerLink="collections" routerLinkActive #rla6="routerLinkActive"
                 [active]="rla6.isActive">
                 <i class="icon-collections"></i><span class="d-none d-md-inline">&ensp;Collections</span>
               </a>
               <a mat-tab-link routerLink="checklist" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-                <fa-icon [icon]="iconService.fasCheckSquare"></fa-icon><span class="d-none d-md-inline">&ensp;Checklist</span>
+                <fa-icon [icon]="iconService.fasCheckSquare"></fa-icon><span
+                  class="d-none d-md-inline">&ensp;Checklist</span>
               </a>
               <a mat-tab-link routerLink="lifetime" routerLinkActive #rlaLifetime="routerLinkActive"
                 [active]="rlaLifetime.isActive">

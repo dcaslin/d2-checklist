@@ -43,6 +43,7 @@ import { SeasonIndicatorComponent } from './season-indicator/season-indicator.co
 import { SignInRequiredModule } from './sign-in-required/sign-in-required.module';
 import { SortIndicatorComponent } from './sort-indicator/sort-indicator.component';
 import { FriendStarComponent } from './friend-star/friend-star.component';
+import { TriumphNameComponent } from './triumph-name/triumph-name.component';
 
 @NgModule({
   imports: [
@@ -87,15 +88,17 @@ import { FriendStarComponent } from './friend-star/friend-star.component';
     MilestoneCheckModule
   ],
   declarations: [
-  SortIndicatorComponent,
-  SeasonIndicatorComponent,
-  SortIndicatorComponent,
-  ItemEnergyIndicatorComponent,
-  ItemIconComponent,
-  FriendStarComponent,
-  FriendStarComponent],
+    SortIndicatorComponent,
+    SeasonIndicatorComponent,
+    SortIndicatorComponent,
+    ItemEnergyIndicatorComponent,
+    ItemIconComponent,
+    FriendStarComponent,
+    FriendStarComponent,
+    TriumphNameComponent],
   exports: [
     SortIndicatorComponent,
+    TriumphNameComponent,
     ItemIconComponent,
     FriendStarComponent,
     SeasonIndicatorComponent,

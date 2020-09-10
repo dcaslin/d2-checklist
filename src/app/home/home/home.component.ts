@@ -50,10 +50,17 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
+  hideAnnouncement = true;
+
   selectedPlatform: Platform;
   gamerTag: string;
   showMoreInfo = false;
   today: Today = null;
+
+  onHideAnnouncement() {
+    this.hideAnnouncement = true;
+    localStorage.setItem('hide-announcement-content-vault', 'true');
+  }
 
   constructor(
     private destinyCacheService: DestinyCacheService,
@@ -71,6 +78,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     if (this.destinyCacheService.cache != null) {
       this.manifestVersion = this.destinyCacheService.cache.version;
     }
+    this.hideAnnouncement = "true" === localStorage.getItem('hide-announcement-content-vault');
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
@@ -98,9 +106,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
           const built = this.parseService.buildShoppingList(sl, bs);
           this.shoppingList.next(built);
         });
-
   }
-
 
   public clearShoppingItems() {
     this.storageService.clearHashList("shoppinglist");

@@ -1807,7 +1807,7 @@ export class ParseService {
         return returnMe;
     }
 
-    private parseProfileChecklists(resp: any): Checklist[] {
+    private parseProfileChecklists(resp: any, contentVaultOnly: boolean): Checklist[] {
         const checklists: Checklist[] = [];
 
         if (resp.profileProgression != null && resp.profileProgression.data != null && resp.profileProgression.data.checklists != null) {
@@ -1818,6 +1818,9 @@ export class ParseService {
                 const vals: any = oChecklists[key];
                 const desc: any = this.destinyCacheService.cache.Checklist[key];
                 if (desc == null) {
+                    return;
+                }
+                if (contentVaultOnly && !desc.contentVault) {
                     return;
                 }
                 let cntr = 0, cntChecked = 0;
@@ -1892,6 +1895,7 @@ export class ParseService {
                     hash: key,
                     name: checklistName,
                     complete: cntChecked,
+                    contentVault: desc.contentVault,
                     total: cntr,
                     entries: checkListItems,
                     hasDescs: hasDescs
@@ -1951,7 +1955,7 @@ export class ParseService {
 
     }
 
-    private parseCharChecklists(resp: any, chars: Character[]): CharChecklist[] {
+    private parseCharChecklists(resp: any, chars: Character[], contentVaultOnly: boolean): CharChecklist[] {
         const checklists: CharChecklist[] = [];
         if (resp.characterProgressions && resp.characterProgressions.data) {
             for (const char of chars) {
@@ -1962,6 +1966,9 @@ export class ParseService {
                         const vals: any = oChecklists[key];
                         const desc: any = this.destinyCacheService.cache.Checklist[key];
                         if (desc == null) {
+                            return;
+                        }
+                        if (contentVaultOnly && !desc.contentVault) {
                             return;
                         }
 
@@ -1982,6 +1989,8 @@ export class ParseService {
                             checklist = {
                                 hash: key,
                                 name: checklistName,
+                                maxComplete: 0,
+                                contentVault: desc.contentVault,
                                 totals: [],
                                 entries: []
                             };
@@ -2066,6 +2075,9 @@ export class ParseService {
                         }
                     }
                 }
+                if (entry.allDone) {
+                    checklist.maxComplete++;
+                }
             }
         }
         return checklists;
@@ -2139,11 +2151,11 @@ export class ParseService {
             }
         }
         let completeValue = node.children.length;
-        if (cDesc.objectiveHashes && cDesc.objectiveHashes.length==1) {
+        if (cDesc.objectiveHashes && cDesc.objectiveHashes.length == 1) {
             const oDesc = this.destinyCacheService.cache.Objective[cDesc.objectiveHashes[0]];
             if (oDesc && oDesc.completionValue) {
                 // MMXIX shows 25 even though there are only 24
-                if (oDesc.completionValue< completeValue) {
+                if (oDesc.completionValue < completeValue) {
                     completeValue = oDesc.completionValue;
                 }
             }
@@ -2151,6 +2163,7 @@ export class ParseService {
         const percent = Math.floor((100 * progress) / completeValue);
         return {
             hash: node.hash,
+            contentVault: pDesc.contentVault,
             name: node.name,
             desc: node.desc,
             icon: node.icon,
@@ -2212,20 +2225,18 @@ export class ParseService {
 
     }
 
-    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Player {
+    public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean, contentVaultOnly?: boolean): Player {
         if (resp.profile != null && resp.profile.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s profile.');
         }
         if (resp.characters != null && resp.characters.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s characters.');
         }
-
         let profile: Profile;
         if (resp.profile != null) {
             profile = resp.profile.data;
         }
         let superprivate = false;
-
         const charsDict: { [key: string]: Character } = {};
         const accountProgressions: Progression[] = [];
         const milestoneList: MileStoneName[] = [];
@@ -2458,8 +2469,8 @@ export class ParseService {
         let artifactPowerBonus = 0;
 
         if (!superprivate) {
-            checklists = this.parseProfileChecklists(resp);
-            charChecklists = this.parseCharChecklists(resp, chars);
+            checklists = this.parseProfileChecklists(resp, contentVaultOnly);
+            charChecklists = this.parseCharChecklists(resp, chars, contentVaultOnly);
             artifactPowerBonus = this.parseArtifactProgressions(resp, chars, accountProgressions);
             let gettingCurrencies = false;
             // hit with a hammer
@@ -2633,15 +2644,17 @@ export class ParseService {
 
             if (records.length > 0) {
                 let triumphLeaves: TriumphRecordNode[] = [];
-                const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true).children;
+
+                // Seals
+                const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true, contentVaultOnly).children;
                 for (const ts of tempSeals) {
                     const seal = this.buildSeal(ts, badges);
                     if (seal != null) {
                         seals.push(seal);
                     }
                 }
-
-                recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs).children;
+                // Tree
+                recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly).children;
                 const leafSet = {};
                 for (const t of triumphLeaves) {
                     leafSet[t.hash] = t;
@@ -2665,10 +2678,13 @@ export class ParseService {
                 searchableTriumphs = triumphLeaves.filter(x => {
                     return (x.name != null) && (x.name.trim().length > 0);
                 });
-                const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs);
-                const highScore = this.handleRecordNode([], '2884099200', records, showZeroPtTriumphs, showInvisTriumphs);
-                searchableTriumphs.push(mmxix);
-                searchableTriumphs.push(highScore);
+                // const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs, false);
+                // searchableTriumphs.push(mmxix);
+                // const mmxx = this.handleRecordNode([], '4239091332', records, showZeroPtTriumphs, showInvisTriumphs, false);
+                // searchableTriumphs.push(mmxx);
+                // const highScore = this.handleRecordNode([], '2884099200', records, showZeroPtTriumphs, showInvisTriumphs, false);
+                // searchableTriumphs.push(highScore);
+
                 searchableTriumphs = searchableTriumphs.sort((a, b) => {
                     if (a.name < b.name) { return -1; }
                     if (a.name < b.name) { return 0; }
@@ -2693,19 +2709,19 @@ export class ParseService {
                 } catch (exc) {
                     console.dir(exc);
                 }
-
-
                 lowHangingTriumphs = lowHangingTriumphs.slice(0, 10);
-
                 const seasonDescs: any[] = this.destinyCacheService.cache.RecordSeasons;
                 for (const seasonDesc of seasonDescs) {
-
                     const seasonRecords: TriumphRecordNode[] = [];
                     for (const hash of seasonDesc.hashes) {
                         if (dictSearchableTriumphs[hash] == null) {
-                            // ignore
+                            // check to see if it's floating out in the ether
+                            const seasonOnly = this.handleRecordNode([], hash, records, showZeroPtTriumphs, showInvisTriumphs, false);
+                            searchableTriumphs.push(seasonOnly);
+                            seasonRecords.push(seasonOnly);
+                        } else {
+                            seasonRecords.push(dictSearchableTriumphs[hash]);
                         }
-                        seasonRecords.push(dictSearchableTriumphs[hash]);
                     }
                     seasons.push({
                         name: seasonDesc.name,
@@ -2910,12 +2926,12 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphPresentationNode {
+    private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) {
             return null;
-        }
+        }        
         path.push({
             path: pDesc.displayProperties.name,
             hash: key
@@ -2924,17 +2940,23 @@ export class ParseService {
         let unredeemedCount = 0;
         let pts = 0;
         let total = 0;
+        let vaulted = 0;
+        let vaultedIncomplete = 0;
+        let vaultedComplete = 0;
         if (pDesc.children != null) {
             for (const child of pDesc.children.presentationNodes) {
-                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs);
+                const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
                 total += oChild.totalPts;
                 pts += oChild.pts;
+                vaulted += oChild.vaultedChildren;
+                vaultedComplete += oChild.vaultedChildrenComplete;
+                vaultedIncomplete += oChild.vaultedChildrenIncomplete;
             }
             for (const child of pDesc.children.records) {
-                const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
+                const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
                 if (oChild.invisible && !showInvisTriumphs) { continue; }
@@ -2944,9 +2966,14 @@ export class ParseService {
                     unredeemedCount++;
                 }
                 pts += oChild.earned;
-                // if (oChild.complete && oChild.redeemed) {
-                //     pts += oChild.score;
-                // }
+                if (oChild.contentVault) {
+                    vaulted++;
+                    if (oChild.complete) {
+                        vaultedComplete++;
+                    } else {
+                        vaultedIncomplete++;
+                    }
+                }
                 total += oChild.score;
             }
         }
@@ -2977,13 +3004,19 @@ export class ParseService {
             path: path,
             unredeemedCount: unredeemedCount,
             pts: pts,
-            totalPts: total
+            totalPts: total,
+            vaultedChildren: vaulted,
+            vaultedChildrenComplete: vaultedComplete,
+            vaultedChildrenIncomplete: vaultedIncomplete,
         };
     }
 
-    private handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): TriumphRecordNode {
+    private handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean): TriumphRecordNode {
         const rDesc = this.destinyCacheService.cache.Record[key];
         if (rDesc == null) { return null; }
+        if (contentVaultOnly && !rDesc.contentVault) {
+            return null;
+        }
         let pointsToBadge = false;
         if (rDesc.displayProperties != null && rDesc.displayProperties.description != null) {
             if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
@@ -3115,6 +3148,7 @@ export class ParseService {
         return {
             type: 'record',
             hash: key,
+            contentVault: rDesc.contentVault,
             name: rDesc.displayProperties.name,
             desc: rDesc.displayProperties.description,
             icon: rDesc.displayProperties.icon,
@@ -3549,7 +3583,7 @@ export class ParseService {
         return name;
     }
 
-    private getSeasonName(seasonalModSlot: number): string|null {
+    private getSeasonName(seasonalModSlot: number): string | null {
         if (seasonalModSlot == 11) {
             return 'arrivals';
         }
@@ -4086,7 +4120,7 @@ export class ParseService {
                     searchText += 'season:' + seasonText;
                 }
                 for (const seasonNumber of coveredSeasons) {
-                    const seasonName  = this.getSeasonName(seasonNumber);
+                    const seasonName = this.getSeasonName(seasonNumber);
                     if (seasonName) {
                         searchText += 'has:' + seasonName;
                     }

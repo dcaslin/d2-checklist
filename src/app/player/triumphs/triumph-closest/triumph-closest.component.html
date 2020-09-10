@@ -21,39 +21,7 @@
             <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
                 <tr>
                     <td class="lead" data-label="">
-                        {{cntr+1}}.&ensp;
-                        <ng-container *ngIf="t.lowLinks==null || t.lowLinks.mapLink==null">
-                            {{t.name}} </ng-container>
-                        <a [href]="t.lowLinks.mapLink" *ngIf="t.lowLinks!=null && t.lowLinks.mapLink!=null"
-                            target="_blank" rel="noopener">
-                            {{t.name}}
-                            <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
-                        </a>
-                        <ng-container *ngIf="debugmode|async">{{t.hash}} {{t.invisible}}</ng-container>
-                        <button mat-icon-button *ngIf="state.dTrackedTriumphIds[t.hash]!=true"
-                            (click)="state.trackTriumph(t)">
-                            <fa-icon [icon]="iconService.farStar"></fa-icon>
-                        </button>
-                        <button mat-icon-button *ngIf="state.dTrackedTriumphIds[t.hash]==true"
-                            (click)="state.untrackTriumph(t)">
-                            <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
-                        </button>
-                        <button mat-icon-button (click)="state.hideClosestTriumph(t)"
-                            matTooltip="Hide this triumph from list">
-                            <fa-icon [icon]="iconService.fasEyeSlash"></fa-icon>
-                        </button>
-                        <br>
-                        <span class="simple-caption">
-                            <ng-container *ngFor="let p of t.path; index as i; last as isLast">
-                                <ng-container *ngIf="i>0">
-                                    <span class="fake-link" [routerLink]="['..','tree', p.hash]">{{p.path}}</span>
-                                    <ng-container *ngIf="debugmode|async">{{p.hash}} </ng-container>
-                                    <ng-container *ngIf="!isLast">
-                                        /
-                                    </ng-container>
-                                </ng-container>
-                            </ng-container>
-                        </span>
+                        <d2c-triumph-name [t]="t" [cntr]="cntr" [hideOption]="true" [debugmode]="debugmode|async" (navigate)="navigate($event)"></d2c-triumph-name>                        
                     </td>
                     <td class="left" data-label="">
                         {{t.percent}}%
