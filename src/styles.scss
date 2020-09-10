@@ -174,6 +174,10 @@
   text-align: center;
 }
 
+.half-opacity {
+  opacity: 0.5;
+}
+
 
 .mobile-button-row {
   display: none;
@@ -439,6 +443,10 @@ mat-form-field.full-width .mat-form-field-infix{
     flex-grow: 1;
     // outline: 1px solid red; // uncomment to see test outlines
   }
+}
+
+.pointer {
+  cursor: pointer;
 }
 
 .fake-link {

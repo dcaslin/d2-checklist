@@ -11,7 +11,18 @@
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{checklist.name}}
+            <ng-container *ngIf="checklist.contentVault">
+              <span class="pad-left" *ngIf="checklist.complete<checklist.total"
+                matTooltip="This checklist will be vaulted next season, complete it now or never!">
+                <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
+              </span>
+              <span class="pad-left" *ngIf="checklist.complete >= checklist.total"
+                matTooltip="This checklist will be vaulted next season, but you got it already! Nice!">
+                <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
+              </span>
+            </ng-container>
             <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
+
           </mat-panel-title>
           <mat-panel-description>
             {{checklist.complete}} / {{checklist.total}}
@@ -35,12 +46,14 @@
               <ng-container *ngFor="let check of checklist.entries">
                 <tr *ngIf="!hideComplete || !check.checked">
                   <td>
-                    <ng-container *ngIf="check.lowLinks==null || check.lowLinks.mapLink==null">
-                      {{check.name}}</ng-container>
-                    <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink"
-                      target="_blank" rel="noopener">{{check.name}}
-                      <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon>
-                    </a>
+                    
+                    {{check.name}}
+                    <ng-container *ngIf="check.lowLinks as ll">
+                      <a [href]="ll.mapLink" class="accent-text link-icon" *ngIf="ll.mapLink!=null && ll.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon> </a>
+                      <a [href]="ll.loreLink" class="link-icon" *ngIf="ll.loreLink!=null && ll.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
+                      <a [href]="ll.videoLink" class="link-icon" *ngIf="ll.videoLink!=null && ll.videoLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+                    </ng-container>
+                    <!-- <a *ngIf="check.lowLinks!=null && check.lowLinks.mapLink!=null" [href]="check.lowLinks.mapLink" target="_blank" rel="noopener">{{check.name}} <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon></a> -->
 
                     <span *ngIf="debugmode|async">
                       &ensp;[{{check.hash}}] &ensp;
@@ -73,6 +86,16 @@
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{checklist.name}}
+          <ng-container *ngIf="checklist.contentVault">
+            <span class="pad-left" *ngIf="checklist.maxComplete < checklist.entries.length"
+              matTooltip="This checklist will be vaulted next season, complete it now or never!">
+              <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
+            </span>
+            <span class="pad-left" *ngIf="checklist.maxComplete >= checklist.entries.length"
+              matTooltip="This checklist will be vaulted next season, but you got it already! Nice!">
+              <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
+            </span>
+          </ng-container>
           <span *ngIf="debugmode|async">&ensp;[{{checklist.hash}}]</span>
         </mat-panel-title>
         <mat-panel-description>

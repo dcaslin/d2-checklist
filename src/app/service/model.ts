@@ -139,6 +139,7 @@ export interface BadgeClass {
 
 export interface Seal {
     hash: string;
+    contentVault: boolean;
     name: string;
     desc: string;
     icon: string;
@@ -174,10 +175,14 @@ export interface TriumphPresentationNode extends TriumphNode {
     unredeemedCount: number;
     pts: number;
     totalPts: number;
+    vaultedChildren?: number;
+    vaultedChildrenComplete?: number;
+    vaultedChildrenIncomplete?: number;
 }
 
 export interface TriumphRecordNode extends TriumphNode {
     objectives: ItemObjective[];
+    contentVault: boolean;
     intervalsRedeemedCount: number;
     redeemed: boolean;
     title: boolean;
@@ -391,6 +396,7 @@ export interface BountySet {
 export class SelectedUser {
     userInfo: UserInfo;
     selectedUserCurrencies: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
+    clans: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
     membership: BungieMembership;
     promptForPlatform = false;
 }
@@ -477,6 +483,7 @@ export interface ChecklistItem {
 export interface Checklist {
     hash: string;
     name: string;
+    contentVault: boolean;
     complete: number;
     total: number;
     entries: ChecklistItem[];
@@ -512,6 +519,8 @@ export interface CharTotal {
 export interface CharChecklist {
     hash: string;
     name: string;
+    contentVault: boolean;
+    maxComplete: number;
     totals: CharTotal[];
     entries: CharChecklistItem[];
 }

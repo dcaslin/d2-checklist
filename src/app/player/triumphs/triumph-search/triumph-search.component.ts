@@ -6,6 +6,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'd2c-triumph-search',
@@ -19,10 +20,16 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
   public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
 
   constructor(storageService: StorageService,
+    private router: Router,
+    private route: ActivatedRoute,
     public iconService: IconService,
     public state: PlayerStateService) {
     super(storageService);
     this.triumphFilterText = localStorage.getItem('triumph-filter');
+  }
+
+  navigate(triumphHash: string) {
+    this.router.navigate(['..', 'tree', triumphHash], { relativeTo: this.route});
   }
 
   ngOnInit() {
