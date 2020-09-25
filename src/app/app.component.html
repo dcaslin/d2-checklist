@@ -108,32 +108,10 @@
             matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
             <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
           </button>
-          <ng-container *ngIf="signedOnUser|async as currUser">
-            <button *ngIf="currUser.userInfo!=null" matTooltip="Sign out or change selected platform" mat-button
-              [matMenuTriggerFor]="toolbarUserMenu">
-              <mat-icon>power_settings_new</mat-icon>
-              <!-- <mat-icon *ngIf="currUser.membership.destinyMemberships.length==1">person</mat-icon>
-              <mat-icon *ngIf="currUser.membership.destinyMemberships.length>1">supervisor_account
-              </mat-icon> -->
-              <!-- &ensp;{{currUser.userInfo.platformName}} -->
-            </button>
-            <mat-menu #toolbarUserMenu="matMenu">
-              <ng-container *ngIf="currUser.membership.destinyMemberships.length>1">
-                <button mat-menu-item *ngFor="let avail of currUser.membership.destinyMemberships"
-                  [disabled]="avail ==currUser.userInfo" (click)="selectUser(avail)">
-                  <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon>
-                  <span style="margin-left: 1em">{{avail.platformName}}</span>
-                </button>
-              </ng-container>
-              <button mat-menu-item (click)="onLogoutClick()">
-                <mat-icon>power_settings_new</mat-icon>
-                <span>Logout</span>
-              </button>
-            </mat-menu>
-          </ng-container>
+
           <span class="d-none d-md-inline">
             <button mat-button class="nav-button" [matMenuTriggerFor]="moreMenu">
-              <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
+              <mat-icon>more_vert</mat-icon>
             </button>
           </span>
           <mat-menu #moreMenu="matMenu">
@@ -153,6 +131,27 @@
               <mat-icon>settings</mat-icon> Settings
             </a>
           </mat-menu>
+
+          <ng-container *ngIf="signedOnUser|async as currUser">
+            <button *ngIf="currUser.userInfo!=null" matTooltip="Sign out or change selected platform" mat-button
+              [matMenuTriggerFor]="toolbarUserMenu">
+              <mat-icon>power_settings_new</mat-icon>
+            </button>
+            <mat-menu #toolbarUserMenu="matMenu">
+              <ng-container *ngIf="currUser.membership.destinyMemberships.length>1">
+                <button mat-menu-item *ngFor="let avail of currUser.membership.destinyMemberships"
+                  [disabled]="avail ==currUser.userInfo" (click)="selectUser(avail)">
+                  <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon>
+                  <span style="margin-left: 1em">{{avail.platformName}}</span>
+                </button>
+              </ng-container>
+              <button mat-menu-item (click)="onLogoutClick()">
+                <mat-icon>power_settings_new</mat-icon>
+                <span>Logout</span>
+              </button>
+            </mat-menu>
+          </ng-container>
+          
         </mat-toolbar-row>
         <mat-toolbar-row *ngIf="(signedOnUser|async) as currUser" class="sub-row">
 
