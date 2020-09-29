@@ -440,12 +440,13 @@ export class BungieService implements OnDestroy {
 
     private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
         const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
-            ['ProfileCurrencies', 'ProfileInventories'], true, true);
+            ['Characters', 'ProfileCurrencies', 'ProfileInventories', 'CharacterInventories'], true, true);
         if (tempPlayer == null) {
             console.log('No player to apply currencies to');
             return;
         }
-        s.selectedUserCurrencies.next(tempPlayer.currencies);
+        s.currencies$.next(tempPlayer.currencies);
+        s.gearMeta$.next(tempPlayer.gearMeta);
 
     }
 

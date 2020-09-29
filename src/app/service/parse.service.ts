@@ -28,6 +28,7 @@ import {
     DamageType,
     DestinyAmmunitionType,
     EnergyType,
+    GearMeta,
     InventoryItem,
     InventoryPlug,
     InventorySocket,
@@ -2467,27 +2468,25 @@ export class ParseService {
         let shared: Shared = null;
         let hasHiddenClosest = false;
         let artifactPowerBonus = 0;
+        let gearMeta = null;
 
         if (!superprivate) {
             checklists = this.parseProfileChecklists(resp, contentVaultOnly);
             charChecklists = this.parseCharChecklists(resp, chars, contentVaultOnly);
             artifactPowerBonus = this.parseArtifactProgressions(resp, chars, accountProgressions);
-            let gettingCurrencies = false;
             // hit with a hammer
             if (resp.profileCurrencies != null && resp.profileCurrencies.data != null &&
                 resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
-                        // if (desc.displayProperties.name != 'Bright Dust') {
                         currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
-                        // }
                     }
                 });
-                gettingCurrencies = true;
             }
             vault = new Vault();
             shared = new Shared();
+            gearMeta = this.handleGearMeta(chars, resp.characterInventories, resp.profileInventory);
 
             if (resp.characterInventories != null && resp.characterInventories.data != null) {
                 Object.keys(resp.characterInventories.data).forEach((key) => {
@@ -2761,33 +2760,71 @@ export class ParseService {
                 joinability: _transData.joinability
             };
         }
-        const specialPgoressions = this.cookSpecialAccountProgression(accountProgressions);
+        const specialProgressions = this.cookSpecialAccountProgression(accountProgressions);
         accountProgressions.sort(function (a, b) {
             if (a.name > b.name) { return 1; }
             if (a.name < b.name) { return -1; }
             return 0;
         });
         if (currencies.length > 0) {
-            for (const g of gear) {
-                // || g.hash == '4257549984' prism || g.hash == '4257549985' ascendant shard
-                if (g.hash == '3853748946' || g.hash == '535079318') { // enhancement cores and warmind bits
-                    const curr = currencies.find(x => x.hash === g.hash);
-                    if (curr) {
-                        curr.count += g.quantity;
-                    } else {
-                        currencies.push(new Currency(g.hash, g.name, g.icon, g.quantity));
-                    }
-
-                }
-
-            }
+            this.handleCurrency('4257549985', gear, currencies); // shards
+            this.handleCurrency('4257549984', gear, currencies); // prisms
+            this.handleCurrency('3853748946', gear, currencies); // cores
         }
         this.handleChallengeMilestones(chars, quests, milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData, specialPgoressions);
+            transitoryData, specialProgressions, gearMeta);
+    }
+
+    private handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): GearMeta {
+        if (profileInventory == null || profileInventory.data == null || profileInventory.data.items == null) {
+            return {
+                postmasterTotal: 0,
+                postmaster: [],
+                vault: null
+            };
+        }
+        const returnMe: GearMeta = {
+            postmasterTotal: 0,
+            postmaster: [],
+            vault: {
+                count: profileInventory.data.items.filter(x => x.bucketHash == 138197802).length,
+                total: this.destinyCacheService.cache.InventoryBucket['138197802'].itemCount
+            }
+        }
+        if (charInvs == null || charInvs.data == null) {
+            return returnMe;
+        }
+        const postmasterMax = this.destinyCacheService.cache.InventoryBucket['215593132'].itemCount;
+        for (const char of chars) {
+            const key = char.characterId;
+            const postmaster = charInvs.data[key].items.filter(x => x.bucketHash == 215593132);
+            console.log('Postmaster: ' + postmaster.length);
+            returnMe.postmaster.push({
+                char,
+                count: postmaster.length,
+                total: postmasterMax
+            });
+            returnMe.postmasterTotal += postmaster.length;
+        }
+        console.dir(returnMe);
+        return returnMe;
+    }
+
+    private handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[]) {
+        const g = gear.find(x => x.hash == hash);
+        if (!g) {
+            return;
+        }
+        const curr = currencies.find(x => x.hash === g.hash);
+        if (curr) {
+            curr.count += g.quantity;
+        } else {
+            currencies.push(new Currency(g.hash, g.name, g.icon, g.quantity));
+        }
     }
 
     private handleChallengeMilestones(chars: Character[], quests: InventoryItem[], milestoneList: MileStoneName[]) {
@@ -2931,7 +2968,7 @@ export class ParseService {
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) {
             return null;
-        }        
+        }
         path.push({
             path: pDesc.displayProperties.name,
             hash: key

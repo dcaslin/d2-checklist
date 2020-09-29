@@ -127,10 +127,13 @@ export class GearService {
         try {
             this.loading.next(true);
             const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType,
-                selectedUser.userInfo.membershipId, ['Profiles', 'Characters',
+                selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
                 'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
                 'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true);
+            // update gear counts on title bar
+            this.bungieService.selectedUser.gearMeta$.next(player.gearMeta);
+            // this.bungieService.selectedUser.currencies$.next(player.currencies);
             const gearById: { [key: string]: InventoryItem[]; } = {};
             for (const g of player.gear) {
                 this.canEquip(g);

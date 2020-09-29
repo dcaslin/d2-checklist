@@ -160,8 +160,13 @@
             *ngIf="currUser.userInfo!=null">{{currUser.userInfo.displayName}} -
             {{currUser.userInfo.platformName}}</a>
           <span class="spacer"></span>
+          <div class="currency-icons" *ngIf="currUser.gearMeta$|async as gm">
+            {{gm.postmasterTotal}} | 
+
+            {{gm.vault.count}} / {{gm.vault.total}}
+          </div>
           <div class="currency-icons">
-            <ng-container *ngFor="let c of currUser.selectedUserCurrencies|async">
+            <ng-container *ngFor="let c of currUser.currencies$|async">
               <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
                 [matTooltip]="c.count+' '+c.name">
                 <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
