@@ -122,6 +122,9 @@
           <d2c-gear-toggle #rarityToggle [icon]="iconService.fasBalanceScale" title="Rarity" [choices]="rarityChoices"
             (change)="filterChanged()">
           </d2c-gear-toggle>
+          <d2c-gear-toggle #postmasterToggle [icon]="iconService.fasEnvelope" title="Postmaster" [choices]="postmasterChoices"
+            (change)="filterChanged()">
+          </d2c-gear-toggle>
         </div>
         <div [hidden]="selectedUser==null" class="filter-container">
           <mat-form-field class="wildcard-filter">
@@ -421,7 +424,7 @@
                       </span>
                     </span>
                     <span *ngIf="i.postmaster" class="margin-left warn-text">
-                      <fa-icon [icon]="iconService.falMailbox"></fa-icon>
+                      <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
                     </span>
 
                     <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>

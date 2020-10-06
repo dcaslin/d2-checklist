@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
 import { ItemType } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
 import { IconService } from '@app/service/icon.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, generate } from 'rxjs';
 
 @Component({
   selector: 'd2c-gear-toggle',
@@ -12,96 +12,50 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class GearToggleComponent implements OnInit {
 
+  _state: ToggleState;
+  @Output() change = new EventEmitter<ToggleState>();
+
   @Input()
-  set currentItemType(currentItemType: ItemType) {
-    this.updateCurrentItemType(currentItemType);
+  get state() {
+    return this._state;
   }
-  _currentItemType: ItemType;
-  hidden: boolean;
 
-  isAllSelected$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  set state(val: ToggleState) {
+    this._state = val;
+    this.change.emit(this._state);
+  }
 
-  @Input()
-  displayOptions: ItemType[];
+  public static cloneState(val: ToggleState): ToggleState {
+    return GearToggleComponent.generateState(val.config, val.choices, val.visibleItemType);
+  }
 
-  @Input()
-  choices: Choice[];
+  public static generateState(config: ToggleConfig, choices: Choice[], visibleItemType: ItemType): ToggleState {
+    const hidden = config.displayTabs && config.displayTabs.indexOf(visibleItemType) >= 0;
+    const allSelected = choices && choices.every(x => x.value);
+    return {
+      config,
+      visibleItemType,
+      hidden,
+      allSelected,
+      choices
+    };
+  }
 
-  @Input()
-  icon: IconDefinition;
-
-
-  @Input()
-  iconClass: string;
-
-  @Input()
-  title: string;
-
-  @Output() change = new EventEmitter<ToggleInfo>();
 
   constructor(public iconService: IconService) { }
 
-  public setCurrentItemType(currentItemType: ItemType) {
-    this.updateCurrentItemType(currentItemType, true);
-  }
-
-  private updateCurrentItemType(currentItemType: ItemType, noEmit?: boolean) {
-    if (currentItemType !== this._currentItemType) {
-      this._currentItemType = currentItemType;
-      this.checkDisplay(noEmit);
-    }
-  }
-
-
-
   ngOnInit() {
-    this.checkDisplay();
+
   }
 
-  private emit() {
-    this.setAllSelected();
-    this.change.emit({
-      title: this.title,
-      hidden: this.hidden,
-      choices: this.choices
-    });
-  }
-
-  private checkDisplay(noEmit?: boolean) {
-    if (this.displayOptions != null && this.displayOptions.length > 0) {
-      if (this.displayOptions.indexOf(this._currentItemType) >= 0) {
-        this.hidden = false;
-      } else {
-        this.hidden = true;
-      }
-      if (noEmit != true) {
-        this.emit();
-      }
-    }
-  }
-
-  setAllSelected() {
-    if (this.choices) {
-      for (const ch of this.choices) {
-        if (!ch.value) {
-            this.isAllSelected$.next(false);
-           return ;
+  selectAll() {
+    try {
+      if (this.state?.choices) {
+        for (const ch of this.state.choices) {
+          ch.value = true;
         }
       }
-    }
-    this.isAllSelected$.next(true);
-  }
-
-  selectAll(noEmit?: boolean) {
-    try {
-      for (const ch of this.choices) {
-        ch.value = true;
-      }
-      if (!noEmit) {
-        this.emit();
-      } else {
-        this.setAllSelected();
-      }
+      this.state = GearToggleComponent.generateState(this.state.config, this.state.choices, this.state.visibleItemType);
     } catch (e) {
       console.log('Error selectAll: ' + e);
     }
@@ -109,13 +63,13 @@ export class GearToggleComponent implements OnInit {
 
   exclusiveSelect(choice) {
     try {
-      for (const ch of this.choices) {
+      for (const ch of this.state.choices) {
         if (ch !== choice) {
           ch.value = false;
         }
       }
       choice.value = true;
-      this.emit();
+      this.state = GearToggleComponent.generateState(this.state.config, this.state.choices, this.state.visibleItemType);
     } catch (e) {
       console.log('Error exclusiveSelect: ' + e);
     }
@@ -124,45 +78,40 @@ export class GearToggleComponent implements OnInit {
   select(event, choice) {
     try {
       choice.value = !choice.value;
-      this.emit();
+      this.state = GearToggleComponent.generateState(this.state.config, this.state.choices, this.state.visibleItemType);
       event.stopPropagation();
     } catch (e) {
       console.log('Error select: ' + e);
     }
   }
 
-  public isChosen(optionType: ItemType, val: any): boolean {
-    if (this.hidden == true) { return true; }
-    if (this.isAllSelected$.getValue()) { return true; }
-    if (optionType != this._currentItemType) {
-      console.log('OOPS');
-    }
+  // public isChosen(optionType: ItemType, val: any): boolean {
+  //   if (this.hidden == true) { return true; }
+  //   if (this.isAllSelected$.getValue()) { return true; }
+  //   if (optionType != this._currentItemType) {
+  //     console.log('OOPS');
+  //   }
 
-    if (this.choices.length == null || this.choices.length == 0) { return true; }
-    for (const c of this.choices) {
-      if (c.value == true && c.matchValue == val) { return true; }
-    }
-    return false;
-  }
+  //   if (this._choices.length == null || this._choices.length == 0) { return true; }
+  //   for (const c of this._choices) {
+  //     if (c.value == true && c.matchValue == val) { return true; }
+  //   }
+  //   return false;
+  // }
 
-  public getNotes(): string {
-    if (this.hidden == true) { return null; }
-    if (this.choices.length == null || this.choices.length == 0) { return null; }
-    if (this.isAllSelected$.getValue()) { return null; }
-    let s = this.title + ': \n';
-    for (const c of this.choices) {
-      if (c.value == false) {
-        s += '    ' + c.display + '\n';
-      }
-    }
-    return s;
-  }
-}
+  // public getNotes(): string {
+  //   if (this.hidden == true) { return this.title + ': hidden'; }
+  //   if (this._choices.length == null || this._choices.length == 0) { return this.title + ': empty choices'; }
+  //   if (this.isAllSelected$.getValue()) { return this.title + ': all selected'; }
+  //   let s = this.title + ': \n';
+  //   for (const c of this._choices) {
+  //     if (c.value == false) {
+  //       s += '    ' + c.display + '\n';
+  //     }
+  //   }
+  //   return s;
+  // }
 
-export interface ToggleInfo {
-  title: string;
-  hidden: boolean;
-  choices: Choice[];
 }
 
 export class Choice {
@@ -176,3 +125,19 @@ export class Choice {
     if (value != undefined) { this.value = value; }
   }
 }
+
+export interface ToggleConfig {
+  title: string;
+  icon?: IconDefinition;
+  iconClass?: string;
+  displayTabs: ItemType[];
+}
+
+export interface ToggleState {
+  config: ToggleConfig;
+  visibleItemType: ItemType;
+  hidden: boolean;
+  allSelected: boolean;
+  choices: Choice[];
+}
+

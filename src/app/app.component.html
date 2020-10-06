@@ -70,10 +70,11 @@
           <button mat-icon-button class="d-md-none" (click)="sidenav.open()">
             <mat-icon>menu</mat-icon>
           </button>
-          <span routerLink="" class="branding spacer d-md-none text-center">
-            <img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
-          <span routerLink="" class="branding spacer d-none d-md-inline">
-            <img class="logo" src="/assets/logo.svg" /> D2 Checklist
+          <span class="spacer d-md-none text-center">
+            <span class="branding" routerLink=""><img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
+          </span>
+          <span class="spacer d-none d-md-inline">
+            <span class="branding" routerLink=""><img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
             <a style="margin-left:15px" target="_blank" rel="noopener" href="https://blacklivesmatters.carrd.co/"
               mat-button color="accent">#BlackLivesMatter</a>
           </span>
@@ -99,11 +100,11 @@
               <span class="d-none d-xl-inline"> Vendors</span>
             </a>
             <a mat-button class="nav-button" routerLink="searchClans" routerLinkActive="active">
-              <mat-icon>group</mat-icon> 
+              <mat-icon>group</mat-icon>
               <span class="d-none d-xl-inline">Clans</span>
             </a>
           </span>
-          
+
           <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"
             matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
             <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
@@ -151,7 +152,7 @@
               </button>
             </mat-menu>
           </ng-container>
-          
+
         </mat-toolbar-row>
         <mat-toolbar-row *ngIf="(signedOnUser|async) as currUser" class="sub-row">
 
@@ -160,10 +161,35 @@
             *ngIf="currUser.userInfo!=null">{{currUser.userInfo.displayName}} -
             {{currUser.userInfo.platformName}}</a>
           <span class="spacer"></span>
-          <div class="currency-icons" *ngIf="currUser.gearMeta$|async as gm">
-            {{gm.postmasterTotal}} | 
 
-            {{gm.vault.count}} / {{gm.vault.total}}
+          <div class="currency-icons d-none d-xxl-block" *ngIf="currUser.gearMeta$|async as gm">
+            <div class="gm-section">
+              <a class="currency-chip fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
+                [queryParams]="{ owner: 'vault'}">
+                <mat-icon>account_balance</mat-icon> {{gm.vault.count}} / {{gm.vault.total}}
+              </a>
+            </div>
+            <div class="gm-section">
+              <mat-icon>email</mat-icon>
+
+              <ng-container *ngFor="let p of gm.postmaster">
+                <a class="currency-chip fake-link" [matTooltip]="p.char.className + ' postmaster' "
+                  [routerLink]="['/gear']" [queryParams]="{ postmaster: 'true', owner: p.char.characterId}">
+                  <span *ngIf="p.char.emblemPath!=null" class="currency-icon"
+                    [style.background-image]="'url(//www.bungie.net' + p.char.emblemPath + ')'">
+                  </span>
+                  <ng-container *ngIf="(p.total - p.count)<8; else safePostmaster">
+                    <span class="warn-text">{{p.count}} / {{p.total}}</span>
+                  </ng-container>
+                  <ng-template #safePostmaster>
+                    {{p.count}} / {{p.total}}
+                  </ng-template>
+
+                </a>
+              </ng-container>
+            </div>
+
+
           </div>
           <div class="currency-icons">
             <ng-container *ngFor="let c of currUser.currencies$|async">

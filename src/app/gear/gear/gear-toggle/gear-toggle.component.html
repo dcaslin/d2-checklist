@@ -1,21 +1,17 @@
-<ng-container *ngIf="!hidden">
-  <ng-container *ngIf="{ isAllSelected: isAllSelected$ | async } as data">
-
-
-    <button mat-button class="toggle-button" [matMenuTriggerFor]="menu" [class.warn-text]="!data.isAllSelected">
-      <fa-icon *ngIf="icon" [icon]="icon"></fa-icon>
-      <i *ngIf="iconClass" [class]="iconClass"></i>
-      <span class="hide-mobile-inline">&ensp;{{title}}</span>
+<ng-container *ngIf="!state.hidden">
+    <button mat-button class="toggle-button" [matMenuTriggerFor]="menu" [class.warn-text]="!state.allSelected">
+      <fa-icon *ngIf="state.config.icon" [icon]="state.config.icon"></fa-icon>
+      <i *ngIf="state.config.iconClass" [class]="state.config.iconClass"></i>
+      <span class="hide-mobile-inline">&ensp;{{state.config.title}}</span>
     </button>
     <mat-menu #menu="matMenu">
-      <button *ngIf="!data.isAllSelected" mat-menu-item (click)="selectAll()">
+      <button *ngIf="!state.allSelected" mat-menu-item (click)="selectAll()">
         <fa-icon [icon]="iconService.fasTimes"></fa-icon>
         Clear Filter
       </button>
-      <a *ngFor="let choice of choices" mat-menu-item (click)="exclusiveSelect(choice)">
+      <a *ngFor="let choice of state.choices" mat-menu-item (click)="exclusiveSelect(choice)">
         <mat-checkbox [(ngModel)]="choice.value" (click)="select($event, choice); false"></mat-checkbox>
         {{choice.display}}
       </a>
     </mat-menu>
-  </ng-container>
 </ng-container>

@@ -2802,7 +2802,6 @@ export class ParseService {
         for (const char of chars) {
             const key = char.characterId;
             const postmaster = charInvs.data[key].items.filter(x => x.bucketHash == 215593132);
-            console.log('Postmaster: ' + postmaster.length);
             returnMe.postmaster.push({
                 char,
                 count: postmaster.length,
@@ -2810,7 +2809,6 @@ export class ParseService {
             });
             returnMe.postmasterTotal += postmaster.length;
         }
-        console.dir(returnMe);
         return returnMe;
     }
 
