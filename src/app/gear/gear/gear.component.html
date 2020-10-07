@@ -66,65 +66,21 @@
           </mat-menu>
         </div>
         <div class="filter-buttons" [hidden]="selectedUser==null">
-          <d2c-gear-toggle #markToggle [icon]="iconService.fasTags" title="Tags" [choices]="markChoices"
-            (change)="filterChanged()"
-            [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #weaponInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
-            [choices]="weaponInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #energyTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="energyTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #seasonToggle [icon]="iconService.fasWheat" title="Season" [choices]="seasonChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #damageTypeToggle [icon]="iconService.fasBolt" title="Energy" [choices]="damageTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #weaponTypeToggle [icon]="iconService.fasSwords" title="Type" [choices]="weaponTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #ammoTypeToggle iconClass="icon-ammo_heavy_mono" title="Ammo" [choices]="ammoTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Weapon]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #armorInventoryBucketToggle [icon]="iconService.fasHelmetBattle" title="Slot"
-            [choices]="armorInventoryBucketChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Armor]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #vehicleTypeToggle [icon]="iconService.fasHelmetBattle" title="Slot"
-            [choices]="vehicleTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Vehicle]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #modTypeToggle [icon]="iconService.fasBookSpells" title="Type" [choices]="modTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.GearMod]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #consumableTypeToggle [icon]="iconService.fasFlaskPotion" title="Type"
-            [choices]="consumableTypeChoices" (change)="filterChanged()" [displayOptions]="[ItemType.Consumable]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #exchangeTypeToggle [icon]="iconService.fasGem" title="Type" [choices]="exchangeTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.ExchangeMaterial]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #classTypeToggle [icon]="iconService.fasHoodCloak" title="Class" [choices]="classTypeChoices"
-            (change)="filterChanged()" [displayOptions]="[ItemType.Armor]" [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #ownerToggle [icon]="iconService.fasUsers" title="Owner" [choices]="ownerChoices"
-            (change)="filterChanged()">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #equippedToggle [icon]="iconService.fasTShirt" title="Equipped" [choices]="equippedChoices"
-            (change)="filterChanged()"
-            [displayOptions]="[ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle]"
-            [currentItemType]="option.type">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #rarityToggle [icon]="iconService.fasBalanceScale" title="Rarity" [choices]="rarityChoices"
-            (change)="filterChanged()">
-          </d2c-gear-toggle>
-          <d2c-gear-toggle #postmasterToggle [icon]="iconService.fasEnvelope" title="Postmaster" [choices]="postmasterChoices"
-            (change)="filterChanged()">
-          </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.tags" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.weaponBuckets"  (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.damageType" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.seasons" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.energyType" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.weaponTypes" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.ammoTypes" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.armorBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.vehicleBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.exchangeType"(change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.classType" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.owners" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.equipped" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.rarities" (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.postmaster"(change)="filterChanged()"> </d2c-gear-toggle>
         </div>
         <div [hidden]="selectedUser==null" class="filter-container">
           <mat-form-field class="wildcard-filter">
@@ -272,7 +228,7 @@
         </mat-menu>
         <div *ngIf="debugmode|async">
           <h5>Filters</h5>
-          <div *ngFor="let note of filterNotes">
+          <div *ngFor="let note of debugFilterNotes">
             {{note}}
           </div>
         </div>
