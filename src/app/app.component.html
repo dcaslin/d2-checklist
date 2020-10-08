@@ -178,7 +178,7 @@
                   <span *ngIf="p.char.emblemPath!=null" class="currency-icon"
                     [style.background-image]="'url(//www.bungie.net' + p.char.emblemPath + ')'">
                   </span>
-                  <ng-container *ngIf="(p.total - p.count)<8; else safePostmaster">
+                  <ng-container *ngIf="(p.total - p.count)<3; else safePostmaster">
                     <span class="warn-text">{{p.count}} / {{p.total}}</span>
                   </ng-container>
                   <ng-template #safePostmaster>

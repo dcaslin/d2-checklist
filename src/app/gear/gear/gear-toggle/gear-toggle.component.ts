@@ -61,6 +61,16 @@ export class GearToggleComponent implements OnInit {
     }
   }
 
+  public static selectExclusiveVal(state: ToggleState, val: any) {
+    for (const c of state.choices) {
+      if (c.matchValue == val) {
+        c.value = true;
+      } else {
+        c.value = false;
+      }
+    }
+  }
+
   exclusiveSelect(choice) {
     try {
       for (const ch of this.state.choices) {

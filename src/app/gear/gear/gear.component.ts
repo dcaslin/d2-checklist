@@ -29,12 +29,6 @@ import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utili
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
 
-
-// TODO use shortcutprefs while choices load
-// also try to apply choices to in place, DO NOT USE the toggles, they just make it a bigger pain
-// once preference is applied, forget it
-// between the two should be good
-
 @Component({
   selector: 'd2c-gear',
   templateUrl: './gear.component.html',
@@ -48,12 +42,9 @@ export class GearComponent extends ChildComponent {
   // show thinking while gear filtering is occurring
   public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  // if postmaster/vault/etc is sent in via query string, store it here, clear it after it's applied
-  // lest we leave the user stuck w/ those filters
-  private shortcutInfo$: BehaviorSubject<ShortcutInfo> = new BehaviorSubject({ postmaster: null, owner: null });
-
   // our state for all our gear toggles
   public toggleData: ToggleData;
+  private shortcutInfo: ShortcutInfo = null;
 
   readonly fixedAutoCompleteOptions: AutoCompleteOption[] = [
     { value: 'is:highest', desc: 'Highest PL for each slot' },
@@ -502,21 +493,18 @@ export class GearComponent extends ChildComponent {
       this.loadWishlist();
     });
 
-    // TODO on query params, clear saved search text and apply short cut filters, owner = characterId or vault, postmaster = true/false
     this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       // only care if magic params are here
       if (params.owner || params.postmaster) {
-        this.shortcutInfo$.next({
+        this.shortcutInfo = {
           postmaster: params.postmaster,
           owner: params.owner
-        });
-        console.dir(params);
-        this.router.navigate(
-          [],
-          {
-            relativeTo: this.route,
-            queryParams: {}
-          });
+        };
+        // 1) we could encounter this on initial load, when the owner data isn't populated yet
+        // 2) or we could encounter it post-load, when a user clicks it as a shortcut
+        // for 1, this shouldn't do anything, we'll catch it on the `load` call instead
+        // for 2, this is where it should update the filters
+        this.applyShortcutInfo();
       }
     });
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
@@ -570,10 +558,6 @@ export class GearComponent extends ChildComponent {
       this.visibleFilterText = gFilter;
       this.parseWildcardFilter();
     }
-
-    this.shortcutInfo$.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
-      this.handlePreselects();
-    });
 
     this.filterKeyUp.pipe(takeUntil(this.unsubscribe$), debounceTime(150)).subscribe(() => {
       this.parseWildcardFilter();
@@ -957,11 +941,10 @@ export class GearComponent extends ChildComponent {
         // browser refresh would fix anyway
         if (p?.gear?.length > 0) {
           // if we already stocked our weapon types, this has been done
-          if (this.toggleData.weaponTypes.choices.length == 0) {
+          if (!this.isToggleDataInit()) {
             GearComponent.generateDynamicChoices(p, this.toggleData);
             this.autoCompleteOptions = GearComponent.generateDynamicAutocompleteOptions(this.fixedAutoCompleteOptions, this._player.getValue().gear);
-            // TODO, we just reset our owner list, apply presets if necessary
-            this.handlePreselects();
+            this.applyShortcutInfo();
           }
         }
       }
@@ -970,6 +953,30 @@ export class GearComponent extends ChildComponent {
     finally {
       this.loading.next(false);
     }
+  }
+
+  private isToggleDataInit() {
+    return (this.toggleData.weaponTypes.choices.length > 0);
+  }
+
+  private applyShortcutInfo() {
+    if (!this.shortcutInfo) {
+      return;
+    }
+    if (!this.isToggleDataInit()) {
+      return;
+    }
+    this.resetFilters(true);
+    if  (this.shortcutInfo.owner) {
+      GearToggleComponent.selectExclusiveVal(this.toggleData.owners, this.shortcutInfo.owner);
+      this.toggleData.owners = GearToggleComponent.cloneState(this.toggleData.owners);
+    }
+    if (this.shortcutInfo.postmaster) {
+      GearToggleComponent.selectExclusiveVal(this.toggleData.postmaster, true);
+      this.toggleData.postmaster = GearToggleComponent.cloneState(this.toggleData.postmaster);
+    }
+    this.shortcutInfo = null;
+    this.filterChanged();
   }
 
   private static sortByIndexReverse(a: any, b: any): number {
@@ -1040,40 +1047,6 @@ export class GearComponent extends ChildComponent {
       returnMe.push(new Choice(bucket.displayProperties.name, bucket.displayProperties.name));
     }
     return returnMe;
-  }
-
-  private handlePreselects() {
-    // TODO handle these
-    // // pre select shortcut values
-    // const shortcutInfo = this.shortcutInfo$.getValue();
-
-    // // if we have any presets handle them and then reset them
-    // if (shortcutInfo.owner != null || shortcutInfo.postmaster != null) {
-    //   this.resetFilters();
-    //   if (shortcutInfo.owner != null) {
-    //     for (const t of this.ownerChoices) {
-    //       if (t.matchValue == shortcutInfo.owner) {
-    //         t.value = true;
-    //       } else {
-    //         t.value = false;
-    //       }
-    //     }
-    //     this.ownerToggle?.setAllSelected();
-    //   }
-    //   if (shortcutInfo.postmaster != null) {
-    //     for (const t of this.postmasterChoices) {
-    //       if (t.matchValue === 'true') {
-    //         t.value = true;
-    //       } else {
-    //         t.value = false;
-    //       }
-    //     }
-    //     this.postmasterToggle?.setAllSelected();
-    //   }
-    //   console.log('applied pre-select');
-    //   this.shortcutInfo$.next({ postmaster: null, owner: null });
-    // }
-
   }
 
   private static generateDynamicAutocompleteOptions(baseOptions: AutoCompleteOption[], gear: InventoryItem[]) {
