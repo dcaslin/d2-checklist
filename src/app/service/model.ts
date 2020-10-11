@@ -395,7 +395,8 @@ export interface BountySet {
 
 export class SelectedUser {
     userInfo: UserInfo;
-    selectedUserCurrencies: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
+    currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
+    gearMeta$: BehaviorSubject<GearMeta> = new BehaviorSubject(null);
     clans: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
     membership: BungieMembership;
     promptForPlatform = false;
@@ -568,6 +569,7 @@ export class Player {
     readonly artifactPowerBonus: number;
     readonly transitoryData: ProfileTransitoryData;
     readonly minsPlayed: number;
+    readonly gearMeta: GearMeta;
     maxLL = 0;
     pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = [];
@@ -585,7 +587,7 @@ export class Player {
         seals: Seal[], badges: Badge[],
         title: string, seasons: RecordSeason[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
-        specialAccountProgressions: SpecialAccountProgressions) {
+        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMeta) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -631,6 +633,7 @@ export class Player {
             this.valor = specialAccountProgressions.valor;
             this.seasonRank = specialAccountProgressions.seasonRank;
         }
+        this.gearMeta = gearMeta;
     }
 
     public getWeeklyXp(): number {
@@ -782,6 +785,23 @@ export class Currency {
     }
 }
 
+export interface GearMeta {
+    postmaster: CharPostmasterMeta[];
+    vault: VaultMeta;
+    postmasterTotal: number;
+}
+
+export interface VaultMeta {
+    count: number;
+    total: number;
+}
+
+export interface CharPostmasterMeta {
+    char: Character;
+    count: number;
+    total: number;
+}
+
 export class MilestoneStatus {
     readonly hash: string;
     readonly complete: boolean;
@@ -793,7 +813,7 @@ export class MilestoneStatus {
     readonly tooLowPower: boolean;
     readonly readyToCollect: boolean;
 
-    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string, 
+    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string,
             phases: boolean[], locked: boolean, tooLowPower: boolean, readyToCollect?: boolean) {
         this.hash = hash;
         this.complete = complete;
