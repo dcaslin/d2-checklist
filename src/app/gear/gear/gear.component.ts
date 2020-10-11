@@ -24,11 +24,10 @@ import { ArmorPerksDialogComponent } from './armor-perks-dialog/armor-perks-dial
 import { BulkOperationsHelpDialogComponent } from './bulk-operations-help-dialog/bulk-operations-help-dialog.component';
 import { GearCompareDialogComponent } from './gear-compare-dialog/gear-compare-dialog.component';
 import { GearHelpDialogComponent } from './gear-help-dialog/gear-help-dialog.component';
-import { Choice, GearToggleComponent } from './gear-toggle/gear-toggle.component';
+import { Choice, GearToggleComponent, ToggleConfig, ToggleState } from './gear-toggle/gear-toggle.component';
 import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
-
 
 @Component({
   selector: 'd2c-gear',
@@ -36,92 +35,70 @@ import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season
   styleUrls: ['./gear.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GearComponent extends ChildComponent implements OnInit, AfterViewInit {
+export class GearComponent extends ChildComponent {
 
   private static NUMBER_REGEX = /^\d+$/;
 
+  // show thinking while gear filtering is occurring
   public filtering: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  readonly markChoices: Choice[] = [
-    new Choice('upgrade', 'Upgrade'),
-    new Choice('keep', 'Keep'),
-    new Choice('infuse', 'Infuse'),
-    new Choice('junk', 'Junk'),
-    new Choice(null, 'Unmarked')
-  ];
-
-  readonly ammoTypeChoices: Choice[] = [
-    new Choice(DestinyAmmunitionType.Primary + '', 'Primary'),
-    new Choice(DestinyAmmunitionType.Special + '', 'Special'),
-    new Choice(DestinyAmmunitionType.Heavy + '', 'Heavy')
-  ];
-
-
-  readonly classTypeChoices: Choice[] = [
-    new Choice(ClassAllowed.Titan + '', 'Titan'),
-    new Choice(ClassAllowed.Warlock + '', 'Warlock'),
-    new Choice(ClassAllowed.Hunter + '', 'Hunter'),
-    new Choice(ClassAllowed.Any + '', 'Any'),
-  ];
-  readonly equippedChoices: Choice[] = [
-    new Choice('true', 'Equipped'),
-    new Choice('false', 'Not Equipped')
-  ];
-
+  // our state for all our gear toggles
+  public toggleData: ToggleData;
+  private shortcutInfo: ShortcutInfo = null;
 
   readonly fixedAutoCompleteOptions: AutoCompleteOption[] = [
-    {value: 'is:highest', desc: 'Highest PL for each slot'},
-    {value: 'is:goodroll', desc: 'At least a good roll in each slot'},
-    {value: 'is:godroll', desc: 'A god roll in EVERY slot'},
-    {value: 'is:fixme', desc: 'Best perk unselected'},
-    {value: 'is:light>=', desc: 'Filter by PL'},
-    {value: 'is:stattotal>=', desc: 'Total of ALL stat pts'},
-    {value: 'is:postmaster'},
-    {value: 'is:godrollpve', desc: 'Only PVE god rolls'},
-    {value: 'is:godrollpvp', desc: 'Only PVP god rolls'},
-    {value: 'is:goodrollpve'},
-    {value: 'is:goodrollpvp'},
-    {value: 'is:masterwork', desc: 'Fully MW\'d'},
-    {value: 'is:light<='},
-    {value: 'is:light>'},
-    {value: 'is:light<'},
-    {value: 'is:light='},
-    {value: 'is:copies>', desc: 'Duplicate counts'},
-    {value: 'is:copies>='},
-    {value: 'is:copies<'},
-    {value: 'is:copies<='},
-    {value: 'is:cap<=', desc: 'PL cap'},
-    {value: 'is:cap>='},
-    {value: 'is:cap<'},
-    {value: 'is:cap>'},
-    {value: 'is:stattotal<='},
-    {value: 'is:stattotal>'},
-    {value: 'is:stattotal<'},
-    {value: 'is:stattotal='},
-    {value: 'is:random', desc: 'Random'},
-    {value: 'is:fixed'},
-    {value: 'is:hasmod'},
-    {value: 'is:locked'},
-    {value: 'is:unlocked'},
-    {value: 'is:extratagged', desc: 'It\'s complicated. See help button'},
-    {value: 'has:arrivals', desc: 'Armor can load mods from Arrivals'},
-    {value: 'has:worthy'},
-    {value: 'has:dawn'},
-    {value: 'has:undying'},
-    {value: 'has:opulence'},
-    {value: 'has:drifter'},
-    {value: 'has:forge'},
-    {value: 'has:outlaw'},
-    {value: 'season:none', desc: 'No season mod slot'},
-    {value: 'season:arrivals', desc: 'Arrivals mod slot'},
-    {value: 'season:worthy'},
-    {value: 'season:dawn'},
-    {value: 'season:undying'},
-    {value: 'season:opulence'},
-    {value: 'season:drifter'},
-    {value: 'season:forge'},
-    {value: 'season:outlaw'},
-    {value: 'is:seasonmod', desc: 'Has a seasonal mod slot'}
+    { value: 'is:highest', desc: 'Highest PL for each slot' },
+    { value: 'is:goodroll', desc: 'At least a good roll in each slot' },
+    { value: 'is:godroll', desc: 'A god roll in EVERY slot' },
+    { value: 'is:fixme', desc: 'Best perk unselected' },
+    { value: 'is:light>=', desc: 'Filter by PL' },
+    { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },
+    { value: 'is:postmaster' },
+    { value: 'is:godrollpve', desc: 'Only PVE god rolls' },
+    { value: 'is:godrollpvp', desc: 'Only PVP god rolls' },
+    { value: 'is:goodrollpve' },
+    { value: 'is:goodrollpvp' },
+    { value: 'is:masterwork', desc: 'Fully MW\'d' },
+    { value: 'is:light<=' },
+    { value: 'is:light>' },
+    { value: 'is:light<' },
+    { value: 'is:light=' },
+    { value: 'is:copies>', desc: 'Duplicate counts' },
+    { value: 'is:copies>=' },
+    { value: 'is:copies<' },
+    { value: 'is:copies<=' },
+    { value: 'is:cap<=', desc: 'PL cap' },
+    { value: 'is:cap>=' },
+    { value: 'is:cap<' },
+    { value: 'is:cap>' },
+    { value: 'is:stattotal<=' },
+    { value: 'is:stattotal>' },
+    { value: 'is:stattotal<' },
+    { value: 'is:stattotal=' },
+    { value: 'is:random', desc: 'Random' },
+    { value: 'is:fixed' },
+    { value: 'is:hasmod' },
+    { value: 'is:locked' },
+    { value: 'is:unlocked' },
+    { value: 'is:extratagged', desc: 'It\'s complicated. See help button' },
+    { value: 'has:arrivals', desc: 'Armor can load mods from Arrivals' },
+    { value: 'has:worthy' },
+    { value: 'has:dawn' },
+    { value: 'has:undying' },
+    { value: 'has:opulence' },
+    { value: 'has:drifter' },
+    { value: 'has:forge' },
+    { value: 'has:outlaw' },
+    { value: 'season:none', desc: 'No season mod slot' },
+    { value: 'season:arrivals', desc: 'Arrivals mod slot' },
+    { value: 'season:worthy' },
+    { value: 'season:dawn' },
+    { value: 'season:undying' },
+    { value: 'season:opulence' },
+    { value: 'season:drifter' },
+    { value: 'season:forge' },
+    { value: 'season:outlaw' },
+    { value: 'is:seasonmod', desc: 'Has a seasonal mod slot' }
   ];
 
   public autoCompleteOptions: AutoCompleteOption[];
@@ -137,8 +114,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   damageTypeChoices: Choice[] = [];
 
   vehicleTypeChoices: Choice[] = [];
-  modTypeChoices: Choice[] = [];
-  consumableTypeChoices: Choice[] = [];
   exchangeTypeChoices: Choice[] = [];
   ownerChoices: Choice[] = [];
   rarityChoices: Choice[] = [];
@@ -149,42 +124,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   @ViewChild('optionsgroup')
   public optionsgroup: MatButtonToggleGroup;
 
-  @ViewChild('markToggle')
-  public markToggle: GearToggleComponent;
-  @ViewChild('weaponTypeToggle')
-  public weaponTypeToggle: GearToggleComponent;
-  @ViewChild('ammoTypeToggle')
-  public ammoTypeToggle: GearToggleComponent;
-  @ViewChild('armorInventoryBucketToggle')
-  public armorInventoryBucketToggle: GearToggleComponent;
-  @ViewChild('weaponInventoryBucketToggle')
-  public weaponInventoryBucketToggle: GearToggleComponent;
-  @ViewChild('energyTypeToggle')
-  public energyTypeToggle: GearToggleComponent;
-  @ViewChild('seasonToggle')
-  public seasonToggle: GearToggleComponent;
-  @ViewChild('damageTypeToggle')
-  public damageTypeToggle: GearToggleComponent;
-  @ViewChild('vehicleTypeToggle')
-  public vehicleTypeToggle: GearToggleComponent;
-  @ViewChild('modTypeToggle')
-  public modTypeToggle: GearToggleComponent;
-  @ViewChild('consumableTypeToggle')
-  public consumableTypeToggle: GearToggleComponent;
-  @ViewChild('exchangeTypeToggle')
-  public exchangeTypeToggle: GearToggleComponent;
-  @ViewChild('classTypeToggle')
-  public classTypeToggle: GearToggleComponent;
-  @ViewChild('ownerToggle')
-  public ownerToggle: GearToggleComponent;
-  @ViewChild('equippedToggle')
-  public equippedToggle: GearToggleComponent;
-  @ViewChild('rarityToggle')
-  public rarityToggle: GearToggleComponent;
-
   // filters: GearToggleComponent[] = [];
   filtersDirty = false;
-  filterNotes: string[] = [];
+  debugFilterNotes: string[] = [];
 
   showAllWeaponStats = false;
   controller = true;
@@ -204,13 +146,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   orMode = false;
   appendMode = false;
 
-  options = [
-    { name: 'Weapons', type: ItemType.Weapon, path: 'weapons' },
-    { name: 'Armor', type: ItemType.Armor, path: 'armor' },
-    { name: 'Ghosts', type: ItemType.Ghost, path: 'ghosts' },
-    { name: 'Vehicles', type: ItemType.Vehicle, path: 'vehicles' },
-    { name: 'Material', type: ItemType.ExchangeMaterial, path: 'material' }];
-  option = this.options[0];
+  options: TabOption[];
+  option: TabOption;
+
   sortBy = 'power';
   sortDesc = true;
   gearToShow: InventoryItem[] = [];
@@ -224,6 +162,181 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   DamageType = DamageType;
   EnergyType = EnergyType;
   ClassAllowed = ClassAllowed;
+
+
+  private static initToggles(iconService: IconService, currentTab: TabOption, cacheService: DestinyCacheService): ToggleData {
+    const tagConfig: ToggleConfig = {
+      title: 'Tags',
+      debugKey: 'Tags',
+      icon: iconService.fasTags,
+      displayTabs: [ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle],
+      grabValue: (x: InventoryItem) => x.mark
+    };
+    const weaponBucketsConfig: ToggleConfig = {
+      title: 'Slot',
+      debugKey: 'Weapon Bucket',
+      icon: iconService.fasHelmetBattle,
+      displayTabs: [ItemType.Weapon],
+      grabValue: (x: InventoryItem) => x.inventoryBucket.displayProperties.name
+    };
+    const ammoTypesConfig: ToggleConfig = {
+      title: 'Ammo',
+      debugKey: 'Ammo Type',
+      iconClass: 'icon-ammo_heavy_mono',
+      displayTabs: [ItemType.Weapon],
+      grabValue: (x: InventoryItem) => x.ammoType
+    };
+    const weaponTypesConfig: ToggleConfig = {
+      title: 'Type',
+      debugKey: 'Weapon Type',
+      icon: iconService.fasSwords,
+      displayTabs: [ItemType.Weapon],
+      grabValue: (x: InventoryItem) => x.typeName
+    };
+    const armorBucketsConfig: ToggleConfig = {
+      title: 'Slot',
+      debugKey: 'Armor Bucket',
+      icon: iconService.fasHelmetBattle,
+      displayTabs: [ItemType.Armor],
+      grabValue: (x: InventoryItem) => x.inventoryBucket.displayProperties.name
+    };
+    const energyConfig: ToggleConfig = {
+      title: 'Energy',
+      debugKey: 'Armor Energy Type',
+      icon: iconService.fasBolt,
+      displayTabs: [ItemType.Armor],
+      grabValue: (x: InventoryItem) => x.energyType
+    };
+    const seasonConfig: ToggleConfig = {
+      title: 'Season',
+      debugKey: 'Seasonal mod slot',
+      icon: iconService.fasWheat,
+      displayTabs: [ItemType.Armor],
+      grabValue: (x: InventoryItem) => x.seasonalModSlot
+    };
+    const damageConfig: ToggleConfig = {
+      title: 'Energy',
+      debugKey: 'Weapon Damage Type (energy)',
+      icon: iconService.fasBolt,
+      displayTabs: [ItemType.Weapon],
+      grabValue: (x: InventoryItem) => x.damageType
+    };
+    const vehicleBucketsConfig: ToggleConfig = {
+      title: 'Slot',
+      debugKey: 'Vehicle Bucket',
+      icon: iconService.fasHelmetBattle,
+      displayTabs: [ItemType.Vehicle],
+      grabValue: (x: InventoryItem) => x.inventoryBucket.displayProperties.name
+    };
+    const exchangeTypesConfig: ToggleConfig = {
+      title: 'Type',
+      debugKey: 'Exchange/Material type',
+      icon: iconService.fasGem,
+      displayTabs: [ItemType.ExchangeMaterial],
+      grabValue: (x: InventoryItem) => x.typeName
+    };
+    const ownerConfig: ToggleConfig = {
+      title: 'Owner',
+      debugKey: 'Owner',
+      icon: iconService.fasUsers,
+      displayTabs: null,
+      grabValue: (x: InventoryItem) => x.owner.getValue().id
+    };
+    const raritiesConfig: ToggleConfig = {
+      title: 'Rarity',
+      debugKey: 'Rarity/Tier',
+      icon: iconService.fasBalanceScale,
+      displayTabs: null,
+      grabValue: (x: InventoryItem) => x.tier
+    };
+    const classTypeConfig: ToggleConfig = {
+      title: 'Class',
+      debugKey: 'Class Type',
+      icon: iconService.fasBalanceScale,
+      displayTabs: [ItemType.Armor],
+      grabValue: (x: InventoryItem) => x.classAllowed
+    };
+    const equippedConfig: ToggleConfig = {
+      title: 'Equipped',
+      debugKey: 'Equipped',
+      icon: iconService.fasTShirt,
+      displayTabs: null,
+      grabValue: (x: InventoryItem) => x.equipped.getValue()
+    };
+    const postmasterConfig: ToggleConfig = {
+      title: 'Postmaster',
+      debugKey: 'Postmaster',
+      icon: iconService.fasEnvelope,
+      displayTabs: null,
+      grabValue: (x: InventoryItem) => x.postmaster
+    };
+
+    return {
+      tags: GearToggleComponent.generateState(tagConfig, [
+        new Choice('upgrade', 'Upgrade'),
+        new Choice('keep', 'Keep'),
+        new Choice('infuse', 'Infuse'),
+        new Choice('junk', 'Junk'),
+        new Choice(null, 'Unmarked')
+      ], currentTab.type),
+      energyType: GearToggleComponent.generateState(energyConfig, [
+        new Choice(`${EnergyType.Arc}`, 'Arc'),
+        new Choice(`${EnergyType.Thermal}`, 'Solar'),
+        new Choice(`${EnergyType.Void}`, 'Void'),
+        new Choice(`${EnergyType.Any}`, 'Any')
+      ], currentTab.type),
+      seasons: GearToggleComponent.generateState(seasonConfig, [
+        new Choice(null, 'None'),
+        new Choice('11', 'Arrivals'),
+        new Choice('10', 'Worthy'),
+        new Choice('9', 'Dawn'),
+        new Choice('8', 'Undying'),
+        new Choice('7', 'Opulence'),
+        new Choice('6', 'Drifter'),
+        new Choice('5', 'Forge'),
+        new Choice('4', 'Outlaw'),
+      ], currentTab.type),
+      damageType: GearToggleComponent.generateState(damageConfig,
+        [
+          new Choice(`${DamageType.Kinetic}`, 'Kinetic'),
+          new Choice(`${DamageType.Arc}`, 'Arc'),
+          new Choice(`${DamageType.Thermal}`, 'Solar'),
+          new Choice(`${DamageType.Void}`, 'Void')
+        ], currentTab.type),
+      ammoTypes: GearToggleComponent.generateState(ammoTypesConfig, [
+        new Choice(DestinyAmmunitionType.Primary + '', 'Primary'),
+        new Choice(DestinyAmmunitionType.Special + '', 'Special'),
+        new Choice(DestinyAmmunitionType.Heavy + '', 'Heavy')
+      ], currentTab.type),
+      classType: GearToggleComponent.generateState(classTypeConfig, [
+        new Choice(ClassAllowed.Titan + '', 'Titan'),
+        new Choice(ClassAllowed.Warlock + '', 'Warlock'),
+        new Choice(ClassAllowed.Hunter + '', 'Hunter'),
+        new Choice(ClassAllowed.Any + '', 'Any'),
+      ], currentTab.type),
+      equipped: GearToggleComponent.generateState(equippedConfig, [
+        new Choice(true, 'Equipped'),
+        new Choice(false, 'Not Equipped')
+      ], currentTab.type),
+      postmaster: GearToggleComponent.generateState(postmasterConfig, [
+        new Choice(true, 'Postmaster'),
+        new Choice(false, 'Not postmaster')
+      ], currentTab.type),
+      weaponBuckets: GearToggleComponent.generateState(weaponBucketsConfig,
+        GearComponent.generateBucketChoices(ItemType.Weapon, cacheService), currentTab.type),
+      armorBuckets: GearToggleComponent.generateState(armorBucketsConfig,
+        GearComponent.generateBucketChoices(ItemType.Armor, cacheService), currentTab.type),
+      vehicleBuckets: GearToggleComponent.generateState(vehicleBucketsConfig,
+        GearComponent.generateBucketChoices(ItemType.Vehicle, cacheService), currentTab.type),
+      rarities: GearToggleComponent.generateState(raritiesConfig,
+        GearComponent.generateRarityChoices(cacheService), currentTab.type),
+      weaponTypes: GearToggleComponent.generateState(weaponTypesConfig, [], currentTab.type),
+      exchangeType: GearToggleComponent.generateState(exchangeTypesConfig, [], currentTab.type),
+
+      owners: GearToggleComponent.generateState(ownerConfig, [], currentTab.type)
+    };
+  }
+
 
   show(count: number) {
     this.size = count;
@@ -244,7 +357,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterChangedSubject.next();
   }
 
-  resetFilters(): void {
+  resetFilters(noEmit?: boolean): void {
     if (this.filter) {
       this.filter.nativeElement.value = '';
     }
@@ -252,12 +365,15 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.filterTags = [];
     this.orMode = false;
     this.appendMode = false;
-    const filters = this.grabFilters();
-    for (const toggle of filters) {
-      toggle.selectAll(true);
-    }
-    this.filterChanged();
 
+    for (const key of Object.keys(this.toggleData)) {
+      const data = this.toggleData[key];
+      GearToggleComponent.selectAllState(data);
+      this.toggleData[key] = GearToggleComponent.cloneState(data);
+    }
+    if (!noEmit) {
+      this.filterChanged();
+    }
   }
 
   showPossibleRolls(i: InventoryItem) {
@@ -344,20 +460,66 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     private ref: ChangeDetectorRef) {
     super(storageService);
     this.loading.next(true);
+    this.options = [
+      { name: 'Weapons', type: ItemType.Weapon, path: 'weapons' },
+      { name: 'Armor', type: ItemType.Armor, path: 'armor' },
+      { name: 'Ghosts', type: ItemType.Ghost, path: 'ghosts' },
+      { name: 'Vehicles', type: ItemType.Vehicle, path: 'vehicles' },
+      { name: 'Material', type: ItemType.ExchangeMaterial, path: 'material' }];
+    this.option = this.options[0];
 
     this.autoCompleteOptions = this.fixedAutoCompleteOptions.slice(0);
+    this.toggleData = GearComponent.initToggles(this.iconService, this.option, this.cacheService);
     const savedSize = parseInt(localStorage.getItem('page-size'), 10);
     if (savedSize > 2 && savedSize < 800) {
       this.size = savedSize;
     }
+    // selected user changed
+    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+      this.selectedUser = selectedUser;
+      const controllerPref = localStorage.getItem('mnk-vs-controller');
+      if (controllerPref != null) {
+        this.controller = 'true' == controllerPref;
+      } else {
+        // if no explicit prep, assume MnK on steam, controller otherwise
+        if (this.selectedUser != null && this.selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type) {
+          this.controller = false;
+        } else {
+          this.controller = true;
+        }
+      }
+      console.log(`--- Controller: ${this.controller}`);
+      this.loadMarks();
+      this.loadWishlist();
+    });
 
-
+    this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
+      // only care if magic params are here
+      if (params.owner || params.postmaster) {
+        this.shortcutInfo = {
+          postmaster: params.postmaster,
+          owner: params.owner
+        };
+        // 1) we could encounter this on initial load, when the owner data isn't populated yet
+        // 2) or we could encounter it post-load, when a user clicks it as a shortcut
+        // for 1, this shouldn't do anything, we'll catch it on the `load` call instead
+        // for 2, this is where it should update the filters
+        this.applyShortcutInfo();
+      }
+    });
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       const sTab = params.tab;
       if (sTab) {
         for (const o of this.options) {
           if (o.path == sTab) {
             this.option = o;
+            console.log('Updating toggles from new tab');
+            // update toggles view of current state
+            for (const key of Object.keys(this.toggleData)) {
+              const data: ToggleState = this.toggleData[key];
+              data.visibleItemType = this.option.type;
+              this.toggleData[key] = GearToggleComponent.cloneState(data);
+            }
           }
         }
       }
@@ -371,6 +533,35 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
           this.load();
         }
       });
+    this.filterChangedSubject.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(10))
+      .subscribe(() => {
+        this.filtersDirty = this.checkFilterDirty();
+        this.filterGear();
+        this.filtering.next(false);
+        // TODO is this needed?
+        this.ref.markForCheck();
+      });
+
+
+    this.noteChanged.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(100))
+      .subscribe(itm => {
+        this.markService.updateItem(itm);
+      });
+
+
+    const gFilter = localStorage.getItem('gear-filter');
+    if (gFilter != null) {
+      this.visibleFilterText = gFilter;
+      this.parseWildcardFilter();
+    }
+
+    this.filterKeyUp.pipe(takeUntil(this.unsubscribe$), debounceTime(150)).subscribe(() => {
+      this.parseWildcardFilter();
+    });
   }
 
   public async shardBlues() {
@@ -389,7 +580,7 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   public async pullFromPostmaster(player: Player, itm: InventoryItem) {
     try {
       const owner = itm.owner.getValue();
-      const success = await this.gearService.transfer(player, itm, owner, {isFull: false});
+      const success = await this.gearService.transfer(player, itm, owner, { isFull: false });
       if (success) {
         this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + owner.label);
       } else {
@@ -403,9 +594,9 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public async transfer(player: Player, itm: InventoryItem, target: Target) {
     try {
-      const success = await this.gearService.transfer(player, itm, target, {isFull: false});
+      const success = await this.gearService.transfer(player, itm, target, { isFull: false });
       if (success) {
-      this.notificationService.success('Transferred ' + itm.name + ' to ' + target.label);
+        this.notificationService.success('Transferred ' + itm.name + ' to ' + target.label);
       } else {
         this.notificationService.info('Could not transfer ' + itm.name + ' to ' + target.label + '. Target was full.');
       }
@@ -597,10 +788,12 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
   }
 
-  private wildcardFilter(gear: InventoryItem[]): InventoryItem[] {
+  private wildcardFilter(gear: InventoryItem[], debugFilterNotes: string[]): InventoryItem[] {
     if (this.filterTags.length > 0) {
-      for (const f of this.filterTags) {
-        this.filterNotes.push('wildcard = ' + f);
+      if (this.debugmode.getValue()) {
+        for (const f of this.filterTags) {
+          debugFilterNotes.push('wildcard = ' + f);
+        }
       }
       return gear.filter(this.shouldKeepItem, this);
     } else {
@@ -609,201 +802,79 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
   }
 
   checkFilterDirty() {
-    if (this.filterTags.length > 0) { return true; }
-    const filters = this.grabFilters();
-    for (const toggle of filters) {
-      if (!toggle.isAllSelected$.getValue()) { return true; }
+    // we have wildcard entries
+    if (this.filterTags.length > 0) {
+      return true;
+    }
+
+    // check if toggles are filtering anything
+    for (const key of Object.keys(this.toggleData)) {
+      if (!this.toggleData[key].allSelected) {
+        return true;
+      }
     }
     return false;
   }
 
-  private appendToggleFilterNote(t: GearToggleComponent) {
-    if (t == null) { return; }
-    const note = t.getNotes();
-    if (note != null) {
-      this.filterNotes.push(note);
-    }
-  }
-
-  private appendToggleFilterNotes() {
-    this.appendToggleFilterNote(this.markToggle);
-    this.appendToggleFilterNote(this.weaponTypeToggle);
-    this.appendToggleFilterNote(this.ammoTypeToggle);
-    this.appendToggleFilterNote(this.armorInventoryBucketToggle);
-    this.appendToggleFilterNote(this.weaponInventoryBucketToggle);
-    this.appendToggleFilterNote(this.energyTypeToggle);
-    this.appendToggleFilterNote(this.seasonToggle);
-    this.appendToggleFilterNote(this.damageTypeToggle);
-    this.appendToggleFilterNote(this.vehicleTypeToggle);
-    this.appendToggleFilterNote(this.modTypeToggle);
-    this.appendToggleFilterNote(this.consumableTypeToggle);
-    this.appendToggleFilterNote(this.exchangeTypeToggle);
-    this.appendToggleFilterNote(this.ownerToggle);
-    this.appendToggleFilterNote(this.equippedToggle);
-    this.appendToggleFilterNote(this.rarityToggle);
-    this.appendToggleFilterNote(this.classTypeToggle);
-  }
-
   private toggleFilterSingle(i: InventoryItem, report: any): boolean {
 
-    if (!this.markToggle.isChosen(this.option.type, i.mark)) {
-      const key = 'mark';
-      if (report[key] == null) {
-        report[key] = 0;
+    for (const key of Object.keys(this.toggleData)) {
+      const t: ToggleState = this.toggleData[key];
+      // toggle is hidden or not filtering anything
+      if (t.hidden || t.allSelected) {
+        continue;
       }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.weaponTypeToggle.isChosen(this.option.type, i.typeName)) {
-      const key = 'weaponType';
-      if (report[key] == null) {
-        report[key] = 0;
+      // toggle is empty for some reason
+      if (t.choices == null || t.choices.length == 0) {
+        continue;
       }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.ammoTypeToggle.isChosen(this.option.type, i.ammoType)) {
-      const key = 'ammoType';
-      if (report[key] == null) {
-        report[key] = 0;
+      // only now do we actually have to grab the value from our gear
+      const val = t.config.grabValue(i);
+      // iterate through choices and see if one matches
+      let matched = false;
+      for (const c of t.choices) {
+        if (c.value && c.matchValue == val) {
+          matched = true;
+          continue;
+        }
       }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.armorInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
-      const key = 'armorInventoryBucket';
-      if (report[key] == null) {
-        report[key] = 0;
+      if (matched) {
+        continue;
       }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.damageTypeToggle.isChosen(this.option.type, i.damageType)) {
-      const key = 'damageType';
-      if (report[key] == null) {
-        report[key] = 0;
+      // nothing matched, this item is filtered out, log it
+      if (this.debugmode.getValue()) {
+        if (report[t.config.title] == null) {
+          report[t.config.title] = 0;
+        }
+        report[t.config.title]++;
       }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.energyTypeToggle.isChosen(this.option.type, i.energyType)) {
-      const key = 'energyType';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.seasonToggle.isChosen(this.option.type, i.seasonalModSlot)) {
-      const key = 'season';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.weaponInventoryBucketToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
-      const key = 'weaponInventoryBucket';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.vehicleTypeToggle.isChosen(this.option.type, i.inventoryBucket.displayProperties.name)) {
-      const key = 'vehicleType';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.modTypeToggle.isChosen(this.option.type, i.typeName)) {
-      const key = 'modType';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.consumableTypeToggle.isChosen(this.option.type, i.typeName)) {
-      const key = 'consumableType';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.exchangeTypeToggle.isChosen(this.option.type, i.typeName)) {
-      const key = 'exchangeType';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.ownerToggle.isChosen(this.option.type, i.owner.getValue().id)) {
-      const key = 'owner';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.equippedToggle.isChosen(this.option.type, '' + i.equipped.getValue())) {
-      const key = 'equipped';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.rarityToggle.isChosen(this.option.type, i.tier)) {
-      const key = 'rarity';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
-      return false;
-    }
-    if (!this.classTypeToggle.isChosen(this.option.type, i.classAllowed)) {
-      const key = 'classType';
-      if (report[key] == null) {
-        report[key] = 0;
-      }
-      report[key] = report[key] + 1;
       return false;
     }
     return true;
   }
 
-  private toggleFilter(gear: InventoryItem[]): InventoryItem[] {
-    // hit it with a hammer, owner and rarity are fine
-    this.markToggle.setCurrentItemType(this.option.type);
-    this.weaponTypeToggle.setCurrentItemType(this.option.type);
-    this.ammoTypeToggle.setCurrentItemType(this.option.type);
-    this.armorInventoryBucketToggle.setCurrentItemType(this.option.type);
-    this.weaponInventoryBucketToggle.setCurrentItemType(this.option.type);
-    this.energyTypeToggle.setCurrentItemType(this.option.type);
-    this.seasonToggle.setCurrentItemType(this.option.type);
-    this.damageTypeToggle.setCurrentItemType(this.option.type);
-    this.vehicleTypeToggle.setCurrentItemType(this.option.type);
-    this.modTypeToggle.setCurrentItemType(this.option.type);
-    this.consumableTypeToggle.setCurrentItemType(this.option.type);
-    this.exchangeTypeToggle.setCurrentItemType(this.option.type);
-    this.ownerToggle.setCurrentItemType(this.option.type);
-    this.equippedToggle.setCurrentItemType(this.option.type);
-    this.rarityToggle.setCurrentItemType(this.option.type);
-    this.classTypeToggle.setCurrentItemType(this.option.type);
 
+  private toggleFilter(gear: InventoryItem[], debugFilterNotes: string[]): InventoryItem[] {
 
-    this.appendToggleFilterNotes();
+    // add debug notes if debugging
+    if (this.debugmode.getValue()) {
+      for (const key of Object.keys(this.toggleData)) {
+        const data = this.toggleData[key];
+        const note = GearToggleComponent.getNote(data);
+        if (note) {
+          debugFilterNotes.push(note);
+        }
+      }
+    }
     const returnMe: InventoryItem[] = [];
     const report: any = {};
     for (const i of gear) {
       if (this.toggleFilterSingle(i, report)) {
         returnMe.push(i);
       }
+    }
+    if (this.debugmode.getValue()) {
+      console.dir(report);
     }
 
     return returnMe;
@@ -812,11 +883,13 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
 
   filterGear() {
-    this.filterNotes = [];
     if (this._player.getValue() == null) { return; }
     let tempGear = this._player.getValue().gear.filter(i => i.type == this.option.type);
-    tempGear = this.wildcardFilter(tempGear);
-    tempGear = this.toggleFilter(tempGear);
+    console.log(`Filtering gear - ${tempGear.length}`);
+    const debugFilterNotes = [];
+    tempGear = this.wildcardFilter(tempGear, debugFilterNotes);
+    tempGear = this.toggleFilter(tempGear, debugFilterNotes);
+    this.debugFilterNotes = debugFilterNotes;
     GearService.sortGear(this.sortBy, this.sortDesc, tempGear);
     const start = this.page * this.size;
     const end = Math.min(start + this.size, tempGear.length);
@@ -863,13 +936,47 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       } else {
         const p = await this.gearService.loadGear(this.selectedUser);
         this._player.next(p);
+        // a few of our toggles and our automompletes are stocked by the players inventory
+        // only do this once; might be buggy if a new type shows up post load but pretty unlikely
+        // browser refresh would fix anyway
+        if (p?.gear?.length > 0) {
+          // if we already stocked our weapon types, this has been done
+          if (!this.isToggleDataInit()) {
+            GearComponent.generateDynamicChoices(p, this.toggleData);
+            this.autoCompleteOptions = GearComponent.generateDynamicAutocompleteOptions(this.fixedAutoCompleteOptions, this._player.getValue().gear);
+            this.applyShortcutInfo();
+          }
+        }
       }
-      this.generateChoices();
       this.filterChanged();
     }
     finally {
       this.loading.next(false);
     }
+  }
+
+  private isToggleDataInit() {
+    return (this.toggleData.weaponTypes.choices.length > 0);
+  }
+
+  private applyShortcutInfo() {
+    if (!this.shortcutInfo) {
+      return;
+    }
+    if (!this.isToggleDataInit()) {
+      return;
+    }
+    this.resetFilters(true);
+    if  (this.shortcutInfo.owner) {
+      GearToggleComponent.selectExclusiveVal(this.toggleData.owners, this.shortcutInfo.owner);
+      this.toggleData.owners = GearToggleComponent.cloneState(this.toggleData.owners);
+    }
+    if (this.shortcutInfo.postmaster) {
+      GearToggleComponent.selectExclusiveVal(this.toggleData.postmaster, true);
+      this.toggleData.postmaster = GearToggleComponent.cloneState(this.toggleData.postmaster);
+    }
+    this.shortcutInfo = null;
+    this.filterChanged();
   }
 
   private static sortByIndexReverse(a: any, b: any): number {
@@ -890,45 +997,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return 0;
   }
 
-  private generateDamageTypeChoices(): Choice[] {
-    const returnMe: Choice[] = [];
-    returnMe.push(new Choice('' + DamageType.Kinetic, 'Kinetic'));
-    returnMe.push(new Choice('' + DamageType.Arc, 'Arc'));
-    returnMe.push(new Choice('' + DamageType.Thermal, 'Solar'));
-    returnMe.push(new Choice('' + DamageType.Void, 'Void'));
-    return returnMe;
-  }
-
-  private generateEnergyTypeChoices(): Choice[] {
-    const returnMe: Choice[] = [];
-    returnMe.push(new Choice('' + EnergyType.Arc, 'Arc'));
-    returnMe.push(new Choice('' + EnergyType.Thermal, 'Solar'));
-    returnMe.push(new Choice('' + EnergyType.Void, 'Void'));
-    returnMe.push(new Choice('' + EnergyType.Any, 'Any'));
-    return returnMe;
-  }
-
-
-  private generateSeasonChoices(): Choice[] {
-    const returnMe: Choice[] = [];
-    returnMe.push(new Choice(null, 'None'));
-    returnMe.push(new Choice('11', 'Arrivals'));
-    returnMe.push(new Choice('10', 'Worthy'));
-    returnMe.push(new Choice('9', 'Dawn'));
-    returnMe.push(new Choice('8', 'Undying'));
-    returnMe.push(new Choice('7', 'Opulence'));
-    returnMe.push(new Choice('6', 'Drifter'));
-    returnMe.push(new Choice('5', 'Forge'));
-    returnMe.push(new Choice('4', 'Outlaw'));
-    return returnMe;
-  }
-
-
-
-
-
-  private generateRarityChoices(): Choice[] {
-    const tiers = this.cacheService.cache['ItemTierType'];
+  private static generateRarityChoices(cacheService: DestinyCacheService): Choice[] {
+    const tiers = cacheService.cache['ItemTierType'];
     const aTiers: ApiItemTierType[] = [];
     for (const key of Object.keys(tiers)) {
       const val: ApiItemTierType = tiers[key];
@@ -946,8 +1016,8 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return returnMe;
   }
 
-  private generateBucketChoices(itemType: ItemType): Choice[] {
-    const buckets = this.cacheService.cache['InventoryBucket'];
+  private static generateBucketChoices(itemType: ItemType, cacheService: DestinyCacheService): Choice[] {
+    const buckets = cacheService.cache['InventoryBucket'];
     const aBuckets: ApiInventoryBucket[] = [];
     for (const key of Object.keys(buckets)) {
       const val: ApiInventoryBucket = buckets[key];
@@ -979,55 +1049,50 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     return returnMe;
   }
 
-
-  // TODO use inventorybucket to generate other type choices properly
-
-  private generateChoices(force?: boolean) {
-    if (this._player.getValue() == null) { return; }
-    if (this._player.getValue().gear == null) { return; }
-    if (this._player.getValue().gear.length == 0) { return; }
-    if (this.weaponTypeChoices.length > 0 && !force) { return; }
-
-    const tempOwners = [];
-    for (const char of this._player.getValue().characters) {
-      tempOwners.push(new Choice(char.id, char.label));
-    }
-    tempOwners.push(new Choice(this._player.getValue().vault.id, this._player.getValue().vault.label));
-    tempOwners.push(new Choice(this._player.getValue().shared.id, this._player.getValue().shared.label));
-    this.ownerChoices = tempOwners;
-
-    const temp: any = {};
+  private static generateDynamicAutocompleteOptions(baseOptions: AutoCompleteOption[], gear: InventoryItem[]) {
     // for each piece of gear, grab a set of its type names, by type
     // and grab the superset of rarity tiers
-
     const mwChoices: { [key: string]: boolean } = {};
-
-    for (const i of this._player.getValue().gear) {
-      if (temp[i.type + ''] == null) {
-        temp[i.type + ''] = [];
-        temp[i.type + 'bucket'] = [];
-      }
-      temp[i.type + ''][i.typeName] = true;
-      temp[i.type + 'bucket'][i.inventoryBucket.displayProperties.name] = true;
+    for (const i of gear) {
       if (i.masterwork) {
         const key = 'is:mw:' + i.masterwork.name.toLowerCase();
         mwChoices[key] = true;
       }
-
     }
     const amwChoices: string[] = [];
     for (const mwChoice of Object.keys(mwChoices)) {
       amwChoices.push(mwChoice);
     }
     amwChoices.sort();
-    const newChoices = this.fixedAutoCompleteOptions.slice(0);
+    const newChoices = baseOptions.slice(0);
     for (const c of amwChoices) {
       newChoices.push({
         value: c
       });
     }
-    this.autoCompleteOptions = newChoices;
+    return newChoices;
+  }
 
+
+  private static generateDynamicChoices(player: Player, toggleData: ToggleData) {
+    const tempOwners: Choice[] = [];
+    for (const char of player.characters) {
+      tempOwners.push(new Choice(char.id, char.label));
+    }
+    tempOwners.push(new Choice(player.vault.id, player.vault.label));
+    tempOwners.push(new Choice(player.shared.id, player.shared.label));
+    toggleData.owners.choices = tempOwners;
+    toggleData.owners = GearToggleComponent.cloneState(toggleData.owners);
+
+    // enumerate the actual types of gear, since we'll want that for guns and exchange
+    // actually sift through the gear to find only the ones we need
+    const temp: any = {};
+    for (const i of player.gear) {
+      if (temp[i.type + ''] == null) {
+        temp[i.type + ''] = [];
+      }
+      temp[i.type + ''][i.typeName] = true;
+    }
     const arrays: any = {};
     for (const key of Object.keys(temp)) {
       const arr = [];
@@ -1045,17 +1110,10 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
       });
       arrays[key] = arr;
     }
-    this.weaponTypeChoices = arrays[ItemType.Weapon + ''];
-    this.weaponInventoryBucketChoices = this.generateBucketChoices(ItemType.Weapon);
-    this.damageTypeChoices = this.generateDamageTypeChoices();
-    this.energyTypeChoices = this.generateEnergyTypeChoices();
-    this.seasonChoices = this.generateSeasonChoices();
-    this.armorInventoryBucketChoices = this.generateBucketChoices(ItemType.Armor);
-    this.vehicleTypeChoices = this.generateBucketChoices(ItemType.Vehicle);
-    this.modTypeChoices = arrays[ItemType.GearMod + ''];
-    this.consumableTypeChoices = arrays[ItemType.Consumable + ''];
-    this.exchangeTypeChoices = arrays[ItemType.ExchangeMaterial + ''];
-    this.rarityChoices = this.generateRarityChoices();
+    toggleData.exchangeType.choices = arrays[ItemType.ExchangeMaterial + ''];
+    toggleData.exchangeType = GearToggleComponent.cloneState(toggleData.exchangeType);
+    toggleData.weaponTypes.choices = arrays[ItemType.Weapon + ''];
+    toggleData.weaponTypes = GearToggleComponent.cloneState(toggleData.weaponTypes);
   }
 
   async loadMarks() {
@@ -1113,7 +1171,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 
   public autoCompleteSelected(event: MatAutocompleteSelectedEvent) {
     this.parseWildcardFilter();
-    // console.dir(event);
   }
 
   public handlePage(x: PageEvent) {
@@ -1124,69 +1181,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     }
     this.filterChanged();
   }
-
-  private grabFilters(): GearToggleComponent[] {
-    const filters = [];
-    if (this.markToggle) { filters.push(this.markToggle); }
-    if (this.weaponTypeToggle) { filters.push(this.weaponTypeToggle); }
-    if (this.ammoTypeToggle) { filters.push(this.ammoTypeToggle); }
-    if (this.armorInventoryBucketToggle) { filters.push(this.armorInventoryBucketToggle); }
-    if (this.weaponInventoryBucketToggle) { filters.push(this.weaponInventoryBucketToggle); }
-    if (this.energyTypeToggle) { filters.push(this.energyTypeToggle); }
-    if (this.seasonToggle) { filters.push(this.seasonToggle); }
-    if (this.damageTypeToggle) { filters.push(this.damageTypeToggle); }
-
-    if (this.vehicleTypeToggle) { filters.push(this.vehicleTypeToggle); }
-    if (this.modTypeToggle) { filters.push(this.modTypeToggle); }
-    if (this.consumableTypeToggle) { filters.push(this.consumableTypeToggle); }
-    if (this.exchangeTypeToggle) { filters.push(this.exchangeTypeToggle); }
-    if (this.ownerToggle) { filters.push(this.ownerToggle); }
-    if (this.equippedToggle) { filters.push(this.equippedToggle); }
-    if (this.rarityToggle) { filters.push(this.rarityToggle); }
-    if (this.classTypeToggle) { filters.push(this.classTypeToggle); }
-    return filters;
-  }
-
-  ngAfterViewInit() {
-    this.filterChangedSubject.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(50))
-      .subscribe(() => {
-        this.filtersDirty = this.checkFilterDirty();
-        try {
-          if (this.optionsgroup) {
-            this.option = this.optionsgroup.value;
-            this.filterGear();
-          }
-
-        } catch (e) {
-          console.log('Error filtering: ' + e);
-        }
-        this.filtering.next(false);
-        this.ref.markForCheck();
-      });
-
-
-    this.noteChanged.pipe(
-      takeUntil(this.unsubscribe$),
-      debounceTime(100))
-      .subscribe(itm => {
-        this.markService.updateItem(itm);
-      });
-
-
-    const gFilter = localStorage.getItem('gear-filter');
-    if (gFilter != null) {
-      this.visibleFilterText = gFilter;
-    }
-    this.parseWildcardFilter();
-    this.filterKeyUp.pipe(takeUntil(this.unsubscribe$),
-      debounceTime(150))
-      .subscribe(() => {
-        this.parseWildcardFilter();
-      });
-  }
-
 
   public showSeasonBreakdown(): void {
     const dc = new MatDialogConfig();
@@ -1267,30 +1261,6 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
     this.dialog.open(BulkOperationsHelpDialogComponent, dc);
   }
 
-  ngOnInit() {
-    // selected user changed
-    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-      this.selectedUser = selectedUser;
-      const controllerPref = localStorage.getItem('mnk-vs-controller');
-      if (controllerPref != null) {
-        this.controller = 'true' == controllerPref;
-      } else {
-        // if no explicit prep, assume MnK on steam, controller otherwise
-        if (this.selectedUser != null && this.selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type) {
-          this.controller = false;
-        } else {
-          this.controller = true;
-        }
-      }
-      console.log(`--- Controller: ${this.controller}`);
-      this.loadMarks();
-      this.loadWishlist();
-    });
-  }
-
-  async updateSelectedUser(selectedUser: SelectedUser) {
-
-  }
 
   onLeft() {
     this.paginator.previousPage();
@@ -1310,4 +1280,33 @@ export class GearComponent extends ChildComponent implements OnInit, AfterViewIn
 interface AutoCompleteOption {
   value: string;
   desc?: string;
+}
+
+interface ShortcutInfo {
+  postmaster: boolean | null;
+  owner: string | null;
+}
+
+interface ToggleData {
+  tags: ToggleState;
+  weaponBuckets: ToggleState;
+  weaponTypes: ToggleState;
+  ammoTypes: ToggleState;
+  armorBuckets: ToggleState;
+  energyType: ToggleState;
+  seasons: ToggleState;
+  damageType: ToggleState;
+  vehicleBuckets: ToggleState;
+  exchangeType: ToggleState;
+  owners: ToggleState;
+  rarities: ToggleState;
+  equipped: ToggleState;
+  classType: ToggleState;
+  postmaster: ToggleState;
+}
+
+interface TabOption {
+  name: string;
+  type: ItemType;
+  path: string;
 }

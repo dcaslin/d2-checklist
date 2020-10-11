@@ -233,7 +233,7 @@ export class PandaGodrollsService {
       console.log(`    Using cached ${prefix}: ${key}`);
     }
     const t1 = performance.now();
-    console.log(`${(t1 - t0)} + ' ms to load wishlists`);
+    console.log(`${(t1 - t0)}ms to load wishlists`);
     return rolls;
   }
 

@@ -4,7 +4,7 @@ import {
   faSquare as farSquare, faCheckSquare as falCheckSquare, faClone as falClone,
   faLayerGroup as falLayerGroup, faBars as falBars,
   faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen,
-  faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faMailbox as falMailbox, faSigma as falSigma, 
+  faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faSigma as falSigma,
   faSort as falSort, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy,
   faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow, faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy,
   faInfoSquare as falInfoSquare,
@@ -27,7 +27,7 @@ import {
   faHourglassHalf as fadHourGlassHalf
  } from '@fortawesome/pro-duotone-svg-icons';
 import {
-  faGamepadAlt as fasGamepadAlt, faMinus as fasMinus,
+  faGamepadAlt as fasGamepadAlt, faMinus as fasMinus, faUniversity as fasUniversity, faEnvelope as fasEnvelope,
   faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
@@ -210,7 +210,9 @@ export class IconService {
   public readonly falClone = falClone;
   public readonly falCopy = falCopy;
   public readonly falDiceD20 = falDiceD20;
-  public readonly falMailbox = falMailbox;
+
+  public readonly fasEnvelope = fasEnvelope;
+  public readonly fasUniversity = fasUniversity;
   public readonly falSortDown = falSortDown;
   public readonly falSortUp = falSortUp;
   public readonly falSigma = falSigma;
