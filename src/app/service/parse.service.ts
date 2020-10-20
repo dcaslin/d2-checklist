@@ -2813,15 +2813,22 @@ export class ParseService {
     }
 
     private handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[]) {
-        const g = gear.find(x => x.hash == hash);
-        if (!g) {
+
+        const ag = gear.filter(x => x.hash == hash);
+        if (!ag || ag.length == 0) {
             return;
         }
+        let total = 0;
+        for (const g of ag) {
+            total += g.quantity;
+        }
+
+        const g = ag[0];
         const curr = currencies.find(x => x.hash === g.hash);
         if (curr) {
-            curr.count += g.quantity;
+            curr.count += total;
         } else {
-            currencies.push(new Currency(g.hash, g.name, g.icon, g.quantity));
+            currencies.push(new Currency(g.hash, g.name, g.icon, total));
         }
     }
 
