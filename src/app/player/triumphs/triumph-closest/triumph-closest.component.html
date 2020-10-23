@@ -1,8 +1,12 @@
 <ng-container *ngIf="state.player|async as player">
     <h4 class="triumph-score">
-        Closest 10
+        <mat-select [(ngModel)]="selectedMaxResults" placeholder="Max Results" class="searchField">
+            <mat-option *ngFor="let p of maxResults" [value]="p">
+                Closest {{ p }}
+            </mat-option>
+        </mat-select>
         <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.showZeroPtTriumphs">
-            Show Zero Pt
+            Show 0 Pt
         </mat-checkbox>
         <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.showInvisTriumphs">
             Show Invisible
@@ -19,7 +23,7 @@
     <table class="responsive-table">
         <tbody>
             <ng-container *ngFor="let t of player.lowHangingTriumphs; index as cntr">
-                <tr>
+                <tr *ngIf="cntr < selectedMaxResults">
                     <td class="lead" data-label="">
                         <d2c-triumph-name [t]="t" [cntr]="cntr" [hideOption]="true" [debugmode]="debugmode|async" (navigate)="navigate($event)"></d2c-triumph-name>                        
                     </td>

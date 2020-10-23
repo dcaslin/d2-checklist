@@ -12,6 +12,8 @@ import { Router, ActivatedRoute } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TriumphClosestComponent extends ChildComponent implements OnInit {
+  maxResults: number[] = [10, 25, 50];
+  selectedMaxResults = 10;
 
   constructor(storageService: StorageService,
     private router: Router,

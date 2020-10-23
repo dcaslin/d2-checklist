@@ -2708,7 +2708,7 @@ export class ParseService {
                 } catch (exc) {
                     console.dir(exc);
                 }
-                lowHangingTriumphs = lowHangingTriumphs.slice(0, 10);
+                lowHangingTriumphs = lowHangingTriumphs.slice(0, 50);
                 const seasonDescs: any[] = this.destinyCacheService.cache.RecordSeasons;
                 for (const seasonDesc of seasonDescs) {
                     const seasonRecords: TriumphRecordNode[] = [];
