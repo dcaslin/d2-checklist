@@ -1,6 +1,6 @@
 <div class="title-row">
     <div>
-        <ng-container *ngIf="cntr">
+        <ng-container *ngIf="cntr!=null">
             {{cntr+1}}.&ensp;
         </ng-container>
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="t.complete && t.redeemed"
