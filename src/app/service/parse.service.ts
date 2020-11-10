@@ -602,7 +602,7 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['248573323'];  // TODO UPDATE ME  2007338097
+        const s: Season = this.destinyCacheService.cache.Season['2809059427'];  // TODO UPDATE ME  2007338097 -> 248573323
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
@@ -1509,10 +1509,7 @@ export class ParseService {
                     }
                 }
             }
-
-
             const dAct = {};
-
             for (const a of activities) {
                 const key = a.name + ' ' + a.modifiers.length;
                 if (dAct[key] == null) {
@@ -1525,7 +1522,6 @@ export class ParseService {
                     dAct[key].lls.push(a.ll);
                 }
             }
-
             const aggActivities = [];
             let nothingInteresting = true;
             for (const key of Object.keys(dAct)) {
@@ -1566,8 +1562,10 @@ export class ParseService {
                 }
             }
             if (ms.milestoneHash == 2712317338 && rewards == '???') { // Garden of Salvation
-                rewards = 'Pinnacle Gear';
-            } else if (ms.milestoneHash == 2434762343 && rewards == '???') { // Crucible Core
+                // rewards = 'Pinnacle Gear';
+                rewards = 'Legendary Gear';
+            } else
+            if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
                 rewards = 'Pinnacle Gear (Weak)';
@@ -1609,7 +1607,7 @@ export class ParseService {
             } else if (pushMe.hash == '3628293753') {
                 pushMe.summary = 'Trials Seven Wins';
                 pushMe.dependsOn = ['3628293757', '3628293755'];
-            }
+            }            
             returnMe.push(pushMe);
         }
         // we're still missing nightfalls and heroic menagerie and some other fun stuff we need to get from a character
@@ -1730,34 +1728,6 @@ export class ParseService {
 
             }
         }
-        // so Bungie is showing 4 milestones on the public list for Contact, but only one of them is real
-        // I'm just going to promise that I'll never complete Contact on all three chars right now
-        if (sample && sampleProfile && sampleProfile.characterProgressions && sampleProfile.characterProgressions.data) {
-            const CONTACT_CANDIDATES = ['725935997', '1586382136', '3657936059', '332644611'];
-            let foundContactMs = null;
-            // repeat for each char
-            for (const key of Object.keys(sampleProfile.characterProgressions.data)) {
-                const charProg = sampleProfile.characterProgressions.data[key];
-                for (const hash of CONTACT_CANDIDATES) {
-                    if (charProg.milestones[hash]) {
-                        foundContactMs = hash;
-                        break;
-                    }
-                }
-            }
-            // we found our real contact ms, remove all the others
-            for (const key of CONTACT_CANDIDATES) {
-                // if this isn't the real one, remove it
-                if (key != foundContactMs) {
-                    const removeMe = returnMe.find((x) => {
-                        return x.hash == key;
-                    });
-                    const index = returnMe.indexOf(removeMe);
-                    returnMe.splice(index, 1);
-                }
-            }
-
-        }
         returnMe.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
             if (a.pl > b.pl) { return -1; }
@@ -1767,18 +1737,11 @@ export class ParseService {
             if (a.name > b.name) { return 1; }
             return 0;
         });
-
-        let flashpoint: string = null;
         let weekStart: moment.Moment = null;
 
         // grab special milestones to have them for the home screen and such
         for (const m of returnMe) {
-
-            if ('463010297' === m.hash) {
-                let name = m.summary;
-                name = name.replace('FLASHPOINT: ', '');
-                name = name.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
-                flashpoint = name;
+            if (m.milestoneType == 3 && weekStart == null) {
                 weekStart = moment(m.start);
             }
         }
@@ -1792,7 +1755,7 @@ export class ParseService {
             reckoning: reckoning,
             nightfalls: nightfalls,
             nightmareHunts: nightmareHunts,
-            flashpoint: flashpoint,
+            flashpoint: null,
             weekStart: weekStart
         };
     }
@@ -2284,7 +2247,7 @@ export class ParseService {
                 }
                 milestoneList.push(ms);
             }
-            const missingMilestones = ['2770934901'];
+            const missingMilestones = [];
             let msAdded = false;
             for (const m of missingMilestones) {
                 if (milestonesByKey[m] != null) {
@@ -2629,6 +2592,7 @@ export class ParseService {
                 });
 
                 const collLeaves: TriumphCollectibleNode[] = [];
+                // old 3790247699
                 colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
                 searchableCollection = collLeaves.sort((a, b) => {
                     if (a.name < b.name) { return -1; }
@@ -2644,16 +2608,16 @@ export class ParseService {
             if (records.length > 0) {
                 let triumphLeaves: TriumphRecordNode[] = [];
 
-                // Seals
-                const tempSeals = this.handleRecPresNode([], '1652422747', nodes, records, triumphLeaves, true, true, contentVaultOnly).children;
+                // Seals 1652422747
+                const tempSeals = this.handleRecPresNode([], '616318467', nodes, records, triumphLeaves, true, true, contentVaultOnly).children;
                 for (const ts of tempSeals) {
                     const seal = this.buildSeal(ts, badges);
                     if (seal != null) {
                         seals.push(seal);
                     }
                 }
-                // Tree
-                recordTree = this.handleRecPresNode([], '1024788583', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly).children;
+                // Tree 1024788583
+                recordTree = this.handleRecPresNode([], '1866538467', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly).children;
                 const leafSet = {};
                 for (const t of triumphLeaves) {
                     leafSet[t.hash] = t;
@@ -2771,7 +2735,7 @@ export class ParseService {
             this.handleCurrency('4257549984', gear, currencies); // prisms
             this.handleCurrency('3853748946', gear, currencies); // cores
         }
-        this.handleChallengeMilestones(chars, quests, milestoneList);
+        // this.handleChallengeMilestones(chars, quests, milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -2794,7 +2758,7 @@ export class ParseService {
                 count: profileInventory.data.items.filter(x => x.bucketHash == 138197802).length,
                 total: this.destinyCacheService.cache.InventoryBucket['138197802'].itemCount
             }
-        }
+        };
         if (charInvs == null || charInvs.data == null) {
             return returnMe;
         }
@@ -2832,96 +2796,98 @@ export class ParseService {
         }
     }
 
-    private handleChallengeMilestones(chars: Character[], quests: InventoryItem[], milestoneList: MileStoneName[]) {
-        if (quests == null || quests.length == 0) {
-            return;
-        }
-        // we're not loading milestones
-        if (chars[0].endWeek == null) {
-            return;
-        }
-        // extra luna's '1257909267', '1652224118', '2256060246'
+    // private handleChallengeMilestones(chars: Character[], quests: InventoryItem[], milestoneList: MileStoneName[]) {
+    //     if (quests == null || quests.length == 0) {
+    //         return;
+    //     }
+    //     // we're not loading milestones
+    //     if (chars[0].endWeek == null) {
+    //         return;
+    //     }
+    //     // extra luna's '1257909267', '1652224118', '2256060246'
+    //     // remove dark times 2743269252
+    //     const challengeMilestones = ['247878674', '2701029102'];
 
-        // remove dark times 2743269252
-        const challengeMilestones = ['247878674', '2701029102'];
+    //     const foundMilestones = [];
+    //     // is the char sitting on Mysterious Disturbance or In Search of Answers?
+    //     const hasErisWorkToDo = {};
+    //     for (const c of chars) {
+    //         hasErisWorkToDo[c.characterId] = false;
+    //     }
 
-        const foundMilestones = [];
-        // is the char sitting on Mysterious Disturbance or In Search of Answers?
-        const hasErisWorkToDo = {};
-        for (const c of chars) {
-            hasErisWorkToDo[c.characterId] = false;
-        }
+    //     for (const q of quests) { // luna's calling
+    //         if (q.hash == '2178015352' || q.hash == '4039893890') {
+    //             hasErisWorkToDo[(q.owner.getValue() as Character).characterId] = true;
+    //         }
+    //         for (const cHash of challengeMilestones) {
+    //             if (q.hash == cHash ||
+    //                 (cHash == '2701029102' &&
+    //                     (q.hash == '1257909267' ||
+    //                         q.hash == '1652224118' ||
+    //                         q.hash == '2256060246'
+    //                     ))
+    //             ) {
+    //                 if (foundMilestones.indexOf(cHash) < 0) {
+    //                     foundMilestones.push(cHash);
+    //                 }
+    //                 const c = q.owner.getValue() as Character;
+    //                 const obj = q.objectives[0];
+    //                 const total = obj.completionValue ? obj.completionValue : 1;
+    //                 const pct = obj.progress / total;
+    //                 let info = null;
+    //                 if (pct > 0 && pct < 1) {
+    //                     info = Math.floor(100 * pct) + '% complete';
+    //                 }
+    //                 const suppInfo = obj.progress + ' / ' + obj.completionValue;
+    //                 c.milestones[cHash] = new MilestoneStatus(cHash, obj.complete, pct, info, suppInfo, [], false, false);
+    //             }
+    //         }
 
-        for (const q of quests) { // luna's calling
-            if (q.hash == '2178015352' || q.hash == '4039893890') {
-                hasErisWorkToDo[(q.owner.getValue() as Character).characterId] = true;
-            }
-            for (const cHash of challengeMilestones) {
-                if (q.hash == cHash ||
-                    (cHash == '2701029102' &&
-                        (q.hash == '1257909267' ||
-                            q.hash == '1652224118' ||
-                            q.hash == '2256060246'
-                        ))
-                ) {
-                    if (foundMilestones.indexOf(cHash) < 0) {
-                        foundMilestones.push(cHash);
-                    }
-                    const c = q.owner.getValue() as Character;
-                    const obj = q.objectives[0];
-                    const total = obj.completionValue ? obj.completionValue : 1;
-                    const pct = obj.progress / total;
-                    let info = null;
-                    if (pct > 0 && pct < 1) {
-                        info = Math.floor(100 * pct) + '% complete';
-                    }
-                    const suppInfo = obj.progress + ' / ' + obj.completionValue;
-                    c.milestones[cHash] = new MilestoneStatus(cHash, obj.complete, pct, info, suppInfo, [], false, false);
-                }
-            }
+    //     }
+    //     for (const f of foundMilestones) {
 
-        }
-        for (const f of foundMilestones) {
+    //         const fDesc = this.destinyCacheService.cache.InventoryItem[f];
+    //         if (fDesc==null) {
+    //             continue;
+    //         }
+    //         const qHash = fDesc.objectives.questlineItemHash;
+    //         const qDesc = this.destinyCacheService.cache.InventoryItem[qHash];
+    //         let rewardName = null;
+    //         if (qDesc.value != null && qDesc.value.itemValue != null) {
+    //             for (const val of qDesc.value.itemValue) {
+    //                 if (val.itemHash === 0) { continue; }
+    //                 const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+    //                 if (valDesc != null) {
+    //                     rewardName = valDesc.displayProperties.name;
+    //                     break;
+    //                 }
+    //             }
+    //         }
+    //         const ms: MileStoneName = {
+    //             key: f,
+    //             resets: chars[0].endWeek.toISOString(),
+    //             rewards: rewardName,
+    //             pl: this.parseMilestonePl(rewardName),
+    //             name: qDesc.displayProperties.name,
+    //             desc: fDesc.displayProperties.description,
+    //             dependsOn: [],
+    //             hasPartial: true,
+    //             neverDisappears: false
+    //         };
+    //         milestoneList.push(ms);
 
-            const fDesc = this.destinyCacheService.cache.InventoryItem[f];
-            const qHash = fDesc.objectives.questlineItemHash;
-            const qDesc = this.destinyCacheService.cache.InventoryItem[qHash];
-            let rewardName = null;
-            if (qDesc.value != null && qDesc.value.itemValue != null) {
-                for (const val of qDesc.value.itemValue) {
-                    if (val.itemHash === 0) { continue; }
-                    const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
-                    if (valDesc != null) {
-                        rewardName = valDesc.displayProperties.name;
-                        break;
-                    }
-                }
-            }
-            const ms: MileStoneName = {
-                key: f,
-                resets: chars[0].endWeek.toISOString(),
-                rewards: rewardName,
-                pl: this.parseMilestonePl(rewardName),
-                name: qDesc.displayProperties.name,
-                desc: fDesc.displayProperties.description,
-                dependsOn: [],
-                hasPartial: true,
-                neverDisappears: false
-            };
-            milestoneList.push(ms);
-
-            for (const c of chars) {
-                if (c.milestones[f] != null) {
-                    continue;
-                }
-                if (f == '2701029102' && hasErisWorkToDo[c.characterId]) {
-                    c.milestones[f] = new MilestoneStatus(f, true, 0, null, null, null, true, false);
-                } else {
-                    c.milestones[f] = new MilestoneStatus(f, true, 1, null, null, [], false, c.notReady);
-                }
-            }
-        }
-    }
+    //         for (const c of chars) {
+    //             if (c.milestones[f] != null) {
+    //                 continue;
+    //             }
+    //             if (f == '2701029102' && hasErisWorkToDo[c.characterId]) {
+    //                 c.milestones[f] = new MilestoneStatus(f, true, 0, null, null, null, true, false);
+    //             } else {
+    //                 c.milestones[f] = new MilestoneStatus(f, true, 1, null, null, [], false, c.notReady);
+    //             }
+    //         }
+    //     }
+    // }
 
     private cookSpecialAccountProgression(accountProgressions: Progression[]): SpecialAccountProgressions {
         const returnMe = {

@@ -4,14 +4,14 @@
       <div class="top-section">
         
         <div class="normal-top-section">
-          <div class="announcement light-border" *ngIf="!hideAnnouncement">
+          <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
             <div class="announcement-body">
               Check out the new <a class="no-break" routerLink="/content-vault"> <fa-icon  class="warn-text" [icon]="iconService.fadHourGlassHalf"></fa-icon><span class="link-text">Content Vault page</span></a>! 
             </div>
             <div>
               <button mat-icon-button (click)="onHideAnnouncement()"><fa-icon  [icon]="iconService.fasTimes"></fa-icon></button>
             </div>
-          </div>
+          </div> -->
 
           <div>
             <div *ngIf="debugmode|async" style="margin-bottom: 25px; text-align: left">
@@ -214,7 +214,7 @@
             *ngTemplateOutlet="burnDialogs; context: {title: 'Nightmare Hunts', milestones: today.publicMilestones.nightmareHunts}">
           </ng-container>
         </div>
-        <div>
+        <!-- <div>
 
           <ng-container
             *ngTemplateOutlet="simpleBurns; context: {title: 'Heroic Strike Modifiers', milestone: today.publicMilestones.heroicStrikes}">
@@ -252,7 +252,7 @@
           <ng-container
             *ngTemplateOutlet="simpleBurns; context: {title: 'Heroic Menagerie Modifiers', milestone: today.publicMilestones.herMenag}">
           </ng-container>
-        </div>
+        </div> -->
         <div>
           <mat-card>
             <mat-card-header>
@@ -289,7 +289,7 @@
           <ng-container
             *ngTemplateOutlet="simpleBurns; context: {title: 'Reckoning Modifiers', milestone: today.publicMilestones.reckoning}">
           </ng-container>
-          <mat-card *ngIf="today.week && today.week.escalationProtocolBoss">
+          <!-- <mat-card *ngIf="today.week && today.week.escalationProtocolBoss">
             <mat-card-header>
               <mat-card-title>Escalation Protocol</mat-card-title>
               <mat-card-subtitle>Complete all 7 waves for a chance at a weapon drop</mat-card-subtitle>
@@ -306,7 +306,7 @@
                   {{today.week.escalationProtocolWeapon}}</mat-list-item>
               </mat-list>
             </mat-card-content>
-          </mat-card>
+          </mat-card> -->
           <mat-card>
             <mat-card-header>
               <mat-card-title>Dreaming City</mat-card-title>
@@ -334,7 +334,7 @@
             </mat-card-content>
           </mat-card>
         </div>
-        <div>
+        <!-- <div>
           <mat-card>
             <mat-card-header>
               <mat-card-title>Crucible Rotator</mat-card-title>
@@ -372,7 +372,7 @@
               </mat-list>
             </mat-card-content>
           </mat-card>
-        </div>
+        </div> -->
       </div>
     </div>
     <div *ngIf="(disableAds|async)!==true" class="adRight">
