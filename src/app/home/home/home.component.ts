@@ -78,7 +78,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     if (this.destinyCacheService.cache != null) {
       this.manifestVersion = this.destinyCacheService.cache.version;
     }
-    this.hideAnnouncement = "true" === localStorage.getItem('hide-announcement-content-vault');
+    this.hideAnnouncement = 'true' === localStorage.getItem('hide-announcement-content-vault');
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
@@ -95,7 +95,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
             this.ref.markForCheck();
           }
           let sl = x.shoppinglist as { [key: string]: boolean };
-          sl = sl? sl : {};
+          sl = sl ? sl : {};
           this.shoppingListHashes.next(sl);
         });
 
@@ -109,11 +109,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   public clearShoppingItems() {
-    this.storageService.clearHashList("shoppinglist");
+    this.storageService.clearHashList('shoppinglist');
   }
 
   public removeShoppingItem(i: SaleItem) {
-    this.storageService.untrackHashList("shoppinglist", i.hash);
+    this.storageService.untrackHashList('shoppinglist', i.hash);
   }
 
   private setPlatform(type: number) {
