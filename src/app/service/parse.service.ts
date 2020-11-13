@@ -1607,7 +1607,7 @@ export class ParseService {
             } else if (pushMe.hash == '3628293753') {
                 pushMe.summary = 'Trials Seven Wins';
                 pushMe.dependsOn = ['3628293757', '3628293755'];
-            }            
+            }
             returnMe.push(pushMe);
         }
         // we're still missing nightfalls and heroic menagerie and some other fun stuff we need to get from a character
@@ -2592,7 +2592,6 @@ export class ParseService {
                 });
 
                 const collLeaves: TriumphCollectibleNode[] = [];
-                // old 3790247699
                 colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
                 searchableCollection = collLeaves.sort((a, b) => {
                     if (a.name < b.name) { return -1; }
@@ -2616,8 +2615,32 @@ export class ParseService {
                         seals.push(seal);
                     }
                 }
+                // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
+                // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
-                recordTree = this.handleRecPresNode([], '1866538467', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly).children;
+                recordTree = this.handleRecPresNode([], '1866538467', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly, []).children;
+
+                // exotic catalysts
+                let oChild = this.handleRecPresNode([], '511607103', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                if (oChild && oChild.children && oChild.children.length > 0) {
+                    recordTree.push(oChild.children[0]);
+                }
+                // medals
+                oChild = this.handleRecPresNode([], '3901403713', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                if (oChild && oChild.children && oChild.children.length > 0) {
+                recordTree.push(oChild.children[0]);
+                }
+                // metrics
+                // oChild = this.handleRecPresNode([], '1074663644', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                // recordTree.push(oChild);
+                // lore
+                oChild = this.handleRecPresNode([], '1993337477', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                if (oChild && oChild.children && oChild.children.length > 0) {
+                    recordTree.push(oChild.children[0]);
+                }
+
+
+
                 const leafSet = {};
                 for (const t of triumphLeaves) {
                     leafSet[t.hash] = t;
@@ -2638,9 +2661,11 @@ export class ParseService {
                     if (a.percent < b.percent) { return 1; }
                     return 0;
                 });
+
                 searchableTriumphs = triumphLeaves.filter(x => {
                     return (x.name != null) && (x.name.trim().length > 0);
                 });
+
                 // const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs, false);
                 // searchableTriumphs.push(mmxix);
                 // const mmxx = this.handleRecordNode([], '4239091332', records, showZeroPtTriumphs, showInvisTriumphs, false);
@@ -2934,7 +2959,7 @@ export class ParseService {
         return bestNode;
     }
 
-    private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean): TriumphPresentationNode {
+    private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean, extraRoots?: string[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) {
@@ -2952,7 +2977,21 @@ export class ParseService {
         let vaultedIncomplete = 0;
         let vaultedComplete = 0;
         if (pDesc.children != null) {
-            for (const child of pDesc.children.presentationNodes) {
+            let presNodes = pDesc.children.presentationNodes.slice(0);
+            let recNodes = pDesc.children.records.slice(0);
+            if (extraRoots) {
+                for (const extraRoot of extraRoots) {
+                    const xrDesc = this.destinyCacheService.cache.PresentationNode[extraRoot];
+                    if (xrDesc == null) {
+                        return null;
+                    }
+                    presNodes = presNodes.concat(xrDesc.children.presentationNodes);
+                    recNodes = presNodes.concat(xrDesc.children.records);
+                }
+            }
+
+
+            for (const child of presNodes) {
                 const oChild = this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
                 if (oChild == null) { continue; }
                 children.push(oChild);
@@ -2963,7 +3002,7 @@ export class ParseService {
                 vaultedComplete += oChild.vaultedChildrenComplete;
                 vaultedIncomplete += oChild.vaultedChildrenIncomplete;
             }
-            for (const child of pDesc.children.records) {
+            for (const child of recNodes) {
                 const oChild = this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
