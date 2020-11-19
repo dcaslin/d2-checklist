@@ -430,7 +430,9 @@ export class ParseService {
                                             suppInfo = o.progress + ' / ' + oDesc.completionValue;
                                         } else if (oDesc.completionValue == 1) {
                                             if (oDesc.progressDescription) {
-                                                if (oDesc.progressDescription.toLowerCase().startsWith('speak with')
+                                                if (
+                                                    oDesc.progressDescription.endsWith(' visited')
+                                                    || oDesc.progressDescription.toLowerCase().startsWith('speak with')
                                                     || oDesc.progressDescription.toLowerCase().startsWith('reward collected')
                                                     || oDesc.progressDescription.toLowerCase().endsWith('for a reward.')
                                                 ) {
@@ -1565,15 +1567,15 @@ export class ParseService {
                 // rewards = 'Pinnacle Gear';
                 rewards = 'Legendary Gear';
             } else
-            if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
-                rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
-                rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 1437935813 && rewards == '???') { // Weekly Vanguard
-                rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 3603098564) { // override clan weekly
-                rewards = 'Pinnacle Gear (Weak)';
-            }
+                if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
+                    rewards = 'Pinnacle Gear (Weak)';
+                } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
+                    rewards = 'Pinnacle Gear (Weak)';
+                } else if (ms.milestoneHash == 1437935813 && rewards == '???') { // Weekly Vanguard
+                    rewards = 'Pinnacle Gear (Weak)';
+                } else if (ms.milestoneHash == 3603098564) { // override clan weekly
+                    rewards = 'Pinnacle Gear (Weak)';
+                }
             // // weekly pinnacle challenge, not in list yet, but just in case
             // if (ms.milestoneHash == 3881226684) {
             //     rewards = 'Pinnacle Gear';
@@ -2628,7 +2630,7 @@ export class ParseService {
                 // medals
                 oChild = this.handleRecPresNode([], '3901403713', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
-                recordTree.push(oChild.children[0]);
+                    recordTree.push(oChild.children[0]);
                 }
                 // metrics
                 // oChild = this.handleRecPresNode([], '1074663644', nodes, records, triumphLeaves, true, true, contentVaultOnly);
