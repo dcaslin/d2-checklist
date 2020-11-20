@@ -1,6 +1,11 @@
-<div *ngIf="i.icon!=null" class="pointer item-image divider-border"
-    [style.background-image]="'url(//www.bungie.net' + i.icon + ')'" [class.masterworked]="i.masterworked"
+<div *ngIf="i.icon!=null" class="pointer item divider-border"
+     [class.masterworked]="i.masterworked"
     [matMenuTriggerFor]="itemMenu">
+    
+    <img [src]="'//www.bungie.net' + i.icon" class="item-image" loading="lazy">
+    <div class="icon-watermark" *ngIf="i.iconWatermark">
+        <img [src]="'//www.bungie.net' + i.iconWatermark" class="img" loading="lazy">
+    </div>
     <div *ngIf="i.power>0" class="primary-stat"
         [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
         [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"

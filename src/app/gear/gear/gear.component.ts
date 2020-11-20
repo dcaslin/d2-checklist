@@ -81,6 +81,7 @@ export class GearComponent extends ChildComponent {
     { value: 'is:locked' },
     { value: 'is:unlocked' },
     { value: 'is:extratagged', desc: 'It\'s complicated. See help button' },
+    { value: 'has:Hunt' },
     { value: 'has:arrivals', desc: 'Armor can load mods from Arrivals' },
     { value: 'has:worthy' },
     { value: 'has:dawn' },
@@ -91,6 +92,7 @@ export class GearComponent extends ChildComponent {
     { value: 'has:outlaw' },
     { value: 'season:none', desc: 'No season mod slot' },
     { value: 'season:arrivals', desc: 'Arrivals mod slot' },
+    { value: 'season:hunt' },
     { value: 'season:worthy' },
     { value: 'season:dawn' },
     { value: 'season:undying' },
@@ -242,6 +244,13 @@ export class GearComponent extends ChildComponent {
       displayTabs: null,
       grabValue: (x: InventoryItem) => x.owner.getValue().id
     };
+    const powerCapsConfig: ToggleConfig = {
+      title: 'Cap',
+      debugKey: 'Cap',
+      icon: iconService.fasLevelUpAlt,
+      displayTabs: [ItemType.Weapon, ItemType.Armor],
+      grabValue: (x: InventoryItem) => x.powerCap
+    };
     const raritiesConfig: ToggleConfig = {
       title: 'Rarity',
       debugKey: 'Rarity/Tier',
@@ -287,6 +296,7 @@ export class GearComponent extends ChildComponent {
       ], currentTab.type),
       seasons: GearToggleComponent.generateState(seasonConfig, [
         new Choice(null, 'None'),
+        new Choice('12', 'Hunt'),
         new Choice('11', 'Arrivals'),
         new Choice('10', 'Worthy'),
         new Choice('9', 'Dawn'),
@@ -332,8 +342,8 @@ export class GearComponent extends ChildComponent {
         GearComponent.generateRarityChoices(cacheService), currentTab.type),
       weaponTypes: GearToggleComponent.generateState(weaponTypesConfig, [], currentTab.type),
       exchangeType: GearToggleComponent.generateState(exchangeTypesConfig, [], currentTab.type),
-
-      owners: GearToggleComponent.generateState(ownerConfig, [], currentTab.type)
+      owners: GearToggleComponent.generateState(ownerConfig, [], currentTab.type),
+      powerCaps: GearToggleComponent.generateState(powerCapsConfig, [], currentTab.type)
     };
   }
 
@@ -1087,11 +1097,29 @@ export class GearComponent extends ChildComponent {
     // enumerate the actual types of gear, since we'll want that for guns and exchange
     // actually sift through the gear to find only the ones we need
     const temp: any = {};
+    const dPowerCaps: any = {};
     for (const i of player.gear) {
       if (temp[i.type + ''] == null) {
         temp[i.type + ''] = [];
       }
       temp[i.type + ''][i.typeName] = true;
+      if (i.powerCap) {
+        dPowerCaps[i.powerCap] = true;
+      }
+    }
+    const aPowerCaps = [];
+    for (const key of Object.keys(dPowerCaps)) {
+      aPowerCaps.push(key);
+    }
+    aPowerCaps.sort();
+    aPowerCaps.reverse();
+    const aPowerCapChoices = [];
+    for (const pc of aPowerCaps) {
+      if (pc == 9999) {
+        aPowerCapChoices.push(new Choice(pc, 'None'));
+      } else {
+        aPowerCapChoices.push(new Choice(pc, `${pc}`));
+      }
     }
     const arrays: any = {};
     for (const key of Object.keys(temp)) {
@@ -1114,6 +1142,8 @@ export class GearComponent extends ChildComponent {
     toggleData.exchangeType = GearToggleComponent.cloneState(toggleData.exchangeType);
     toggleData.weaponTypes.choices = arrays[ItemType.Weapon + ''];
     toggleData.weaponTypes = GearToggleComponent.cloneState(toggleData.weaponTypes);
+    toggleData.powerCaps.choices = aPowerCapChoices;
+    toggleData.powerCaps = GearToggleComponent.cloneState(toggleData.powerCaps);
   }
 
   async loadMarks() {
@@ -1303,6 +1333,7 @@ interface ToggleData {
   equipped: ToggleState;
   classType: ToggleState;
   postmaster: ToggleState;
+  powerCaps: ToggleState;
 }
 
 interface TabOption {

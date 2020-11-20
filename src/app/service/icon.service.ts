@@ -9,6 +9,7 @@ import {
   faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow, faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy,
   faInfoSquare as falInfoSquare,
   faCrosshairs as falCrosshairs,
+  faBowArrow as falBowArrow,
   faShoppingCart as falShoppingCart,
   faBolt as falBolt,
   faWheat as falWheat,
@@ -192,6 +193,8 @@ export class IconService {
   public readonly fasQuestionCircle = fasQuestionCircle;
   public readonly fasTrash = fasTrash;
   public readonly fasLevelUp = fasLevelUp;
+
+  public readonly falBowArrow = falBowArrow;
 
   public readonly fasBowArrow = fasBowArrow;
   public readonly fabPaypal = fabPaypal;

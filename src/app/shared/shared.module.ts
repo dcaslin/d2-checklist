@@ -57,7 +57,6 @@ import { TriumphNameComponent } from './triumph-name/triumph-name.component';
       adSlot: 7862857321 // 7862857321 responsive right 6246523328 responsive banner
     }),
     MatButtonModule,
-    MatButtonModule,
     MatToolbarModule,
     MatSelectModule,
     MatTabsModule,

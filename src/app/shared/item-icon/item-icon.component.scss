@@ -39,12 +39,38 @@
   font-weight: 700;
 }
 
-.item-image {
+.item {
   position: relative;
   display: inline-block;
   vertical-align: top;
   width: 72px;
   height: 72px;
   margin-right: 6px;
-  background-size: cover;
+  contain: layout paint style;
+  box-sizing: border-box;
+  // background-size: cover;
+}
+
+.item-image {
+  display: block;
+  width: 70px;
+  height: 70px;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.icon-watermark {
+  overflow: hidden;
+  top: 0px;
+  left: 0px;
+  height: 50px;
+  width: 50px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.img{
+  pointer-events: none;
+  width: inherit;
+  height: inherit;
 }

@@ -3633,6 +3633,9 @@ export class ParseService {
     }
 
     private getSeasonName(seasonalModSlot: number): string | null {
+        if (seasonalModSlot == 12) {
+            return 'hunt';
+        }
         if (seasonalModSlot == 11) {
             return 'arrivals';
         }
@@ -3661,28 +3664,33 @@ export class ParseService {
     }
 
     private genCoveredMods(season: number | null): number[] {
-        if (season == 11) {
-            return [9, 10, 11];
+        if (season == 12) {
+            return [9, 10, 11, 12];
+        } else if (season == 11) {
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 10) {
-            return [9, 10, 11];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 9) {
-            return [8, 9, 10];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 8) {
-            return [7, 8, 9];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 7) {
-            return [7, 8];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 6) {
-            return [6];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 5) {
-            return [4, 5];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else if (season == 4) {
-            return [4, 5];
+            return [4, 5, 6, 7, 8, 9, 10, 11];
         } else {
             return [];
         }
     }
 
     private checkSeasonalMod(socketHash: number) {
+        if (socketHash == 2493100093) { // hunt 2493100093
+            return 12;
+        }
         if (socketHash == 4153634494) { // arrivals 4153634494
             return 11;
         }
@@ -4198,6 +4206,7 @@ export class ParseService {
                         const pCapDesc = this.destinyCacheService.cache.PowerCap[pCapHash];
                         if (pCapDesc) {
                             powerCap = pCapDesc.powerCap;
+                            powerCap = powerCap > 10000 ? 9999 : powerCap;
                             // check for GoS and LW overrides
                             // if (powerCap == 1060) {
                             //     if (desc.collectibleHash) {
@@ -4225,8 +4234,13 @@ export class ParseService {
             }
             searchText += name;
             searchText = searchText.toLowerCase();
+            const watermarkIcons = desc?.quality?.displayVersionWatermarkIcons;
+            let iconWatermark = null;
+            if (watermarkIcons && watermarkIcons.length > 0) {
+                iconWatermark = watermarkIcons[0];
+            }
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
-                equipped, canEquip, owner, icon, type, desc.itemTypeDisplayName,
+                equipped, canEquip, owner, icon, iconWatermark, type, desc.itemTypeDisplayName,
                 itm.quantity,
                 power, damageType, energyType, stats, sockets, objectives,
                 description,

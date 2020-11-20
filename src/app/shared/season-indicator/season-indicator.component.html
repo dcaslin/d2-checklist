@@ -1,4 +1,7 @@
 <ng-container *ngIf="season">
+    <span class="indicator" *ngIf="season==12" matTooltip="Season of the Hunt mod slot">
+        <fa-icon [icon]="iconService.falBowArrow"></fa-icon>
+    </span>
     <span class="indicator" *ngIf="season==11" matTooltip="Season of Arrivals mod slot">
         <fa-icon [icon]="iconService.farAlien"></fa-icon>
     </span>
