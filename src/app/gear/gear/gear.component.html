@@ -68,6 +68,7 @@
         <div class="filter-buttons" [hidden]="selectedUser==null">
           <d2c-gear-toggle [(state)]="toggleData.tags" (change)="filterChanged()"> </d2c-gear-toggle>
           <d2c-gear-toggle [(state)]="toggleData.weaponBuckets"  (change)="filterChanged()"> </d2c-gear-toggle>
+          <d2c-gear-toggle [(state)]="toggleData.powerCaps"  (change)="filterChanged()"> </d2c-gear-toggle>
           <d2c-gear-toggle [(state)]="toggleData.damageType" (change)="filterChanged()"> </d2c-gear-toggle>
           <d2c-gear-toggle [(state)]="toggleData.seasons" (change)="filterChanged()"> </d2c-gear-toggle>
           <d2c-gear-toggle [(state)]="toggleData.energyType" (change)="filterChanged()"> </d2c-gear-toggle>
@@ -373,7 +374,7 @@
                     <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}
                       <span *ngIf="i.powerCap">
                         <span class="mobile-only-inline">
-                          <ng-container *ngIf="i.powerCap<10000; else highCap">
+                          <ng-container *ngIf="i.powerCap<9999; else highCap">
                             | {{i.powerCap}} cap
                           </ng-container>
                         </span>
@@ -420,7 +421,7 @@
                 </td>
                 <td class="limited-gear-width hide-mobile-table-cell"
                   *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-                  <ng-container *ngIf="i.powerCap<10000; else highCap">
+                  <ng-container *ngIf="i.powerCap<9999; else highCap">
                     <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
                   </ng-container>
                 </td>

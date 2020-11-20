@@ -76,6 +76,7 @@ export class SeasonBreakdownDialogComponent {
 
   private static generateSeasons(): SeasonRow[] {
     return [
+      { name: 'Hunt', details: true, season: 12, note: 'Beyond Light' },
       { name: 'Arrivals', details: true, season: 11, note: 'Charged with Light 2.0' },
       { name: 'Worthy', details: true, season: 10, note: 'Warmind Cells go boom' },
       { name: 'Dawn', details: true, season: 9, note: 'Charged with Light 1.0' },

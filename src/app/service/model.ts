@@ -649,6 +649,7 @@ export class InventoryItem {
     equipped: BehaviorSubject<boolean>;
     readonly canEquip: boolean;
     readonly icon: string;
+    readonly iconWatermark: string;
     owner: BehaviorSubject<Target>;
     readonly type: ItemType;
     readonly typeName: string;
@@ -710,7 +711,8 @@ export class InventoryItem {
     }
 
     constructor(id: string, hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Target,
-        icon: string, type: ItemType, typeName: string, quantity: number,
+        icon: string, iconWatermark: string,
+        type: ItemType, typeName: string, quantity: number,
         power: number, damageType: DamageType, energyType: EnergyType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: NameQuantity[], expirationDate: string,
@@ -727,6 +729,7 @@ export class InventoryItem {
         this.owner = new BehaviorSubject(owner);
 
         this.icon = icon;
+        this.iconWatermark = iconWatermark;
         this.type = type;
         this.typeName = typeName;
         this.quantity = quantity;

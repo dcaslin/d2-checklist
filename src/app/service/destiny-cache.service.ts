@@ -156,6 +156,7 @@ export interface Cache {
 
 export interface InventoryItem {
   displayProperties: DisplayProperties;
+  iconWatermark: string;
   tooltipNotifications: any[];
   backgroundColor: any;
   itemTypeDisplayName: string;
