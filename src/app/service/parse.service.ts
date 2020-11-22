@@ -453,18 +453,18 @@ export class ParseService {
                             const obj = challenge.objective;
                             const oDesc: any = this.destinyCacheService.cache.Objective[obj.objectiveHash];
                             if (oDesc != null) {
-                                if (obj.complete === true) {
-                                    oPct = 1;
-
-                                } else {
-                                    oPct = obj.progress / oDesc.completionValue;
-                                }
-                                if (suppInfo == null && oDesc.completionValue > 1) {
-                                    suppInfo = obj.progress + ' / ' + oDesc.completionValue;
+                                if (oDesc.redacted) {
+                                    if (obj.complete === true) {
+                                        oPct = 1;
+                                    } else {
+                                        oPct = obj.progress / oDesc.completionValue;
+                                    }
+                                    if (suppInfo == null && oDesc.completionValue > 1) {
+                                        suppInfo = obj.progress + ' / ' + oDesc.completionValue;
+                                    }
                                 }
                             }
                         }
-
                     }
                     if (act.phases != null && act.phases.length > 0) {
                         for (const p of act.phases) {
@@ -488,7 +488,6 @@ export class ParseService {
                         milestonesByKey[key].hasPartial = true;
                     }
                 }
-
                 if (phases.length == 0) { phases = null; }
                 const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases, false, false, readyToCollect);
                 c.milestones[key] = m;
