@@ -2,7 +2,7 @@
      [class.masterworked]="i.masterworked"
     [matMenuTriggerFor]="itemMenu">
     
-    <img [src]="'//www.bungie.net' + i.icon" class="item-image" loading="lazy">
+    <img [src]="'//www.bungie.net' + i.icon" class="item-image" [class.redacted]="i.redacted" loading="lazy">
     <div class="icon-watermark" *ngIf="i.iconWatermark">
         <img [src]="'//www.bungie.net' + i.iconWatermark" class="img" loading="lazy">
     </div>
