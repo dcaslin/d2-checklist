@@ -2144,7 +2144,7 @@ export class ParseService {
 
 
     private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }) {
-
+        // console.dir(chalice);
         let imperials: number;
         let powerfulDropsRemaining: number;
         let perfected = false;
@@ -3732,17 +3732,48 @@ export class ParseService {
 
     private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
+            // // prey mod saveks
+            // if (itm.itemHash == 3630662113) {
+            //     console.dir(itm);
+            // }
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
+                console.log('Skipping - no desc: ' + itm.itemHash);
                 return null;
                 // return new InventoryItem(""+itm.itemHash, "Classified", equipped, owner, null, ItemType.None, "Classified");
             }
             // anything with no type goes away too
+
+            let type: ItemType = desc.itemType;
+            let redacted = false;
             if (desc.itemTypeDisplayName == null) {
-                return null;
+                // handle hidden stuff, like early raid gear
+                if (desc.redacted && desc.inventory != null) {
+                    const bucketHash = desc.inventory.bucketTypeHash;
+                    redacted = true;
+                    if (bucketHash != null) {
+                        if ([1498876634, 2465295065, 953998645].includes(bucketHash)) {
+                            type = ItemType.Weapon;
+                        } else if (
+                            [3448274439,
+                                3551918588,
+                                14239492,
+                                20886954,
+                                1585787867].includes(bucketHash)) {
+                            type = ItemType.Armor;
+                        } else {
+                            console.log('Skipping no type: '+ itm.itemHash);
+                            return null;
+                        }
+
+                    }
+                } else {
+                    return null;
+                }
+            } else {
+                type = desc.itemType;
             }
             const postmaster = (itm.bucketHash == 215593132);
-            let type: ItemType = desc.itemType;
             let ammoType: DestinyAmmunitionType;
             if (desc.equippingBlock != null) {
                 ammoType = desc.equippingBlock.ammoType;
@@ -3758,6 +3789,10 @@ export class ParseService {
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
                 type = ItemType.ForgeVessel;
             }
+            // TODO cleanup
+            // if (desc.itemTypeDisplayName == 'Modified Hive Artifact') {
+            //     type = ItemType.Chalice;
+            // }
             if (itm.itemHash === 1115550924) {
                 type = ItemType.Chalice;
             } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName == 'Invitation of the Nine') {
@@ -3773,7 +3808,7 @@ export class ParseService {
                     return null;
                 }
             } else {
-                if (desc.itemType === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
+                if (type === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
                     // mods we use the perk desc
                     if (desc.perks != null && desc.perks.length > 0) {
@@ -3784,9 +3819,9 @@ export class ParseService {
                             description = pDesc.displayProperties.description;
                         }
                     }
-                } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
+                } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
-                } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName.indexOf('Currency') >= 0) {
+                } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Currency') >= 0) {
                     type = ItemType.ExchangeMaterial;
                 } else if (desc.itemType === ItemType.Ship) {
                     type = ItemType.Vehicle;
@@ -3862,13 +3897,10 @@ export class ParseService {
             const sockets: InventorySocket[] = [];
             let mw: MasterworkInfo = null;
             const mods: InventoryPlug[] = [];
-
             let inventoryBucket: ApiInventoryBucket = null;
             let tier = null;
             let isRandomRoll = false;
-
             if (itemComp && (detailedInv || type === ItemType.Chalice)) {
-
                 if (desc.inventory != null) {
                     tier = desc.inventory.tierTypeName;
                     const bucketHash = desc.inventory.bucketTypeHash;
@@ -4246,7 +4278,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
-                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, coveredSeasons, powerCap
+                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, coveredSeasons, powerCap, redacted
             );
         } catch (exc) {
             console.dir(itemComp);
