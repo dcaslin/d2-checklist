@@ -246,14 +246,9 @@ export interface ItemPerks {
 
 export interface PublicMilestonesAndActivities {
     publicMilestones: PublicMilestone[];
-    crucibleCore: MilestoneActivity[];
-    crucibleRotator: MilestoneActivity[];
-    herMenag: MilestoneActivity;
-    heroicStrikes: MilestoneActivity;
-    reckoning: MilestoneActivity;
-    nightfalls: MilestoneActivity[];
-    nightmareHunts: MilestoneActivity[];
-    flashpoint: string;
+    crucible: PublicMilestone;
+    strikes: PublicMilestone;
+    nightfall: PublicMilestone;
     weekStart: Moment;
 }
 
@@ -266,10 +261,8 @@ export interface PublicMilestone {
     order: number;
     icon: string;
     activities: MilestoneActivity[];
-    aggActivities: AggMilestoneActivity[];
     rewards: string;
     pl: number;
-    summary: string;
     milestoneType: number;
     type?: string;
     dependsOn: string[];

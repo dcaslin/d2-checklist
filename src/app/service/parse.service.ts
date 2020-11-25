@@ -310,18 +310,15 @@ export class ParseService {
         if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = this.destinyCacheService.cache.Milestone[key];
             if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                let name = skipDesc.displayProperties.name;
                 let descRewards = this.parseMilestoneRewards(skipDesc);
                 if (descRewards == null || descRewards.trim().length == 0) {
+                    descRewards = 'Unknown';
                     // weekly pinnacle challenge
-                    if (key == '3881226684') {
-                        name = 'Nightmare Hunt: Master';
-                        descRewards = 'Pinnacle Gear';
-                    } else if (key == '1437935813') {
-                        descRewards = 'Pinnacle Gear (Weak)';
-                    } else {
-                        descRewards = 'Unknown';
-                    }
+                    // if (key == '3881226684') {
+                    //     descRewards = 'Pinnacle Gear';
+                    // } else if (key == '1437935813') {
+                    //     descRewards = 'Pinnacle Gear (Weak)';
+                    // }
                 }
                 const ms2: MileStoneName = {
                     key: skipDesc.hash + '',
@@ -338,7 +335,7 @@ export class ParseService {
             } else if (skipDesc != null) {
 
             } else {
-                // console.log('Skipping unknown milestone: ' + key);
+                console.log('Skipping unknown milestone: ' + key);
             }
         }
     }
@@ -392,12 +389,9 @@ export class ParseService {
                 }
 
                 // if they finished all, then force them in anyway, if the public milestones exist already this will do nothing
-                // nightmare hunt pinnacle
-                this.addPsuedoMilestone('3881226684', milestonesByKey, milestoneList);
-                // weekly nightmare hunt
-                this.addPsuedoMilestone('2246196133', milestonesByKey, milestoneList);
+                // this is needed to fix dissapperaing weekly milestones that are also not in the public milestone list
                 // weekly strikes
-                this.addPsuedoMilestone('1437935813', milestonesByKey, milestoneList);
+                // this.addPsuedoMilestone('1437935813', milestonesByKey, milestoneList);
 
                 let total = 0;
                 let complete = 0;
@@ -697,7 +691,7 @@ export class ParseService {
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
 
-    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[], nf: Mission[]): AggHistoryEntry[] {
+    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[],): AggHistoryEntry[] {
         const returnMe: AggHistoryEntry[] = [];
         let aKeys = [];
         for (const c of charAggHistDicts) {
@@ -709,13 +703,6 @@ export class ParseService {
 
         const nfHashes = [];
         const nfDict = {};
-        for (const n of nf) {
-            nfHashes.push(n.hash);
-            nfDict[n.hash] = {
-                found: false,
-                mission: n
-            };
-        }
 
         for (const key of aKeys) {
             let model: AggHistoryEntry = null;
@@ -1345,53 +1332,6 @@ export class ParseService {
         return false;
     }
 
-    private buildMilestoneActivity(aa: any): MilestoneActivity {
-        const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
-        if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
-            return null;
-        }
-        const modifiers: NameDesc[] = [];
-        if (aa.modifierHashes && aa.modifierHashes.length > 0) {
-            for (const modHash of aa.modifierHashes) {
-                const mod: NameDesc = this.parseModifier(modHash);
-                modifiers.push(mod);
-            }
-        }
-        const msa: MilestoneActivity = {
-            hash: aa.activityHash,
-            name: desc.displayProperties.name,
-            desc: desc.displayProperties.description,
-            ll: aa.recommendedLight,
-            tier: aa.difficultyTier,
-            icon: desc.displayProperties.icon,
-            modifiers: modifiers
-        };
-        return msa;
-    }
-
-    private addNightmareLoot(msa: MilestoneActivity) {
-        let lootHash = null;
-        if (msa.name.indexOf('Insanity') >= 0) {
-            lootHash = '3690523502'; // love and death
-        } else if (msa.name.indexOf('Rage') >= 0) {
-            lootHash = '1016668089'; // one small step
-        } else if (msa.name.indexOf('Servitude') >= 0) {
-            lootHash = '2931957300'; // Dream breaker
-        } else if (msa.name.indexOf('Pride') >= 0) {
-            lootHash = '760455599'; // helmet
-        } else if (msa.name.indexOf('Isolation') >= 0) {
-            lootHash = '2874010934'; // Gauntlets
-        } else if (msa.name.indexOf('Fear') >= 0) {
-            lootHash = '2568538788'; // chest
-        } else if (msa.name.indexOf('Anguish') >= 0) {
-            lootHash = '4086393232'; // lets
-        } else if (msa.name.indexOf('Despair') >= 0) {
-            lootHash = '3312368889'; // class
-        }
-        if (lootHash) {
-            msa.specialLoot = this.destinyCacheService.cache.InventoryItem[lootHash];
-        }
-    }
 
     private addNightfallLoot(msa: MilestoneActivity) {
         let lootHash = null;
@@ -1431,22 +1371,17 @@ export class ParseService {
         }
     }
 
-    public parsePublicMilestones(resp: any, sampleProfile: any): PublicMilestonesAndActivities {
+    public parsePublicMilestones(resp: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
             const ms: any = resp[key];
             msMilestones.push(ms);
         });
-        let sample: PublicMilestone = null;
         for (const ms of msMilestones) {
             let activityRewards = '';
             const desc = this.destinyCacheService.cache.Milestone[ms.milestoneHash];
             if (desc == null) {
-                continue;
-            }
-            // skip broken Garden of Salvation
-            if (ms.milestoneHash == 2712317338 && desc.displayProperties.name.startsWith('###')) {
                 continue;
             }
             // skip weird old master class milestone
@@ -1471,13 +1406,21 @@ export class ParseService {
                             activityRewards = rewDesc.displayProperties.name;
                         }
                     }
+                    let activityIcon: string = aDesc.displayProperties.icon;
+                    if (activityIcon == null || activityIcon.indexOf('missing_icon') >= 0) {
+                        if (aDesc.activityModeHashes && aDesc.activityModeHashes.length>0) {
+                            const amHash = aDesc.activityModeHashes[0];
+                            const amDesc = this.destinyCacheService.cache.ActivityMode[amHash];
+                            activityIcon = amDesc.displayProperties.icon;
+                        }
+                    }
                     activities.push({
                         hash: act.activityHash,
                         name: aDesc.displayProperties.name,
                         desc: aDesc.displayProperties.description,
                         ll: aDesc.activityLightLevel,
                         tier: aDesc.tier,
-                        icon: aDesc.displayProperties.icon,
+                        icon: activityIcon,
                         modifiers: modifiers
                     });
                 }
@@ -1485,13 +1428,14 @@ export class ParseService {
                 for (const q of ms.availableQuests) {
                     const iDesc: any = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
                     if (iDesc != null) {
-                        if (iDesc.value != null && iDesc.value.itemValue != null) {
-                            for (const v of iDesc.value.itemValue) {
-                                if (v.itemHash != null && v.itemHash > 0) {
-                                    const rewDesc: any = this.destinyCacheService.cache.InventoryItem[v.itemHash];
-                                    if (rewDesc != null) {
-                                        activityRewards += rewDesc.displayProperties.name;
-                                    }
+                        if (iDesc.value != null && iDesc.value.itemValue != null && iDesc.value.itemValue.length > 0) {
+                            // use the first listed reward, even if there are more
+                            // deadly venatiks lists pinnacle as reward 2 b/c it's weird
+                            const v = iDesc.value.itemValue[0];
+                            if (v.itemHash != null && v.itemHash > 0) {
+                                const rewDesc: any = this.destinyCacheService.cache.InventoryItem[v.itemHash];
+                                if (rewDesc != null) {
+                                    activityRewards += rewDesc.displayProperties.name;
                                 }
                             }
                         }
@@ -1523,29 +1467,6 @@ export class ParseService {
                     dAct[key].lls.push(a.ll);
                 }
             }
-            const aggActivities = [];
-            let nothingInteresting = true;
-            for (const key of Object.keys(dAct)) {
-                const aggAct = dAct[key];
-                aggAct.lls = ParseService.dedupeArray(aggAct.lls);
-                if (aggAct.activity.modifiers.length > 0) {
-                    nothingInteresting = false;
-                }
-                aggActivities.push(aggAct);
-            }
-            aggActivities.sort(function (a, b) {
-                return a.activity.ll - b.activity.ll;
-            });
-
-
-            let summary = null;
-            if (nothingInteresting && aggActivities.length > 0 && aggActivities.length < 2) {
-                summary = '';
-                for (const a of aggActivities) {
-                    summary += a.activity.name + ' ';
-                }
-            }
-
             const descRewards = this.parseMilestoneRewards(desc);
             let rewards = '';
             if (descRewards && descRewards.trim().length > 0) {
@@ -1555,16 +1476,16 @@ export class ParseService {
             } else {
                 let checkMe = '' + desc.displayProperties.name + desc.displayProperties.description;
                 checkMe = checkMe.toLowerCase();
-                if (checkMe.indexOf('raid') >= 0) {
+                if (checkMe.indexOf('raid') >= 0 || checkMe.indexOf('garden of salvation') >= 0) {
                     rewards = 'Legendary Gear';
                 } else {
                     // console.log(desc.displayProperties.name + ' - ' + desc.hash + ' is missing rewards');
                     rewards = '???';
                 }
             }
-            if (ms.milestoneHash == 2712317338 && rewards == '???') { // Garden of Salvation
+            if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crype
                 // rewards = 'Pinnacle Gear';
-                rewards = 'Legendary Gear';
+                rewards = 'Pinnacle Gear';
             } else
                 if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
                     rewards = 'Pinnacle Gear (Weak)';
@@ -1575,10 +1496,6 @@ export class ParseService {
                 } else if (ms.milestoneHash == 3603098564) { // override clan weekly
                     rewards = 'Pinnacle Gear (Weak)';
                 }
-            // // weekly pinnacle challenge, not in list yet, but just in case
-            // if (ms.milestoneHash == 3881226684) {
-            //     rewards = 'Pinnacle Gear';
-            // }
             const pl = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
             const pushMe = {
@@ -1590,144 +1507,21 @@ export class ParseService {
                 order: ms.order,
                 icon: icon,
                 activities: activities,
-                aggActivities: aggActivities,
                 rewards: rewards,
                 pl: pl,
-                summary: summary,
                 milestoneType: desc.milestoneType,
                 dependsOn: []
             };
-            if (pushMe.hash == '4253138191') {
-                sample = pushMe;
-            } else if (pushMe.hash == '3628293757') {
-                pushMe.summary = 'Trials Three Wins';
-
+            if (pushMe.hash == '3628293757') {
+                pushMe.name = 'Trials Three Wins';
             } else if (pushMe.hash == '3628293755') {
-                pushMe.summary = 'Trials Five Wins';
+                pushMe.name = 'Trials Five Wins';
                 pushMe.dependsOn = ['3628293757'];
             } else if (pushMe.hash == '3628293753') {
-                pushMe.summary = 'Trials Seven Wins';
+                pushMe.name = 'Trials Seven Wins';
                 pushMe.dependsOn = ['3628293757', '3628293755'];
             }
             returnMe.push(pushMe);
-        }
-        // we're still missing nightfalls and heroic menagerie and some other fun stuff we need to get from a character
-        const crucibleCore: MilestoneActivity[] = [];
-        const crucibleRotator: MilestoneActivity[] = [];
-        const nightfalls: MilestoneActivity[] = [];
-        const nightmareHunts: MilestoneActivity[] = [];
-        let herMenag: MilestoneActivity = null;
-        let heroicStrikes: MilestoneActivity = null;
-        let reckoning: MilestoneActivity = null;
-
-        if (sample && sampleProfile && sampleProfile.characterActivities && sampleProfile.characterActivities.data) {
-            for (const key of Object.keys(sampleProfile.characterActivities.data)) {
-                const charAct = sampleProfile.characterActivities.data[key];
-                if (charAct && charAct.availableActivities && charAct.availableActivities.length > 0) {
-                    if (crucibleCore.length == 0) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if (ParseService.hasChallenge(aa, '3118376466')) { //  455756300
-                                if (!msa.icon) {
-
-                                    const labDesc = this.destinyCacheService.cache.Activity['1709912095'];
-                                    if (labDesc && labDesc.displayProperties && labDesc.displayProperties.icon) {
-                                        msa.icon = labDesc.displayProperties.icon;
-                                    }
-                                }
-                                crucibleCore.push(msa);
-                            }
-                        }
-                    }
-                    if (crucibleRotator.length == 0) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if (ParseService.hasChallenge(aa, '1607758693')) { // 978034479
-                                crucibleRotator.push(msa);
-                            }
-                        }
-                    }
-                    if (nightfalls.length == 0) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if (msa.name.indexOf('Nightfall: ') >= 0) {
-                                const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
-                                if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
-                                    msa.name = msa.name.replace('Nightfall: ', '');
-                                    if (msa.name.indexOf('The Ordeal') >= 0) {
-                                        msa.name = msa.name.replace('The Ordeal', 'Ordeal');
-                                        msa.name = msa.name.replace(': Master', '');
-                                        msa.name += ': ' + msa.desc;
-                                    }
-                                    this.addNightfallLoot(msa);
-                                    nightfalls.push(msa);
-                                }
-                            }
-
-                        }
-                    }
-                    if (nightmareHunts.length == 0) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if (msa.name.indexOf('Nightmare Hunt: ') >= 0) {
-                                const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
-                                if (desc.modifiers.length > 10 && aa.displayLevel >= 50) {
-                                    msa.name = msa.name.replace('Nightmare Hunt: ', '');
-                                    msa.name = msa.name.replace(': Master', '');
-                                    this.addNightmareLoot(msa);
-                                    nightmareHunts.push(msa);
-                                }
-                            }
-                        }
-                    }
-                    if (herMenag == null) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if (msa.name.indexOf('The Menagerie (Heroic)') >= 0) {
-                                herMenag = msa;
-                            }
-                        }
-                    }
-                    if (heroicStrikes == null) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if (msa.hash == '4252456044') {
-                                heroicStrikes = msa;
-                            }
-                        }
-                    }
-                    if (reckoning == null) {
-                        for (const aa of charAct.availableActivities) {
-                            const msa = this.buildMilestoneActivity(aa);
-                            if (msa == null) {
-                                continue;
-                            }
-                            if ('1446606128' == aa.activityHash) {
-                                reckoning = msa;
-                            }
-                        }
-                    }
-                }
-
-            }
         }
         returnMe.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
@@ -1746,17 +1540,12 @@ export class ParseService {
                 weekStart = moment(m.start);
             }
         }
-
+        console.dir(returnMe);
         return {
             publicMilestones: returnMe,
-            crucibleCore: crucibleCore,
-            crucibleRotator: crucibleRotator,
-            herMenag: herMenag,
-            heroicStrikes: heroicStrikes,
-            reckoning: reckoning,
-            nightfalls: nightfalls,
-            nightmareHunts: nightmareHunts,
-            flashpoint: null,
+            crucible: returnMe.find(x => x.hash == '3312774044'),
+            nightfall: returnMe.find(x => x.hash == '2029743966'),
+            strikes: returnMe.find(x => x.hash == '1437935813'),
             weekStart: weekStart
         };
     }
@@ -2232,11 +2021,11 @@ export class ParseService {
                     p.end = null;
                 }
                 const ms: MileStoneName = {
-                    key: p.hash + '',
+                    key: p.hash,
                     resets: p.end,
                     rewards: p.rewards,
                     pl: p.pl,
-                    name: p.summary == null ? p.name : p.summary,
+                    name: p.name,
                     desc: p.desc,
                     hasPartial: false,
                     dependsOn: p.dependsOn,

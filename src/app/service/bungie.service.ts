@@ -263,33 +263,11 @@ export class BungieService implements OnDestroy {
             promises.push(p);
         });
         const x = await Promise.all(promises);
-        const nf = await this.getNightFalls();
-        const arr = ParseService.mergeAggHistory2(x, nf);
+        const arr = ParseService.mergeAggHistory2(x);
         player.aggHistory = arr;
         this.setCachedAggHistoryForPlayer(player);
         // this isn't stale b/c we just loaded it
         return false;
-    }
-
-    public async getNightFalls(): Promise<Mission[]> {
-        const nightfalls: Mission[] = [];
-        const publicMilestones = await this.getPublicMilestones();
-        if (publicMilestones != null) {
-            for (const m of publicMilestones.publicMilestones) {
-                if ('2853331463' === m.hash || 'nf' === m.type) {
-                    for (const a of m.aggActivities) {
-                        let name = a.activity.name;
-                        name = name.replace('Nightfall: ', '');
-                        nightfalls.push({
-                            name: name,
-                            icon: a.activity.icon,
-                            hash: a.activity.hash
-                        });
-                    }
-                }
-            }
-        }
-        return nightfalls;
     }
 
     public async observeUpdateAggHistoryAndScores(player: BehaviorSubject<Player>, debug: boolean) {
@@ -744,9 +722,7 @@ export class BungieService implements OnDestroy {
         }
         try {
             const resp = await this._publicMsHack();
-            // hack to get menagerie burns and public nightfalls
-            const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities,CharacterProgressions');
-            const reply = this.parseService.parsePublicMilestones(resp, resp2);
+            const reply = this.parseService.parsePublicMilestones(resp);
             this.publicMilestonesAndActivities = reply;
             return reply;
         } catch (err) {
