@@ -57,7 +57,7 @@
               <tbody *ngIf="shoppingListHashes|async as sl">
                 <ng-container *ngFor="let i of vendorData|async">
                   <tr
-                    *ngIf="(i.type==ItemType.Bounty || i.type==ItemType.ForgeVessel) && includeItem(i, filterText$|async, hideCompleted$|async)">
+                    *ngIf="(i.type==ItemType.Bounty) && includeItem(i, filterText$|async, hideCompleted$|async)">
                     <td class="item-icon-cell">
                       <span *ngIf="i.icon!=null" class="item-icon"
                         [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>

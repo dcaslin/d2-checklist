@@ -1214,8 +1214,6 @@ export class ParseService {
         let itemType = iDesc.itemType;
         if (iDesc.itemType === ItemType.Mod && iDesc.itemTypeDisplayName.indexOf('Mod') >= 0) {
             itemType = ItemType.GearMod;
-        } else if (iDesc.itemType === ItemType.Dummy && iDesc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
-            itemType = ItemType.ForgeVessel;
         } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName != null && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
             itemType = ItemType.Bounty;
         } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName == 'Invitation of the Nine') {
@@ -1540,7 +1538,6 @@ export class ParseService {
                 weekStart = moment(m.start);
             }
         }
-        console.dir(returnMe);
         return {
             publicMilestones: returnMe,
             crucible: returnMe.find(x => x.hash == '3312774044'),
@@ -1932,13 +1929,13 @@ export class ParseService {
 
 
 
-    private handleChalice(char: Character, chalice: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }) {
-        // console.dir(chalice);
+    private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }) {
+        console.dir(artifact);
         let imperials: number;
         let powerfulDropsRemaining: number;
         let perfected = false;
-        if (chalice.sockets != null && chalice.sockets.length > 0) {
-            const lastSocket = chalice.sockets[chalice.sockets.length - 1];
+        if (artifact.sockets != null && artifact.sockets.length > 0) {
+            const lastSocket = artifact.sockets[artifact.sockets.length - 1];
             if (lastSocket.plugs != null && lastSocket.plugs.length == 1) {
                 perfected = lastSocket.plugs[0].enabled;
             }
@@ -1946,7 +1943,7 @@ export class ParseService {
 
 
         // TODO fix this item objective
-        for (const obj of chalice.objectives) {
+        for (const obj of artifact.objectives) {
             if (obj.progressDescription.indexOf('rewards') > 0) {
                 powerfulDropsRemaining = obj.progress;
             }
@@ -2251,9 +2248,9 @@ export class ParseService {
                         const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
-                            if (parsed.type === ItemType.Chalice && resp.characterProgressions) {
-                                this.handleChalice(char, parsed, milestoneList, milestonesByKey);
-                            } else if (parsed.type === ItemType.Bounty || parsed.type === ItemType.ForgeVessel) {
+                            if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
+                                this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey);
+                            } else if (parsed.type === ItemType.Bounty) {
                                 // ignore expired
                                 if (!parsed.expired) {
                                     parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
@@ -3303,7 +3300,9 @@ export class ParseService {
         if (plugDesc.itemTypeDisplayName != null && plugDesc.itemTypeDisplayName.indexOf('Ornament') >= 0) {
             return null;
         }
-        if (plugDesc.displayProperties.name.indexOf('Catalyst') >= 0) {
+        if (plugDesc.displayProperties.name.indexOf('Catalyst') >= 0
+            || plugDesc.displayProperties.name.indexOf('Lure Mod') >= 0
+            || plugDesc.displayProperties.name.indexOf('Prey Mod Slot') >= 0) {
             if (plugDesc.perks.length > 0) {
                 let catName = plugDesc.displayProperties.name;
                 let catDesc = plugDesc.displayProperties.description;
@@ -3572,28 +3571,21 @@ export class ParseService {
             if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Bounty') >= 0) {
                 type = ItemType.Bounty;
             }
-            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Key Mold') >= 0) {
-                type = ItemType.Quest;
-            }
-            if (type === ItemType.None && desc.itemTypeDisplayName != null && desc.itemTypeDisplayName.indexOf('Forge Vessel') >= 0) {
-                type = ItemType.ForgeVessel;
-            }
-            // TODO cleanup
-            // if (desc.itemTypeDisplayName == 'Modified Hive Artifact') {
+            // if (itm.itemHash === 1115550924) {
             //     type = ItemType.Chalice;
-            // }
-            if (itm.itemHash === 1115550924) {
-                type = ItemType.Chalice;
+
+            if (desc.itemTypeDisplayName == 'Modified Hive Artifact') {
+                type = ItemType.MissionArtifact;
+
             } else if (desc.itemType === ItemType.None && desc.itemTypeDisplayName == 'Invitation of the Nine') {
                 type = ItemType.Bounty;
             }
 
             if (!detailedInv) {
                 if (type !== ItemType.Bounty
-                    && type !== ItemType.ForgeVessel
                     && type !== ItemType.Quest
                     && type !== ItemType.QuestStep
-                    && type !== ItemType.Chalice) {
+                    && type !== ItemType.MissionArtifact) {
                     return null;
                 }
             } else {
@@ -3689,7 +3681,7 @@ export class ParseService {
             let inventoryBucket: ApiInventoryBucket = null;
             let tier = null;
             let isRandomRoll = false;
-            if (itemComp && (detailedInv || type === ItemType.Chalice)) {
+            if (itemComp && (detailedInv || type === ItemType.MissionArtifact)) {
                 if (desc.inventory != null) {
                     tier = desc.inventory.tierTypeName;
                     const bucketHash = desc.inventory.bucketTypeHash;
@@ -3776,6 +3768,9 @@ export class ParseService {
                 }
 
                 if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {
+                    if (type==ItemType.MissionArtifact) {
+                        console.log("xxx");
+                    }
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
                     if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
                         let reusablePlugs = null;
@@ -3796,7 +3791,7 @@ export class ParseService {
                             if (760375309 == jCat.socketCategoryHash) {
                                 continue;
                             }
-                            const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949;
+                            const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949 || jCat.socketCategoryHash == 3848483489;
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
@@ -3936,7 +3931,7 @@ export class ParseService {
             if (postmaster) {
                 searchText += ' mail is:postmaster';
             }
-            if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep || type === ItemType.ForgeVessel) {
+            if (type === ItemType.Bounty || type === ItemType.Quest || type === ItemType.QuestStep) {
                 searchText = desc.displayProperties.name + ' ';
                 searchText += desc.displayProperties.description + ' ';
                 // values
