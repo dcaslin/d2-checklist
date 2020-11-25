@@ -71,8 +71,7 @@ export enum ItemType {
     Ghost = 24,
     Package = 25,
     Bounty = 26,
-    Chalice = 97, // custom
-    ForgeVessel = 98, // custom
+    MissionArtifact = 97, // custom
     GearMod = 99  // custom added
 }
 
