@@ -46,38 +46,6 @@ export class WeekService {
     'Chamber of Starlight'
   ];
 
-  readonly EP_WEAPON_ROTATION = [
-    'Sniper Rifle',
-    'All weapons',
-    'All weapons',
-    'Shotgun',
-    'SMG'
-  ];
-
-  readonly EP_BOSS = [
-    'Damkath: The Mask',
-    'Naksud: The Famine',
-    'Bok Litur: Hunger of Xol',
-    'Nur Abath: Crest of Xol',
-    'Kathok: Roar of Xol'
-  ];
-
-  readonly MENAGERIE_BOSS_ROTATION = [
-    'Hasapiko - Minotaur',
-    'Arunak - Ogre (Truth quest)',
-    'Pagouri - Hydra'
-  ];
-
-
-  readonly EP_VIDEOS = [
-    'https://www.youtube.com/watch?v=1DGzF9Z_s9w',
-    'https://www.youtube.com/watch?v=7g4So51h1mk',
-    'https://www.youtube.com/watch?v=ONRve7CUnAE',
-    'https://www.youtube.com/watch?v=0tjlwp3n0BE',
-    'https://www.youtube.com/watch?v=nz57z9jgrYU'
-  ];
-
-
   constructor(private bungieService: BungieService, private destinyCacheService: DestinyCacheService) {
   }
 
@@ -98,10 +66,6 @@ export class WeekService {
         ascendantVideo: WeekService.getRotation(numWeeks, this.ASCENDANT_VIDEOS),
         location: WeekService.getRotation(numWeeks, this.ASCENDENT_LOCATION_ROTATION),
         curseStrength: WeekService.getRotation(numWeeks, this.CURSE_STRENGTH_ROTATION),
-        escalationProtocolWeapon: WeekService.getRotation(numWeeks, this.EP_WEAPON_ROTATION),
-        escalationProtocolBoss: WeekService.getRotation(numWeeks, this.EP_BOSS),
-        menagerieBoss: WeekService.getRotation(numWeeks, this.MENAGERIE_BOSS_ROTATION),
-        epVideo: WeekService.getRotation(numWeeks, this.EP_VIDEOS)
       };
 
 
@@ -126,38 +90,13 @@ export class WeekService {
       altarWeaponKey = '2164448701'; // apostate
     }
 
-    const forgeIndex = numDays % 4;
-    // Sat, 11/09: Volundr
-    let forgeDay;
-    if (forgeIndex == 0) { // 1506080581 4185095559
-      forgeDay = {
-        name: 'Volundur',
-        icon: this.destinyCacheService.cache.InventoryItem[4185095559].displayProperties.icon
-      };
-    } else if (forgeIndex == 1) { // 957727787 4185095558
-      forgeDay = {
-        name: 'Gofannon',
-        icon: this.destinyCacheService.cache.InventoryItem[4185095558].displayProperties.icon
-      };
-    } else if (forgeIndex == 2) { // 2656947700 4185095557
-      forgeDay = {
-        name: 'Izanami',
-        icon: this.destinyCacheService.cache.InventoryItem[4185095557].displayProperties.icon
-      };
-    } else if (forgeIndex == 3) { // 1434072700 4185095556
-      forgeDay = {
-        name: 'Bergusia',
-        icon: this.destinyCacheService.cache.InventoryItem[4185095556].displayProperties.icon
-      };
-    }
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const currWeek = await this.getCurrWeek(publicMilestones);
 
     return {
       week: currWeek,
       publicMilestones: publicMilestones,
-      altarOfSorrowsWeapon: this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
-      forge: forgeDay
+      altarOfSorrowsWeapon: this.destinyCacheService.cache.InventoryItem[altarWeaponKey]
     };
   }
 }
@@ -166,20 +105,8 @@ export interface Today {
   week: Week;
   publicMilestones: PublicMilestonesAndActivities;
   altarOfSorrowsWeapon: ItemDisplay;
-  forge: ForgeDay;
 }
 
-export interface ForgeDay {
-  name: string;
-  icon: string;
-}
-
-export interface ReckDay {
-  day: Date;
-  singe: NameDesc;
-  good: NameDesc;
-  bad: NameDesc;
-}
 
 interface WeekData {
   weeks: Week[];
@@ -192,8 +119,4 @@ interface Week {
   ascendantVideo?: string;
   location: string;
   curseStrength: string;
-  escalationProtocolWeapon: string;
-  escalationProtocolBoss: string;
-  menagerieBoss: string;
-  epVideo?: string;
 }

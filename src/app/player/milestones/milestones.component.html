@@ -31,9 +31,8 @@
           <fa-icon *ngIf="hideCompleteChars=='ALL'" [icon]="iconService.falEye"
             matTooltip="Hide milestones where all chars are complete" (click)="hideCompleteChars = null"
             class="warn-text" matTooltip="Stop hiding milestones where all chars are complete"></fa-icon>
-          <span *ngIf="(hiddenMilestones|async).length>0"
-            matTooltip="Show all hidden milestones" class="warn-text pad-left fake-link pad-left-more" 
-            (click)="showAllMilestones()">Restore Hidden</span>
+          <span *ngIf="(hiddenMilestones|async).length>0" matTooltip="Show all hidden milestones"
+            class="warn-text pad-left fake-link pad-left-more" (click)="showAllMilestones()">Restore Hidden</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
           {{char.className}} - {{char.light}} {{char.title}}
@@ -69,7 +68,7 @@
             </div>
             <div class="milestone-row">
               <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="state.sort"
-              (sortClick)="sortByRewards()"></d2c-reward-desc>
+                (sortClick)="sortByRewards()"></d2c-reward-desc>
               <div class="caption milestone-resets" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
                 <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
                   Resets in {{today| amDifference:mileStoneName.resets | amDuration:'ms'}}
@@ -92,18 +91,26 @@
       </ng-container>
       <tr
         *ngIf="player.characters.length>=1 && player.characters[0].clanMilestones!=null && (hiddenMilestones|async).indexOf('1')===-1">
-        <td class="lead" matTooltip="Shared clan rewards, one per account">Clan Milestones
-          <span class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
-            class="milestoneVisibilityButton" (click)="hideMilestone('1')">hide</span>
-          <d2c-reward-desc pl="3" rewards="Powerful Gear" [sort]="state.sort" (sortClick)="sortByRewards()">
-          </d2c-reward-desc>
+        <td class="lead" matTooltip="Shared clan rewards, one per account">
+
+          <div class="milestone-row">
+            <div>Clan Milestones</div>
+            <div class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
+              class="hideMilestoneButton" (click)="hideMilestone('1')">
+              <fa-icon [icon]="iconService.farTimes"></fa-icon>
+            </div>
+          </div>
+          <div class="milestone-row">
+            <span class="simple-caption">Powerful Gear +1</span>
+          </div>
         </td>
         <td [attr.colspan]="player.characters.length">
           <div class="clanMsRow">
             <span style="margin-right: 0.5em" *ngFor="let clanMs of player.characters[0].clanMilestones">
               {{clanMs.name}}
-              <fa-icon [icon]="iconService.fasStar" matTooltip='Collect reward' *ngIf="clanMs.earned==true && !clanMs.redeemed==true"
-                class="warn-text mat-option.mat-selected"></fa-icon>
+              <fa-icon [icon]="iconService.fasStar" matTooltip='Collect reward'
+                *ngIf="clanMs.earned==true && !clanMs.redeemed==true" class="warn-text mat-option.mat-selected">
+              </fa-icon>
               <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="clanMs.earned==true && clanMs.redeemed==true"
                 class="accent-text mat-option.mat-selected"></fa-icon>
               <fa-icon [icon]="iconService.farSquare" *ngIf="!clanMs.earned==true"></fa-icon>
@@ -117,7 +124,8 @@
 <div class="bottom-note">
   <ul class="left">
     <!-- TODO UPDATE ME -->
-    <li><span class="">[Beyond Light update]</span> First cut done, plenty of known issues to clean up soon. First of all is when milestones properly unlock in the API.
+    <li><span class="">[Beyond Light update]</span> First cut done, plenty of known issues to clean up soon. First of
+      all is when milestones properly unlock in the API.
     </li>
     <li><span class="">[Season of Arrivals update]</span> New power caps are 1050 and 1060, more to come as we
       see the season roll out
@@ -134,10 +142,10 @@
       unavailable milestones. Chars that aren't eligible for milestones may therefore show as complete. Milestones with
       this icon
       <fa-icon [icon]="iconService.falMinusSquare" class="faint" matTooltip="Not available"></fa-icon>
-      denotes activities that aren't available. 
+      denotes activities that aren't available.
       Usually you need to level up and/or complete story missions to get these.
-      In some cases, I'm making an educated guess here as it's sometimes impossible to tell the difference 
-      between a completed milestone and one that's unavailable (b/c milestones dissappear on completion). I use a 
+      In some cases, I'm making an educated guess here as it's sometimes impossible to tell the difference
+      between a completed milestone and one that's unavailable (b/c milestones dissappear on completion). I use a
       blunt "Are you under 900PL?" check in those cases.
     </li>
   </ul>
