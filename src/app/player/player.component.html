@@ -61,6 +61,10 @@
                 <fa-icon class="menu-icon" [icon]="iconService.fadHourGlassHalf"></fa-icon>
                 <span class="d-none d-md-inline">Content Vault</span>
               </a> -->
+              <a mat-button href="https://destiny2utils.com/" rel="noopener" target="_blank" rel="noopener">
+                <fa-icon [icon]="iconService.fasLevelUp" class="menu-icon"></fa-icon>
+                <span class="d-none d-md-inline">Destiny 2 Utils</span>
+              </a>
               <a mat-button [routerLink]="['/party', player.characters[0].membershipType, player.characters[0].membershipId]">
                 <fa-icon class="menu-icon" [icon]="iconService.falGamepad"
                   [class.accent-text]="player.currentActivity!=null"></fa-icon>
