@@ -82,14 +82,17 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_POINT_PROG_HASH = '2691820383';
-    ARTIFACT_POWER_PROG_HASH = '2046159590';
+    ARTIFACT_POINT_PROG_HASH = '1196593248';
+    ARTIFACT_POWER_PROG_HASH = '1183600353';
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
         '1714509342', // Future War Cult
         '2105209711', // New Monarchy
         '3398051042', // Dead Orbit
+        '3859807381', // Rasputin
+        '1482334108', // Leviathan
+        '2677528157', // "Follower of Osiris"
 
     ];
 
@@ -200,12 +203,6 @@ export class ParseService {
             } else if (name === 'Vanguard Research') {
                 name = 'Ikora';
                 info = 'Research';
-            } else if (name === 'Fragmented Researcher') {
-                name = 'Asher';
-                info = 'IO';
-            } else if (name === 'Field Commander') {
-                name = 'Sloane';
-                info = 'Titan';
             } else if (name === 'The Crucible') {
                 name = 'Crucible';
                 info = 'Shaxx';
@@ -220,24 +217,13 @@ export class ParseService {
             if (p.progressionHash === 3759191272) { name = 'Guided Trials'; }
             if (p.progressionHash === 1273404180) { name = 'Guided Nightfall'; }
             if (p.progressionHash === 3381682691) { name = 'Guided Raid'; }
-            if (p.progressionHash === +this.ARTIFACT_POINT_PROG_HASH) { name = 'Artifact Points'; }
+            if (p.progressionHash === +this.ARTIFACT_POINT_PROG_HASH) { name = 'Artifact Perk Unlocks'; }
             if (p.progressionHash === +this.ARTIFACT_POWER_PROG_HASH) { name = 'Artifact Power Bonus'; }
 
 
             prog.name = name;
             if ('Resonance Rank' == prog.name) {
-                try {
-                    if (desc.vendors && desc.vendors.length > 0) {
-                        const vendorHash = desc.vendors[0].vendorHash;
-                        const vDesc: any = this.destinyCacheService.cache.Vendor[vendorHash];
-                        const vName = vDesc.displayProperties.name;
-                        if (vName) {
-                            prog.name = vName;
-                        }
-                    }
-                } catch (x) {
-                    console.dir(x);
-                }
+                return null;
             }
             prog.info = info;
             prog.desc = desc.displayProperties.description;
@@ -320,12 +306,17 @@ export class ParseService {
                     //     descRewards = 'Pinnacle Gear (Weak)';
                     // }
                 }
+                if (skipDesc.hash == 979073379) { // force exo challenge to pinnacle
+                    // this is actually unlocked by Europa Explorer III which is too much trouble to track b/c we'd have to load
+                    // the slow varik's vendor endpoint
+                    descRewards = 'Pinnacle Gear';
+                }
                 const ms2: MileStoneName = {
                     key: skipDesc.hash + '',
                     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
                     rewards: descRewards,
                     pl: this.parseMilestonePl(descRewards),
-                    name: name,
+                    name: skipDesc.displayProperties.name,
                     desc: skipDesc.displayProperties.description,
                     hasPartial: false,
                     dependsOn: []
@@ -691,7 +682,7 @@ export class ParseService {
         return new NameDesc('Classified', 'Keep it secret, keep it safe');
     }
 
-    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[],): AggHistoryEntry[] {
+    public static mergeAggHistory2(charAggHistDicts: { [key: string]: AggHistoryEntry }[]): AggHistoryEntry[] {
         const returnMe: AggHistoryEntry[] = [];
         let aKeys = [];
         for (const c of charAggHistDicts) {
@@ -1145,7 +1136,7 @@ export class ParseService {
                         const perkSet = [];
                         if (socketVal.reusablePlugs != null) {
 
-                            // TODO fix this? might be ok, need to wait on xur, or do we even care about perks on vendor guns anymore?
+                            // ix this? might be ok, need to wait on xur, or do we even care about perks on vendor guns anymore?
                             for (const perkHash of socketVal.reusablePlugHashes) {
                                 const perkDesc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
                                 if (perkDesc != null) {
@@ -1484,16 +1475,15 @@ export class ParseService {
             if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crype
                 // rewards = 'Pinnacle Gear';
                 rewards = 'Pinnacle Gear';
-            } else
-                if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
-                    rewards = 'Pinnacle Gear (Weak)';
-                } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
-                    rewards = 'Pinnacle Gear (Weak)';
-                } else if (ms.milestoneHash == 1437935813 && rewards == '???') { // Weekly Vanguard
-                    rewards = 'Pinnacle Gear (Weak)';
-                } else if (ms.milestoneHash == 3603098564) { // override clan weekly
-                    rewards = 'Pinnacle Gear (Weak)';
-                }
+            } else if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
+                rewards = 'Pinnacle Gear (Weak)';
+            } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
+                rewards = 'Pinnacle Gear (Weak)';
+            } else if (ms.milestoneHash == 1437935813 && rewards == '???') { // Weekly Vanguard
+                rewards = 'Pinnacle Gear (Weak)';
+            } else if (ms.milestoneHash == 3603098564) { // override clan weekly
+                rewards = 'Pinnacle Gear (Weak)';
+            }
             const pl = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
             const pushMe = {
@@ -1944,12 +1934,19 @@ export class ParseService {
         // }
         const charPlugSetData = characterPlugSet?.data;
         if (char && charPlugSetData) {
-            const plugObjectives = charPlugSetData[char.characterId]?.plugs["2611374829"];
+            const plugObjectives = charPlugSetData[char.characterId]?.plugs['2611374829'];
             if (plugObjectives?.length > 0) {
                 const obj = plugObjectives[0];
                 if (obj.plugObjectives?.length > 0) {
                     const powerfulObj = obj.plugObjectives[0];
                     const total = powerfulObj.completionValue;
+                    // they've unlocked crow's pinnacle
+                    if (total > 2) {
+                        // 2406589846
+                        const venatiks = milestonesByKey['2406589846'];
+                        venatiks.pl = Const.HIGH_BOOST;
+                        venatiks.rewards = 'Pinnacle Gear';
+                    }
                     const powerfulDropsRemaining = powerfulObj.progress;
                     const progress = total - powerfulDropsRemaining;
 
@@ -3802,9 +3799,6 @@ export class ParseService {
                 }
 
                 if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {
-                    if (type == ItemType.MissionArtifact) {
-                        console.log("xxx");
-                    }
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
                     if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
                         let reusablePlugs = null;
@@ -3831,10 +3825,6 @@ export class ParseService {
                             for (const index of jCat.socketIndexes) {
                                 const socketDesc = desc.sockets.socketEntries[index];
                                 const socketVal = socketArray[index];
-                                // handle mission unlock artifact thingy
-                                if (socketDesc.reusablePlugSetHash == 2611374829) {
-                                    console.log("xyx");
-                                }
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
