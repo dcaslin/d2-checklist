@@ -1406,7 +1406,7 @@ export class ParseService {
                     }
                     let activityIcon: string = aDesc.displayProperties.icon;
                     if (activityIcon == null || activityIcon.indexOf('missing_icon') >= 0) {
-                        if (aDesc.activityModeHashes && aDesc.activityModeHashes.length>0) {
+                        if (aDesc.activityModeHashes && aDesc.activityModeHashes.length > 0) {
                             const amHash = aDesc.activityModeHashes[0];
                             const amDesc = this.destinyCacheService.cache.ActivityMode[amHash];
                             activityIcon = amDesc.displayProperties.icon;
@@ -1929,50 +1929,84 @@ export class ParseService {
 
 
 
-    private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }) {
+    private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
         console.dir(artifact);
-        let imperials: number;
-        let powerfulDropsRemaining: number;
-        let perfected = false;
-        if (artifact.sockets != null && artifact.sockets.length > 0) {
-            const lastSocket = artifact.sockets[artifact.sockets.length - 1];
-            if (lastSocket.plugs != null && lastSocket.plugs.length == 1) {
-                perfected = lastSocket.plugs[0].enabled;
+        console.dir(characterPlugSet);
+
+        // TODO report on stored charges and progress
+        // TODO determine lure upgrades
+
+        // if (artifact.sockets != null && artifact.sockets.length > 0) {
+        //     const lastSocket = artifact.sockets[artifact.sockets.length - 1];
+        //     if (lastSocket.plugs != null && lastSocket.plugs.length == 1) {
+        //         perfected = lastSocket.plugs[0].enabled;
+        //     }
+        // }
+        const charPlugSetData = characterPlugSet?.data;
+        if (char && charPlugSetData) {
+            const plugObjectives = charPlugSetData[char.characterId]?.plugs["2611374829"];
+            if (plugObjectives?.length > 0) {
+                const obj = plugObjectives[0];
+                if (obj.plugObjectives?.length > 0) {
+                    const powerfulObj = obj.plugObjectives[0];
+                    const total = powerfulObj.completionValue;
+                    const powerfulDropsRemaining = powerfulObj.progress;
+                    const progress = total - powerfulDropsRemaining;
+
+                    if (milestonesByKey[Const.CHALICE_KEY] == null) {
+                        const reward = 'Powerful Gear';
+                        const ms: MileStoneName = {
+                            key: Const.CHALICE_KEY,
+                            resets: char.endWeek.toISOString(),
+                            rewards: reward,
+                            pl: this.parseMilestonePl(reward),
+                            name: 'Wrathborn Hunts',
+                            desc: 'Your Cryptolith Lure gives a fixed number of powerful drops per week.',
+                            hasPartial: false,
+                            dependsOn: []
+                            // suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
+                        };
+                        milestoneList.push(ms);
+                        milestonesByKey[Const.CHALICE_KEY] = ms;
+                    }
+                    // constructor(hash, complete, pct, info, suppInfo, phases) {
+                    const complete = powerfulDropsRemaining === 0;
+                    char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
+                }
             }
         }
-
 
         // TODO fix this item objective
-        for (const obj of artifact.objectives) {
-            if (obj.progressDescription.indexOf('rewards') > 0) {
-                powerfulDropsRemaining = obj.progress;
-            }
-            if (obj.progressDescription === 'Imperials') {
-                imperials = obj.progress;
-            }
-        }
+        // for (const obj of artifact.objectives) {
+        //     if (obj.progressDescription.indexOf('rewards') > 0) {
+        //         powerfulDropsRemaining = obj.progress;
+        //     }
+        //     if (obj.progressDescription === 'Imperials') {
+        //         imperials = obj.progress;
+        //     }
+        // }
 
-        if (char != null) {
-            if (milestonesByKey[Const.CHALICE_KEY] == null) {
-                const reward = 'Legendary Gear';
-                const ms: MileStoneName = {
-                    key: Const.CHALICE_KEY,
-                    resets: char.endWeek.toISOString(),
-                    rewards: reward,
-                    pl: this.parseMilestonePl(reward),
-                    name: 'Menagerie',
-                    desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
-                    hasPartial: false,
-                    dependsOn: [],
-                    suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
-                };
-                milestoneList.push(ms);
-                milestonesByKey[Const.CHALICE_KEY] = ms;
-            }
-            // constructor(hash, complete, pct, info, suppInfo, phases) {
-            const complete = powerfulDropsRemaining === 0;
-            char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
-        }
+        // if (char != null) {
+        //     if (milestonesByKey[Const.CHALICE_KEY] == null) {
+        //         const reward = 'Legendary Gear';
+        //         const ms: MileStoneName = {
+        //             key: Const.CHALICE_KEY,
+        //             resets: char.endWeek.toISOString(),
+        //             rewards: reward,
+        //             pl: this.parseMilestonePl(reward),
+        //             name: 'Menagerie',
+        //             desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
+        //             hasPartial: false,
+        //             dependsOn: [],
+        //             suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
+        //         };
+        //         milestoneList.push(ms);
+        //         milestonesByKey[Const.CHALICE_KEY] = ms;
+        //     }
+        //     // constructor(hash, complete, pct, info, suppInfo, phases) {
+        //     const complete = powerfulDropsRemaining === 0;
+        //     char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
+        // }
 
     }
 
@@ -2245,11 +2279,11 @@ export class ParseService {
                     options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     items.forEach(itm => {
-                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
+                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, null);
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
                             if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
-                                this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey);
+                                this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey, resp.characterPlugSets);
                             } else if (parsed.type === ItemType.Bounty) {
                                 // ignore expired
                                 if (!parsed.expired) {
@@ -3550,7 +3584,7 @@ export class ParseService {
                                 1585787867].includes(bucketHash)) {
                             type = ItemType.Armor;
                         } else {
-                            console.log('Skipping no type: '+ itm.itemHash);
+                            console.log('Skipping no type: ' + itm.itemHash);
                             return null;
                         }
 
@@ -3768,7 +3802,7 @@ export class ParseService {
                 }
 
                 if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {
-                    if (type==ItemType.MissionArtifact) {
+                    if (type == ItemType.MissionArtifact) {
                         console.log("xxx");
                     }
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
@@ -3791,12 +3825,16 @@ export class ParseService {
                             if (760375309 == jCat.socketCategoryHash) {
                                 continue;
                             }
-                            const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949 || jCat.socketCategoryHash == 3848483489;
+                            const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949;
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
                                 const socketDesc = desc.sockets.socketEntries[index];
                                 const socketVal = socketArray[index];
+                                // handle mission unlock artifact thingy
+                                if (socketDesc.reusablePlugSetHash == 2611374829) {
+                                    console.log("xyx");
+                                }
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
