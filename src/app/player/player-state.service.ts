@@ -76,7 +76,6 @@ export class PlayerStateService {
   public trackedPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
 
   private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
-  public _contentVaultOnly: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   public player: Observable<Player>;
 
   private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -106,11 +105,7 @@ export class PlayerStateService {
   public requestRefresh() {
     const p = this.currPlayer();
     const platform = Const.PLATFORMS_DICT['' + p.profile.userInfo.membershipType];
-    if (this._contentVaultOnly.getValue()) {
-      this.loadContentVault(platform, p.profile.userInfo.membershipId, true);
-    } else {
-      this.loadPlayer(platform, p.profile.userInfo.membershipId, true);
-    }
+    this.loadPlayer(platform, p.profile.userInfo.membershipId, true);
   }
 
   public getPlayerRoute(params: any[]): string[] {
@@ -175,38 +170,6 @@ export class PlayerStateService {
     this._signedOnUserIsCurrent.next(isCurrent);
   }
 
-
-  public async loadContentVault(platform: Platform, memberId: string, refresh: boolean): Promise<void> {
-    this._loading.next(true);
-    if (!refresh) {
-      this.filterChar = null;
-      this._player.next(null);
-    }
-    try {
-      const x = await this.bungieService.getChars(platform.type, memberId,
-        ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
-          'ProfileProgression', 'PresentationNodes', 'Records'
-        ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs, true);
-      if (x == null || x.characters == null) {
-        throw new Error('No valid destiny player found for ' + memberId + ' on ' + platform.name);
-      }
-      this.checkSignedOnCurrent(x);
-      this.applyTrackedTriumphs(x);
-      if (x.characters && x.characters.length > 0) {
-        this.filterChar = x.characters[0];
-      } else {
-        this.filterChar = null;
-      }
-      this._contentVaultOnly.next(true);
-      this._player.next(x);
-      this.bungieService.loadClans(this._player);
-    }
-    finally {
-      this._loading.next(false);
-    }
-  }
-
-
   public async loadPlayer(platform: Platform, memberId: string, refresh: boolean): Promise<void> {
 
     this._loading.next(true);
@@ -217,12 +180,12 @@ export class PlayerStateService {
     try {
       const x = await this.bungieService.getChars(platform.type, memberId,
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
-          'CharacterEquipment', 'CharacterInventories',
+          'CharacterEquipment', 'ItemInstances', 'CharacterInventories','ProfileInventories',
           'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives'
           // , '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
           // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
-        ], false, false, this.showZeroPtTriumphs, this.showInvisTriumphs);
+        ], false, true, this.showZeroPtTriumphs, this.showInvisTriumphs);
       if (x == null || x.characters == null) {
         throw new Error('No valid destiny player found for ' + memberId + ' on ' + platform.name);
       }
@@ -243,7 +206,6 @@ export class PlayerStateService {
       } else {
         this.filterChar = null;
       }
-      this._contentVaultOnly.next(false);
       this._player.next(x);
       this.bungieService.loadClans(this._player);
       this.bungieService.observeUpdatePvpStreak(this._player);
