@@ -86,9 +86,7 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
       if (player != null) {
         const ui = player.profile.userInfo;
         if (ui.membershipType == platform.type && ui.membershipId == memberId) {
-          if (this.state._contentVaultOnly.value != true) {
-            return;
-          }
+          return;
         }
       }
       await this.state.loadPlayer(platform, memberId, false);

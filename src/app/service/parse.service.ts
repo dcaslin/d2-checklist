@@ -9,6 +9,9 @@ import {
     Badge,
     BadgeClass,
     BountySet,
+    BUCKETS_ALL_POWER,
+    BUCKETS_ARMOR,
+    BUCKETS_WEAPON,
     BungieGroupMember,
     BungieMember,
     BungieMemberPlatform,
@@ -21,6 +24,7 @@ import {
     ChecklistItem,
     ClanInfo,
     ClanMilestoneResult,
+    ClassAllowed,
     Const,
     Currency,
     CurrentActivity,
@@ -41,7 +45,7 @@ import {
     MilestoneActivity,
     MileStoneName,
     MilestoneStatus,
-    Mission,
+
     NameDesc,
     NameQuantity,
     PathEntry,
@@ -116,6 +120,40 @@ export class ParseService {
     private static dedupeArray(arr: any[]): any[] {
         const unique_array = Array.from(new Set(arr));
         return unique_array;
+    }
+
+    private calculateMaxLight(chars: Character[], gear: InventoryItem[]) {
+        const tempGear = gear.slice(0);
+        tempGear.sort((a, b) => {
+            return a.power > b.power ? -1 : a.power < b.power ? 1 : 0;
+        });
+        for (const char of chars) {
+            const powerLevels: number[] = [];
+            for (const bucketHash of BUCKETS_ALL_POWER) {
+                const best = tempGear.find((itm) => {
+                    if (!itm.inventoryBucket){
+                        return false;
+                    }
+                    if (itm.inventoryBucket.hash !== bucketHash) {
+                        return false;
+                    }
+                    if (itm.classAllowed == ClassAllowed.Any || itm.classAllowed == char.classType) {
+                        return true;
+                    }
+                    return false;
+                });
+                if (best) {
+                    // console.log(`${char.className} best for ${bucketHash} is ${best.name} - ${best.power}` );
+                    // console.dir(best);
+                    powerLevels.push(best.power);
+                } else {
+                    // console.log(`${char.className} best for ${bucketHash} is none`);
+                }
+            }
+            const basePL = powerLevels.reduce((sume, el) => sume + el, 0) / powerLevels.length;
+            console.log(basePL);
+
+        }
     }
 
     private parseCharacter(c: PrivCharacter): Character {
@@ -2578,6 +2616,10 @@ export class ParseService {
             this.handleCurrency('4257549984', gear, currencies); // prisms
             this.handleCurrency('3853748946', gear, currencies); // cores
         }
+        if (resp.profileInventory?.data) {
+            this.calculateMaxLight(chars, gear);
+        }
+        console.dir(gear);
         // this.handleChallengeMilestones(chars, quests, milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
@@ -3571,14 +3613,10 @@ export class ParseService {
                     const bucketHash = desc.inventory.bucketTypeHash;
                     redacted = true;
                     if (bucketHash != null) {
-                        if ([1498876634, 2465295065, 953998645].includes(bucketHash)) {
+                        if (BUCKETS_WEAPON.includes(bucketHash)) {
                             type = ItemType.Weapon;
                         } else if (
-                            [3448274439,
-                                3551918588,
-                                14239492,
-                                20886954,
-                                1585787867].includes(bucketHash)) {
+                            BUCKETS_ARMOR.includes(bucketHash)) {
                             type = ItemType.Armor;
                         } else {
                             console.log('Skipping no type: ' + itm.itemHash);

@@ -55,13 +55,9 @@ export class ContentVaultComponent extends ChildComponent implements OnInit, OnD
       if (player != null) {
         const ui = player.profile.userInfo;
         if (ui.membershipType == platform.type && ui.membershipId == memberId) {
-          if (this.state._contentVaultOnly.value == true) {
-            return;
-          }
+          return;
         }
       }
-      await this.state.loadContentVault(platform, memberId, false);
-
     } catch (exc) {
       console.dir(exc);
       this.errorMsg.next(exc.message);
