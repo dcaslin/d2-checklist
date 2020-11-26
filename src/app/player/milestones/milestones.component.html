@@ -66,6 +66,9 @@
                 <fa-icon [icon]="iconService.farTimes"></fa-icon>
               </div>
             </div>
+            <div class="milestone-row" *ngIf="mileStoneName.suppInfo!=null">
+              <div class="ms-supp-info accent-text">{{mileStoneName.suppInfo}}</div>
+            </div>
             <div class="milestone-row">
               <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="state.sort"
                 (sortClick)="sortByRewards()"></d2c-reward-desc>
@@ -78,10 +81,10 @@
                 <ng-container *ngIf="debugmode|async">
                   <br> {{mileStoneName.resets|date:'short'}}
                 </ng-container>
-                <div class="accent-text ms-supp-info" *ngIf="mileStoneName.suppInfo!=null">{{mileStoneName.suppInfo}}
-                </div>
+                
               </div>
-            </div>
+            </div>            
+            
           </td>
           <td [attr.data-label]="char.className+' - '+char.light+' '+(char.lightFraction?(char.lightFraction.top+'/'+char.lightFraction.bottom):'')+' '+char.title" *ngFor="let char of player.characters">
             <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" [detailed]="true">
