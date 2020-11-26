@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
+import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
-import { Sort } from '@app/service/model';
 import { AggHistoryEntry, Badge, BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphCollectibleNode, TriumphRecordNode } from '../service/model';
 
 export interface ClanUserList {
@@ -1025,7 +1025,7 @@ export class ClanStateService {
     if (b.currentPlayer() != null) { bX = b.currentPlayer().minsPlayed; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
-  
+
   private static compareLLs(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aPts = -1;
     if (a.currentPlayer() != null && a.currentPlayer().maxLL != null) {
@@ -1159,7 +1159,8 @@ export class ClanStateService {
     try {
       const x = await this.bungieService.getChars(target.destinyUserInfo.membershipType,
         target.destinyUserInfo.membershipId, ['Profiles', 'Characters', 'CharacterProgressions', 'ProfileProgression', 'ItemObjectives',
-        'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true);
+        'CharacterEquipment', 'ItemInstances', 'CharacterInventories', 'ProfileInventories',
+        'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true, true);
       target.player$.next(x);
       if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
         this.modelPlayer.next(x);

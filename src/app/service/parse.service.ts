@@ -32,6 +32,7 @@ import {
     DamageType,
     DestinyAmmunitionType,
     EnergyType,
+    Fraction,
     GearMeta,
     InventoryItem,
     InventoryPlug,
@@ -101,11 +102,12 @@ export class ParseService {
     ];
 
     ACCOUNT_LEVEL = [
-        '2126988316', // Obelisk: Mars
-        '2468902004', // Obelisk: Nessus
-        '3258748553', // Obelisk: Tangled Shore
-        // '1482334108', // Leviathan
-        '185244751', // Obelisk: EDZ
+        '3611983588', //CROW
+        // '2126988316', // Obelisk: Mars
+        // '2468902004', // Obelisk: Nessus
+        // '3258748553', // Obelisk: Tangled Shore
+        // // '1482334108', // Leviathan
+        // '185244751', // Obelisk: EDZ
         // '3468066401', // The Nine
         // '1714509342', // Future War Cult
         // '2105209711', // New Monarchy
@@ -122,7 +124,32 @@ export class ParseService {
         return unique_array;
     }
 
-    private calculateMaxLight(chars: Character[], gear: InventoryItem[]) {
+    private static decimalToFraction(value: number): Fraction {
+        if (value === parseInt(value.toString(), 10)) {
+            return null;
+        } else {
+            let top = value.toString().includes('.') ? +(value.toString().replace(/\d+[.]/, '')) : 0;
+            const wholeNumber = Math.floor(value);
+            const decimal = value - wholeNumber;
+            const bottom = Math.pow(10, top.toString().replace('-', '').length);
+            if (decimal >= 1) {
+                top = +top + (Math.floor(decimal) * bottom);
+            } else if (decimal <= -1) {
+                top = +top + (Math.ceil(decimal) * bottom);
+            }
+            const x = Math.abs(ParseService.greatestCommonDenominator(top, bottom));
+            return {
+                top: top / x,
+                bottom: bottom / x
+            };
+        }
+    }
+
+    private static greatestCommonDenominator(a: number, b: number) {
+        return (b) ? ParseService.greatestCommonDenominator(b, a % b) : a;
+    }
+
+    private calculateMaxLight(chars: Character[], gear: InventoryItem[], artifactBonus: number) {
         const tempGear = gear.slice(0);
         tempGear.sort((a, b) => {
             return a.power > b.power ? -1 : a.power < b.power ? 1 : 0;
@@ -131,7 +158,7 @@ export class ParseService {
             const powerLevels: number[] = [];
             for (const bucketHash of BUCKETS_ALL_POWER) {
                 const best = tempGear.find((itm) => {
-                    if (!itm.inventoryBucket){
+                    if (!itm.inventoryBucket) {
                         return false;
                     }
                     if (itm.inventoryBucket.hash !== bucketHash) {
@@ -150,9 +177,13 @@ export class ParseService {
                     // console.log(`${char.className} best for ${bucketHash} is none`);
                 }
             }
-            const basePL = powerLevels.reduce((sume, el) => sume + el, 0) / powerLevels.length;
-            console.log(basePL);
-
+            if (powerLevels.length > 0) {
+                const basePL = powerLevels.reduce((sume, el) => sume + el, 0) / powerLevels.length;
+                char.light = Math.floor(basePL) + artifactBonus;
+                char.lightFraction = ParseService.decimalToFraction(basePL + artifactBonus);
+            } else {
+                // this account is weird, don't worry about it. probaby got this on the clan page when using invalid account combos
+            }
         }
     }
 
@@ -2617,9 +2648,8 @@ export class ParseService {
             this.handleCurrency('3853748946', gear, currencies); // cores
         }
         if (resp.profileInventory?.data) {
-            this.calculateMaxLight(chars, gear);
+            this.calculateMaxLight(chars, gear, artifactPowerBonus);
         }
-        console.dir(gear);
         // this.handleChallengeMilestones(chars, quests, milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,

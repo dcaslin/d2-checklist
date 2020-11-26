@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
+import { IconService } from '@app/service/icon.service';
 import { FriendListEntry, Player, UserInfo } from '@app/service/model';
+import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { IconService } from '@app/service/icon.service';
-import * as moment from 'moment';
 
 
 @Component({
@@ -43,7 +43,10 @@ export class FriendsComponent extends ChildComponent implements OnInit {
 
   public  async loadPlayer(friend: FriendListEntry): Promise<void> {
     const x = await this.bungieService.getChars(friend.user.membershipType, friend.user.membershipId,
-      ['Profiles', 'Characters', 'CharacterActivities', 'CharacterProgressions', 'ItemObjectives', 'Records'], true);
+      ['Profiles', 'Characters', 'CharacterProgressions', 'ProfileProgression', 'ItemObjectives',
+      'CharacterEquipment', 'ItemInstances', 'CharacterInventories', 'ProfileInventories',
+      'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'
+    ], true, true);
     if (this.modelPlayer == null && x != null && x.characters != null) {
       this.modelPlayer = x;
     }

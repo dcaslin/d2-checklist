@@ -64,7 +64,8 @@
                 <ng-container *ngIf="member.player$|async as player">
                   <ng-container *ngIf="!player.superprivate">
                     <br>
-                    <span class="simple-caption-no-margin">{{player.maxLL}}LL.
+                    <span class="simple-caption-no-margin">{{player.maxLL}} <ng-container *ngIf="player.maxLLFraction"><sup>{{player.maxLLFraction.top}}</sup>&frasl;<sub>{{player.maxLLFraction.bottom}}</sub></ng-container>
+                      <br>
                       {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
                       <br>
                       {{player.triumphScore|number : '2.0-0'}} <fa-icon [icon]="iconService.falTrophy">
