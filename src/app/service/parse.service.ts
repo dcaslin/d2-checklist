@@ -102,7 +102,7 @@ export class ParseService {
     ];
 
     ACCOUNT_LEVEL = [
-        '3611983588', //CROW
+        '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
         // '2468902004', // Obelisk: Nessus
         // '3258748553', // Obelisk: Tangled Shore
@@ -1989,18 +1989,6 @@ export class ParseService {
 
 
     private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
-        console.dir(artifact);
-        console.dir(characterPlugSet);
-
-        // TODO report on stored charges and progress
-        // TODO determine lure upgrades
-
-        // if (artifact.sockets != null && artifact.sockets.length > 0) {
-        //     const lastSocket = artifact.sockets[artifact.sockets.length - 1];
-        //     if (lastSocket.plugs != null && lastSocket.plugs.length == 1) {
-        //         perfected = lastSocket.plugs[0].enabled;
-        //     }
-        // }
         const charPlugSetData = characterPlugSet?.data;
         if (char && charPlugSetData) {
             const plugObjectives = charPlugSetData[char.characterId]?.plugs['2611374829'];
@@ -2018,62 +2006,33 @@ export class ParseService {
                     }
                     const powerfulDropsRemaining = powerfulObj.progress;
                     const progress = total - powerfulDropsRemaining;
+                    let suppInfo = null;
+                    if (artifact.objectives?.length > 1) {
+                        suppInfo = `${artifact.objectives[0].percent}% Charged, ${artifact.objectives[1].progress} stored`;
+                    }
 
-                    if (milestonesByKey[Const.CHALICE_KEY] == null) {
+                    if (milestonesByKey[Const.MISSION_ARTIFACT_KEY] == null) {
                         const reward = 'Powerful Gear';
                         const ms: MileStoneName = {
-                            key: Const.CHALICE_KEY,
+                            key: Const.MISSION_ARTIFACT_KEY,
                             resets: char.endWeek.toISOString(),
                             rewards: reward,
                             pl: this.parseMilestonePl(reward),
                             name: 'Wrathborn Hunts',
                             desc: 'Your Cryptolith Lure gives a fixed number of powerful drops per week.',
                             hasPartial: false,
-                            dependsOn: []
-                            // suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
+                            dependsOn: [],
+                            suppInfo
                         };
                         milestoneList.push(ms);
-                        milestonesByKey[Const.CHALICE_KEY] = ms;
+                        milestonesByKey[Const.MISSION_ARTIFACT_KEY] = ms;
                     }
                     // constructor(hash, complete, pct, info, suppInfo, phases) {
                     const complete = powerfulDropsRemaining === 0;
-                    char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
+                    char.milestones[Const.MISSION_ARTIFACT_KEY] = new MilestoneStatus(Const.MISSION_ARTIFACT_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
                 }
             }
         }
-
-        // TODO fix this item objective
-        // for (const obj of artifact.objectives) {
-        //     if (obj.progressDescription.indexOf('rewards') > 0) {
-        //         powerfulDropsRemaining = obj.progress;
-        //     }
-        //     if (obj.progressDescription === 'Imperials') {
-        //         imperials = obj.progress;
-        //     }
-        // }
-
-        // if (char != null) {
-        //     if (milestonesByKey[Const.CHALICE_KEY] == null) {
-        //         const reward = 'Legendary Gear';
-        //         const ms: MileStoneName = {
-        //             key: Const.CHALICE_KEY,
-        //             resets: char.endWeek.toISOString(),
-        //             rewards: reward,
-        //             pl: this.parseMilestonePl(reward),
-        //             name: 'Menagerie',
-        //             desc: 'Pleasure and delight await you. Your chalice gives a fixed number of powerful drops per week.',
-        //             hasPartial: false,
-        //             dependsOn: [],
-        //             suppInfo: !perfected ? imperials + ' Imperials' : 'Perfected'
-        //         };
-        //         milestoneList.push(ms);
-        //         milestonesByKey[Const.CHALICE_KEY] = ms;
-        //     }
-        //     // constructor(hash, complete, pct, info, suppInfo, phases) {
-        //     const complete = powerfulDropsRemaining === 0;
-        //     char.milestones[Const.CHALICE_KEY] = new MilestoneStatus(Const.CHALICE_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
-        // }
-
     }
 
     public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean, contentVaultOnly?: boolean): Player {
@@ -3680,14 +3639,16 @@ export class ParseService {
                 type = ItemType.Bounty;
             }
 
-            if (!detailedInv) {
-                if (type !== ItemType.Bounty
-                    && type !== ItemType.Quest
-                    && type !== ItemType.QuestStep
-                    && type !== ItemType.MissionArtifact) {
-                    return null;
-                }
+            if (type == ItemType.Bounty
+                || type == ItemType.Quest
+                || type == ItemType.QuestStep
+                || type == ItemType.MissionArtifact) {
+                // this is fine, keep going
+            } else if (!detailedInv) {
+                // nothing useful
+                return null;
             } else {
+                // gear we need to check on or not
                 if (type === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Mod') >= 0) {
                     type = ItemType.GearMod;
                     // mods we use the perk desc

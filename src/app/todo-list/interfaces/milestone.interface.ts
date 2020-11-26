@@ -149,7 +149,7 @@ export const CRUCIBLE_WEEKLY_BOUNTIES = 2594202463;
 export const GUNSMITH_WEEKLY_BOUNTIES = 3899487295;
 export const VANGUARD_WEEKLY_BOUNTIES = 2709491520;
 export const GAMBIT_WEEKLY_BOUNTIES = 3802603984;
-export const MENAGERIE_HASH = Const.CHALICE_KEY;
+export const MENAGERIE_HASH = Const.MISSION_ARTIFACT_KEY;
 
 // these are large transparent icons to match the other milestone icon styles
 export const SHAXX_ICON = '/common/destiny2_content/icons/8a7eb56950435db546a4d9422a959391.png';
