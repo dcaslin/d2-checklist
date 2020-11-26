@@ -581,6 +581,7 @@ export class Player {
     readonly minsPlayed: number;
     readonly gearMeta: GearMeta;
     maxLL = 0;
+    maxLLFraction?: Fraction;
     pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = [];
 
@@ -619,6 +620,7 @@ export class Player {
             for (const char of characters) {
                 if (char.light > this.maxLL) {
                     this.maxLL = char.light;
+                    this.maxLLFraction = char.lightFraction;
                 }
                 minsPlayed += char.minutesPlayedTotal;
             }
@@ -879,13 +881,19 @@ export class Shared extends Target {
     }
 }
 
+export interface Fraction {
+    top: number;
+    bottom: number;
+}
+
 
 export class Character extends Target {
     readonly membershipId: string;
     readonly membershipType: number;
     readonly characterId: string;
     readonly className: string;
-    readonly light: number;
+    light: number;
+    lightFraction?: Fraction;
 
     dateLastPlayed: string;
     minutesPlayedThisSession: string;

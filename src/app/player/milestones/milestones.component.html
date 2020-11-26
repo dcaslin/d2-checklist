@@ -35,7 +35,7 @@
             class="warn-text pad-left fake-link pad-left-more" (click)="showAllMilestones()">Restore Hidden</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
-          {{char.className}} - {{char.light}} {{char.title}}
+          {{char.className}} - {{char.light}} <ng-container *ngIf="char.lightFraction"><sup>{{char.lightFraction.top}}</sup>&frasl;<sub>{{char.lightFraction.bottom}}</sub></ng-container> {{char.title}}
 
           <fa-icon [icon]="iconService.falEyeSlash" *ngIf="char.characterId!=hideCompleteChars"
             (click)="hideCompleteChars = char.characterId" matTooltip="Hide milestones that this char has completed">
@@ -83,7 +83,7 @@
               </div>
             </div>
           </td>
-          <td [attr.data-label]="char.className+' - '+char.light+' '+char.title" *ngFor="let char of player.characters">
+          <td [attr.data-label]="char.className+' - '+char.light+' '+(char.lightFraction?(char.lightFraction.top+'/'+char.lightFraction.bottom):'')+' '+char.title" *ngFor="let char of player.characters">
             <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" [detailed]="true">
             </d2c-milestone-check>
           </td>

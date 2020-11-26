@@ -107,6 +107,7 @@
 
                     <td data-label="Max Current Light Level">
                         <ng-container *ngIf="!player.superprivate && player.maxLL">{{player.maxLL}}
+                            <ng-container *ngIf="player.maxLLFraction"><sup>{{player.maxLLFraction.top}}</sup>&frasl;<sub>{{player.maxLLFraction.bottom}}</sub></ng-container>
                         </ng-container>
                     </td>
                     <td data-label="Time played">
