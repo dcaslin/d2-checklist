@@ -621,7 +621,7 @@ export class BungieService implements OnDestroy {
         }
         // no powerful bounties avail
         if (powerfulBounties.length == 0) {
-            const psuedoMs = new MilestoneStatus(key, false, 0, null, 'Not available', null, true, false);
+            const psuedoMs = new MilestoneStatus(key, false, 0, null, ['Not available'], null, true, false);
             return psuedoMs;
         } else if (powerfulBounties.length == 1) {
             const i = powerfulBounties[0];
@@ -644,7 +644,7 @@ export class BungieService implements OnDestroy {
                 }
             }
             const psuedoMs = new MilestoneStatus(key, complete, progress, null,
-                complete ? null : held ? 'Held' : 'Not Held', null, false, false);
+                complete ? null : held ? ['Held'] : ['Not Held'], null, false, false);
             return psuedoMs;
         } else {
             if (!vendorFound) {
@@ -668,7 +668,7 @@ export class BungieService implements OnDestroy {
             }
             const allDone = complete === powerfulBounties.length;
             const psuedoMs = new MilestoneStatus(key, allDone,
-                complete / powerfulBounties.length, null, allDone ? null : info, null, false, false);
+                complete / powerfulBounties.length, null, allDone ? null : [info], null, false, false);
             return psuedoMs;
         }
     }

@@ -36,10 +36,13 @@
             </ng-template>
         </ng-template>
 
-        <div class="simple-caption-darker margin-bottom-0" *ngIf="detailed==true && milestone.suppInfo!=null">
-            {{milestone.suppInfo}}
+        <div class="margin-bottom-0" *ngIf="detailed==true && milestone.suppInfo!=null">
+            <div class="supp-info-container">
+                <div class="supp-info simple-darker-caption-no-margin" *ngFor="let s of milestone.suppInfo">
+                    {{s}}
+                </div>
+            </div>
         </div>
-
     </ng-container>
     <ng-template #isNull>
         <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Milestone missing, raise your PL or progress your quests"></fa-icon>
