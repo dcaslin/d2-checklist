@@ -508,7 +508,7 @@ export class ParseService {
                             const obj = challenge.objective;
                             const oDesc: any = this.destinyCacheService.cache.Objective[obj.objectiveHash];
                             if (oDesc != null) {
-                                if (oDesc.redacted) {
+                                if (!oDesc.redacted) {
                                     if (obj.complete === true) {
                                         oPct = 1;
                                     } else {
@@ -2316,7 +2316,7 @@ export class ParseService {
                     options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     items.forEach(itm => {
-                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, null);
+                        const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
                             if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
@@ -3693,6 +3693,9 @@ export class ParseService {
                 if (type == ItemType.Consumable) {
                     type = ItemType.ExchangeMaterial;
                 }
+            }
+            if (itm.itemHash == 2593817224) {
+                console.log('abc');
             }
             const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
