@@ -148,7 +148,7 @@ export class MilestoneCatalogService extends Destroyable {
     p.characters.forEach((c: Character) => {
       const info: MilestoneStatus = c?.milestones[m.key];
       let progress, completionValue;
-      if (info?.suppInfo.length == 1) {
+      if (info?.suppInfo?.length == 1 && info.suppInfo[0]) {
         [progress, completionValue] = info.suppInfo[0].split('/')?.map(str => str?.trim());
       }
       const charInfo: ActivityCharInfo = {
