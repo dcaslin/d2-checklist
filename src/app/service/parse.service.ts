@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
+import { parse } from 'path';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
@@ -2319,12 +2320,13 @@ export class ParseService {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
                             } else {
-                                if (parsed.objectives && parsed.objectives.length > 0) {
-                                    parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
-                                    quests.push(parsed);
+                                // if (parsed.objectives && parsed.objectives.length > 0) {
+                                //     parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
+                                //     quests.push(parsed);
+                                //     console.log(`Non quest pushed ${parsed.name}`);
 
 
-                                }
+                                // }
                                 gear.push(parsed);
                             }
                         }
