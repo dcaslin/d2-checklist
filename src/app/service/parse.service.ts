@@ -3694,9 +3694,6 @@ export class ParseService {
                     type = ItemType.ExchangeMaterial;
                 }
             }
-            if (itm.itemHash == 2593817224) {
-                console.log('abc');
-            }
             const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
             if (itemComp != null) {
