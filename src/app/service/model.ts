@@ -824,13 +824,13 @@ export class MilestoneStatus {
     readonly complete: boolean;
     readonly pct: number;
     readonly info: string;
-    readonly suppInfo: string;
+    readonly suppInfo: string[];
     readonly phases: boolean[];
     readonly locked: boolean;
     readonly tooLowPower: boolean;
     readonly readyToCollect: boolean;
 
-    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string,
+    constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string[],
             phases: boolean[], locked: boolean, tooLowPower: boolean, readyToCollect?: boolean) {
         this.hash = hash;
         this.complete = complete;

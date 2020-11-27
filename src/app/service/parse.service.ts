@@ -544,7 +544,7 @@ export class ParseService {
                     }
                 }
                 if (phases.length == 0) { phases = null; }
-                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, suppInfo, phases, false, false, readyToCollect);
+                const m: MilestoneStatus = new MilestoneStatus(key, complete === total, pct, info, [suppInfo], phases, false, false, readyToCollect);
                 c.milestones[key] = m;
             }
         }
@@ -2007,9 +2007,11 @@ export class ParseService {
                     }
                     const powerfulDropsRemaining = powerfulObj.progress;
                     const progress = total - powerfulDropsRemaining;
-                    let suppInfo = null;
+                    const pct = progress / total;
+                    let suppInfo: string[] = [`${powerfulDropsRemaining} left`];
                     if (artifact.objectives?.length > 1) {
-                        suppInfo = `${artifact.objectives[0].percent}% Charged, ${artifact.objectives[1].progress} stored`;
+                        suppInfo.push(`${artifact.objectives[0].percent}% Charged`);
+                        suppInfo.push(`${artifact.objectives[1].progress} stored`);
                     }
 
                     if (milestonesByKey[Const.MISSION_ARTIFACT_KEY] == null) {
@@ -2022,15 +2024,24 @@ export class ParseService {
                             name: 'Wrathborn Hunts',
                             desc: 'Your Cryptolith Lure gives a fixed number of powerful drops per week.',
                             hasPartial: false,
-                            dependsOn: [],
-                            suppInfo
+                            dependsOn: []
                         };
                         milestoneList.push(ms);
                         milestonesByKey[Const.MISSION_ARTIFACT_KEY] = ms;
                     }
                     // constructor(hash, complete, pct, info, suppInfo, phases) {
                     const complete = powerfulDropsRemaining === 0;
-                    char.milestones[Const.MISSION_ARTIFACT_KEY] = new MilestoneStatus(Const.MISSION_ARTIFACT_KEY, complete, complete ? 1 : 0, null, complete ? null : powerfulDropsRemaining + ' left', null, false, false);
+                    let info = null;
+                    if (pct > 0 && pct < 1) {
+                        info = Math.floor(100 * pct) + '% complete';
+                    }
+
+
+                    char.milestones[Const.MISSION_ARTIFACT_KEY] =
+                        new MilestoneStatus(Const.MISSION_ARTIFACT_KEY,
+                            complete, pct, info,
+                            suppInfo,
+                            null, false, false);
                 }
             }
         }
