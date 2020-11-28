@@ -23,11 +23,43 @@ $footer-height: 140px;
 .sub-row{
    font-size: smaller;
    height: 40px;
+   animation: slide-down-anim 1.0s ease;
 }
 .currency-icons{
   margin-right: 10px;
   margin-left: 10px;
+}
 
+.defer-block {
+  display: inline-block;
+}
+
+.slide-left {
+  animation: slide-left-anim 0.4s ease;
+}
+
+@keyframes slide-down-anim {
+  0% {
+      opacity: 0;
+      height: 0;
+      transform: translateY(-20px);
+  }
+  100% {
+      opacity: 1;
+      height: 40px;
+      transform: translateX(0);
+  }
+}
+
+@keyframes slide-left-anim {
+  0% {
+      opacity: 0;
+      transform: translateX(20px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateX(0);
+  }
 }
 
 .apiAlert{

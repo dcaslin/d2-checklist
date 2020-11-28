@@ -162,7 +162,7 @@
             {{currUser.userInfo.platformName}}</a>
           <span class="spacer"></span>
 
-          <div class="currency-icons d-none d-xxl-block" *ngIf="currUser.gearMeta$|async as gm">
+          <div class="currency-icons slide-left d-none d-xxl-block" *ngIf="currUser.gearMeta$|async as gm">
             <div class="gm-section">
               <a class="currency-chip fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
                 [queryParams]="{ owner: 'vault'}">
@@ -192,21 +192,20 @@
 
           </div>
           <div class="currency-icons">
-            <ng-container *ngFor="let c of currUser.currencies$|async">
+            <div class="defer-block slide-left" *ngFor="let c of currUser.currencies$|async">
               <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
                 [matTooltip]="c.count+' '+c.name">
                 <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
                 <span> {{c.count|number}}</span>
               </span>
-            </ng-container>
+            </div>
           </div>
           <ng-container *ngIf="currUser.clans|async as clans">
-            <button *ngIf="clans.length==1" mat-button class="d-none d-md-inline nav-button"
-              (click)="loadClan(clans[0])">
+            <button *ngIf="clans.length==1" mat-button class="slide-left d-none d-md-inline nav-button" (click)="loadClan(clans[0])">
               <i class="icon-clan"></i> My Clan
             </button>
             <ng-container *ngIf="clans.length>1">
-              <button mat-button [matMenuTriggerFor]="toolbarClanMenu">
+              <button mat-button [matMenuTriggerFor]="toolbarClanMenu" class="slide-left">
                 <mat-icon>flag</mat-icon> My Clans
               </button>
               <mat-menu #toolbarClanMenu="matMenu">
