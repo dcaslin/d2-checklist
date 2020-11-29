@@ -1,134 +1,115 @@
-<div class="childComponent">
-  <div class="childVert">
-    <div class="main">
-
-
-      <h1>Friends</h1>
-      <div class="info centerMe">
-        <section class="body-2" style="text-align: left">To select friends, browse players on the site and click the
-          <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
-          so that it looks like this <span class="warn-text">
-            <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
-          </span>.
-        </section>
-        <div class="button-row">
-          <a mat-button (click)="load()">
-            <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon> Refresh
+<h1>Friends</h1>
+<div class="info centerMe">
+  <section class="body-2" style="text-align: left">To select friends, browse players on the site and click the
+    <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
+    so that it looks like this <span class="warn-text">
+      <fa-icon [icon]="iconService.farHeart" style="font-weight: normal !important"></fa-icon>
+    </span>.
+  </section>
+  <div class="button-row">
+    <a mat-button (click)="load()">
+      <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon> Refresh
+    </a>
+    <a mat-button (click)="showAllMilestones()" *ngIf="(hiddenMilestones|async).length>0">Show Hidden
+      Milestones</a>
+  </div>
+</div>
+<div class="center-spinner">
+  <mat-spinner class="loading" class="center-spinner"
+    *ngIf="(loading|async)===true || (modelPlayer==null && (members|async).length>0)"></mat-spinner>
+</div>
+<div class="body clan-body">
+  <table class="responsive-table clan-table" *ngIf="(members|async)!=null && modelPlayer!=null">
+    <thead>
+      <tr>
+        <th>
+          Member
+        </th>
+        <ng-container *ngIf="modelPlayer!=null">
+          <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+            <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
+              *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">
+              {{mileStoneName.name}}
+              <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
+              <span matTooltip="Hide this milestone, click Show All to restore it later"
+                class="fake-link milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
+                <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
+              </span>
+            </th>
+          </ng-container>
+        </ng-container>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let member of members|async">
+        <td class="lead">
+          <a [routerLink]="['/',member.user.membershipType, member.user.membershipId]">
+            {{member.user.displayName}}
           </a>
-          <a mat-button (click)="showAllMilestones()" *ngIf="(hiddenMilestones|async).length>0">Show Hidden
-            Milestones</a>
-        </div>
-      </div>
-      <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner"
-          *ngIf="(loading|async)===true || (modelPlayer==null && (members|async).length>0)"></mat-spinner>
-      </div>
-      <div class="body clan-body">
-        <table class="responsive-table clan-table" *ngIf="(members|async)!=null && modelPlayer!=null">
-          <thead>
-            <tr>
-              <th>
-                Member
-              </th>
-              <ng-container *ngIf="modelPlayer!=null">
-                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                  <th [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space"
-                    *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">
-                    {{mileStoneName.name}}
-                    <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
-                    <span matTooltip="Hide this milestone, click Show All to restore it later"
-                      class="fake-link milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
-                      <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-                    </span>
-                  </th>
-                </ng-container>
-              </ng-container>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let member of members|async">
-              <td class="lead">
-                <a [routerLink]="['/',member.user.membershipType, member.user.membershipId]">
-                  {{member.user.displayName}}
-                </a>
-                
-                <span class="fake-link" style="margin-left:0.25em" *ngIf="(member.player$|async)==null"
-                  (click)="loadPlayer(member)">
-                  &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
-                </span>
-                <span style="margin-left:0.25em" class="warn-text fake-link"
-                  (click)="storageService.toggleFav(member.user, member.bungieMembershipId)">
-                  <fa-icon [icon]="iconService.farTimes" style="font-weight: normal !important"></fa-icon>
-                </span>
+          
+          <span class="fake-link" style="margin-left:0.25em" *ngIf="(member.player$|async)==null"
+            (click)="loadPlayer(member)">
+            &ensp;<fa-icon [icon]="iconService.fasSync"></fa-icon>
+          </span>
+          <span style="margin-left:0.25em" class="warn-text fake-link"
+            (click)="storageService.toggleFav(member.user, member.bungieMembershipId)">
+            <fa-icon [icon]="iconService.farTimes" style="font-weight: normal !important"></fa-icon>
+          </span>
 
-                <ng-container *ngIf="member.player$|async as player">
-                  <ng-container *ngIf="!player.superprivate">
-                    <br>
-                    <span class="simple-caption-no-margin">{{player.maxLL}} <ng-container *ngIf="player.maxLLFraction"><sup>{{player.maxLLFraction.top}}</sup>&frasl;<sub>{{player.maxLLFraction.bottom}}</sub></ng-container>
-                      <br>
-                      {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
-                      <br>
-                      {{player.triumphScore|number : '2.0-0'}} <fa-icon [icon]="iconService.falTrophy">
-                      </fa-icon>
-                    </span>
-                  </ng-container>
-                </ng-container>
+          <ng-container *ngIf="member.player$|async as player">
+            <ng-container *ngIf="!player.superprivate">
+              <br>
+              <span class="simple-caption-no-margin">{{player.maxLL}} <ng-container *ngIf="player.maxLLFraction"><sup>{{player.maxLLFraction.top}}</sup>&frasl;<sub>{{player.maxLLFraction.bottom}}</sub></ng-container>
+                <br>
+                {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                <br>
+                {{player.triumphScore|number : '2.0-0'}} <fa-icon [icon]="iconService.falTrophy">
+                </fa-icon>
+              </span>
+            </ng-container>
+          </ng-container>
 
+        </td>
+
+        <ng-container *ngIf="member.player$|async as player">
+
+          <td
+            *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones==null"
+            [attr.colspan]="(modelPlayer.milestoneList).length">
+            Blocked by privacy settings
+          </td>
+          <ng-container
+            *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones!=null && modelPlayer!=null">
+            <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+
+              <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
+                [attr.data-label]="mileStoneName.name">
+
+                  <span class="fake-link" style="float: left"
+                    matTooltip="Hide this milestone, click Show All to restore it later"
+                    class="mobileVisibilityButton responsive-table-inline-mobile-only"
+                    (click)="hideMilestone(mileStoneName.key)">
+                    <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
+                  </span>
+                <ng-container *ngFor="let char of player.characters">
+                  <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]">
+                  </d2c-milestone-check>
+                </ng-container>
               </td>
-
-              <ng-container *ngIf="member.player$|async as player">
-
-                <td
-                  *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones==null"
-                  [attr.colspan]="(modelPlayer.milestoneList).length">
-                  Blocked by privacy settings
-                </td>
-                <ng-container
-                  *ngIf="player.characters!=null && player.characters.length>0 && player.characters[0].milestones!=null && modelPlayer!=null">
-                  <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
-
-                    <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1" class="clan-player-ms-cell"
-                      [attr.data-label]="mileStoneName.name">
-
-                        <span class="fake-link" style="float: left"
-                          matTooltip="Hide this milestone, click Show All to restore it later"
-                          class="mobileVisibilityButton responsive-table-inline-mobile-only"
-                          (click)="hideMilestone(mileStoneName.key)">
-                          <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
-                        </span>
-                      <ng-container *ngFor="let char of player.characters">
-                        <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]">
-                        </d2c-milestone-check>
-                      </ng-container>
-                    </td>
-                  </ng-container>
-                </ng-container>
-              </ng-container>
-              <ng-container *ngIf="(member.player$|async)==null && (member.errorMsg$|async)==null && modelPlayer!=null">
-                <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
-                  <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">...</td>
-                </ng-container>
-              </ng-container>
-              <ng-container *ngIf="member.errorMsg$|async">
-                <td colspan="0" *ngIf="modelPlayer!=null">
-                  {{member.errorMsg}}
-                </td>
-              </ng-container>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-
-    </div>
-    <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
-
-  </div>
-  <div *ngIf="(disableAds|async)!==true" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
-  </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="(member.player$|async)==null && (member.errorMsg$|async)==null && modelPlayer!=null">
+          <ng-container *ngFor="let mileStoneName of modelPlayer.milestoneList">
+            <td *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">...</td>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="member.errorMsg$|async">
+          <td colspan="0" *ngIf="modelPlayer!=null">
+            {{member.errorMsg}}
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
 </div>

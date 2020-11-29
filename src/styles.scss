@@ -130,47 +130,15 @@
 }
 
 
-.childComponent{
-  height: 100%;
-  flex: 1 0 auto;
-
-  
+.foobar{
   display: flex;
   flex-direction: column;
-  // background-color: purple;
-}
-
-.childVert{
-  order: 1;
-  flex: 1 1 auto;
-
-  display: inline-flex;
-  flex-direction: row;
-  // background-color: yellow;
-}
-
-.adRight{
-  order: 2;
-  width: 300px;
-  min-height: 300px;
-  flex-grow: 0;
-  // background-color: red;
-}
-
-.main{
-  order: 1;
-  height: 100%;
-  padding: 20px;
-  
-  text-align: center;
-  margin-left: auto; 
-  margin-right: auto;
-  // background-color: green;
 }
 
 
 .adText {
   opacity: 0.5;
+  margin-left: 2px;
   text-align: center;
 }
 
@@ -198,42 +166,6 @@
   .tree-leaf{
     padding-left: 0px !important;
   }
-}
-
-.adBottom{
-  order: 2;
-  display: none;
-  visibility: hidden;
-  text-align: center;
-  //background-color: pink;
-}
-
-@media (max-width: 1440px) {
-  .adRight {
-      width: 120px;
-  }
-}
-
-
-
-@media (max-width: 960px) {
-  .adRight {
-      display: none;
-      visibility: hidden;
-  }
-  
-  .main{
-    padding: 5px;
-  }
-    
-  .adBottom{
-    min-width: 336px;
-    // background-color: pink;
-    display: block;
-    visibility: visible;
-    height: 300px;
-  }
-
 }
 
 .loading{

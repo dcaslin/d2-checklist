@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "12.3.7",
+  "version": "12.4.1",
   "manifest": "89360.20.11.18.2249-6",
   "license": "MIT",
   "scripts": {
@@ -53,7 +53,6 @@
     "lodash.isequal": "^4.5.0",
     "lz-string": "^1.4.4",
     "moment": "^2.24.0",
-    "ng2-adsense": "^6.0.3",
     "ng2-charts": "^2.3.0",
     "ngx-clipboard": "^12.3.1",
     "ngx-moment": "^3.5.0",

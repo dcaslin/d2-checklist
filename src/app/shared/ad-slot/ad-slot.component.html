@@ -1,0 +1,47 @@
+<ng-container *ngIf="(disableAds|async)!==true">
+    <ng-container *ngIf="screenWidth$|async as screenWidth">
+        <ng-container *ngIf="adType=='unknown'">
+            Unknown type, fixme
+        </ng-container>
+        <ng-container *ngIf="adType=='top'">
+            <div class="adTop" *ngIf="screenWidth<=1000">
+                <small class="adText">Advertisement</small>
+                <ng-container *ngIf="!(busyRouting$|async)">
+                    <!-- 2020-D2C-mobile-banner -->
+                    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:50px"
+                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="6797379468"></ins>
+                </ng-container>
+            </div>
+            <div class="adTopDesktop" *ngIf="screenWidth>1000 && screenWidth<=1500">
+                <small class="adText">Advertisement</small>
+                <ng-container *ngIf="!(busyRouting$|async)">
+                    <!-- 2020-D2C-mobile-banner -->
+                    <ins class="adsbygoogle" style="display:inline-block;width:970px;height:90px"
+                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="6828141388"></ins>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="adType=='right'">
+            <div class="adRight" *ngIf="screenWidth>1500">
+                <small class="adText">Advertisement</small>
+                <ng-container *ngIf="!(busyRouting$|async)">
+                    <!-- 2020-D2C-Right-fat -->
+                    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
+                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="5274568322"></ins>
+                </ng-container>
+            </div>
+        </ng-container>
+        <ng-container *ngIf="adType=='bottom' && screenWidth<=1500">
+            <div class="adBottom">
+                <small class="adText">Advertisement</small>
+                <ng-container *ngIf="!(busyRouting$|async)">
+                    <!-- 2020-D2C-mobile-footer -->
+                    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:200px"
+                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="4516838661"></ins>
+                </ng-container>
+            </div>
+        </ng-container>
+    </ng-container>
+
+
+</ng-container>
