@@ -1,52 +1,37 @@
-<div class="childComponent">
-  <div class="childVert">
-    <div class="main">
-      <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
-      </div>
-      <h1><i class="icon-clan"></i> Clan Search</h1>
-      <div class="note centerMe"><small>Clan names must match exactly.</small>
-      </div>
-      <div>
-        <mat-form-field class="searchField">
-          <input matInput placeholder="Clan name" [(ngModel)]="name" (keyup.enter)="search()">
-        </mat-form-field>
-        &emsp;
-        <button mat-mini-fab color="primary" class="searchField" (click)="search()" color="primary">
-          <mat-icon>search</mat-icon>
-        </button>
-      </div>
-      <ng-container *ngIf="(clan|async)!=null">
-        <div>
-          <a [routerLink]="['/clan', (clan|async).groupId]">{{(clan|async).name}}</a>
-        </div>
-        <mat-card class="clan-card">
-          <mat-card-header>
-            <div mat-card-avatar class="clan-avatar transparent-icon" [style.background-image]="'url(//www.bungie.net' + (clan|async).avatarPath + ')'"></div>
-            <mat-card-title>
-                <a [routerLink]="['/clan', (clan|async).groupId]">{{(clan|async).name}}</a>
-            </mat-card-title>
-            <mat-card-subtitle>
-              {{(clan|async).memberCount}} members
-            </mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-            {{(clan|async).about}}
-          </mat-card-content>
-          <mat-card-actions>
-              <a mat-button [routerLink]="['/clan', (clan|async).groupId]">VIEW CLAN PROGRESS</a>
-            </mat-card-actions>
-        </mat-card>
-      </ng-container>
-    </div>
-    <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
-  </div>
-  <div *ngIf="(disableAds|async)!==true" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
-  </div>
-
+<div class="center-spinner">
+  <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
 </div>
+<h1><i class="icon-clan"></i> Clan Search</h1>
+<div class="note centerMe"><small>Clan names must match exactly.</small>
+</div>
+<div>
+  <mat-form-field class="searchField">
+    <input matInput placeholder="Clan name" [(ngModel)]="name" (keyup.enter)="search()">
+  </mat-form-field>
+  &emsp;
+  <button mat-mini-fab color="primary" class="searchField" (click)="search()" color="primary">
+    <mat-icon>search</mat-icon>
+  </button>
+</div>
+<ng-container *ngIf="(clan|async)!=null">
+  <div>
+    <a [routerLink]="['/clan', (clan|async).groupId]">{{(clan|async).name}}</a>
+  </div>
+  <mat-card class="clan-card">
+    <mat-card-header>
+      <div mat-card-avatar class="clan-avatar transparent-icon" [style.background-image]="'url(//www.bungie.net' + (clan|async).avatarPath + ')'"></div>
+      <mat-card-title>
+          <a [routerLink]="['/clan', (clan|async).groupId]">{{(clan|async).name}}</a>
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{(clan|async).memberCount}} members
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      {{(clan|async).about}}
+    </mat-card-content>
+    <mat-card-actions>
+        <a mat-button [routerLink]="['/clan', (clan|async).groupId]">VIEW CLAN PROGRESS</a>
+      </mat-card-actions>
+  </mat-card>
+</ng-container>

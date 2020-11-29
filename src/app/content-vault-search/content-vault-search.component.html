@@ -1,75 +1,61 @@
-<div class="childComponent">
-    <div class="childVert">
-        <div class="main">
-            <div class="fixed-spinner">
-                <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
-            </div>
-            <div class="body-text">
-                <h1>
-                    <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>&ensp;Content Vault
-                </h1>
-                <div class="searchRow">
-                    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
-                        <mat-form-field class="searchField searchPlatform">
-                            <mat-select placeholder="Platform" formControlName="platform">
-                                <mat-select-trigger>
-                                    <ng-container *ngIf="platform.value">
-                                        <fa-icon [icon]="platform.value.icon"></fa-icon>
-                                        <span class="d-none d-md-inline pad-left">{{platform.value.name }}</span>
-                                    </ng-container>
-                                    <ng-container *ngIf="!platform.value">
-                                        ???
-                                    </ng-container>
-                                </mat-select-trigger>
-                                <mat-option *ngFor="let p of platforms" [value]="p">
-                                    <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <mat-form-field class="searchField searchGt" class="gt">
-                            <input matInput placeholder="Gamer tag" formControlName="gt">
-                        </mat-form-field>
-                        <button mat-mini-fab class="searchField" [disabled]="!searchForm.valid" type="submit"
-                            color="primary">
-                            <mat-icon>search</mat-icon>
-                        </button>
-                    </form>
-                </div>
-                <div class="searchRow" *ngIf="_failedSearch|async as fail">
-                    <p class="warn-text">{{fail.gt}} not found on {{fail.platform.desc}}. Try a different platform or <a [routerLink]="['/','search', fail.gt]">wildcard search Bungie account names</a> </p>                    
-                </div>
-                <div class="searchRow" *ngIf="!(_selectedUser|async)">
-                    <button mat-stroked-button (click)="logon()"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In </button> to link directly to your player's info and skip searching.
-                </div>
-                <div class="searchRow" *ngIf="(_selectedUser|async) as selectedUser">
-                    <button mat-raised-button color="accent" [routerLink]="['/content-vault', selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId]"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> My Content Vault Info </button>
-                </div>
-                <div class="help-text-parent">
-                    <p class="help-text"><a target="_blank" rel="noopener"
-                            href="https://www.bungie.net/en-us/Explore/Detail/News/49507">Bungie has announced</a>
-                        that various activities are going into the Destiny Content Vault and will be unavailable when
-                        Beyond Light goes live in November. The
-                        Content Vault page on D2Checklist shows JUST those Triumphs/Seals/Checklists to help you track
-                        your progress on them and get as many as possible done before they go away.</p>
-                    <p class="help-text">
-                        Search for a player
-                        above, or sign-in to click directly to your own Content Vault info.</p>
-
-                    <p class="help-text">
-                        [Note that this is simply a focused, trimmed-down version of the regular D2Checklist player page,
-                        and you can also see those Content Vault items flagged on that page as well.]
-                    </p>
-                </div>
-
-            </div>
-        </div>
-        <div *ngIf="(disableAds|async)!==true" class="adRight">
-            <small class="adText">Advertisement</small>
-            <ng-adsense adFormat="vertical"></ng-adsense>
-        </div>
+<div class="fixed-spinner">
+    <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+</div>
+<div class="body-text">
+    <h1>
+        <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>&ensp;Content Vault
+    </h1>
+    <div class="searchRow">
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+            <mat-form-field class="searchField searchPlatform">
+                <mat-select placeholder="Platform" formControlName="platform">
+                    <mat-select-trigger>
+                        <ng-container *ngIf="platform.value">
+                            <fa-icon [icon]="platform.value.icon"></fa-icon>
+                            <span class="d-none d-md-inline pad-left">{{platform.value.name }}</span>
+                        </ng-container>
+                        <ng-container *ngIf="!platform.value">
+                            ???
+                        </ng-container>
+                    </mat-select-trigger>
+                    <mat-option *ngFor="let p of platforms" [value]="p">
+                        <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field class="searchField searchGt" class="gt">
+                <input matInput placeholder="Gamer tag" formControlName="gt">
+            </mat-form-field>
+            <button mat-mini-fab class="searchField" [disabled]="!searchForm.valid" type="submit"
+                color="primary">
+                <mat-icon>search</mat-icon>
+            </button>
+        </form>
     </div>
-    <div *ngIf="(disableAds|async)!==true" class="adBottom">
-        <small class="adText">Advertisement</small>
-        <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+    <div class="searchRow" *ngIf="_failedSearch|async as fail">
+        <p class="warn-text">{{fail.gt}} not found on {{fail.platform.desc}}. Try a different platform or <a [routerLink]="['/','search', fail.gt]">wildcard search Bungie account names</a> </p>                    
     </div>
+    <div class="searchRow" *ngIf="!(_selectedUser|async)">
+        <button mat-stroked-button (click)="logon()"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In </button> to link directly to your player's info and skip searching.
+    </div>
+    <div class="searchRow" *ngIf="(_selectedUser|async) as selectedUser">
+        <button mat-raised-button color="accent" [routerLink]="['/content-vault', selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId]"><fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> My Content Vault Info </button>
+    </div>
+    <div class="help-text-parent">
+        <p class="help-text"><a target="_blank" rel="noopener"
+                href="https://www.bungie.net/en-us/Explore/Detail/News/49507">Bungie has announced</a>
+            that various activities are going into the Destiny Content Vault and will be unavailable when
+            Beyond Light goes live in November. The
+            Content Vault page on D2Checklist shows JUST those Triumphs/Seals/Checklists to help you track
+            your progress on them and get as many as possible done before they go away.</p>
+        <p class="help-text">
+            Search for a player
+            above, or sign-in to click directly to your own Content Vault info.</p>
+
+        <p class="help-text">
+            [Note that this is simply a focused, trimmed-down version of the regular D2Checklist player page,
+            and you can also see those Content Vault items flagged on that page as well.]
+        </p>
+    </div>
+
 </div>

@@ -1,17 +1,14 @@
-<div class="childComponent mat-typography">
-  <div class="childVert">
-    <div class="main">
+
       <div class="top-section">
-        
         <div class="normal-top-section">
           <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
-            <div class="announcement-body">
-              Check out the new <a class="no-break" routerLink="/content-vault"> <fa-icon  class="warn-text" [icon]="iconService.fadHourGlassHalf"></fa-icon><span class="link-text">Content Vault page</span></a>! 
-            </div>
-            <div>
-              <button mat-icon-button (click)="onHideAnnouncement()"><fa-icon  [icon]="iconService.fasTimes"></fa-icon></button>
-            </div>
-          </div> -->
+              <div class="announcement-body">
+                Check out the new <a class="no-break" routerLink="/content-vault"> <fa-icon  class="warn-text" [icon]="iconService.fadHourGlassHalf"></fa-icon><span class="link-text">Content Vault page</span></a>! 
+              </div>
+              <div>
+                <button mat-icon-button (click)="onHideAnnouncement()"><fa-icon  [icon]="iconService.fasTimes"></fa-icon></button>
+              </div>
+            </div> -->
 
           <div>
             <div *ngIf="debugmode|async" style="margin-bottom: 25px; text-align: left">
@@ -54,7 +51,7 @@
               <fa-icon [icon]="iconService.fasVideo"></fa-icon> Video tutorials
             </a>
           </div>
-          
+
         </div>
       </div>
       <div class="center-spinner" *ngIf="(loading|async)===true">
@@ -217,9 +214,9 @@
                   <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
                     [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
                     [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                  <div mat-line> 
-                    <span class="fake-link underline" (click)="showBurns(n)">{{n.name}} <fa-icon [icon]="iconService.fasBurn"
-                      class="fa-icon"></fa-icon></span>
+                  <div mat-line>
+                    <span class="fake-link underline" (click)="showBurns(n)">{{n.name}} <fa-icon
+                        [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span>
                     <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
                   </div>
                 </mat-list-item>
@@ -264,7 +261,7 @@
               </mat-list>
             </mat-card-content>
           </mat-card>
-     
+
         </div>
         <div>
           <mat-card>
@@ -312,33 +309,21 @@
           </mat-card>
         </div>
       </div>
-    </div>
-    <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
 
-  </div>
-  <div *ngIf="(disableAds|async)!==true" class="adBottom">
-    <small class="adText">Advertisement</small><br>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
-  </div>
-</div>
-
-<ng-template #simpleBurns let-title="title" let-milestone="milestone">
-  <mat-card *ngIf="milestone && milestone.modifiers">
-    <mat-card-header>
-      <mat-card-title>{{title}}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <mat-list role="list">
-        <mat-list-item *ngFor="let b of milestone.modifiers" [matTooltip]="b.desc">
-          <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
-            [class.brighten]="b.icon.endsWith('jpg')"
-            [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-          <div mat-line>{{b.name}}</div>
-        </mat-list-item>
-      </mat-list>
-    </mat-card-content>
-  </mat-card>
-</ng-template>
+      <ng-template #simpleBurns let-title="title" let-milestone="milestone">
+        <mat-card *ngIf="milestone && milestone.modifiers">
+          <mat-card-header>
+            <mat-card-title>{{title}}</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list role="list">
+              <mat-list-item *ngFor="let b of milestone.modifiers" [matTooltip]="b.desc">
+                <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
+                  [class.brighten]="b.icon.endsWith('jpg')"
+                  [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+                <div mat-line>{{b.name}}</div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>

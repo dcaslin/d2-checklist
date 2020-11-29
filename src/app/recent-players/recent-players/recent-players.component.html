@@ -1,103 +1,86 @@
-<div class="childComponent">
-  <div class="childVert">
-    <div class="main">
-
-
-      <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
-      </div>
-      <div class="body-text">
-        <h2 class="centerMe">Recent Teammates -
-            <a *ngIf="player" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId]">
-              {{player.profile.userInfo.displayName}}
-            </a>      
-        </h2>
-        <div *ngIf="player!=null && player.characters!=null" class="button-row">
-          <a mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'"
-            [routerLink]="['/recent-players',this.membershipType, this.membershipId, c.characterId]">{{c.className}} -
-            {{c.light}}</a>
-        </div>
-        <br />
-        <div class="centerMe">
-          <mat-form-field class="searchField">
-            <mat-select [(ngModel)]="selectedMode" (selectionChange)="history()" placeholder="Mode">
-              <mat-option *ngFor="let p of activityModes" [value]="p">
-                {{ p.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field style="margin-left: 5px" class="searchField">
-            <mat-select [(ngModel)]="selectedMaxResults" (selectionChange)="history()" placeholder="Max Results">
-              <mat-option *ngFor="let p of maxResults" [value]="p">
-                {{ p }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <button mat-raised-button title="Activity History" color="primary" (click)="history()">
-            <mat-icon>search</mat-icon>
-          </button>
-        </div>
-        <div class="table-container" *ngIf="this.rows!=null">
-          <div *ngIf="rowCntr < rows.length">
-            Analyzing match {{rowCntr}} / {{this.rows.length}}...
-          </div>
-          <table class="recent-players-table itemTable" style="margin-top: 1em">
-            <thead>
-              <tr>
-                <th class="icon-cell"></th>
-                <th>Name <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true" [hidden]="rowCntr >= rows.length"></fa-icon></th>
-                <th>Total</th>
-                <th class="d-none d-lg-table-cell">Dates</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngIf="friends.length==0">
-                <td colspan="3">
-                  No matches found
-                </td>
-                <td class="d-none d-lg-table-cell">
-                </td>
-              </tr>
-              <tr *ngFor="let friend of friends">
-                <td class="icon-cell">
-                  <span *ngIf="friend.user.icon!=null" class="friend-icon" [style.background-image]="'url(//www.bungie.net' + friend.user.icon + ')'"></span>
-                </td>
-                <td>
-                  <a [routerLink]="['/'+friend.user.membershipType, friend.user.membershipId]"
-                    color="accent">{{friend.user.displayName}}</a>
-                  <d2c-friend-star [userInfo]="friend.user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
-                  <div *ngIf="friend.user.bungieInfo!=null && friend.user.bungieInfo.clans!=null">
-                    <div class="clans" *ngFor="let clan of friend.user.bungieInfo.clans">  
-                      Clan: <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
-                    </div>
-                    
-                  </div>
-                </td>
-                <td>{{friend.instances.length}}</td>
-                <td class="d-none d-lg-table-cell">
-                  <div *ngFor="let i of friend.instances">
-                    <a color="primary" [routerLink]="['/pgcr', i.instanceId]">
-                      {{i.mode}} - {{i.name}}
-                    </a>
-                    , {{i.period|date:'shortDate'}}
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
-
+<div class="center-spinner">
+  <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+</div>
+<div class="body-text">
+  <h2 class="centerMe">Recent Teammates -
+      <a *ngIf="player" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId]">
+        {{player.profile.userInfo.displayName}}
+      </a>      
+  </h2>
+  <div *ngIf="player!=null && player.characters!=null" class="button-row">
+    <a mat-raised-button *ngFor="let c of player.characters" [color]="c.characterId==characterId?'accent':'default'"
+      [routerLink]="['/recent-players',this.membershipType, this.membershipId, c.characterId]">{{c.className}} -
+      {{c.light}}</a>
   </div>
-  <div *ngIf="(disableAds|async)!==true" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
+  <br />
+  <div class="centerMe">
+    <mat-form-field class="searchField">
+      <mat-select [(ngModel)]="selectedMode" (selectionChange)="history()" placeholder="Mode">
+        <mat-option *ngFor="let p of activityModes" [value]="p">
+          {{ p.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field style="margin-left: 5px" class="searchField">
+      <mat-select [(ngModel)]="selectedMaxResults" (selectionChange)="history()" placeholder="Max Results">
+        <mat-option *ngFor="let p of maxResults" [value]="p">
+          {{ p }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button title="Activity History" color="primary" (click)="history()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <div class="table-container" *ngIf="this.rows!=null">
+    <div *ngIf="rowCntr < rows.length">
+      Analyzing match {{rowCntr}} / {{this.rows.length}}...
+    </div>
+    <table class="recent-players-table itemTable" style="margin-top: 1em">
+      <thead>
+        <tr>
+          <th class="icon-cell"></th>
+          <th>Name <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true" [hidden]="rowCntr >= rows.length"></fa-icon></th>
+          <th>Total</th>
+          <th class="d-none d-lg-table-cell">Dates</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="friends.length==0">
+          <td colspan="3">
+            No matches found
+          </td>
+          <td class="d-none d-lg-table-cell">
+          </td>
+        </tr>
+        <tr *ngFor="let friend of friends">
+          <td class="icon-cell">
+            <span *ngIf="friend.user.icon!=null" class="friend-icon" [style.background-image]="'url(//www.bungie.net' + friend.user.icon + ')'"></span>
+          </td>
+          <td>
+            <a [routerLink]="['/'+friend.user.membershipType, friend.user.membershipId]"
+              color="accent">{{friend.user.displayName}}</a>
+            <d2c-friend-star [userInfo]="friend.user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+            <div *ngIf="friend.user.bungieInfo!=null && friend.user.bungieInfo.clans!=null">
+              <div class="clans" *ngFor="let clan of friend.user.bungieInfo.clans">  
+                Clan: <a [routerLink]="['/clan', clan.id]">{{clan.name}}</a>
+              </div>
+              
+            </div>
+          </td>
+          <td>{{friend.instances.length}}</td>
+          <td class="d-none d-lg-table-cell">
+            <div *ngFor="let i of friend.instances">
+              <a color="primary" [routerLink]="['/pgcr', i.instanceId]">
+                {{i.mode}} - {{i.name}}
+              </a>
+              , {{i.period|date:'shortDate'}}
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

@@ -1,7 +1,3 @@
-<div class="childComponent">
-  <div class="childVert">
-    <div class="main">
-
       <h1>Destiny 2 Checklist</h1>
       <div class="actions">
         <a class="space-right" mat-raised-button color="accent" rel="noopener"
@@ -69,14 +65,3 @@
           
         </section>
       </div>
-    </div>
-    <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
-  </div>
-  <div *ngIf="(disableAds|async)!==true" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
-  </div>
-</div>

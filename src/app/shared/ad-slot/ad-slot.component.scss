@@ -1,0 +1,46 @@
+
+.adTop {
+    text-align: center;    
+    width: 300px;
+    min-height: 50px;  
+    margin-left: auto;
+    margin-right: auto;  
+    // background-color: pink;
+}
+
+.adTopDesktop {
+    text-align: center;    
+    width: 970px;
+    min-height: 90px;  
+    margin-left: auto;
+    margin-right: auto;  
+}
+
+
+.adRight {
+    width: 300px;
+    min-height: 300px;
+    // background-color: pink;
+}
+
+.adBottom {
+    text-align: center;    
+    width: 300px;
+    display: block;
+    visibility: visible;
+    min-height: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5px;
+    // background-color: pink;
+}
+
+@media (max-width: 1500px) {
+    .adRight {
+        width: 160px;
+    }
+}
+
+// .adsbygoogle {
+//     background-color: purple;
+// }

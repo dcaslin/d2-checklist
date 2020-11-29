@@ -1,310 +1,315 @@
-<div class="holder">
-  <mat-sidenav-container>
+<mat-sidenav-container>
 
-    <mat-sidenav #sidenav mode="push">
-      <div routerLink="" class="branding">
-        <img class="logo" src="/assets/logo.svg" />
-        <span>D2 Checklist</span>
-      </div>
-      <mat-nav-list>
-        <ng-container *ngIf="signedOnUser|async as currUser">
-          <ng-container *ngIf="currUser.userInfo!=null">
-            <a mat-list-item [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]"
-              (click)="sidenav.close();">
-              <mat-icon>account_circle</mat-icon>&ensp;{{currUser.userInfo.displayName}} -
-              {{currUser.userInfo.platformName}}
+  <mat-sidenav #sidenav mode="push">
+    <div routerLink="" class="branding">
+      <img class="logo" src="/assets/logo.svg" />
+      <span>D2 Checklist</span>
+    </div>
+    <mat-nav-list>
+      <ng-container *ngIf="signedOnUser|async as currUser">
+        <ng-container *ngIf="currUser.userInfo!=null">
+          <a mat-list-item [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]"
+            (click)="sidenav.close();">
+            <mat-icon>account_circle</mat-icon>&ensp;{{currUser.userInfo.displayName}} -
+            {{currUser.userInfo.platformName}}
+          </a>
+          <ng-container *ngIf="currUser.clans|async as clans">
+            <a *ngFor="let clan of clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
+              <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
             </a>
-            <ng-container *ngIf="currUser.clans|async as clans">
-              <a *ngFor="let clan of clans" mat-list-item (click)="sidenav.close();loadClan(clan)">
-                <mat-icon>flag</mat-icon>&ensp;{{clan.name}}
-              </a>
-            </ng-container>
-            <mat-divider></mat-divider>
           </ng-container>
+          <mat-divider></mat-divider>
         </ng-container>
+      </ng-container>
 
-        <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
-          <mat-icon>home</mat-icon>&ensp;Home
-        </a>
-        <a mat-list-item (click)="sidenav.close()" routerLink="gear" routerLinkActive="active">
-          <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>&ensp;Gear
-        </a>
-        <!-- <a mat-list-item (click)="sidenav.close()" routerLink="content-vault" routerLinkActive="active">
+      <a mat-list-item (click)="sidenav.close()" routerLink="home" routerLinkActive="active">
+        <mat-icon>home</mat-icon>&ensp;Home
+      </a>
+      <a mat-list-item (click)="sidenav.close()" routerLink="gear" routerLinkActive="active">
+        <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>&ensp;Gear
+      </a>
+      <!-- <a mat-list-item (click)="sidenav.close()" routerLink="content-vault" routerLinkActive="active">
           <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>&ensp;Content Vault
         </a> -->
-        <a mat-list-item (click)="sidenav.close()" routerLink="todo-list" routerLinkActive="active">
-          <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>&ensp;Todo
-        </a>
-        <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
-          <mat-icon>favorite</mat-icon>&ensp;Friends
-        </a>
-        <a mat-list-item (click)="sidenav.close()" routerLink="vendors" routerLinkActive="active">
-          <mat-icon>store</mat-icon>&ensp;Vendors
-        </a>
-        <a mat-list-item [matMenuTriggerFor]="searchMobileMenu">
-          <mat-icon>search</mat-icon>&ensp;Search
-        </a>
-        <mat-menu #searchMobileMenu="matMenu">
-          <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="search"
-            routerLinkActive="active">
-            Search Users
-          </button>
-          <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="searchClans"
-            routerLinkActive="active">
-            Search Clans
-          </button>
-        </mat-menu>
-        <a mat-list-item (click)="sidenav.close()" routerLink="about" routerLinkActive="active">
-          <mat-icon>info</mat-icon>&ensp;About
-        </a>
-        <a mat-list-item (click)="sidenav.close()" routerLink="settings" routerLinkActive="active">
-          <mat-icon>settings</mat-icon>&ensp;Settings
-        </a>
-      </mat-nav-list>
-    </mat-sidenav>
+      <a mat-list-item (click)="sidenav.close()" routerLink="todo-list" routerLinkActive="active">
+        <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>&ensp;Todo
+      </a>
+      <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
+        <mat-icon>favorite</mat-icon>&ensp;Friends
+      </a>
+      <a mat-list-item (click)="sidenav.close()" routerLink="vendors" routerLinkActive="active">
+        <mat-icon>store</mat-icon>&ensp;Vendors
+      </a>
+      <a mat-list-item [matMenuTriggerFor]="searchMobileMenu">
+        <mat-icon>search</mat-icon>&ensp;Search
+      </a>
+      <mat-menu #searchMobileMenu="matMenu">
+        <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="search"
+          routerLinkActive="active">
+          Search Users
+        </button>
+        <button (click)="sidenav.close()" mat-menu-item class="nav-button" routerLink="searchClans"
+          routerLinkActive="active">
+          Search Clans
+        </button>
+      </mat-menu>
+      <a mat-list-item (click)="sidenav.close()" routerLink="about" routerLinkActive="active">
+        <mat-icon>info</mat-icon>&ensp;About
+      </a>
+      <a mat-list-item (click)="sidenav.close()" routerLink="settings" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>&ensp;Settings
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
 
-    <div class="wrapper">
-      <div class="ribbon"></div>
-      <mat-toolbar color="primary">
-        <mat-toolbar-row>
-          <button mat-icon-button class="d-md-none" (click)="sidenav.open()">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <span class="spacer d-md-none text-center">
-            <span class="branding" routerLink=""><img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
-          </span>
-          <span class="spacer d-none d-md-inline">
-            <span class="branding" routerLink=""><img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
-            <a style="margin-left:15px" target="_blank" rel="noopener" href="https://blacklivesmatters.carrd.co/"
-              mat-button color="accent">#BlackLivesMatter</a>
-          </span>
-          <span class="d-none d-md-inline">
-            <a mat-button class="nav-button" routerLink="home" routerLinkActive="active">
-              <mat-icon>home</mat-icon>
-              <span class="d-none d-xl-inline"> Home</span>
-            </a>
-            <a mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
-              <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>
-              <span class="d-none d-xl-inline"> Gear</span>
-            </a>
-            <!-- <a mat-button class="nav-button" routerLink="content-vault" routerLinkActive="active">
-              <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>
-              <span class="d-none d-xl-inline"> Content Vault</span>
-            </a> -->
-            <a mat-button class="nav-button" routerLink="todo-list" routerLinkActive="active">
-              <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>
-              <span class="d-none d-xl-inline"> Todo</span>
-            </a>
-            <a mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
-              <mat-icon>store</mat-icon>
-              <span class="d-none d-xl-inline"> Vendors</span>
-            </a>
-            <a mat-button class="nav-button" routerLink="searchClans" routerLinkActive="active">
-              <mat-icon>group</mat-icon>
-              <span class="d-none d-xl-inline">Clans</span>
-            </a>
-          </span>
-
-          <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"
-            matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
-            <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
-          </button>
-
-          <span class="d-none d-md-inline">
-            <button mat-button class="nav-button" [matMenuTriggerFor]="moreMenu">
-              <mat-icon>more_vert</mat-icon>
-            </button>
-          </span>
-          <mat-menu #moreMenu="matMenu">
-            <a mat-menu-item class="nav-button" routerLink="friends" routerLinkActive="active">
-              <mat-icon>favorite</mat-icon> Friends
-            </a>
-            <a mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
-              <mat-icon>search</mat-icon> Search Users
-            </a>
-            <a mat-menu-item class="nav-button" routerLink="about" routerLinkActive="active">
-              <mat-icon>info</mat-icon> About
-            </a>
-            <button mat-menu-item class="nav-button" *ngIf="(showInstallButton|async)" (click)="install()">
-              <mat-icon>arrow_downward</mat-icon> Install
-            </button>
-            <a mat-menu-item class="nav-button" routerLink="settings">
-              <mat-icon>settings</mat-icon> Settings
-            </a>
-          </mat-menu>
-
-          <ng-container *ngIf="signedOnUser|async as currUser">
-            <button *ngIf="currUser.userInfo!=null" matTooltip="Sign out or change selected platform" mat-button
-              [matMenuTriggerFor]="toolbarUserMenu">
-              <mat-icon>power_settings_new</mat-icon>
-            </button>
-            <mat-menu #toolbarUserMenu="matMenu">
-              <ng-container *ngIf="currUser.membership.destinyMemberships.length>1">
-                <button mat-menu-item *ngFor="let avail of currUser.membership.destinyMemberships"
-                  [disabled]="avail ==currUser.userInfo" (click)="selectUser(avail)">
-                  <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon>
-                  <span style="margin-left: 1em">{{avail.platformName}}</span>
-                </button>
-              </ng-container>
-              <button mat-menu-item (click)="onLogoutClick()">
-                <mat-icon>power_settings_new</mat-icon>
-                <span>Logout</span>
+  
+      <div class="holder">
+        <div class="wrapper">
+          <div class="ribbon"></div>
+          <mat-toolbar color="primary">
+            <mat-toolbar-row>
+              <button mat-icon-button class="d-md-none" (click)="sidenav.open()">
+                <mat-icon>menu</mat-icon>
               </button>
-            </mat-menu>
-          </ng-container>
+              <span class="spacer d-md-none text-center">
+                <span class="branding" routerLink=""><img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
+              </span>
+              <span class="spacer d-none d-md-inline">
+                <span class="branding" routerLink=""><img class="logo" src="/assets/logo.svg" /> D2 Checklist</span>
+                <a style="margin-left:15px" target="_blank" rel="noopener" href="https://blacklivesmatters.carrd.co/"
+                  mat-button color="accent">#BlackLivesMatter</a>
+              </span>
+              <span class="d-none d-md-inline">
+                <a mat-button class="nav-button" routerLink="home" routerLinkActive="active">
+                  <mat-icon>home</mat-icon>
+                  <span class="d-none d-xl-inline"> Home</span>
+                </a>
+                <a mat-button class="nav-button" routerLink="gear" routerLinkActive="active">
+                  <fa-icon [icon]="iconService.fasBowArrow"></fa-icon>
+                  <span class="d-none d-xl-inline"> Gear</span>
+                </a>
+                <!-- <a mat-button class="nav-button" routerLink="content-vault" routerLinkActive="active">
+                <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>
+                <span class="d-none d-xl-inline"> Content Vault</span>
+              </a> -->
+                <a mat-button class="nav-button" routerLink="todo-list" routerLinkActive="active">
+                  <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>
+                  <span class="d-none d-xl-inline"> Todo</span>
+                </a>
+                <a mat-button class="nav-button" routerLink="vendors" routerLinkActive="active">
+                  <mat-icon>store</mat-icon>
+                  <span class="d-none d-xl-inline"> Vendors</span>
+                </a>
+                <a mat-button class="nav-button" routerLink="searchClans" routerLinkActive="active">
+                  <mat-icon>group</mat-icon>
+                  <span class="d-none d-xl-inline">Clans</span>
+                </a>
+              </span>
+  
+              <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(loggingOn|async)"
+                matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
+                <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
+              </button>
+  
+              <span class="d-none d-md-inline">
+                <button mat-button class="nav-button" [matMenuTriggerFor]="moreMenu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+              </span>
+              <mat-menu #moreMenu="matMenu">
+                <a mat-menu-item class="nav-button" routerLink="friends" routerLinkActive="active">
+                  <mat-icon>favorite</mat-icon> Friends
+                </a>
+                <a mat-menu-item class="nav-button" routerLink="search" routerLinkActive="active">
+                  <mat-icon>search</mat-icon> Search Users
+                </a>
+                <a mat-menu-item class="nav-button" routerLink="about" routerLinkActive="active">
+                  <mat-icon>info</mat-icon> About
+                </a>
+                <button mat-menu-item class="nav-button" *ngIf="(showInstallButton|async)" (click)="install()">
+                  <mat-icon>arrow_downward</mat-icon> Install
+                </button>
+                <a mat-menu-item class="nav-button" routerLink="settings">
+                  <mat-icon>settings</mat-icon> Settings
+                </a>
+              </mat-menu>
+  
+              <ng-container *ngIf="signedOnUser|async as currUser">
+                <button *ngIf="currUser.userInfo!=null" matTooltip="Sign out or change selected platform" mat-button
+                  [matMenuTriggerFor]="toolbarUserMenu">
+                  <mat-icon>power_settings_new</mat-icon>
+                </button>
+                <mat-menu #toolbarUserMenu="matMenu">
+                  <ng-container *ngIf="currUser.membership.destinyMemberships.length>1">
+                    <button mat-menu-item *ngFor="let avail of currUser.membership.destinyMemberships"
+                      [disabled]="avail ==currUser.userInfo" (click)="selectUser(avail)">
+                      <fa-icon [icon]="PLATFORMS_DICT[avail.membershipType+''].icon"></fa-icon>
+                      <span style="margin-left: 1em">{{avail.platformName}}</span>
+                    </button>
+                  </ng-container>
+                  <button mat-menu-item (click)="onLogoutClick()">
+                    <mat-icon>power_settings_new</mat-icon>
+                    <span>Logout</span>
+                  </button>
+                </mat-menu>
+              </ng-container>
+  
+            </mat-toolbar-row>
+            <mat-toolbar-row *ngIf="(signedOnUser|async) as currUser" class="sub-row">
+  
+              <a mat-button class="d-none d-md-inline"
+                [routerLink]="[currUser.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"
+                *ngIf="currUser.userInfo!=null">{{currUser.userInfo.displayName}} -
+                {{currUser.userInfo.platformName}}</a>
+              <span class="spacer"></span>
+  
+              <div class="currency-icons slide-left d-none d-xxl-block" *ngIf="currUser.gearMeta$|async as gm">
+                <div class="gm-section">
+                  <a class="currency-chip fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
+                    [queryParams]="{ owner: 'vault'}">
+                    <mat-icon>account_balance</mat-icon> {{gm.vault.count}} / {{gm.vault.total}}
+                  </a>
+                </div>
+                <div class="gm-section">
+                  <mat-icon>email</mat-icon>
+  
+                  <ng-container *ngFor="let p of gm.postmaster">
+                    <a class="currency-chip fake-link" [matTooltip]="p.char.className + ' postmaster' "
+                      [routerLink]="['/gear']" [queryParams]="{ postmaster: 'true', owner: p.char.characterId}">
+                      <span *ngIf="p.char.emblemPath!=null" class="currency-icon"
+                        [style.background-image]="'url(//www.bungie.net' + p.char.emblemPath + ')'">
+                      </span>
+                      <ng-container *ngIf="(p.total - p.count)<3; else safePostmaster">
+                        <span class="warn-text">{{p.count}} / {{p.total}}</span>
+                      </ng-container>
+                      <ng-template #safePostmaster>
+                        {{p.count}} / {{p.total}}
+                      </ng-template>
+  
+                    </a>
+                  </ng-container>
+                </div>
+  
+  
+              </div>
+              <div class="currency-icons">
+                <div class="defer-block slide-left" *ngFor="let c of currUser.currencies$|async">
+                  <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
+                    [matTooltip]="c.count+' '+c.name">
+                    <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
+                    <span> {{c.count|number}}</span>
+                  </span>
+                </div>
+              </div>
+              <ng-container *ngIf="currUser.clans|async as clans">
+                <button *ngIf="clans.length==1" mat-button class="slide-left d-none d-md-inline nav-button"
+                  (click)="loadClan(clans[0])">
+                  <i class="icon-clan"></i> My Clan
+                </button>
+                <ng-container *ngIf="clans.length>1">
+                  <button mat-button [matMenuTriggerFor]="toolbarClanMenu" class="slide-left">
+                    <mat-icon>flag</mat-icon> My Clans
+                  </button>
+                  <mat-menu #toolbarClanMenu="matMenu">
+                    <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of clans">
+                      <span>{{clan.name}}</span>
+                    </button>
+                  </mat-menu>
+                </ng-container>
+              </ng-container>
+              <a mat-button class="d-none d-md-inline nav-button"
+                [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]">
+                <fa-icon [icon]="PLATFORMS_DICT[currUser.userInfo.membershipType+''].icon"></fa-icon>
+                My Info
+              </a>
+  
+  
+            </mat-toolbar-row>
+          </mat-toolbar>
+          <d2c-ad-slot adType="top"></d2c-ad-slot>
+          <mat-card class='apiAlert' *ngIf="bungieService.apiDown===true">
+            <mat-card-content>
+              <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new
+                releases and lasts a few hours
+                past when the game is back online.
+                <a href="https://twitter.com/D2Checklist">Msg me on Twitter</a> if you have any problems or questions.
+              </div>
+            </mat-card-content>
+          </mat-card>
+  
+          
+          <div class="db-error" *ngIf="(destinyCacheService.error | async) != null">
+            {{destinyCacheService.error | async}}
+          </div>
+          <div class="center-spinner db-progress">
+            <div *ngIf="destinyCacheService.unzipping | async">
+              <br>
+              <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+              Processing manifest DB...
+            </div>
+            <div *ngIf="(destinyCacheService.percent | async) < 100">
+              <br>
+              <div *ngIf="destinyCacheService.checkingCache|async">
+                <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+                Checking cache...
+              </div>
+              <div *ngIf="!(destinyCacheService.checkingCache|async)">
+                <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
+                </mat-progress-bar>
+                Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
+              </div>
+            </div>
+          </div>
+          <div class="childComponent">
+            <div class="childVert">
+              <div class="main">
+                <div class="component-holder">
+                  <router-outlet #o="outlet"></router-outlet>
+                </div>
 
-        </mat-toolbar-row>
-        <mat-toolbar-row *ngIf="(signedOnUser|async) as currUser" class="sub-row">
-
-          <a mat-button class="d-none d-md-inline"
-            [routerLink]="[currUser.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"
-            *ngIf="currUser.userInfo!=null">{{currUser.userInfo.displayName}} -
-            {{currUser.userInfo.platformName}}</a>
-          <span class="spacer"></span>
-
-          <div class="currency-icons slide-left d-none d-xxl-block" *ngIf="currUser.gearMeta$|async as gm">
-            <div class="gm-section">
-              <a class="currency-chip fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
-                [queryParams]="{ owner: 'vault'}">
-                <mat-icon>account_balance</mat-icon> {{gm.vault.count}} / {{gm.vault.total}}
+              </div>
+              <d2c-ad-slot adType="right"></d2c-ad-slot>
+            </div>
+          </div>
+        </div>
+        <d2c-ad-slot adType="bottom"></d2c-ad-slot>
+        <div class="footer">
+          <div class="row">
+            <div class="col-sm-12 links">
+              <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">
+                <fa-icon [icon]="iconService.fabReddit" size="2x"></fa-icon>
+                <span>Reddit</span>
+              </a>
+              <a href="https://github.com/dcaslin/d2-checklist/" target="_blank" rel="noopener">
+                <fa-icon [icon]="iconService.fabGithub" size="2x"></fa-icon>
+                <span>Source</span>
+              </a>
+              <a href="https://twitter.com/D2Checklist" target="_blank" rel="noopener">
+                <fa-icon [icon]="iconService.fabTwitter" size="2x"></fa-icon>
+                <span>Twitter</span>
+              </a>
+  
+              <a matTooltip="destinychecklistnet at gmail.com" matTooltipPosition="above">
+                <fa-icon [icon]="iconService.falEnvelope" size="2x"></fa-icon>
+                <span>Email</span>
+              </a>
+              <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank"
+                rel="noopener">
+                <fa-icon [icon]="iconService.fabPaypal" size="2x"></fa-icon>
+                <span>Donate</span>
               </a>
             </div>
-            <div class="gm-section">
-              <mat-icon>email</mat-icon>
-
-              <ng-container *ngFor="let p of gm.postmaster">
-                <a class="currency-chip fake-link" [matTooltip]="p.char.className + ' postmaster' "
-                  [routerLink]="['/gear']" [queryParams]="{ postmaster: 'true', owner: p.char.characterId}">
-                  <span *ngIf="p.char.emblemPath!=null" class="currency-icon"
-                    [style.background-image]="'url(//www.bungie.net' + p.char.emblemPath + ')'">
-                  </span>
-                  <ng-container *ngIf="(p.total - p.count)<3; else safePostmaster">
-                    <span class="warn-text">{{p.count}} / {{p.total}}</span>
-                  </ng-container>
-                  <ng-template #safePostmaster>
-                    {{p.count}} / {{p.total}}
-                  </ng-template>
-
-                </a>
-              </ng-container>
-            </div>
-
-
           </div>
-          <div class="currency-icons">
-            <div class="defer-block slide-left" *ngFor="let c of currUser.currencies$|async">
-              <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
-                [matTooltip]="c.count+' '+c.name">
-                <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-                <span> {{c.count|number}}</span>
-              </span>
+          <div class="row">
+            <div class="col-12 links">
+              &#169; {{year}} - Destiny Checklist |
+              <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a> | Not affiliated with Bungie
+  
             </div>
           </div>
-          <ng-container *ngIf="currUser.clans|async as clans">
-            <button *ngIf="clans.length==1" mat-button class="slide-left d-none d-md-inline nav-button" (click)="loadClan(clans[0])">
-              <i class="icon-clan"></i> My Clan
-            </button>
-            <ng-container *ngIf="clans.length>1">
-              <button mat-button [matMenuTriggerFor]="toolbarClanMenu" class="slide-left">
-                <mat-icon>flag</mat-icon> My Clans
-              </button>
-              <mat-menu #toolbarClanMenu="matMenu">
-                <button mat-menu-item (click)="loadClan(clan)" *ngFor="let clan of clans">
-                  <span>{{clan.name}}</span>
-                </button>
-              </mat-menu>
-            </ng-container>
-          </ng-container>
-          <a mat-button class="d-none d-md-inline nav-button"
-            [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]">
-            <fa-icon [icon]="PLATFORMS_DICT[currUser.userInfo.membershipType+''].icon"></fa-icon>
-            My Info
-          </a>
-
-
-        </mat-toolbar-row>
-      </mat-toolbar>
-      <mat-card class='apiAlert' *ngIf="bungieService.apiDown===true">
-        <mat-card-content>
-          <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new
-            releases and lasts a few hours
-            past when the game is back online.
-            <a href="https://twitter.com/D2Checklist">Msg me on Twitter</a> if you have any problems or questions.
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <router-outlet #o="outlet"></router-outlet>
-      <!-- <div *ngIf="(authGuard.loader$ | async)">
-        <br>
-        <div class="center-spinner">
-          <mat-spinner class="loading" class="center-spinner"></mat-spinner>
         </div>
-      </div> -->
-
-      <div class="db-error" *ngIf="(destinyCacheService.error | async) != null">
-        {{destinyCacheService.error | async}}
-      </div>
-      <div class="center-spinner db-progress">
-        <div *ngIf="destinyCacheService.unzipping | async">
-          <br>
-          <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
-          Processing manifest DB...
-        </div>
-        <div *ngIf="(destinyCacheService.percent | async) < 100">
-          <br>
-          <div *ngIf="destinyCacheService.checkingCache|async">
-            <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
-            Checking cache...
-          </div>
-          <div *ngIf="!(destinyCacheService.checkingCache|async)">
-            <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
-            </mat-progress-bar>
-            Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
-          </div>
-        </div>
-      </div>
-
-      <div class="push"></div>
-
-
     </div>
+    
+  
 
-    <div class="footer">
-      <div class="row">
-        <div class="col-sm-12 links">
-          <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">
-            <fa-icon [icon]="iconService.fabReddit" size="2x"></fa-icon>
-            <span>Reddit</span>
-          </a>
-          <a href="https://github.com/dcaslin/d2-checklist/" target="_blank" rel="noopener">
-            <fa-icon [icon]="iconService.fabGithub" size="2x"></fa-icon>
-            <span>Source</span>
-          </a>
-          <a href="https://twitter.com/D2Checklist" target="_blank" rel="noopener">
-            <fa-icon [icon]="iconService.fabTwitter" size="2x"></fa-icon>
-            <span>Twitter</span>
-          </a>
-
-          <a matTooltip="destinychecklistnet at gmail.com" matTooltipPosition="above">
-            <fa-icon [icon]="iconService.falEnvelope" size="2x"></fa-icon>
-            <span>Email</span>
-          </a>
-          <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS" target="_blank"
-            rel="noopener">
-            <fa-icon [icon]="iconService.fabPaypal" size="2x"></fa-icon>
-            <span>Donate</span>
-          </a>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 links">
-          &#169; {{year}} - Destiny Checklist |
-          <a href="https://www.destinychecklist.net/privacy">Privacy Policy </a> | Not affiliated with Bungie
-
-        </div>
-      </div>
-    </div>
-
-  </mat-sidenav-container>
-</div>
+</mat-sidenav-container>

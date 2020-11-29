@@ -1,180 +1,165 @@
-<div class="childComponent">
-  <div class="childVert">
-    <div class="main mat-typography">
+<div class="center-spinner">
+  <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
+</div>
+<div style="text-align:left">
 
-      <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
-      </div>
-      <div style="text-align:left">
+  <ng-container *ngIf="pgcr|async as data">
+    <h2>
+      {{data.mode}} - {{data.name}}
+      <span class="pad-left">
+        <fa-icon [icon]="iconService.fasTimes" *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text">
+        </fa-icon>
+        <fa-icon [icon]="iconService.fasCheck" *ngIf="data.pve==true && data.pveSuccess==true"
+          class="accent-text"></fa-icon>
+      </span>
+    </h2>
+    <h2 *ngIf="data.teamScore">Team Score: {{data.teamScore|number}}</h2>
+    <h4 *ngIf="data.timeLostPoints">Points lost to time: {{data.timeLostPoints}}</h4>
+    <div *ngIf="debugmode|async">
+      <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
+      <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
+    </div>
+    <table class="timing-table">
+      <tr>
+        <th>Date</th>
+        <th>Start</th>
+        <th>Finish</th>
+        <th>Duration</th>
+        <th>Avg Glory</th>
+      </tr>
+      <tr>
+        <td>{{data.period|date:'shortDate'}}</td>
+        <td>{{data.period|date:'shortTime'}}</td>
+        <td>{{data.finish|date:'shortTime'}}</td>
+        <td>{{data.activityDurationSeconds | amnsTiming:'seconds' }}</td>
+        <td>
+          <ng-container *ngIf="avgGlory|async as ag">
+            {{ag|number: '0.0-0'}}
+          </ng-container>
+          <ng-container *ngIf="!(avgGlory|async)">
+            ...
+          </ng-container>
+        </td>
+      </tr>
+    </table>
 
-        <ng-container *ngIf="pgcr|async as data">
-          <h2>
-            {{data.mode}} - {{data.name}}
-            <span class="pad-left">
-              <fa-icon [icon]="iconService.fasTimes" *ngIf="data.pve==true && data.pveSuccess==false" class="warn-text">
-              </fa-icon>
-              <fa-icon [icon]="iconService.fasCheck" *ngIf="data.pve==true && data.pveSuccess==true"
-                class="accent-text"></fa-icon>
-            </span>
-          </h2>
-          <h2 *ngIf="data.teamScore">Team Score: {{data.teamScore|number}}</h2>
-          <h4 *ngIf="data.timeLostPoints">Points lost to time: {{data.timeLostPoints}}</h4>
-          <div *ngIf="debugmode|async">
-            <ng-container *ngIf="data.level>0"> Lvl {{data.level}}</ng-container>
-            <ng-container *ngIf="data.isPrivate"> (Private)</ng-container>
+    <table class="timing-table" *ngIf="data.teams!=null && data.teams.length>0">
+      <tr>
+        <th>Team</th>
+        <td *ngFor="let t of data.teams">{{t.name}}</td>
+      </tr>
+      <tr>
+        <th>Score</th>
+        <td *ngFor="let t of data.teams">{{t.score|number}}</td>
+      </tr>
+      <tr>
+        <th>Standing</th>
+        <td *ngFor="let t of data.teams">{{t.standing}}</td>
+      </tr>
+      <tr>
+        <th>Avg Glory</th>
+        <td *ngFor="let t of data.teams">{{t.avgGlory|number: '0.0-0'}}</td>
+      </tr>
+    </table>
+
+    <mat-card class="card" *ngFor="let entry of data.entries">
+
+      <mat-card-header class="full-width">
+        <div *ngIf="entry.user.icon!=null" class="icon" mat-card-avatar
+          [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
+        <mat-card-title class="full-width">
+          <b>
+            <a [routerLink]="['/'+entry.user.membershipType, entry.user.membershipId]"
+              color="accent">{{entry.user.displayName}}</a>
+            
+            <d2c-friend-star [userInfo]="entry.user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+          </b>
+          <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD
+            <br>
+          </span>
+        </mat-card-title>
+        <mat-card-subtitle class="full-width">
+          <ng-container *ngIf="players|async as ps">
+            <div>
+              <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}} PL</span>
+              <span class="pad-left-more" *ngIf="ps[entry.user.membershipId] as player">
+                Glory: 
+                <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
+                <ng-container *ngIf="!player.glory">hidden</ng-container>
+              </span>
+              
+            </div>
+          </ng-container>
+
+          <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
+          <div>
+            <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+            <span class="pad-left-more">{{entry.fireteamSize}} members</span>
           </div>
-          <table class="timing-table">
+          <div>
+            <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score|number}}</span>
+            <span class="pad-left" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
+            <span class="pad-left" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
+            <span class="pad-left" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
+          </div>
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="full-width">
+        <table class="weapon-table">
+          <thead>
             <tr>
-              <th>Date</th>
-              <th>Start</th>
-              <th>Finish</th>
-              <th>Duration</th>
-              <th>Avg Glory</th>
+              <th>Name</th>
+              <th>Kills</th>
             </tr>
-            <tr>
-              <td>{{data.period|date:'shortDate'}}</td>
-              <td>{{data.period|date:'shortTime'}}</td>
-              <td>{{data.finish|date:'shortTime'}}</td>
-              <td>{{data.activityDurationSeconds | amnsTiming:'seconds' }}</td>
-              <td>
-                <ng-container *ngIf="avgGlory|async as ag">
-                  {{ag|number: '0.0-0'}}
-                </ng-container>
-                <ng-container *ngIf="!(avgGlory|async)">
-                  ...
-                </ng-container>
-              </td>
+          </thead>
+          <tbody>
+            <tr *ngFor="let w of entry.weapons">
+              <td>{{w.name}}
+                <span class="simple-caption-no-margin">{{w.type}}</span></td>
+              <td>{{w.kills}} <span class="simple-caption">{{w.precPct|percent:'1.0-0'}}</span></td>
             </tr>
-          </table>
-
-          <table class="timing-table" *ngIf="data.teams!=null && data.teams.length>0">
-            <tr>
-              <th>Team</th>
-              <td *ngFor="let t of data.teams">{{t.name}}</td>
-            </tr>
-            <tr>
-              <th>Score</th>
-              <td *ngFor="let t of data.teams">{{t.score|number}}</td>
-            </tr>
-            <tr>
-              <th>Standing</th>
-              <td *ngFor="let t of data.teams">{{t.standing}}</td>
-            </tr>
-            <tr>
-              <th>Avg Glory</th>
-              <td *ngFor="let t of data.teams">{{t.avgGlory|number: '0.0-0'}}</td>
-            </tr>
-          </table>
-
-          <mat-card class="card" *ngFor="let entry of data.entries">
-
-            <mat-card-header class="full-width">
-              <div *ngIf="entry.user.icon!=null" class="icon" mat-card-avatar
-                [style.background-image]="'url(//www.bungie.net' + entry.user.icon + ')'"></div>
-              <mat-card-title class="full-width">
-                <b>
-                  <a [routerLink]="['/'+entry.user.membershipType, entry.user.membershipId]"
-                    color="accent">{{entry.user.displayName}}</a>
-                  
-                  <d2c-friend-star [userInfo]="entry.user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
-                </b>
-                <span class="kd accent-text">{{entry.kd| number : '1.2-2'}} KD
-                  <br>
-                </span>
-              </mat-card-title>
-              <mat-card-subtitle class="full-width">
-                <ng-container *ngIf="players|async as ps">
-                  <div>
-                    <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}} PL</span>
-                    <span class="pad-left-more" *ngIf="ps[entry.user.membershipId] as player">
-                      Glory: 
-                      <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
-                      <ng-container *ngIf="!player.glory">hidden</ng-container>
+          </tbody>
+        </table>
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>&nbsp;Medals etc.
+            </mat-expansion-panel-header>
+            <table class="weapon-table">
+              
+              <tbody>
+                <tr *ngFor="let w of entry.extra">
+                  <td>
+                    <div *ngIf="w.desc && w.desc.iconImage; else noMedal" 
+                    [style.background-image]="'url(//www.bungie.net' + w.desc.iconImage + ')'" 
+                    class="medal-icon" >
+                    </div>
+                    <ng-template  #noMedal>
+                      <div class="no-medal-icon">
+                        <fa-icon [icon]="iconService.fasHorizontalRule" [fixedWidth]="true"></fa-icon>
+                      </div>
+                    </ng-template>
+                  </td>
+                  <td>
+                    <span *ngIf="w.desc!=null">
+                      {{w.desc.statName}}
+                      <div class="simple-caption" style="max-width: 200px">
+                        {{w.desc.statDescription}}
+                      </div>
                     </span>
-                    
-                  </div>
-                </ng-container>
-
-                <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
-                <div>
-                  <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
-                  <span class="pad-left-more">{{entry.fireteamSize}} members</span>
-                </div>
-                <div>
-                  <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score|number}}</span>
-                  <span class="pad-left" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
-                  <span class="pad-left" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
-                  <span class="pad-left" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
-                </div>
-              </mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content class="full-width">
-              <table class="weapon-table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Kills</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let w of entry.weapons">
-                    <td>{{w.name}}
-                      <span class="simple-caption-no-margin">{{w.type}}</span></td>
-                    <td>{{w.kills}} <span class="simple-caption">{{w.precPct|percent:'1.0-0'}}</span></td>
-                  </tr>
-                </tbody>
-              </table>
-              <mat-accordion>
-                <mat-expansion-panel>
-                  <mat-expansion-panel-header>
-                    <fa-icon [icon]="iconService.fasInfoSquare"></fa-icon>&nbsp;Medals etc.
-                  </mat-expansion-panel-header>
-                  <table class="weapon-table">
-                    
-                    <tbody>
-                      <tr *ngFor="let w of entry.extra">
-                        <td>
-                          <div *ngIf="w.desc && w.desc.iconImage; else noMedal" 
-                          [style.background-image]="'url(//www.bungie.net' + w.desc.iconImage + ')'" 
-                          class="medal-icon" >
-                          </div>
-                          <ng-template  #noMedal>
-                            <div class="no-medal-icon">
-                              <fa-icon [icon]="iconService.fasHorizontalRule" [fixedWidth]="true"></fa-icon>
-                            </div>
-                          </ng-template>
-                        </td>
-                        <td>
-                          <span *ngIf="w.desc!=null">
-                            {{w.desc.statName}}
-                            <div class="simple-caption" style="max-width: 200px">
-                              {{w.desc.statDescription}}
-                            </div>
-                          </span>
-                          <ng-container *ngIf="w.desc==null">
-                            {{w.name}}
-                          </ng-container>
-                        </td>
-                        <td>{{w.value|number}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </mat-expansion-panel>
-              </mat-accordion>
+                    <ng-container *ngIf="w.desc==null">
+                      {{w.name}}
+                    </ng-container>
+                  </td>
+                  <td>{{w.value|number}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </mat-expansion-panel>
+        </mat-accordion>
 
 
-            </mat-card-content>
-          </mat-card>
-        </ng-container>
-      </div>
-    </div>
-    <div *ngIf="(disableAds|async)!==true" class="adRight">
-      <small class="adText">Advertisement</small>
-      <ng-adsense adFormat="vertical"></ng-adsense>
-    </div>
-  </div>
-  <div *ngIf="(disableAds|async)!==true" class="adBottom">
-    <small class="adText">Advertisement</small>
-    <ng-adsense adSlot="7909243132" display="inline-block" width="336" height="280"></ng-adsense>
-  </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
 </div>

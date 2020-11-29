@@ -32,7 +32,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { AdsenseModule } from 'ng2-adsense';
 import { MomentModule } from 'ngx-moment';
 
 import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energy-indicator.component';
@@ -44,6 +43,7 @@ import { SignInRequiredModule } from './sign-in-required/sign-in-required.module
 import { SortIndicatorComponent } from './sort-indicator/sort-indicator.component';
 import { FriendStarComponent } from './friend-star/friend-star.component';
 import { TriumphNameComponent } from './triumph-name/triumph-name.component';
+import { AdSlotComponent } from './ad-slot/ad-slot.component';
 
 @NgModule({
   imports: [
@@ -51,11 +51,7 @@ import { TriumphNameComponent } from './triumph-name/triumph-name.component';
     CommonModule,
     FormsModule,
     FontAwesomeModule,
-    MomentModule,
-    AdsenseModule.forRoot({
-      adClient: 'ca-pub-4577479845324857',
-      adSlot: 7862857321 // 7862857321 responsive right 6246523328 responsive banner
-    }),
+    MomentModule,    
     MatButtonModule,
     MatToolbarModule,
     MatSelectModule,
@@ -94,13 +90,15 @@ import { TriumphNameComponent } from './triumph-name/triumph-name.component';
     ItemIconComponent,
     FriendStarComponent,
     FriendStarComponent,
-    TriumphNameComponent],
+    TriumphNameComponent,
+    AdSlotComponent],
   exports: [
     SortIndicatorComponent,
     TriumphNameComponent,
     ItemIconComponent,
     FriendStarComponent,
     SeasonIndicatorComponent,
+    AdSlotComponent,
     ItemEnergyIndicatorComponent,
     RouterModule,
     PipeModule,
@@ -108,7 +106,6 @@ import { TriumphNameComponent } from './triumph-name/triumph-name.component';
     FormsModule,
     ReactiveFormsModule,
     MomentModule,
-    AdsenseModule,
     FontAwesomeModule,
     MatButtonModule,
     MatButtonToggleModule,

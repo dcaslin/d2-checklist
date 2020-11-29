@@ -1,27 +1,22 @@
-<div class="childComponent">
-  <div class="childVert">
-    <div class="main">
-      <div class="center-spinner">
-        <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
-      </div>
-      <h1>{{statusMsg}}</h1>
-      <ng-container *ngIf="errMsg!=null">
-        <section>
-          <code>Error: {{errMsg}}</code>
-        </section>
-        <section>
-          <h3 class='warn-text'>If you are using Kasperky Internet read below</h3>
-          <p>Try <a target="_blank" rel="noopener"
-            href="https://www.kaspersky.com/blog/tracking-ids-bug/27979/">disabling
-            Kaspersky script injection</a>. To do so (as of 12/2019):</p>
-          <ul>
-            <li>Go to Settings</li>
-            <li>Go to Network Settings</li>
-            <li>Uncheck the Inject script into web traffic to interact with web pages option under Traffic processing
-            </li>
-          </ul>
-        </section>
-      </ng-container>
-    </div>
-  </div>
+
+<div class="center-spinner">
+  <mat-spinner class="loading" class="center-spinner" *ngIf="(loading|async)===true"></mat-spinner>
 </div>
+<h1>{{statusMsg}}</h1>
+<ng-container *ngIf="errMsg!=null">
+  <section>
+    <code>Error: {{errMsg}}</code>
+  </section>
+  <section>
+    <h3 class='warn-text'>If you are using Kasperky Internet read below</h3>
+    <p>Try <a target="_blank" rel="noopener"
+      href="https://www.kaspersky.com/blog/tracking-ids-bug/27979/">disabling
+      Kaspersky script injection</a>. To do so (as of 12/2019):</p>
+    <ul>
+      <li>Go to Settings</li>
+      <li>Go to Network Settings</li>
+      <li>Uncheck the Inject script into web traffic to interact with web pages option under Traffic processing
+      </li>
+    </ul>
+  </section>
+</ng-container>

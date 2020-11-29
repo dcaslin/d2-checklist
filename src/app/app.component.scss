@@ -1,16 +1,9 @@
 @import 'styles-variables';
 
-$footer-height: 140px;
-
 .logo{
   height: 38px;
   width: 38px;
 }
-
-.holder{
-  height: 100%;
-}
-
 .db-progress{
   width: 250px;
 }
@@ -152,17 +145,23 @@ mat-sidenav {
 .ribbon {
   height: 3px;
   background-color: #B53339;
-  //opacity: 0.5;
+}
+
+
+.holder{
+  min-height:100vh;
+  display: flex; 
+  flex-direction: column;
 }
 
 .wrapper {
-  z-index: -2;
-  min-height: 100%;
-  margin-bottom: -$footer-height;
+  flex-grow: 1;
 }
 
-.footer, .push{
-  height: $footer-height;
+.footer{
+  height: 140px;
+  max-height: 140px;
+  flex-grow: 0;
 }
 
 .footer {
@@ -222,4 +221,45 @@ mat-sidenav {
 .fake-link {
   color: inherit;
   text-decoration: none;
+}
+
+
+.childComponent{
+  // height: 100%;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  // background-color: goldenrod;
+}
+
+.childVert{
+  flex: 1 1 auto;
+  display: inline-flex;
+  flex-direction: row;
+  // background-color: yellow;
+}
+
+
+.main{
+  flex-grow: 1;
+  // height: 100%;
+  padding: 20px;
+  
+  text-align: center;
+  margin-left: auto; 
+  margin-right: auto;
+  // background-color: green;
+}
+
+.component-holder {
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+}
+
+
+@media (max-width: 960px) {
+  .main{
+    padding: 5px;
+  }
 }
