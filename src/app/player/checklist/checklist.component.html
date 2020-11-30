@@ -11,6 +11,9 @@
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{checklist.name}}
+            <ng-container *ngIf="checklist.video">
+              <a [href]="checklist.video" class="accent-text link-icon" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+            </ng-container>
             <ng-container *ngIf="checklist.contentVault">
               <span class="pad-left" *ngIf="checklist.complete<checklist.total"
                 matTooltip="This checklist will be vaulted next season, complete it now or never!">
@@ -46,8 +49,12 @@
               <ng-container *ngFor="let check of checklist.entries">
                 <tr *ngIf="!hideComplete || !check.checked">
                   <td>
+                    <ng-container *ngIf="check.video">
+                      <a [href]="check.video" class="accent-text link-icon" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fabYoutube"></fa-icon></a>
+                    </ng-container>
                     
                     {{check.name}}
+                    
                     <ng-container *ngIf="check.lowLinks as ll">
                       <a [href]="ll.mapLink" class="accent-text link-icon" *ngIf="ll.mapLink!=null && ll.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt"></fa-icon> </a>
                       <a [href]="ll.loreLink" class="link-icon" *ngIf="ll.loreLink!=null && ll.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
@@ -155,8 +162,7 @@
   <div class="bottom-note">
     <br>
     <ul>
-      <li>Only 4 of Cayde's Journals are completable in game, thus the other 16 are pre-filtered.</li>
-      <li>2 Adventures are account only</li>
+      <li>Penguins seem to be dropping weekly, site will be updated as they're found.</li>
     </ul>
   </div>
 </ng-container>

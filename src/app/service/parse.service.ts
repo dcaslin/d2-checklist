@@ -1642,19 +1642,6 @@ export class ParseService {
                     let name = entry.displayProperties.name;
                     const checked = vals[entry.hash];
                     let cDesc = entry.displayProperties.description;
-
-                    if ('Mementos from the Wild' === name) {
-                        name += ' ' + (1 + cntr);
-                        if ((hash === '4195138678') ||
-                            (hash === '78905203') ||
-                            (hash === '1394016600') ||
-                            (hash === '1399126202')) {
-                            // this is fine
-                        } else {
-                            // ignore
-                            continue;
-                        }
-                    }
                     cntr++;
                     if (entry.itemHash) {
                         const iDesc: any = this.destinyCacheService.cache.InventoryItem[entry.itemHash];
@@ -1666,12 +1653,7 @@ export class ParseService {
                     }
                     if (cDesc == null || cDesc.length === 0) {
                         cDesc = null;
-                    } else if (cDesc.startsWith('CB.NAV/RUN.()')) {
-                        cDesc = cDesc.substring('CB.NAV/RUN.()'.length);
-                        name = name.substring(0, 3) + ' ' + cDesc;
-                        cDesc = null;
                     }
-
                     if (!hasDescs && cDesc != null) {
                         hasDescs = true;
                     }
@@ -1680,6 +1662,7 @@ export class ParseService {
                         hash: hash,
                         name: name,
                         checked: checked,
+                        video: entry.video,
                         lowLinks: this.lowlineService.buildChecklistLink(hash),
                         desc: cDesc
                     };
@@ -1706,6 +1689,8 @@ export class ParseService {
                     hash: key,
                     name: checklistName,
                     complete: cntChecked,
+                    video: desc.video,
+                    order: desc.index,
                     contentVault: desc.contentVault,
                     total: cntr,
                     entries: checkListItems,
@@ -1713,8 +1698,19 @@ export class ParseService {
                 };
 
                 checklists.push(checklist);
+                console.log(`${checklist.name} ${checklist.order}`);
             });
         }
+
+        checklists.sort(function (a, b) {
+            if (a.order < b.order) {
+              return -1;
+            }
+            if (a.order > b.order) {
+              return 1;
+            }
+            return 0;
+          });
         return checklists;
     }
 
