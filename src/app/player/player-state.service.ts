@@ -208,8 +208,7 @@ export class PlayerStateService {
       }
       this._player.next(x);
       this.bungieService.loadClans(this._player);
-      this.bungieService.observeUpdatePvpStreak(this._player);
-      this.bungieService.observeUpdateAggHistoryAndScores(this._player, this.storageService.isDebug());
+      this.bungieService.observeUpdateAggHistory(this._player, this.storageService.isDebug());
     }
     finally {
       this._loading.next(false);

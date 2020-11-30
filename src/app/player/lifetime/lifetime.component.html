@@ -37,7 +37,6 @@
                 <th>Efficiency</th>
                 <th>Completions</th>
                 <th *ngIf="type=='nf'">Top Personal Score</th>
-                <th *ngIf="type=='nf'">High Score</th>
                 <th *ngIf="type=='nf'">Fastest</th>
                 <th>Time Played</th>
                 <th>K/D</th>
@@ -68,23 +67,6 @@
                     <td *ngIf="type=='nf'" data-label="Top Personal Score">
                         <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
                             {{a.activityBestSingleGameScore| number}}
-                        </ng-container>
-                    </td>
-                    <td *ngIf="type=='nf'" data-label="High Score">
-                        <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
-                            <ng-container *ngIf="a.highScore==null">
-                                <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
-                            </ng-container>
-                            <ng-container *ngIf="a.highScore!=null">
-                                {{a.highScore| number}}
-                                <div class="pgcr-link" *ngIf="a.highScorePGCR">
-                                    <a [routerLink]="['/pgcr', a.highScorePGCR]">
-                                        PGCR
-                                    </a>
-                                </div>
-
-                            </ng-container>
-
                         </ng-container>
                     </td>
                     <td *ngIf="type=='nf'" data-label="Fastest">

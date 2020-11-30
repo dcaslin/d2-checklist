@@ -34,7 +34,6 @@
                 <th>Completions</th>
                 <th>Efficiency</th>
                 <th *ngIf="type=='nf'">Top Personal Score</th>
-                <th *ngIf="type=='nf'">High Score</th>
                 <th *ngIf="type=='nf'">Fastest</th>
                 <th>Time Played</th>
                 <th>K/D</th>
@@ -75,13 +74,6 @@
                         <ng-container *ngIf="a.activityBestSingleGameScore.length==0">-</ng-container>
                         <div *ngFor="let c of a.activityBestSingleGameScore; first as isFirst">
                             <div *ngIf="isFirst">{{c.data.activityBestSingleGameScore|number}}</div>
-                            <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
-                        </div>
-                    </td>
-                    <td *ngIf="type=='nf'" data-label="High Score">
-                        <ng-container *ngIf="a.highScore.length==0">-</ng-container>
-                        <div *ngFor="let c of a.highScore; first as isFirst">
-                            <div *ngIf="isFirst">{{c.data.highScore|number}}</div>
                             <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
                         </div>
                     </td>

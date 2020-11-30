@@ -6,38 +6,39 @@
         <ng-container *ngIf="adType=='top'">
             <div class="adTop" *ngIf="screenWidth<=1000">
                 <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!(busyRouting$|async)">
-                    <!-- 2020-D2C-mobile-banner -->
-                    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:50px"
-                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="6797379468"></ins>
+                <ng-container *ngIf="!navigating">
+                    <d2c-ad-unit title="Mobile banner 300 x 50" adSlot="6797379468"
+                        adStyle="display:inline-block;width:300px;height:50px">
+                    </d2c-ad-unit>
                 </ng-container>
             </div>
-            <div class="adTopDesktop" *ngIf="screenWidth>1000 && screenWidth<=1500">
+            <div class="adTopDesktop" *ngIf="screenWidth>1000 && screenWidth<=1439">
                 <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!(busyRouting$|async)">
-                    <!-- 2020-D2C-mobile-banner -->
-                    <ins class="adsbygoogle" style="display:inline-block;width:970px;height:90px"
-                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="6828141388"></ins>
+                <ng-container *ngIf="!navigating">
+                    <d2c-ad-unit title="Desktop banner 970 x 90" adSlot="6828141388"
+                        adStyle="display:inline-block;width:970px;height:90px">
+                    </d2c-ad-unit>
                 </ng-container>
             </div>
         </ng-container>
         <ng-container *ngIf="adType=='right'">
-            <div class="adRight" *ngIf="screenWidth>1500">
+            <div class="adRight" *ngIf="screenWidth>1439">
                 <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!(busyRouting$|async)">
-                    <!-- 2020-D2C-Right-fat -->
-                    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:600px"
-                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="5274568322"></ins>
+                <ng-container *ngIf="!navigating">
+                    <d2c-ad-unit title="Desktop right 300 x 600" adSlot="5274568322"
+                        adStyle="display:inline-block;width:300px;height:600px">
+                    </d2c-ad-unit>
                 </ng-container>
             </div>
         </ng-container>
-        <ng-container *ngIf="adType=='bottom' && screenWidth<=1500">
+        <ng-container *ngIf="adType=='bottom' && screenWidth<=1439">
             <div class="adBottom">
                 <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!(busyRouting$|async)">
+                <ng-container *ngIf="!navigating">
                     <!-- 2020-D2C-mobile-footer -->
-                    <ins class="adsbygoogle" style="display:inline-block;width:300px;height:200px"
-                        data-ad-client="ca-pub-4577479845324857" data-ad-slot="4516838661"></ins>
+                    <d2c-ad-unit title="Mobile footer 300 x 200" adSlot="4516838661"
+                        adStyle="display:inline-block;width:300px;height:200px">
+                    </d2c-ad-unit>
                 </ng-container>
             </div>
         </ng-container>

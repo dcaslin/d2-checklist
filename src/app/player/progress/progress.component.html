@@ -25,11 +25,6 @@
                 <button mat-raised-button color="accent" (click)="openStepDialog(faction)">
                   {{faction.title}}
                 </button>
-
-                <span style="margin-left: 5px" *ngIf="player.pvpStreak && faction.hash == '2000925172'">
-                  <span class="accent-text" *ngIf="player.pvpStreak.win">Streak: {{player.pvpStreak.count}} W</span>
-                  <span class="warn-text" *ngIf="!player.pvpStreak.win">Streak: {{player.pvpStreak.count}} L</span>
-                </span>
               </ng-container>
 
             </span>

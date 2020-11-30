@@ -459,7 +459,7 @@ export class ClanStateService {
       for (const child of seal.data.children) {
         const triumph = clanSearchableTriumphsDict[child.hash];
         if (!triumph) {
-          console.log('Warning: ' + child.hash + ' not found');
+          // console.log('Warning: ' + child.hash + ' not found');
           continue;
         }
         seal.children.push(triumph);
@@ -1051,9 +1051,6 @@ export class ClanStateService {
         }
         if (type != 'nf') {
           await this.bungieService.applyAggHistoryForPlayer(m.currentPlayer(), type);
-        }
-        if (type == 'nf') {
-          await this.bungieService.updateNfScores(m.currentPlayer());
         }
         this.handleAggHistory();
       } catch (err) {

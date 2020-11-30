@@ -11,10 +11,9 @@ import { filter, takeUntil } from 'rxjs/operators';
   styleUrls: ['./ad-slot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdSlotComponent extends ChildComponent implements OnInit, AfterViewInit {
-
-
+export class AdSlotComponent extends ChildComponent implements OnInit {
   @Input() adType = 'unknown';
+  @Input() navigating = false;
 
   screenWidth$: BehaviorSubject<number> = new BehaviorSubject<number>(window.innerWidth);
   busyRouting$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -33,7 +32,7 @@ export class AdSlotComponent extends ChildComponent implements OnInit, AfterView
     storageService: StorageService,
 
     // private router: Router,
-    // private route: ActivatedRoute
+    private route: ActivatedRoute
   ) {
     super(storageService);
 
@@ -46,33 +45,5 @@ export class AdSlotComponent extends ChildComponent implements OnInit, AfterView
 
   ngOnInit(): void {
     this.screenWidth$.next(window.innerWidth);
-
-    // this.router.events.pipe(
-    //   filter(routeEvent => routeEvent instanceof NavigationEnd),
-    //   takeUntil(this.unsubscribe$)).subscribe(x => {
-    //     console.log('Blah blah blah');
-    //     this.busyRouting$.next(true);
-    //     setTimeout(()=>{
-    //       this.busyRouting$.next(false);
-    //       console.log("Done");
-    //     }, 500);
-    //   });
   }
-
-
-  ngAfterViewInit(): void {
-    this.push();
-  }
-
-  push(): void {
-    if (window) {
-      try {
-        // tslint:disable-next-line:no-any
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-      } catch (x) {
-        console.dir(x);
-      }
-    }
-  }
-
 }

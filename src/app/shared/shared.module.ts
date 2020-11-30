@@ -44,6 +44,7 @@ import { SortIndicatorComponent } from './sort-indicator/sort-indicator.componen
 import { FriendStarComponent } from './friend-star/friend-star.component';
 import { TriumphNameComponent } from './triumph-name/triumph-name.component';
 import { AdSlotComponent } from './ad-slot/ad-slot.component';
+import { AdUnitComponent } from './ad-slot/ad-unit/ad-unit.component';
 
 @NgModule({
   imports: [
@@ -91,7 +92,8 @@ import { AdSlotComponent } from './ad-slot/ad-slot.component';
     FriendStarComponent,
     FriendStarComponent,
     TriumphNameComponent,
-    AdSlotComponent],
+    AdSlotComponent,
+    AdUnitComponent],
   exports: [
     SortIndicatorComponent,
     TriumphNameComponent,
