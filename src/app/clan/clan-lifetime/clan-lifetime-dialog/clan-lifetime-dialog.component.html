@@ -56,16 +56,7 @@
                                     </ng-container>
                                 </span>
                             </th>
-                            <th *ngIf="entry.data.type=='nf'">
-                                <span class="fake-link" (click)="sortData('highScore')">
-                                    High Score
-                                    <ng-container *ngIf="sort.name=='highScore'">
-                                        <fa-icon [icon]="iconService.fasSortUp" *ngIf="sort.ascending"></fa-icon>
-                                        <fa-icon [icon]="iconService.fasSortDown" *ngIf="!sort.ascending"></fa-icon>
-                                    </ng-container>
-                                </span>
-
-                            </th>
+                           
                             <th *ngIf="entry.data.type=='nf'">
                                 <span class="fake-link" (click)="sortData('fastestCompletionMsForActivity')">
                                     Fastest
@@ -114,21 +105,6 @@
                                 <td *ngIf="entry.data.type=='nf'" data-label="Top Personal Score">
                                     <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
                                         {{+a.activityBestSingleGameScore| number}}
-                                    </ng-container>
-                                </td>
-                                <td *ngIf="entry.data.type=='nf'" data-label="High Score">
-                                    <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
-                                        <ng-container *ngIf="a.highScore==null">
-                                            <fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
-                                        </ng-container>
-                                        <ng-container *ngIf="a.highScore!=null">
-                                            {{a.highScore| number}}
-                                            <div class="pgcr-link">
-                                                <a [routerLink]="['/pgcr', a.highScorePGCR]">
-                                                    PGCR
-                                                </a>
-                                            </div>
-                                        </ng-container>
                                     </ng-container>
                                 </td>
                                 <td *ngIf="entry.data.type=='nf'" data-label="Fastest">

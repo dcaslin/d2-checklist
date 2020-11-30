@@ -12,7 +12,7 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, Mission, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, PvpStreak, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, Mission, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -121,15 +121,6 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async getPvpStreakMatches(char: Character): Promise<Activity[]> {
-        try {
-            return await this.getActivityHistory(char.membershipType, char.membershipId, char.characterId,
-                69, 50, true);
-        } catch (err) {
-            console.log('Error getting PVP streak history for char');
-            return [];
-        }
-    }
 
     public async getAggHistoryForChar(char: Character): Promise<{ [key: string]: AggHistoryEntry }> {
         try {
@@ -143,47 +134,6 @@ export class BungieService implements OnDestroy {
             console.dir(err);
             return {};
         }
-    }
-
-    private async updatePvpStreak(p: Player): Promise<PvpStreak> {
-        const promises: Promise<Activity[]>[] = [];
-        p.characters.forEach(c => {
-            const prom = this.getPvpStreakMatches(c);
-            promises.push(prom);
-        });
-        const charCompAct = await Promise.all(promises);
-        let allAct: Activity[] = [];
-        for (const ca of charCompAct) {
-            allAct = allAct.concat(ca);
-        }
-        if (allAct.length == 0) {
-            return {
-                count: 0,
-                win: true
-            };
-        }
-        allAct.sort(function (a, b) {
-            if (a.period < b.period) {
-                return 1;
-            }
-            if (a.period > b.period) {
-                return -1;
-            }
-            return 0;
-        });
-        const win = allAct[0].success;
-        let count = 0;
-        for (const a of allAct) {
-            if (a.success == win) {
-                count++;
-            } else {
-                break;
-            }
-        }
-        return {
-            count,
-            win
-        };
     }
 
     private static getAgghistoryCacheKey(player: Player) {
@@ -270,10 +220,6 @@ export class BungieService implements OnDestroy {
         return false;
     }
 
-    public async observeUpdateAggHistoryAndScores(player: BehaviorSubject<Player>, debug: boolean) {
-        await this.observeUpdateAggHistory(player, debug);
-        await this.observeUpdateNfScores(player);
-    }
 
     public async observeUpdateAggHistory(player: BehaviorSubject<Player>, debug: boolean) {
         const p = player.getValue();
@@ -284,12 +230,6 @@ export class BungieService implements OnDestroy {
             await this.applyAggHistoryForPlayer(p, 'force');
             player.next(p);
         }
-    }
-
-    public async observeUpdateNfScores(player: BehaviorSubject<Player>) {
-        const p = player.getValue();
-        await this.updateNfScores(p);
-        player.next(p);
     }
 
     private static hasNfHighScores(player: Player): boolean {
@@ -303,67 +243,6 @@ export class BungieService implements OnDestroy {
         }
         return true;
     }
-
-    public async updateNfScores(player: Player): Promise<boolean> {
-        if (BungieService.hasNfHighScores(player)) {
-            // console.log(player.profile.userInfo.displayName + ' NF pre-cached');
-            return false;
-        }
-
-        console.log(player.profile.userInfo.displayName + ' NF loading from API...');
-        const promises: Promise<Activity[]>[] = [];
-        for (const c of player.characters) {
-            const promise = this.getNightfallPGCR(c);
-            promises.push(promise);
-
-        }
-        const results = await Promise.all(promises);
-        let allAct: Activity[] = [];
-        for (const nfActivities of results) {
-            const filtered = nfActivities.filter(x => {
-                return x.success;
-            });
-            allAct = allAct.concat(filtered);
-        }
-        for (const agg of player.aggHistory) {
-            if (agg.type != 'nf') {
-                continue;
-            }
-            for (const hash of agg.hash) {
-                for (const act of allAct) {
-                    if (act.referenceId == +hash) {
-                        if (agg.highScore == null || agg.highScore < act.teamScore) {
-                            agg.highScore = act.teamScore;
-                            agg.highScorePGCR = act.instanceId;
-                        }
-                    }
-                }
-                if (agg.highScore == null) {
-                    agg.highScore = 0;
-                }
-            }
-        }
-        this.setCachedAggHistoryForPlayer(player);
-        return true;
-    }
-
-    public async getNightfallPGCR(char: Character): Promise<Activity[]> {
-        try {
-            return await this.getActivityHistory(char.membershipType, char.membershipId, char.characterId,
-                46, 500);
-        } catch (err) {
-            console.log('Error getting PVP streak history for char');
-            return [];
-        }
-    }
-
-
-    public async observeUpdatePvpStreak(player: BehaviorSubject<Player>) {
-        const p = player.getValue();
-        p.pvpStreak = await this.updatePvpStreak(p);
-        player.next(p);
-    }
-
 
     public async loadClansForUser(userInfo: UserInfo) {
         if (userInfo.bungieInfo == null) {

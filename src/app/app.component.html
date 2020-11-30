@@ -226,7 +226,7 @@
   
             </mat-toolbar-row>
           </mat-toolbar>
-          <d2c-ad-slot adType="top"></d2c-ad-slot>
+          <d2c-ad-slot [navigating]="navigating$|async" adType="top"></d2c-ad-slot>
           <mat-card class='apiAlert' *ngIf="bungieService.apiDown===true">
             <mat-card-content>
               <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new
@@ -268,11 +268,11 @@
                 </div>
 
               </div>
-              <d2c-ad-slot adType="right"></d2c-ad-slot>
+              <d2c-ad-slot [navigating]="navigating$|async"  adType="right"></d2c-ad-slot>
             </div>
           </div>
         </div>
-        <d2c-ad-slot adType="bottom"></d2c-ad-slot>
+        <d2c-ad-slot [navigating]="navigating$|async" adType="bottom"></d2c-ad-slot>
         <div class="footer">
           <div class="row">
             <div class="col-sm-12 links">

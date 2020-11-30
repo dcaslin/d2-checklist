@@ -582,7 +582,6 @@ export class Player {
     readonly gearMeta: GearMeta;
     maxLL = 0;
     maxLLFraction?: Fraction;
-    pvpStreak: PvpStreak;
     aggHistory: AggHistoryEntry[] = [];
 
     constructor(profile: Profile, characters: Character[], currentActivity: CurrentActivity,
@@ -1218,11 +1217,6 @@ export class Progression {
     title: string;
     nextTitle: string;
     special: string;
-}
-
-export interface PvpStreak {
-    count: number;
-    win: boolean;
 }
 
 export class Const {
