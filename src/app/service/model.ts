@@ -487,6 +487,7 @@ export interface ChecklistItem {
     hash: string;
     name: string;
     checked: boolean;
+    video?: string;
     desc: string;
     lowLinks?: LowLinks;
 }
@@ -495,6 +496,8 @@ export interface Checklist {
     hash: string;
     name: string;
     contentVault: boolean;
+    order: number;
+    video?: string;
     complete: number;
     total: number;
     entries: ChecklistItem[];
