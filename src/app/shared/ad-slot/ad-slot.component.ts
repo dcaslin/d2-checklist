@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, Input, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -11,7 +11,7 @@ import { filter, takeUntil } from 'rxjs/operators';
   styleUrls: ['./ad-slot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AdSlotComponent extends ChildComponent implements OnInit {
+export class AdSlotComponent extends ChildComponent implements OnInit, AfterViewInit {
 
 
   @Input() adType = 'unknown';
@@ -57,6 +57,22 @@ export class AdSlotComponent extends ChildComponent implements OnInit {
     //       console.log("Done");
     //     }, 500);
     //   });
+  }
+
+
+  ngAfterViewInit(): void {
+    this.push();
+  }
+
+  push(): void {
+    if (window) {
+      try {
+        // tslint:disable-next-line:no-any
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      } catch (x) {
+        console.dir(x);
+      }
+    }
   }
 
 }
