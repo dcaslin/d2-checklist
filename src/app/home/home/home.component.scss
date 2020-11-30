@@ -1,24 +1,31 @@
 @import 'styles-variables';
 
-.grid-parent{
+.grid-parent {
   display: grid;
-  
-   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-   grid-column-gap: 10px;
-   grid-row-gap: 10px;
+
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
   //margin:1em 0;
   grid-auto-flow: row dense;
 }
 
- .ll{
-   float: right;
- }
 
- .lighter{
-   opacity: .6;
- }
+@media (min-width: 1300px) {
+  .grid-parent {
+    min-width: 900px;
+  }
+}
 
- .activity-icon{
+.ll {
+  float: right;
+}
+
+.lighter {
+  opacity: .6;
+}
+
+.activity-icon {
   //  width: 19px;
   //  height: 19px;
   width: 24px;
@@ -28,13 +35,14 @@
   display: inline-block;
 }
 
- 
-.modifier-chip{
+
+.modifier-chip {
   padding: 5px;
   margin-bottom: 5px;
   display: inline-block;
 }
-::ng-deep .mat-card-header-text{
+
+::ng-deep .mat-card-header-text {
   text-align: left;
 }
 
@@ -42,12 +50,12 @@
   margin-bottom: 0px !important;
 }
 
-::ng-deep .mat-list-item-content{
+::ng-deep .mat-list-item-content {
   text-align: left;
 }
 
-.more-info{
-  text-align: left; 
+.more-info {
+  text-align: left;
   max-width: 700px;
   margin-right: auto;
   margin-left: auto;
@@ -64,12 +72,14 @@
 .bounty-button-row {
   margin-top: 15px !important;
   text-align: left;
-  & button{  
+
+  & button {
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
   }
-  & a{  
+
+  & a {
     margin-bottom: 10px;
     margin-left: 5px;
     margin-right: 5px;
@@ -92,7 +102,7 @@
   align-items: center;
 }
 
-.info{
+.info {
   //max-width: 700px;
   margin-right: 10px;
   margin-left: 10px;
@@ -110,7 +120,8 @@
   display: flex;
   flex-direction: row;
   text-align: left;
-  align-items: center;;
+  align-items: center;
+  ;
   margin-top: 5px;
   margin-bottom: 10px;
   margin-left: 16px;
@@ -141,7 +152,7 @@ a.underline:link {
 .announcement {
   border-radius: 5px;
   padding: 8px;
-  
+
   font-size: larger;
   margin: 15px;
   display: flex;
@@ -158,24 +169,24 @@ a.underline:link {
   flex-grow: 1;
 }
 
-.home-button-row{
+.home-button-row {
   margin-right: 10px;
   margin-left: 10px;
   margin-bottom: 25px;
   margin-top: 5px;
 }
 
-.home-button{
+.home-button {
   margin-bottom: 5px;
 }
 
-.spacer{
-  width:5px;
-  height:auto;
-  display:inline-block;
+.spacer {
+  width: 5px;
+  height: auto;
+  display: inline-block;
 }
 
-.mat-card{
+.mat-card {
   margin-bottom: 20px;
 }
 
@@ -187,11 +198,11 @@ a.underline:link {
   border-radius: 0%;
 }
 
-.invert{
+.invert {
   filter: invert(50%);
 }
 
-.brighten{
+.brighten {
   filter: brightness(1.8);
 }
 
@@ -205,15 +216,15 @@ a.underline:link {
   margin-left: 0.25em;
 }
 
-.icon{
+.icon {
   height: 24px;
-  width: 24px;  
+  width: 24px;
   margin-right: 10px;
   background-size: cover;
   display: block;
 }
 
-.list-icon{  
+.list-icon {
   background-size: cover;
   display: block;
 }
@@ -222,7 +233,6 @@ a.underline:link {
   display: flex;
   flex-direction: row;
   align-items: center
-
 }
 
 .shopping-cell {
@@ -244,32 +254,32 @@ a.underline:link {
   box-sizing: content-box;
 }
 
-dl{
+dl {
   margin-left: 20px;
 }
 
-.searchRow{
+.searchRow {
   display: inline-block;
   margin-left: 20px;
   text-align: left;
 }
 
-.searchField{
+.searchField {
   margin-bottom: 10px;
 }
 
-.searchPlatform{
+.searchPlatform {
   // width: 75px;
   margin-right: 10px;
 }
 
-.searchGt{
+.searchGt {
   width: 125px;
   margin-right: 10px;
 }
 
 @media (max-width: 400px) {
-  .searchPlatform{
+  .searchPlatform {
     width: 50px;
   }
 }
