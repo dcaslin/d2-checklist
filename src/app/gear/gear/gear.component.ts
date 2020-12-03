@@ -174,6 +174,14 @@ export class GearComponent extends ChildComponent {
       displayTabs: [ItemType.Weapon, ItemType.Armor, ItemType.Ghost, ItemType.Vehicle],
       grabValue: (x: InventoryItem) => x.mark
     };
+    const godRollConfig: ToggleConfig = {
+      title: 'God Rolls',
+      debugKey: 'God Roll',
+      icon: iconService.fasStar,
+      displayTabs: [ItemType.Weapon],
+      wildcard: true,
+      grabValue: (x: InventoryItem) => x.godRollInfo
+    };
     const weaponBucketsConfig: ToggleConfig = {
       title: 'Slot',
       debugKey: 'Weapon Bucket',
@@ -209,12 +217,20 @@ export class GearComponent extends ChildComponent {
       displayTabs: [ItemType.Armor],
       grabValue: (x: InventoryItem) => x.energyType
     };
+    // const seasonConfig: ToggleConfig = {
+    //   title: 'Season',
+    //   debugKey: 'Seasonal mod slot',
+    //   icon: iconService.fasWheat,
+    //   displayTabs: [ItemType.Armor],
+    //   grabValue: (x: InventoryItem) => x.seasonalModSlot
+    // };
     const seasonConfig: ToggleConfig = {
-      title: 'Season',
-      debugKey: 'Seasonal mod slot',
+      title: 'Season Mods',
+      debugKey: 'Seasonal Mods',
       icon: iconService.fasWheat,
       displayTabs: [ItemType.Armor],
-      grabValue: (x: InventoryItem) => x.seasonalModSlot
+      wildcard: true,
+      grabValue: (x: InventoryItem) => x.specialModSockets
     };
     const damageConfig: ToggleConfig = {
       title: 'Energy',
@@ -295,16 +311,10 @@ export class GearComponent extends ChildComponent {
         new Choice(`${EnergyType.Any}`, 'Any')
       ], currentTab.type),
       seasons: GearToggleComponent.generateState(seasonConfig, [
-        new Choice(null, 'None'),
-        new Choice('12', 'Hunt'),
-        new Choice('11', 'Arrivals'),
-        new Choice('10', 'Worthy'),
-        new Choice('9', 'Dawn'),
-        new Choice('8', 'Undying'),
-        new Choice('7', 'Opulence'),
-        new Choice('6', 'Drifter'),
-        new Choice('5', 'Forge'),
-        new Choice('4', 'Outlaw'),
+        new Choice('none', 'None'),
+        new Choice('deepstone', 'Deepstone Crypt Mod Slot'),
+        new Choice('combat', 'Combat Mod Slot'),
+        new Choice('legacy', 'Legacy Mod Slot')
       ], currentTab.type),
       damageType: GearToggleComponent.generateState(damageConfig,
         [
@@ -332,6 +342,15 @@ export class GearComponent extends ChildComponent {
         new Choice(true, 'Postmaster'),
         new Choice(false, 'Not postmaster')
       ], currentTab.type),
+      godRolls: GearToggleComponent.generateState(godRollConfig,
+        [
+          new Choice('is:godroll', 'God Roll'),
+          new Choice('is:goodroll', 'Good Roll'),
+          new Choice('is:godrollpve', 'God Roll PVE'),
+          new Choice('is:godrollpvp', 'God Roll PVP'),
+          new Choice('is:goodrollpve', 'Good Roll PVE'),
+          new Choice('is:goodrollpvp', 'Good Roll PVP')
+        ], currentTab.type),
       weaponBuckets: GearToggleComponent.generateState(weaponBucketsConfig,
         GearComponent.generateBucketChoices(ItemType.Weapon, cacheService), currentTab.type),
       armorBuckets: GearToggleComponent.generateState(armorBucketsConfig,
@@ -843,9 +862,18 @@ export class GearComponent extends ChildComponent {
       // iterate through choices and see if one matches
       let matched = false;
       for (const c of t.choices) {
-        if (c.value && c.matchValue == val) {
-          matched = true;
-          continue;
+        // is it checked?
+        if (c.value) {
+          if (c.matchValue == val) {
+            matched = true;
+            continue;
+          } else if (t.config.wildcard && val) {
+            const sVal = val as string;
+            if (sVal.indexOf(c.matchValue) >= 0) {
+              matched = true;
+              continue;
+            }
+          }
         }
       }
       if (matched) {
@@ -1320,6 +1348,7 @@ interface ShortcutInfo {
 interface ToggleData {
   tags: ToggleState;
   weaponBuckets: ToggleState;
+  godRolls: ToggleState;
   weaponTypes: ToggleState;
   ammoTypes: ToggleState;
   armorBuckets: ToggleState;

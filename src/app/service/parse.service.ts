@@ -1639,7 +1639,7 @@ export class ParseService {
                 let hasDescs = false;
                 for (const entry of desc.entries) {
                     const hash = entry.hash;
-                    let name = entry.displayProperties.name;
+                    const name = entry.displayProperties.name;
                     const checked = vals[entry.hash];
                     let cDesc = entry.displayProperties.description;
                     cntr++;
@@ -2004,7 +2004,7 @@ export class ParseService {
                     const powerfulDropsRemaining = powerfulObj.progress;
                     const progress = total - powerfulDropsRemaining;
                     const pct = progress / total;
-                    let suppInfo: string[] = [`${powerfulDropsRemaining} left`];
+                    const suppInfo: string[] = [`${powerfulDropsRemaining} left`];
                     if (artifact.objectives?.length > 1) {
                         suppInfo.push(`${artifact.objectives[0].percent}% Charged`);
                         suppInfo.push(`${artifact.objectives[1].progress} stored`);
@@ -3743,6 +3743,7 @@ export class ParseService {
             let searchText = '';
             let seasonalModSlot = null;
             let coveredSeasons = [];
+            const specialModSockets: string[] = [];
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
             let mw: MasterworkInfo = null;
@@ -3862,6 +3863,22 @@ export class ParseService {
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
                                 const socketDesc = desc.sockets.socketEntries[index];
+                                if (socketDesc.singleInitialItemHash) {
+                                    const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+                                    const modSocketType = emptyModSocketDesc?.itemTypeDisplayName;
+                                    if ('Combat Style Armor Mod' == modSocketType) {
+                                        searchText += 'has:modcombat';
+                                        specialModSockets.push('combat');
+
+                                    } else if ('Deep Stone Crypt Raid Mod' == modSocketType) {
+                                        specialModSockets.push('deepstone');
+                                        searchText += 'has:moddeepstone';
+                                    } else if ('Legacy Armor Mod' == modSocketType) {
+                                        searchText += 'has:modlegacy';
+                                        specialModSockets.push('legacy');
+
+                                    }
+                                }
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
                                 const possiblePlugs: InventoryPlug[] = [];
@@ -4088,17 +4105,6 @@ export class ParseService {
                         if (pCapDesc) {
                             powerCap = pCapDesc.powerCap;
                             powerCap = powerCap > 10000 ? 9999 : powerCap;
-                            // check for GoS and LW overrides
-                            // if (powerCap == 1060) {
-                            //     if (desc.collectibleHash) {
-                            //         const cDesc = this.destinyCacheService.cache.Collectible[desc.collectibleHash];
-                            //         if (cDesc) {
-                            //             if (cDesc.sourceHash == 1491707941 || cDesc.sourceHash == 2455011338) {
-                            //                 powerCap = 1360;
-                            //             }
-                            //         }
-                            //     }
-                            // }
                         }
                     }
                 }
@@ -4116,9 +4122,18 @@ export class ParseService {
             searchText += name;
             searchText = searchText.toLowerCase();
             const watermarkIcons = desc?.quality?.displayVersionWatermarkIcons;
-            let iconWatermark = null;
+            let iconWatermark = null;            
             if (watermarkIcons && watermarkIcons.length > 0) {
-                iconWatermark = watermarkIcons[0];
+                if (itm.versionNumber && watermarkIcons.length > itm.versionNumber) {
+                    iconWatermark = watermarkIcons[itm.versionNumber];
+                } else {
+                    iconWatermark = watermarkIcons[0];
+                }
+
+            }
+            if (specialModSockets.length == 0) {
+                specialModSockets.push('none');
+                searchText += 'has:modnone';
             }
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
                 equipped, canEquip, owner, icon, iconWatermark, type, desc.itemTypeDisplayName,
@@ -4128,7 +4143,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster
-                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, coveredSeasons, powerCap, redacted
+                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, coveredSeasons, powerCap, redacted, specialModSockets
             );
         } catch (exc) {
             console.dir(itemComp);

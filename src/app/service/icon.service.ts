@@ -28,6 +28,7 @@ import {
   faHourglassHalf as fadHourGlassHalf
  } from '@fortawesome/pro-duotone-svg-icons';
 import {
+  faPlug as fasPlug,
   faGamepadAlt as fasGamepadAlt, faMinus as fasMinus, faUniversity as fasUniversity, faEnvelope as fasEnvelope,
   faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
@@ -66,6 +67,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fasPlug = fasPlug;
   public readonly farAward = farAward;
   public readonly farPercent = farPercent;
   public readonly fasSignOutAlt = fasSignOutAlt;
