@@ -63,6 +63,7 @@
     </mat-menu>
   </div>
   <div class="filter-buttons" [hidden]="selectedUser==null">
+    <d2c-gear-toggle [(state)]="toggleData.godRolls" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.tags" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.weaponBuckets"  (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.powerCaps"  (change)="filterChanged()"> </d2c-gear-toggle>

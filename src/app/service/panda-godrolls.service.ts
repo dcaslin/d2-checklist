@@ -82,15 +82,20 @@ export class PandaGodrollsService {
   private processGunRolls(i: InventoryItem, rolls: GunRolls) {
     i.pandaPve = this.processGunRoll(i, rolls.pve, true);
     i.pandaPvp = this.processGunRoll(i, rolls.pvp, false);
+    i.godRollInfo = '';
     if (i.pandaPvp > 1) {
       i.searchText = i.searchText + ' is:godrollpvp  is:goodrollpvp';
+      i.godRollInfo = i.godRollInfo + ' is:godrollpvp  is:goodrollpvp';
     } else if (i.pandaPvp > 0) {
       i.searchText = i.searchText + ' is:goodrollpvp';
+      i.godRollInfo = i.godRollInfo + ' is:goodrollpvp';
     }
     if (i.pandaPve > 1) {
       i.searchText = i.searchText + ' is:godrollpve is:goodrollpve';
+      i.godRollInfo = i.godRollInfo + ' is:godrollpve is:goodrollpve';
     } else if (i.pandaPve > 0) {
       i.searchText = i.searchText + ' is:goodrollpve';
+      i.godRollInfo = i.godRollInfo + ' is:goodrollpve';
     }
     let needsFixing = false;
     let first = true;

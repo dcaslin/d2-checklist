@@ -385,6 +385,13 @@ table.stat-table {
   align-items: center;
 }
 
+
+@media screen and (min-width: 1200px) {
+  .filter-container {
+    min-width: 1100px;
+  }
+}
+
 .radio-group {
   display: flex;
   flex-direction: column;

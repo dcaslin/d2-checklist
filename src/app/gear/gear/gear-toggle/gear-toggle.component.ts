@@ -138,6 +138,7 @@ export interface ToggleConfig {
   icon?: IconDefinition;
   iconClass?: string;
   displayTabs: ItemType[];
+  wildcard?: boolean;
   grabValue(i: InventoryItem): any;
 }
 

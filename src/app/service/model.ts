@@ -704,6 +704,7 @@ export class InventoryItem {
     public copies = 1;
     public pandaPve = 0;
     public pandaPvp = 0;
+    public godRollInfo: string;
     public noGodRollInfo = false;
     public preferredStatPoints: number;
     public readonly seasonalModSlot: number;
@@ -713,6 +714,7 @@ export class InventoryItem {
     public dupesByFrameSlotAndEnergy?: number;
     public coveredSeasons?: number[];
     readonly redacted: boolean;
+    readonly specialModSockets: string[];
 
     public lowLinks: LowLinks;
     // more to come, locked other stuff
@@ -734,7 +736,8 @@ export class InventoryItem {
         locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
-        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number, coveredSeasons?: number[], powerCap?: number, redacted?: boolean
+        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number, coveredSeasons?: number[], powerCap?: number, redacted?: boolean,
+        specialModSockets?: string[]
     ) {
         this.id = id;
         this.hash = hash;
@@ -788,6 +791,7 @@ export class InventoryItem {
         this.coveredSeasons = coveredSeasons;
         this.powerCap = powerCap;
         this.redacted = redacted;
+        this.specialModSockets = specialModSockets;
     }
 }
 
