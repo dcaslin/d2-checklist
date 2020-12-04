@@ -76,14 +76,9 @@ export class SeasonBreakdownDialogComponent {
 
   private static generateSeasons(): SeasonRow[] {
     return [
-      { name: 'Hunt', details: true, season: 12, note: 'Beyond Light' },
-      { name: 'Arrivals', details: true, season: 11, note: 'Charged with Light 2.0' },
-      { name: 'Worthy', details: true, season: 10, note: 'Warmind Cells go boom' },
-      { name: 'Dawn', details: true, season: 9, note: 'Charged with Light 1.0' },
-      { name: 'Undying', details: true, season: 8, note: 'Nightmare Hunts & GoS' },
-      { name: 'Opulence', details: true, season: 7, note: 'Hive perks' },
-      { name: 'Drifter', details: true, season: 6, note: 'Gambit Prime' },
-      { name: 'Forge/Outlaw', details: true, season: 5, note: 'Taken & Fallen perks' },
+      { name: 'Raid', details: true, season: 2, note: 'Deepstone Crypt dedicated' },
+      { name: 'Combat', details: true, season: 1, note: 'Charged w/ Light + Warmind' },
+      { name: 'Legacy', details: true, season: 0, note: 'Legacy mods' },
     ];
   }
 

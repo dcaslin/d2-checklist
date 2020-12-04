@@ -19,8 +19,11 @@ import {
 
   faAlien as farAlien,
   faAxeBattle as farAxeBattle, faBadgeCheck as farBadgeCheck, faBookmark as farBookmark, faBalanceScale as farBalanceScale, faCheckSquare as farCheckSquare, faCheckSquare as farCheckSqure, faCog as farCog, faCopy as farCopy, faExternalLink as farExternalLink, faGem as farGem, faGift as farGift, faHeart as farHeart, faHelmetBattle as farHelmetBattle, faInfoSquare as farInfoSquare, faMapMarkerAlt as farMapMarkerAlt, faMedal as farMedal, faMinusSquare as farMinusSquare, faPalette as farPalette, faProjectDiagram as farProjectDiagram, faSearch as farSearch, faSigma as farSigma, faSpinner as farSpinner, faStar as farStar, faSync as farSync, faTable as farTable,
-  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy, faClipboardCheck as farClipboardCheck, faPercent as farPercent, faAward as farAward
-
+  faThumbtack as farThumbtack, faTimes as farTimes, faTimesSquare as farTimesSquare, faTrophy as farTrophy, faClipboardCheck as farClipboardCheck, faPercent as farPercent, faAward as farAward,
+  faInfinity as falInfinity,
+  faSwords as falSwords,
+  faScrollOld as falScrollOld,
+  faBan as falBan
 } from '@fortawesome/pro-regular-svg-icons';
 
 import { 
@@ -82,6 +85,10 @@ export class IconService {
   public readonly falPlusSquare = falPlusSquare;
   public readonly falMinusSquare = falMinusSquare;
   public readonly falInfoSquare = falInfoSquare;
+  public readonly falInfinity = falInfinity;
+  public readonly falSwords = falSwords;
+  public readonly falScrollOld = falScrollOld;
+  public readonly falBan = falBan;
   public readonly falBars = falBars;
   public readonly fadSort = fadSort;
   public readonly fadSortUp = fadSortUp;

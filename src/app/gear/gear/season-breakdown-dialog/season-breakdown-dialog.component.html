@@ -22,7 +22,8 @@
                         <ng-container *ngIf="char._seasons|async as seasons">
                             <tr *ngFor="let season of seasons">
                                 <td>
-                                    {{season.name}}<div *ngIf="season.note" class="simple-caption">{{season.note}}</div>
+                                    <d2c-season-indicator [season]="season.season"></d2c-season-indicator> {{season.name}}
+                                    <div *ngIf="season.note" class="simple-caption">{{season.note}}</div>
                                 </td>
                                 <td *ngFor="let bucket of season.buckets" [attr.data-label]="bucket.name">
                                     <div class="bucket-body">

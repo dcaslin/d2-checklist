@@ -5,8 +5,8 @@ import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
 import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser, Target } from './model';
 import { NotificationService } from './notification.service';
-import { PreferredStatService } from './preferred-stat.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
+import { PreferredStatService } from './preferred-stat.service';
 
 interface VaultStatus {
     isFull: boolean;
@@ -256,7 +256,7 @@ export class GearService {
         let moved = 0;
         let tryCount = 0;
         let incrementalWork = 1;
-        const vaultStatus = {isFull: false};
+        const vaultStatus = { isFull: false };
         let invClearedSuccessfully = false;
         while (!vaultStatus.isFull && tryCount < 3 && incrementalWork > 0) {
             tryCount++;
@@ -377,6 +377,25 @@ export class GearService {
                     continue;
                 }
                 if (seasonAndBurn) {
+                    // if (i.specialModSockets == null || g.specialModSockets == null) {
+                    //     if (i.specialModSockets == null && g.specialModSockets != null) {
+                    //         continue;
+                    //     }
+                    //     if (i.specialModSockets != null && g.specialModSockets == null) {
+                    //         continue;
+                    //     }
+                    // } else {
+                    //     if (i.specialModSockets.length!= g.specialModSockets.length) {
+                    //         continue;
+                    //     }
+                    //     for (let cntr=0; cntr<i.specialModSockets.length; cntr++) {
+                    //         if (i.specialModSockets[cntr] != g.specialModSockets[cntr]) {
+                    //             continue;
+                    //         }
+                    //     }
+                    // }
+
+
                     if (i.seasonalModSlot != g.seasonalModSlot) {
                         continue;
                     }
@@ -410,7 +429,7 @@ export class GearService {
 
     public async bulkMove(player: Player, items: InventoryItem[], target: Target) {
         console.log('Moving ' + items.length + ' items.');
-        const vaultStatus = {isFull: false};
+        const vaultStatus = { isFull: false };
         let successCnt = 0;
         for (const i of items) {
             try {
@@ -449,7 +468,7 @@ export class GearService {
 
     public async clearInv(player: Player, itemType?: ItemType) {
         const target = player.characters[0];
-        const vaultStatus = {isFull: false};
+        const vaultStatus = { isFull: false };
         const clearSuccess = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], itemType, vaultStatus);
         if (!clearSuccess) {
             this.notificationService.info('Inventory could not be fully cleared, your vault ran out of space');
@@ -462,7 +481,7 @@ export class GearService {
 
     public async upgradeMode(player: Player, itemType?: ItemType) {
         const target = player.characters[0];
-        const vaultStatus = {isFull: false};
+        const vaultStatus = { isFull: false };
         const clearSuccess = await this.clearInvForMode(target, player, [], itemType, vaultStatus);
         let totalErr = 0;
         let moved = 0;
@@ -497,13 +516,13 @@ export class GearService {
                             let postMasterSuccess = true;
                             if (moveMe.postmaster === true) {
                                 const owner = moveMe.owner.getValue();
-                                postMasterSuccess = await this.transfer(player, moveMe, owner, {isFull: false});
+                                postMasterSuccess = await this.transfer(player, moveMe, owner, { isFull: false });
                                 if (owner.id === target.characterId) {
                                     continue;
                                 }
                             }
                             if (postMasterSuccess && moveMe.owner.getValue().id != target.id) {
-                                success = await this.transfer(player, moveMe, target, {isFull: false});
+                                success = await this.transfer(player, moveMe, target, { isFull: false });
                             }
                             if (success) {
                                 moved++;

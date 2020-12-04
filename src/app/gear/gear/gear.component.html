@@ -450,7 +450,7 @@
           </td>
           <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
             *ngIf="option.type==ItemType.Armor">
-            <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot">
+            <span class="mod-obj">{{i.energyCapacity}} / 10  <d2c-season-indicator [season]="i.seasonalModSlot">
               </d2c-season-indicator> </span>
             <mat-progress-bar mode="determinate" class="mw-progress"
               [color]="i.energyCapacity>=10?'accent':'primary'" [value]="i.energyCapacity*10">

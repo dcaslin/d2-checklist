@@ -3490,104 +3490,6 @@ export class ParseService {
         return name;
     }
 
-    private getSeasonName(seasonalModSlot: number): string | null {
-        if (seasonalModSlot == 12) {
-            return 'hunt';
-        }
-        if (seasonalModSlot == 11) {
-            return 'arrivals';
-        }
-        if (seasonalModSlot == 10) {
-            return 'worthy';
-        }
-        if (seasonalModSlot == 9) {
-            return 'dawn';
-        }
-        if (seasonalModSlot == 8) {
-            return 'undying';
-        }
-        if (seasonalModSlot == 7) {
-            return 'opulence';
-        }
-        if (seasonalModSlot == 6) {
-            return 'drifter';
-        }
-        if (seasonalModSlot == 5) {
-            return 'forge';
-        }
-        if (seasonalModSlot == 4) {
-            return 'outlaw';
-        }
-        return null;
-    }
-
-    private genCoveredMods(season: number | null): number[] {
-        if (season == 12) {
-            return [9, 10, 11, 12];
-        } else if (season == 11) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 10) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 9) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 8) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 7) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 6) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 5) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else if (season == 4) {
-            return [4, 5, 6, 7, 8, 9, 10, 11];
-        } else {
-            return [];
-        }
-    }
-
-    private checkSeasonalMod(socketHash: number) {
-        if (socketHash == 2493100093) { // hunt 2493100093
-            return 12;
-        }
-        if (socketHash == 4153634494) { // arrivals 4153634494
-            return 11;
-        }
-        if (socketHash == 2655746324) { // worthy 2655746324
-            return 10;
-        }
-        if (socketHash == 2357307006) { // dawn 2600899007
-            return 9;
-        }
-        if (socketHash == 2620967748) { // undying  2620967748
-            return 8;
-        }
-        if (socketHash == 4106547009) { // opulence  4106547009
-            return 7;
-        }
-        if (socketHash == 720857) { // forge  720857
-            return 5;
-        }
-        if (socketHash == 3625698764 || // outlaw 3625698764
-            socketHash == 2527938402) {
-            return 4;
-        } else if ( // drifter sentry/invader/reaper/collector
-            socketHash == 149961592 ||
-            socketHash == 326979294 ||
-            socketHash == 446122123 ||
-            socketHash == 548249507 ||
-            socketHash == 911695907 ||
-            socketHash == 1233336930 ||
-            socketHash == 1263189958 ||
-            socketHash == 4258500190 ||
-            socketHash == 3588389153 ||
-            socketHash == 3047801520 ||
-            socketHash == 2684355120 ||
-            socketHash == 2575042148) {
-            return 6;
-        }
-        return null;
-    }
-
 
     private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
@@ -3741,8 +3643,10 @@ export class ParseService {
             let equipped = false;
             let canEquip = false;
             let searchText = '';
-            let seasonalModSlot = null;
-            let coveredSeasons = [];
+            let seasonalModSlot = -1;
+            const coveredSeasons = [];
+
+
             const specialModSockets: string[] = [];
             const stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
@@ -3815,25 +3719,6 @@ export class ParseService {
                         stats.sort((a, b) => {
                             return a.index > b.index ? 1 : a.index < b.index ? -1 : 0;
                         });
-
-                        // if (type === ItemType.Armor) {
-                        //     stats.sort(function (a, b) {
-                        //         const ai = ArmorStat[a.name];
-                        //         const bi = ArmorStat[b.name];
-
-                        //         if (bi < ai) { return 1; }
-                        //         if (bi > ai) { return -1; }
-                        //         return 0;
-                        //     });
-                        // } else {
-                        //     stats.sort(function (a, b) {
-                        //         const bs: string = b.name;
-                        //         const as: string = a.name;
-                        //         if (bs < as) { return 1; }
-                        //         if (bs > as) { return -1; }
-                        //         return 0;
-                        //     });
-                        // }
                     }
                 }
 
@@ -3869,14 +3754,19 @@ export class ParseService {
                                     if ('Combat Style Armor Mod' == modSocketType) {
                                         searchText += 'has:modcombat';
                                         specialModSockets.push('combat');
+                                        seasonalModSlot = 1;
+                                        coveredSeasons.push(1);
 
                                     } else if ('Deep Stone Crypt Raid Mod' == modSocketType) {
                                         specialModSockets.push('deepstone');
                                         searchText += 'has:moddeepstone';
+                                        seasonalModSlot = 2;
+                                        coveredSeasons.push(2);
                                     } else if ('Legacy Armor Mod' == modSocketType) {
                                         searchText += 'has:modlegacy';
                                         specialModSockets.push('legacy');
-
+                                        seasonalModSlot = 0;
+                                        coveredSeasons.push(0);
                                     }
                                 }
                                 const socketVal = socketArray[index];
@@ -3898,7 +3788,6 @@ export class ParseService {
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
-                                    seasonalModSlot = this.checkSeasonalMod(socketDesc.singleInitialItemHash) || seasonalModSlot;
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
                                         if (mwInfo != null) {
@@ -4067,23 +3956,6 @@ export class ParseService {
                     totalStatPoints += s.value;
                 }
             }
-            if (seasonalModSlot) {
-                searchText += 'is:seasonmod';
-                coveredSeasons = this.genCoveredMods(seasonalModSlot);
-                const seasonText = this.getSeasonName(seasonalModSlot);
-                if (seasonText) {
-                    searchText += 'season:' + seasonText;
-                }
-                for (const seasonNumber of coveredSeasons) {
-                    const seasonName = this.getSeasonName(seasonNumber);
-                    if (seasonName) {
-                        searchText += 'has:' + seasonName;
-                    }
-                }
-            } else if (type === ItemType.Armor) {
-                searchText += 'season:none';
-            }
-
             let icon = desc.displayProperties.icon;
             if (itm.overrideStyleItemHash != null) {
                 if (!(itm.overrideStyleItemHash == 2931483505
@@ -4122,7 +3994,7 @@ export class ParseService {
             searchText += name;
             searchText = searchText.toLowerCase();
             const watermarkIcons = desc?.quality?.displayVersionWatermarkIcons;
-            let iconWatermark = null;            
+            let iconWatermark = null;
             if (watermarkIcons && watermarkIcons.length > 0) {
                 if (itm.versionNumber && watermarkIcons.length > itm.versionNumber) {
                     iconWatermark = watermarkIcons[itm.versionNumber];
@@ -4134,7 +4006,10 @@ export class ParseService {
             if (specialModSockets.length == 0) {
                 specialModSockets.push('none');
                 searchText += 'has:modnone';
+                seasonalModSlot = -1;
+                coveredSeasons.push(-1);
             }
+            specialModSockets.sort();
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
                 equipped, canEquip, owner, icon, iconWatermark, type, desc.itemTypeDisplayName,
                 itm.quantity,

@@ -81,26 +81,9 @@ export class GearComponent extends ChildComponent {
     { value: 'is:locked' },
     { value: 'is:unlocked' },
     { value: 'is:extratagged', desc: 'It\'s complicated. See help button' },
-    { value: 'has:Hunt' },
-    { value: 'has:arrivals', desc: 'Armor can load mods from Arrivals' },
-    { value: 'has:worthy' },
-    { value: 'has:dawn' },
-    { value: 'has:undying' },
-    { value: 'has:opulence' },
-    { value: 'has:drifter' },
-    { value: 'has:forge' },
-    { value: 'has:outlaw' },
-    { value: 'season:none', desc: 'No season mod slot' },
-    { value: 'season:arrivals', desc: 'Arrivals mod slot' },
-    { value: 'season:hunt' },
-    { value: 'season:worthy' },
-    { value: 'season:dawn' },
-    { value: 'season:undying' },
-    { value: 'season:opulence' },
-    { value: 'season:drifter' },
-    { value: 'season:forge' },
-    { value: 'season:outlaw' },
-    { value: 'is:seasonmod', desc: 'Has a seasonal mod slot' }
+    { value: 'has:moddeepstone', desc: 'Armor includes Deepstone Crypt mod slot' },
+    { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' },
+    { value: 'has:modlegacy', desc: 'Armor can use legacy mods' }
   ];
 
   public autoCompleteOptions: AutoCompleteOption[];
@@ -229,8 +212,7 @@ export class GearComponent extends ChildComponent {
       debugKey: 'Seasonal Mods',
       icon: iconService.fasWheat,
       displayTabs: [ItemType.Armor],
-      wildcard: true,
-      grabValue: (x: InventoryItem) => x.specialModSockets
+      grabValue: (x: InventoryItem) => x.specialModSockets  // this is a string[]
     };
     const damageConfig: ToggleConfig = {
       title: 'Energy',
@@ -311,10 +293,10 @@ export class GearComponent extends ChildComponent {
         new Choice(`${EnergyType.Any}`, 'Any')
       ], currentTab.type),
       seasons: GearToggleComponent.generateState(seasonConfig, [
-        new Choice('none', 'None'),
         new Choice('deepstone', 'Deepstone Crypt Mod Slot'),
         new Choice('combat', 'Combat Mod Slot'),
-        new Choice('legacy', 'Legacy Mod Slot')
+        new Choice('legacy', 'Legacy Mod Slot'),
+        new Choice('none', 'None')
       ], currentTab.type),
       damageType: GearToggleComponent.generateState(damageConfig,
         [
@@ -349,7 +331,9 @@ export class GearComponent extends ChildComponent {
           new Choice('is:godrollpve', 'God Roll PVE'),
           new Choice('is:godrollpvp', 'God Roll PVP'),
           new Choice('is:goodrollpve', 'Good Roll PVE'),
-          new Choice('is:goodrollpvp', 'Good Roll PVP')
+          new Choice('is:goodrollpvp', 'Good Roll PVP'),
+          new Choice('is:fixme', 'Suboptimal perks active'),
+          new Choice('is:notgoodroll', 'Neither good nor god rolls')
         ], currentTab.type),
       weaponBuckets: GearToggleComponent.generateState(weaponBucketsConfig,
         GearComponent.generateBucketChoices(ItemType.Weapon, cacheService), currentTab.type),
@@ -867,6 +851,12 @@ export class GearComponent extends ChildComponent {
           if (c.matchValue == val) {
             matched = true;
             continue;
+          } else if (Array.isArray(val)) {
+            const aVal = val as string[];
+            if (aVal.indexOf(c.matchValue) >= 0) {
+              matched = true;
+              continue;
+            }
           } else if (t.config.wildcard && val) {
             const sVal = val as string;
             if (sVal.indexOf(c.matchValue) >= 0) {
