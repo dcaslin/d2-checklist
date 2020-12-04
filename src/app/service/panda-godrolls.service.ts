@@ -97,6 +97,10 @@ export class PandaGodrollsService {
       i.searchText = i.searchText + ' is:goodrollpve';
       i.godRollInfo = i.godRollInfo + ' is:goodrollpve';
     }
+    if (i.pandaPve<1 && i.pandaPvp<1) {
+      i.searchText = i.searchText + ' is:notgoodroll';
+      i.godRollInfo = i.godRollInfo + ' is:notgoodroll';
+    }
     let needsFixing = false;
     let first = true;
     for (const s of i.sockets) {
@@ -123,6 +127,7 @@ export class PandaGodrollsService {
     }
     if (needsFixing) {
       i.searchText = i.searchText + ' is:fixme';
+      i.godRollInfo = i.godRollInfo + ' is:fixme';
     }
   }
 
