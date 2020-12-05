@@ -42,7 +42,7 @@ export class SeasonBreakdownDialogComponent {
 
   private static fillinTable(player: Player, chars: CharSeasons[]) {
     for (const charSeasons of chars) {
-      const charGear = player.gear.filter(g => g.classAllowed == charSeasons.char.classType);
+      const charGear = player.gear.filter(g => (g.classAllowed == charSeasons.char.classType && g.tier != 'Exotic') );
       for (const season of charSeasons._seasons.getValue()) {
         season.buckets = [];
         const seasonGear = charGear.filter(g => g.coveredSeasons && g.coveredSeasons.includes(season.season));
