@@ -149,7 +149,7 @@ export class GearService {
                 for (const item of items) {
                     item.copies = items.length;
                     let copies = null;
-                    if (item.type === ItemType.Armor && item.seasonalModSlot) {
+                    if (item.type === ItemType.Armor && item.seasonalModSlot != null) {
                         copies = this.findSimilarArmor(item, player, true, true);
                         item.dupesByEnergyAndSeason = copies.length;
                     }
@@ -377,24 +377,6 @@ export class GearService {
                     continue;
                 }
                 if (seasonAndBurn) {
-                    // if (i.specialModSockets == null || g.specialModSockets == null) {
-                    //     if (i.specialModSockets == null && g.specialModSockets != null) {
-                    //         continue;
-                    //     }
-                    //     if (i.specialModSockets != null && g.specialModSockets == null) {
-                    //         continue;
-                    //     }
-                    // } else {
-                    //     if (i.specialModSockets.length!= g.specialModSockets.length) {
-                    //         continue;
-                    //     }
-                    //     for (let cntr=0; cntr<i.specialModSockets.length; cntr++) {
-                    //         if (i.specialModSockets[cntr] != g.specialModSockets[cntr]) {
-                    //             continue;
-                    //         }
-                    //     }
-                    // }
-
 
                     if (i.seasonalModSlot != g.seasonalModSlot) {
                         continue;
