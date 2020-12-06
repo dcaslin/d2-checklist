@@ -613,11 +613,11 @@
           <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmor(i)">
             <fa-icon [icon]="iconService.falBolt"></fa-icon> By energy
           </button>
-          <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
+          <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot != null" mat-menu-item
             (click)="showSimilarArmorBySeason(i)">
             <fa-icon [icon]="iconService.falWheat"></fa-icon> By season
           </button>
-          <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot" mat-menu-item
+          <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot != null" mat-menu-item
             (click)="showSimilarArmorBySeasonAndBurn(i)">
             <fa-icon [icon]="iconService.falPlusSquare"></fa-icon> By season & energy
           </button>

@@ -200,13 +200,6 @@ export class GearComponent extends ChildComponent {
       displayTabs: [ItemType.Armor],
       grabValue: (x: InventoryItem) => x.energyType
     };
-    // const seasonConfig: ToggleConfig = {
-    //   title: 'Season',
-    //   debugKey: 'Seasonal mod slot',
-    //   icon: iconService.fasWheat,
-    //   displayTabs: [ItemType.Armor],
-    //   grabValue: (x: InventoryItem) => x.seasonalModSlot
-    // };
     const seasonConfig: ToggleConfig = {
       title: 'Season Mods',
       debugKey: 'Seasonal Mods',
