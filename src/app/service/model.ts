@@ -830,7 +830,7 @@ export class MilestoneStatus {
     readonly complete: boolean;
     readonly pct: number;
     readonly info: string;
-    readonly suppInfo: string[];
+    suppInfo: string[];
     readonly phases: boolean[];
     readonly locked: boolean;
     readonly tooLowPower: boolean;
@@ -1248,6 +1248,7 @@ export class Const {
     };
 
     public static readonly MISSION_ARTIFACT_KEY = '22222222';
+    public static readonly HERESY_KEY = '33333333';
     public static readonly UNKNOWN_BOOST = 0;
     public static readonly NO_BOOST = 1;
     public static readonly LOW_BOOST = 2;

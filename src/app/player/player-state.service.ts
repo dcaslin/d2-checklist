@@ -180,7 +180,7 @@ export class PlayerStateService {
     try {
       const x = await this.bungieService.getChars(platform.type, memberId,
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
-          'CharacterEquipment', 'ItemInstances', 'CharacterInventories','ProfileInventories',
+          'CharacterEquipment', 'ItemInstances', 'CharacterInventories', 'ProfileInventories',
           'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives'
           // , '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
@@ -207,7 +207,11 @@ export class PlayerStateService {
         this.filterChar = null;
       }
       this._player.next(x);
+      // this.bungieService.loadWeeklyPowerfulBounties(this._player);
+      // this.bungieService.observeUpdatePvpStreak(this._player);
+      // this.bungieService.observeUpdateAggHistoryAndScores(this._player, this.storageService.isDebug());
       this.bungieService.loadClans(this._player);
+      this.bungieService.loadActivityPsuedoMilestones(this._player);
       this.bungieService.observeUpdateAggHistory(this._player, this.storageService.isDebug());
     }
     finally {
