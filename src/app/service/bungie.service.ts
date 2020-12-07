@@ -12,7 +12,7 @@ import { filter, first, takeUntil } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { AuthInfo, AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, Mission, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -819,7 +819,7 @@ export class BungieService implements OnDestroy {
     }
 
     // TODO use this once it works on enough things to be worthwhile
-    
+
     // public async setTrackedState(membershipType: number, item: InventoryItem, tracked: boolean): Promise<boolean> {
     //     try {
     //         await this.postReq('Destiny2/Actions/Items/SetTrackedState/', {
@@ -885,5 +885,61 @@ export class BungieService implements OnDestroy {
         return resp;
     }
 
+
+    public loadActivityPsuedoMilestones(playerSubject: BehaviorSubject<Player>) {
+        const p = playerSubject.getValue();
+        if (!p) {
+            return;
+        }
+
+        // privacy will hide this
+        if (!p.characters[0].endWeek) {
+            return;
+        }
+
+        const ms1: MileStoneName = {
+            key: Const.HERESY_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Masterwork Armor',
+            pl: Const.LOW_BOOST,
+            name: 'Pit of Heresy',
+            desc: 'Complete the Pit of Heresy Dungeon',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(ms1);
+        p.milestoneList.sort((a, b) => {
+            if (a.pl < b.pl) { return 1; }
+            if (a.pl > b.pl) { return -1; }
+            if (a.rewards < b.rewards) { return 1; }
+            if (a.rewards > b.rewards) { return -1; }
+            if (a.name > b.name) { return 1; }
+            if (a.name < b.name) { return -1; }
+            return 0;
+          });
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.HERESY_KEY, false, 0, null, ['Loading...'], null, false, false);
+        // load empty while we wait, so it doesn't show checked
+        for (const c of p.characters) {
+            c.milestones[Const.HERESY_KEY] = empty1;
+        }
+        playerSubject.next(p);
+        for (const c of p.characters) {
+            this.loadActivityPsuedoMilestonesOnChar(playerSubject, c);
+        }
+        return playerSubject;
+    }
+
+
+    private async loadActivityPsuedoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
+        const dungeonActivitiesIncomplete = activities.filter(a => a.mode == 'Dungeon' && (!a.completed || !a.success));
+        const dungeonActivities = activities.filter(a => a.mode == 'Dungeon' && a.success && a.completed);
+        const done = dungeonActivities.length >= 1;
+        const mightHaveCheckpoint = dungeonActivitiesIncomplete.length >= 1;
+        const dungeonPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.HERESY_KEY, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, null, mightHaveCheckpoint ? ['May hold checkpoint'] : null, null, false, false);
+        c.milestones[Const.HERESY_KEY] = dungeonPsuedoMs;
+        p.next(p.getValue());
+    }
 
 }

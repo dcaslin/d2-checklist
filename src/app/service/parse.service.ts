@@ -1696,9 +1696,7 @@ export class ParseService {
                     entries: checkListItems,
                     hasDescs: hasDescs
                 };
-
                 checklists.push(checklist);
-                console.log(`${checklist.name} ${checklist.order}`);
             });
         }
 
@@ -1990,24 +1988,35 @@ export class ParseService {
         if (char && charPlugSetData) {
             const plugObjectives = charPlugSetData[char.characterId]?.plugs['2611374829'];
             if (plugObjectives?.length > 0) {
-                const obj = plugObjectives[0];
-                if (obj.plugObjectives?.length > 0) {
+                let obj = null;
+                // the artifact has a random set of plugs and we need to find one that discusses powerful rewards
+                for (const o of plugObjectives) {
+                    if (o.plugObjectives?.length > 0) {
+                        obj = o;
+                        break;
+                    }
+                }
+                // const obj = plugObjectives[0];
+                if (obj?.plugObjectives?.length > 0) {
                     const powerfulObj = obj.plugObjectives[0];
                     const total = powerfulObj.completionValue;
+                    const venatiks = milestonesByKey['2406589846'];
+
                     // they've unlocked crow's pinnacle
                     if (total > 2) {
                         // 2406589846
-                        const venatiks = milestonesByKey['2406589846'];
                         venatiks.pl = Const.HIGH_BOOST;
                         venatiks.rewards = 'Pinnacle Gear';
                     }
                     const powerfulDropsRemaining = powerfulObj.progress;
                     const progress = total - powerfulDropsRemaining;
                     const pct = progress / total;
-                    const suppInfo: string[] = [`${powerfulDropsRemaining} left`];
+                    const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
                     if (artifact.objectives?.length > 1) {
-                        suppInfo.push(`${artifact.objectives[0].percent}% Charged`);
-                        suppInfo.push(`${artifact.objectives[1].progress} stored`);
+                        const venatiksSupp = [];
+                        venatiksSupp.push(`${artifact.objectives[0].percent}% Charged`);
+                        venatiksSupp.push(`${artifact.objectives[1].progress} stored`);
+                        char.milestones['2406589846'].suppInfo = venatiksSupp;
                     }
 
                     if (milestonesByKey[Const.MISSION_ARTIFACT_KEY] == null) {
