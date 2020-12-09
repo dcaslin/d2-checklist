@@ -211,7 +211,7 @@ export class PlayerStateService {
       // this.bungieService.observeUpdatePvpStreak(this._player);
       // this.bungieService.observeUpdateAggHistoryAndScores(this._player, this.storageService.isDebug());
       this.bungieService.loadClans(this._player);
-      this.bungieService.loadActivityPsuedoMilestones(this._player);
+      this.bungieService.loadActivityPseudoMilestones(this._player);
       this.bungieService.observeUpdateAggHistory(this._player, this.storageService.isDebug());
     }
     finally {
