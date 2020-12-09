@@ -336,6 +336,7 @@ export class BungieService implements OnDestroy {
             new ActivityMode(7, 'All - PvE', 'All PvE'),
             new ActivityMode(5, 'All - PvP', 'All PvP'),
             new ActivityMode(4, 'Raid', 'Raid'),
+            new ActivityMode(82, 'Dungeon', 'Dungeon'),
             new ActivityMode(46, 'Nightfall', 'Scored Nightfall'),
             new ActivityMode(69, 'Competitive - PvP', 'Competitive PvP'),
             // new ActivityMode(66, 'Forge', 'Forge'),
@@ -500,8 +501,7 @@ export class BungieService implements OnDestroy {
         }
         // no powerful bounties avail
         if (powerfulBounties.length == 0) {
-            const psuedoMs = new MilestoneStatus(key, false, 0, null, ['Not available'], null, true, false);
-            return psuedoMs;
+            return new MilestoneStatus(key, false, 0, null, ['Not available'], null, true, false);
         } else if (powerfulBounties.length == 1) {
             const i = powerfulBounties[0];
             const complete = i.status == 'Already completed';
@@ -522,12 +522,12 @@ export class BungieService implements OnDestroy {
                     progress = bounty.aggProgress / 100;
                 }
             }
-            const psuedoMs = new MilestoneStatus(key, complete, progress, null,
+            const pseudoMs = new MilestoneStatus(key, complete, progress, null,
                 complete ? null : held ? ['Held'] : ['Not Held'], null, false, false);
-            return psuedoMs;
+            return pseudoMs;
         } else {
             if (!vendorFound) {
-                // const psuedoMs = new MilestoneStatus(key, false, 0, null,
+                // const pseudoMs = new MilestoneStatus(key, false, 0, null,
                 //     'Vendor not found', null);
                 return null;
             }
@@ -546,9 +546,9 @@ export class BungieService implements OnDestroy {
                 info += ', ' + held + ' held';
             }
             const allDone = complete === powerfulBounties.length;
-            const psuedoMs = new MilestoneStatus(key, allDone,
+            const pseudoMs = new MilestoneStatus(key, allDone,
                 complete / powerfulBounties.length, null, allDone ? null : [info], null, false, false);
-            return psuedoMs;
+            return pseudoMs;
         }
     }
 
@@ -886,7 +886,7 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public loadActivityPsuedoMilestones(playerSubject: BehaviorSubject<Player>) {
+    public loadActivityPseudoMilestones(playerSubject: BehaviorSubject<Player>) {
         const p = playerSubject.getValue();
         if (!p) {
             return;
@@ -909,6 +909,18 @@ export class BungieService implements OnDestroy {
             dependsOn: []
         };
         p.milestoneList.push(ms1);
+        const ms2: MileStoneName = {
+            key: Const.PROPHECY_KEY,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Pinnacle Gear',
+            pl: Const.HIGH_BOOST,
+            name: 'Prophecy',
+            desc: 'Complete the Prophecy Dungeon',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(ms2);
         p.milestoneList.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
             if (a.pl > b.pl) { return -1; }
@@ -925,20 +937,37 @@ export class BungieService implements OnDestroy {
         }
         playerSubject.next(p);
         for (const c of p.characters) {
-            this.loadActivityPsuedoMilestonesOnChar(playerSubject, c);
+            this.loadActivityPseudoMilestonesOnChar(playerSubject, c);
         }
         return playerSubject;
     }
 
 
-    private async loadActivityPsuedoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
-        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
-        const dungeonActivitiesIncomplete = activities.filter(a => a.mode == 'Dungeon' && (!a.completed || !a.success));
-        const dungeonActivities = activities.filter(a => a.mode == 'Dungeon' && a.success && a.completed);
-        const done = dungeonActivities.length >= 1;
-        const mightHaveCheckpoint = dungeonActivitiesIncomplete.length >= 1;
-        const dungeonPsuedoMs: MilestoneStatus = new MilestoneStatus(Const.HERESY_KEY, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, null, mightHaveCheckpoint ? ['May hold checkpoint'] : null, null, false, false);
-        c.milestones[Const.HERESY_KEY] = dungeonPsuedoMs;
+    private static setPseudoMilestoneFromActivities(c: Character, msKey: string, activities: Activity[], filterName: string) {
+        const filteredActivities = activities.filter(a => a.name?.indexOf(filterName) >= 0);
+        let done = false;
+        let mightHaveCheckpoint = false;
+        // iterate in descending order, if they have an unfinished instance, they might have a checkpoint
+        // if they're done, we're done looking
+        for (const a of filteredActivities) {
+            if (a.success && a.completed) {
+                done = true;
+                break;
+            } else {
+                mightHaveCheckpoint = true;
+            }
+        }
+        c.milestones[msKey] = new MilestoneStatus(msKey, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, null, mightHaveCheckpoint ? ['May hold checkpoint'] : null, null, false, false);
+    }
+
+    private async loadActivityPseudoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
+        // let d = new Date();
+        // d.setDate(d.getDate() - 40)
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);        
+        // extra filter just in case
+        const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
+        BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
+        BungieService.setPseudoMilestoneFromActivities(c, Const.HERESY_KEY, dungeonActivities, "Heresy");
         p.next(p.getValue());
     }
 

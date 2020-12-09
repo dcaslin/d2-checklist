@@ -362,7 +362,7 @@ export class ParseService {
     }
 
 
-    private addPsuedoMilestone(key: string, milestonesByKey: any, milestoneList: MileStoneName[]) {
+    private addPseudoMilestone(key: string, milestonesByKey: any, milestoneList: MileStoneName[]) {
         if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = this.destinyCacheService.cache.Milestone[key];
             if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
@@ -446,13 +446,13 @@ export class ParseService {
                     c.clanMilestones = clanMilestones;
                 } else {
                     // add this milestone if not already there
-                    this.addPsuedoMilestone(key, milestonesByKey, milestoneList);
+                    this.addPseudoMilestone(key, milestonesByKey, milestoneList);
                 }
 
                 // if they finished all, then force them in anyway, if the public milestones exist already this will do nothing
-                // this is needed to fix dissapperaing weekly milestones that are also not in the public milestone list
+                // this is needed to fix disappearing weekly milestones that are also not in the public milestone list
                 // weekly strikes
-                // this.addPsuedoMilestone('1437935813', milestonesByKey, milestoneList);
+                // this.addPseudoMilestone('1437935813', milestonesByKey, milestoneList);
 
                 let total = 0;
                 let complete = 0;
