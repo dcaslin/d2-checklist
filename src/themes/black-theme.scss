@@ -7,7 +7,7 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
 @mixin black-gear-tags($theme) {
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
-    
+
     .mat-input-element {
         caret-color: white;
     }
@@ -39,7 +39,7 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
 
     .mark-table > tbody > tr.upgrade > td,
     .mark-table > tbody > tr > td.upgrade {
-        background-color: #303D4D;
+        background-color: #303d4d;
     }
     .mark-table > tbody > tr.keep > td,
     .mark-table > tbody > tr > td.keep {
@@ -58,31 +58,39 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
     }
 
     button.upgrade {
-        background-color: #2C4674;
+        background-color: #2c4674;
     }
     button.keep {
-        background-color: #2C552D;
+        background-color: #2c552d;
     }
 
     button.infuse {
-        background-color: #9F5927;
+        background-color: #9f5927;
     }
     button.junk {
-        background-color: #84302F;
+        background-color: #84302f;
+    }
+
+    .nitro-consent-link button {
+        color: mat-color($primary, 300);
+        &:hover {
+            color: mat-color($accent);
+        }
     }
 
     .footer {
         color: mat-color($primary, lighter);
         background-color: mat-color($primary, 900);
-  
-        .links, .signature {
-          color: mat-color($primary, 400);
-          a {
-            color: mat-color($primary, 300);
-            &:hover {
-              color: mat-color($accent);
+
+        .links,
+        .signature {
+            color: mat-color($primary, 400);
+            a {
+                color: mat-color($primary, 300);
+                &:hover {
+                    color: mat-color($accent);
+                }
             }
-          }
         }
-      }
+    }
 }

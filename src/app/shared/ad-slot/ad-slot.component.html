@@ -5,44 +5,27 @@
         </ng-container>
         <ng-container *ngIf="adType=='top'">
             <div class="adTop" *ngIf="screenWidth<=1000">
-                <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!navigating">
-                    <d2c-ad-unit title="Mobile banner 300 x 50" adSlot="6797379468"
-                        adStyle="display:inline-block;width:300px;height:50px">
-                    </d2c-ad-unit>
-                </ng-container>
+                
+                <d2c-nitro-unit unitId="d2c-ad-nitro-mobile-top" title="Mobile banner 320 x 50" [width]="320" [height]='50'></d2c-nitro-unit>
             </div>
             <div class="adTopDesktop" *ngIf="screenWidth>1000 && screenWidth<=1439">
-                <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!navigating">
-                    <d2c-ad-unit title="Desktop banner 970 x 90" adSlot="6828141388"
-                        adStyle="display:inline-block;width:970px;height:90px">
-                    </d2c-ad-unit>
-                </ng-container>
+                <d2c-nitro-unit unitId="d2c-ad-nitro-desktop-top" title="Desktop banner 970 x 90" [width]="970" [height]='90'></d2c-nitro-unit>
             </div>
         </ng-container>
         <ng-container *ngIf="adType=='right'">
-            <div class="adRight" *ngIf="screenWidth>1439">
-                <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!navigating">
-                    <d2c-ad-unit title="Desktop right 300 x 600" adSlot="5274568322"
-                        adStyle="display:inline-block;width:300px;height:600px">
-                    </d2c-ad-unit>
-                </ng-container>
+            <div class="adRight" *ngIf="screenWidth>1500">
+                
+                <d2c-nitro-unit unitId="d2c-ad-nitro-desktop-right" title="Desktop right 300 x 600" [width]="300" [height]='600'></d2c-nitro-unit>
+            </div>
+            <div class="adRight" *ngIf="screenWidth>1439 && screenWidth<=1500">
+                <d2c-nitro-unit unitId="d2c-ad-nitro-desktop-thin-right" title="Desktop right 160 x 600" [width]="160" [height]='600'></d2c-nitro-unit>
             </div>
         </ng-container>
         <ng-container *ngIf="adType=='bottom' && screenWidth<=1439">
             <div class="adBottom">
-                <small class="adText">Advertisement</small>
-                <ng-container *ngIf="!navigating">
-                    <!-- 2020-D2C-mobile-footer -->
-                    <d2c-ad-unit title="Mobile footer 300 x 200" adSlot="4516838661"
-                        adStyle="display:inline-block;width:300px;height:200px">
-                    </d2c-ad-unit>
-                </ng-container>
+                
+                <d2c-nitro-unit unitId="d2c-ad-nitro-mobile-bottom" title="Mobile footer 300 x 250" [width]="300" [height]='250'></d2c-nitro-unit>
             </div>
         </ng-container>
     </ng-container>
-
-
 </ng-container>
