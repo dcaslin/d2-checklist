@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { environment as env, environment } from '@env/environment';
 
 @Component({
   selector: 'd2c-nitro-unit',
@@ -21,7 +22,7 @@ export class NitroUnitComponent implements OnInit, AfterViewInit {
     window['nitroAds'].createAd(this.unitId, {
       'refreshLimit': 10,
       'refreshTime': 90,
-      'demo': true,
+      'demo': !environment.production,
       'renderVisibleOnly': false,
       'refreshVisibleOnly': true,
       'sizes': [
