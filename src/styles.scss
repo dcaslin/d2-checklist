@@ -135,13 +135,6 @@
   flex-direction: column;
 }
 
-
-.adText {
-  opacity: 0.5;
-  margin-left: 2px;
-  text-align: center;
-}
-
 .half-opacity {
   opacity: 0.5;
 }
@@ -419,4 +412,23 @@ mat-form-field.full-width .mat-form-field-infix{
     display: -ms-inline-flexbox !important;
     display: inline-flex !important;
   }
+}
+
+.report-link {
+  top: -15px !important;
+  height: 15px !important;
+  padding-right: 5px !important;
+}
+
+.nitro-consent-link button{
+  background-color: rgba(0,0,0,0);
+  border: none;
+}
+
+.nitro-consent-link button::before{
+  content: "| ";
+}
+
+.nitro-consent-link a::before{
+  content: "| ";
 }

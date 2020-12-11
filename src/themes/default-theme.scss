@@ -1,11 +1,7 @@
 $d2c-primary: mat-palette($mat-blue-grey, 900);
 $d2c-accent: mat-palette($mat-amber, A400);
 
-$d2c-theme: mat-light-theme(
-    $d2c-primary,
-    $d2c-accent
-);
-
+$d2c-theme: mat-light-theme($d2c-primary, $d2c-accent);
 
 @mixin default-gear-tags($theme) {
     $primary: map-get($theme, primary);
@@ -13,7 +9,7 @@ $d2c-theme: mat-light-theme(
 
     .upgrade-color {
         color: hsl(200, 65%, 45%);
-        font-weight: bold;;
+        font-weight: bold;
     }
     .keep-color {
         color: hsl(103, 44%, 43%);
@@ -21,66 +17,75 @@ $d2c-theme: mat-light-theme(
     }
     .infuse-color {
         color: hsla(40, 81%, 48%, 1);
-        font-weight: bold;;
+        font-weight: bold;
     }
     .junk-color {
         color: hsla(0, 76%, 36%, 1);
-        font-weight: bold;;
+        font-weight: bold;
     }
 
     .fake-link {
-        color: rgba(0,0,0,.87);
+        color: rgba(0, 0, 0, 0.87);
     }
 
     .fake-link:hover {
         color: #ffc400 !important;
     }
-    
-    button.upgrade{
+
+    button.upgrade {
         background-color: hsl(200, 65%, 71%);
     }
-    .mark-table>tbody>tr.upgrade>td, .mark-table>tbody>tr>td.upgrade{
-
-        background-color: hsl(200, 65%, 91%); 
+    .mark-table > tbody > tr.upgrade > td,
+    .mark-table > tbody > tr > td.upgrade {
+        background-color: hsl(200, 65%, 91%);
     }
-    button.keep{
+    button.keep {
         background-color: hsl(103, 44%, 69%);
     }
-    .mark-table>tbody>tr.keep>td, .mark-table>tbody>tr>td.keep
-    {
+    .mark-table > tbody > tr.keep > td,
+    .mark-table > tbody > tr > td.keep {
         background-color: hsl(103, 44%, 89%);
     }
-    button.infuse{
+    button.infuse {
         background-color: hsl(50, 81%, 74%);
     }
-    .mark-table>tbody>tr.infuse>td, .mark-table>tbody>tr>td.infuse{
+    .mark-table > tbody > tr.infuse > td,
+    .mark-table > tbody > tr > td.infuse {
         background-color: hsl(50, 81%, 94%);
     }
-    button.junk{
+    button.junk {
         background-color: hsl(0, 43%, 71%);
     }
-    .mark-table>tbody>tr.junk>td, .mark-table>tbody>tr>td.junk{
+    .mark-table > tbody > tr.junk > td,
+    .mark-table > tbody > tr > td.junk {
         background-color: hsl(0, 43%, 91%);
     }
 
     // transparent icons are impossible to see on a light theme
     .bungie-icon {
-      background-color: #636363
+        background-color: #636363;
     }
 
-    
+    .nitro-consent-link button {
+        color: mat-color($primary, lighter);
+        &:hover {
+            color: mat-color($accent);
+        }
+    }
+
     .footer {
         color: mat-color($primary, lighter);
         background-color: mat-color($primary, darker);
-  
-        .links, .signature {
-         color: mat-color($primary, lighter);
-          a {
+
+        .links,
+        .signature {
             color: mat-color($primary, lighter);
-            &:hover {
-              color: mat-color($accent);
+            a {
+                color: mat-color($primary, lighter);
+                &:hover {
+                    color: mat-color($accent);
+                }
             }
-          }
         }
-      }
+    }
 }

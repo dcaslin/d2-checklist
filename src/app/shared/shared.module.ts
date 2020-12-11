@@ -45,6 +45,7 @@ import { FriendStarComponent } from './friend-star/friend-star.component';
 import { TriumphNameComponent } from './triumph-name/triumph-name.component';
 import { AdSlotComponent } from './ad-slot/ad-slot.component';
 import { AdUnitComponent } from './ad-slot/ad-unit/ad-unit.component';
+import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
 
 @NgModule({
   imports: [
@@ -93,7 +94,8 @@ import { AdUnitComponent } from './ad-slot/ad-unit/ad-unit.component';
     FriendStarComponent,
     TriumphNameComponent,
     AdSlotComponent,
-    AdUnitComponent],
+    AdUnitComponent,
+    NitroUnitComponent],
   exports: [
     SortIndicatorComponent,
     TriumphNameComponent,

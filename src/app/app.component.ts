@@ -1,6 +1,6 @@
 
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, HostListener } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, HostListener, AfterViewInit } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
@@ -24,7 +24,7 @@ import { PwaService } from './service/pwa.service';
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   private unsubscribe$: Subject<void> = new Subject<void>();
   navigating$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private lastPath$: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
           }
           if (x.debugmode != null) {
             this.debugmode.next(x.debugmode);
-        }
+          }
         });
 
     this.notificationService.notifyFeed.pipe(
@@ -223,6 +223,15 @@ export class AppComponent implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  ngAfterViewInit(): void {
+    if (window['NitroPayCCPA']) {
+      window['NitroPayCCPA'].init();
+    }
+    if (window['__cmp']) {
+      window['__cmp']('addConsentLink');
+    }
   }
 
   ngOnDestroy(): void {
