@@ -50,6 +50,7 @@ import { SettingsModule } from './settings';
 import { ChildComponent } from './shared/child.component';
 import { ContentVaultComponent } from './content-vault/content-vault.component';
 import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 
 
@@ -89,7 +90,7 @@ import { ContentVaultSearchComponent } from './content-vault-search/content-vaul
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent
   ],
   entryComponents: [
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent

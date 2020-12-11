@@ -56,6 +56,7 @@ import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
 import { ContentVaultComponent } from './content-vault/content-vault.component';
 import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 
 
 @Injectable()
@@ -99,6 +100,10 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: AboutComponent
+    }, {
+      path: 'privacy',
+      pathMatch: 'full',
+      component: PrivacyComponent
     }, {
       path: 'friends',
       pathMatch: 'full',
