@@ -921,6 +921,18 @@ export class BungieService implements OnDestroy {
             dependsOn: []
         };
         p.milestoneList.push(ms2);
+        const ms3: MileStoneName = {
+            key: Const.MASTER_EMPIRE_HUNT,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Pinnacle Gear',
+            pl: Const.HIGH_BOOST,
+            name: 'Master Empire Hunt',
+            desc: 'Complete a 1280 Empire Hunt',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(ms3);
         p.milestoneList.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
             if (a.pl > b.pl) { return -1; }

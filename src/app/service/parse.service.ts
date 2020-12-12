@@ -376,11 +376,12 @@ export class ParseService {
                     //     descRewards = 'Pinnacle Gear (Weak)';
                     // }
                 }
-                if (skipDesc.hash == 979073379) { // force exo challenge to pinnacle
-                    // this is actually unlocked by Europa Explorer III which is too much trouble to track b/c we'd have to load
-                    // the slow varik's vendor endpoint
-                    descRewards = 'Pinnacle Gear';
-                }
+                // if (skipDesc.hash == 979073379) { // force exo challenge to pinnacle    12/12/2020 this key is wrong? it is 
+                //  979073379 and that works fine 
+                //     // this is actually unlocked by Europa Explorer III which is too much trouble to track b/c we'd have to load
+                //     // the slow varik's vendor endpoint
+                //     descRewards = 'Pinnacle Gear';
+                // }
                 const ms2: MileStoneName = {
                     key: skipDesc.hash + '',
                     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
@@ -1702,13 +1703,13 @@ export class ParseService {
 
         checklists.sort(function (a, b) {
             if (a.order < b.order) {
-              return -1;
+                return -1;
             }
             if (a.order > b.order) {
-              return 1;
+                return 1;
             }
             return 0;
-          });
+        });
         return checklists;
     }
 
@@ -2014,6 +2015,9 @@ export class ParseService {
                     const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
                     if (artifact.objectives?.length > 1) {
                         const venatiksSupp = [];
+                        if (char.milestones['2406589846'].suppInfo?.length==1) {
+                            char.milestones['2406589846'].info = char.milestones['2406589846'].suppInfo[0];
+                        }
                         venatiksSupp.push(`${artifact.objectives[0].percent}% Charged`);
                         venatiksSupp.push(`${artifact.objectives[1].progress} stored`);
                         char.milestones['2406589846'].suppInfo = venatiksSupp;
@@ -2132,8 +2136,22 @@ export class ParseService {
                 milestonesByKey[ms.key] = ms;
                 msAdded = true;
             }
+            // --- FORCE ANY SPECIAL MILESTONES HERE
+            if (!milestoneList.find(x => x.key == '1713200903')) {
+                milestoneList.push({
+                    "key": "1713200903",
+                    "resets": weekEnd,
+                    "rewards": "Pinnacle Gear",
+                    "pl": 5,
+                    "name": "Weekly Exo Challenge",
+                    "desc": "Complete an Exo Challenge.",
+                    "hasPartial": false,
+                    "dependsOn": [
+                    ]
+                }
+                );
+            }
             if (msAdded) {
-
                 milestoneList.sort((a, b) => {
                     if (a.pl < b.pl) { return 1; }
                     if (a.pl > b.pl) { return -1; }
@@ -2175,9 +2193,34 @@ export class ParseService {
                             && resp.characterActivities.data[key]
                             && resp.characterActivities.data[key].availableActivities
                         ) {
+                            // do some weirdness for Master Empire hunts
+                            let hasAccessTo1280EmpireHunt = false;
+                            let incomplete1280Hunt = false;
                             for (const aa of resp.characterActivities.data[key].availableActivities) {
                                 availableActivities[aa.activityHash] = true;
+                                // while we're here check for Empire Hunt pinnacle.
+                                // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
+                                if (aa.recommendedLight == 1280) {
+                                    const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+                                    // is this an empire hunt
+                                    if (vDesc?.displayProperties?.name?.startsWith("Empire Hunt")) {
+                                        hasAccessTo1280EmpireHunt = true;
+                                        if (aa.challenges?.length > 0) {
+                                            for (const challenge of aa.challenges) {
+                                                if (challenge.objective?.objectiveHash == 1980717736) {
+                                                    // if this is here it shouldn't be complete, these disappear when complete
+                                                    if (!challenge.objective.complete) {
+                                                        incomplete1280Hunt = true;
+                                                        break;
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
+                            c.milestones[Const.MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
                         }
                         for (const missingKey of Object.keys(milestonesByKey)) {
                             if (c.milestones[missingKey] == null) {
