@@ -2014,12 +2014,23 @@ export class ParseService {
                     const pct = progress / total;
                     const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
                     if (artifact.objectives?.length > 1) {
+                        console.dir(artifact.objectives);
                         const venatiksSupp = [];
+                        const huntObj = artifact.objectives.find(x=>x.hash=='34632179');
+                        const storedObj = artifact.objectives.find(x=>x.hash=='4186537209');
+                        const chargeObj = artifact.objectives.find(x=>x.hash=='1514334696');
+                        if (huntObj!=null) {
+                            venatiksSupp.push(`Configured for Hunt`);
+                        }
+                        if (chargeObj!=null) {
+                            venatiksSupp.push(`${chargeObj.percent}% charged`);
+                        }
+                        if (storedObj!=null) {
+                            venatiksSupp.push(`${storedObj.progress} stored`);
+                        }
                         if (char.milestones['2406589846'].suppInfo?.length==1) {
                             char.milestones['2406589846'].info = char.milestones['2406589846'].suppInfo[0];
                         }
-                        venatiksSupp.push(`${artifact.objectives[0].percent}% Charged`);
-                        venatiksSupp.push(`${artifact.objectives[1].progress} stored`);
                         char.milestones['2406589846'].suppInfo = venatiksSupp;
                     }
 
