@@ -900,6 +900,7 @@ export class Character extends Target {
     readonly className: string;
     light: number;
     lightFraction?: Fraction;
+    basePLString?: string;
 
     dateLastPlayed: string;
     minutesPlayedThisSession: string;
