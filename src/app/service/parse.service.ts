@@ -182,6 +182,11 @@ export class ParseService {
                 const basePL = powerLevels.reduce((sume, el) => sume + el, 0) / powerLevels.length;
                 char.light = Math.floor(basePL) + artifactBonus;
                 char.lightFraction = ParseService.decimalToFraction(basePL + artifactBonus);
+                if (!char.lightFraction) {
+                    char.basePLString = `${Math.floor(basePL)} Base PL`;
+                } else {
+                    char.basePLString = `${Math.floor(basePL)} ${char.lightFraction.top}/${char.lightFraction.bottom} Base PL`;
+                }
             } else {
                 // this account is weird, don't worry about it. probaby got this on the clan page when using invalid account combos
             }
