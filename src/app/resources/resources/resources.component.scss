@@ -69,3 +69,16 @@
   padding-left: 5px;
   padding-right: 0em;
 }
+
+table.stat-table {
+  border: 0px !important;
+  padding: 0.2em !important;
+
+  & tr {
+    border: 0px !important;
+    background-color: unset !important;
+  }
+  & td {
+    font-size: smaller;
+  }
+}

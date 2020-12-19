@@ -1176,76 +1176,6 @@ export class ParseService {
                 }
             }
         }
-
-        const rolledPerks = [];
-
-        const itemSockets = resp.itemComponents[vendor.hash].sockets.data[index];
-        if (itemSockets != null) {
-            const socketArray = itemSockets.sockets;
-            for (let cntr = 0; cntr < socketArray.length; cntr++) {
-                const socketVal = socketArray[cntr];
-                if (iDesc.sockets == null) {
-                    continue;
-                }
-                const socketTemplate = iDesc.sockets.socketEntries[cntr];
-
-                if (socketTemplate != null) {
-
-                    // 2846385770
-                    if (socketTemplate.reusablePlugItems != null && socketTemplate.reusablePlugItems.length > 0) {
-                        const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
-                        if (perkDesc != null && perkDesc.itemTypeAndTierDisplayName === 'Exotic Intrinsic'
-                            && (iDesc.itemTypeAndTierDisplayName.indexOf('Exotic') >= 0)) {
-                            const perkSet = [];
-                            perkSet.push({
-                                hash: socketVal.plugHash,
-                                icon: perkDesc.displayProperties.icon,
-                                name: perkDesc.displayProperties.name,
-                                desc: perkDesc.displayProperties.description,
-                            });
-                            searchText += perkDesc.displayProperties.name + ' ';
-                            rolledPerks.push(perkSet);
-                        }
-                    }
-
-                    if (socketTemplate.randomizedPlugItems != null && socketTemplate.randomizedPlugItems.length > 0) {
-                        const perkSet = [];
-                        if (socketVal.reusablePlugs != null) {
-
-                            // ix this? might be ok, need to wait on xur, or do we even care about perks on vendor guns anymore?
-                            for (const perkHash of socketVal.reusablePlugHashes) {
-                                const perkDesc: any = this.destinyCacheService.cache.InventoryItem[perkHash];
-                                if (perkDesc != null) {
-                                    perkSet.push({
-                                        hash: perkHash,
-                                        icon: perkDesc.displayProperties.icon,
-                                        name: perkDesc.displayProperties.name,
-                                        desc: perkDesc.displayProperties.description,
-                                    });
-                                    searchText += perkDesc.displayProperties.name + ' ';
-                                }
-                            }
-
-                        } else if (socketVal.reusablePlugHashes == null) {
-                            const perkDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
-                            if (perkDesc != null) {
-                                perkSet.push({
-                                    hash: socketVal.plugHash,
-                                    icon: perkDesc.displayProperties.icon,
-                                    name: perkDesc.displayProperties.name,
-                                    desc: perkDesc.displayProperties.description,
-                                });
-                                searchText += perkDesc.displayProperties.name + ' ';
-                            }
-                        }
-                        if (perkSet.length > 0) {
-                            rolledPerks.push(perkSet);
-                        }
-                    }
-                }
-            }
-        }
-
         const objectives = [];
         if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
             for (const oHash of iDesc.objectives.objectiveHashes) {
@@ -1293,7 +1223,13 @@ export class ParseService {
         if (vendor.hash === '2190858386') {
             searchText += 'Xur ';
         }
+        let stats: InventoryStat[] = [];
+        const itemStats = resp.itemComponents[vendor.hash]?.stats?.data[index];
+        if (itemStats) {
+            stats = this.parseItemStats(itemStats, iDesc, itemType);
+        }
         searchText += iDesc.itemTypeAndTierDisplayName + ' ';
+
 
         return {
             vendor: vendor,
@@ -1308,9 +1244,10 @@ export class ParseService {
             itemTypeDisplayName: iDesc.itemTypeDisplayName,
             quantity: i.quantity,
             objectives: objectives,
-            rolledPerks: rolledPerks,
             values: values,
+            stats: stats,
             costs: costs,
+            classAllowed: iDesc.classType,
             searchText: searchText.toLowerCase()
         };
     }
@@ -3558,6 +3495,47 @@ export class ParseService {
         return name;
     }
 
+    private parseItemStats(instanceData: any, desc: any, type: ItemType) {
+        const stats: InventoryStat[] = [];
+        if (desc && instanceData) {
+            const statDict: { [hash: string]: InventoryStat; } = {};            
+            if (instanceData != null && instanceData.stats != null) {
+                Object.keys(instanceData.stats).forEach(key => {
+                    const val: any = instanceData.stats[key];
+                    const jDesc: any = this.destinyCacheService.cache.Stat[key];
+                    statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
+                        jDesc.displayProperties.description, val.value, null, jDesc.index);
+                });
+                const ostats = desc.stats.stats;
+                Object.keys(ostats).forEach(key => {
+                    const val: any = ostats[key];
+                    const baseValue = val.value;
+                    if (statDict[key] == null) {
+                        const jDesc: any = this.destinyCacheService.cache.Stat[key];
+                        statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
+                            jDesc.displayProperties.description, null, baseValue, jDesc.index);
+                    } else {
+                        statDict[key].baseValue = baseValue;
+                    }
+                });
+                Object.keys(statDict).forEach(key => {
+                    const val = statDict[key];
+                    // armor with a stat penalty can be zero for a meaningful stat
+                    if (val.baseValue > 0 || val.value > 0 || (val.value == 0 && type == ItemType.Armor)) {
+                        if (val.name != 'Defense' && val.name != 'Power' && val.name.length > 0) {
+                            stats.push(val);
+                        }
+                    }
+                });
+
+                stats.sort((a, b) => {
+                    return a.index > b.index ? 1 : a.index < b.index ? -1 : 0;
+                });
+            }
+        }
+        return stats;
+    }
+
 
     private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
@@ -3716,7 +3694,7 @@ export class ParseService {
 
 
             const specialModSockets: string[] = [];
-            const stats: InventoryStat[] = [];
+            let stats: InventoryStat[] = [];
             const sockets: InventorySocket[] = [];
             let mw: MasterworkInfo = null;
             const mods: InventoryPlug[] = [];
@@ -3753,41 +3731,8 @@ export class ParseService {
                     }
                 }
                 if (itemComp.stats != null && itemComp.stats.data != null) {
-                    const statDict: { [hash: string]: InventoryStat; } = {};
                     const instanceData = itemComp.stats.data[itm.itemInstanceId];
-                    if (instanceData != null && instanceData.stats != null) {
-                        Object.keys(instanceData.stats).forEach(key => {
-                            const val: any = instanceData.stats[key];
-                            const jDesc: any = this.destinyCacheService.cache.Stat[key];
-                            statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
-                                jDesc.displayProperties.description, val.value, null, jDesc.index);
-                        });
-                        const ostats = desc.stats.stats;
-                        Object.keys(ostats).forEach(key => {
-                            const val: any = ostats[key];
-                            const baseValue = val.value;
-                            if (statDict[key] == null) {
-                                const jDesc: any = this.destinyCacheService.cache.Stat[key];
-                                statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
-                                    jDesc.displayProperties.description, null, baseValue, jDesc.index);
-                            } else {
-                                statDict[key].baseValue = baseValue;
-                            }
-                        });
-                        Object.keys(statDict).forEach(key => {
-                            const val = statDict[key];
-                            // armor with a stat penalty can be zero for a meaningful stat
-                            if (val.baseValue > 0 || val.value > 0 || (val.value == 0 && type == ItemType.Armor)) {
-                                if (val.name != 'Defense' && val.name != 'Power' && val.name.length > 0) {
-                                    stats.push(val);
-                                }
-                            }
-                        });
-
-                        stats.sort((a, b) => {
-                            return a.index > b.index ? 1 : a.index < b.index ? -1 : 0;
-                        });
-                    }
+                    stats = this.parseItemStats(instanceData, desc, type);
                 }
 
                 if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {

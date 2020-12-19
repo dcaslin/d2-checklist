@@ -2,8 +2,9 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
-import { Character, ItemType, Player, SaleItem, SelectedUser } from '@app/service/model';
+import { Character, ClassAllowed, ItemType, Player, SaleItem, SelectedUser } from '@app/service/model';
 import { ParseService } from '@app/service/parse.service';
+import { PreferredStatService } from '@app/service/preferred-stat.service';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent as observableFromEvent, of as observableOf } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
@@ -31,13 +32,15 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
   public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  options = ['Bounties', 'Gear', 'Exchange', 'Cosmetics'];
+  options = ['Bounties','Weapons','Armor', 'Mods', 'Exchange', 'Cosmetics'];
   option = this.options[0];
 
   ItemType = ItemType;
+  ClassAllowed = ClassAllowed;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public parseService: ParseService,
+    public preferredStatService: PreferredStatService,
     public iconService: IconService,
     private route: ActivatedRoute, public router: Router) {
     super(storageService);
@@ -97,6 +100,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
       } else {
         this.char = c;
         const data = await this.bungieService.loadVendors(c);
+        this.preferredStatService.processSaleItems(data);
         this.parseService.applyTags(data);
         this.vendorData.next(data);
       }

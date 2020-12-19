@@ -206,7 +206,11 @@
         <div>
           <mat-card *ngIf="today.publicMilestones.nightfall as nightfall">
             <mat-card-header>
-              <mat-card-title>Nightfall</mat-card-title>
+              <mat-card-title>Nightfall
+
+                <ng-container *ngIf="nightfall.activities.length>0">: {{nightfall.activities[0].desc}}</ng-container>
+
+              </mat-card-title>
             </mat-card-header>
             <mat-card-content>
               <mat-list>

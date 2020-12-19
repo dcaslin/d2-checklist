@@ -574,7 +574,7 @@ export class BungieService implements OnDestroy {
     public async loadVendors(c: Character): Promise<SaleItem[]> {
         try {
             const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-                c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemSockets');
+                c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemStats'); //ItemSockets,ItemInstances
             const vendorData = this.parseService.parseVendorData(resp);
 
             return vendorData;
