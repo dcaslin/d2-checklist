@@ -115,12 +115,13 @@
         </tbody>
       </table>
     </ng-container>
-    <ng-container *ngIf="option=='Gear'">
+    <ng-container *ngIf="option=='Weapons'">
       <table class="tidy-auto-table itemTable" style="margin-top: 1em">
         <thead>
           <tr>
             <th class="item-icon-cell hide-mobile-table-cell"></th>
             <th>Name</th>
+            <th class="d-none d-md-table-cell">Random Stats</th>
             <th class="d-none d-md-table-cell">Vendor</th>
           </tr>
 
@@ -128,7 +129,121 @@
         <tbody>
           <ng-container *ngFor="let i of vendorData|async">
             <tr
-              *ngIf="((i.type==ItemType.Armor || i.type==ItemType.Weapon ) || i.type==ItemType.GearMod) && includeItem(i, filterText$|async)">
+              *ngIf="i.type==ItemType.Weapon && includeItem(i, filterText$|async)">
+              <td class="item-icon-cell">
+                <span *ngIf="i.icon!=null" class="item-icon"
+                  [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+              </td>
+              <td>
+                <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
+                <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                  target="_blank" rel="noopener">
+                  {{i.name}}
+                  <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
+                </a>
+                <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
+                <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
+                <div class="d-block d-md-none">{{i.vendor.name}}</div>
+
+              </td>            
+              <td class="d-none d-md-table-cell">
+                {{i.vendor.name}}
+                <span class="type-caption">Resets in {{ i.vendor.nextRefreshDate | amDifference: today |
+                  amDuration:'ms'}}</span>
+                <div *ngFor="let c of i.costs">
+                  <small>{{c.name}} {{c.quantity}}</small>
+                </div>
+                <div *ngIf="i.status!=null" class="warn-text">
+                  <small>{{i.status}}</small>
+                </div>
+              </td>
+
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-container *ngIf="option=='Armor'">
+      <table class="tidy-auto-table itemTable" style="margin-top: 1em">
+        <thead>
+          <tr>
+            <th class="item-icon-cell hide-mobile-table-cell"></th>
+            <th>Name</th>
+            <th class="d-none d-md-table-cell">Random Stats</th>
+            <th class="d-none d-md-table-cell">Vendor</th>
+          </tr>
+
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let i of vendorData|async">
+            <tr
+              *ngIf="i.type==ItemType.Armor && includeItem(i, filterText$|async)">
+              <td class="item-icon-cell">
+                <span *ngIf="i.icon!=null" class="item-icon"
+                  [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>
+              </td>
+              <td>
+                <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">{{i.name}} </ng-container>
+                <a [href]="i.lowLinks.mapLink" *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null"
+                  target="_blank" rel="noopener">
+                  {{i.name}}
+                  <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon>
+                </a>
+                <ng-container *ngIf="debugmode|async">{{i.hash}} {{i.status}}</ng-container><br>
+                <span class="type-caption">{{i.itemTypeAndTierDisplayName}}</span>
+                <div class="d-block d-md-none">{{i.vendor.name}}</div>
+
+              </td>
+              <td class="d-none d-md-table-cell">
+                <div *ngIf="i.preferredStatPoints>0 && i.stats">
+                  <table class="stat-table" *ngIf="i.type==ItemType.Armor">
+                    <tbody>
+                      <tr>
+                        <td colspan="2">
+                          {{i.preferredStatPoints}} / {{i.totalStatPoints}} pref pts
+                        </td>
+                      </tr>
+                      <ng-container *ngFor="let stat of i.stats">
+                        <tr *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">                          
+                          <td>{{stat.name}}</td>
+                          <td>{{stat.value}}</td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                 
+                </div> 
+              </td>
+              <td class="d-none d-md-table-cell">
+                {{i.vendor.name}}
+                <span class="type-caption">Resets in {{ i.vendor.nextRefreshDate | amDifference: today |
+                  amDuration:'ms'}}</span>
+                <div *ngFor="let c of i.costs">
+                  <small>{{c.name}} {{c.quantity}}</small>
+                </div>
+                <div *ngIf="i.status!=null" class="warn-text">
+                  <small>{{i.status}}</small>
+                </div>
+              </td>
+
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </ng-container>
+    <ng-container *ngIf="option=='Mods'">
+      <table class="tidy-auto-table itemTable" style="margin-top: 1em">
+        <thead>
+          <tr>
+            <th class="item-icon-cell hide-mobile-table-cell"></th>
+            <th>Name</th>
+            <th class="d-none d-md-table-cell">Vendor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let i of vendorData|async">
+            <tr
+              *ngIf="i.type==ItemType.GearMod && includeItem(i, filterText$|async)">
               <td class="item-icon-cell">
                 <span *ngIf="i.icon!=null" class="item-icon"
                   [style.background-image]="'url(//www.bungie.net' +i.icon + ')'"></span>

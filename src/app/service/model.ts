@@ -247,7 +247,10 @@ export interface SaleItem {
     itemTypeDisplayName: string;
     quantity: number;
     objectives: ItemObjective[];
-    rolledPerks: ItemPerks[][];
+    stats: InventoryStat[];
+    preferredStatPoints?: number;
+    totalStatPoints?: number;
+    classAllowed: ClassAllowed;
     values: NameQuantity[];
     costs: NameQuantity[];
     searchText: string;

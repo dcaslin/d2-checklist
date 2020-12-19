@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Player, ItemType, InventoryStat, ClassAllowed, DestinyClasses } from './model';
+import { ClassAllowed, InventoryStat, ItemType, Player, SaleItem } from './model';
 
 const PREF_STATS_KEY = 'preferred-armor-stats';
 @Injectable({
@@ -89,6 +89,26 @@ export class PreferredStatService {
       return cur.stats[destinyClass][stat.name];
     }
     return false;
+  }
+
+
+  public processSaleItems(items: SaleItem[]) {
+    
+    for (const i of items) {
+      if (i.type !== ItemType.Armor) {
+        continue;
+      }
+      let prefPts = 0;
+      let totalPts = 0;
+      for (const stat of i.stats) {
+        if (this.isPreferred(ClassAllowed[i.classAllowed], stat, false)) {
+          prefPts += stat.value;
+        }
+        totalPts += stat.value;
+      }
+      i.preferredStatPoints = prefPts;
+      i.totalStatPoints = totalPts;
+    }
   }
 
   public processGear(player: Player) {
