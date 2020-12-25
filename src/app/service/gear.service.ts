@@ -357,8 +357,11 @@ export class GearService {
         return copies;
     }
 
-    public findSimilarArmor(i: InventoryItem, player: Player, season?: boolean, seasonAndBurn?: boolean): InventoryItem[] {
+    public findSimilarArmor(i: InventoryItem, player: Player, season?: boolean, burn?: boolean): InventoryItem[] {
         const copies = [i];
+        if (i.tier!='Legendary') {
+            return [];
+        }
         for (const g of player.gear) {
             if (g.id == i.id) {
                 continue;
@@ -376,11 +379,10 @@ export class GearService {
                 if (i.tier != g.tier) {
                     continue;
                 }
-                if (seasonAndBurn) {
-
-                    if (i.seasonalModSlot != g.seasonalModSlot) {
-                        continue;
-                    }
+                if (burn) {
+                    // if (i.seasonalModSlot != g.seasonalModSlot) {
+                    //     continue;
+                    // }
                     if (i.energyType != g.energyType) {
                         continue;
                     }

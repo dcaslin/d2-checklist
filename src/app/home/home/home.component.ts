@@ -50,7 +50,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
+
   hideAnnouncement = true;
+  bountiesExpanded = true;
 
   selectedPlatform: Platform;
   gamerTag: string;
@@ -60,6 +62,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   onHideAnnouncement() {
     this.hideAnnouncement = true;
     localStorage.setItem('hide-announcement-content-vault', 'true');
+  }
+
+  onToggleBounties(val: boolean) {
+    this.bountiesExpanded = val;
+    localStorage.setItem('expand-bounties', val.toString());
   }
 
   constructor(
@@ -79,6 +86,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       this.manifestVersion = this.destinyCacheService.cache.version;
     }
     this.hideAnnouncement = 'true' === localStorage.getItem('hide-announcement-content-vault');
+    this.bountiesExpanded = 'true' === localStorage.getItem('expand-bounties');
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
@@ -139,6 +147,26 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   onGtChange() {
     this.storageService.setItem('defaultgt', this.gamerTag);
+  }
+
+  removeActivitySuffix(name: string) {
+    if (name==null) {
+      return null;
+    }
+    const spot = name.lastIndexOf(':');
+    if (spot>0) {
+      return name.substring(0, spot);
+    } else {
+      return name;
+    }
+  }
+
+  removeActivityPrefixes(name: string) {
+    if (name==null) {
+      return null;
+    }
+    const parts = name.split(':');
+    return parts[parts.length-1].trim();
   }
 
   showBurns(msa: MilestoneActivity) {
