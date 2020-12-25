@@ -742,7 +742,7 @@ export class ParseService {
 
     }
 
-    private parseModifier(hash: string): NameDesc {
+    public parseModifier(hash: string): NameDesc {
         const jDesc = this.destinyCacheService.cache.ActivityModifier[hash];
         let name: string = null;
         let desc: string = null;
@@ -1607,7 +1607,6 @@ export class ParseService {
         });
         return returnMe;
     }
-
 
     private buildMilestoneActivity(aa: any): MilestoneActivity {
         const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];

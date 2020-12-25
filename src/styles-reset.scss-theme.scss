@@ -114,7 +114,7 @@
     color: mat-color($foreground, secondary-text);
   }
 
-  .simple-darker-caption-no-margin {
+  .simple-caption-darker-no-margin {
     font-size: smaller;
     color: mat-color($foreground, secondary-text);
   }
@@ -122,6 +122,11 @@
   .simple-caption-no-margin {
     font-size: smaller;
     font-weight: lighter;
+    color: mat-color($foreground, secondary-text);
+  }
+  
+  .simple-caption-darker-no-margin {
+    font-size: smaller;
     color: mat-color($foreground, secondary-text);
   }
 
