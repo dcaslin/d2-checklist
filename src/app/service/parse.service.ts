@@ -1373,7 +1373,7 @@ export class ParseService {
         }
     }
 
-    public parsePublicMilestones(resp: any): PublicMilestonesAndActivities {
+    public parsePublicMilestones(resp: any, sampleProfile: any): PublicMilestonesAndActivities {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
@@ -1485,7 +1485,7 @@ export class ParseService {
                     rewards = '???';
                 }
             }
-            if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crype
+            if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
                 // rewards = 'Pinnacle Gear';
                 rewards = 'Pinnacle Gear';
             } else if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
@@ -1524,6 +1524,31 @@ export class ParseService {
             }
             returnMe.push(pushMe);
         }
+
+        const empireHunts: MilestoneActivity[] = [];
+        const empireHuntKeys: string[] = [];
+
+        if (sampleProfile?.characterActivities?.data) {
+            for (const key of Object.keys(sampleProfile.characterActivities.data)) {
+                const charAct = sampleProfile.characterActivities.data[key];
+                if (charAct?.availableActivities?.length > 0) {
+                    for (const aa of charAct.availableActivities) {
+                        const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+                        if (vDesc?.displayProperties?.name?.startsWith("Empire Hunt")) {  
+                            if (empireHuntKeys.includes(aa.activityHash)) {
+                                continue;
+                            }
+                            if (aa.recommendedLight<1150) { 
+                                continue;
+                            }
+                            empireHuntKeys.push(aa.activityHash);
+                            empireHunts.push(this.buildMilestoneActivity(aa));
+                        }
+                    }
+                }
+            }
+        }
+
         returnMe.sort((a, b) => {
             if (a.pl < b.pl) { return 1; }
             if (a.pl > b.pl) { return -1; }
@@ -1541,13 +1566,35 @@ export class ParseService {
                 weekStart = moment(m.start);
             }
         }
-        return {
+        const pmsa: PublicMilestonesAndActivities = {
             publicMilestones: returnMe,
             crucible: returnMe.find(x => x.hash == '3312774044'),
             nightfall: returnMe.find(x => x.hash == '2029743966'),
             strikes: returnMe.find(x => x.hash == '1437935813'),
+            empireHunts,
             weekStart: weekStart
         };
+
+        if (pmsa.nightfall?.activities) {
+            pmsa.nightfall.activities.sort((a, b) => {
+                const mla = a?.modifiers?.length;
+                const mlb = b?.modifiers?.length;
+                if (mla>mlb) { return -1;}
+                if (mla<mlb) { return 1;}
+                return 0;
+            });
+        }
+        if (pmsa.empireHunts) {
+            pmsa.empireHunts.sort((a, b) => {
+                const mla = a?.modifiers?.length;
+                const mlb = b?.modifiers?.length;
+                if (mla>mlb) { return -1;}
+                if (mla<mlb) { return 1;}
+                return 0;
+            });
+        }
+
+        return pmsa;
     }
 
     public parseActivities(a: any[]): Activity[] {
@@ -1559,6 +1606,31 @@ export class ParseService {
             }
         });
         return returnMe;
+    }
+
+
+    private buildMilestoneActivity(aa: any): MilestoneActivity {
+        const desc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
+        if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
+            return null;
+        }
+        const modifiers: NameDesc[] = [];
+        if (aa.modifierHashes && aa.modifierHashes.length > 0) {
+            for (const modHash of aa.modifierHashes) {
+                const mod: NameDesc = this.parseModifier(modHash);
+                modifiers.push(mod);
+            }
+        }
+        const msa: MilestoneActivity = {
+            hash: aa.activityHash,
+            name: desc.displayProperties.name,
+            desc: desc.displayProperties.description,
+            ll: aa.recommendedLight,
+            tier: aa.difficultyTier,
+            icon: desc.displayProperties.icon,
+            modifiers: modifiers
+        };
+        return msa;
     }
 
     private parseProfileChecklists(resp: any, contentVaultOnly: boolean): Checklist[] {
@@ -1956,7 +2028,6 @@ export class ParseService {
                     const pct = progress / total;
                     const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
                     if (artifact.objectives?.length > 1) {
-                        console.dir(artifact.objectives);
                         const venatiksSupp = [];
                         const huntObj = artifact.objectives.find(x=>x.hash=='34632179');
                         const storedObj = artifact.objectives.find(x=>x.hash=='4186537209');
@@ -2193,7 +2264,11 @@ export class ParseService {
                                     } else {
                                         activityAvailable = true;
                                     }
+                                    
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
+                                    if (!activityAvailable || c.notReady) {
+                                        console.dir(c.milestones[missingKey]);
+                                    }
                                 }
                             }
                         }

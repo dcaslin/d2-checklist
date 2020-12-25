@@ -269,6 +269,7 @@ export interface PublicMilestonesAndActivities {
     crucible: PublicMilestone;
     strikes: PublicMilestone;
     nightfall: PublicMilestone;
+    empireHunts: MilestoneActivity[];
     weekStart: Moment;
 }
 

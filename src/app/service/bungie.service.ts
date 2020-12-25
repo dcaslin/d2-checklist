@@ -601,7 +601,8 @@ export class BungieService implements OnDestroy {
         }
         try {
             const resp = await this._publicMsHack();
-            const reply = this.parseService.parsePublicMilestones(resp);
+            const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities,CharacterProgressions');
+            const reply = this.parseService.parsePublicMilestones(resp, resp2);
             this.publicMilestonesAndActivities = reply;
             return reply;
         } catch (err) {

@@ -1,7 +1,6 @@
-
-      <div class="top-section">
-        <div class="normal-top-section">
-          <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
+<div class="top-section">
+  <div class="normal-top-section">
+    <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
               <div class="announcement-body">
                 Check out the new <a class="no-break" routerLink="/content-vault"> <fa-icon  class="warn-text" [icon]="iconService.fadHourGlassHalf"></fa-icon><span class="link-text">Content Vault page</span></a>! 
               </div>
@@ -10,324 +9,348 @@
               </div>
             </div> -->
 
-          <div>
-            <div *ngIf="debugmode|async" style="margin-bottom: 25px; text-align: left">
-              <div>Version: {{version}}</div>
-              <div>Manifest: {{manifestVersion}}</div>
-              <div class="d-block d-sm-none">Screen: XS</div>
-              <div class="d-none d-sm-block d-md-none">Screen: SM</div>
-              <div class="d-none d-md-block d-lg-none">Screen: MD</div>
-              <div class="d-none d-lg-block d-xl-none">Screen: LG</div>
-              <div class="d-none d-xl-block">Screen: XL</div>
-            </div>
-            <div class="searchRow">
-              <mat-form-field class="searchField searchPlatform">
-                <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform"
-                  (selectionChange)="onPlatformChange()">
-                  <mat-select-trigger>
-                    <fa-icon [icon]="selectedPlatform.icon"></fa-icon>
-                    <span class="d-none d-md-inline pad-left">{{selectedPlatform.name }}</span>
-                  </mat-select-trigger>
-                  <mat-option *ngFor="let p of platforms" [value]="p">
-                    <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field class="searchField searchGt" class="gt">
-                <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
-                  (change)="onGtChange()">
-              </mat-form-field>
-              <button mat-mini-fab class="searchField" (click)="routeSearch()" color="primary">
-                <mat-icon>search</mat-icon>
-              </button>
-            </div>
-          </div>
-          <div class="home-button-row">
-            <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2CwNvcz">
-              <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Grimoire Anthology, Vol III (pre-order)
-            </a>
-            <div class="spacer"></div>
-            <a mat-raised-button class="home-button" color="primary" target="_blank" href="https://imgur.com/a/dUlLzny">
-              <fa-icon [icon]="iconService.fasVideo"></fa-icon> Video tutorials
-            </a>
-          </div>
+    <div>
+      <div *ngIf="debugmode|async" style="margin-bottom: 25px; text-align: left">
+        <div>Version: {{version}}</div>
+        <div>Manifest: {{manifestVersion}}</div>
+        <div class="d-block d-sm-none">Screen: XS</div>
+        <div class="d-none d-sm-block d-md-none">Screen: SM</div>
+        <div class="d-none d-md-block d-lg-none">Screen: MD</div>
+        <div class="d-none d-lg-block d-xl-none">Screen: LG</div>
+        <div class="d-none d-xl-block">Screen: XL</div>
+      </div>
+      <div class="searchRow">
+        <mat-form-field class="searchField searchPlatform">
+          <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
+            <mat-select-trigger>
+              <fa-icon [icon]="selectedPlatform.icon"></fa-icon>
+              <span class="d-none d-md-inline pad-left">{{selectedPlatform.name }}</span>
+            </mat-select-trigger>
+            <mat-option *ngFor="let p of platforms" [value]="p">
+              <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="searchField searchGt" class="gt">
+          <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
+            (change)="onGtChange()">
+        </mat-form-field>
+        <button mat-mini-fab class="searchField" (click)="routeSearch()" color="primary">
+          <mat-icon>search</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="home-button-row">
+      <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2CwNvcz">
+        <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Grimoire Anthology, Vol III (pre-order)
+      </a>
+      <div class="spacer"></div>
+      <a mat-raised-button class="home-button" color="primary" target="_blank" href="https://imgur.com/a/dUlLzny">
+        <fa-icon [icon]="iconService.fasVideo"></fa-icon> Video tutorials
+      </a>
+    </div>
 
+  </div>
+</div>
+<div class="center-spinner" *ngIf="(loading|async)===true">
+  <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+</div>
+<p *ngIf="!(isSignedOn|async)">
+  <button mat-stroked-button (click)="logon()">
+    <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In
+  </button> to see bounty availabilities (this requires a private endpoint that doesn't work otherwise)
+</p>
+<mat-card *ngIf="isSignedOn|async">
+
+
+
+
+  <mat-card-header>
+    <mat-card-title>
+      Bounties
+    </mat-card-title>
+    <mat-card-subtitle>
+      Currently held and available bounties for the selected character, grouped by shared objectives.
+      <div>
+        <button mat-icon-button (click)="refreshMe.next()">
+          <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(playerLoading|async)===true"></fa-icon>
+        </button>
+        <mat-button-toggle-group *ngIf="player|async as p" #chargroup="matButtonToggleGroup" [value]="currentChar"
+          (change)="char.next($event.value)">
+          <mat-button-toggle *ngFor="let c of p.characters" [value]="c">
+            {{c.className}}<span class="d-none d-md-inline"> - {{c.light}}</span>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </mat-card-subtitle>
+  </mat-card-header>
+
+
+  <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' 
+    (opened)="onToggleBounties(true)"  (closed)="onToggleBounties(false)">
+    <mat-expansion-panel-header style="position: absolute; right: 0px; top: 0px;"></mat-expansion-panel-header>
+
+
+    <mat-card-content class="grid-parent" style="margin-top: 10px">
+      <div class="dashed-border">
+        <div class="bounty-title-container">
+          <div class="bounty-title">
+            Sets Currently Held
+            <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="_hideCompletePursuits"
+              (change)="hideCompletePursuits.next($event.checked)">
+              Hide Completed
+            </mat-checkbox>
+          </div>
+          <div class="bounty-subtitle" *ngIf="char|async as c">
+            <a mat-button [routerLink]="['/',c.membershipType, c.membershipId,'pursuits','bounties']">
+              <fa-icon [icon]="iconService.farSearch"></fa-icon>
+              See all
+            </a>
+          </div>
+        </div>
+        <div class="bounty-button-row loading-spinner" *ngIf="(playerLoading|async)===true">
+          <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
+            [fixedWidth]="true"></fa-icon>
+        </div>
+        <div class="bounty-button-row" *ngIf="!(playerLoading|async) && playerBountySets|async as bs">
+          <div *ngIf="bs.length==0 && !(playerLoading|async)" class="button-replacement simple-caption-no-margin">
+            No groups of bounties held right now.
+          </div>
+          <ng-container *ngFor="let b of bs; let i = index">
+            <button mat-stroked-button (click)="showBountySet(b)"
+              [matBadgeSize]="(showAllPlayerBounties|async)?'small':'medium'" matBadgeColor=""
+              *ngIf="i < BOUNTY_CUTOFF || (showAllPlayerBounties|async)" [matBadge]="b.bounties.length">
+              {{b.tag| titlecase}}
+            </button>
+          </ng-container>
+          <button mat-stroked-button *ngIf="!(showAllPlayerBounties|async) && bs.length > BOUNTY_CUTOFF"
+            (click)="showAllPlayerBounties.next(true)">
+            <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+          </button>
+          <button mat-stroked-button *ngIf="showAllPlayerBounties|async" (click)="showAllPlayerBounties.next(false)">
+            <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
+          </button>
         </div>
       </div>
-      <div class="center-spinner" *ngIf="(loading|async)===true">
-        <mat-spinner class="loading" class="center-spinner"></mat-spinner>
-      </div>
-      <p *ngIf="!(isSignedOn|async)">
-        <button mat-stroked-button (click)="logon()">
-          <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In
-        </button> to see bounty availabilities (this requires a private endpoint that doesn't work otherwise)
-      </p>
-      <mat-card *ngIf="isSignedOn|async">
-        <mat-card-header>
-          <mat-card-title>
-            Bounties
-          </mat-card-title>
-          <mat-card-subtitle>
-            Currently held and available bounties for the selected character, grouped by shared objectives.
-            <div>
-              <button mat-icon-button (click)="refreshMe.next()">
-                <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(playerLoading|async)===true"></fa-icon>
-              </button>
-              <mat-button-toggle-group *ngIf="player|async as p" #chargroup="matButtonToggleGroup" [value]="currentChar"
-                (change)="char.next($event.value)">
-                <mat-button-toggle *ngFor="let c of p.characters" [value]="c">
-                  {{c.className}}<span class="d-none d-md-inline"> - {{c.light}}</span>
-                </mat-button-toggle>
-              </mat-button-toggle-group>
-            </div>
-          </mat-card-subtitle>
-        </mat-card-header>
-        <mat-card-content class="grid-parent" style="margin-top: 10px">
-          <div class="dashed-border">
-            <div class="bounty-title-container">
-              <div class="bounty-title">
-                Sets Currently Held
-                <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="_hideCompletePursuits"
-                  (change)="hideCompletePursuits.next($event.checked)">
-                  Hide Completed
-                </mat-checkbox>
-              </div>
-              <div class="bounty-subtitle" *ngIf="char|async as c">
-                <a mat-button [routerLink]="['/',c.membershipType, c.membershipId,'pursuits','bounties']">
-                  <fa-icon [icon]="iconService.farSearch"></fa-icon>
-                  See all
-                </a>
-              </div>
-            </div>
-            <div class="bounty-button-row loading-spinner" *ngIf="(playerLoading|async)===true">
-              <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
-                [fixedWidth]="true"></fa-icon>
-            </div>
-            <div class="bounty-button-row" *ngIf="!(playerLoading|async) && playerBountySets|async as bs">
-              <div *ngIf="bs.length==0 && !(playerLoading|async)" class="button-replacement simple-caption-no-margin">
-                No groups of bounties held right now.
-              </div>
-              <ng-container *ngFor="let b of bs; let i = index">
-                <button mat-stroked-button (click)="showBountySet(b)"
-                  [matBadgeSize]="(showAllPlayerBounties|async)?'small':'medium'" matBadgeColor=""
-                  *ngIf="i < BOUNTY_CUTOFF || (showAllPlayerBounties|async)" [matBadge]="b.bounties.length">
-                  {{b.tag| titlecase}}
-                </button>
-              </ng-container>
-              <button mat-stroked-button *ngIf="!(showAllPlayerBounties|async) && bs.length > BOUNTY_CUTOFF"
-                (click)="showAllPlayerBounties.next(true)">
-                <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
-              </button>
-              <button mat-stroked-button *ngIf="showAllPlayerBounties|async"
-                (click)="showAllPlayerBounties.next(false)">
-                <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
-              </button>
-            </div>
-          </div>
-          <div class="dashed-border">
-            <div class="bounty-title-container">
-              <div class="bounty-title">
-                Sets For Sale
+      <div class="dashed-border">
+        <div class="bounty-title-container">
+          <div class="bounty-title">
+            Sets For Sale
 
-              </div>
-              <div class="bounty-subtitle" *ngIf="char|async as c">
-                <a mat-button [routerLink]="['/vendors',c.id,'Bounties']">
-                  <fa-icon [icon]="iconService.farSearch"></fa-icon>
-                  See all
-                </a>
+          </div>
+          <div class="bounty-subtitle" *ngIf="char|async as c">
+            <a mat-button [routerLink]="['/vendors',c.id,'Bounties']">
+              <fa-icon [icon]="iconService.farSearch"></fa-icon>
+              See all
+            </a>
+          </div>
+        </div>
+        <div class="bounty-button-row loading-spinner" *ngIf="(vendorBountiesLoading|async) || (playerLoading|async)">
+          <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
+            [fixedWidth]="true"></fa-icon>
+        </div>
+        <div class="bounty-button-row"
+          *ngIf="!((vendorBountiesLoading|async) || (playerLoading|async)) && vendorBountySets|async as bs">
+          <ng-container *ngFor="let b of bs; let i = index">
+            <button mat-stroked-button (click)="showBountySet(b)"
+              [matBadgeSize]="(showAllVendorBounties|async)?'small':'medium'" matBadgeColor=""
+              *ngIf="i < BOUNTY_CUTOFF || (showAllVendorBounties|async)" [matBadge]="b.bounties.length">
+              {{b.tag| titlecase}}
+            </button>
+          </ng-container>
+          <button mat-stroked-button *ngIf="!(showAllVendorBounties|async) && bs.length > BOUNTY_CUTOFF"
+            (click)="showAllVendorBounties.next(true)">
+            <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+          </button>
+          <button mat-stroked-button *ngIf="showAllVendorBounties|async" (click)="showAllVendorBounties.next(false)">
+            <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="dashed-border">
+        <div class="bounty-title-container">
+          <div class="bounty-title">
+            Shopping List
+          </div>
+          <div class="bounty-subtitle" *ngIf="(shoppingList|async).length>0">
+            <a mat-button (click)="clearShoppingItems()">
+              <fa-icon [icon]="iconService.farTimesSquare"></fa-icon>
+              Clear All
+            </a>
+          </div>
+        </div>
+        <div class="bounty-button-row loading-spinner" *ngIf="(vendorBountiesLoading|async) || (playerLoading|async)">
+          <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
+            [fixedWidth]="true"></fa-icon>
+        </div>
+        <div class="bounty-button-row"
+          *ngIf="!((vendorBountiesLoading|async) || (playerLoading|async)) && vendorBountySets|async as bs">
+          <div *ngIf="(shoppingList|async).length==0" class="button-replacement simple-caption-no-margin">
+            Click on bounties for sale to add them here.
+          </div>
+          <div *ngFor="let i of shoppingList|async" class="shopping-row">
+            <div class="shopping-cell">
+              <div class="shopping-icon" *ngIf="i.icon!=null"
+                [style.background-image]="'url(//www.bungie.net' + i.icon + ')'">
               </div>
             </div>
-            <div class="bounty-button-row loading-spinner"
-              *ngIf="(vendorBountiesLoading|async) || (playerLoading|async)">
-              <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
-                [fixedWidth]="true"></fa-icon>
+            <div class="shopping-cell" style="flex-grow: 1; flex-shrink: 1;">
+              <span [matTooltip]="i.desc" [class.shopping-done]="i.status=='Already held'">
+                {{i.vendor.name}} - {{i.name}}
+              </span>
             </div>
-            <div class="bounty-button-row"
-              *ngIf="!((vendorBountiesLoading|async) || (playerLoading|async)) && vendorBountySets|async as bs">
-              <ng-container *ngFor="let b of bs; let i = index">
-                <button mat-stroked-button (click)="showBountySet(b)"
-                  [matBadgeSize]="(showAllVendorBounties|async)?'small':'medium'" matBadgeColor=""
-                  *ngIf="i < BOUNTY_CUTOFF || (showAllVendorBounties|async)" [matBadge]="b.bounties.length">
-                  {{b.tag| titlecase}}
-                </button>
-              </ng-container>
-              <button mat-stroked-button *ngIf="!(showAllVendorBounties|async) && bs.length > BOUNTY_CUTOFF"
-                (click)="showAllVendorBounties.next(true)">
-                <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
-              </button>
-              <button mat-stroked-button *ngIf="showAllVendorBounties|async"
-                (click)="showAllVendorBounties.next(false)">
-                <fa-icon [icon]="iconService.falMinusSquare"></fa-icon>
-              </button>
+            <div class="shopping-cell" style="cursor: pointer;" (click)="removeShoppingItem(i)">
+              <fa-icon [icon]="iconService.fasTimes"></fa-icon>
             </div>
           </div>
-          <div class="dashed-border">
-            <div class="bounty-title-container">
-              <div class="bounty-title">
-                Shopping List
-              </div>
-              <div class="bounty-subtitle" *ngIf="(shoppingList|async).length>0">
-                <a mat-button (click)="clearShoppingItems()">
-                  <fa-icon [icon]="iconService.farTimesSquare"></fa-icon>
-                  Clear All
-                </a>
-              </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-expansion-panel>
+
+</mat-card>
+<div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
+  <div>
+    <mat-card *ngIf="today.publicMilestones.nightfall as nightfall">
+      <mat-card-header>
+        <mat-card-title>Nightfall
+
+          <ng-container *ngIf="nightfall.activities.length>0">: {{nightfall.activities[0].desc}}</ng-container>
+
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let n of nightfall.activities ">
+            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+            <div mat-line>
+              <span class="fake-link underline" (click)="showBurns(n)">{{removeActivityPrefixes(n.name)}} <fa-icon
+                  [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span> ({{n.modifiers.length}})
+              <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
             </div>
-            <div class="bounty-button-row loading-spinner"
-              *ngIf="(vendorBountiesLoading|async) || (playerLoading|async)">
-              <fa-icon class="button-replacement fa-icon" [icon]="iconService.farSpinner" [spin]="true" size="2x"
-                [fixedWidth]="true"></fa-icon>
-            </div>
-            <div class="bounty-button-row"
-              *ngIf="!((vendorBountiesLoading|async) || (playerLoading|async)) && vendorBountySets|async as bs">
-              <div *ngIf="(shoppingList|async).length==0" class="button-replacement simple-caption-no-margin">
-                Click on bounties for sale to add them here.
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div>
+    <ng-container *ngIf="today.publicMilestones.empireHunts as hunts">
+      <mat-card *ngIf="hunts.length>0">
+        <mat-card-header>
+          <mat-card-title>{{removeActivitySuffix(hunts[0].name)}}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let n of hunts ">
+              <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+                [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+                [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+              <div mat-line>
+                <span class="fake-link underline" (click)="showBurns(n)">{{removeActivityPrefixes(n.name)}} - {{n.ll}}
+                  <fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span> ({{n.modifiers.length}})
+                <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
               </div>
-              <div *ngFor="let i of shoppingList|async" class="shopping-row">
-                <div class="shopping-cell">
-                  <div class="shopping-icon" *ngIf="i.icon!=null"
-                    [style.background-image]="'url(//www.bungie.net' + i.icon + ')'">
-                  </div>
-                </div>
-                <div class="shopping-cell" style="flex-grow: 1; flex-shrink: 1;">
-                  <span [matTooltip]="i.desc" [class.shopping-done]="i.status=='Already held'">
-                    {{i.vendor.name}} - {{i.name}}
-                  </span>
-                </div>
-                <div class="shopping-cell" style="cursor: pointer;" (click)="removeShoppingItem(i)">
-                  <fa-icon [icon]="iconService.fasTimes"></fa-icon>
-                </div>
-              </div>
-            </div>
-          </div>
+            </mat-list-item>
+          </mat-list>
         </mat-card-content>
       </mat-card>
-      <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
-        <div>
-          <mat-card *ngIf="today.publicMilestones.nightfall as nightfall">
-            <mat-card-header>
-              <mat-card-title>Nightfall
+    </ng-container>
+  </div>
+  <div>
+    <mat-card *ngIf="today.publicMilestones.strikes as strikes">
+      <mat-card-header>
+        <mat-card-title>Strike Playlist</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list *ngIf="strikes.activities[0] as strike">
+          <mat-list-item *ngFor="let n of strike.modifiers">
+            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+            <div mat-line [matTooltip]="n.desc"> {{n.name}}
+              <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="today.publicMilestones.crucible as crucible">
+      <mat-card-header>
+        <mat-card-title>Crucible</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let n of crucible.activities ">
+            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+            <div mat-line> {{n.name}}
+              <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+            </div>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Altar of Sorrow</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <span class="simple-caption-no-margin right-margin">
+              {{today.altarOfSorrowsWeapon.itemTypeDisplayName}}</span>
+            <a href="https://docs.google.com/spreadsheets/d/1VXPqxaD9pKuOfTYO-aNp_NiQ_032bdltsCQ2JG4FbJM/htmlview?sle=true#gid=0"
+              target="_blank" rel="noopener">
+              {{today.altarOfSorrowsWeapon.displayProperties.name}}
+              &nbsp;<fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Dreaming City</mat-card-title>
+        <mat-card-subtitle>Curse level rotates weekly</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <span class="simple-caption-no-margin right-margin">Ascendant Challenge</span>
+            <a [href]="today.week.ascendantVideo" target="_blank" rel="noopener">
+              {{today.week.ascendantChallenge}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text">
+              </fa-icon>
+            </a>
+          </mat-list-item>
+          <mat-list-item><span class="simple-caption-no-margin right-margin">Location</span>
+            {{today.week.location}}</mat-list-item>
+          <mat-list-item><span class="simple-caption-no-margin right-margin">Curse Strength</span>
+            {{today.week.curseStrength}}</mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
 
-                <ng-container *ngIf="nightfall.activities.length>0">: {{nightfall.activities[0].desc}}</ng-container>
-
-              </mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-list>
-                <mat-list-item *ngFor="let n of nightfall.activities ">
-                  <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-                    [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-                    [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                  <div mat-line>
-                    <span class="fake-link underline" (click)="showBurns(n)">{{n.name}} <fa-icon
-                        [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span>
-                    <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                  </div>
-                </mat-list-item>
-              </mat-list>
-            </mat-card-content>
-          </mat-card>
-        </div>
-        <div>
-          <mat-card *ngIf="today.publicMilestones.crucible as crucible">
-            <mat-card-header>
-              <mat-card-title>Crucible</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-list>
-                <mat-list-item *ngFor="let n of crucible.activities ">
-                  <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-                    [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-                    [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                  <div mat-line> {{n.name}}
-                    <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                  </div>
-                </mat-list-item>
-              </mat-list>
-            </mat-card-content>
-          </mat-card>
-        </div>
-        <div>
-          <mat-card *ngIf="today.publicMilestones.strikes as strikes">
-            <mat-card-header>
-              <mat-card-title>Strike Playlist</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-list *ngIf="strikes.activities[0] as strike">
-                <mat-list-item *ngFor="let n of strike.modifiers">
-                  <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-                    [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-                    [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-                  <div mat-line [matTooltip]="n.desc"> {{n.name}}
-                    <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-                  </div>
-                </mat-list-item>
-              </mat-list>
-            </mat-card-content>
-          </mat-card>
-
-        </div>
-        <div>
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Altar of Sorrow</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-list>
-                <mat-list-item>
-                  <span class="simple-caption-no-margin right-margin">
-                    {{today.altarOfSorrowsWeapon.itemTypeDisplayName}}</span>
-                  <a href="https://docs.google.com/spreadsheets/d/1VXPqxaD9pKuOfTYO-aNp_NiQ_032bdltsCQ2JG4FbJM/htmlview?sle=true#gid=0"
-                    target="_blank" rel="noopener">
-                    {{today.altarOfSorrowsWeapon.displayProperties.name}}
-                    &nbsp;<fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
-                </mat-list-item>
-              </mat-list>
-            </mat-card-content>
-          </mat-card>
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Dreaming City</mat-card-title>
-              <mat-card-subtitle>Curse level rotates weekly</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-list>
-                <mat-list-item>
-                  <span class="simple-caption-no-margin right-margin">Ascendant Challenge</span>
-                  <a [href]="today.week.ascendantVideo" target="_blank" rel="noopener">
-                    {{today.week.ascendantChallenge}} <fa-icon [icon]="iconService.fabYoutube" class="accent-text">
-                    </fa-icon>
-                  </a>
-                </mat-list-item>
-                <mat-list-item><span class="simple-caption-no-margin right-margin">Location</span>
-                  {{today.week.location}}</mat-list-item>
-                <mat-list-item><span class="simple-caption-no-margin right-margin">Curse Strength</span>
-                  {{today.week.curseStrength}}</mat-list-item>
-                <mat-list-item *ngIf="today.week.curseStrength=='Strong'">
-                  <a href="https://www.youtube.com/watch?v=_lKQBwKfnnc" target="_blank" rel="noopener">
-                    Shattered Throne Active <fa-icon [icon]="iconService.fabYoutube" class="accent-text"></fa-icon>
-                  </a>
-                </mat-list-item>
-              </mat-list>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </div>
-
-      <ng-template #simpleBurns let-title="title" let-milestone="milestone">
-        <mat-card *ngIf="milestone && milestone.modifiers">
-          <mat-card-header>
-            <mat-card-title>{{title}}</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <mat-list role="list">
-              <mat-list-item *ngFor="let b of milestone.modifiers" [matTooltip]="b.desc">
-                <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
-                  [class.brighten]="b.icon.endsWith('jpg')"
-                  [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
-                <div mat-line>{{b.name}}</div>
-              </mat-list-item>
-            </mat-list>
-          </mat-card-content>
-        </mat-card>
-      </ng-template>
+<ng-template #simpleBurns let-title="title" let-milestone="milestone">
+  <mat-card *ngIf="milestone && milestone.modifiers">
+    <mat-card-header>
+      <mat-card-title>{{title}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list role="list">
+        <mat-list-item *ngFor="let b of milestone.modifiers" [matTooltip]="b.desc">
+          <span mat-list-icon class="list-icon" [class.invert]="b.icon.endsWith('png')"
+            [class.brighten]="b.icon.endsWith('jpg')"
+            [style.background-image]="'url(//www.bungie.net' + b.icon + ')'"></span>
+          <div mat-line>{{b.name}}</div>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
