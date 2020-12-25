@@ -86,8 +86,8 @@
   </mat-card-header>
 
 
-  <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' 
-    (opened)="onToggleBounties(true)"  (closed)="onToggleBounties(false)">
+  <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' (opened)="onToggleBounties(true)"
+    (closed)="onToggleBounties(false)">
     <mat-expansion-panel-header style="position: absolute; right: 0px; top: 0px;"></mat-expansion-panel-header>
 
 
@@ -210,6 +210,46 @@
 
 </mat-card>
 <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
+
+  <div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Lost Sectors
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <ng-container *ngTemplateOutlet="lostSector; context: {ls: today.masterLostSector}"></ng-container>
+          <ng-container *ngTemplateOutlet="lostSector; context: {ls: today.legendaryLostSector}"></ng-container>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <ng-container *ngIf="today.publicMilestones.empireHunts as hunts">
+      <mat-card *ngIf="hunts.length>0">
+        <mat-card-header>
+          <mat-card-title>{{removeActivitySuffix(hunts[0].name)}}
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-list>
+            <mat-list-item *ngFor="let n of hunts ">
+              <!-- <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+                [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+                [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span> -->
+              <div mat-line>
+                <span class="fake-link underline" (click)="showBurns(n)">{{removeActivityPrefixes(n.name)}}
+
+                  <fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
+                </span> ({{n.modifiers.length}})
+                <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+                <span class="simple-caption-darker-no-margin">{{n.ll}}</span>
+              </div>
+            </mat-list-item>
+          </mat-list>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+  </div>
   <div>
     <mat-card *ngIf="today.publicMilestones.nightfall as nightfall">
       <mat-card-header>
@@ -229,35 +269,11 @@
               <span class="fake-link underline" (click)="showBurns(n)">{{removeActivityPrefixes(n.name)}} <fa-icon
                   [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span> ({{n.modifiers.length}})
               <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-            </div>
+            </div>            
           </mat-list-item>
         </mat-list>
       </mat-card-content>
     </mat-card>
-  </div>
-  <div>
-    <ng-container *ngIf="today.publicMilestones.empireHunts as hunts">
-      <mat-card *ngIf="hunts.length>0">
-        <mat-card-header>
-          <mat-card-title>{{removeActivitySuffix(hunts[0].name)}}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-list>
-            <mat-list-item *ngFor="let n of hunts ">
-              <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-                [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-                [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-              <div mat-line>
-                <span class="fake-link underline" (click)="showBurns(n)">{{removeActivityPrefixes(n.name)}} - {{n.ll}}
-                  <fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span> ({{n.modifiers.length}})
-                <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-card-content>
-      </mat-card>
-    </ng-container>
   </div>
   <div>
     <mat-card *ngIf="today.publicMilestones.strikes as strikes">
@@ -353,4 +369,23 @@
       </mat-list>
     </mat-card-content>
   </mat-card>
+</ng-template>
+
+<ng-template #lostSector let-ls="ls">
+  <mat-list-item *ngIf="ls.activity as n">
+    <span mat-list-icon class="list-icon" [class.invert]="ls.icon.endsWith('png')"
+      [class.brighten]="ls.icon.endsWith('jpg')" *ngIf="ls.icon"
+      [style.background-image]="'url(//www.bungie.net' + ls.icon + ')'"></span>
+    <div mat-line>
+      <span class="fake-link underline" (click)="showBurns(n)">{{n.name}}
+        <fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
+      </span> ({{n.modifiers?.length}})
+      <span class="simple-caption-darker-no-margin">{{n.ll}}</span>
+      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+    </div>
+    <div mat-line>
+      Exotic {{ls.soloReward}} <span class="accent-text" *ngIf="ls.special"> BL exclusive</span>
+    </div>
+    
+  </mat-list-item>
 </ng-template>
