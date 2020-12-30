@@ -16,7 +16,7 @@ import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMe
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
-const API_ROOT = 'https://www.bungie.net/Platform/';
+export const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
 
 @Injectable()
@@ -385,7 +385,7 @@ export class BungieService implements OnDestroy {
         ];
     }
 
-    private async buildReqOptions(): Promise<any> {
+    public async buildReqOptions(): Promise<any> {
         try {
             const key = await this.authService.getKey();
             if (key == null) {
@@ -416,7 +416,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private handleError(err) {
+    public handleError(err) {
         if (err.error != null) {
             const j = err.error;
             if (j.ErrorCode && j.ErrorCode !== 1) {
@@ -446,7 +446,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private parseBungieResponse(j: any): any {
+    public parseBungieResponse(j: any): any {
         if (j.ErrorCode && j.ErrorCode !== 1) {
             if (j.ErrorCode === 1665) {
                 return {

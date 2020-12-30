@@ -94,20 +94,17 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
         x => {
           if (x.defaultplatform != null) {
             this.setPlatform(x.defaultplatform);
-
             this.ref.markForCheck();
           }
           if (x.defaultgt != null) {
             this.gamerTag = x.defaultgt;
-
             this.ref.markForCheck();
           }
           let sl = x.shoppinglist as { [key: string]: boolean };
           sl = sl ? sl : {};
           this.shoppingListHashes.next(sl);
         });
-
-    combineLatest(this.shoppingListHashes, this.rawVendorBountySets).pipe(
+    combineLatest([this.shoppingListHashes, this.rawVendorBountySets]).pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
         ([sl, bs]) => {
