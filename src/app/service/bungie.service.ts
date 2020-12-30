@@ -902,7 +902,7 @@ export class BungieService implements OnDestroy {
             key: Const.HERESY_KEY,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Masterwork Armor',
-            pl: Const.LOW_BOOST,
+            pl: Const.NO_BOOST,
             name: 'Pit of Heresy',
             desc: 'Complete the Pit of Heresy Dungeon',
             hasPartial: true,

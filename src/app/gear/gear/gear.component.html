@@ -52,8 +52,7 @@
         target="_blank" class="important-note header-link" rel="noopener">
         <fa-icon [icon]="iconService.falInfoSquare"></fa-icon> Important notes about god rolls
       </a>
-      <a mat-menu-item
-        href="https://www.reddit.com/r/destinychecklistnet/comments/huouu7/pandapaxxy_god_roll_post_hub/"
+      <a mat-menu-item href="https://www.reddit.com/r/destinychecklistnet/comments/huouu7/pandapaxxy_god_roll_post_hub/"
         class="header-link" target="_blank" rel="noopener">
         <fa-icon [icon]="iconService.farBooks"></fa-icon> Pandapaxxy's hub post (07/2020)
       </a>
@@ -65,8 +64,8 @@
   <div class="filter-buttons" [hidden]="selectedUser==null">
     <d2c-gear-toggle [(state)]="toggleData.godRolls" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.tags" (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.weaponBuckets"  (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.powerCaps"  (change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.weaponBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.powerCaps" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.damageType" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.seasons" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.energyType" (change)="filterChanged()"> </d2c-gear-toggle>
@@ -74,12 +73,12 @@
     <d2c-gear-toggle [(state)]="toggleData.ammoTypes" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.armorBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.vehicleBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.exchangeType"(change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.exchangeType" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.classType" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.owners" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.equipped" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.rarities" (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.postmaster"(change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.postmaster" (change)="filterChanged()"> </d2c-gear-toggle>
   </div>
   <div [hidden]="selectedUser==null" class="filter-container">
     <mat-form-field class="wildcard-filter">
@@ -93,8 +92,7 @@
       <button mat-button matSuffix mat-icon-button aria-label="Help" (click)="showWildcardHelp()">
         <mat-icon>help_outline</mat-icon>
       </button>
-      <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption
-        (optionSelected)="autoCompleteSelected($event)">
+      <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption (optionSelected)="autoCompleteSelected($event)">
         <mat-option *ngFor="let option of filteredAutoCompleteOptions|async" [value]="option.value">
           {{option.value}} <span *ngIf="option.desc" class="simple-caption">{{option.desc}}</span>
         </mat-option>
@@ -122,7 +120,8 @@
   </div>
 
   <mat-menu #menuMoreOptions="matMenu" xPosition="before">
-    <ng-container *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+    <ng-container
+      *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
       <button mat-menu-item [matMenuTriggerFor]="menuBulkMove">
         <fa-icon [icon]="iconService.falExchange"></fa-icon>&ensp;Move current rows to:
       </button>
@@ -232,8 +231,7 @@
     </div>
   </div>
 
-  <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()"
-    (keydown.ArrowRight)="onRight()">
+  <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()" (keydown.ArrowRight)="onRight()">
     <thead>
       <tr>
         <th class="limited-gear-width">
@@ -260,8 +258,7 @@
           </span>
 
         </th>
-        <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
-          *ngIf="option.type==ItemType.Armor">
+        <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
           <span class="fake-link gear-sort" (click)="sort('energyCapacity')">Energy
             <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
             </d2c-sort-indicator>
@@ -284,20 +281,22 @@
           *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
           Sockets
         </th>
-        <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+        <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
+          *ngIf="option.type==ItemType.Armor">
           <span class="fake-link gear-sort" (click)="sort('preferredStatPoints')">Stat Pts
             <d2c-sort-indicator field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc">
             </d2c-sort-indicator>
           </span>
         </th>
-        <th class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+        <th class="hide-mobile-table-cell show-tablet-table-cell"
+          *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
           Stats
 
           <ng-container *ngIf="option.type==ItemType.Weapon">
             <fa-icon *ngIf="showAllWeaponStats" [icon]="iconService.falMinusSquare"
               matTooltip="Show default weapon stats" (click)="showAllWeaponStats=false"></fa-icon>
-            <fa-icon *ngIf="!showAllWeaponStats" [icon]="iconService.falPlusSquare"
-              matTooltip="Show all weapon stats" (click)="showAllWeaponStats=true"></fa-icon>
+            <fa-icon *ngIf="!showAllWeaponStats" [icon]="iconService.falPlusSquare" matTooltip="Show all weapon stats"
+              (click)="showAllWeaponStats=true"></fa-icon>
           </ng-container>
         </th>
 
@@ -343,8 +342,8 @@
           </td>
           <td class="limited-gear-width">
 
-            <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc"
-              [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
+            <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc" [matMenuTriggerFor]="itemMenu"
+              matTooltipClass="preserve-white-space">
               <div class="item-name">{{i.name}}</div>
             </button>
 
@@ -383,14 +382,18 @@
               </span>
 
               <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
-              <span class="mobile-only-block">
-                <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
+              <span class="mobile-only-block" *ngIf="i.type == ItemType.Armor || i.type == ItemType.Ghost">
+
+                <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot">
+                  </d2c-season-indicator> </span>
+                <mat-progress-bar mode="determinate" class="mw-progress"
+                  [color]="i.energyCapacity>=10?'accent':'primary'" [value]="i.energyCapacity*10">
+                </mat-progress-bar>
 
               </span>
             </div>
             <div class="mobile-only-block">
-              <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc"
-                matTooltipClass="preserve-white-space">
+              <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc" matTooltipClass="preserve-white-space">
                 {{i.masterwork.name}} {{i.masterwork.tier}}
                 <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
                   [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
@@ -408,9 +411,8 @@
                     <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
                     {{obj.progressDescription}}
                     <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                    <mat-progress-bar class="bounty-progress"
-                      *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
-                      [value]="100*obj.progress/obj.completionValue">
+                    <mat-progress-bar class="bounty-progress" *ngIf="obj.completionValue!=null && obj.completionValue>0"
+                      mode="determinate" [value]="100*obj.progress/obj.completionValue">
                     </mat-progress-bar>
                   </div>
                 </div>
@@ -448,26 +450,23 @@
 
 
           </td>
-          <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
-            *ngIf="option.type==ItemType.Armor">
-            <span class="mod-obj">{{i.energyCapacity}} / 10  <d2c-season-indicator [season]="i.seasonalModSlot">
+          <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
+            <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot">
               </d2c-season-indicator> </span>
-            <mat-progress-bar mode="determinate" class="mw-progress"
-              [color]="i.energyCapacity>=10?'accent':'primary'" [value]="i.energyCapacity*10">
+            <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
+              [value]="i.energyCapacity*10">
             </mat-progress-bar>
 
             <div *ngFor="let socket of i.sockets" class="bottom-divider">
               <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-              <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                [class.not-selected-plug]="!plug.active">
+              <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
                 <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
                 <ng-container *ngIf="!isLastPlug">|</ng-container>
               </span>
             </div>
 
             <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-              <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space"
-                [class.bottom-divider]="!isLastMod">
+              <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom-divider]="!isLastMod">
                 {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
               </div>
             </ng-container>
@@ -499,14 +498,14 @@
             *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
               <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-              <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                [class.not-selected-plug]="!plug.active">
+              <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
                 <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
                 <ng-container *ngIf="!isLastPlug">|</ng-container>
               </span>
             </div>
           </td>
-          <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+          <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
+            *ngIf="option.type==ItemType.Armor">
 
             <ng-container *ngIf="i.preferredStatPoints">{{i.preferredStatPoints}}</ng-container>
 
@@ -537,8 +536,7 @@
                         <ng-template #default>
                           {{stat.name}}
                         </ng-template>
-                        <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
-                          [descending]="sortDesc">
+                        <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
                         </d2c-sort-indicator>
                       </span>
                     </td>
@@ -548,7 +546,7 @@
               </tbody>
             </table>
           </td>
-          <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor">
+          <td class="hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Armor">
             <table class="stat-table" *ngIf="i.type==ItemType.Armor">
               <tbody>
                 <ng-container *ngFor="let stat of i.stats">
@@ -556,8 +554,7 @@
                   <tr *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
                     <td class="gear-sort">
                       <span class="fake-link" (click)="sort('stat.'+stat.hash)">{{stat.name}}
-                        <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy"
-                          [descending]="sortDesc">
+                        <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
                         </d2c-sort-indicator>
                       </span>
                     </td>
@@ -625,8 +622,8 @@
       </ng-container>
       <tr>
         <td colspan="100%">
-          <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page"
-            [pageSize]="size" (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
+          <mat-paginator #paginator showFirstLastButtons="true" [length]="total" [pageIndex]="page" [pageSize]="size"
+            (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
           </mat-paginator>
         </td>
       </tr>

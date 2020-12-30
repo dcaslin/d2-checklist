@@ -13,12 +13,14 @@ export class PandaGodrollsService {
 
   private data: { [name: string]: GunInfo; };
   private isController = true;
+  private matchLastTwoSockets = false;
   constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
 
   }
 
-  public async init(isController: boolean): Promise<void> {
+  public async init(isController: boolean, matchLastTwoSockets: boolean): Promise<void> {
     this.isController = isController;
+    this.matchLastTwoSockets = matchLastTwoSockets;
     if (this.data != null) { return; } else {
       const temp = await this.load();
 
@@ -97,7 +99,7 @@ export class PandaGodrollsService {
       i.searchText = i.searchText + ' is:goodrollpve';
       i.godRollInfo = i.godRollInfo + ' is:goodrollpve';
     }
-    if (i.pandaPve<1 && i.pandaPvp<1) {
+    if (i.pandaPve < 1 && i.pandaPvp < 1) {
       i.searchText = i.searchText + ' is:notgoodroll';
       i.godRollInfo = i.godRollInfo + ' is:notgoodroll';
     }
@@ -163,7 +165,9 @@ export class PandaGodrollsService {
     }
 
     let first = true;
+    let cntr = 0;
     for (const s of i.sockets) {
+      cntr++;
       if (first) {
         first = false;
         continue;
@@ -193,8 +197,10 @@ export class PandaGodrollsService {
           }
         }
       }
-      goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
-      greatRollFound = greatPerkFound && greatRollFound;
+      if (!this.matchLastTwoSockets || cntr >= (i.sockets.length - 1)) {
+        goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
+        greatRollFound = greatPerkFound && greatRollFound;
+      }
       for (const p of s.possiblePlugs) {
         const name = p.name.toLowerCase();
         for (const goodPerk of roll.goodPerks) {

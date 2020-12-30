@@ -101,10 +101,11 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
         // we're already here, nothing to load
       } else {
         this.char = c;
-        this.vendorService.loadVendors(c).subscribe((x) => {
-          console.log("loaded vendor");
-          console.dir(x);
-        });
+        // Testing out new service approach
+        // this.vendorService.loadVendors(c).subscribe((x) => {
+        //   console.log("loaded vendor");
+        //   console.dir(x);
+        // });
         const data = await this.bungieService.loadVendors(c);
         this.preferredStatService.processSaleItems(data);
         this.parseService.applyTags(data);
