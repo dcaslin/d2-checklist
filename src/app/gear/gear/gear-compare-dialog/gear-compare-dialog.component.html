@@ -138,15 +138,27 @@
                         </td>
                     </ng-container>
                 </tr>
+                
+                
                 <tr *ngIf="model.type==ItemType.Armor">
                     <th>
                         <d2c-horizontal-sort field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc"
-                            (sort)="sort($event)">Points</d2c-horizontal-sort>
+                            (sort)="sort($event)">Pref Pts</d2c-horizontal-sort>                        
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
                             {{i.preferredStatPoints}}
-                            <div class="simple-caption">{{i.totalStatPoints}} total</div>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="model.type==ItemType.Armor">
+                    <th>
+                       <d2c-horizontal-sort field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc"
+                            (sort)="sort($event)">Total Pts</d2c-horizontal-sort>
+                    </th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">                            
+                            {{i.totalStatPoints}}
                         </td>
                     </ng-container>
                 </tr>

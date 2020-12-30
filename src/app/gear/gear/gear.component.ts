@@ -115,6 +115,7 @@ export class GearComponent extends ChildComponent {
 
   showAllWeaponStats = false;
   controller = true;
+  godRollLastTwoOnly = false;
 
   private filterChangedSubject: Subject<void> = new Subject<void>();
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
@@ -476,6 +477,7 @@ export class GearComponent extends ChildComponent {
 
     this.autoCompleteOptions = this.fixedAutoCompleteOptions.slice(0);
     this.toggleData = GearComponent.initToggles(this.iconService, this.option, this.cacheService);
+    this.godRollLastTwoOnly = localStorage.getItem('god-roll-last-two-only') == 'true';
     const savedSize = parseInt(localStorage.getItem('page-size'), 10);
     if (savedSize > 2 && savedSize < 800) {
       this.size = savedSize;
@@ -494,7 +496,6 @@ export class GearComponent extends ChildComponent {
           this.controller = true;
         }
       }
-      console.log(`--- Controller: ${this.controller}`);
       this.loadMarks();
       this.loadWishlist();
     });
@@ -1168,7 +1169,7 @@ export class GearComponent extends ChildComponent {
   }
 
   async loadWishlist() {
-    await this.pandaGodRollsService.init(this.controller);
+    await this.pandaGodRollsService.init(this.controller, this.godRollLastTwoOnly);
     if (this._player.getValue() != null) {
       this.pandaGodRollsService.processItems(this._player.getValue().gear);
     }
@@ -1262,11 +1263,12 @@ export class GearComponent extends ChildComponent {
       parent: this,
     };
     const previousController = this.controller;
+    const previousGodRollLastTwoOnly = this.godRollLastTwoOnly;
     const dialogRef = this.dialog.open(GearUtilitiesDialogComponent, dc);
 
     dialogRef.afterClosed().subscribe(result => {
-      if (this.controller != previousController) {
-        this.updateMnkVsController(this.controller);
+      if (this.controller != previousController || this.godRollLastTwoOnly != previousGodRollLastTwoOnly) {
+        this.saveSettingsAndRefreshWishlist(this.controller, this.godRollLastTwoOnly);
       }
     });
   }
@@ -1311,9 +1313,9 @@ export class GearComponent extends ChildComponent {
     this.paginator.nextPage();
   }
 
-  public async updateMnkVsController(controller: boolean) {
+  public async saveSettingsAndRefreshWishlist(controller: boolean, godRollLastTwoOnly: boolean) {
     localStorage.setItem('mnk-vs-controller', controller ? 'true' : 'false');
-    this.controller = controller;
+    localStorage.setItem('god-roll-last-two-only', godRollLastTwoOnly ? 'true' : 'false');
     this.loadWishlist();
   }
 }
