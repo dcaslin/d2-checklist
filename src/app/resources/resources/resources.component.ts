@@ -5,6 +5,7 @@ import { IconService } from '@app/service/icon.service';
 import { Character, ClassAllowed, ItemType, Player, SaleItem, SelectedUser } from '@app/service/model';
 import { ParseService } from '@app/service/parse.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
+import { VendorService } from '@app/service/vendor.service';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent as observableFromEvent, of as observableOf } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
@@ -39,6 +40,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   ClassAllowed = ClassAllowed;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    private vendorService: VendorService,
     public parseService: ParseService,
     public preferredStatService: PreferredStatService,
     public iconService: IconService,
@@ -99,6 +101,10 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
         // we're already here, nothing to load
       } else {
         this.char = c;
+        this.vendorService.loadVendors(c).subscribe((x) => {
+          console.log("loaded vendor");
+          console.dir(x);
+        });
         const data = await this.bungieService.loadVendors(c);
         this.preferredStatService.processSaleItems(data);
         this.parseService.applyTags(data);
