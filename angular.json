@@ -35,15 +35,18 @@
             "styles": [
               {
                 "input": "src/styles.scss",
-                "bundleName": "app"
+                "bundleName": "app",
+                "inject": true
               },
               {
                 "input": "src/assets/icomoon.css",
-                "bundleName": "icons"
+                "bundleName": "icons",
+                "inject": true
               },
               {
                 "input": "src/ag-grid-styles.scss",
-                "bundleName": "ag-grid"
+                "bundleName": "ag-grid",
+                "inject": true
               }
             ],
             "scripts": [
@@ -62,7 +65,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -113,11 +115,13 @@
             "styles": [
               {
                 "input": "src/styles.scss",
-                "bundleName": "app"
+                "bundleName": "app",
+                "inject": true
               },
               {
                 "input": "src/ag-grid-styles.scss",
-                "bundleName": "ag-grid"
+                "bundleName": "ag-grid",
+                "inject": true
               }
             ],
             "assets": [
