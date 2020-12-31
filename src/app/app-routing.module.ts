@@ -474,7 +474,7 @@ export class AuthGuard implements CanActivate {
       path: '**',
       redirectTo: 'home'
     }
-    ], { useHash: false })],
+    ], { useHash: false, relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
   providers: [AuthGuard]
 })
