@@ -31,7 +31,6 @@ import { ClanCollectionItemDialogComponent } from './clan-collections/clan-colle
     ChartsModule
   ],
   declarations: [ClanComponent, ClanMilestonesComponent, ClanInfoComponent,
-    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanLifetimeGraphComponent, ClanCollectionsComponent, ClanBadgesComponent, ClanCollectionSearchComponent, ClanCollectionBadgeDialogComponent, ClanCollectionItemComponent, ClanCollectionItemDialogComponent],
-  entryComponents: [ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanCollectionBadgeDialogComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanCollectionItemDialogComponent]
+    ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanLifetimeGraphComponent, ClanCollectionsComponent, ClanBadgesComponent, ClanCollectionSearchComponent, ClanCollectionBadgeDialogComponent, ClanCollectionItemComponent, ClanCollectionItemDialogComponent]
 })
 export class ClanModule { }
