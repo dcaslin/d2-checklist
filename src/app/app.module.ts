@@ -51,6 +51,7 @@ import { ChildComponent } from './shared/child.component';
 import { ContentVaultComponent } from './content-vault/content-vault.component';
 import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
 import { PrivacyComponent } from './privacy/privacy.component';
+import { TestbedComponent } from './testbed/testbed.component';
 
 
 
@@ -90,10 +91,7 @@ import { PrivacyComponent } from './privacy/privacy.component';
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent
-  ],
-  entryComponents: [
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent, TestbedComponent
   ],
   providers: [
     AuthService,

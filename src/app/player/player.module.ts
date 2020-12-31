@@ -38,9 +38,6 @@ import { TriumphObjectivesComponent } from './triumphs/triumph-objectives/triump
     CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, 
     TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, 
     CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, 
-    PlayerEfficiencyGraphComponent, PursuitListComponent, TriumphObjectivesComponent],
-  entryComponents: [
-    QuestDialogComponent, ProgressStepDialogComponent
-  ],
+    PlayerEfficiencyGraphComponent, PursuitListComponent, TriumphObjectivesComponent]
 })
 export class PlayerModule { }

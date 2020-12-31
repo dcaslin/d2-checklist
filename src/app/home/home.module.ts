@@ -12,10 +12,6 @@ import { BountySetsDialogComponent } from './home/bounty-sets-dialog/bounty-sets
     SharedModule
   ],
   declarations: [HomeComponent, BurnDialogComponent, BountySetsDialogComponent,
-  ], 
-  entryComponents: [
-    BurnDialogComponent, 
-    BountySetsDialogComponent
   ]
 })
 export class HomeModule { }

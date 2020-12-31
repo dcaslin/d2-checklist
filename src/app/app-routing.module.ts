@@ -57,6 +57,7 @@ import { SettingsComponent } from './settings';
 import { ContentVaultComponent } from './content-vault/content-vault.component';
 import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
 import { PrivacyComponent } from './privacy/privacy.component';
+import { TestbedComponent } from './testbed/testbed.component';
 
 
 @Injectable()
@@ -89,7 +90,11 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       component: AuthComponent
     },
-
+    {
+      path: 'test',
+      pathMatch: 'full',
+      component: TestbedComponent
+    },
     {
       path: 'settings',
       pathMatch: 'full',
