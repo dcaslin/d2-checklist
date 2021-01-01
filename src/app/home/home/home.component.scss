@@ -42,6 +42,10 @@
   display: inline-block;
 }
 
+.title-hack {
+  margin: 0px !important;
+}
+
 ::ng-deep .mat-card-header-text {
   text-align: left;
 }
