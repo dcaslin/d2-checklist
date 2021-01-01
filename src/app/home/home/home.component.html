@@ -64,12 +64,31 @@
 
 
 
-
+<!-- 
   <mat-card-header>
     <mat-card-title>
       Bounties
     </mat-card-title>
-    <mat-card-subtitle>
+  </mat-card-header> -->
+
+
+  <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' (opened)="onToggleBounties(true)"
+    (closed)="onToggleBounties(false)">
+    <mat-expansion-panel-header>
+      
+      <mat-panel-title>
+        <span class="mat-card-header">
+          <span class="mat-card-title title-hack">Bounties</span>
+        </span>
+      </mat-panel-title>
+      
+      <mat-panel-description>
+        Held, For Sale & Shopping List
+      </mat-panel-description>
+      
+    </mat-expansion-panel-header>
+
+    <div class="mat-card-subtitle left">
       Currently held and available bounties for the selected character, grouped by shared objectives.
       <div>
         <button mat-icon-button (click)="refreshMe.next()">
@@ -82,13 +101,7 @@
           </mat-button-toggle>
         </mat-button-toggle-group>
       </div>
-    </mat-card-subtitle>
-  </mat-card-header>
-
-
-  <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' (opened)="onToggleBounties(true)"
-    (closed)="onToggleBounties(false)">
-    <mat-expansion-panel-header style="z-index: 999; position: absolute; right: 0px; top: 0px;"></mat-expansion-panel-header>
+    </div>
 
 
     <mat-card-content class="grid-parent" style="margin-top: 10px">
@@ -269,7 +282,7 @@
               <span class="fake-link underline" (click)="showBurns(n)">{{removeActivityPrefixes(n.name)}} <fa-icon
                   [icon]="iconService.fasBurn" class="fa-icon"></fa-icon></span> ({{n.modifiers.length}})
               <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-            </div>            
+            </div>
           </mat-list-item>
         </mat-list>
       </mat-card-content>
@@ -386,6 +399,6 @@
     <div mat-line>
       Exotic {{ls.soloReward}} <span class="accent-text" *ngIf="ls.special"> BL exclusive</span>
     </div>
-    
+
   </mat-list-item>
 </ng-template>
