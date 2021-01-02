@@ -20,16 +20,20 @@ export class VendorService {
 
   }
 
-  public loadVendors(c: Character): Observable<string> {
+  public loadVendors(c: Character): Observable<number> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-    c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemStats,ItemSockets,ItemInstances';
-    return this.streamReq('loadVendors', url);
-    // .pipe(
-    //   map(resp=> {
-    //     console.dir(resp);
-    //     return 's';
-    //   })
-    // );
+      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemStats,ItemSockets,ItemInstances';
+    return this.streamReq('loadVendors', url)
+      .pipe(
+        map((resp) => {
+          const vendors = resp?.vendors;
+          if (!vendors) {
+            return 0;
+          } else {
+            return Object.keys(vendors).length;
+          }
+        })
+      );
   }
 
   private streamReq(operation: string, uri: string): Observable<any> {
@@ -75,4 +79,8 @@ export class VendorService {
   }
 
 
+}
+
+export interface VendorData {
+  name: string;
 }
