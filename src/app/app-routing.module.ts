@@ -88,11 +88,13 @@ export class AuthGuard implements CanActivate {
     {
       path: 'auth',
       pathMatch: 'full',
+      canActivate: [AuthGuard],
       component: AuthComponent
     },
     {
       path: 'test',
       pathMatch: 'full',
+      canActivate: [AuthGuard],
       component: TestbedComponent
     },
     {

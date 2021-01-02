@@ -23,7 +23,7 @@ export const BUCKETS_ALL_POWER = [BUCKET_WEAPON_KINETIC, BUCKET_WEAPON_ENERGY,
     BUCKET_ARMOR_CHEST, BUCKET_ARMOR_LEG, BUCKET_ARMOR_CLASS
 ];
 
-export const TAG_WEIGHTS: {[key: string]: number} = {
+export const TAG_WEIGHTS: { [key: string]: number } = {
     'warmind bits': 5.0,
     'gambit': 0.25,
     'crucible': 0.5,
@@ -404,7 +404,7 @@ export interface BountySet {
     type: string;
     tag: string;
     score: number;
-    bounties: (SaleItem|InventoryItem)[];
+    bounties: (SaleItem | InventoryItem)[];
 }
 
 export class SelectedUser {
@@ -427,7 +427,7 @@ export class BungieGroupMember {
     player$: BehaviorSubject<Player> = new BehaviorSubject(null);
     errorMsg: string;
 
-    currentPlayer(): Player|null {
+    currentPlayer(): Player | null {
         return this.player$.getValue();
     }
 
@@ -444,7 +444,7 @@ export class FriendListEntry {
     player$: BehaviorSubject<Player> = new BehaviorSubject(null);
     errorMsg$: BehaviorSubject<string> = new BehaviorSubject(null);
 
-    currentPlayer(): Player|null {
+    currentPlayer(): Player | null {
         return this.player$.getValue();
     }
 }
@@ -719,9 +719,7 @@ export class InventoryItem {
     public coveredSeasons?: number[];
     readonly redacted: boolean;
     readonly specialModSockets: string[];
-
     public lowLinks: LowLinks;
-    // more to come, locked other stuff
 
     damageTypeString(): string {
         return DamageType[this.damageType];
@@ -841,7 +839,7 @@ export class MilestoneStatus {
     readonly readyToCollect: boolean;
 
     constructor(hash: string, complete: boolean, pct: number, info: string, suppInfo: string[],
-            phases: boolean[], locked: boolean, tooLowPower: boolean, readyToCollect?: boolean) {
+        phases: boolean[], locked: boolean, tooLowPower: boolean, readyToCollect?: boolean) {
         this.hash = hash;
         this.complete = complete;
         this.pct = pct;
@@ -984,7 +982,7 @@ export interface AggHistoryEntry {
     activityBestSingleGameScore: number; // this is a personal score, NOT team score, useless
     fastestCompletionMsForActivity: number;
     activityCompletions: number;
-    charCompletions:  CharCompletions[];
+    charCompletions: CharCompletions[];
     efficiency: number;
 
     activityKills: number;
@@ -1483,4 +1481,21 @@ export interface ApiItemTierType {
     index: number;
     infusionProcess: any;
     redacted: boolean;
+}
+
+export interface CharacterVendorData {
+    char: Character;
+    data: VendorInventoryItem[];
+}
+
+export interface VendorInventoryItem {
+    tags?: string[];
+    vendor: Vendor;
+    status: string;
+    quantity: number;
+    values: NameQuantity[];
+    costs: NameQuantity[];
+    objectives: ItemObjective[];
+    data: InventoryItem;
+    searchText: string;
 }

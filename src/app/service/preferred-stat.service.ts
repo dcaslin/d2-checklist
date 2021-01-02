@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ClassAllowed, InventoryStat, ItemType, Player, SaleItem } from './model';
+import { ClassAllowed, VendorInventoryItem, InventoryItem, InventoryStat, ItemType, Player, SaleItem } from './model';
 
 const PREF_STATS_KEY = 'preferred-armor-stats';
 @Injectable({
@@ -93,7 +93,6 @@ export class PreferredStatService {
 
 
   public processSaleItems(items: SaleItem[]) {
-    
     for (const i of items) {
       if (i.type !== ItemType.Armor) {
         continue;
@@ -111,8 +110,17 @@ export class PreferredStatService {
     }
   }
 
-  public processGear(player: Player) {
-    const items = player.gear;
+  public processVendorSaleItems(vendorItems: VendorInventoryItem[]) {
+    const items = [];
+    for (const i of vendorItems) {
+      if (i.data) {
+        items.push(i.data);
+      }
+    }
+    this.processItems(items);
+  }
+
+  private processItems(items: InventoryItem[]) {
     for (const i of items) {
       if (i.type !== ItemType.Armor) {
         continue;
@@ -125,6 +133,12 @@ export class PreferredStatService {
       }
       i.preferredStatPoints = prefPts;
     }
+  }
+
+  public processGear(player: Player) {
+    const items = player.gear;
+    this.processItems(items);
+    
   }
 }
 

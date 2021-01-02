@@ -1,11 +1,24 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of, defer, from } from 'rxjs';
-import { catchError, concatAll, flatMap, map, switchAll, switchMap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
+import { DestinyCacheService } from './destiny-cache.service';
+import { LowLineService } from './lowline.service';
+import {
+  Character,
+  InventoryItem,
+  ItemObjective,
+  ItemType,
+  NameQuantity,
+  VendorInventoryItem,
+  CharacterVendorData,
+  Vendor
+} from './model';
 import { NotificationService } from './notification.service';
-import { Character } from './model';
 import { ParseService } from './parse.service';
+import { PreferredStatService } from './preferred-stat.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,24 +29,185 @@ export class VendorService {
     private httpClient: HttpClient,
     private bungieService: BungieService,
     private notificationService: NotificationService,
+    private destinyCacheService: DestinyCacheService,
+    private lowlineService: LowLineService,
+    private preferredStatService: PreferredStatService,
     private parseService: ParseService) {
 
   }
 
-  public loadVendors(c: Character): Observable<number> {
+  public loadVendors(c: Character): Observable<CharacterVendorData> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemStats,ItemSockets,ItemInstances';
+      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';      
     return this.streamReq('loadVendors', url)
       .pipe(
         map((resp) => {
-          const vendors = resp?.vendors;
-          if (!vendors) {
-            return 0;
-          } else {
-            return Object.keys(vendors).length;
-          }
+          return {
+            char: c,
+            data: this.parseVendorData(c, resp)
+          };
         })
       );
+  }
+
+
+  public parseVendorData(char: Character, resp: any): VendorInventoryItem[] {
+    if (resp == null || resp.sales == null) { return null; }
+    let returnMe = [];
+    for (const key of Object.keys(resp.sales.data)) {
+      const vendor = resp.sales.data[key];
+      const items = this.parseIndividualVendor(resp, char, key, vendor);
+      returnMe = returnMe.concat(items);
+    }
+    for (const i of returnMe) {
+      i.lowLinks = this.lowlineService.buildItemLink(i.hash);
+
+    }
+    returnMe.sort((a, b) => {
+      if (a.tierType < b.tierType) { return 1; }
+      if (a.tierType > b.tierType) { return -1; }
+      if (a.name < b.name) { return -1; }
+      if (a.name > b.name) { return 1; }
+      return 0;
+    });
+    this.preferredStatService.processVendorSaleItems(returnMe);
+    return returnMe;
+  }
+
+  private parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any): VendorInventoryItem[] {
+    if (v.saleItems == null) { return []; }
+    const vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
+    if (vDesc == null) { return []; }
+    if (resp.vendors.data[vendorKey] == null) {
+      // vendor isn't here right now;
+      return [];
+    }
+    const vendor: Vendor = {
+      hash: vendorKey,
+      name: vDesc.displayProperties.name,
+      icon: vDesc.displayProperties.icon,
+      displayProperties: vDesc.displayProperties,
+      nextRefreshDate: resp.vendors.data[vendorKey].nextRefreshDate
+    };
+    const items: VendorInventoryItem[] = [];
+    for (const key of Object.keys(v.saleItems)) {
+      const i = v.saleItems[key];
+      const oItem = this.parseSaleItem(vendor, char, resp, i);
+      if (oItem != null) {
+        items.push(oItem);
+      }
+    }
+    return items;
+  }
+
+
+
+  private parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): VendorInventoryItem {
+    if (i.itemHash == null && i.itemHash === 0) { return null; }
+    const index = i.vendorItemIndex;
+    const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
+    if (iDesc == null) { return null; }
+    const itemStats = resp.itemComponents[vendor.hash]?.stats?.data[index];
+
+    let vendorSearchText = '';
+
+    // calculate costs
+    const costs: any[] = [];
+    if (i.costs) {
+      for (const cost of i.costs) {
+        if (cost.itemHash == null || cost.itemHash === 0) { continue; }
+        const cDesc: any = this.destinyCacheService.cache.InventoryItem[cost.itemHash];
+        if (cDesc == null) { continue; }
+        costs.push({
+          name: cDesc.displayProperties.name,
+          hash: cost.itemHash,
+          quantity: cost.quantity
+        });
+        // don't add glimmer, it's not worth searching on
+        if (cDesc.displayProperties.name != 'Glimmer') {
+          vendorSearchText += cDesc.displayProperties.name + ' ';
+        }
+      }
+    }
+
+    // calculate objectives
+    const objectives = [];
+    if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
+      for (const oHash of iDesc.objectives.objectiveHashes) {
+        const oDesc: any = this.destinyCacheService.cache.Objective[oHash];
+        if (oDesc != null) {
+          objectives.push({
+            total: oDesc.completionValue,
+            units: oDesc.progressDescription
+          });
+
+          vendorSearchText += oDesc.progressDescription + ' ';
+        }
+      }
+    }
+
+    // calculate rewards
+    const values = [];
+    if (iDesc.value != null && iDesc.value.itemValue != null) {
+      for (const val of iDesc.value.itemValue) {
+        if (val.itemHash === 0) { continue; }
+        const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+        if (valDesc != null) {
+          values.push({
+            hash: val.itemHash,
+            name: valDesc.displayProperties.name,
+            quantity: val.quantity
+          });
+          vendorSearchText += valDesc.displayProperties.name + ' ';
+        }
+
+      }
+    }
+
+    // calc item type, move to general call
+    let itemType = iDesc.itemType;
+    if (iDesc.itemType === ItemType.Mod && iDesc.itemTypeDisplayName.indexOf('Mod') >= 0) {
+      itemType = ItemType.GearMod;
+    } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName != null && iDesc.itemTypeDisplayName.endsWith('Bounty')) {
+      itemType = ItemType.Bounty;
+    } else if (iDesc.itemType === ItemType.None && iDesc.itemTypeDisplayName == 'Invitation of the Nine') {
+      itemType = ItemType.Bounty;
+    }
+
+    vendorSearchText += iDesc.displayProperties.name + ' ';
+    vendorSearchText += vendor.name + ' ';
+    // hack xur text search
+    if (vendor.hash === '2190858386') {
+      vendorSearchText += 'Xur ';
+    }
+    vendorSearchText += iDesc.itemTypeAndTierDisplayName + ' ';
+    // vendorIndex acts as psuedo instance id, so just set it ahead of processing
+    i.itemInstanceId = i.vendorItemIndex;
+    // last arg is item progressions, which will always be empty from a vendor
+    const data: InventoryItem = this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
+    return {
+      vendor: vendor,
+      status: this.parseSaleItemStatus(i.saleStatus),
+      quantity: i.quantity,
+      objectives: objectives,
+      values: values,
+      costs: costs,
+      searchText: vendorSearchText.toLowerCase(),
+      data
+    };
+  }
+
+  private parseSaleItemStatus(s: number): string {
+    if ((s & 8) > 0) {
+      return 'Already completed';
+    } else if ((s & 32) > 0) {
+      return 'Not for sale right now';
+    } else if ((s & 64) > 0) {
+      return 'Not available';
+    } else if ((s & 128) > 0) {
+      return 'Already held';
+    }
+    return null;
   }
 
   private streamReq(operation: string, uri: string): Observable<any> {
@@ -77,10 +251,4 @@ export class VendorService {
       return of(result as T);
     };
   }
-
-
-}
-
-export interface VendorData {
-  name: string;
 }

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
-import { Character, Player, SelectedUser } from '@app/service/model';
+import { Character, CharacterVendorData, Player, SelectedUser } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { StorageService } from '@app/service/storage.service';
 import { VendorService } from '@app/service/vendor.service';
@@ -18,7 +18,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public vendorsLoading$: BehaviorSubject<number> = new BehaviorSubject(0);
-  public vendors$: BehaviorSubject<number[]> = new BehaviorSubject([]);
+  public vendors$: BehaviorSubject<CharacterVendorData[]|null> = new BehaviorSubject([]);
 
   constructor(
     storageService: StorageService,
@@ -35,8 +35,9 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.player$.pipe(
+      takeUntil(this.unsubscribe$),
       map((player) => {
-        const requests: Observable<number>[] = [];
+        const requests: Observable<CharacterVendorData>[] = [];
         const values = [];
         if (player) {
           for (const char of player.characters) {
@@ -48,10 +49,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
         this.vendors$.next(values);
         return combineLatest(requests);
       }),
-      concatAll(),
-      // combineAll(),
-      // combineLatest(),
-      // takeUntil(this.unsubscribe$)
+      concatAll()
     ).subscribe(x => {
       this.vendors$.next(x);
     });
@@ -61,18 +59,13 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
       filter(selectedUser => selectedUser != null),
       tap(x => this.playerLoading$.next(true)),
       map(selectedUser => from(
-        this.bungieService.getChars(selectedUser.userInfo.membershipType, selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'CharacterInventories', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives']))
+        this.bungieService.getChars(selectedUser.userInfo.membershipType,
+          selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
+          'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
+          'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
+          'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true))
       ),
-      concatAll(),
-      // map((player) =>  {
-      //   const returnMe = [];
-      //   for (const char of player.characters) {
-      //     const req = this.vendorService.loadVendors(char);
-      //     returnMe.push(req.pipe(startWith(null)));
-      //   }
-      //   return combineLatest(returnMe);
-      // }),
-      // concatAll()
+      concatAll(),      
       catchError((err) => {
         this.notificationService.fail(err);
         return null;
@@ -84,6 +77,16 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
     });
     this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser$.next(selectedUser);
+    });
+    combineLatest([this.player$, this.vendors$]).pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(([player, vendors]) => {
+      console.dir(player);
+      console.dir(vendors);
+      // TODO look at gear vs vendors
+      // TODO look at spider exchanges vs what guardian has
+      // TODO use this for bounty shopping list stuff on home page
+      // TODO use this four "resources" page (make entire new page w/ better name?)
     });
   }
 }
