@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { parse } from 'path';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
@@ -1103,6 +1102,7 @@ export class ParseService {
         }
     }
 
+    // asdf
     public parseVendorData(resp: any): SaleItem[] {
         if (resp == null || resp.sales == null) { return null; }
         let returnMe = [];
@@ -3611,7 +3611,7 @@ export class ParseService {
     }
 
 
-    private parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
+    public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
             // // prey mod saveks
             // if (itm.itemHash == 3630662113) {

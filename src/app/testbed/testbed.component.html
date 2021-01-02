@@ -1,26 +1,21 @@
-<p>testbed works!</p>
-<p>
-    <button (click)="refresh()">Refresh</button>
-</p>
-
-
-<ng-container *ngIf="playerLoading$|async as loading">
-    <div>Player loading</div>
-</ng-container>
-<ng-container *ngIf="player$|async as player">
-    <div>Player: {{player.profile?.userInfo?.displayName}}</div>
-</ng-container>
-
-<ng-container *ngIf="vendors$|async as vendors">
-    <div *ngFor="let vendor of vendors">
-        <ng-container *ngIf="!vendor">Loading</ng-container>
-        {{vendor}}
-    </div>    
-</ng-container>
-<!-- 
-<ng-container *ngIf="s|async as vendors">
-    <div *ngFor="let v of vendors">
-        V {{v|json}}
-    </div>
-</ng-container>
- -->
+<div class="left test-container">
+    <h1>Test Bed</h1>
+    <p>
+        <button mat-stroked-button (click)="refresh()">Refresh</button>
+    </p>
+    
+    
+    <ng-container *ngIf="playerLoading$|async as loading">
+        <div>Player loading</div>
+    </ng-container>
+    <ng-container *ngIf="player$|async as player">
+        <div>Player: {{player.profile?.userInfo?.displayName}}: {{player.gear.length}}</div>
+    </ng-container>
+    
+    <ng-container *ngIf="vendors$|async as vendorChars">
+        <div *ngFor="let vendorChar of vendorChars">
+            <ng-container *ngIf="!vendorChar">Loading</ng-container>
+            <ng-container *ngIf="vendorChar">Vendor: {{vendorChar.char.className}} {{vendorChar.data.length}}</ng-container>
+        </div>    
+    </ng-container>
+</div>
