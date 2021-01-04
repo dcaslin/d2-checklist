@@ -660,8 +660,9 @@ export class Player {
 }
 
 export class InventoryItem {
+    vendorItemInfo?: VendorItemInfo;
     tags?: string[];
-    readonly id: string;
+    id: string;
     readonly hash: string;
     readonly name: string;
     equipped: BehaviorSubject<boolean>;
@@ -1485,10 +1486,10 @@ export interface ApiItemTierType {
 
 export interface CharacterVendorData {
     char: Character;
-    data: VendorInventoryItem[];
+    data: InventoryItem[];
 }
 
-export interface VendorInventoryItem {
+export interface VendorItemInfo {
     tags?: string[];
     vendor: Vendor;
     status: string;
@@ -1496,6 +1497,17 @@ export interface VendorInventoryItem {
     values: NameQuantity[];
     costs: NameQuantity[];
     objectives: ItemObjective[];
-    data: InventoryItem;
     searchText: string;
 }
+
+// export interface VendorInventoryItem {
+//     tags?: string[];
+//     vendor: Vendor;
+//     status: string;
+//     quantity: number;
+//     values: NameQuantity[];
+//     costs: NameQuantity[];
+//     objectives: ItemObjective[];
+//     data: InventoryItem;
+//     searchText: string;
+// }
