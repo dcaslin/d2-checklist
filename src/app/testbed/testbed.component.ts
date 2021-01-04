@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
-import { Character, CharacterVendorData, Player, SelectedUser } from '@app/service/model';
+import { Character, CharacterVendorData, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { StorageService } from '@app/service/storage.service';
 import { VendorService } from '@app/service/vendor.service';
@@ -33,6 +33,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
     this.signedOnUser$.next(this.signedOnUser$.value);
   }
 
+  
   ngOnInit(): void {
     this.player$.pipe(
       takeUntil(this.unsubscribe$),
@@ -81,8 +82,63 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
     combineLatest([this.player$, this.vendors$]).pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(([player, vendors]) => {
+
+      if (!player || !player.gear) {
+        return;
+      }
       console.dir(player);
       console.dir(vendors);
+      let allItems = player.gear;
+      for (const v of vendors) {
+        if (!v) {
+          continue;
+        }
+        allItems = allItems.concat(v.data);
+      }
+      console.dir(allItems);
+      const allArmor = allItems.filter(i => i.type === ItemType.Armor);
+      const allVendorArmor = allArmor.filter(i => i.vendorItemInfo!=null);
+      const map : { [key:string]:InventoryItem; } = {};
+      const allUniqueVendorArmor = [];
+      for (const g of allVendorArmor) {
+        map[g.id] = g;
+      }
+      for (const key in map) {
+        allUniqueVendorArmor.push(map[key]);
+      }
+      // VendorService.checkDupes(allUniqueVendorArmor);
+
+      for (const g of allUniqueVendorArmor) {
+        const group = VendorService.findComparableArmor(g, allUniqueVendorArmor, false, 1260);
+        if (!group) {
+          continue;
+        }
+        group.sort((a, b) => {
+          let aN = a.preferredStatPoints;
+          let bN = b.preferredStatPoints;
+          if (aN < bN) {
+            return 1;
+          } else if (aN > bN) {
+            return -1;
+          }
+          aN = a.totalStatPoints;
+          bN = b.totalStatPoints;
+          if (aN < bN) {
+            return 1;
+          } else if (aN > bN) {
+            return -1;
+          }
+          return 0;
+
+        });
+        if (group[0].vendorItemInfo!=null) {
+          const i = group[0];
+          console.log(`Better vendor item: ${i.name} ${i.preferredStatPoints} ${i.inventoryBucket.displayProperties.name}`);
+          console.dir(i);
+        }
+      }
+
+      
       // TODO look at gear vs vendors
       // TODO look at spider exchanges vs what guardian has
       // TODO use this for bounty shopping list stuff on home page

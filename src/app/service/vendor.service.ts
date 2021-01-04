@@ -7,11 +7,10 @@ import { DestinyCacheService } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
   Character,
-  InventoryItem,
   ItemObjective,
   ItemType,
   NameQuantity,
-  VendorInventoryItem,
+  InventoryItem,
   CharacterVendorData,
   Vendor
 } from './model';
@@ -38,7 +37,7 @@ export class VendorService {
 
   public loadVendors(c: Character): Observable<CharacterVendorData> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';      
+      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
     return this.streamReq('loadVendors', url)
       .pipe(
         map((resp) => {
@@ -51,7 +50,7 @@ export class VendorService {
   }
 
 
-  public parseVendorData(char: Character, resp: any): VendorInventoryItem[] {
+  public parseVendorData(char: Character, resp: any): InventoryItem[] {
     if (resp == null || resp.sales == null) { return null; }
     let returnMe = [];
     for (const key of Object.keys(resp.sales.data)) {
@@ -70,11 +69,11 @@ export class VendorService {
       if (a.name > b.name) { return 1; }
       return 0;
     });
-    this.preferredStatService.processVendorSaleItems(returnMe);
+    this.preferredStatService.processItems(returnMe);
     return returnMe;
   }
 
-  private parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any): VendorInventoryItem[] {
+  private parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any): InventoryItem[] {
     if (v.saleItems == null) { return []; }
     const vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
     if (vDesc == null) { return []; }
@@ -89,7 +88,7 @@ export class VendorService {
       displayProperties: vDesc.displayProperties,
       nextRefreshDate: resp.vendors.data[vendorKey].nextRefreshDate
     };
-    const items: VendorInventoryItem[] = [];
+    const items: InventoryItem[] = [];
     for (const key of Object.keys(v.saleItems)) {
       const i = v.saleItems[key];
       const oItem = this.parseSaleItem(vendor, char, resp, i);
@@ -102,7 +101,7 @@ export class VendorService {
 
 
 
-  private parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): VendorInventoryItem {
+  private parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): InventoryItem {
     if (i.itemHash == null && i.itemHash === 0) { return null; }
     const index = i.vendorItemIndex;
     const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
@@ -185,16 +184,88 @@ export class VendorService {
     i.itemInstanceId = i.vendorItemIndex;
     // last arg is item progressions, which will always be empty from a vendor
     const data: InventoryItem = this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
-    return {
+    // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
+    if (!data) {
+      return null;
+    }
+    data.vendorItemInfo = {
       vendor: vendor,
       status: this.parseSaleItemStatus(i.saleStatus),
       quantity: i.quantity,
       objectives: objectives,
       values: values,
       costs: costs,
-      searchText: vendorSearchText.toLowerCase(),
-      data
+      searchText: vendorSearchText.toLowerCase()
     };
+    // make item id somewhat unique for use later in finding dupes
+    data.id = vendor.hash+data.id;
+    return data;
+  }
+
+  public static checkDupes(gear: InventoryItem[]) {
+    for (const g of gear) {
+      const matches = gear.filter(x => x!==g && x.hash === g.hash);
+      if (matches.length>0) {
+        console.log(g.name+" has dupes");
+        console.dir(g);
+        console.dir(matches);
+      }
+    }
+  }
+
+
+  public static findComparableArmor(i: InventoryItem, gear: InventoryItem[], checkEnergyType: boolean, minPowerCap: number): InventoryItem[] {
+    const copies = [i];
+    // only exotic or legendary
+    if (!(i.tier === 'Exotic' || i.tier === 'Legendary')) {
+      return null;
+    }
+    const preciseMatch = i.tier === 'Exotic';
+    for (const g of gear) {
+      if (g.id == i.id) {
+        continue;
+      }
+      // for exotics we only want to compare the same type of gear, 
+      // like Dragon's shadow to Dragon's shadow
+      if (preciseMatch) {
+        if (i.hash != g.hash) {
+
+        }
+      }
+      if (g.powerCap<minPowerCap) { 
+        continue;
+      }
+      if (i.type != g.type) {
+        continue;
+      }
+      if (i.classAllowed != g.classAllowed) {
+        continue;
+      }
+      if (!i.inventoryBucket || !g.inventoryBucket) {
+        continue;
+      }
+      if (i.inventoryBucket.displayProperties.name != g.inventoryBucket.displayProperties.name) {
+        continue;
+      }
+
+      // don't worry about matching by season
+      if (i.tier != g.tier) {
+        continue;
+      }
+      if (checkEnergyType) {
+        if (i.seasonalModSlot != g.seasonalModSlot) {
+          continue;
+        }
+      }
+      
+
+      // do we match by burn?
+      if (i.energyType != g.energyType) {
+        continue;
+      }
+      copies.push(g);
+    }
+    return copies;
   }
 
   private parseSaleItemStatus(s: number): string {
