@@ -90,7 +90,9 @@ export enum ItemType {
     Package = 25,
     Bounty = 26,
     MissionArtifact = 97, // custom
-    GearMod = 99  // custom added
+    GearMod = 99,  // custom added
+    Shader = 100,  // custom added
+    CurrencyExchange = 101  // custom added
 }
 
 export enum ItemState {
@@ -720,6 +722,7 @@ export class InventoryItem {
     public coveredSeasons?: number[];
     readonly redacted: boolean;
     readonly specialModSockets: string[];
+    readonly collectibleHash: string;
     public lowLinks: LowLinks;
 
     damageTypeString(): string {
@@ -738,9 +741,9 @@ export class InventoryItem {
         bucketOrder: number, aggProgress: number, values: NameQuantity[], expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, mods: InventoryPlug[], tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
-        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed?: number,
-        energyCapacity?: number, totalStatPoints?: number, seasonalModSlot?: number, coveredSeasons?: number[], powerCap?: number, redacted?: boolean,
-        specialModSockets?: string[]
+        isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
+        energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
+        specialModSockets: string[], collectibleHash: string
     ) {
         this.id = id;
         this.hash = hash;
@@ -795,6 +798,7 @@ export class InventoryItem {
         this.powerCap = powerCap;
         this.redacted = redacted;
         this.specialModSockets = specialModSockets;
+        this.collectibleHash = collectibleHash;
     }
 }
 
