@@ -97,29 +97,28 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
       }
       const vendorItems = VendorService.getUniqueVendorItems(vendors);
       const interestingVendorArmor = vendorItems.filter(val => val.type === ItemType.Armor && (val.tier == 'Legendary' || val.tier == 'Exotic') && val.powerCap >= 1310);
-      const deals = this.vendorService.findLegendaryArmorDeals(player, interestingVendorArmor);
-      // console.dir(deals.filter(d => d.hasDeal));
 
+      // look just at legendary armor grouped by class and bucket
+      const legendaryDeals = this.vendorService.findLegendaryArmorDeals(player, interestingVendorArmor);
+      const goodLegendaryDeals = legendaryDeals.filter(i=>i.hasDeal);
+      console.log(`Legendary deals: ${goodLegendaryDeals.length}`);
+
+      // if any vendor exotic armor (Xur), look exactly by item type
       const exoticDeals = this.vendorService.findExoticArmorDeals(player, interestingVendorArmor);
-      // console.dir(exoticDeals);
+      console.log(`Exotic deals: ${exoticDeals.length}`);
+
+      const collectionItems = this.vendorService.checkCollections(player, vendorItems);
+      console.log(`Collection items, tess: ${collectionItems.tess.length}  banshee: ${collectionItems.banshee.length}`);
 
 
-      this.vendorService.getExchangeInfo(player, vendorItems);
-      // type == 99 and seller is banshee (for gun mods), compare to collections? "Rampage Spec Banshee-44 672118013" 1990124610
-      // type == 100 and seller is tess, compare to collections "Resilient Laurel Tess Everis 3361454721"
-      // type == 101 is all spider currency exchange "Purchase Enhancement Prisms Spider 863940356"
-      // type == 10 and seller is banshee ("Upgrade Module Banshee-44 672118013") is upgrade modules, prisms, and shards
-      // seller is banshee or s
+      const exchange = this.vendorService.getExchangeInfo(player, vendorItems);
+      console.dir(exchange);
 
-
-      // TODO look just at legendary armor grouped by class and bucket
-      // TODO if any vendor exotic armor (Xur), look exactly by item type
-
-      // TODO compare to collections
-      // TODO look at gear vs vendors
-      // TODO look at spider exchanges vs what guardian has
+      // DONE compare to collections
+      // Eh, kinda: look at gear vs vendors
+      // DONE look at spider exchanges vs what guardian has
       // TODO use this for bounty shopping list stuff on home page
-      // TODO use this four "resources" page (make entire new page w/ better name?)
+      // LATER use this for "resources" page (make entire new page w/ better name?)
     });
   }
 }
