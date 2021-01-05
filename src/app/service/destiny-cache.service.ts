@@ -131,7 +131,7 @@ export interface Cache {
   Faction?: any;
   Progression?: any;
   PowerCap?: any;
-  InventoryItem?: { [key: string]: InventoryItem };
+  InventoryItem?: { [key: string]: ManifestInventoryItem };
   Stat?: any;
   Objective?: { [key: string]: Objective };
   ActivityModifier?: any;
@@ -154,7 +154,7 @@ export interface Cache {
   TagWeights?:  {[key: string]: number};
 }
 
-export interface InventoryItem {
+export interface ManifestInventoryItem {
   displayProperties: DisplayProperties;
   iconWatermark: string;
   tooltipNotifications: any[];

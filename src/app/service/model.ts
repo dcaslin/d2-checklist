@@ -3,6 +3,7 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 import { Moment } from 'moment';
 import { BehaviorSubject } from 'rxjs';
+import { ManifestInventoryItem } from './destiny-cache.service';
 
 export const BUCKET_WEAPON_KINETIC = 1498876634;
 export const BUCKET_WEAPON_ENERGY = 2465295065;
@@ -1493,13 +1494,18 @@ export interface CharacterVendorData {
     data: InventoryItem[];
 }
 
+export interface VendorCost {
+    desc: ManifestInventoryItem;
+    count: number;
+}
+
 export interface VendorItemInfo {
     tags?: string[];
     vendor: Vendor;
     status: string;
     quantity: number;
     values: NameQuantity[];
-    costs: NameQuantity[];
+    costs: VendorCost[];
     objectives: ItemObjective[];
     searchText: string;
 }

@@ -2371,8 +2371,7 @@ export class ParseService {
             charChecklists = this.parseCharChecklists(resp, chars, contentVaultOnly);
             artifactPowerBonus = this.parseArtifactProgressions(resp, chars, accountProgressions);
             // hit with a hammer
-            if (resp.profileCurrencies != null && resp.profileCurrencies.data != null &&
-                resp.profileCurrencies.data.items != null && this.destinyCacheService.cache != null) {
+            if (resp.profileCurrencies?.data?.items != null && this.destinyCacheService.cache != null) {
                 resp.profileCurrencies.data.items.forEach(x => {
                     const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
                     if (desc != null) {
