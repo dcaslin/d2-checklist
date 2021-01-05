@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
+import { IconService } from '@app/service/icon.service';
 import { Character, CharacterVendorData, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { StorageService } from '@app/service/storage.service';
-import { VendorService } from '@app/service/vendor.service';
+import { VendorDeals, VendorService } from '@app/service/vendor.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, combineLatest, from, Observable, of } from 'rxjs';
 import { catchError, combineAll, concatAll, filter, map, startWith, takeUntil, tap } from 'rxjs/operators';
@@ -18,12 +19,14 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public vendorsLoading$: BehaviorSubject<number> = new BehaviorSubject(0);
-  public vendors$: BehaviorSubject<CharacterVendorData[]|null> = new BehaviorSubject([]);
+  public vendors$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
+  public vendorDeals$: BehaviorSubject<VendorDeals> = new BehaviorSubject(null);
 
   constructor(
     storageService: StorageService,
     private bungieService: BungieService,
     private vendorService: VendorService,
+    public iconService: IconService,
     private notificationService: NotificationService) {
     super(storageService);
 
@@ -86,33 +89,10 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
     combineLatest([this.player$, this.vendors$]).pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(([player, vendors]) => {
-      if (!player) {
-        return;
-      }
-      // for testing temp
-      for (const v of vendors) {
-        if (v == null) {
-          return;
-        }
-      }
-      const vendorItems = VendorService.getUniqueVendorItems(vendors);
-      const interestingVendorArmor = vendorItems.filter(val => val.type === ItemType.Armor && (val.tier == 'Legendary' || val.tier == 'Exotic') && val.powerCap >= 1310);
+      const state = this.vendorService.getDeals(player, vendors);
+      this.vendorDeals$.next(state);
+      console.dir(state);
 
-      // look just at legendary armor grouped by class and bucket
-      const legendaryDeals = this.vendorService.findLegendaryArmorDeals(player, interestingVendorArmor);
-      const goodLegendaryDeals = legendaryDeals.filter(i=>i.hasDeal);
-      console.log(`Legendary deals: ${goodLegendaryDeals.length}`);
-
-      // if any vendor exotic armor (Xur), look exactly by item type
-      const exoticDeals = this.vendorService.findExoticArmorDeals(player, interestingVendorArmor);
-      console.log(`Exotic deals: ${exoticDeals.length}`);
-
-      const collectionItems = this.vendorService.checkCollections(player, vendorItems);
-      console.log(`Collection items, tess: ${collectionItems.tess.length}  banshee: ${collectionItems.banshee.length}`);
-
-
-      const exchange = this.vendorService.getExchangeInfo(player, vendorItems);
-      console.dir(exchange);
 
       // DONE compare to collections
       // Eh, kinda: look at gear vs vendors

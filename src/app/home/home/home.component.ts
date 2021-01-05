@@ -50,7 +50,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
-
   hideAnnouncement = true;
   bountiesExpanded = true;
 
