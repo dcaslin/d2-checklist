@@ -6,19 +6,32 @@ import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
-  Character,
-  ItemObjective,
-  ClassAllowed,
-  ItemType,
-  NameQuantity,
-  InventoryItem,
-  CharacterVendorData,
-  Vendor,
-  Player,
-  ApiInventoryBucket,
-  EnergyType,
-  Currency,
-  CurrentActivity,
+  ApiInventoryBucket, Character,
+
+
+
+
+
+  CharacterVendorData, ClassAllowed,
+
+
+
+
+
+
+
+
+  Currency, EnergyType, InventoryItem, ItemType,
+
+
+
+
+  Player, Vendor,
+
+
+
+
+
   VendorCost
 } from './model';
 import { NotificationService } from './notification.service';
@@ -56,6 +69,46 @@ export class VendorService {
       );
   }
 
+  public getDeals(player: Player, vendors: CharacterVendorData[]): VendorDeals {
+    const vendorsLoading = vendors.filter(x => x == null).length;
+    if (!player) {
+      return {
+        playerLoading: true,
+        vendorsLoading,
+        totalVendors: vendors.length,
+        legendary: [],
+        exotic: [],
+        collection: {
+          banshee: [],
+          tess: []
+        },
+        exchange: {
+          banshee: [],
+          spider: []
+        }
+      };
+    }
+    const vendorItems = VendorService.getUniqueVendorItems(vendors);
+    const interestingVendorArmor = vendorItems.filter(val => val.type === ItemType.Armor && (val.tier == 'Legendary' || val.tier == 'Exotic') && val.powerCap >= 1310);
+    // look just at legendary armor grouped by class and bucket
+    const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
+    const goodLegendaryDeals = legendaryDeals.filter(i => i.hasDeal);
+    // if any vendor exotic armor (Xur), look exactly by item type
+    const exoticDeals = this.findExoticArmorDeals(player, interestingVendorArmor);
+    const collectionItems = this.checkCollections(player, vendorItems);
+    const exchange = this.getExchangeInfo(player, vendorItems);
+    const returnMe = {
+      playerLoading: false,
+      vendorsLoading,
+      totalVendors: vendors.length,
+      legendary: goodLegendaryDeals,
+      exotic: exoticDeals,
+      collection: collectionItems,
+      exchange: exchange
+    };
+    return returnMe;
+  }
+
   private static sortByStats(a: InventoryItem, b: InventoryItem): number {
     let aN = a.preferredStatPoints;
     let bN = b.preferredStatPoints;
@@ -75,11 +128,11 @@ export class VendorService {
   }
 
   private checkCollectionForVendor(player: Player, vendorItems: InventoryItem[], vendorHash: string, checkType: ItemType) {
-    const checkMe = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash==vendorHash && i.type== checkType);
+    const checkMe = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == vendorHash && i.type == checkType);
     const returnMe = [];
     for (const c of checkMe) {
       if (c.collectibleHash) {
-        const collectionItem = player.searchableCollection.find(i => i.hash==c.collectibleHash);
+        const collectionItem = player.searchableCollection.find(i => i.hash == c.collectibleHash);
         if (!collectionItem || !collectionItem.complete) {
           returnMe.push(c);
         }
@@ -88,51 +141,50 @@ export class VendorService {
     return returnMe;
   }
 
-  public checkCollections(player: Player, vendorItems: InventoryItem[]): VendorCollections {
+  private checkCollections(player: Player, vendorItems: InventoryItem[]): VendorCollections {
     // type == 99 and seller is banshee (for gun mods), compare to collections? "Rampage Spec Banshee-44 672118013" 1990124610
     // type == 100 and seller is tess, compare to collections "Resilient Laurel Tess Everis 3361454721"
     const bansheeMods = this.checkCollectionForVendor(player, vendorItems, '672118013', ItemType.GearMod);
     const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
-   
-   return {
-     tess: tessShaders,
-     banshee: bansheeMods
-   }
+    return {
+      tess: tessShaders,
+      banshee: bansheeMods
+    };
   }
 
   private static setCost(costs: { [key: string]: number; }, v: VendorCurrency) {
     let targetCost;
     // if it has one cost, use it
     // otherwise find the redeemable
-    if (v.saleItem.vendorItemInfo.costs.length==1) {
+    if (v.saleItem.vendorItemInfo.costs.length == 1) {
       targetCost = v.saleItem.vendorItemInfo.costs[0];
     } else {
-      targetCost = v.saleItem.vendorItemInfo.costs.find(c => c.desc.itemTypeDisplayName=='Redeemable');
+      targetCost = v.saleItem.vendorItemInfo.costs.find(c => c.desc.itemTypeDisplayName == 'Redeemable');
     }
     const count = costs[targetCost.desc.hash];
     v.cost = targetCost;
     v.costCount = count;
   }
 
-  public getExchangeInfo(player: Player, vendorItems: InventoryItem[]): VendorCurrencies {
+  private getExchangeInfo(player: Player, vendorItems: InventoryItem[]): VendorCurrencies {
     // type == 101 is all spider currency exchange "Purchase Enhancement Prisms Spider 863940356"
     // type == 10 and seller is banshee ("Upgrade Module Banshee-44 672118013") is upgrade modules, prisms, and shards
-    const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash=='672118013' && i.type== ItemType.ExchangeMaterial);    
-    const spiderCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash=='863940356' && i.type== ItemType.CurrencyExchange);    
-    const costs:{ [key: string]: number; }  = {};
+    const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
+    const spiderCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '863940356' && i.type == ItemType.CurrencyExchange);
+    const costs: { [key: string]: number; } = {};
     for (const g of spiderCurrency.concat(bansheeConsumables)) {
       for (const c of g.vendorItemInfo.costs) {
         costs[c.desc.hash] = 0;
       }
     }
     for (const key of Object.keys(costs)) {
-      if (key=='1022552290' || key == '3159615086') { // legendary shards or glimmer
-        const currency = player.currencies.find(x=>x.hash==key);
+      if (key == '1022552290' || key == '3159615086') { // legendary shards or glimmer
+        const currency = player.currencies.find(x => x.hash == key);
         if (currency) {
           costs[key] = currency.count;
         }
       } else {
-        costs[key] = player.gear.filter(i=>i.hash==key).reduce((result, item)=>{ return result + item.quantity;}, 0);
+        costs[key] = player.gear.filter(i => i.hash == key).reduce((result, item) => { return result + item.quantity; }, 0);
       }
     }
 
@@ -142,51 +194,51 @@ export class VendorService {
     };
     for (const g of spiderCurrency) {
       // skip enhancement cores and prisms
-      if (g.name.indexOf('Enhancement')>=0) {
+      if (g.name.indexOf('Enhancement') >= 0) {
         continue;
       }
       let targetName = g.name.substr('Purchase '.length);
       if (targetName.endsWith('s')) {
-        targetName = targetName.substr(0, targetName.length-1);
+        targetName = targetName.substr(0, targetName.length - 1);
       }
-      if (targetName == "Datalattice") {
-        targetName = "Microphasic Datalattice";
+      if (targetName == 'Datalattice') {
+        targetName = 'Microphasic Datalattice';
       }
-      if (targetName=='Glimmer' || targetName=='Legendary Shards') {
-        const currency = player.currencies.find(x=>x.name==targetName);
+      if (targetName == 'Glimmer' || targetName == 'Legendary Shards') {
+        const currency = player.currencies.find(x => x.name == targetName);
         const v: VendorCurrency = {
           saleItem: g,
           target: currency,
           targetCount: currency.count,
           cost: null,
           costCount: null
-        }
+        };
         VendorService.setCost(costs, v);
         returnMe.spider.push(v);
         continue;
       }
-      const targetCount = player.gear.filter(i=>i.name==targetName).reduce((result, item)=>{ return result + item.quantity;}, 0);
-      const target = player.gear.find(i=>i.name==targetName);
+      const targetCount = player.gear.filter(i => i.name == targetName).reduce((result, item) => { return result + item.quantity; }, 0);
+      const target = player.gear.find(i => i.name == targetName);
       const v: VendorCurrency = {
         saleItem: g,
         target,
         targetCount,
         cost: null,
         costCount: null
-      }
+      };
       VendorService.setCost(costs, v);
       returnMe.spider.push(v);
     }
     for (const g of bansheeConsumables) {
-      const targetCount = player.gear.filter(i=>i.hash==g.hash).reduce((result, item)=>{ return result + item.quantity;}, 0);
-      const target = player.gear.find(i=>i.hash==g.hash);
+      const targetCount = player.gear.filter(i => i.hash == g.hash).reduce((result, item) => { return result + item.quantity; }, 0);
+      const target = player.gear.find(i => i.hash == g.hash);
       const v: VendorCurrency = {
         saleItem: g,
         target,
         targetCount,
         cost: null,
         costCount: null
-      }
+      };
       VendorService.setCost(costs, v);
       returnMe.banshee.push(v);
     }
@@ -196,7 +248,7 @@ export class VendorService {
 
   }
 
-  public findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): InventoryItem[] {
+  private findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): InventoryItem[] {
     const vendorExotics = vendorArmor.filter(i => i.tier == 'Exotic');
     const playerExotics = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Exotic');
     const deals = [];
@@ -210,7 +262,7 @@ export class VendorService {
     return deals;
   }
 
-  public findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
+  private findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
     this.preferredStatService.processGear(player);
     const bucketMap: { [key: string]: ClassInventoryBucket; } = {};
     const buckets = this.getBuckets();
@@ -257,7 +309,7 @@ export class VendorService {
     return returnMe;
   }
 
-  public static getUniqueVendorItems(vendors: CharacterVendorData[]): InventoryItem[] {
+  private static getUniqueVendorItems(vendors: CharacterVendorData[]): InventoryItem[] {
     // get a unique list of all vendor items
     const vendorGearMap: { [key: string]: InventoryItem; } = {};
     for (const v of vendors) {
@@ -282,7 +334,7 @@ export class VendorService {
   }
 
 
-  public parseVendorData(char: Character, resp: any): InventoryItem[] {
+  private parseVendorData(char: Character, resp: any): InventoryItem[] {
     if (resp == null || resp.sales == null) { return null; }
     let returnMe = [];
     for (const key of Object.keys(resp.sales.data)) {
@@ -343,7 +395,7 @@ export class VendorService {
     let vendorSearchText = '';
 
     // calculate costs
-    const costs: VendorCost[] = []; 
+    const costs: VendorCost[] = [];
     if (i.costs) {
       for (const cost of i.costs) {
         if (cost.itemHash == null || cost.itemHash === 0) { continue; }
@@ -434,7 +486,7 @@ export class VendorService {
     return data;
   }
 
-  public static checkDupes(gear: InventoryItem[]) {
+  private static checkDupes(gear: InventoryItem[]) {
     for (const g of gear) {
       const matches = gear.filter(x => x !== g && x.hash === g.hash);
       if (matches.length > 0) {
@@ -446,7 +498,7 @@ export class VendorService {
   }
 
 
-  public static findComparableArmor(i: InventoryItem, gear: InventoryItem[], checkEnergyType: boolean, minPowerCap: number): InventoryItem[] {
+  private static findComparableArmor(i: InventoryItem, gear: InventoryItem[], checkEnergyType: boolean, minPowerCap: number): InventoryItem[] {
     const copies = [i];
     // only exotic or legendary
     if (!(i.tier === 'Exotic' || i.tier === 'Legendary')) {
@@ -578,9 +630,19 @@ export interface VendorCurrencies {
 export interface VendorCurrency {
   saleItem: InventoryItem;
 
-  target: InventoryItem|Currency;
+  target: InventoryItem | Currency;
   targetCount: number;
 
-  cost: InventoryItem|Currency;
+  cost: InventoryItem | Currency;
   costCount: number;
+}
+
+export interface VendorDeals {
+  playerLoading: boolean;
+  vendorsLoading: number;
+  totalVendors: number;
+  legendary: ClassInventoryBucket[];
+  exotic: InventoryItem[];
+  collection: VendorCollections;
+  exchange: VendorCurrencies;
 }

@@ -18,4 +18,22 @@
             <ng-container *ngIf="vendorChar">Vendor: {{vendorChar.char.className}} {{vendorChar.data.length}}</ng-container>
         </div>    
     </ng-container>
+    <div *ngIf="vendorDeals$|async as vendorDeals">
+        <div *ngIf="vendorDeals.playerLoading"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
+        <div *ngIf="vendorDeals.vendorsLoading>0"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Vendors Loading {{vendorDeals.vendorsLoading}} / {{vendorDeals.totalVendors}} </div>
+        <h3>Exchange</h3>
+        <h5>- Banshee</h5>
+        {{vendorDeals.exchange.banshee.length}}
+        <h5>- Spider</h5>
+        {{vendorDeals.exchange.spider.length}}
+        <h3>Collection</h3>
+        <h5>- Banshee</h5>
+        {{vendorDeals.collection.banshee.length}}
+        <h5>- Tess</h5>
+        {{vendorDeals.collection.tess.length}}
+        <h3>Exotic</h3>
+        {{vendorDeals.exotic.length}}
+        <h3>Legendary</h3>
+        {{vendorDeals.legendary.length}}
+    </div>
 </div>
