@@ -1534,11 +1534,11 @@ export class ParseService {
                 if (charAct?.availableActivities?.length > 0) {
                     for (const aa of charAct.availableActivities) {
                         const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
-                        if (vDesc?.displayProperties?.name?.startsWith("Empire Hunt")) {  
+                        if (vDesc?.displayProperties?.name?.startsWith("Empire Hunt")) {
                             if (empireHuntKeys.includes(aa.activityHash)) {
                                 continue;
                             }
-                            if (aa.recommendedLight<1150) { 
+                            if (aa.recommendedLight < 1150) {
                                 continue;
                             }
                             empireHuntKeys.push(aa.activityHash);
@@ -1579,8 +1579,8 @@ export class ParseService {
             pmsa.nightfall.activities.sort((a, b) => {
                 const mla = a?.modifiers?.length;
                 const mlb = b?.modifiers?.length;
-                if (mla>mlb) { return -1;}
-                if (mla<mlb) { return 1;}
+                if (mla > mlb) { return -1; }
+                if (mla < mlb) { return 1; }
                 return 0;
             });
         }
@@ -1588,8 +1588,8 @@ export class ParseService {
             pmsa.empireHunts.sort((a, b) => {
                 const mla = a?.modifiers?.length;
                 const mlb = b?.modifiers?.length;
-                if (mla>mlb) { return -1;}
-                if (mla<mlb) { return 1;}
+                if (mla > mlb) { return -1; }
+                if (mla < mlb) { return 1; }
                 return 0;
             });
         }
@@ -2028,19 +2028,19 @@ export class ParseService {
                     const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
                     if (artifact.objectives?.length > 1) {
                         const venatiksSupp = [];
-                        const huntObj = artifact.objectives.find(x=>x.hash=='34632179');
-                        const storedObj = artifact.objectives.find(x=>x.hash=='4186537209');
-                        const chargeObj = artifact.objectives.find(x=>x.hash=='1514334696');
-                        if (huntObj!=null) {
+                        const huntObj = artifact.objectives.find(x => x.hash == '34632179');
+                        const storedObj = artifact.objectives.find(x => x.hash == '4186537209');
+                        const chargeObj = artifact.objectives.find(x => x.hash == '1514334696');
+                        if (huntObj != null) {
                             venatiksSupp.push(`Configured for Hunt`);
                         }
-                        if (chargeObj!=null) {
+                        if (chargeObj != null) {
                             venatiksSupp.push(`${chargeObj.percent}% charged`);
                         }
-                        if (storedObj!=null) {
+                        if (storedObj != null) {
                             venatiksSupp.push(`${storedObj.progress} stored`);
                         }
-                        if (char.milestones['2406589846'].suppInfo?.length==1) {
+                        if (char.milestones['2406589846'].suppInfo?.length == 1) {
                             char.milestones['2406589846'].info = char.milestones['2406589846'].suppInfo[0];
                         }
                         char.milestones['2406589846'].suppInfo = venatiksSupp;
@@ -2263,10 +2263,10 @@ export class ParseService {
                                     } else {
                                         activityAvailable = true;
                                     }
-                                    
+
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
                                     if (!activityAvailable || c.notReady) {
-                                        console.dir(c.milestones[missingKey]);
+                                        // console.dir(c.milestones[missingKey]);
                                     }
                                 }
                             }
@@ -2468,34 +2468,28 @@ export class ParseService {
             if (resp.profileRecords != null) {
                 triumphScore = resp.profileRecords.data.score;
             }
-            if (resp.profilePresentationNodes != null && resp.profileRecords != null) {
-                if (resp.profilePresentationNodes.data != null && resp.profilePresentationNodes.data.nodes != null) {
-                    if (resp.profilePresentationNodes && resp.profilePresentationNodes.data) {
-                        nodes.push(resp.profilePresentationNodes.data.nodes);
-                    }
-                    if (resp.profileRecords && resp.profileRecords.data) {
-                        records.push(resp.profileRecords.data.records);
-                    }
-                    if (resp.profileCollectibles && resp.profileCollectibles.data) {
-                        collections.push(resp.profileCollectibles.data.collectibles);
-                    }
-                }
+            if (resp.profilePresentationNodes?.data) {
+                nodes.push(resp.profilePresentationNodes.data.nodes);
             }
-            if (resp.characterPresentationNodes != null && resp.characterRecords != null) {
-                for (const char of chars) {
-                    if (resp.characterPresentationNodes && resp.characterPresentationNodes.data) {
-                        const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
-                        nodes.push(presentationNodes);
-                    }
-                    if (resp.characterRecords && resp.characterRecords.data) {
-                        const _records = resp.characterRecords.data[char.characterId].records;
-                        records.push(_records);
-                    }
-                    if (resp.characterCollectibles && resp.characterCollectibles.data) {
-                        const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
-                        collections.push(_coll);
-                    }
+            if (resp.profileRecords?.data) {
+                records.push(resp.profileRecords.data.records);
+            }
+            if (resp.profileCollectibles?.data) {
+                collections.push(resp.profileCollectibles.data.collectibles);
+            }
 
+            for (const char of chars) {
+                if (resp.characterPresentationNodes?.data) {
+                    const presentationNodes = resp.characterPresentationNodes.data[char.characterId].nodes;
+                    nodes.push(presentationNodes);
+                }
+                if (resp.characterRecords?.data) {
+                    const _records = resp.characterRecords.data[char.characterId].records;
+                    records.push(_records);
+                }
+                if (resp.characterCollectibles?.data) {
+                    const _coll = resp.characterCollectibles.data[char.characterId].collectibles;
+                    collections.push(_coll);
                 }
             }
 
@@ -3572,7 +3566,7 @@ export class ParseService {
     private parseItemStats(instanceData: any, desc: any, type: ItemType) {
         const stats: InventoryStat[] = [];
         if (desc && instanceData) {
-            const statDict: { [hash: string]: InventoryStat; } = {};            
+            const statDict: { [hash: string]: InventoryStat; } = {};
             if (instanceData != null && instanceData.stats != null) {
                 Object.keys(instanceData.stats).forEach(key => {
                     const val: any = instanceData.stats[key];
@@ -3613,9 +3607,9 @@ export class ParseService {
 
     public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
         try {
-            // // prey mod saveks
-            // if (itm.itemHash == 3630662113) {
-            //     console.dir(itm);
+            // baryon bough
+            // if (itm.itemHash == 778553120) {
+            //     console.dir('xxx');
             // }
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
@@ -3691,6 +3685,12 @@ export class ParseService {
                             description = pDesc.displayProperties.description;
                         }
                     }
+                } else if (type === ItemType.Mod && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
+                    type = ItemType.Shader;
+                } else if (type === ItemType.Dummy && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
+                    type = ItemType.Shader;
+                } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
+                    type = ItemType.CurrencyExchange;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Currency') >= 0) {
@@ -3706,6 +3706,7 @@ export class ParseService {
                     && type != ItemType.ExchangeMaterial
                     && type != ItemType.Subclass
                     && type != ItemType.Consumable) {
+                    // console.log(`Skipping ${desc.displayProperties.name} type ${type}`);
                     return null;
                 }
                 if (type == ItemType.Consumable) {
@@ -4055,16 +4056,17 @@ export class ParseService {
                 }
             }
             let powerCap = null;
-
-            if (itm.versionNumber != null) {
-                if (desc.quality && desc.quality.versions && desc.quality.versions.length > itm.versionNumber && desc.quality.versions[itm.versionNumber]) {
-                    const pCapHash = desc.quality.versions[itm.versionNumber].powerCapHash;
-                    if (pCapHash) {
-                        const pCapDesc = this.destinyCacheService.cache.PowerCap[pCapHash];
-                        if (pCapDesc) {
-                            powerCap = pCapDesc.powerCap;
-                            powerCap = powerCap > 10000 ? 9999 : powerCap;
-                        }
+            // often null in vendor gear
+            if (itm.versionNumber == null) {
+                itm.versionNumber = 0;
+            }
+            if (desc.quality?.versions?.length > itm.versionNumber && desc.quality.versions[itm.versionNumber]) {
+                const pCapHash = desc.quality.versions[itm.versionNumber].powerCapHash;
+                if (pCapHash) {
+                    const pCapDesc = this.destinyCacheService.cache.PowerCap[pCapHash];
+                    if (pCapDesc) {
+                        powerCap = pCapDesc.powerCap;
+                        powerCap = powerCap > 10000 ? 9999 : powerCap;
                     }
                 }
             }
@@ -4104,8 +4106,8 @@ export class ParseService {
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
-                isRandomRoll, ammoType, postmaster
-                , energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, coveredSeasons, powerCap, redacted, specialModSockets
+                isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, 
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash
             );
         } catch (exc) {
             console.dir(itemComp);

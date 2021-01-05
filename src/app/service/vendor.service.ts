@@ -8,11 +8,15 @@ import { LowLineService } from './lowline.service';
 import {
   Character,
   ItemObjective,
+  ClassAllowed,
   ItemType,
   NameQuantity,
   InventoryItem,
   CharacterVendorData,
-  Vendor
+  Vendor,
+  Player,
+  ApiInventoryBucket,
+  EnergyType
 } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
@@ -49,6 +53,116 @@ export class VendorService {
       );
   }
 
+  private static sortByStats(a: InventoryItem, b: InventoryItem): number {
+    let aN = a.preferredStatPoints;
+    let bN = b.preferredStatPoints;
+    if (aN < bN) {
+      return 1;
+    } else if (aN > bN) {
+      return -1;
+    }
+    aN = a.totalStatPoints;
+    bN = b.totalStatPoints;
+    if (aN < bN) {
+      return 1;
+    } else if (aN > bN) {
+      return -1;
+    }
+    return 0;
+  }
+
+  public getExchangeInfo(player: Player, vendorItems: InventoryItem[]) {
+    const stuff = player.gear.concat(vendorItems);
+    if (stuff.length > 820) {
+      console.log('hi');
+    }
+  }
+
+  public findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): InventoryItem[] {
+    const vendorExotics = vendorArmor.filter(i => i.tier == 'Exotic');
+    const playerExotics = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Exotic');
+    const deals = [];
+    for (const v of vendorExotics) {
+      const copies = playerExotics.filter(i => i.hash == v.hash);
+      copies.sort(VendorService.sortByStats);
+      if (copies[0].vendorItemInfo) {
+        deals.push(copies[0]);
+      }
+    }
+    return deals;
+  }
+
+  public findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
+    this.preferredStatService.processGear(player);
+    const bucketMap: { [key: string]: ClassInventoryBucket; } = {};
+    const buckets = this.getBuckets();
+    for (const bucket of buckets) {
+      bucketMap[bucket.bucket.hash.toString() + bucket.energyType.toString() + bucket.classType.toString()] = bucket;
+    }
+    const allItems = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Legendary');
+    for (const i of allItems) {
+      const bucket = bucketMap[i.inventoryBucket.hash.toString() + i.energyType.toString() + i.classAllowed.toString()];
+      if (!bucket) {
+        // console.log(`Skipping ${i.name}`);
+        continue;
+      }
+      bucket.gear.push(i);
+    }
+    for (const bucket of buckets) {
+      bucket.gear.sort(VendorService.sortByStats);
+      bucket.hasDeal = bucket.gear.length > 0 && bucket.gear[0].vendorItemInfo != null;
+    }
+    return buckets;
+  }
+
+  private getBuckets(): ClassInventoryBucket[] {
+    // one per armor slot, one per class
+    const buckets = this.destinyCacheService.cache['InventoryBucket'];
+    const returnMe: ClassInventoryBucket[] = [];
+    const classTypes = [ClassAllowed.Titan, ClassAllowed.Warlock, ClassAllowed.Hunter];
+    const energyTypes = [EnergyType.Arc, EnergyType.Thermal, EnergyType.Void];
+    for (const key of Object.keys(buckets)) {
+      const val: ApiInventoryBucket = buckets[key];
+      if (val.index >= 3 && val.index <= 7) {
+        for (const classType of classTypes) {
+          for (const energyType of energyTypes) {
+            returnMe.push({
+              bucket: val,
+              classType,
+              energyType,
+              gear: []
+            });
+          }
+        }
+      }
+    }
+    return returnMe;
+  }
+
+  public static getUniqueVendorItems(vendors: CharacterVendorData[]): InventoryItem[] {
+    // get a unique list of all vendor items
+    const vendorGearMap: { [key: string]: InventoryItem; } = {};
+    for (const v of vendors) {
+      if (!v) {
+        continue;
+      }
+      for (const g of v.data) {
+        if (g.id == null) {
+          console.dir(g);
+        } else {
+          vendorGearMap[g.id] = g;
+        }
+      }
+    }
+    const allUniqueVendorItems = [];
+    // tslint:disable-next-line: forin
+    for (const key of Object.keys(vendorGearMap)) {
+      const val = vendorGearMap[key];
+      allUniqueVendorItems.push(val);
+    }
+    return allUniqueVendorItems;
+  }
+
 
   public parseVendorData(char: Character, resp: any): InventoryItem[] {
     if (resp == null || resp.sales == null) { return null; }
@@ -62,13 +176,13 @@ export class VendorService {
       i.lowLinks = this.lowlineService.buildItemLink(i.hash);
 
     }
-    returnMe.sort((a, b) => {
-      if (a.tierType < b.tierType) { return 1; }
-      if (a.tierType > b.tierType) { return -1; }
-      if (a.name < b.name) { return -1; }
-      if (a.name > b.name) { return 1; }
-      return 0;
-    });
+    // returnMe.sort((a, b) => {
+    //   if (a.tierType < b.tierType) { return 1; }
+    //   if (a.tierType > b.tierType) { return -1; }
+    //   if (a.name < b.name) { return -1; }
+    //   if (a.name > b.name) { return 1; }
+    //   return 0;
+    // });
     this.preferredStatService.processItems(returnMe);
     return returnMe;
   }
@@ -184,6 +298,7 @@ export class VendorService {
     i.itemInstanceId = i.vendorItemIndex;
     // last arg is item progressions, which will always be empty from a vendor
     const data: InventoryItem = this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
+    i.owner = char;
     // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
     if (!data) {
       return null;
@@ -197,16 +312,16 @@ export class VendorService {
       costs: costs,
       searchText: vendorSearchText.toLowerCase()
     };
-    // make item id somewhat unique for use later in finding dupes
-    data.id = vendor.hash+data.id;
+    // make item id unique for use later in finding dupes
+    data.id = vendor.hash + data.hash + data.id;
     return data;
   }
 
   public static checkDupes(gear: InventoryItem[]) {
     for (const g of gear) {
-      const matches = gear.filter(x => x!==g && x.hash === g.hash);
-      if (matches.length>0) {
-        console.log(g.name+" has dupes");
+      const matches = gear.filter(x => x !== g && x.hash === g.hash);
+      if (matches.length > 0) {
+        console.log(g.name + ' has dupes');
         console.dir(g);
         console.dir(matches);
       }
@@ -225,14 +340,14 @@ export class VendorService {
       if (g.id == i.id) {
         continue;
       }
-      // for exotics we only want to compare the same type of gear, 
+      // for exotics we only want to compare the same type of gear,
       // like Dragon's shadow to Dragon's shadow
       if (preciseMatch) {
         if (i.hash != g.hash) {
 
         }
       }
-      if (g.powerCap<minPowerCap) { 
+      if (g.powerCap < minPowerCap) {
         continue;
       }
       if (i.type != g.type) {
@@ -257,7 +372,7 @@ export class VendorService {
           continue;
         }
       }
-      
+
 
       // do we match by burn?
       if (i.energyType != g.energyType) {
@@ -322,4 +437,13 @@ export class VendorService {
       return of(result as T);
     };
   }
+}
+
+
+export interface ClassInventoryBucket {
+  bucket: ApiInventoryBucket;
+  classType: ClassAllowed;
+  energyType: EnergyType;
+  gear: InventoryItem[];
+  hasDeal?: boolean;
 }
