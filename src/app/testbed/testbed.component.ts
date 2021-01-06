@@ -97,6 +97,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
       // DONE compare to collections
       // Eh, kinda: look at gear vs vendors
       // DONE look at spider exchanges vs what guardian has
+      // TODO tess bright dust ornaments
       // TODO use this for bounty shopping list stuff on home page
       // LATER use this for "resources" page (make entire new page w/ better name?)
     });
