@@ -4,28 +4,18 @@
         <button mat-stroked-button (click)="refresh()">Refresh</button>
     </p>
     
-    
-    <ng-container *ngIf="playerLoading$|async as loading">
-        <div>Player loading</div>
-    </ng-container>
-    <ng-container *ngIf="player$|async as player">
-        <div>Player: {{player.profile?.userInfo?.displayName}}: {{player.gear.length}}</div>
-    </ng-container>
-    
-    <ng-container *ngIf="vendors$|async as vendorChars">
-        <div *ngFor="let vendorChar of vendorChars">
-            <ng-container *ngIf="!vendorChar">Loading</ng-container>
-            <ng-container *ngIf="vendorChar">Vendor: {{vendorChar.char.className}} {{vendorChar.data.length}}</ng-container>
-        </div>    
-    </ng-container>
     <div *ngIf="vendorDeals$|async as vendorDeals">
         <div *ngIf="vendorDeals.playerLoading"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
         <div *ngIf="vendorDeals.vendorsLoading>0"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Vendors Loading {{vendorDeals.vendorsLoading}} / {{vendorDeals.totalVendors}} </div>
         <h3>Exchange</h3>
-        <h5>- Banshee</h5>
-        {{vendorDeals.exchange.banshee.length}}
-        <h5>- Spider</h5>
-        {{vendorDeals.exchange.spider.length}}
+        <h5>Banshee {{vendorDeals.exchange.banshee.length}}</h5>
+        <div *ngFor="let c of vendorDeals.exchange.banshee">
+            {{c.target.displayProperties.name}} (you have {{c.targetCount|number}}) costs {{c.cost.desc.displayProperties.name}} (you have {{c.costCount|number}})
+        </div>
+        <h5>Spider {{vendorDeals.exchange.spider.length}}</h5>
+        <div *ngFor="let c of vendorDeals.exchange.spider">
+            {{c.target?.displayProperties.name}} (you have {{c.targetCount|number}}}) costs {{c.cost?.desc?.displayProperties?.name}} (you have {{c.costCount|number}})
+        </div>
         <h3>Collection</h3>
         <h5>- Banshee</h5>
         {{vendorDeals.collection.banshee.length}}

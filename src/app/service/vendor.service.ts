@@ -153,7 +153,7 @@ export class VendorService {
   }
 
   private static setCost(costs: { [key: string]: number; }, v: VendorCurrency) {
-    let targetCost;
+    let targetCost: VendorCost;
     // if it has one cost, use it
     // otherwise find the redeemable
     if (v.saleItem.vendorItemInfo.costs.length == 1) {
@@ -164,6 +164,23 @@ export class VendorService {
     const count = costs[targetCost.desc.hash];
     v.cost = targetCost;
     v.costCount = count;
+  }
+
+  private static getCostHash(name: string): string {
+    if (name == 'Purchase Baryon Boughs') { return '592227263'; }
+    if (name == 'Purchase Phaseglass') { return '1305274547'; }
+    if (name == 'Purchase Simulation Seeds') { return '49145143'; }
+    if (name == 'Purchase Glacial Starwort') { return '1485756901'; }
+    if (name == 'Purchase Datalattice') { return '3487922223'; }
+    if (name == 'Purchase Helium Filaments') { return '3592324052'; }
+    if (name == 'Purchase Seraphite') { return '31293053'; }
+    if (name == 'Purchase Legendary Shards') { return '1022552290'; }
+    if (name == 'Purchase Etheric Spiral') { return '1177810185'; }
+    if (name == 'Purchase Glimmer') { return '3159615086'; }
+    if (name == 'Purchase Dusklight Shards') { return '950899352'; }
+    if (name == 'Purchase Spinmetal Leaves') { return '293622383'; }
+    if (name == 'Purchase Alkane Dust') { return '2014411539'; }
+    return null;
   }
 
   private getExchangeInfo(player: Player, vendorItems: InventoryItem[]): VendorCurrencies {
@@ -197,31 +214,28 @@ export class VendorService {
       if (g.name.indexOf('Enhancement') >= 0) {
         continue;
       }
-      let targetName = g.name.substr('Purchase '.length);
-      if (targetName.endsWith('s')) {
-        targetName = targetName.substr(0, targetName.length - 1);
+      // let targetName = g.name.substr('Purchase '.length);
+      // if (targetName.endsWith('s')) {
+      //   targetName = targetName.substr(0, targetName.length - 1);
+      // }
+      // if (targetName == 'Datalattice') {
+      //   targetName = 'Microphasic Datalattice';
+      // }
+      // if (targetName == 'Helium Filament') {
+      //   targetName = 'Helium Filaments';
+      // }
+      const targetHash = VendorService.getCostHash(g.name);
+      const targetDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[targetHash];
+      let targetCount;
+      if (targetHash == '1022552290' || targetHash == '3159615086') { // legendary shards or glimmer
+        const currency = player.currencies.find(x => x.hash == targetHash);
+        targetCount = currency.count;
+      } else {
+        targetCount = player.gear.filter(i => i.hash == targetHash).reduce((result, item) => { return result + item.quantity; }, 0);
       }
-      if (targetName == 'Datalattice') {
-        targetName = 'Microphasic Datalattice';
-      }
-      if (targetName == 'Glimmer' || targetName == 'Legendary Shards') {
-        const currency = player.currencies.find(x => x.name == targetName);
-        const v: VendorCurrency = {
-          saleItem: g,
-          target: currency,
-          targetCount: currency.count,
-          cost: null,
-          costCount: null
-        };
-        VendorService.setCost(costs, v);
-        returnMe.spider.push(v);
-        continue;
-      }
-      const targetCount = player.gear.filter(i => i.name == targetName).reduce((result, item) => { return result + item.quantity; }, 0);
-      const target = player.gear.find(i => i.name == targetName);
       const v: VendorCurrency = {
         saleItem: g,
-        target,
+        target: targetDesc,
         targetCount,
         cost: null,
         costCount: null
@@ -231,10 +245,10 @@ export class VendorService {
     }
     for (const g of bansheeConsumables) {
       const targetCount = player.gear.filter(i => i.hash == g.hash).reduce((result, item) => { return result + item.quantity; }, 0);
-      const target = player.gear.find(i => i.hash == g.hash);
+      const targetDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[g.hash];
       const v: VendorCurrency = {
         saleItem: g,
-        target,
+        target: targetDesc,
         targetCount,
         cost: null,
         costCount: null
@@ -387,13 +401,9 @@ export class VendorService {
 
   private parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): InventoryItem {
     if (i.itemHash == null && i.itemHash === 0) { return null; }
-    const index = i.vendorItemIndex;
     const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
     if (iDesc == null) { return null; }
-    const itemStats = resp.itemComponents[vendor.hash]?.stats?.data[index];
-
     let vendorSearchText = '';
-
     // calculate costs
     const costs: VendorCost[] = [];
     if (i.costs) {
@@ -630,10 +640,10 @@ export interface VendorCurrencies {
 export interface VendorCurrency {
   saleItem: InventoryItem;
 
-  target: InventoryItem | Currency;
+  target: ManifestInventoryItem;
   targetCount: number;
 
-  cost: InventoryItem | Currency;
+  cost: VendorCost;
   costCount: number;
 }
 
