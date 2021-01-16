@@ -21,83 +21,15 @@ const MAX_PAGE_SIZE = 250;
 
 @Injectable()
 export class BungieService implements OnDestroy {
-    private selectedUserSub = new ReplaySubject(1);
-    public selectedUserFeed: Observable<SelectedUser>;
     private publicMilestonesAndActivities: PublicMilestonesAndActivities = null;
     private unsubscribe$: Subject<void> = new Subject<void>();
-    authInfo: AuthInfo;
-    selectedUser: SelectedUser;
     apiDown = false;
-
-    private async updateSelectedUser(selectedUser: SelectedUser): Promise<void> {
-        if (selectedUser != null) {
-            // wait until cache is ready
-            this.destinyCacheService.ready.asObservable().pipe(filter(x => x === true), first()).subscribe(() => {
-                this.applyClans(this.selectedUser);
-                this.applyCurrencies(this.selectedUser);
-            });
-        }
-    }
 
     constructor(private httpClient: HttpClient,
         private notificationService: NotificationService,
         private destinyCacheService: DestinyCacheService,
         private authService: AuthService,
         private parseService: ParseService) {
-        this.selectedUserFeed = this.selectedUserSub.asObservable() as Observable<SelectedUser>;
-        this.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-            this.updateSelectedUser(selectedUser);
-        });
-        this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
-            this.authInfo = ai;
-            if (ai != null) {
-                this.getBungieMembershipsById(ai.memberId, -1).then((membership: BungieMembership) => {
-                    if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length === 0) {
-                        console.log('No membership found for id, signing out.');
-                        this.authService.signOut();
-                        return;
-                    }
-                    const selectedUser: SelectedUser = new SelectedUser();
-                    selectedUser.membership = membership;
-
-                    // For testing, add a fake PSN account
-                    // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-                    // fake.membershipType = 2;
-                    // fake.platformName = "PSN";
-                    // membership.destinyMemberships.push(fake);
-
-                    // fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-                    // fake.membershipType = 4;
-                    // fake.platformName = "BNET";
-                    // membership.destinyMemberships.push(fake);
-
-
-                    let platform = 2;
-                    const sPlatform: string = localStorage.getItem('D2STATE-preferredPlatform');
-                    if (sPlatform != null) {
-                        platform = parseInt(sPlatform, 10);
-                    } else {
-                        console.log('No preferred platform using: ' + platform);
-                        if (membership.destinyMemberships.length > 1) {
-                            selectedUser.promptForPlatform = true;
-                        }
-                    }
-                    membership.destinyMemberships.forEach(m => {
-                        if (m.membershipType === platform) {
-                            selectedUser.userInfo = m;
-                        }
-                    });
-                    if (selectedUser.userInfo == null) {
-                        selectedUser.userInfo = membership.destinyMemberships[0];
-                    }
-                    this.selectedUser = selectedUser;
-                    this.emitUsers();
-                });
-            } else {
-                this.selectedUser = null;
-                this.emitUsers();
-            }
-        });
     }
 
     public async searchBungieUsers(name: string): Promise<BungieMember[]> {
@@ -295,39 +227,11 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private async applyCurrencies(s: SelectedUser): Promise<Currency[]> {
-        const tempPlayer = await this.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
-            ['Characters', 'ProfileCurrencies', 'ProfileInventories', 'CharacterInventories'], true, true);
-        if (tempPlayer == null) {
-            console.log('No player to apply currencies to');
-            return;
-        }
-        s.currencies$.next(tempPlayer.currencies);
-        s.gearMeta$.next(tempPlayer.gearMeta);
-
-    }
-
-
-    private async applyClans(s: SelectedUser) {
-        const c = await this.getClans(s.membership.bungieId);
-        s.clans.next(c);
-    }
-
     private async setClans(membership: BungieMembership) {
         const c = await this.getClans(membership.bungieId);
         if (c != null) {
             membership.clans = c;
         }
-    }
-
-    public selectUser(u: UserInfo) {
-        this.selectedUser.userInfo = u;
-        localStorage.setItem('D2STATE-preferredPlatform', '' + u.membershipType);
-        this.emitUsers();
-    }
-
-    private emitUsers() {
-        this.selectedUserSub.next(this.selectedUser);
     }
 
     public getActivityModes(): ActivityMode[] {
@@ -347,20 +251,12 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(76, 'Reckoning', 'Reckoning'),
             new ActivityMode(84, 'Trials', 'Trials'),
             new ActivityMode(2, 'Story', 'Story'),
-
             // new ActivityMode(18, 'All Strikes', 'All Strikes'),
-
-
-
             // new ActivityMode(69, 'PvP Competitive', 'PvP Competitive'),
             // new ActivityMode(70, 'PvP Quickplay', 'PvP Quickplay'),
             // new ActivityMode(32, 'Private Matches', 'Private Matches'),
-
-
-
             // new ActivityMode(39, 'Trials', 'Trials'),
             // new ActivityMode(15, 'Crimson Doubles', 'Crimson Doubles'),
-
             // new ActivityMode(10, 'Control', 'Control'),
             // new ActivityMode(43, 'Iron Banner Control', 'Iron Banner Control'),
             // new ActivityMode(12, 'Clash', 'Clash'),
@@ -368,14 +264,9 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(31, 'Supremacy', 'Supremacy'),
             // new ActivityMode(45, 'Iron Banner Supremacy', 'Iron Banner Supremacy'),
             // new ActivityMode(25, 'All Mayhem', 'All Mayhem'),
-
-
-
-
             // new ActivityMode(16, 'Nightfall (old)', 'Nightfall (old)'),
             // new ActivityMode(17, 'Heroic Nightfall (old)', 'Heroic Nightfall (old)'),
             // new ActivityMode(3, 'Strike', 'Strike'),
-
             // new ActivityMode(37, 'Survival', 'Survival'),
             // new ActivityMode(38, 'Countdown', 'Countdown'),
             // new ActivityMode(40, 'Social', 'Social'),
@@ -551,12 +442,7 @@ export class BungieService implements OnDestroy {
             return pseudoMs;
         }
     }
-
-    public isSignedOn(p: Player): boolean {
-        if (this.selectedUser == null) { return false; }
-        return (this.selectedUser.userInfo.membershipId == p.profile.userInfo.membershipId);
-    }
-
+    
     public async groupVendorBounties(c: Character) {
         try {
             const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +

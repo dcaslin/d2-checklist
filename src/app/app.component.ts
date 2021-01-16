@@ -16,6 +16,7 @@ import { ClanRow, Const, SelectedUser, UserInfo } from './service/model';
 import { NotificationService } from './service/notification.service';
 import { StorageService } from './service/storage.service';
 import { PwaService } from './service/pwa.service';
+import { SignedOnUserService } from './service/signed-on-user.service';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     public authGuard: AuthGuard,
+    private signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
@@ -186,7 +188,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser.next(selectedUser);
       this.loggingOn.next(false);
       if (selectedUser == null) { return; }
@@ -245,7 +247,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   selectUser(user) {
-    this.bungieService.selectUser(user);
+    this.signedOnUserService.selectUser(user);
     this.ref.markForCheck();
   }
 

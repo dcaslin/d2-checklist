@@ -4,6 +4,7 @@ import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const,
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { StorageService } from '@app/service/storage.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -127,12 +128,13 @@ export class PlayerStateService {
 
   constructor(
     private storageService: StorageService,
+    private signedOnUserService: SignedOnUserService,
     private bungieService: BungieService) {
     this.player = this._player.pipe(map(val => {
       PlayerStateService.sortMileStones(val, this.sort);
       return val;
     }));
-    this.bungieService.selectedUserFeed.pipe().subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe().subscribe((selectedUser: SelectedUser) => {
       this._isSignedOn.next(selectedUser != null);
       this.checkSignedOnCurrent(this.currPlayer());
     });
@@ -160,7 +162,7 @@ export class PlayerStateService {
   }
 
   private checkSignedOnCurrent(currentPlayer: Player) {
-    const a = this.bungieService.selectedUser;
+    const a = this.signedOnUserService.signedOnUser$.getValue();
     let isCurrent = false;
     if (a != null && currentPlayer != null) {
       if (currentPlayer.profile.userInfo.membershipId == a.userInfo.membershipId) {

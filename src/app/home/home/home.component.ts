@@ -16,6 +16,7 @@ import { BountySetsDialogComponent, BountySetInfo } from './bounty-sets-dialog/b
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 import { ParseService } from '@app/service/parse.service';
 import { AuthService } from '@app/service/auth.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Component({
   selector: 'd2c-home',
@@ -70,6 +71,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
 
   constructor(
     private destinyCacheService: DestinyCacheService,
+    private signedOnUserService: SignedOnUserService,
     public bungieService: BungieService,
     private authService: AuthService,
     private parseService: ParseService,
@@ -246,10 +248,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.loading.next(true);
     this.loadMileStones();
     this.refreshMe.pipe(takeUntil(this.unsubscribe$)).subscribe(() => {
-      this.loadPlayerForBounties(this.bungieService.selectedUser);
+      this.loadPlayerForBounties(this.signedOnUserService.signedOnUser$.getValue());
     });
     // selected user changed
-    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.player.next(null);
       this.isSignedOn.next(selectedUser != null);
       this.refreshMe.next();

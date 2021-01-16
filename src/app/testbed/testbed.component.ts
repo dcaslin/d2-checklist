@@ -3,6 +3,7 @@ import { BungieService } from '@app/service/bungie.service';
 import { IconService } from '@app/service/icon.service';
 import { Character, CharacterVendorData, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { VendorDeals, VendorService } from '@app/service/vendor.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -25,6 +26,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
   constructor(
     storageService: StorageService,
     private bungieService: BungieService,
+    private signedOnUserService: SignedOnUserService,
     private vendorService: VendorService,
     public iconService: IconService,
     private notificationService: NotificationService) {
@@ -83,7 +85,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
       this.player$.next(player);
       this.playerLoading$.next(false);
     });
-    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser$.next(selectedUser);
     });
     combineLatest([this.player$, this.vendors$]).pipe(
