@@ -5,6 +5,7 @@ import { IconService } from '@app/service/icon.service';
 import { Character, ClassAllowed, ItemType, Player, SaleItem, SelectedUser } from '@app/service/model';
 import { ParseService } from '@app/service/parse.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { VendorService } from '@app/service/vendor.service';
 import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent as observableFromEvent, of as observableOf } from 'rxjs';
@@ -40,6 +41,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   ClassAllowed = ClassAllowed;
 
   constructor(storageService: StorageService, private bungieService: BungieService,
+    private signedOnUserService: SignedOnUserService,
     private vendorService: VendorService,
     public parseService: ParseService,
     public preferredStatService: PreferredStatService,
@@ -193,7 +195,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
         }
       });
 
-    combineLatest(this.bungieService.selectedUserFeed, this.route.paramMap, this.route.url).pipe(
+    combineLatest([this.signedOnUserService.signedOnUser$, this.route.paramMap, this.route.url]).pipe(
       switchMap(([selectedUser, params, url]) => {
         return observableOf({
           user: selectedUser,

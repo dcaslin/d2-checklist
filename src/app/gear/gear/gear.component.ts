@@ -28,6 +28,7 @@ import { Choice, GearToggleComponent, ToggleConfig, ToggleState } from './gear-t
 import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Component({
   selector: 'd2c-gear',
@@ -452,6 +453,7 @@ export class GearComponent extends ChildComponent {
 
   constructor(storageService: StorageService,
     private bungieService: BungieService,
+    private signedOnUserService: SignedOnUserService,
     private cacheService: DestinyCacheService,
     public iconService: IconService,
     public markService: MarkService,
@@ -483,7 +485,7 @@ export class GearComponent extends ChildComponent {
       this.size = savedSize;
     }
     // selected user changed
-    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.selectedUser = selectedUser;
       const controllerPref = localStorage.getItem('mnk-vs-controller');
       if (controllerPref != null) {

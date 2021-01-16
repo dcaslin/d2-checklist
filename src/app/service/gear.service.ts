@@ -7,6 +7,7 @@ import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser,
 import { NotificationService } from './notification.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
 import { PreferredStatService } from './preferred-stat.service';
+import { SignedOnUserService } from './signed-on-user.service';
 
 interface VaultStatus {
     isFull: boolean;
@@ -117,6 +118,7 @@ export class GearService {
 
     constructor(private bungieService: BungieService,
         public markService: MarkService,
+        private signedOnUserService: SignedOnUserService,
         private notificationService: NotificationService,
         private bucketService: BucketService,
         private pandaService: PandaGodrollsService,
@@ -132,7 +134,7 @@ export class GearService {
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
                 'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true);
             // update gear counts on title bar
-            this.bungieService.selectedUser.gearMeta$.next(player.gearMeta);
+            this.signedOnUserService.signedOnUser$.getValue().gearMeta$.next(player.gearMeta);
             // this.bungieService.selectedUser.currencies$.next(player.currencies);
             const gearById: { [key: string]: InventoryItem[]; } = {};
             for (const g of player.gear) {

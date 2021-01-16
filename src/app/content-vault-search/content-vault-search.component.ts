@@ -9,6 +9,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '@app/service/auth.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Component({
   selector: 'd2c-content-vault-search',
@@ -24,6 +25,7 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
   readonly _failedSearch: BehaviorSubject<FailedSearch> = new BehaviorSubject(null);
 
   constructor(storageService: StorageService,
+    private signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     private formBuilder: FormBuilder,
     private bungieService: BungieService,
@@ -36,7 +38,7 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
       platform: [this.platforms[0], [Validators.required]],
       gt: ['', [Validators.required]]
     });
-    this.bungieService.selectedUserFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+    this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this._selectedUser.next(selectedUser);
     });
     this.storageService.settingFeed.pipe(

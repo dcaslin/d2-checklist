@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthService } from '@app/service/auth.service';
 import { BungieService } from '@app/service/bungie.service';
 import { SelectedUser } from '@app/service/model';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
@@ -30,6 +31,7 @@ export class ContextService extends Destroyable {
 
   constructor(
     private http: HttpService,
+    private signedOnUserService: SignedOnUserService,
     private bungieService: BungieService,
     private auth: AuthService,
     private dictionary: DictionaryService
@@ -70,7 +72,7 @@ export class ContextService extends Destroyable {
   }
 
   private userFeed(): Observable<any> {
-    return this.bungieService.selectedUserFeed.pipe(
+    return this.signedOnUserService.signedOnUser$.pipe(
       filter((x) => !!x), // only trigger when it emits truthy
       tap((user) => {
         this.user.next(user); // lol I know this is basically the same thing as the selected user feed
