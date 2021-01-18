@@ -49,7 +49,7 @@ export class DictionaryService extends Destroyable {
    * Waits for the cache to be available then gets it
    */
   private getCache() {
-    this.cacheService.ready.pipe(
+    this.cacheService.ready$.pipe(
       first((x) => !!x), // only trigger when it emits true
       takeUntil(this.destroy$)
     ).subscribe(() => {

@@ -33,7 +33,7 @@ import {
     DestinyAmmunitionType,
     EnergyType,
     Fraction,
-    GearMeta,
+    GearMetaData,
     InventoryItem,
     InventoryPlug,
     InventorySocket,
@@ -2698,7 +2698,7 @@ export class ParseService {
             transitoryData, specialProgressions, gearMeta);
     }
 
-    private handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): GearMeta {
+    private handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): GearMetaData {
         if (profileInventory == null || profileInventory.data == null || profileInventory.data.items == null) {
             return {
                 postmasterTotal: 0,
@@ -2706,7 +2706,7 @@ export class ParseService {
                 vault: null
             };
         }
-        const returnMe: GearMeta = {
+        const returnMe: GearMetaData = {
             postmasterTotal: 0,
             postmaster: [],
             vault: {

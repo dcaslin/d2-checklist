@@ -1,3 +1,13 @@
 .test-container {
     min-width: 200px;
 }
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-row div {
+    margin: 10px;
+}

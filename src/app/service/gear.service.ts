@@ -134,7 +134,7 @@ export class GearService {
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
                 'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true);
             // update gear counts on title bar
-            this.signedOnUserService.signedOnUser$.getValue().gearMeta$.next(player.gearMeta);
+            this.signedOnUserService.signedOnUser$.getValue().gearMeta$.next(player.gearMetaData);
             // this.bungieService.selectedUser.currencies$.next(player.currencies);
             const gearById: { [key: string]: InventoryItem[]; } = {};
             for (const g of player.gear) {

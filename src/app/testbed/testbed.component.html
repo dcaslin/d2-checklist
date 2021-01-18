@@ -1,11 +1,27 @@
 <div class="left test-container">
     <h1>Test Bed</h1>
-    <p>
-        <button mat-stroked-button (click)="refresh()">Refresh</button>
-    </p>
+    <div class="flex-row">
+        <div><button mat-stroked-button (click)="refreshPlayer()">Refresh Player</button></div>
+        <div><button mat-stroked-button (click)="refreshVendors()">Refresh Vendors</button></div>
+    </div>
+
+    <div *ngIf="signedOnUserService.vendors$|async as vendors">
+        {{vendors.length}}
+        <div class="flex-row">
+            <div *ngFor="let v of vendors">
+                <div *ngIf="v!=null">
+                    {{v.char.className}} {{v.cached}} {{v.ts}} <span *ngIf="v.loading"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></span>
+                </div>
+                <div *ngIf="v==null">
+                    Null
+                </div>
+            </div>
+        </div>
+    </div>
     
-    <div *ngIf="vendorDeals$|async as vendorDeals">
-        <div *ngIf="vendorDeals.playerLoading"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
+    <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
+        <div *ngIf="signedOnUserService.playerLoading$|async"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
+
         <div *ngIf="vendorDeals.vendorsLoading>0"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Vendors Loading {{vendorDeals.vendorsLoading}} / {{vendorDeals.totalVendors}} </div>
         <h3>Exchange</h3>
         <h5>Banshee {{vendorDeals.exchange.banshee.length}}</h5>

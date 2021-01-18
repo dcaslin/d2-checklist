@@ -413,7 +413,7 @@ export interface BountySet {
 export class SelectedUser {
     userInfo: UserInfo;
     currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
-    gearMeta$: BehaviorSubject<GearMeta> = new BehaviorSubject(null);
+    gearMeta$: BehaviorSubject<GearMetaData> = new BehaviorSubject(null);
     clans: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
     membership: BungieMembership;
     promptForPlatform = false;
@@ -589,7 +589,7 @@ export class Player {
     readonly artifactPowerBonus: number;
     readonly transitoryData: ProfileTransitoryData;
     readonly minsPlayed: number;
-    readonly gearMeta: GearMeta;
+    readonly gearMetaData: GearMetaData;
     maxLL = 0;
     maxLLFraction?: Fraction;
     aggHistory: AggHistoryEntry[] = [];
@@ -607,7 +607,7 @@ export class Player {
         seals: Seal[], badges: Badge[],
         title: string, seasons: RecordSeason[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
-        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMeta) {
+        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -654,7 +654,7 @@ export class Player {
             this.valor = specialAccountProgressions.valor;
             this.seasonRank = specialAccountProgressions.seasonRank;
         }
-        this.gearMeta = gearMeta;
+        this.gearMetaData = gearMeta;
     }
 
     public getWeeklyXp(): number {
@@ -816,7 +816,7 @@ export class Currency {
     }
 }
 
-export interface GearMeta {
+export interface GearMetaData {
     postmaster: CharPostmasterMeta[];
     vault: VaultMeta;
     postmasterTotal: number;
@@ -1492,6 +1492,9 @@ export interface ApiItemTierType {
 export interface CharacterVendorData {
     char: Character;
     data: InventoryItem[];
+    cached: boolean;
+    ts?: number;
+    loading?: boolean;
 }
 
 export interface VendorCost {
