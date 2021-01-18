@@ -68,7 +68,7 @@ export class AuthGuard implements CanActivate {
   }
 
   canActivate(): Observable<boolean> {
-    return this.destinyCacheService.ready.asObservable().pipe(filter(x => x === true));
+    return this.destinyCacheService.ready$.asObservable().pipe(filter(x => x === true));
   }
 }
 
@@ -116,7 +116,7 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: FriendsComponent
-    }, 
+    },
     {
       path: 'gear',
       redirectTo: 'gear/weapons',
@@ -127,7 +127,7 @@ export class AuthGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [AuthGuard],
       component: GearComponent
-    }, 
+    },
     {
       path: 'search',
       pathMatch: 'full',

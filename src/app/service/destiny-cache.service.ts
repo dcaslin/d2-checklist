@@ -11,7 +11,7 @@ declare let JSZip: any;
 export class DestinyCacheService {
   public cache: Cache;
 
-  public readonly ready: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly ready$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly checkingCache: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly percent: BehaviorSubject<number> = new BehaviorSubject(0);
   public readonly unzipping: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -42,7 +42,7 @@ export class DestinyCacheService {
         this.cache = manifest;
       }
       this.percent.next(100);
-      this.ready.next(true);
+      this.ready$.next(true);
       const t1 = performance.now();
       console.log((t1 - t0) + ' ms to load manifest');
 
@@ -63,7 +63,7 @@ export class DestinyCacheService {
     const z2f = zip2.file('destiny2.json');
     const data2 = await z2f.async('string');
     this.cache = JSON.parse(data2);
-    this.ready.next(true);
+    this.ready$.next(true);
   }
 
   private showProgress(evt: HttpEvent<any>) {

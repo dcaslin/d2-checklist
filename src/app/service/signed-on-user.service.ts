@@ -1,10 +1,12 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, first, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
+import { catchError, concatAll, filter, first, map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { AuthInfo, AuthService } from './auth.service';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
-import { BungieMembership, Player, SelectedUser, UserInfo } from './model';
+import { VendorDeals, VendorService } from '@app/service/vendor.service';
+import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo } from './model';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +14,19 @@ import { BungieMembership, Player, SelectedUser, UserInfo } from './model';
 export class SignedOnUserService implements OnDestroy {
   unsubscribe$: Subject<void> = new Subject<void>();
   public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
+
+  public refreshPlayer$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public refreshVendors$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
+  public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
+  public vendors$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
+  public vendorDeals$: BehaviorSubject<VendorDeals> = new BehaviorSubject(null);
+
+  public currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
+  public clans$: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
+  public gearMetadata$: BehaviorSubject<GearMetaData> = new BehaviorSubject(null);
 
   // track info about the signed on user
   // Player
@@ -22,8 +37,10 @@ export class SignedOnUserService implements OnDestroy {
 
   constructor(
     private bungieService: BungieService,
+    private vendorService: VendorService,
     private authService: AuthService,
-    private destinyCacheService: DestinyCacheService
+    private destinyCacheService: DestinyCacheService,
+    private notificationService: NotificationService
   ) {
     this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
       if (ai != null) {
@@ -68,38 +85,89 @@ export class SignedOnUserService implements OnDestroy {
         this.signedOnUser$.next(null);
       }
     });
+    // handle clans
     this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-      this.updateSelectedUser(selectedUser);
+      if (selectedUser != null) {
+        this.applyClans(selectedUser);
+      }
+    });
+    // new work to look up inventory, profile, etc
+    // TODO also find clans
+    // TODO combine w/ refresh signal, some sort of distinct until changed
+
+    combineLatest([this.refreshPlayer$, this.signedOnUser$, this.destinyCacheService.ready$]).pipe(
+      takeUntil(this.unsubscribe$),
+      filter(([refresh, selectedUser, cacheReady]) => cacheReady && (selectedUser != null)),
+      tap(([refresh, selectedUser, cacheReady]) => this.playerLoading$.next(true)),
+      map(([refresh, selectedUser, cacheReady]) => from(
+        this.bungieService.getChars(selectedUser.userInfo.membershipType,
+          selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
+          'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
+          'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
+          'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles'], false, true))
+      ),
+      concatAll(),
+      catchError((err) => {
+        this.notificationService.fail(err);
+        return null;
+      }
+      ),
+    ).subscribe((player: Player) => {
+      this.player$.next(player);
+      if (player != null) {
+        this.currencies$.next(player.currencies);
+        this.gearMetadata$.next(player.gearMetaData);
+      } else {
+        this.currencies$.next([]);
+        this.gearMetadata$.next(null);
+      }
+      this.playerLoading$.next(false);
     });
 
+
+    // use player updates to drive vendor updates
+    // TODO only query vendors if interested?
+    combineLatest([this.refreshVendors$, this.player$]).pipe(
+      takeUntil(this.unsubscribe$),
+      map(([refresh, player]) => {
+        const requests: Observable<CharacterVendorData>[] = [];
+        if (player) {
+          for (const char of player.characters) {
+                // TODO mark this current request as loading
+                const loadMe = this.vendors$.getValue().find(x => x.char === char);
+                if (loadMe) {
+                  loadMe.loading = true;
+                }
+                const req = this.vendorService.loadVendors(char, refresh);
+                requests.push(req);
+          }
+        }
+        return combineLatest(requests);
+      }),
+      concatAll()
+    ).subscribe(x => {
+      this.vendors$.next(x);
+    });
+
+    combineLatest([this.player$, this.vendors$]).pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(([player, vendors]) => {
+      const state = this.vendorService.getDeals(player, vendors);
+      this.vendorDeals$.next(state);
+      console.dir(state);
+
+      // DONE compare to collections
+      // Eh, kinda: look at gear vs vendors
+      // DONE look at spider exchanges vs what guardian has
+      // TODO tess bright dust ornaments
+      // TODO use this for bounty shopping list stuff on home page
+      // LATER use this for "resources" page (make entire new page w/ better name?)
+    });
   }
-
-  private async updateSelectedUser(selectedUser: SelectedUser): Promise<void> {
-    if (selectedUser != null) {
-      // wait until cache is ready
-      this.destinyCacheService.ready.asObservable().pipe(filter(x => x === true), first()).subscribe(() => {
-        this.applyClans(this.signedOnUser$.getValue());
-        this.applyCurrencies(this.signedOnUser$.getValue());
-      });
-    }
-  }
-
-
-  private async applyCurrencies(s: SelectedUser): Promise<void> {
-    const tempPlayer = await this.bungieService.getChars(s.userInfo.membershipType, s.userInfo.membershipId,
-      ['Characters', 'ProfileCurrencies', 'ProfileInventories', 'CharacterInventories'], true, true);
-    if (tempPlayer == null) {
-      console.log('No player to apply currencies to');
-      return;
-    }
-    s.currencies$.next(tempPlayer.currencies);
-    s.gearMeta$.next(tempPlayer.gearMeta);
-  }
-
 
   private async applyClans(s: SelectedUser) {
     const c = await this.bungieService.getClans(s.membership.bungieId);
-    s.clans.next(c);
+    this.clans$.next(c);
   }
 
 

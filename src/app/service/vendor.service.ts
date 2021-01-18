@@ -1,37 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { from, Observable, of } from 'rxjs';
+import { combineLatest, concat, from, Observable, of } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
+import { get as idbGet, set as idbSet } from 'idb-keyval';
+import { environment as env } from '@env/environment';
 import { LowLineService } from './lowline.service';
 import {
   ApiInventoryBucket, Character,
-
-
-
-
-
   CharacterVendorData, ClassAllowed,
-
-
-
-
-
-
-
-
-  Currency, EnergyType, InventoryItem, ItemType,
-
-
-
-
+  EnergyType, InventoryItem, ItemType,
   Player, Vendor,
-
-
-
-
-
   VendorCost
 } from './model';
 import { NotificationService } from './notification.service';
@@ -55,18 +35,62 @@ export class VendorService {
 
   }
 
-  public loadVendors(c: Character): Observable<CharacterVendorData> {
+  // this will quickly emit the cached vendor data and then later emit the current data
+  // if refresh is true then we won't bother to load from cache
+  public loadVendors(c: Character, refresh: boolean): Observable<CharacterVendorData> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
       c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
-    return this.streamReq('loadVendors', url)
-      .pipe(
+    const remoteReq =  this.streamReq('loadVendors', url).pipe(
         map((resp) => {
-          return {
+          // parse it
+          const returnMe = {
             char: c,
-            data: this.parseVendorData(c, resp)
+            data: this.parseVendorData(c, resp),
+            cached: false
           };
+          // if that worked out well, cache it for next time
+          this.setCachedVendor(c, resp);
+          return returnMe;
         })
       );
+    if (refresh) {
+      return remoteReq;
+    }
+    const cacheReq = from(this.getCachedVendor(c)).pipe(
+      map((resp) => {
+        if (resp == null) {
+          return null;
+        }
+        return {
+          char: c,
+          data: this.parseVendorData(c, resp),
+          cached: true,
+          ts: resp.ts,
+          loading: true
+        };
+      })
+    );
+    return concat(cacheReq, remoteReq);
+  }
+
+  private static getVendorCacheKey(c: Character) {
+    const key = 'vendor2-' + env.versions.app + '-' + c.membershipType + '-' + c.membershipId + ' - ' + c.characterId;
+    return key;
+  }
+
+  private async getCachedVendor(c: Character): Promise<any> {
+    const key = VendorService.getVendorCacheKey(c);
+    const cachedResponse = await idbGet(key);
+    return cachedResponse;
+  }
+
+  private async setCachedVendor(c: Character, resp: any): Promise<any> {
+    // shallow copy
+    const cacheMe = Object.assign({}, resp);
+    cacheMe.cached = true;
+    cacheMe.ts = Date.now();
+    const key = VendorService.getVendorCacheKey(c);
+    return await idbSet(key, cacheMe);
   }
 
   public getDeals(player: Player, vendors: CharacterVendorData[]): VendorDeals {
@@ -327,7 +351,7 @@ export class VendorService {
     // get a unique list of all vendor items
     const vendorGearMap: { [key: string]: InventoryItem; } = {};
     for (const v of vendors) {
-      if (!v) {
+      if (!v || !v.data) {
         continue;
       }
       for (const g of v.data) {

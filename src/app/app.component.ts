@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     public authGuard: AuthGuard,
-    private signedOnUserService: SignedOnUserService,
+    public signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,

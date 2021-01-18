@@ -6,13 +6,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { environment as env } from '@env/environment';
-import { get, set } from 'idb-keyval';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, first, takeUntil } from 'rxjs/operators';
+import { get as idbGet, set as idbSet } from 'idb-keyval';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { AuthInfo, AuthService } from './auth.service';
+import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, Currency, InventoryItem, ItemType, MileStoneName, MilestoneStatus, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SaleItem, SearchResult, SelectedUser, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, ItemType, MileStoneName, MilestoneStatus, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SaleItem, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -90,7 +89,7 @@ export class BungieService implements OnDestroy {
 
     public async getCachedAggHistoryForPlayer(player: Player): Promise<AggHistoryCache> {
         const key = BungieService.getAgghistoryCacheKey(player);
-        const cache = await get(key) as AggHistoryCache;
+        const cache = await idbGet(key) as AggHistoryCache;
         if (cache == null) {
             return null;
         }
@@ -115,7 +114,7 @@ export class BungieService implements OnDestroy {
             data: player.aggHistory
         };
         const key = BungieService.getAgghistoryCacheKey(player);
-        return set(key, cacheMe);
+        return idbSet(key, cacheMe);
     }
 
 

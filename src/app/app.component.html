@@ -163,7 +163,7 @@
                 {{currUser.userInfo.platformName}}</a>
               <span class="spacer"></span>
   
-              <div class="currency-icons slide-left d-none d-xxl-block" *ngIf="currUser.gearMeta$|async as gm">
+              <div class="currency-icons slide-left d-none d-xxl-block" *ngIf="signedOnUserService.gearMetadata$|async as gm">
                 <div class="gm-section">
                   <a class="currency-chip fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
                     [queryParams]="{ owner: 'vault'}">
@@ -193,7 +193,7 @@
   
               </div>
               <div class="currency-icons">
-                <div class="defer-block slide-left" *ngFor="let c of currUser.currencies$|async">
+                <div class="defer-block slide-left" *ngFor="let c of signedOnUserService.currencies$|async">
                   <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
                     [matTooltip]="c.count+' '+c.name">
                     <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
