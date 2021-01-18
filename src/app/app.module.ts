@@ -52,6 +52,8 @@ import { ContentVaultComponent } from './content-vault/content-vault.component';
 import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { TestbedComponent } from './testbed/testbed.component';
+import { VendorsComponent } from './vendors/vendors/vendors.component';
+import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
 
 
 
@@ -91,7 +93,7 @@ import { TestbedComponent } from './testbed/testbed.component';
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent, TestbedComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent
   ],
   providers: [
     AuthService,

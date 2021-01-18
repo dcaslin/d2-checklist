@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { CharacterVendorData } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
@@ -11,7 +11,8 @@ import { concatAll, map, startWith, takeUntil } from 'rxjs/operators';
 @Component({
   selector: 'd2c-testbed',
   templateUrl: './testbed.component.html',
-  styleUrls: ['./testbed.component.scss']
+  styleUrls: ['./testbed.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TestbedComponent extends ChildComponent implements OnInit, OnDestroy {
   
