@@ -113,6 +113,7 @@ export class SignedOnUserService implements OnDestroy {
       }
       ),
     ).subscribe((player: Player) => {
+      console.dir(player);
       this.player$.next(player);
       if (player != null) {
         this.currencies$.next(player.currencies);
@@ -154,7 +155,7 @@ export class SignedOnUserService implements OnDestroy {
     ).subscribe(([player, vendors]) => {
       const state = this.vendorService.getDeals(player, vendors);
       this.vendorDeals$.next(state);
-      console.dir(state);
+      // console.dir(state);
 
       // DONE compare to collections
       // Eh, kinda: look at gear vs vendors
