@@ -14,20 +14,34 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class VendorsComponent implements OnInit {
   @ViewChild('filter', {static: true}) filter: ElementRef;
 
-  public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
-  public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  options: VendorChoice[] = [
+  public options: VendorChoice[] = [
     {text: 'Bounties', icon: this.iconService.farGift, types: [ItemType.Bounty] },
     {text: 'Weapons', icon: this.iconService.farAxeBattle, types: [ItemType.Weapon]},
     {text: 'Armor', icon: this.iconService.farHelmetBattle, types: [ItemType.Armor]},
     {text: 'Mods', icon: this.iconService.farCog, types: [ItemType.GearMod]},
     {text: 'Exchange', icon: this.iconService.farBalanceScale, types: [ItemType.ExchangeMaterial, ItemType.CurrencyExchange] },
     {text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost] }];
-  option = this.options[0];
 
-  @Input() player: Player;
-  @Input() char: Character;
+  public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
+  public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
+  public option$: BehaviorSubject<VendorChoice> = new BehaviorSubject(this.options[0]);
+
+  private _player: Player;
+
+  @Input()
+  public set player(val: Player) {
+    this._player = val;
+    if (val && val.characters && val.characters.length > 0) {
+      this.char$.next(val.characters[0]);
+    }
+  }
+
+  public get player() {
+    return this._player;
+  }
+
   @Input() currUser: SelectedUser;
   @Input() vendorData: CharacterVendorData[];
   @Input() shoppingListHashes: { [key: string]: boolean };
@@ -49,6 +63,10 @@ export class VendorsComponent implements OnInit {
           this.filterText$.next(val.toLowerCase());
         }
       });
+  }
+
+  public updateData() {
+
   }
 
   public getData(): InventoryItem[] {
