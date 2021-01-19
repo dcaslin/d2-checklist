@@ -4,14 +4,13 @@
 </h2>
 <div class="nav-toggles">
 
-
-    <mat-button-toggle-group #chargroup="matButtonToggleGroup" [value]="char">
+    <mat-button-toggle-group #chargroup="matButtonToggleGroup" [value]="char$|async" (change)="updateData$.next(true)">
         <mat-button-toggle *ngFor="let c of player.characters" [value]="c"> {{c.className}}<span
                 class="d-none d-md-inline"> - {{c.light}}</span>
         </mat-button-toggle>
     </mat-button-toggle-group>
     <div>{{chargroup?.value?.className}}</div>
-    <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" [value]="option">
+    <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" [value]="options$|async" (change)="updateData$.next(true)">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
             <fa-icon [icon]="o.icon"></fa-icon>
             <span class="d-none d-md-inline"> {{o.text}}</span>
