@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { Character, CharacterVendorData, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
-import { BehaviorSubject, fromEvent } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'd2c-vendors',
@@ -11,7 +11,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./vendors.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class VendorsComponent implements OnInit {
+export class VendorsComponent implements OnInit, OnDestroy {
   @ViewChild('filter', {static: true}) filter: ElementRef;
 
 
@@ -27,8 +27,17 @@ export class VendorsComponent implements OnInit {
   public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
   public option$: BehaviorSubject<VendorChoice> = new BehaviorSubject(this.options[0]);
+  public data$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
+
+  private unsubscribe$: Subject<void> = new Subject<void>();
 
   private _player: Player;
+
+
+  @Input() currUser: SelectedUser;
+  @Input() shoppingListHashes: { [key: string]: boolean };
+  @Input() loading: boolean;
 
   @Input()
   public set player(val: Player) {
@@ -42,17 +51,22 @@ export class VendorsComponent implements OnInit {
     return this._player;
   }
 
-  @Input() currUser: SelectedUser;
-  @Input() vendorData: CharacterVendorData[];
-  @Input() shoppingListHashes: { [key: string]: boolean };
-  @Input() loading: boolean;
+  @Input()
+  public set vendorData(val: CharacterVendorData[]) {
+    this.vendorData$.next(val);
+  }
 
+  public get vendorData() {
+    return this.vendorData$.getValue();
+  }
 
   constructor(
-    public iconService: IconService) { }
+    public iconService: IconService) {
+    }
 
   ngOnInit(): void {
     fromEvent(this.filter.nativeElement, 'keyup').pipe(
+      takeUntil(this.unsubscribe$),
       debounceTime(150),
       distinctUntilChanged(), )
       .subscribe(() => {
@@ -63,29 +77,49 @@ export class VendorsComponent implements OnInit {
           this.filterText$.next(val.toLowerCase());
         }
       });
+    combineLatest([this.char$, this.option$, this.filterText$, this.hideCompleted$, this.vendorData$]).pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(150),
+      distinctUntilChanged()
+    ).subscribe(([char, option, filterText, hideCompleted, vendorData]) => {
+      const data = VendorsComponent.filterData(char, option, filterText, hideCompleted, vendorData);
+      this.data$.next(data);
+    });
   }
 
-  public updateData() {
-
-  }
-
-  public getData(): InventoryItem[] {
-    console.log('Get data');
-    if (!this.char || !this.vendorData || !this.option) {
+  private static filterData(char: Character, option: VendorChoice, filterText: string,
+    hideCompleted: boolean, vendorData: CharacterVendorData[]): InventoryItem[] {
+    console.log('Filter data');
+    // return [];
+    if (!char || !vendorData || !option) {
       return [];
     }
-    const selected = this.vendorData.find(x => x.char = this.char);
+    const selected = vendorData.find(x => x.char.id == char.id);
     if (!selected) {
       return [];
     }
 
     return selected.data.filter((item: InventoryItem) => {
-      if (!this.option.types.includes(item.type)) {
+      if (!option.types.includes(item.type)) {
+        return false;
+      }
+      if (filterText && filterText.length > 0) {
+        if (item.vendorItemInfo.searchText.indexOf(filterText) < 0) {
+          return false;
+        }
+      }
+      if (hideCompleted && item.vendorItemInfo.status === 'Already completed') {
         return false;
       }
       return true;
     });
   }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+}
+
 
 }
 

@@ -4,25 +4,25 @@
 </h2>
 <div class="nav-toggles">
 
-    <mat-button-toggle-group #chargroup="matButtonToggleGroup" [value]="char$|async" (change)="updateData$.next(true)">
-        <mat-button-toggle *ngFor="let c of player.characters" [value]="c"> {{c.className}}<span
-                class="d-none d-md-inline"> - {{c.light}}</span>
+    <mat-button-toggle-group *ngIf="player?.characters" [value]="char$|async" (change)="char$.next($event.value)">
+        <mat-button-toggle *ngFor="let c of player.characters" [value]="c"> 
+            {{c.className}}
+            <span class="d-none d-md-inline"> - {{c.light}}</span>
         </mat-button-toggle>
     </mat-button-toggle-group>
-    <div>{{chargroup?.value?.className}}</div>
-    <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" [value]="options$|async" (change)="updateData$.next(true)">
+    <div *ngIf="char$|async as char">{{char.className}}</div>
+    <mat-button-toggle-group [value]="options[0]" (change)="option$.next($event.value)">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
             <fa-icon [icon]="o.icon"></fa-icon>
             <span class="d-none d-md-inline"> {{o.text}}</span>
         </mat-button-toggle>
     </mat-button-toggle-group>
-    <div>{{option.text}}</div>
-
+    <div *ngIf="option$|async as option">{{option.text}}</div>
     <div>
         <mat-form-field>
             <input matInput #filter placeholder="Filter items">
         </mat-form-field>
-        <mat-checkbox class="hide-complete-triumphs">
+        <mat-checkbox class="hide-complete-triumphs" (change)="hideCompleted$.next($event.checked)">
             Hide Completed
         </mat-checkbox>
     </div>
@@ -30,23 +30,19 @@
         <mat-spinner class="loading" class="center-spinner" *ngIf="loading"></mat-spinner>
     </div>
     <div *ngIf="!loading">
-        <table class="tidy-auto-table itemTable">
-
+        <table class="tidy-auto-table itemTable" *ngIf="data$|async as data">
             <thead>
                 <tr>
-                    <th>Header {{getData().length}}</th>
+                    <th>Header {{data.length}}</th>
                 </tr>
             </thead>
             <tbody>
-                <ng-container *ngFor="let i of getData()">
+                <ng-container *ngFor="let i of data">
                     <tr>
                         <td>{{i.name}}</td>
                     </tr>
                 </ng-container>
-                
             </tbody>
         </table>
     </div>
-
-
 </div>
