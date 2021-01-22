@@ -1,6 +1,6 @@
 <ng-container *ngIf="signedOnUserService.signedOnUser$|async as currUser; else notSignedIn">
     <ng-container *ngIf="signedOnUserService.player$|async as player">
-        <d2c-vendors [player]="player" [char]="player.characters[0]" [currUser]="currUser" [vendorData]="signedOnUserService.vendors$|async">
+        <d2c-vendors [player]="player" [currUser]="currUser" [vendorData]="signedOnUserService.vendors$|async">
         </d2c-vendors>
     </ng-container>
 </ng-container>
