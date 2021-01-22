@@ -3060,7 +3060,7 @@ export class ParseService {
             if (oDesc == null) { continue; }
 
             let score = null;
-            if (isInterval && objIndex < rDesc.intervalInfo.intervalObjectives.length) {
+            if (isInterval && rDesc?.intervalInfo?.intervalObjectives && objIndex < rDesc.intervalInfo.intervalObjectives.length) {
                 score = rDesc.intervalInfo.intervalObjectives[objIndex].intervalScoreValue;
             }
 
