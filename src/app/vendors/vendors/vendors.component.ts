@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { Character, CharacterVendorData, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
+import { Character, CharacterVendorData, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
 import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
+import { PreferredStatService } from '@app/service/preferred-stat.service';
 
 @Component({
   selector: 'd2c-vendors',
@@ -31,6 +33,10 @@ export class VendorsComponent implements OnInit, OnDestroy {
   private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
 
   private unsubscribe$: Subject<void> = new Subject<void>();
+  public today =  moment(new Date());
+
+  ItemType = ItemType;
+  ClassAllowed = ClassAllowed;
 
   private _player: Player;
 
@@ -61,6 +67,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    public preferredStatService: PreferredStatService,
     public iconService: IconService) {
     }
 
@@ -94,7 +101,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
     if (!char || !vendorData || !option) {
       return [];
     }
-    const selected = vendorData.find(x => x.char.id == char.id);
+    const selected = vendorData.find(x => x?.char.id == char.id);
     if (!selected) {
       return [];
     }

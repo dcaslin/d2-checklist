@@ -16,6 +16,7 @@ export class ItemIconComponent  {
 
   @Input() i: InventoryItem;
   @Input() option: ItemType;
+  @Input() hideMenu = false;
 
   @Output() toggleLock = new EventEmitter<boolean>();
   @Output() pullPostmaster = new EventEmitter<boolean>();
