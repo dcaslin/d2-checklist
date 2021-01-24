@@ -135,7 +135,7 @@ export class SignedOnUserService implements OnDestroy {
         if (player) {
           for (const char of player.characters) {
                 // TODO mark this current request as loading
-                const loadMe = this.vendors$.getValue().find(x => x.char === char);
+                const loadMe = this.vendors$.getValue().find(x => x?.char === char);
                 if (loadMe) {
                   loadMe.loading = true;
                 }
