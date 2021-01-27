@@ -50,6 +50,19 @@
     background-color: mat-color($accent, lighter);
   }
 
+  .bounty-chip {
+    background-color: mat-color($background, unselected-chip);
+    color: mat-color($foreground, unselected-chip);
+    // background-color: #e0e0e0;
+    // color: rgba(0,0,0,.87);
+    padding: 4px 12px;
+    margin: 3px;
+    border-radius: 16px;
+    align-items: center;
+    font-size: 10px;
+    font-weight: bold;
+  }
+
   .primary-bg-text {
     color: mat-color($primary, default-contrast);
     background-color: mat-color($primary);
