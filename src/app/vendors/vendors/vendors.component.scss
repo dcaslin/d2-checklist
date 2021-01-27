@@ -1,9 +1,31 @@
-.nav-toggles {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.nav-toggles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.nav-toggles div {
-    margin-top: 5px;
+.nav-toggles {
+  margin-top: 10px;
+}
+
+.bounty {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+}
+
+.bounty-title {
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+
+.bounty-shopping-cart {
+  padding: 5px;
+}
+
+.bounty-tags {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }

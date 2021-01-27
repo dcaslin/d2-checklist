@@ -1,11 +1,17 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { Character, CharacterVendorData, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
+import { PreferredStatService } from '@app/service/preferred-stat.service';
+import { StorageService } from '@app/service/storage.service';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
+import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
-import { PreferredStatService } from '@app/service/preferred-stat.service';
+
+// TODO
+// - responsive columns
+// - loading indicator
+// - drop into routing
 
 @Component({
   selector: 'd2c-vendors',
@@ -25,6 +31,8 @@ export class VendorsComponent implements OnInit, OnDestroy {
     {text: 'Exchange', icon: this.iconService.farBalanceScale, types: [ItemType.ExchangeMaterial, ItemType.CurrencyExchange] },
     {text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost] }];
 
+
+  public visibleFilterText: string = null;
   public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
   public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
@@ -41,8 +49,11 @@ export class VendorsComponent implements OnInit, OnDestroy {
   private _player: Player;
 
 
+  @Input() debugmode: boolean;
   @Input() currUser: SelectedUser;
   @Input() shoppingListHashes: { [key: string]: boolean };
+
+  @Output() toggleVendorBounty = new EventEmitter<string>();
   @Input() loading: boolean;
 
   @Input()
@@ -67,6 +78,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private storageService: StorageService,
     public preferredStatService: PreferredStatService,
     public iconService: IconService) {
     }

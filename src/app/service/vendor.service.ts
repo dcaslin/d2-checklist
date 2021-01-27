@@ -392,6 +392,7 @@ export class VendorService {
     //   return 0;
     // });
     this.preferredStatService.processItems(returnMe);
+    this.parseService.applyTagsToItem(returnMe);
     return returnMe;
   }
 

@@ -34,7 +34,7 @@ export class ResourcesComponent extends ChildComponent implements OnInit, OnDest
   public filterText$: BehaviorSubject<string> = new BehaviorSubject(null);
   public hideCompleted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  options = ['Bounties','Weapons','Armor', 'Mods', 'Exchange', 'Cosmetics'];
+  options = ['Bounties', 'Weapons', 'Armor', 'Mods', 'Exchange', 'Cosmetics'];
   option = this.options[0];
 
   ItemType = ItemType;
