@@ -20,16 +20,16 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class VendorsComponent implements OnInit, OnDestroy {
-  @ViewChild('filter', {static: true}) filter: ElementRef;
+  @ViewChild('filter', { static: true }) filter: ElementRef;
 
 
   public options: VendorChoice[] = [
-    {text: 'Bounties', icon: this.iconService.farGift, types: [ItemType.Bounty] },
-    {text: 'Weapons', icon: this.iconService.farAxeBattle, types: [ItemType.Weapon]},
-    {text: 'Armor', icon: this.iconService.farHelmetBattle, types: [ItemType.Armor]},
-    {text: 'Mods', icon: this.iconService.farCog, types: [ItemType.GearMod]},
-    {text: 'Exchange', icon: this.iconService.farBalanceScale, types: [ItemType.ExchangeMaterial, ItemType.CurrencyExchange] },
-    {text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost] }];
+    { text: 'Bounties', icon: this.iconService.farGift, types: [ItemType.Bounty] },
+    { text: 'Weapons', icon: this.iconService.farAxeBattle, types: [ItemType.Weapon] },
+    { text: 'Armor', icon: this.iconService.farHelmetBattle, types: [ItemType.Armor] },
+    { text: 'Mods', icon: this.iconService.farCog, types: [ItemType.GearMod] },
+    { text: 'Exchange', icon: this.iconService.farBalanceScale, types: [ItemType.ExchangeMaterial, ItemType.CurrencyExchange] },
+    { text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost] }];
 
 
   public visibleFilterText: string = null;
@@ -41,7 +41,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
   private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
 
   private unsubscribe$: Subject<void> = new Subject<void>();
-  public today =  moment(new Date());
+  public today = moment(new Date());
 
   ItemType = ItemType;
   ClassAllowed = ClassAllowed;
@@ -52,9 +52,8 @@ export class VendorsComponent implements OnInit, OnDestroy {
   @Input() debugmode: boolean;
   @Input() currUser: SelectedUser;
   @Input() shoppingListHashes: { [key: string]: boolean };
-
-  @Output() toggleVendorBounty = new EventEmitter<string>();
   @Input() loading: boolean;
+
 
   @Input()
   public set player(val: Player) {
@@ -64,9 +63,47 @@ export class VendorsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // charIdSelect.emit($event.value.characterId)
+  // tabSelect.emit($event.value.text)
   public get player() {
     return this._player;
   }
+
+  @Input()
+  public set charId(val: string) {
+    if (this.player == null) {
+      return;
+    }
+    if (!val) {
+      return;
+    }
+    for (const c of this.player.characters) {
+      if (c.characterId == val) {
+        if (this.char$.getValue()?.characterId != val) {
+          this.char$.next(c);
+        }
+      }
+    }
+  }
+
+  @Input()
+  public set tab(val: string) {
+
+    console.log(`setTab(${val})`);
+    if (!val) {
+      return;
+    }
+    for (const o of this.options) {
+      if (o.text.toUpperCase() === val.toUpperCase()) {
+        this.option$.next(o);
+        break;
+      }
+    }
+  }
+
+  @Output() toggleVendorBounty = new EventEmitter<string>();
+  @Output() charIdSelect = new EventEmitter<string>();
+  @Output() tabSelect = new EventEmitter<string>();
 
   @Input()
   public set vendorData(val: CharacterVendorData[]) {
@@ -81,13 +118,13 @@ export class VendorsComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     public preferredStatService: PreferredStatService,
     public iconService: IconService) {
-    }
+  }
 
   ngOnInit(): void {
     fromEvent(this.filter.nativeElement, 'keyup').pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(150),
-      distinctUntilChanged(), )
+      distinctUntilChanged())
       .subscribe(() => {
         const val: string = this.filter.nativeElement.value;
         if (val == null || val.trim().length === 0) {
@@ -137,7 +174,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-}
+  }
 
 
 }
