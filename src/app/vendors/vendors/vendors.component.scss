@@ -1,7 +1,24 @@
+.char-row {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+}
+
+.chars-toggle {
+  flex-grow: 1;
+}
+
+.filter-row {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+}
+
 .nav-toggles-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
 }
 
 .nav-toggles {
@@ -28,4 +45,76 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+.mobile-bounty-tags {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.hide-mobile-table-cell {
+  display: none;
+  visibility: hidden;
+}
+
+.hide-mobile-inline {
+  display: none;
+  visibility: hidden;
+}
+
+.hide-mobile-block {
+  display: none;
+  visibility: hidden;
+}
+
+.mobile-only-inline {
+  display: inline;
+  visibility: visible;
+}
+
+.mobile-only-block {
+  display: inline;
+  visibility: visible;
+}
+
+.mobile-only-table-cell {
+  display: table-cell;
+  visibility: visible;
+}
+
+
+@media screen and (min-width: 1019px) {
+  
+  .hide-mobile-inline {
+    display: inline;
+    visibility: visible;
+  }
+
+  .hide-mobile-block {
+    display: block;
+    visibility: visible;
+  }
+  .mobile-only-inline {
+    display: none;
+    visibility: hidden;
+  }
+  .mobile-only-block {
+    display: none;
+    visibility: hidden;
+  }
+
+  .hide-mobile-table-cell {
+    display: table-cell;
+    visibility: visible;
+  }
+  .mobile-only-table-cell {
+    display: none;
+    visibility: hidden;
+  }
+  .mobile-bounty-tags {
+    display: none;
+    visibility: hidden;
+  }  
 }

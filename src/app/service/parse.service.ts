@@ -1090,7 +1090,7 @@ export class ParseService {
         const tags = this.destinyCacheService.cache.PursuitTags!;
         const used = {};
         for (const s of items) {
-            if (!tags[s.hash]) {
+            if (!tags[s.hash] || tags[s.hash].length == 0) {
                 continue;
             }
             // don't double count bounties, werner-99 has an issue with this

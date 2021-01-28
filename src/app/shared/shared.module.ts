@@ -46,6 +46,7 @@ import { TriumphNameComponent } from './triumph-name/triumph-name.component';
 import { AdSlotComponent } from './ad-slot/ad-slot.component';
 import { AdUnitComponent } from './ad-slot/ad-unit/ad-unit.component';
 import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
+import { SignedOnLoadingIconComponent } from './signed-on-loading-icon/signed-on-loading-icon.component';
 
 @NgModule({
   imports: [
@@ -95,7 +96,8 @@ import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
     TriumphNameComponent,
     AdSlotComponent,
     AdUnitComponent,
-    NitroUnitComponent],
+    NitroUnitComponent,
+    SignedOnLoadingIconComponent],
   exports: [
     SortIndicatorComponent,
     TriumphNameComponent,
@@ -104,6 +106,7 @@ import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
     SeasonIndicatorComponent,
     AdSlotComponent,
     ItemEnergyIndicatorComponent,
+    SignedOnLoadingIconComponent,
     RouterModule,
     PipeModule,
     CommonModule,

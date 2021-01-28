@@ -26,7 +26,7 @@ import {
   faBan as falBan
 } from '@fortawesome/pro-regular-svg-icons';
 
-import { 
+import {
   faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp, faArchive as fadArchive,
   faHourglassHalf as fadHourGlassHalf
  } from '@fortawesome/pro-duotone-svg-icons';
@@ -36,10 +36,10 @@ import {
   faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
-  faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup, 
+  faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup,
   faArrowLeft as fasArrowLeft, faArrowRight as fasArrowRight,
   faChevronLeft as fasChevronLeft, faChevronRight as fasChevronRight,
-  faBooks as farBooks,  
+  faBooks as farBooks,
   faBookmark as fasBookmark,
   faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed,
   faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
@@ -59,7 +59,9 @@ import {
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
   faWheat as fasWheat,
   faSignOutAlt as fasSignOutAlt,
-  faCheckCircle as fasCheckCircle
+  faCheckCircle as fasCheckCircle,
+  faCircleNotch as fasCircleNotch,
+  faStore as fasStore, faUser as fasUser
 } from '@fortawesome/pro-solid-svg-icons';
 
 
@@ -118,7 +120,7 @@ export class IconService {
   public readonly fasArrowLeft = fasArrowLeft;
   public readonly fasArrowRight = fasArrowRight;
   public readonly fasChevronLeft = fasChevronLeft;
-  public readonly fasChevronRight = fasChevronRight;  
+  public readonly fasChevronRight = fasChevronRight;
   public readonly farProjectDiagram = farProjectDiagram;
   public readonly fasClock = fasClock;
   public readonly farGift = farGift;
@@ -142,6 +144,9 @@ export class IconService {
   public readonly fasInfoSquare = fasInfoSquare;
   public readonly fasHistory = fasHistory;
   public readonly fasUserFriends = fasUserFriends;
+  public readonly fasUser = fasUser;
+  public readonly fasCircleNotch = fasCircleNotch;
+  public readonly fasStore = fasStore;
   public readonly fasGift = fasGift;
   public readonly fasSigma = fasSigma;
   public readonly fasWheat = fasWheat;

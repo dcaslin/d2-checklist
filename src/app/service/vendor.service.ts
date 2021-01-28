@@ -12,7 +12,8 @@ import {
   CharacterVendorData, ClassAllowed,
   EnergyType, InventoryItem, ItemType,
   Player, Vendor,
-  VendorCost
+  VendorCost,
+  VendorLoadType
 } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
@@ -37,7 +38,7 @@ export class VendorService {
 
   // this will quickly emit the cached vendor data and then later emit the current data
   // if refresh is true then we won't bother to load from cache
-  public loadVendors(c: Character, refresh: boolean): Observable<CharacterVendorData> {
+  public loadVendors(c: Character, vendorLoadType: VendorLoadType): Observable<CharacterVendorData> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
       c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
     const remoteReq =  this.streamReq('loadVendors', url).pipe(
@@ -53,7 +54,7 @@ export class VendorService {
           return returnMe;
         })
       );
-    if (refresh) {
+    if (vendorLoadType == VendorLoadType.Refresh) {
       return remoteReq;
     }
     const cacheReq = from(this.getCachedVendor(c)).pipe(

@@ -28,7 +28,13 @@ export class AuthComponent extends ChildComponent implements OnInit, OnDestroy {
       try {
         await this.authService.fetchTokenFromCode(code, state);
         this.statusMsg = 'Successfully logged in...';
-        this.router.navigate(['/home']);
+        const sRoutes = localStorage.getItem('login-target');
+        localStorage.removeItem('login-target');
+        let routes: string[] = ['/home'];
+        if (sRoutes) {
+          routes = JSON.parse(sRoutes);
+        }
+        this.router.navigate(routes);
       } catch (x) {
         this.statusMsg = 'Authentication failed';
         this.errMsg = 'Error: ' + JSON.stringify(x);

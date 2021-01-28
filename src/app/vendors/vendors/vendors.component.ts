@@ -98,7 +98,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
       });
     combineLatest([this.char$, this.option$, this.filterText$, this.hideCompleted$, this.vendorData$]).pipe(
       takeUntil(this.unsubscribe$),
-      debounceTime(150),
+      // debounceTime(150),
       distinctUntilChanged()
     ).subscribe(([char, option, filterText, hideCompleted, vendorData]) => {
       const data = VendorsComponent.filterData(char, option, filterText, hideCompleted, vendorData);
