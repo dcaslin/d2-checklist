@@ -1,22 +1,20 @@
-<h2>Vendors -
-    <a [routerLink]="['/',currUser.userInfo.membershipType, currUser.userInfo.membershipId]">{{currUser.userInfo.displayName}}
-        - {{currUser.userInfo.platformName}}</a>
-</h2>
 <div class="nav-toggles-container">
-    <mat-button-toggle-group class="nav-toggles" *ngIf="player?.characters" [value]="char$|async"
-        (change)="char$.next($event.value)">
-        <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
-            {{c.className}}
-            <span class="d-none d-md-inline"> - {{c.light}}</span>
-        </mat-button-toggle>
-    </mat-button-toggle-group>
+    <div class="nav-toggles char-row">
+        <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
+            (change)="char$.next($event.value)">
+            <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
+                {{c.className}}
+                <span class="d-none d-md-inline"> - {{c.light}}</span>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
     <mat-button-toggle-group class="nav-toggles" [value]="options[0]" (change)="option$.next($event.value)">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
             <fa-icon [icon]="o.icon"></fa-icon>
             <span class="d-none d-md-inline"> {{o.text}}</span>
         </mat-button-toggle>
     </mat-button-toggle-group>
-    <div>
+    <div class="filter-row">
         <mat-form-field>
             <mat-label>Wildcard filter</mat-label>
             <input autocomplete="off" matInput #filter [(ngModel)]="visibleFilterText" placeholder="Name, vendor, stat">
@@ -28,123 +26,136 @@
         <mat-checkbox class="hide-complete-triumphs" (change)="hideCompleted$.next($event.checked)">
             Hide Completed
         </mat-checkbox>
+        <d2c-signed-on-loading-icon class="chars-loading"></d2c-signed-on-loading-icon>
     </div>
 </div>
-<div class="center-spinner">
-    <mat-spinner class="loading" class="center-spinner" *ngIf="loading"></mat-spinner>
-</div>
+
 <div *ngIf="!loading">
     <ng-container *ngIf="option$|async as option">
-        <table class="tidy-auto-table itemTable" *ngIf="data$|async as data">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name {{data.length}}</th>
-                    <th *ngIf="option.text == 'Armor'">Random Stats</th>
-                    <th *ngIf="option.text == 'Bounties'">Objectives</th>
-                    <th *ngIf="option.text == 'Bounties'">Reward</th>
-
-                    <th>Vendor</th>
-                </tr>
-            </thead>
-            <tbody>
-                <ng-container *ngFor="let i of data">
+        <ng-container *ngIf="data$|async as data">
+            <table class="tidy-auto-table itemTable" *ngIf="data.length>0">
+                <thead>
                     <tr>
-                        <td>
-                            <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
-                        </td>
-                        <td>
-                            <div *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty; else notBounty"
-                                class="dashed-border bounty" [class.selected-dashed-border]="shoppingListHashes[i.hash]"
-                                (click)="toggleVendorBounty.emit(i.hash)">
-                                <div class="bounty-title">
-                                    <div [matTooltip]="i.desc">
-                                        <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">
-                                            {{i.name}}
-                                        </ng-container>
-                                        <a [href]="i.lowLinks.mapLink"
-                                            *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank"
-                                            rel="noopener">
-                                            {{i.name}}
-                                            <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text">
-                                            </fa-icon>
-                                        </a>
-                                    </div>
+                        <th></th>
+                        <th *ngIf="option.text == 'Bounties'">Name</th>
+                        <th class="hide-mobile-table-cell" *ngIf="option.text != 'Bounties'">Name</th>
+                        <th *ngIf="option.text == 'Armor'">Random Stats</th>
+                        <th class="hide-mobile-table-cell" *ngIf="option.text == 'Bounties'">Objectives</th>
+                        <th class="hide-mobile-table-cell" *ngIf="option.text == 'Bounties'">Reward</th>
 
-                                    <div class="type-caption">{{i.typeName}}</div>
-                                </div>
-                                <div class="bounty-shopping-cart">
-                                    <fa-icon [icon]="iconService.falShoppingCart"
-                                        [class.accent-text]="shoppingListHashes[i.hash]"
-                                        [class.disabled-text]="!shoppingListHashes[i.hash]"></fa-icon>
-                                </div>
-                            </div>
-                            <ng-template #notBounty>
-
-
-                                <div>{{i.name}}
-                                    <span class="secondary-text bold"
-                                        *ngIf="i.vendorItemInfo?.quantity>1">({{i.vendorItemInfo.quantity}})</span>
-                                </div>
-                                <div class="type-caption">{{i.typeName}}</div>
-                            </ng-template>
-                        </td>
-                        <td *ngIf="option.text == 'Armor' && i.type==ItemType.Armor">
-                            <div *ngIf="i.preferredStatPoints>0 && i.stats">
-                                <table class="stat-table">
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="2">
-                                                {{i.preferredStatPoints}} / {{i.totalStatPoints}} pref pts
-                                            </td>
-                                        </tr>
-                                        <ng-container *ngFor="let stat of i.stats">
-                                            <tr
-                                                *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
-                                                <td>{{stat.name}}</td>
-                                                <td>{{stat.value}}</td>
-                                            </tr>
-                                        </ng-container>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                        <td *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty">
-                            <ng-container *ngIf="i.vendorItemInfo as vi">
-                                <div *ngFor="let o of vi.objectives">
-                                    {{o.total}} {{o.units}}
-                                </div>
-                                <div class="bounty-tags" *ngIf="vi.tags">
-                                    <div class="bounty-chip" *ngFor="let t of vi.tags">{{t}}</div>
-                                </div>
-                            </ng-container>
-                        </td>
-                        <td *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty">
-                            <ng-container *ngIf="i.vendorItemInfo as vi">
-                                <div *ngFor="let v of vi.values">
-                                    {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
-                                    <span *ngIf="debugmode==true"> {{v.hash}}</span>
-                                </div>
-                            </ng-container>
-                        </td>
-                        <td>
-                            <ng-container *ngIf="i.vendorItemInfo as vi">
-                                {{vi.vendor.name}}
-                                <span class="type-caption">Resets in {{ vi.vendor.nextRefreshDate | amDifference:
-                                    today
-                                    |
-                                    amDuration:'ms'}}</span>
-                                <div *ngFor="let c of vi.costs">
-                                    <small>{{c.desc.displayProperties.name}} {{c.count}}</small>
-                                </div>
-                                <div *ngIf="vi.status!=null" class="warn-text">
-                                    <small>{{vi.status}}</small>
-                                </div>
-                            </ng-container>
-                        </td>
+                        <th>Vendor</th>
                     </tr>
-                </ng-container>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let i of data">
+                        <tr>
+                            <td>
+                                <div *ngIf="option.text != 'Bounties'" class="mobile-only-block">
+                                    <div [matTooltip]="i.desc">
+                                        {{i.name}}
+                                    </div>
+                                    <div class="type-caption pad-bottom">{{i.typeName}}</div>
+                                </div>
+                                <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+                            </td>
+                            <td *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty; else notBounty">
+                                <div class="dashed-border bounty"
+                                    [class.selected-dashed-border]="shoppingListHashes[i.hash]"
+                                    (click)="toggleVendorBounty.emit(i.hash)">
+                                    <div class="bounty-title">
+                                        <div [matTooltip]="i.desc">
+                                            <ng-container *ngIf="i.lowLinks==null || i.lowLinks.mapLink==null">
+                                                {{i.name}}
+                                            </ng-container>
+                                            <a [href]="i.lowLinks.mapLink"
+                                                *ngIf="i.lowLinks!=null && i.lowLinks.mapLink!=null" target="_blank"
+                                                rel="noopener">
+                                                {{i.name}}
+                                                <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text">
+                                                </fa-icon>
+                                            </a>
+                                        </div>
+
+                                        <div class="type-caption">{{i.typeName}}</div>
+                                    </div>
+                                    <div class="bounty-shopping-cart">
+                                        <fa-icon [icon]="iconService.falShoppingCart"
+                                            [class.accent-text]="shoppingListHashes[i.hash]"
+                                            [class.disabled-text]="!shoppingListHashes[i.hash]"></fa-icon>
+                                    </div>
+                                </div>
+                                <div class="mobile-bounty-tags" *ngIf="i.vendorItemInfo?.tags as tags">
+                                    <div class="bounty-chip" *ngFor="let t of tags">{{t}}</div>
+                                </div>
+                            </td>
+                            <ng-template #notBounty>
+                                <td class="hide-mobile-table-cell">
+                                    <div>{{i.name}}
+                                        <span class="secondary-text bold"
+                                            *ngIf="i.vendorItemInfo?.quantity>1">({{i.vendorItemInfo.quantity}})</span>
+                                    </div>
+                                    <div class="type-caption">{{i.typeName}}</div>
+                                </td>
+                            </ng-template>
+                            <td *ngIf="option.text == 'Armor' && i.type==ItemType.Armor">
+                                <div *ngIf="i.preferredStatPoints>0 && i.stats">
+                                    <table class="stat-table">
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="2">
+                                                    {{i.preferredStatPoints}} / {{i.totalStatPoints}} pref pts
+                                                </td>
+                                            </tr>
+                                            <ng-container *ngFor="let stat of i.stats">
+                                                <tr
+                                                    *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
+                                                    <td>{{stat.name}}</td>
+                                                    <td>{{stat.value}}</td>
+                                                </tr>
+                                            </ng-container>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                            <td class="hide-mobile-table-cell"
+                                *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty">
+                                <ng-container *ngIf="i.vendorItemInfo as vi">
+                                    <div *ngFor="let o of vi.objectives">
+                                        {{o.total}} {{o.units}}
+                                    </div>
+                                    <div class="bounty-tags" *ngIf="vi.tags">
+                                        <div class="bounty-chip" *ngFor="let t of vi.tags">{{t}}</div>
+                                    </div>
+                                </ng-container>
+                            </td>
+                            <td class="hide-mobile-table-cell"
+                                *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty">
+                                <ng-container *ngIf="i.vendorItemInfo as vi">
+                                    <div *ngFor="let v of vi.values">
+                                        {{v.name}} <ng-container *ngIf="v.quantity>0">{{v.quantity}}</ng-container>
+                                        <span *ngIf="debugmode==true"> {{v.hash}}</span>
+                                    </div>
+                                </ng-container>
+                            </td>
+                            <td>
+                                <ng-container *ngIf="i.vendorItemInfo as vi">
+                                    {{vi.vendor.name}}
+                                    <span class="type-caption">Resets in {{ vi.vendor.nextRefreshDate | amDifference:
+                                        today
+                                        |
+                                        amDuration:'ms'}}</span>
+                                    <div *ngFor="let c of vi.costs">
+                                        <small>{{c.desc.displayProperties.name}} {{c.count}}</small>
+                                    </div>
+                                    <div *ngIf="vi.status!=null" class="warn-text">
+                                        <small>{{vi.status}}</small>
+                                    </div>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </ng-container>
     </ng-container>
 </div>

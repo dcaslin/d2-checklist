@@ -2,7 +2,6 @@ import { Injectable, NgModule } from '@angular/core';
 import { CanActivate, RouterModule } from '@angular/router';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-
 import { AboutComponent } from './about';
 import { AuthComponent } from './auth';
 import { BungieSearchComponent } from './bungie-search';
@@ -10,7 +9,7 @@ import { ClanComponent } from './clan';
 import { ClanSearchComponent } from './clan-search';
 import { ClanBadgesComponent } from './clan/clan-collections/clan-badges/clan-badges.component';
 import {
-  ClanCollectionSearchComponent,
+  ClanCollectionSearchComponent
 } from './clan/clan-collections/clan-collection-search/clan-collection-search.component';
 import { ClanCollectionsComponent } from './clan/clan-collections/clan-collections.component';
 import { ClanInfoComponent } from './clan/clan-info/clan-info.component';
@@ -50,14 +49,13 @@ import { TriumphSeasonsComponent } from './player/triumphs/triumph-seasons/trium
 import { TriumphTrackedComponent } from './player/triumphs/triumph-tracked/triumph-tracked.component';
 import { TriumphTreeComponent } from './player/triumphs/triumph-tree/triumph-tree.component';
 import { TriumphsComponent } from './player/triumphs/triumphs.component';
+import { PrivacyComponent } from './privacy/privacy.component';
 import { RecentPlayersComponent } from './recent-players';
-import { ResourcesComponent } from './resources';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
-import { ContentVaultComponent } from './content-vault/content-vault.component';
-import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
-import { PrivacyComponent } from './privacy/privacy.component';
 import { TestbedComponent } from './testbed/testbed.component';
+import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
+
 
 
 @Injectable()
@@ -228,7 +226,7 @@ export class AuthGuard implements CanActivate {
       path: 'vendors/:characterId/:tab',
       pathMatch: 'full',
       canActivate: [AuthGuard],
-      component: ResourcesComponent
+      component: VendorsContainerComponent
     },
     {
       path: 'vendors/:characterId',
@@ -239,7 +237,7 @@ export class AuthGuard implements CanActivate {
       path: 'vendors',
       pathMatch: 'full',
       canActivate: [AuthGuard],
-      component: ResourcesComponent
+      component: VendorsContainerComponent
     },
     {
       path: 'history/:platform/:memberId/:characterId',

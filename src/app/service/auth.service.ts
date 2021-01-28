@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
 
 import { environment } from '../../environments/environment';
@@ -13,7 +14,10 @@ export class AuthService {
 
     token: Token;
 
-    constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
+    constructor(
+        private activatedRoute: ActivatedRoute,
+        private httpClient: HttpClient, 
+        private notificationService: NotificationService) {
         this.authFeed = this.authSub.asObservable() as Observable<AuthInfo>;
     }
 
@@ -29,9 +33,26 @@ export class AuthService {
         }
     }
 
+
+    private static getFullRouteUrl(activatedRoute: ActivatedRoute): string[] {
+        const segments: string[] = ['/'];
+        let target = activatedRoute;
+        while (target) {
+            if (target.snapshot.url) {
+                for (const u of target.snapshot.url) {
+                    segments.push(u.toString());
+                }
+            }
+            target = target.firstChild;
+        }
+        return segments;
+    }
+
     // called by auth token on Sign-in, assuming token wasn't already valid
-    public static reroute() {
-        console.log('Rerouting to auth page.');
+    public reroute() {
+        const routerUrl = AuthService.getFullRouteUrl(this.activatedRoute);
+        console.log(`Rerouting to auth page, current url: ${routerUrl}`);
+        localStorage.setItem('login-target', JSON.stringify(routerUrl));
         const nonce: string = AuthService.randomString(10);
         localStorage.setItem('nonce', nonce);
         const url: string = environment.bungie.authUrl + '?client_id=' + environment.bungie.clientId + '&response_type=code&state=' + nonce;
@@ -93,7 +114,7 @@ export class AuthService {
         const x = await this.getToken();
         if (x == null) {
             if (force === true) {
-                AuthService.reroute();
+                this.reroute();
             } else {
                 // on initial logon confirm that we got no logons
                 this.emit();

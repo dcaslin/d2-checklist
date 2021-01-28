@@ -5,7 +5,7 @@ import { AuthInfo, AuthService } from './auth.service';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
 import { VendorDeals, VendorService } from '@app/service/vendor.service';
-import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo } from './model';
+import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo, VendorLoadType } from './model';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -16,12 +16,13 @@ export class SignedOnUserService implements OnDestroy {
   public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
   public refreshPlayer$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public refreshVendors$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public refreshVendors$: BehaviorSubject<VendorLoadType> = new BehaviorSubject(VendorLoadType.NoLoad);
 
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public vendors$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
+  public vendorsLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public vendorDeals$: BehaviorSubject<VendorDeals> = new BehaviorSubject(null);
 
   public currencies$: BehaviorSubject<Currency[]> = new BehaviorSubject([]);
@@ -128,26 +129,50 @@ export class SignedOnUserService implements OnDestroy {
 
     // use player updates to drive vendor updates
     // TODO only query vendors if interested?
-    combineLatest([this.refreshVendors$, this.player$]).pipe(
+    combineLatest([this.refreshVendors$]).pipe(
       takeUntil(this.unsubscribe$),
-      map(([refresh, player]) => {
+      filter(([refresh]) => {
+        if (this.player$.getValue() == null) {
+          return false;
+        }
+        if (refresh == VendorLoadType.NoLoad) {
+          return false;
+        } else if (refresh == VendorLoadType.LoadIfNotAlready && this.vendors$.getValue()?.length > 0) {
+          return false;
+        } else {
+          return true;
+        }
+      }),
+      tap(([refresh]) => this.vendorsLoading$.next(true)),
+      map(([refresh]) => {
+        const player = this.player$.getValue();
         const requests: Observable<CharacterVendorData>[] = [];
         if (player) {
           for (const char of player.characters) {
-                // TODO mark this current request as loading
-                const loadMe = this.vendors$.getValue().find(x => x?.char === char);
-                if (loadMe) {
-                  loadMe.loading = true;
-                }
-                const req = this.vendorService.loadVendors(char, refresh);
-                requests.push(req);
+            const loadMe = this.vendors$.getValue().find(x => x?.char === char);
+            if (loadMe) {
+              loadMe.loading = true;
+            }
+            const req = this.vendorService.loadVendors(char, refresh);
+            requests.push(req);
           }
         }
         return combineLatest(requests);
       }),
-      concatAll()
-    ).subscribe(x => {
-      this.vendors$.next(x);
+      concatAll(),
+      catchError((err) => {
+        this.notificationService.fail(err);
+        return [];
+      })
+    ).subscribe((charVendorData: CharacterVendorData[]) => {
+      let loading = charVendorData.length == 0;
+      for (const v of charVendorData) {
+        if (!v || v.cached) {
+          loading = true;
+        }
+      }
+      this.vendorsLoading$.next(loading);
+      this.vendors$.next(charVendorData);
     });
 
     combineLatest([this.player$, this.vendors$]).pipe(
