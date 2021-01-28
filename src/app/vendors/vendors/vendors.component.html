@@ -1,14 +1,14 @@
 <div class="nav-toggles-container">
     <div class="nav-toggles char-row">
         <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
-            (change)="char$.next($event.value)">
+            (change)="char$.next($event.value); charIdSelect.emit($event.value.characterId)">
             <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
                 {{c.className}}
                 <span class="d-none d-md-inline"> - {{c.light}}</span>
             </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
-    <mat-button-toggle-group class="nav-toggles" [value]="options[0]" (change)="option$.next($event.value)">
+    <mat-button-toggle-group class="nav-toggles" [value]="option$|async" (change)="option$.next($event.value); tabSelect.emit($event.value.text)">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
             <fa-icon [icon]="o.icon"></fa-icon>
             <span class="d-none d-md-inline"> {{o.text}}</span>

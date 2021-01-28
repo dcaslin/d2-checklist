@@ -1,7 +1,7 @@
-<div class="button-row">
+<!-- <div class="button-row">
     <button mat-stroked-button (click)="signedOnUserService.refreshPlayer$.next(true)">Refresh Player</button>
     <button mat-stroked-button (click)="signedOnUserService.refreshVendors$.next(VendorLoadType.Refresh)">Refresh Vendors</button>    
-</div>
+</div> -->
 
 <ng-container *ngIf="signedOnUserService.signedOnUser$|async as currUser; else notSignedIn">
     <ng-container *ngIf="signedOnUserService.player$|async as player; else noPlayerYet">
@@ -12,7 +12,11 @@
             [loading]="signedOnUserService.playerLoading$|async"
             [vendorData]="signedOnUserService.vendors$|async"
             [shoppingListHashes]="shoppingListHashes$|async"
-            (toggleVendorBounty)="selectVendorBounty($event)"
+            [charId]="charId$|async"
+            [tab]="tab$|async"
+            (toggleVendorBounty)="onToggleVendorBounty($event)"
+            (charIdSelect)="onCharIdSelect($event)"
+            (tabSelect)="onTabSelect($event)"
             >
         </d2c-vendors>
     </ng-container>

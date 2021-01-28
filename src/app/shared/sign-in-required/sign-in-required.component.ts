@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@app/service/auth.service';
 import { IconService } from '@app/service/icon.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Component({
   selector: 'd2c-sign-in-required',
@@ -9,7 +10,10 @@ import { IconService } from '@app/service/icon.service';
 })
 export class SignInRequiredComponent implements OnInit {
 
-  constructor(private authService: AuthService, public iconService: IconService
+  constructor(
+    public signedOnUserService: SignedOnUserService,
+    private authService: AuthService,
+    public iconService: IconService
   ) { }
 
   ngOnInit() {

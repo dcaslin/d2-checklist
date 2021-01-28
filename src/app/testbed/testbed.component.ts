@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { CharacterVendorData } from '@app/service/model';
+import { CharacterVendorData, VendorLoadType } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { VendorDeals, VendorService } from '@app/service/vendor.service';
@@ -29,7 +29,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
   }
 
   refreshVendors() {
-    this.signedOnUserService.refreshVendors$.next(true);
+    this.signedOnUserService.refreshVendors$.next(VendorLoadType.LoadIfNotAlready);
   }
 
   ngOnInit(): void {

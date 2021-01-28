@@ -20,6 +20,8 @@ export class SignedOnUserService implements OnDestroy {
 
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public authorizing$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
 
   public vendors$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
   public vendorsLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -43,49 +45,56 @@ export class SignedOnUserService implements OnDestroy {
     private destinyCacheService: DestinyCacheService,
     private notificationService: NotificationService
   ) {
-    this.authService.authFeed.pipe(takeUntil(this.unsubscribe$)).subscribe((ai: AuthInfo) => {
-      if (ai != null) {
-        this.bungieService.getBungieMembershipsById(ai.memberId, -1).then((membership: BungieMembership) => {
-          if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length === 0) {
-            console.log('No membership found for id, signing out.');
-            this.authService.signOut();
-            return;
-          }
-          const selectedUser: SelectedUser = new SelectedUser();
-          selectedUser.membership = membership;
-          // For testing, add a fake PSN account
-          // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-          // fake.membershipType = 2;
-          // fake.platformName = "PSN";
-          // membership.destinyMemberships.push(fake);
-          // fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-          // fake.membershipType = 4;
-          // fake.platformName = "BNET";
-          // membership.destinyMemberships.push(fake);
-          let platform = 2;
-          const sPlatform: string = localStorage.getItem('D2STATE-preferredPlatform');
-          if (sPlatform != null) {
-            platform = parseInt(sPlatform, 10);
-          } else {
-            console.log('No preferred platform using: ' + platform);
-            if (membership.destinyMemberships.length > 1) {
-              selectedUser.promptForPlatform = true;
+    this.authService.authFeed.pipe(
+      takeUntil(this.unsubscribe$),
+      tap(x => this.authorizing$.next(true))
+    )
+      .subscribe((ai: AuthInfo) => {
+        if (ai != null) {
+          this.bungieService.getBungieMembershipsById(ai.memberId, -1)
+          .then((membership: BungieMembership) => {
+            if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length === 0) {
+              console.log('No membership found for id, signing out.');
+              this.authService.signOut();
+              return;
             }
-          }
-          membership.destinyMemberships.forEach(m => {
-            if (m.membershipType === platform) {
-              selectedUser.userInfo = m;
+            const selectedUser: SelectedUser = new SelectedUser();
+            selectedUser.membership = membership;
+            // For testing, add a fake PSN account
+            // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+            // fake.membershipType = 2;
+            // fake.platformName = "PSN";
+            // membership.destinyMemberships.push(fake);
+            // fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+            // fake.membershipType = 4;
+            // fake.platformName = "BNET";
+            // membership.destinyMemberships.push(fake);
+            let platform = 2;
+            const sPlatform: string = localStorage.getItem('D2STATE-preferredPlatform');
+            if (sPlatform != null) {
+              platform = parseInt(sPlatform, 10);
+            } else {
+              console.log('No preferred platform using: ' + platform);
+              if (membership.destinyMemberships.length > 1) {
+                selectedUser.promptForPlatform = true;
+              }
             }
-          });
-          if (selectedUser.userInfo == null) {
-            selectedUser.userInfo = membership.destinyMemberships[0];
-          }
-          this.signedOnUser$.next(selectedUser);
-        });
-      } else {
-        this.signedOnUser$.next(null);
-      }
-    });
+            membership.destinyMemberships.forEach(m => {
+              if (m.membershipType === platform) {
+                selectedUser.userInfo = m;
+              }
+            });
+            if (selectedUser.userInfo == null) {
+              selectedUser.userInfo = membership.destinyMemberships[0];
+            }
+            this.signedOnUser$.next(selectedUser);
+          })
+          .finally(() => this.authorizing$.next(false));
+        } else {
+          this.authorizing$.next(false);
+          this.signedOnUser$.next(null);
+        }
+      });
     // handle clans
     this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       if (selectedUser != null) {
@@ -114,7 +123,6 @@ export class SignedOnUserService implements OnDestroy {
       }
       ),
     ).subscribe((player: Player) => {
-      console.dir(player);
       this.player$.next(player);
       if (player != null) {
         this.currencies$.next(player.currencies);
@@ -126,13 +134,10 @@ export class SignedOnUserService implements OnDestroy {
       this.playerLoading$.next(false);
     });
 
-
-    // use player updates to drive vendor updates
-    // TODO only query vendors if interested?
-    combineLatest([this.refreshVendors$]).pipe(
+    combineLatest([this.refreshVendors$, this.player$]).pipe(
       takeUntil(this.unsubscribe$),
-      filter(([refresh]) => {
-        if (this.player$.getValue() == null) {
+      filter(([refresh, player]) => {
+        if (player == null) {
           return false;
         }
         if (refresh == VendorLoadType.NoLoad) {
@@ -143,9 +148,8 @@ export class SignedOnUserService implements OnDestroy {
           return true;
         }
       }),
-      tap(([refresh]) => this.vendorsLoading$.next(true)),
-      map(([refresh]) => {
-        const player = this.player$.getValue();
+      tap(([refresh, player]) => this.vendorsLoading$.next(true)),
+      map(([refresh, player]) => {
         const requests: Observable<CharacterVendorData>[] = [];
         if (player) {
           for (const char of player.characters) {
