@@ -1,0 +1,23 @@
+<ng-container *ngIf="signedOnUserService.signedOnUser$|async as currUser; else notSignedIn">
+    <ng-container *ngIf="signedOnUserService.player$|async as player; else noPlayerYet">
+
+        <d2c-bounty-shopping-list 
+            [player]="player" 
+            [currUser]="currUser" 
+            [debugmode]="debugmode|async"
+            [loading]="signedOnUserService.playerLoading$|async" 
+            [vendorData]="signedOnUserService.vendors$|async"
+            [shoppingListHashes]="shoppingListHashes$|async" 
+            (toggleVendorBounty)="onToggleVendorBounty($event)">
+        </d2c-bounty-shopping-list>
+    </ng-container>
+</ng-container>
+<!-- Decide if show anything w/o sign on -->
+<ng-template #notSignedIn>
+    <d2c-sign-in-required></d2c-sign-in-required>
+</ng-template>
+<ng-template #noPlayerYet>
+    <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+    </div>
+</ng-template>

@@ -704,7 +704,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    // TODO use this once it works on enough things to be worthwhile
+    // use this once it works on enough things to be worthwhile
 
     // public async setTrackedState(membershipType: number, item: InventoryItem, tracked: boolean): Promise<boolean> {
     //     try {

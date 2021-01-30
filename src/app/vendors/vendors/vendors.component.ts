@@ -8,11 +8,6 @@ import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
-// TODO
-// - responsive columns
-// - loading indicator
-// - drop into routing
-
 @Component({
   selector: 'd2c-vendors',
   templateUrl: './vendors.component.html',
@@ -63,8 +58,6 @@ export class VendorsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // charIdSelect.emit($event.value.characterId)
-  // tabSelect.emit($event.value.text)
   public get player() {
     return this._player;
   }
@@ -115,7 +108,6 @@ export class VendorsComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private storageService: StorageService,
     public preferredStatService: PreferredStatService,
     public iconService: IconService) {
   }
