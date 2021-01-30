@@ -31,7 +31,6 @@ import { PGCRModule } from './pgcr';
 import { PlayerModule } from './player';
 import { PlayerStateService } from './player/player-state.service';
 import { RecentPlayersModule } from './recent-players';
-import { ResourcesModule } from './resources';
 import { AuthService } from './service/auth.service';
 import { BucketService } from './service/bucket.service';
 import { BungieService } from './service/bungie.service';
@@ -54,12 +53,8 @@ import { PrivacyComponent } from './privacy/privacy.component';
 import { TestbedComponent } from './testbed/testbed.component';
 import { VendorsComponent } from './vendors/vendors/vendors.component';
 import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
-
-
-
-
-
-
+import { BountyShoppingListComponent } from './shopping-list/bounty-shopping-list/bounty-shopping-list.component';
+import { BountyShoppingListContainerComponent } from './shopping-list/bounty-shopping-list-container/bounty-shopping-list-container.component';
 
 @NgModule({
   imports: [
@@ -82,7 +77,6 @@ import { VendorsContainerComponent } from './vendors/vendors-container/vendors-c
     ClanSearchModule,
     ClanModule,
     PGCRModule,
-    ResourcesModule,
     AuthModule,
 
     // app
@@ -93,7 +87,7 @@ import { VendorsContainerComponent } from './vendors/vendors-container/vendors-c
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent, BountyShoppingListComponent, BountyShoppingListContainerComponent
   ],
   providers: [
     AuthService,

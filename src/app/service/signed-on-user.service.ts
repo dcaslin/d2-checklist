@@ -101,10 +101,6 @@ export class SignedOnUserService implements OnDestroy {
         this.applyClans(selectedUser);
       }
     });
-    // new work to look up inventory, profile, etc
-    // TODO also find clans
-    // TODO combine w/ refresh signal, some sort of distinct until changed
-
     combineLatest([this.refreshPlayer$, this.signedOnUser$, this.destinyCacheService.ready$]).pipe(
       takeUntil(this.unsubscribe$),
       filter(([refresh, selectedUser, cacheReady]) => cacheReady && (selectedUser != null)),
@@ -187,11 +183,11 @@ export class SignedOnUserService implements OnDestroy {
       // console.dir(state);
 
       // DONE compare to collections
+      // DONE use this for "resources" page (make entire new page w/ better name?)
       // Eh, kinda: look at gear vs vendors
       // DONE look at spider exchanges vs what guardian has
       // TODO tess bright dust ornaments
       // TODO use this for bounty shopping list stuff on home page
-      // LATER use this for "resources" page (make entire new page w/ better name?)
     });
   }
 

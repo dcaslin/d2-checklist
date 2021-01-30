@@ -4,7 +4,7 @@
         <div><button mat-stroked-button (click)="refreshPlayer()">Refresh Player</button></div>
         <div><button mat-stroked-button (click)="refreshVendors()">Refresh Vendors</button></div>
     </div>
-
+<!-- 
     <div *ngIf="signedOnUserService.vendors$|async as vendors">
         {{vendors.length}}
         <div class="flex-row">
@@ -17,11 +17,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+   
     <hr>
-    <div>
-        <d2c-vendors-container></d2c-vendors-container>
-    </div>
+    <d2c-bounty-shopping-list-container></d2c-bounty-shopping-list-container>
     <hr>
     
     <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
@@ -46,5 +45,9 @@
         {{vendorDeals.exotic.length}}
         <h3>Legendary</h3>
         {{vendorDeals.legendary.length}}
+    </div>
+    <hr>
+    <div>
+        <d2c-vendors-container></d2c-vendors-container>
     </div>
 </div>

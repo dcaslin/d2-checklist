@@ -298,7 +298,7 @@ export class PlayerStateService {
     this.storageService.untrackHashList('trackedpursuits', n.hash);
   }
 
-  // TODO use this once it works on enough things to be worthwhile
+  // use this once it works on enough things to be worthwhile
   // public async gameTrackPursuit(n: InventoryItem, tracked: boolean) {
   //   console.log(`GameTrack ${n.name} ${tracked}`);
   //   const membershipType = this.currPlayer().profile.userInfo.membershipType;

@@ -29,7 +29,7 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
   }
 
   refreshVendors() {
-    this.signedOnUserService.refreshVendors$.next(VendorLoadType.LoadIfNotAlready);
+    this.signedOnUserService.refreshVendors$.next(VendorLoadType.Refresh);
   }
 
   ngOnInit(): void {
