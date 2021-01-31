@@ -5,7 +5,7 @@ import { AuthInfo, AuthService } from './auth.service';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
 import { VendorDeals, VendorService } from '@app/service/vendor.service';
-import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo, VendorLoadType } from './model';
+import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo } from './model';
 import { NotificationService } from './notification.service';
 
 @Injectable({
@@ -15,8 +15,8 @@ export class SignedOnUserService implements OnDestroy {
   unsubscribe$: Subject<void> = new Subject<void>();
   public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
-  public refreshPlayer$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public refreshVendors$: BehaviorSubject<VendorLoadType> = new BehaviorSubject(VendorLoadType.NoLoad);
+  private refreshPlayer$: BehaviorSubject<null> = new BehaviorSubject(null);
+  private refreshVendors$: BehaviorSubject<LoadType> = new BehaviorSubject(LoadType.LeaveAlone);
 
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -31,12 +31,27 @@ export class SignedOnUserService implements OnDestroy {
   public clans$: BehaviorSubject<ClanRow[]> = new BehaviorSubject([]);
   public gearMetadata$: BehaviorSubject<GearMetaData> = new BehaviorSubject(null);
 
-  // track info about the signed on user
-  // Player
-  // Currencies
-  // postmaster and vault counts
-  // general player info
-  // vendors
+  // Refresh the currently loaded player, don't touch vendors at all
+  public refreshPlayer(): void {
+    this.refreshPlayer$.next(null);
+  }
+
+  // Refresh the currently loaded vendors, don't touch player at all, don't check cache
+  public refreshVendors(): void {
+    this.refreshVendors$.next(LoadType.Refresh);
+  }
+
+  // Lazy load vendors, use cache if we can
+  public loadVendorsIfNotLoaded(): void {
+    this.refreshVendors$.next(LoadType.LoadIfNotAlready);
+  }
+
+  // Forcefully reload the player and the vendors, in no particular order
+  public refreshPlayerAndVendors(): void {
+    this.refreshPlayer$.next(null);
+    this.refreshVendors$.next(LoadType.Refresh);
+
+  }
 
   constructor(
     private bungieService: BungieService,
@@ -101,6 +116,8 @@ export class SignedOnUserService implements OnDestroy {
         this.applyClans(selectedUser);
       }
     });
+
+
     combineLatest([this.refreshPlayer$, this.signedOnUser$, this.destinyCacheService.ready$]).pipe(
       takeUntil(this.unsubscribe$),
       filter(([refresh, selectedUser, cacheReady]) => cacheReady && (selectedUser != null)),
@@ -119,6 +136,7 @@ export class SignedOnUserService implements OnDestroy {
       }
       ),
     ).subscribe((player: Player) => {
+      console.log("blah");
       this.player$.next(player);
       if (player != null) {
         this.currencies$.next(player.currencies);
@@ -136,11 +154,11 @@ export class SignedOnUserService implements OnDestroy {
         if (player == null) {
           return false;
         }
-        if (refresh == VendorLoadType.NoLoad) {
+        if (refresh == LoadType.LeaveAlone) { // if we shouldn't touch this, leave it alone
           return false;
-        } else if (refresh == VendorLoadType.LoadIfNotAlready && this.vendors$.getValue()?.length > 0) {
+        } else if (refresh == LoadType.LoadIfNotAlready && this.vendors$.getValue()?.length > 0) { // if we're lazy loading but also already loaded, leave it alone
           return false;
-        } else {
+        } else { // keep loading
           return true;
         }
       }),
@@ -153,7 +171,7 @@ export class SignedOnUserService implements OnDestroy {
             if (loadMe) {
               loadMe.loading = true;
             }
-            const req = this.vendorService.loadVendors(char, refresh);
+            const req = this.vendorService.loadVendors(char, refresh == LoadType.Refresh); // if we're refreshing, skip reading from cache
             requests.push(req);
           }
         }
@@ -178,7 +196,8 @@ export class SignedOnUserService implements OnDestroy {
     combineLatest([this.player$, this.vendors$]).pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(([player, vendors]) => {
-      const state = this.vendorService.getDeals(player, vendors);
+      // this is just parsing, no network requests
+      const state = this.vendorService.calcDeals(player, vendors);
       this.vendorDeals$.next(state);
       // console.dir(state);
 
@@ -193,7 +212,7 @@ export class SignedOnUserService implements OnDestroy {
 
   private async applyClans(s: SelectedUser) {
     const c = await this.bungieService.getClans(s.membership.bungieId);
-    this.clans$.next(c);
+  this.clans$.next(c);
   }
 
 
@@ -216,4 +235,10 @@ export class SignedOnUserService implements OnDestroy {
     this.unsubscribe$.complete();
   }
 
+}
+
+export enum LoadType {
+  LeaveAlone = 1,
+  LoadIfNotAlready = 2,
+  Refresh = 3
 }

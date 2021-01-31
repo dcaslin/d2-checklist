@@ -8,7 +8,8 @@
             [loading]="signedOnUserService.playerLoading$|async" 
             [vendorData]="signedOnUserService.vendors$|async"
             [shoppingListHashes]="shoppingListHashes$|async" 
-            (toggleVendorBounty)="onToggleVendorBounty($event)">
+            (toggleVendorBounty)="onToggleVendorBounty($event)"
+            (refresh)="signedOnUserService.refreshPlayerAndVendors()">
         </d2c-bounty-shopping-list>
     </ng-container>
 </ng-container>

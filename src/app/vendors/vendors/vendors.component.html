@@ -1,5 +1,8 @@
 <div class="nav-toggles-container">
     <div class="nav-toggles char-row">
+        <button mat-icon-button (click)="refresh.emit()">
+            <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>  <!--[spin]="vendorsLoading"-->
+          </button>
         <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
             (change)="char$.next($event.value); charIdSelect.emit($event.value.characterId)">
             <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
@@ -26,7 +29,7 @@
         <mat-checkbox class="hide-complete-triumphs" (change)="hideCompleted$.next($event.checked)">
             Hide Completed
         </mat-checkbox>
-        <d2c-signed-on-loading-icon class="chars-loading"></d2c-signed-on-loading-icon>
+        <d2c-signed-on-loading-icon></d2c-signed-on-loading-icon>
     </div>
 </div>
 
@@ -56,7 +59,7 @@
                                     </div>
                                     <div class="type-caption pad-bottom">{{i.typeName}}</div>
                                 </div>
-                                <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+                                <d2c-item-icon class="lazy-load" [i]="i" [hideMenu]="true"></d2c-item-icon>
                             </td>
                             <td *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty; else notBounty">
                                 <div class="dashed-border bounty"

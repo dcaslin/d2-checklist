@@ -1,19 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { combineLatest, concat, from, Observable, of } from 'rxjs';
+import { environment as env } from '@env/environment';
+import { get as idbGet, set as idbSet } from 'idb-keyval';
+import { concat, from, Observable, of } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
-import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { environment as env } from '@env/environment';
 import { LowLineService } from './lowline.service';
 import {
   ApiInventoryBucket, Character,
   CharacterVendorData, ClassAllowed,
   EnergyType, InventoryItem, ItemType,
   Player, Vendor,
-  VendorCost,
-  VendorLoadType
+  VendorCost
 } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
@@ -38,7 +37,7 @@ export class VendorService {
 
   // this will quickly emit the cached vendor data and then later emit the current data
   // if refresh is true then we won't bother to load from cache
-  public loadVendors(c: Character, vendorLoadType: VendorLoadType): Observable<CharacterVendorData> {
+  public loadVendors(c: Character, skipCache: boolean): Observable<CharacterVendorData> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
       c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
     const remoteReq =  this.streamReq('loadVendors', url).pipe(
@@ -54,7 +53,7 @@ export class VendorService {
           return returnMe;
         })
       );
-    if (vendorLoadType == VendorLoadType.Refresh) {
+    if (skipCache) {
       return remoteReq;
     }
     const cacheReq = from(this.getCachedVendor(c)).pipe(
@@ -94,7 +93,7 @@ export class VendorService {
     return await idbSet(key, cacheMe);
   }
 
-  public getDeals(player: Player, vendors: CharacterVendorData[]): VendorDeals {
+  public calcDeals(player: Player, vendors: CharacterVendorData[]): VendorDeals {
     const vendorsLoading = vendors.filter(x => x == null).length;
     if (!player) {
       return {
