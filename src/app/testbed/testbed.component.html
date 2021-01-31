@@ -1,8 +1,8 @@
 <div class="left test-container">
     <h1>Test Bed</h1>
     <div class="flex-row">
-        <div><button mat-stroked-button (click)="refreshPlayer()">Refresh Player</button></div>
-        <div><button mat-stroked-button (click)="refreshVendors()">Refresh Vendors</button></div>
+        <div><button mat-stroked-button (click)="signedOnUserService.refreshPlayer()">Refresh Player</button></div>
+        <div><button mat-stroked-button (click)="signedOnUserService.refreshVendors()">Refresh Vendors</button></div>
     </div>
 <!-- 
     <div *ngIf="signedOnUserService.vendors$|async as vendors">
@@ -19,11 +19,11 @@
         </div>
     </div> -->
    
-    <hr>
+    <hr style="width: 1000px">
     <d2c-bounty-shopping-list-container></d2c-bounty-shopping-list-container>
     <hr>
     
-    <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
+    <!-- <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
         <div *ngIf="signedOnUserService.playerLoading$|async"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
 
         <div *ngIf="vendorDeals.vendorsLoading>0"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Vendors Loading {{vendorDeals.vendorsLoading}} / {{vendorDeals.totalVendors}} </div>
@@ -49,5 +49,5 @@
     <hr>
     <div>
         <d2c-vendors-container></d2c-vendors-container>
-    </div>
+    </div> -->
 </div>

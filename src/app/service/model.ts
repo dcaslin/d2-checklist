@@ -65,12 +65,6 @@ export enum DestinyAmmunitionType {
     Unknown = 4
 }
 
-export enum VendorLoadType {
-    NoLoad = 1,
-    LoadIfNotAlready = 2,
-    Refresh = 3
-}
-
 export enum ItemType {
     None = 0,
     Currency = 1,

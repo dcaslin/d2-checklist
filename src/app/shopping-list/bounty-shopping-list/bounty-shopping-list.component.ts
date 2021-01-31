@@ -25,6 +25,7 @@ export class BountyShoppingListComponent implements OnInit {
 
 
   @Output() toggleVendorBounty = new EventEmitter<string>();
+  @Output() refresh = new EventEmitter<void>();
 
   private _player: Player;
 

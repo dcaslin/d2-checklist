@@ -1,4 +1,63 @@
-<h4>Bounty Shopping List</h4>
+<h4>Bounty Shopping List <d2c-signed-on-loading-icon></d2c-signed-on-loading-icon>
+</h4>
+
+<div class="subtitle">Currently held and available bounties for the selected character, grouped by shared objectives.
+</div>
+
+<div class="nav-toggles-container">
+  <div class="nav-toggles char-row">
+    <button mat-icon-button (click)="refresh.emit()">
+      <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon> <!-- [spin]="loading" -->
+    </button>
+    <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
+      (change)="char$.next($event.value)">
+      <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
+        {{c.className}}
+        <span class="d-none d-md-inline"> - {{c.light}}</span>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+</div>
+<div class="grid-parent">
+  <div class="dashed-border">
+    <div class="bounty-title-container">
+      <div class="bounty-title">
+        Sets Currently Held
+        <mat-checkbox class="hide-check">
+          Hide Completed
+        </mat-checkbox>
+
+      </div>
+      <div class="bounty-subtitle">
+        <a mat-button>
+          <fa-icon [icon]="iconService.farSearch"></fa-icon>
+          See all
+        </a>
+      </div>
+    </div>
+
+  </div>
+  <div class="dashed-border">
+    <div class="bounty-title-container">
+      <div class="bounty-title">
+        Sets For Sale
+      </div>
+      <div class="bounty-subtitle">
+        <a mat-button>
+          <fa-icon [icon]="iconService.farSearch"></fa-icon>
+          See all
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="dashed-border">
+    <div class="bounty-title-container">
+      <div class="bounty-title">
+        Shopping List
+      </div>
+    </div>
+  </div>
+</div>
 <!-- 
     <div class="mat-card-subtitle left">
         Currently held and available bounties for the selected character, grouped by shared objectives.

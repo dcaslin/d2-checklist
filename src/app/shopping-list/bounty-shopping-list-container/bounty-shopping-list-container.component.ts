@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
-import { VendorLoadType } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -16,7 +15,6 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BountyShoppingListContainerComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});
-  public VendorLoadType = VendorLoadType;
   public charId$ = new BehaviorSubject<string|null>(null);
 
   constructor(
@@ -39,7 +37,6 @@ export class BountyShoppingListContainerComponent extends ChildComponent impleme
 
   ngOnInit(): void {
   }
-  
 
   onToggleVendorBounty(hash: string) {
     const slh = this.shoppingListHashes$.getValue();

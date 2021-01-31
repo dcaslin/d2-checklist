@@ -48,6 +48,12 @@ export class VendorsComponent implements OnInit, OnDestroy {
   @Input() currUser: SelectedUser;
   @Input() shoppingListHashes: { [key: string]: boolean };
   @Input() loading: boolean;
+  @Input() vendorsLoading: boolean;
+
+  @Output() toggleVendorBounty = new EventEmitter<string>();
+  @Output() charIdSelect = new EventEmitter<string>();
+  @Output() tabSelect = new EventEmitter<string>();
+  @Output() refresh = new EventEmitter<void>();
 
 
   @Input()
@@ -79,6 +85,8 @@ export class VendorsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TODO add paging for render performance
+
   @Input()
   public set tab(val: string) {
 
@@ -93,10 +101,6 @@ export class VendorsComponent implements OnInit, OnDestroy {
       }
     }
   }
-
-  @Output() toggleVendorBounty = new EventEmitter<string>();
-  @Output() charIdSelect = new EventEmitter<string>();
-  @Output() tabSelect = new EventEmitter<string>();
 
   @Input()
   public set vendorData(val: CharacterVendorData[]) {
@@ -131,6 +135,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
       distinctUntilChanged()
     ).subscribe(([char, option, filterText, hideCompleted, vendorData]) => {
       const data = VendorsComponent.filterData(char, option, filterText, hideCompleted, vendorData);
+      console.log('Done filtering');
       this.data$.next(data);
     });
   }
