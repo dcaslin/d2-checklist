@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { VendorDeals, VendorService } from '@app/service/vendor.service';
 import { BehaviorSubject, combineLatest, from, Observable, Subject } from 'rxjs';
-import { catchError, concatAll, filter, first, map, startWith, takeUntil, tap } from 'rxjs/operators';
+import { catchError, concatAll, filter, map, takeUntil, tap } from 'rxjs/operators';
 import { AuthInfo, AuthService } from './auth.service';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
-import { VendorDeals, VendorService } from '@app/service/vendor.service';
 import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo } from './model';
 import { NotificationService } from './notification.service';
 
@@ -136,7 +136,6 @@ export class SignedOnUserService implements OnDestroy {
       }
       ),
     ).subscribe((player: Player) => {
-      console.log("blah");
       this.player$.next(player);
       if (player != null) {
         this.currencies$.next(player.currencies);

@@ -3649,7 +3649,7 @@ export class ParseService {
                             BUCKETS_ARMOR.includes(bucketHash)) {
                             type = ItemType.Armor;
                         } else {
-                            console.log('Skipping no type: ' + itm.itemHash);
+                            // console.log('Skipping no type: ' + itm.itemHash);
                             return null;
                         }
 

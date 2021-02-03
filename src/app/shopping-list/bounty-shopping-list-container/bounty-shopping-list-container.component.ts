@@ -36,6 +36,7 @@ export class BountyShoppingListContainerComponent extends ChildComponent impleme
 
 
   ngOnInit(): void {
+    this.signedOnUserService.loadVendorsIfNotLoaded();
   }
 
   onToggleVendorBounty(hash: string) {
