@@ -58,6 +58,8 @@
     </div>
   </div>
 </div>
+<div *ngIf="charBountySets$|async as cb">Char sets: {{cb.length}}</div>
+<div *ngIf="vendorBountySets$|async as cb">Vendor sets: {{cb.length}}</div>
 <!-- 
     <div class="mat-card-subtitle left">
         Currently held and available bounties for the selected character, grouped by shared objectives.
