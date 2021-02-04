@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { BountySetInfo, BountySetsDialogComponent } from '@app/home/home/bounty-sets-dialog/bounty-sets-dialog.component';
 import { IconService } from '@app/service/icon.service';
+import { BountySet } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { Bounty } from '@app/todo-list/interfaces/vendor.interface';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -15,12 +19,13 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BountyShoppingListContainerComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});
-  public charId$ = new BehaviorSubject<string|null>(null);
+  readonly modalBountySet$: BehaviorSubject<BountySet> = new BehaviorSubject(null);
 
   constructor(
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     public router: Router,
+    private dialog: MatDialog,
     storageService: StorageService
   ) {
     super(storageService);
@@ -52,4 +57,28 @@ export class BountyShoppingListContainerComponent extends ChildComponent impleme
     }
   }
 
+
+  public onShowModalBountySet(bs: BountySet) {
+    // store this in an observable so if it's refreshed we can track it in the modal we're showing
+    this.modalBountySet$.next(bs);
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    const d: BountySetInfo = {
+      modalBountySet: this.modalBountySet$,
+      playerLoading: this.signedOnUserService.playerLoading$,
+      vendorBountiesLoading: this.signedOnUserService.vendorsLoading$,
+      refreshMe: null,
+      shoppingListHashes: this.shoppingListHashes$
+    };
+    dc.data = d;
+    dc.width = '80%';
+    const ref = this.dialog.open(BountySetsDialogComponent, dc);
+    ref.afterClosed().subscribe(result => {
+      this.modalBountySet$.next(null);
+    });
+  }
+
+  onClearShoppingList() {
+    this.storageService.clearHashList('shoppinglist');
+  }
 }

@@ -96,6 +96,6 @@ export interface BountySetInfo {
   readonly playerLoading: BehaviorSubject<boolean>;
   readonly vendorBountiesLoading: BehaviorSubject<boolean>;
   readonly refreshMe: Subject<void>;
-  readonly shoppingList: BehaviorSubject<SaleItem[]>;
+  readonly shoppingList?: BehaviorSubject<SaleItem[]|InventoryItem[]>;
   readonly shoppingListHashes: BehaviorSubject<{ [key: string]: boolean }>;
 }

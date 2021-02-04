@@ -6,9 +6,13 @@
             [currUser]="currUser" 
             [debugmode]="debugmode|async"
             [loading]="signedOnUserService.playerLoading$|async" 
+            [vendorsLoading]="signedOnUserService.vendorsLoading$|async"
             [vendorData]="signedOnUserService.vendors$|async"
             [shoppingListHashes]="shoppingListHashes$|async" 
+            [currentModalBountySet]="modalBountySet$|async"
             (toggleVendorBounty)="onToggleVendorBounty($event)"
+            (clearShoppingList)="onClearShoppingList()"
+            (showModalBountySet)="onShowModalBountySet($event)"
             (refresh)="signedOnUserService.refreshPlayerAndVendors()">
         </d2c-bounty-shopping-list>
     </ng-container>
