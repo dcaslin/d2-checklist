@@ -20,6 +20,8 @@
         </div>
     </div>
     <hr>
+    <d2c-deals-container></d2c-deals-container>
+    <hr>
     
     <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
         <div *ngIf="signedOnUserService.playerLoading$|async"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>

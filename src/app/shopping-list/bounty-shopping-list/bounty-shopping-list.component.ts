@@ -13,6 +13,9 @@ import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges {
+
+  readonly hideCompletePursuits$: BehaviorSubject<boolean> = new BehaviorSubject(localStorage.getItem('hide-completed-pursuits') === 'true');
+
   private readonly unsubscribe$: Subject<void> = new Subject<void>();
   public readonly char$: BehaviorSubject<Character> = new BehaviorSubject(null);
   public readonly charBountySets$ = new BehaviorSubject<BountySet[]>([]);
@@ -50,14 +53,14 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
     private signedOnUserService: SignedOnUserService
 
   ) {
-    combineLatest([this.char$, this.vendorData$]).pipe(
+    combineLatest([this.char$, this.vendorData$, this.hideCompletePursuits$]).pipe(
       takeUntil(this.unsubscribe$),
-      filter(([char, vendorData]) => char != null && vendorData != null),
+      filter(([char, vendorData, hideCompletePursuits]) => char != null && vendorData != null),
       distinctUntilChanged()
-    ).subscribe(([char, vendorData]) => {
+    ).subscribe(([char, vendorData, hideCompletePursuits]) => {
       const selected = vendorData.find(x => x?.char.id == char.id);
       // TODO hideCompletePursuits
-      const c = this.groupCharBounties(this.player, char, false);
+      const c = this.groupCharBounties(this.player, char, hideCompletePursuits);
       this.charBountySets$.next(c);
       if (selected) {
         const v = this.groupVendorBounties(selected.data);
@@ -71,6 +74,11 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
     ).subscribe(([vendorBountySets]) => {
       const shoppingList = BountyShoppingListComponent.buildShoppingList(this.shoppingListHashes, vendorBountySets);
       this.shoppingList$.next(shoppingList);
+    });
+
+    this.hideCompletePursuits$.pipe(takeUntil(this.unsubscribe$)).subscribe((x: boolean) => {
+      localStorage.setItem('hide-completed-pursuits', '' + x);
+      console.log(`Hide completed ${x}`)
     });
   }
 
