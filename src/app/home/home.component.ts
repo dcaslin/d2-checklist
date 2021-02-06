@@ -124,6 +124,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   removeActivityPrefixes(name: string) {
+    // return name;
     if (name == null) {
       return null;
     }
