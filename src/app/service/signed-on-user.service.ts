@@ -68,44 +68,44 @@ export class SignedOnUserService implements OnDestroy {
       .subscribe((ai: AuthInfo) => {
         if (ai != null) {
           this.bungieService.getBungieMembershipsById(ai.memberId, -1)
-          .then((membership: BungieMembership) => {
-            if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length === 0) {
-              console.log('No membership found for id, signing out.');
-              this.authService.signOut();
-              return;
-            }
-            const selectedUser: SelectedUser = new SelectedUser();
-            selectedUser.membership = membership;
-            // For testing, add a fake PSN account
-            // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-            // fake.membershipType = 2;
-            // fake.platformName = "PSN";
-            // membership.destinyMemberships.push(fake);
-            // fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
-            // fake.membershipType = 4;
-            // fake.platformName = "BNET";
-            // membership.destinyMemberships.push(fake);
-            let platform = 2;
-            const sPlatform: string = localStorage.getItem('D2STATE-preferredPlatform');
-            if (sPlatform != null) {
-              platform = parseInt(sPlatform, 10);
-            } else {
-              console.log('No preferred platform using: ' + platform);
-              if (membership.destinyMemberships.length > 1) {
-                selectedUser.promptForPlatform = true;
+            .then((membership: BungieMembership) => {
+              if (membership == null || membership.destinyMemberships == null || membership.destinyMemberships.length === 0) {
+                console.log('No membership found for id, signing out.');
+                this.authService.signOut();
+                return;
               }
-            }
-            membership.destinyMemberships.forEach(m => {
-              if (m.membershipType === platform) {
-                selectedUser.userInfo = m;
+              const selectedUser: SelectedUser = new SelectedUser();
+              selectedUser.membership = membership;
+              // For testing, add a fake PSN account
+              // let fake: UserInfo = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+              // fake.membershipType = 2;
+              // fake.platformName = "PSN";
+              // membership.destinyMemberships.push(fake);
+              // fake = JSON.parse(JSON.stringify(membership.destinyMemberships[0]));
+              // fake.membershipType = 4;
+              // fake.platformName = "BNET";
+              // membership.destinyMemberships.push(fake);
+              let platform = 2;
+              const sPlatform: string = localStorage.getItem('D2STATE-preferredPlatform');
+              if (sPlatform != null) {
+                platform = parseInt(sPlatform, 10);
+              } else {
+                console.log('No preferred platform using: ' + platform);
+                if (membership.destinyMemberships.length > 1) {
+                  selectedUser.promptForPlatform = true;
+                }
               }
-            });
-            if (selectedUser.userInfo == null) {
-              selectedUser.userInfo = membership.destinyMemberships[0];
-            }
-            this.signedOnUser$.next(selectedUser);
-          })
-          .finally(() => this.authorizing$.next(false));
+              membership.destinyMemberships.forEach(m => {
+                if (m.membershipType === platform) {
+                  selectedUser.userInfo = m;
+                }
+              });
+              if (selectedUser.userInfo == null) {
+                selectedUser.userInfo = membership.destinyMemberships[0];
+              }
+              this.signedOnUser$.next(selectedUser);
+            })
+            .finally(() => this.authorizing$.next(false));
         } else {
           this.authorizing$.next(false);
           this.signedOnUser$.next(null);
@@ -113,6 +113,7 @@ export class SignedOnUserService implements OnDestroy {
       });
     // handle clans
     this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
+      console.log("Apply clans");
       if (selectedUser != null) {
         this.applyClans(selectedUser);
       }
@@ -217,7 +218,7 @@ export class SignedOnUserService implements OnDestroy {
 
   private async applyClans(s: SelectedUser) {
     const c = await this.bungieService.getClans(s.membership.bungieId);
-  this.clans$.next(c);
+    this.clans$.next(c);
   }
 
 

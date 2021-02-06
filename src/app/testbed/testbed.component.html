@@ -1,12 +1,13 @@
 <div class="left test-container">
     <h1>Test Bed</h1>
     <div class="flex-row">
-        <div><button mat-stroked-button (click)="signedOnUserService.refreshPlayer()">Refresh Player</button></div>
+        <div><button mat-stroked-button (click)="signedOnUserService.refreshPlayer()">Refresh Player</button></div>        
+        <div><button mat-stroked-button (click)="signedOnUserService.loadVendorsIfNotLoaded()">Load Vendors</button></div>
         <div><button mat-stroked-button (click)="signedOnUserService.refreshVendors()">Refresh Vendors</button></div>
+        <d2c-signed-on-loading-icon></d2c-signed-on-loading-icon>
     </div>
-<!-- 
+
     <div *ngIf="signedOnUserService.vendors$|async as vendors">
-        {{vendors.length}}
         <div class="flex-row">
             <div *ngFor="let v of vendors">
                 <div *ngIf="v!=null">
@@ -17,13 +18,10 @@
                 </div>
             </div>
         </div>
-    </div> -->
-   
-    <hr style="width: 1000px">
-    <d2c-bounty-shopping-list-container></d2c-bounty-shopping-list-container>
+    </div>
     <hr>
     
-    <!-- <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
+    <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
         <div *ngIf="signedOnUserService.playerLoading$|async"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
 
         <div *ngIf="vendorDeals.vendorsLoading>0"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Vendors Loading {{vendorDeals.vendorsLoading}} / {{vendorDeals.totalVendors}} </div>
@@ -45,9 +43,5 @@
         {{vendorDeals.exotic.length}}
         <h3>Legendary</h3>
         {{vendorDeals.legendary.length}}
-    </div>
-    <hr>
-    <div>
-        <d2c-vendors-container></d2c-vendors-container>
-    </div> -->
+    </div>    
 </div>

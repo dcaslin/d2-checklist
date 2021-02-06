@@ -54,40 +54,43 @@ export class WeekService {
     'Head'
   ];
 
-  readonly CURSE_STRENGTH_ROTATION = [
-    'Strong',
-    'Weak',
-    'Medium'
-  ];
-
-
-  readonly ASCENDENT_CHALLENGE_ROTATION = [
-    'Ouroborea',
-    'Forfeit Shrine',
-    'Shattered Ruins',
-    'Keep of Honed Edges',
-    'Agonarch Abyss',
-    'Cimmerian Garrison'
-  ];
-
-
-  readonly ASCENDANT_VIDEOS = [
-    'https://www.youtube.com/watch?v=dUGLYlS7K7w',
-    'https://www.youtube.com/watch?v=r2tKPUZQkFo',
-    'https://www.youtube.com/watch?v=7T7I7qbusIo',
-    'https://www.youtube.com/watch?v=vV6oWIgSsgU',
-    'https://www.youtube.com/watch?v=ogcNP8CzT0g',
-    'https://www.youtube.com/watch?v=l2O9_2Vkgik'
-  ];
-
-
-  readonly ASCENDENT_LOCATION_ROTATION = [
-    'Aphelion\'s Rest',
-    'Gardens of Esila',
-    'Spine of Keres',
-    'Harbinger\'s Seclude',
-    'Bay of Drowned Wishes',
-    'Chamber of Starlight'
+  readonly ASCENDENT_INFO: DreamingCityRow[] = [
+    {
+      curseStrength: 'Strong',
+      challenge: 'Ouroborea',
+      location: 'Aphelion\'s Rest',
+      video: 'https://www.youtube.com/watch?v=xL2S7rjD-HQ'
+    },
+    {
+      curseStrength: 'Weak',
+      challenge: 'Forfeit Shrine',
+      location: 'Gardens of Esila',
+      video: 'https://www.youtube.com/watch?v=OBgPmi6c0T8'
+    },
+    {
+      curseStrength: 'Medium',
+      challenge: 'Shattered Ruins',
+      location: 'Spine of Keres',
+      video: 'https://www.youtube.com/watch?v=8e8fvtkh8kc'
+    },
+    {
+      curseStrength: 'Strong',
+      challenge: 'Keep of Honed Edges',
+      location: 'Harbinger\'s Seclude',
+      video: 'https://www.youtube.com/watch?v=U32rv7T9-ZI'
+    },
+    {
+      curseStrength: 'Weak',
+      challenge: 'Agonarch Abyss',
+      location: 'Bay of Drowned Wishes',
+      video: 'https://www.youtube.com/watch?v=hUz8fIKEPy8'
+    },
+    {
+      curseStrength: 'Medium',
+      challenge: 'Cimmerian Garrison',
+      location: 'Chamber of Starlight',
+      video: 'https://www.youtube.com/watch?v=8XmfC-H-9rs'
+    }
   ];
 
   constructor(private bungieService: BungieService,
@@ -95,7 +98,7 @@ export class WeekService {
     private parseService: ParseService) {
   }
 
-  private static getRotation(cntr: number, list: string[]) {
+  private static getRotation(cntr: number, list: any[]): any {
     const index = cntr % list.length;
     return list[index];
   }
@@ -107,11 +110,14 @@ export class WeekService {
       const thisWeek: moment.Moment = publicMilestones.weekStart;
       const numWeeks = Math.floor(moment.duration(thisWeek.diff(weekEpoch)).asWeeks());
 
+
+      const ascInfo = WeekService.getRotation(numWeeks, this.ASCENDENT_INFO) as DreamingCityRow;
+
       currWeek = {
-        ascendantChallenge: WeekService.getRotation(numWeeks, this.ASCENDENT_CHALLENGE_ROTATION),
-        ascendantVideo: WeekService.getRotation(numWeeks, this.ASCENDANT_VIDEOS),
-        location: WeekService.getRotation(numWeeks, this.ASCENDENT_LOCATION_ROTATION),
-        curseStrength: WeekService.getRotation(numWeeks, this.CURSE_STRENGTH_ROTATION),
+        ascendantChallenge: ascInfo.challenge,
+        ascendantVideo: ascInfo.video,
+        location: ascInfo.location,
+        curseStrength: ascInfo.curseStrength
       };
 
 
@@ -219,4 +225,11 @@ interface Week {
   ascendantVideo?: string;
   location: string;
   curseStrength: string;
+}
+
+interface DreamingCityRow {
+  curseStrength: string;
+  challenge: string;
+  video: string;
+  location: string;
 }

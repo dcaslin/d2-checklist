@@ -768,18 +768,18 @@ export class BungieService implements OnDestroy {
             dependsOn: []
         };
         p.milestoneList.push(ms1);
-        const ms2: MileStoneName = {
-            key: Const.PROPHECY_KEY,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Pinnacle Gear',
-            pl: Const.HIGH_BOOST,
-            name: 'Prophecy',
-            desc: 'Complete the Prophecy Dungeon',
-            hasPartial: true,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(ms2);
+        // const ms2: MileStoneName = {
+        //     key: Const.PROPHECY_KEY,
+        //     resets: p.characters[0].endWeek.toISOString(),
+        //     rewards: 'Pinnacle Gear',
+        //     pl: Const.HIGH_BOOST,
+        //     name: 'Prophecy',
+        //     desc: 'Complete the Prophecy Dungeon',
+        //     hasPartial: true,
+        //     neverDisappears: true,
+        //     dependsOn: []
+        // };
+        // p.milestoneList.push(ms2);
         const ms3: MileStoneName = {
             key: Const.MASTER_EMPIRE_HUNT,
             resets: p.characters[0].endWeek.toISOString(),
@@ -837,7 +837,7 @@ export class BungieService implements OnDestroy {
         const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);        
         // extra filter just in case
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
-        BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
+        // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
         BungieService.setPseudoMilestoneFromActivities(c, Const.HERESY_KEY, dungeonActivities, "Heresy");
         p.next(p.getValue());
     }

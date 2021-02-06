@@ -379,8 +379,8 @@ export class ParseService {
                     //     descRewards = 'Pinnacle Gear (Weak)';
                     // }
                 }
-                // if (skipDesc.hash == 979073379) { // force exo challenge to pinnacle    12/12/2020 this key is wrong? it is 
-                //  979073379 and that works fine 
+                // if (skipDesc.hash == 979073379) { // force exo challenge to pinnacle    12/12/2020 this key is wrong? it is
+                //  979073379 and that works fine
                 //     // this is actually unlocked by Europa Explorer III which is too much trouble to track b/c we'd have to load
                 //     // the slow varik's vendor endpoint
                 //     descRewards = 'Pinnacle Gear';
@@ -1258,7 +1258,7 @@ export class ParseService {
                 if (charAct?.availableActivities?.length > 0) {
                     for (const aa of charAct.availableActivities) {
                         const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
-                        if (vDesc?.displayProperties?.name?.startsWith("Empire Hunt")) {
+                        if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
                             if (empireHuntKeys.includes(aa.activityHash)) {
                                 continue;
                             }
@@ -1300,6 +1300,9 @@ export class ParseService {
         };
 
         if (pmsa.nightfall?.activities) {
+            pmsa.nightfall.activities = pmsa.nightfall.activities.filter(x => {
+                return x.name.startsWith('Nightfall');
+            });
             pmsa.nightfall.activities.sort((a, b) => {
                 const mla = a?.modifiers?.length;
                 const mlb = b?.modifiers?.length;
@@ -1859,6 +1862,9 @@ export class ParseService {
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
                     ms.resets = null;
                 }
+                if (p.hash == '825965416') {
+                    ms.name = 'Prophecy Weekly';
+                }
                 milestoneList.push(ms);
             }
             const missingMilestones = [];
@@ -1886,14 +1892,14 @@ export class ParseService {
             // --- FORCE ANY SPECIAL MILESTONES HERE
             if (!milestoneList.find(x => x.key == '1713200903')) {
                 milestoneList.push({
-                    "key": "1713200903",
-                    "resets": weekEnd,
-                    "rewards": "Pinnacle Gear",
-                    "pl": 5,
-                    "name": "Weekly Exo Challenge",
-                    "desc": "Complete an Exo Challenge.",
-                    "hasPartial": false,
-                    "dependsOn": [
+                    'key': '1713200903',
+                    'resets': weekEnd,
+                    'rewards': 'Pinnacle Gear',
+                    'pl': 5,
+                    'name': 'Weekly Exo Challenge',
+                    'desc': 'Complete an Exo Challenge.',
+                    'hasPartial': false,
+                    'dependsOn': [
                     ]
                 }
                 );
@@ -1950,7 +1956,7 @@ export class ParseService {
                                 if (aa.recommendedLight == 1280) {
                                     const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
                                     // is this an empire hunt
-                                    if (vDesc?.displayProperties?.name?.startsWith("Empire Hunt")) {
+                                    if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
                                         hasAccessTo1280EmpireHunt = true;
                                         if (aa.challenges?.length > 0) {
                                             for (const challenge of aa.challenges) {
@@ -3829,7 +3835,7 @@ export class ParseService {
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
-                isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot, 
+                isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
                 coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash
             );
         } catch (exc) {
