@@ -236,30 +236,6 @@ export interface NameQuantity {
     quantity: number;
 }
 
-export interface SaleItem {
-    tags?: string[];
-    vendor: Vendor;
-    hash: string;
-    name: string;
-    desc: string;
-    icon: string;
-    type: ItemType;
-    tierType: number;
-    status: string;
-    itemTypeAndTierDisplayName: string;
-    itemTypeDisplayName: string;
-    quantity: number;
-    objectives: ItemObjective[];
-    stats: InventoryStat[];
-    preferredStatPoints?: number;
-    totalStatPoints?: number;
-    classAllowed: ClassAllowed;
-    values: NameQuantity[];
-    costs: NameQuantity[];
-    searchText: string;
-    lowLinks?: LowLinks;
-}
-
 export interface ItemPerks {
     icon: string;
     hash: string;
@@ -407,7 +383,7 @@ export interface BountySet {
     type: string;
     tag: string;
     score: number;
-    bounties: (SaleItem | InventoryItem)[];
+    bounties: InventoryItem[];
 }
 
 export class SelectedUser {

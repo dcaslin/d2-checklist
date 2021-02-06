@@ -6,11 +6,6 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
-// TODO handle refresh from modal
-// TODO place on home page
-// TODO clean up all the old SaleItem junk
-// TODO clean up loading indicators and such
-
 @Component({
   selector: 'd2c-bounty-shopping-list',
   templateUrl: './bounty-shopping-list.component.html',
@@ -60,7 +55,6 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
       filter(([char, vendorData]) => char != null && vendorData != null),
       distinctUntilChanged()
     ).subscribe(([char, vendorData]) => {
-      console.log(`update ${char.characterId} ${vendorData.length}`);
       const selected = vendorData.find(x => x?.char.id == char.id);
       // TODO hideCompletePursuits
       const c = this.groupCharBounties(this.player, char, false);

@@ -25,7 +25,7 @@ import { FriendsComponent } from './friends';
 import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 import { GearComponent } from './gear';
 import { HistoryComponent } from './history';
-import { HomeComponent } from './home';
+import { HomeComponent } from './home/home.component';
 import { PartyComponent } from './party/party.component';
 import { PGCRComponent } from './pgcr';
 import { PlayerComponent } from './player';

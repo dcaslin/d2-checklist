@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, ItemType, MileStoneName, MilestoneStatus, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SaleItem, SearchResult, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, ItemType, MileStoneName, MilestoneStatus, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -368,106 +368,79 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
-        const powerfulBounties: SaleItem[] = [];
-        let vendorFound = false;
-        for (const i of vendorData) {
-            if (i.vendor.hash == targetVendorHash) {
-                vendorFound = true;
-                if (i.values != null && i.type == ItemType.Bounty) {
-                    if (i.itemTypeDisplayName.indexOf('Weekly Bounty') >= 0  ) {
-                        powerfulBounties.push(i);
-                    }
-                    // for (const v of i.values) {
-                    //     // is powerful gear
-                    //     if (v.hash == '4039143015') {
-                    //         powerfulBounties.push(i);
-                    //     } else if (v.hash == '3586070587') {
-                    //         powerfulBounties.push(i);
-                    //     } // is Firewalll Data Fragment
-                    // }
-                }
-            }
-        }
-        // no powerful bounties avail
-        if (powerfulBounties.length == 0) {
-            return new MilestoneStatus(key, false, 0, null, ['Not available'], null, true, false);
-        } else if (powerfulBounties.length == 1) {
-            const i = powerfulBounties[0];
-            const complete = i.status == 'Already completed';
-            const held = i.status == 'Already held';
-            let progress = complete ? 1 : 0;
-            if (held) {
-                const bounties: InventoryItem[] = p.bounties[c.characterId];
-                let bounty: InventoryItem = null;
-                if (bounties) {
-                    for (const b of bounties) {
-                        if (b.hash == i.hash) {
-                            bounty = b;
-                        }
-                    }
-                }
+    // private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
+    //     const powerfulBounties: SaleItem[] = [];
+    //     let vendorFound = false;
+    //     for (const i of vendorData) {
+    //         if (i.vendor.hash == targetVendorHash) {
+    //             vendorFound = true;
+    //             if (i.values != null && i.type == ItemType.Bounty) {
+    //                 if (i.itemTypeDisplayName.indexOf('Weekly Bounty') >= 0  ) {
+    //                     powerfulBounties.push(i);
+    //                 }
+    //                 // for (const v of i.values) {
+    //                 //     // is powerful gear
+    //                 //     if (v.hash == '4039143015') {
+    //                 //         powerfulBounties.push(i);
+    //                 //     } else if (v.hash == '3586070587') {
+    //                 //         powerfulBounties.push(i);
+    //                 //     } // is Firewalll Data Fragment
+    //                 // }
+    //             }
+    //         }
+    //     }
+    //     // no powerful bounties avail
+    //     if (powerfulBounties.length == 0) {
+    //         return new MilestoneStatus(key, false, 0, null, ['Not available'], null, true, false);
+    //     } else if (powerfulBounties.length == 1) {
+    //         const i = powerfulBounties[0];
+    //         const complete = i.status == 'Already completed';
+    //         const held = i.status == 'Already held';
+    //         let progress = complete ? 1 : 0;
+    //         if (held) {
+    //             const bounties: InventoryItem[] = p.bounties[c.characterId];
+    //             let bounty: InventoryItem = null;
+    //             if (bounties) {
+    //                 for (const b of bounties) {
+    //                     if (b.hash == i.hash) {
+    //                         bounty = b;
+    //                     }
+    //                 }
+    //             }
 
-                if (bounty != null) {
-                    progress = bounty.aggProgress / 100;
-                }
-            }
-            const pseudoMs = new MilestoneStatus(key, complete, progress, null,
-                complete ? null : held ? ['Held'] : ['Not Held'], null, false, false);
-            return pseudoMs;
-        } else {
-            if (!vendorFound) {
-                // const pseudoMs = new MilestoneStatus(key, false, 0, null,
-                //     'Vendor not found', null);
-                return null;
-            }
-            let complete = 0;
-            let held = 0;
-            for (const b of powerfulBounties) {
-                if (b.status == 'Already completed') {
-                    complete++;
-                }
-                if (b.status == 'Already held') {
-                    held++;
-                }
-            }
-            let info = complete + '/' + powerfulBounties.length;
-            if (held > 0) {
-                info += ', ' + held + ' held';
-            }
-            const allDone = complete === powerfulBounties.length;
-            const pseudoMs = new MilestoneStatus(key, allDone,
-                complete / powerfulBounties.length, null, allDone ? null : [info], null, false, false);
-            return pseudoMs;
-        }
-    }
-    
-    public async groupVendorBounties(c: Character) {
-        try {
-            const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-                c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemSockets');
-            const vendorData = this.parseService.groupVendorBounties(resp);
-            return vendorData;
-        } catch (err) {
-            this.handleError(err);
-            return [];
-        }
-    }
-
-
-
-    public async loadVendors(c: Character): Promise<SaleItem[]> {
-        try {
-            const resp = await this.makeReq('Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-                c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemStats'); //ItemSockets,ItemInstances
-            const vendorData = this.parseService.parseVendorData(resp);
-
-            return vendorData;
-        } catch (err) {
-            this.handleError(err);
-            return [];
-        }
-    }
+    //             if (bounty != null) {
+    //                 progress = bounty.aggProgress / 100;
+    //             }
+    //         }
+    //         const pseudoMs = new MilestoneStatus(key, complete, progress, null,
+    //             complete ? null : held ? ['Held'] : ['Not Held'], null, false, false);
+    //         return pseudoMs;
+    //     } else {
+    //         if (!vendorFound) {
+    //             // const pseudoMs = new MilestoneStatus(key, false, 0, null,
+    //             //     'Vendor not found', null);
+    //             return null;
+    //         }
+    //         let complete = 0;
+    //         let held = 0;
+    //         for (const b of powerfulBounties) {
+    //             if (b.status == 'Already completed') {
+    //                 complete++;
+    //             }
+    //             if (b.status == 'Already held') {
+    //                 held++;
+    //             }
+    //         }
+    //         let info = complete + '/' + powerfulBounties.length;
+    //         if (held > 0) {
+    //             info += ', ' + held + ' held';
+    //         }
+    //         const allDone = complete === powerfulBounties.length;
+    //         const pseudoMs = new MilestoneStatus(key, allDone,
+    //             complete / powerfulBounties.length, null, allDone ? null : [info], null, false, false);
+    //         return pseudoMs;
+    //     }
+    // }
 
     private async _publicMsHack(): Promise<any> {
         return await this.makeReq('Destiny2/Milestones/');
