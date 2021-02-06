@@ -1,15 +1,15 @@
-<div mat-dialog-title style="margin-bottom: 0px" *ngIf="name|async as n">
+<div mat-dialog-title style="margin-bottom: 0px" *ngIf="name$|async as n">
     {{n|titlecase}}
     <span class="simple-caption-no-margin">
-        <button mat-icon-button (click)="input.refreshMe.next()">
+        <button mat-icon-button (click)="signedOnUserService.refreshPlayerAndVendors()">
             <fa-icon [icon]="iconService.fasSyncAlt" [spin]="(loading|async)===true"></fa-icon>
         </button>
         <span *ngIf="TAG_WEIGHTS[n]" class="tag-weight warn-text">{{TAG_WEIGHTS[n]|percent}} weighted</span>
     </span>
 
 </div>
-<mat-dialog-content *ngIf="bounties|async as b">
-    <div class="grid-parent mat-typography" *ngIf="input.shoppingListHashes|async as sl">
+<mat-dialog-content *ngIf="bounties$|async as b">
+    <div class="grid-parent mat-typography" *ngIf="shoppingListHashes$|async as sl">
         <div class="dashed-border bounty" *ngFor="let i of b" (click)="selectVendorBounty(i)"
             [class.vendor-bounty]="i.vendor!=null" [class.selected-dashed-border]="sl[i.hash]">
             <div class="title">

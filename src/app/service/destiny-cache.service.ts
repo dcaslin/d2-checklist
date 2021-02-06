@@ -24,13 +24,14 @@ export class DestinyCacheService {
   private async init() {
     this.checkingCache.next(true);
     const t0 = performance.now();
-    console.log('Loading cache');
+    const key = 'manifest-' + env.versions.manifest;
+    console.log(`Loading cache ${key}`);
     try {
-      const key = 'manifest-' + env.versions.manifest;
       const manifest = await get(key);
       this.checkingCache.next(false);
       // if nothing found, perhaps version has changed, clear old values
       if (manifest == null) {
+        console.log('No cached value found');
         const ks = await keys();
         for (const k of ks) {
           if (k.toString().startsWith('manifest')) {
@@ -45,10 +46,16 @@ export class DestinyCacheService {
       this.ready$.next(true);
       const t1 = performance.now();
       console.log((t1 - t0) + ' ms to load manifest');
-
-
     } catch (exc) {
+      console.log(`Error loading Bungie Manifest DB ${key}`);
       console.dir(exc);
+      try {
+        console.log('Deleting any existing cache entry');
+        await del(key);
+      } catch (exc2) {
+        console.log('Secondary error deleting cache entry');
+        console.dir(exc2);
+      }
       this.error.next('There was an error loading the Bungie Manifest DB, please refresh the page and try again.');
     }
     finally {

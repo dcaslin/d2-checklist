@@ -22,7 +22,9 @@
     <d2c-sign-in-required></d2c-sign-in-required>
 </ng-template>
 <ng-template #noPlayerYet>
-    <div class="center-spinner">
+    <fa-icon class="fa-icon" [icon]="iconService.farSpinner" style="opacity: 0.5" [spin]="true" size="2x"
+        [fixedWidth]="true"></fa-icon>
+    <!-- <div class="center-spinner">
         <mat-spinner class="loading" class="center-spinner"></mat-spinner>
-    </div>
+    </div> -->
 </ng-template>

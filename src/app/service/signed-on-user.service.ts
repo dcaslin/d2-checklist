@@ -17,6 +17,7 @@ export class SignedOnUserService implements OnDestroy {
 
   private refreshPlayer$: BehaviorSubject<null> = new BehaviorSubject(null);
   private refreshVendors$: BehaviorSubject<LoadType> = new BehaviorSubject(LoadType.LeaveAlone);
+  private playerFirstLoad$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   public player$: BehaviorSubject<Player | null> = new BehaviorSubject(null);
   public playerLoading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -136,10 +137,14 @@ export class SignedOnUserService implements OnDestroy {
       }
       ),
     ).subscribe((player: Player) => {
+      const playerWasNull = this.player$.getValue() == null;
       this.player$.next(player);
       if (player != null) {
         this.currencies$.next(player.currencies);
         this.gearMetadata$.next(player.gearMetaData);
+        if (playerWasNull) {
+          this.playerFirstLoad$.next(true);
+        }
       } else {
         this.currencies$.next([]);
         this.gearMetadata$.next(null);
@@ -147,10 +152,10 @@ export class SignedOnUserService implements OnDestroy {
       this.playerLoading$.next(false);
     });
 
-    combineLatest([this.refreshVendors$, this.player$]).pipe(
+    combineLatest([this.refreshVendors$, this.playerFirstLoad$]).pipe(
       takeUntil(this.unsubscribe$),
-      filter(([refresh, player]) => {
-        if (player == null) {
+      filter(([refresh, playerFirstLoad]) => {
+        if (this.player$.getValue() == null) {
           return false;
         }
         if (refresh == LoadType.LeaveAlone) { // if we shouldn't touch this, leave it alone
@@ -161,8 +166,9 @@ export class SignedOnUserService implements OnDestroy {
           return true;
         }
       }),
-      tap(([refresh, player]) => this.vendorsLoading$.next(true)),
-      map(([refresh, player]) => {
+      tap(([refresh, playerFirstLoad]) => this.vendorsLoading$.next(true)),
+      map(([refresh, playerFirstLoad]) => {
+        const player = this.player$.getValue();
         const requests: Observable<CharacterVendorData>[] = [];
         if (player) {
           for (const char of player.characters) {

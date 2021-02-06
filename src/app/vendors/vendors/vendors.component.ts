@@ -85,7 +85,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // TODO add paging for render performance
+  // TODO add paging for render performance?
 
   @Input()
   public set tab(val: string) {
