@@ -56,6 +56,8 @@ import { BountyShoppingListComponent } from './shopping-list/bounty-shopping-lis
 import { TestbedComponent } from './testbed/testbed.component';
 import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
 import { VendorsComponent } from './vendors/vendors/vendors.component';
+import { DealsContainerComponent } from './deals/deals-container/deals-container.component';
+import { DealsComponent } from './deals/deals/deals.component';
 
 
 
@@ -93,7 +95,7 @@ import { VendorsComponent } from './vendors/vendors/vendors.component';
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, 
     SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, 
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent, 
-    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent
+    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent, DealsContainerComponent, DealsComponent
   ],
   providers: [
     AuthService,

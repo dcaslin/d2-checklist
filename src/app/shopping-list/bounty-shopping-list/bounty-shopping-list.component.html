@@ -25,7 +25,7 @@
     <div class="bounty-title-container" >
       <div class="bounty-title">
         Sets Currently Held
-        <mat-checkbox class="hide-check">
+        <mat-checkbox class="hide-check" (change)="hideCompletePursuits$.next($event.checked)">
           Hide Completed
         </mat-checkbox>
 

@@ -25,8 +25,6 @@ import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 })
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  readonly hideCompletePursuits: BehaviorSubject<boolean> = new BehaviorSubject(localStorage.getItem('hide-completed-pursuits') === 'true');
-  public _hideCompletePursuits = this.hideCompletePursuits.getValue();
 
   readonly version = env.versions.app;
   manifestVersion = '';
