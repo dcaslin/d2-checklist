@@ -31,11 +31,6 @@
     <changefreq>weekly</changefreq>
 </url>
 <url>
-    <loc>https://www.d2checklist.com/search</loc>
-    <priority>0.9</priority>
-    <changefreq>weekly</changefreq>
-</url>
-<url>
     <loc>https://www.d2checklist.com/about</loc>
     <priority>0.5</priority>
     <changefreq>weekly</changefreq>

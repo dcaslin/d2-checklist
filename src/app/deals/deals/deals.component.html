@@ -1,1 +1,75 @@
-<p>deals works!</p>
+<h4>Collection Deals</h4>
+<ng-container
+    *ngIf="vendorDeals.collection.tess.length > 0 || vendorDeals.collection.banshee.length > 0; else noCollections">
+    <div class="subtitle">
+        Tess Bright Dust shaders and Banshee mods that aren't yet in your collections. Always smart buys.
+    </div>
+    <div class="flex-row">
+        <ng-container *ngTemplateOutlet="collection; context: {title: 'Tess', data: vendorDeals.collection.tess}">
+        </ng-container>
+        <ng-container *ngTemplateOutlet="collection; context: {title: 'Banshee', data: vendorDeals.collection.banshee}">
+        </ng-container>
+    </div>
+</ng-container>
+
+<ng-template #noCollections>
+    <div class="subtitle">
+        No unowned Banshee mods or Bright Dust shaders for sale right now.
+    </div>
+</ng-template>
+
+<ng-template #collection let-title="title" let-data='data'>
+    <div *ngIf="data.length>0">
+        <h4>{{title}}</h4>
+        <div class="flex-row">
+            <div *ngFor="let i of data">
+                <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+                <div class="collection-label">{{i.name}}</div>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<hr>
+<h3>Legendary Gear Deals</h3>
+<ng-container *ngIf="vendorDeals.legendary.length>0; else noLegendaryArmor">
+    <div class="subtitle">Vendor armor &gt;=1310 cap whose preferred stat points are better 
+        than anything you currently have by slot and energy type.</div>
+    <div class="flex-row">
+        <div *ngFor="let cib of vendorDeals.legendary">
+            <d2c-item-icon [i]="cib.gear[0]" [hideMenu]="true"></d2c-item-icon>
+            <div class="collection-label">{{cib.gear[0].name}}</div>
+            <div class="collection-label">Capped at {{cib.gear[0].powerCap}}PL</div>
+        </div>
+    </div>
+</ng-container>
+<ng-template #noLegendaryArmor>
+    <div class="subtitle">
+        No vendor armor &gt;=1310 cap is better than what you currently have.
+    </div>
+</ng-template>
+<hr>
+
+<ng-container *ngIf="vendorDeals.exotic.length>0">
+<h3>Exotic Gear Deals</h3>
+<div class="flex-row">
+    <div *ngFor="let i of vendorDeals.exotic">
+        <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+        <div class="collection-label">{{i.name}}</div>
+    </div>
+</div>
+</ng-container>
+
+
+
+<h3>Exchange</h3>
+<h5>Banshee {{vendorDeals.exchange.banshee.length}}</h5>
+<div *ngFor="let c of vendorDeals.exchange.banshee">
+    {{c.target.displayProperties.name}} (you have {{c.targetCount|number}}) costs {{c.cost.desc.displayProperties.name}}
+    (you have {{c.costCount|number}})
+</div>
+<h5>Spider {{vendorDeals.exchange.spider.length}}</h5>
+<div *ngFor="let c of vendorDeals.exchange.spider">
+    {{c.target?.displayProperties.name}} (you have {{c.targetCount|number}}}) costs
+    {{c.cost?.desc?.displayProperties?.name}} (you have {{c.costCount|number}})
+</div>
+Exotic: {{vendorDeals.exotic.length}}

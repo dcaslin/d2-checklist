@@ -59,7 +59,7 @@
                                     </div>
                                     <div class="type-caption pad-bottom">{{i.typeName}}</div>
                                 </div>
-                                <d2c-item-icon class="lazy-load" [i]="i" [hideMenu]="true"></d2c-item-icon>
+                                <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
                             </td>
                             <td *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty; else notBounty">
                                 <div class="dashed-border bounty"

@@ -118,6 +118,8 @@ export class VendorService {
     const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
     const goodLegendaryDeals = legendaryDeals.filter(i => i.hasDeal);
     // if any vendor exotic armor (Xur), look exactly by item type
+    // TODO any exotics you don't have yet as well
+    // TODO give list of that exotic to compare
     const exoticDeals = this.findExoticArmorDeals(player, interestingVendorArmor);
     const collectionItems = this.checkCollections(player, vendorItems);
     const exchange = this.getExchangeInfo(player, vendorItems);

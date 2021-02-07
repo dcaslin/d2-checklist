@@ -1,0 +1,18 @@
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+
+.flex-row > div {
+  margin: 5px;
+}
+
+.collection-label {
+  font-size: 12px;
+  font-weight: 400;
+  margin: 3px 0px 5px 0px;
+  max-width: 75px;
+}

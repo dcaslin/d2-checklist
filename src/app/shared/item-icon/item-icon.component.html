@@ -19,7 +19,7 @@
             [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal">
             {{i.power}}
         </div>
-        <div class="gear-lock">
+        <div class="gear-lock" *ngIf="!hideMenu">
             <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked|async"></fa-icon>
             <fa-icon [icon]="iconService.fasLockOpenAlt" *ngIf="!(i.locked|async)"></fa-icon>
         </div>
