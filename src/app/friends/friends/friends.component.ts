@@ -11,10 +11,10 @@ import { ChildComponent } from '../../shared/child.component';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-friends',
   templateUrl: './friends.component.html',
-  styleUrls: ['./friends.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./friends.component.scss']
 })
 export class FriendsComponent extends ChildComponent implements OnInit {
   public today =  moment(new Date());

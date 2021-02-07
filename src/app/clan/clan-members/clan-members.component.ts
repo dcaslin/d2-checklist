@@ -6,10 +6,10 @@ import * as moment from 'moment';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-members',
   templateUrl: './clan-members.component.html',
-  styleUrls: ['./clan-members.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-members.component.scss']
 })
 export class ClanMembersComponent extends ChildComponent implements OnInit {
   public today =  moment(new Date());

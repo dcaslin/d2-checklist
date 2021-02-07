@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivityType, Timespan } from '@app/todo-list/interfaces/activity.interface';
 import { TogglableRowItem } from '@app/todo-list/interfaces/filter.interface';
 import { ActivityTypeFilterService } from '@app/todo-list/services/activity-type-filter.service';
@@ -6,6 +6,7 @@ import { Destroyable } from '@app/util/destroyable';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-activity-type-filters',
   templateUrl: './activity-type-filters.component.html',
   styleUrls: ['../filters-styles.scss']

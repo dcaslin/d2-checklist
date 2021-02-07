@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'icon-cell',
   template: `
     <d2c-bungie-icon
@@ -11,8 +12,7 @@ import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
       [matTooltip]="row.iconTooltip"
       matTooltipClass="multi-line-tooltip">
     </d2c-bungie-icon>
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `
 })
 export class IconRenderer implements ICellRendererAngularComp {
   public params: any;

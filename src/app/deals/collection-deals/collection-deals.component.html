@@ -1,0 +1,16 @@
+<h3
+    matTooltip="Vendor items for sale now that are missing for your collections that you should buy (includes Tess Bright Dust shaders, Banshee weapon mods and Xur armor).">
+    Collection Deals</h3>
+<ng-container *ngIf="vendorDeals.collection.length > 0">
+    <div class="flex-row">
+        <div *ngFor="let vc of vendorDeals.collection">
+            <div class="flex-row">
+                <div *ngFor="let i of vc.data">
+                    <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+                    <div class="deal-label">{{i.name}}</div>
+                    <div class="vendor-deal-label">{{vc.vendor.name}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

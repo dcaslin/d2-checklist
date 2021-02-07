@@ -1,5 +1,5 @@
 
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../service/auth.service';
@@ -8,6 +8,7 @@ import { ChildComponent } from '../../shared/child.component';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']

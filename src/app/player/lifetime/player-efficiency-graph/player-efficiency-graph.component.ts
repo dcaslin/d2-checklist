@@ -6,10 +6,10 @@ import { PlayerStateService } from '@app/player/player-state.service';
 import { AggHistoryEntry } from '@app/service/model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-player-efficiency-graph',
   templateUrl: './player-efficiency-graph.component.html',
-  styleUrls: ['./player-efficiency-graph.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./player-efficiency-graph.component.scss']
 })
 export class PlayerEfficiencyGraphComponent implements OnInit {
   public b: ChartLegendOptions;

@@ -4,10 +4,10 @@ import { Label } from 'ng2-charts';
 import { PlayerTriumph } from '@app/clan/clan-state.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-triumph-graph',
   templateUrl: './clan-triumph-graph.component.html',
-  styleUrls: ['./clan-triumph-graph.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-triumph-graph.component.scss']
 })
 export class ClanTriumphGraphComponent implements OnInit {
   public b: ChartLegendOptions;

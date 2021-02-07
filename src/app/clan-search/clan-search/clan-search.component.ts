@@ -8,10 +8,10 @@ import { ChildComponent } from '../../shared/child.component';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-search',
   templateUrl: './clan-search.component.html',
-  styleUrls: ['./clan-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-search.component.scss']
 })
 export class ClanSearchComponent extends ChildComponent implements OnInit, OnDestroy {
   name: string;

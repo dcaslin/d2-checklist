@@ -4,10 +4,10 @@ import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-about',
   templateUrl: './about.component.html',
-  styleUrls: ['./about.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./about.component.scss']
 })
 export class AboutComponent extends ChildComponent  implements OnInit {
   constructor(storageService: StorageService, public iconService: IconService) {

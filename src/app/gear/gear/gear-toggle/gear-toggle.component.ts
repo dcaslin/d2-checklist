@@ -5,10 +5,10 @@ import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject, generate } from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-gear-toggle',
   templateUrl: './gear-toggle.component.html',
-  styleUrls: ['../gear.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../gear.component.scss']
 })
 export class GearToggleComponent implements OnInit {
 

@@ -14,10 +14,10 @@ import * as moment from 'moment';
 import { PlayerMods, ArmorPerksDialogComponent } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-party',
   templateUrl: './party.component.html',
-  styleUrls: ['./party.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./party.component.scss']
 })
 export class PartyComponent extends ChildComponent implements OnInit, OnDestroy {
   public today = moment(new Date());

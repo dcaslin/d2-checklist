@@ -102,14 +102,8 @@ export class VendorService {
         totalVendors: vendors.length,
         legendary: [],
         exotic: [],
-        collection: {
-          banshee: [],
-          tess: []
-        },
-        exchange: {
-          banshee: [],
-          spider: []
-        }
+        collection: [],
+        exchange: []
       };
     }
     const vendorItems = VendorService.getUniqueVendorItems(vendors);
@@ -167,15 +161,32 @@ export class VendorService {
     return returnMe;
   }
 
-  private checkCollections(player: Player, vendorItems: InventoryItem[]): VendorCollections {
+  private checkCollections(player: Player, vendorItems: InventoryItem[]): VendorCollection[] {
     // type == 99 and seller is banshee (for gun mods), compare to collections? "Rampage Spec Banshee-44 672118013" 1990124610
     // type == 100 and seller is tess, compare to collections "Resilient Laurel Tess Everis 3361454721"
+    const returnMe: VendorCollection[] = [];
+    const xurArmor = this.checkCollectionForVendor(player, vendorItems, '2190858386', ItemType.Armor);
+    if (xurArmor.length > 0) {
+      returnMe.push({
+        vendor: xurArmor[0].vendorItemInfo.vendor,
+        data: xurArmor
+      });
+    }
     const bansheeMods = this.checkCollectionForVendor(player, vendorItems, '672118013', ItemType.GearMod);
+    if (bansheeMods.length > 0) {
+      returnMe.push({
+        vendor: bansheeMods[0].vendorItemInfo.vendor,
+        data: bansheeMods
+      });
+    }
     const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
-    return {
-      tess: tessShaders,
-      banshee: bansheeMods
-    };
+    if (tessShaders.length > 0) {
+      returnMe.push({
+        vendor: tessShaders[0].vendorItemInfo.vendor,
+        data: tessShaders
+      });
+    }
+    return returnMe;
   }
 
   private static setCost(costs: { [key: string]: number; }, v: VendorCurrency) {
@@ -209,7 +220,7 @@ export class VendorService {
     return null;
   }
 
-  private getExchangeInfo(player: Player, vendorItems: InventoryItem[]): VendorCurrencies {
+  private getExchangeInfo(player: Player, vendorItems: InventoryItem[]): VendorCurrencies[] {
     // type == 101 is all spider currency exchange "Purchase Enhancement Prisms Spider 863940356"
     // type == 10 and seller is banshee ("Upgrade Module Banshee-44 672118013") is upgrade modules, prisms, and shards
     const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
@@ -231,25 +242,13 @@ export class VendorService {
       }
     }
 
-    const returnMe: VendorCurrencies = {
-      spider: [],
-      banshee: []
-    };
+    const returnMe: VendorCurrencies[] = [];
+    const spiderItems: VendorCurrency[] = [];
     for (const g of spiderCurrency) {
       // skip enhancement cores and prisms
       if (g.name.indexOf('Enhancement') >= 0) {
         continue;
       }
-      // let targetName = g.name.substr('Purchase '.length);
-      // if (targetName.endsWith('s')) {
-      //   targetName = targetName.substr(0, targetName.length - 1);
-      // }
-      // if (targetName == 'Datalattice') {
-      //   targetName = 'Microphasic Datalattice';
-      // }
-      // if (targetName == 'Helium Filament') {
-      //   targetName = 'Helium Filaments';
-      // }
       const targetHash = VendorService.getCostHash(g.name);
       const targetDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[targetHash];
       let targetCount;
@@ -267,8 +266,15 @@ export class VendorService {
         costCount: null
       };
       VendorService.setCost(costs, v);
-      returnMe.spider.push(v);
+      spiderItems.push(v);
     }
+    if (spiderItems.length > 0) {
+      returnMe.push({
+        vendor: spiderItems[0].saleItem.vendorItemInfo.vendor,
+        data: spiderItems
+      });
+    }
+    const bansheeItems: VendorCurrency[] = [];
     for (const g of bansheeConsumables) {
       const targetCount = player.gear.filter(i => i.hash == g.hash).reduce((result, item) => { return result + item.quantity; }, 0);
       const targetDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[g.hash];
@@ -280,23 +286,29 @@ export class VendorService {
         costCount: null
       };
       VendorService.setCost(costs, v);
-      returnMe.banshee.push(v);
+      bansheeItems.push(v);
+    }
+    if (bansheeItems.length > 0) {
+      returnMe.push({
+        vendor: bansheeItems[0].saleItem.vendorItemInfo.vendor,
+        data: bansheeItems
+      });
     }
     return returnMe;
-
-
-
   }
 
-  private findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): InventoryItem[] {
+  private findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): ExoticInventoryBucket[] {
     const vendorExotics = vendorArmor.filter(i => i.tier == 'Exotic');
     const playerExotics = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Exotic');
-    const deals = [];
+    const deals: ExoticInventoryBucket[] = [];
     for (const v of vendorExotics) {
       const copies = playerExotics.filter(i => i.hash == v.hash);
+      copies.push(v);
       copies.sort(VendorService.sortByStats);
-      if (copies[0].vendorItemInfo) {
-        deals.push(copies[0]);
+      if (copies[0].vendorItemInfo != null) {
+        deals.push({
+          gear: copies
+        });
       }
     }
     return deals;
@@ -645,6 +657,10 @@ export class VendorService {
   }
 }
 
+export interface ExoticInventoryBucket {
+  gear: InventoryItem[];
+}
+
 
 export interface ClassInventoryBucket {
   bucket: ApiInventoryBucket;
@@ -654,14 +670,14 @@ export interface ClassInventoryBucket {
   hasDeal?: boolean;
 }
 
-export interface VendorCollections {
-  tess: InventoryItem[];
-  banshee: InventoryItem[];
+export interface VendorCollection {
+  vendor: Vendor;
+  data: InventoryItem[];
 }
 
 export interface VendorCurrencies {
-  banshee: VendorCurrency[];
-  spider: VendorCurrency[];
+  vendor: Vendor;
+  data: VendorCurrency[];
 }
 
 export interface VendorCurrency {
@@ -679,7 +695,7 @@ export interface VendorDeals {
   vendorsLoading: number;
   totalVendors: number;
   legendary: ClassInventoryBucket[];
-  exotic: InventoryItem[];
-  collection: VendorCollections;
-  exchange: VendorCurrencies;
+  exotic: ExoticInventoryBucket[];
+  collection: VendorCollection[];
+  exchange: VendorCurrencies[];
 }

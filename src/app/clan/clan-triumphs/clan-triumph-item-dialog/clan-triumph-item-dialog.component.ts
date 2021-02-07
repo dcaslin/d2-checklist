@@ -9,10 +9,10 @@ import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-triumph-item-dialog',
   templateUrl: './clan-triumph-item-dialog.component.html',
-  styleUrls: ['./clan-triumph-item-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-triumph-item-dialog.component.scss']
 })
 export class ClanTriumphItemDialogComponent extends ChildComponent implements OnInit {
   sort: Sort = {

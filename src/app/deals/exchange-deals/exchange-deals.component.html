@@ -1,0 +1,30 @@
+<h3>Exchange</h3>
+<div class="flex-row">
+    <div *ngFor="let vd of vendorDeals.exchange">
+        <h4>{{vd.vendor.name}}</h4>
+        <table class="tidy-auto-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>You Have</th>
+                    <th>Cost</th>
+                    <th>You Have</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of vd.data">
+                    <td>
+                        <d2c-manifest-item-icon [desc]="c.target" [small]="true"></d2c-manifest-item-icon>
+                        <div class="deal-label">{{c.target.displayProperties.name}}</div>
+                    </td>
+                    <td>{{c.targetCount|number}}</td>
+                    <td>
+                        <d2c-manifest-item-icon [desc]="c.cost.desc" [small]="true"></d2c-manifest-item-icon>
+                        <div class="deal-label">{{c.cost.desc.displayProperties.name}}</div>
+                    </td>
+                    <td>{{c.costCount|number}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -5,10 +5,10 @@ import { ClipboardService } from 'ngx-clipboard';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-god-roll-plug',
   templateUrl: './god-roll-plug.component.html',
-  styleUrls: ['./god-roll-plug.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./god-roll-plug.component.scss']
 })
 export class GodRollPlugComponent implements OnInit {
 

@@ -9,10 +9,10 @@ import { Sort } from '@app/service/model';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-info',
   templateUrl: './clan-info.component.html',
-  styleUrls: ['./clan-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-info.component.scss']
 })
 export class ClanInfoComponent extends ChildComponent implements OnInit {
   sort: Sort = {

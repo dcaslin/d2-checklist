@@ -11,10 +11,10 @@ import { IconService } from '@app/service/icon.service';
 import { Const } from '@app/service/model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-content-vault',
   templateUrl: './content-vault.component.html',
-  styleUrls: ['./content-vault.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./content-vault.component.scss']
 })
 export class ContentVaultComponent extends ChildComponent implements OnInit, OnDestroy {
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);

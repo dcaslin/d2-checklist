@@ -9,10 +9,10 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-bounty-sets-dialog',
   templateUrl: './bounty-sets-dialog.component.html',
-  styleUrls: ['./bounty-sets-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./bounty-sets-dialog.component.scss']
 })
 export class BountySetsDialogComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});

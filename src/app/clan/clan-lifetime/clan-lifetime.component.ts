@@ -9,10 +9,10 @@ import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dia
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-lifetime',
   templateUrl: './clan-lifetime.component.html',
-  styleUrls: ['./clan-lifetime.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-lifetime.component.scss']
 })
 export class ClanLifetimeComponent extends ChildComponent implements OnInit {
 

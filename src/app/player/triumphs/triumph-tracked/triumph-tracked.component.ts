@@ -6,10 +6,10 @@ import { IconService } from '@app/service/icon.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-tracked',
   templateUrl: './triumph-tracked.component.html',
-  styleUrls: ['./triumph-tracked.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-tracked.component.scss']
 })
 export class TriumphTrackedComponent extends ChildComponent implements OnInit {
 

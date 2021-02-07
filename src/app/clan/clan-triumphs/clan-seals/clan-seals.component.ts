@@ -7,10 +7,10 @@ import { ClanTriumphSealDialogComponent } from '../clan-triumph-seal-dialog/clan
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-seals',
   templateUrl: './clan-seals.component.html',
-  styleUrls: ['./clan-seals.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-seals.component.scss']
 })
 export class ClanSealsComponent extends ChildComponent implements OnInit {
   openEntryId: string|null = null;

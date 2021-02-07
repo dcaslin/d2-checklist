@@ -4,10 +4,10 @@ import { IconService } from '@app/service/icon.service';
 import { GearComponent } from '@app/gear';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-item-icon',
   templateUrl: './item-icon.component.html',
-  styleUrls: ['./item-icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./item-icon.component.scss']
 })
 export class ItemIconComponent  {
   ItemType = ItemType;

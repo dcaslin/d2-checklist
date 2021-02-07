@@ -18,10 +18,10 @@ export class TriumphFlatNode {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-collection-tree',
   templateUrl: './collection-tree.component.html',
-  styleUrls: ['./collection-tree.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./collection-tree.component.scss']
 })
 export class CollectionTreeComponent extends ChildComponent implements OnInit, AfterViewInit {
   selectedTreeNodeHash: string;

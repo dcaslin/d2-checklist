@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 
@@ -8,6 +8,7 @@ import { Sort } from '@app/service/model';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-collection-badge-dialog',
   templateUrl: './clan-collection-badge-dialog.component.html',
   styleUrls: ['./clan-collection-badge-dialog.component.scss']

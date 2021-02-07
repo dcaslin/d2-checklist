@@ -5,10 +5,10 @@ import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-lifetime-graph',
   templateUrl: './clan-lifetime-graph.component.html',
-  styleUrls: ['./clan-lifetime-graph.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-lifetime-graph.component.scss']
 })
 export class ClanLifetimeGraphComponent implements OnInit {
   public b: ChartLegendOptions;

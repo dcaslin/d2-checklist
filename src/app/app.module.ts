@@ -58,6 +58,9 @@ import { VendorsContainerComponent } from './vendors/vendors-container/vendors-c
 import { VendorsComponent } from './vendors/vendors/vendors.component';
 import { DealsContainerComponent } from './deals/deals-container/deals-container.component';
 import { DealsComponent } from './deals/deals/deals.component';
+import { CollectionDealsComponent } from './deals/collection-deals/collection-deals.component';
+import { ExchangeDealsComponent } from './deals/exchange-deals/exchange-deals.component';
+import { ArmorDealsComponent } from './deals/armor-deals/armor-deals.component';
 
 
 
@@ -95,7 +98,7 @@ import { DealsComponent } from './deals/deals/deals.component';
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, 
     SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, 
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent, 
-    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent, DealsContainerComponent, DealsComponent
+    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent, DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent
   ],
   providers: [
     AuthService,

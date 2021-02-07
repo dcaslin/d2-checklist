@@ -16,10 +16,10 @@ import { ProgressRenderer } from '../grid-cell-renderers/progress-renderer.compo
 import { RewardRenderer } from '../grid-cell-renderers/reward-renderer.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-todo-table',
   templateUrl: './todo-table.component.html',
-  styleUrls: ['./todo-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./todo-table.component.scss']
 })
 export class TodoTableComponent extends Destroyable implements OnInit {
 

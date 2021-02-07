@@ -6,10 +6,10 @@ import { PlayerStateService } from '../player-state.service';
 import * as moment from 'moment';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-pursuits',
   templateUrl: './pursuits.component.html',
-  styleUrls: ['./pursuits.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./pursuits.component.scss']
 })
 export class PursuitsComponent extends ChildComponent implements OnInit {
   public today =  moment(new Date());

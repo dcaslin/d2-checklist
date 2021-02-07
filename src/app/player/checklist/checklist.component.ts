@@ -5,10 +5,10 @@ import { PlayerStateService } from '../player-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-checklist',
   templateUrl: './checklist.component.html',
-  styleUrls: ['./checklist.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./checklist.component.scss']
 })
 export class ChecklistComponent extends ChildComponent implements OnInit {
   hideComplete: boolean;

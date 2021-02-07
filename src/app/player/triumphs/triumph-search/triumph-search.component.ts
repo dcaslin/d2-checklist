@@ -9,10 +9,10 @@ import { IconService } from '@app/service/icon.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-search',
   templateUrl: './triumph-search.component.html',
-  styleUrls: ['./triumph-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-search.component.scss']
 })
 export class TriumphSearchComponent extends ChildComponent implements OnInit {
   private triumphSearchSubject: Subject<void> = new Subject<void>();

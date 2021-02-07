@@ -7,10 +7,10 @@ import { ClanTriumphItemDialogComponent } from '../clan-triumph-item-dialog/clan
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-triumph-item',
   templateUrl: './clan-triumph-item.component.html',
-  styleUrls: ['./clan-triumph-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-triumph-item.component.scss']
 })
 export class ClanTriumphItemComponent extends ChildComponent implements OnInit {
 

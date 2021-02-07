@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-bungie-icon',
   template: `
     <img class="bungie-icon" [ngClass]="iconClass" [src]="iconUrl">
-  `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `
 })
 export class BungieIconComponent {
 

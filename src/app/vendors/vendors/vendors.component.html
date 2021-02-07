@@ -36,7 +36,7 @@
 <div *ngIf="!loading">
     <ng-container *ngIf="option$|async as option">
         <ng-container *ngIf="data$|async as data">
-            <table class="tidy-auto-table itemTable" *ngIf="data.length>0">
+            <table class="tidy-auto-table" *ngIf="data.length>0">
                 <thead>
                     <tr>
                         <th></th>

@@ -5,10 +5,10 @@ import { ClanStateService } from '../clan-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-triumphs',
   templateUrl: './clan-triumphs.component.html',
-  styleUrls: ['./clan-triumphs.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-triumphs.component.scss']
 })
 export class ClanTriumphsComponent extends ChildComponent implements OnInit {
 

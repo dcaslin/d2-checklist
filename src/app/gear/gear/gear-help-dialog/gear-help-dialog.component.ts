@@ -3,10 +3,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-gear-help-dialog',
   templateUrl: './gear-help-dialog.component.html',
-  styleUrls: ['../gear.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../gear.component.scss']
 })
 export class GearHelpDialogComponent {
 

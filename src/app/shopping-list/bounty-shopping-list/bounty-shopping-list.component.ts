@@ -7,10 +7,10 @@ import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-bounty-shopping-list',
   templateUrl: './bounty-shopping-list.component.html',
-  styleUrls: ['./bounty-shopping-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./bounty-shopping-list.component.scss']
 })
 export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges {
 

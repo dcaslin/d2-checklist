@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { ClanStateService } from '../clan-state.service';
@@ -7,6 +7,7 @@ import { BungieGroupMember } from '@app/service/model';
 import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-list-dialog.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-settings',
   templateUrl: './clan-settings.component.html',
   styleUrls: ['./clan-settings.component.scss']

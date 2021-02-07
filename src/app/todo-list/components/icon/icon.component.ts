@@ -4,10 +4,10 @@ import { SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-icon',
   template: `<fa-icon [size]="size" [icon]="iconObject"></fa-icon>`,
-  styleUrls: ['./icon.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./icon.component.scss']
 })
 export class IconComponent {
 

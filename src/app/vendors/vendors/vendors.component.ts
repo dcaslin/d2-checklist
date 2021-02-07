@@ -9,10 +9,10 @@ import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-vendors',
   templateUrl: './vendors.component.html',
-  styleUrls: ['./vendors.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./vendors.component.scss']
 })
 export class VendorsComponent implements OnInit, OnDestroy {
   @ViewChild('filter', { static: true }) filter: ElementRef;

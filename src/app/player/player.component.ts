@@ -13,10 +13,10 @@ import * as moment from 'moment';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-player',
   templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
   public today = moment(new Date());

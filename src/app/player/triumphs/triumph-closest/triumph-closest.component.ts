@@ -6,10 +6,10 @@ import { IconService } from '@app/service/icon.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-closest',
   templateUrl: './triumph-closest.component.html',
-  styleUrls: ['./triumph-closest.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-closest.component.scss']
 })
 export class TriumphClosestComponent extends ChildComponent implements OnInit {
   maxResults: number[] = [10, 25, 50];

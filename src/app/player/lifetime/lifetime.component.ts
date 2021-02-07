@@ -7,10 +7,10 @@ import { WeekService } from '@app/service/week.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-lifetime',
   templateUrl: './lifetime.component.html',
-  styleUrls: ['./lifetime.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./lifetime.component.scss']
 })
 export class LifetimeComponent extends ChildComponent implements OnInit {
 

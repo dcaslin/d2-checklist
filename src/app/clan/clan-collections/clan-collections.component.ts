@@ -5,6 +5,7 @@ import { ClanStateService } from '../clan-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-collections',
   templateUrl: './clan-collections.component.html',
   styleUrls: ['./clan-collections.component.scss']

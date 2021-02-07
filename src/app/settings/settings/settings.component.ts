@@ -7,10 +7,10 @@ import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-settings',
   templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent extends ChildComponent implements OnInit, OnDestroy {
 

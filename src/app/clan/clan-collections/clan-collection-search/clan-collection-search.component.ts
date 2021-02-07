@@ -6,6 +6,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-collection-search',
   templateUrl: './clan-collection-search.component.html',
   styleUrls: ['./clan-collection-search.component.scss']

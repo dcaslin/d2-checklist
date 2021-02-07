@@ -6,10 +6,10 @@ import { PlayerStateService } from '@app/player/player-state.service';
 import { TriumphRecordNode } from '@app/service/model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-name',
   templateUrl: './triumph-name.component.html',
-  styleUrls: ['./triumph-name.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-name.component.scss']
 })
 export class TriumphNameComponent implements OnInit {
   @Input() cntr: number|null;

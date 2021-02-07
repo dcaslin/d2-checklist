@@ -5,10 +5,10 @@ import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-friend-star',
   templateUrl: './friend-star.component.html',
-  styleUrls: ['./friend-star.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./friend-star.component.scss']
 })
 export class FriendStarComponent implements OnInit {
   public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);

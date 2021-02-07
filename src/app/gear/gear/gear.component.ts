@@ -31,10 +31,10 @@ import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-gear',
   templateUrl: './gear.component.html',
-  styleUrls: ['./gear.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./gear.component.scss']
 })
 export class GearComponent extends ChildComponent {
 
