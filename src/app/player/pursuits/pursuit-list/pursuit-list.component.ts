@@ -13,10 +13,10 @@ import * as moment from 'moment';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-pursuit-list',
   templateUrl: './pursuit-list.component.html',
-  styleUrls: ['./pursuit-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./pursuit-list.component.scss']
 })
 export class PursuitListComponent extends ChildComponent implements OnInit {
   public today =  moment(new Date());

@@ -9,6 +9,7 @@ import { Platform, Const } from '@app/service/model';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-gamer-tag-search',
   templateUrl: './gamer-tag-search.component.html',
   styleUrls: ['./gamer-tag-search.component.scss']

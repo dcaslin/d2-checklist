@@ -8,10 +8,10 @@ import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-collection-search',
   templateUrl: './collection-search.component.html',
-  styleUrls: ['./collection-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./collection-search.component.scss']
 })
 export class CollectionSearchComponent extends ChildComponent implements OnInit {
   public searchSubject: Subject<void> = new Subject<void>();

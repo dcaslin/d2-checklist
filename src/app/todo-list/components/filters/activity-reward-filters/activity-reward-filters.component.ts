@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TogglableItem } from '@app/todo-list/interfaces/filter.interface';
 import { ActivityRewardFilterService } from '@app/todo-list/services/activity-reward-filter.service';
 import { Destroyable } from '@app/util/destroyable';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-activity-reward-filters',
   templateUrl: './activity-reward-filters.component.html',
   styleUrls: ['../filters-styles.scss']

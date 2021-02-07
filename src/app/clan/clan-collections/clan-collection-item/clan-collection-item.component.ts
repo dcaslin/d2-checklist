@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClanSearchableCollection, ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
@@ -7,6 +7,7 @@ import { ClanCollectionItemDialogComponent } from '../clan-collection-item-dialo
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-collection-item',
   templateUrl: './clan-collection-item.component.html',
   styleUrls: ['./clan-collection-item.component.scss']

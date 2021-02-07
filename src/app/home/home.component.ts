@@ -18,10 +18,10 @@ import { takeUntil } from 'rxjs/operators';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);

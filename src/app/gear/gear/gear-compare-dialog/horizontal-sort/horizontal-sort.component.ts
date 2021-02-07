@@ -7,10 +7,10 @@ export interface SortEvent {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-horizontal-sort',
   templateUrl: './horizontal-sort.component.html',
-  styleUrls: ['./horizontal-sort.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./horizontal-sort.component.scss']
 })
 export class HorizontalSortComponent {
 

@@ -13,10 +13,10 @@ import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-tree',
   templateUrl: './triumph-tree.component.html',
-  styleUrls: ['./triumph-tree.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-tree.component.scss']
 })
 export class TriumphTreeComponent extends ChildComponent implements OnInit {
   selectedTreeNodeHash: string;

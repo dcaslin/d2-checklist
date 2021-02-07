@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'details-cell',
   template: `
   <div class="multi-line-cell" [matTooltip]="data.detailTooltip">
@@ -22,8 +23,7 @@ import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
       overflow: hidden;
       user-select: text;
     }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  `]
 })
 export class DetailsRenderer implements ICellRendererAngularComp {
   public params: any;

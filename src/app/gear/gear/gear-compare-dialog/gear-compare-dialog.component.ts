@@ -11,10 +11,10 @@ import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-gear-compare-dialog',
   templateUrl: './gear-compare-dialog.component.html',
-  styleUrls: ['../gear.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../gear.component.scss']
 })
 export class GearCompareDialogComponent extends ChildComponent {
   sortBy = 'power';

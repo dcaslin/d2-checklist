@@ -11,10 +11,10 @@ import { ChildComponent } from '../../shared/child.component';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-pgcr-history',
   templateUrl: './pgcr.component.html',
-  styleUrls: ['./pgcr.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./pgcr.component.scss']
 })
 export class PGCRComponent extends ChildComponent implements OnInit, OnDestroy {
 

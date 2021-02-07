@@ -11,10 +11,10 @@ import { IconService } from '@app/service/icon.service';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-bungie-search',
   templateUrl: './bungie-search.component.html',
-  styleUrls: ['./bungie-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./bungie-search.component.scss']
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
   routedName: string;

@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { environment as env, environment } from '@env/environment';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { environment } from '@env/environment';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-nitro-unit',
   templateUrl: './nitro-unit.component.html',
   styleUrls: ['./nitro-unit.component.scss']

@@ -9,10 +9,10 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { DisplayProperties } from '@app/todo-list/interfaces/api.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-season-breakdown-dialog',
   templateUrl: './season-breakdown-dialog.component.html',
-  styleUrls: ['./season-breakdown-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./season-breakdown-dialog.component.scss']
 })
 export class SeasonBreakdownDialogComponent {
   parent: GearComponent;

@@ -7,10 +7,10 @@ import { faGameConsoleHandheld } from '@fortawesome/pro-light-svg-icons';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-gear-utilities-dialog',
   templateUrl: './gear-utilities-dialog.component.html',
-  styleUrls: ['../gear.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../gear.component.scss']
 })
 export class GearUtilitiesDialogComponent {
   parent: GearComponent;

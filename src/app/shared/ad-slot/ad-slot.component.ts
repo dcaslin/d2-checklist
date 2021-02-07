@@ -6,10 +6,10 @@ import { BehaviorSubject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-ad-slot',
   templateUrl: './ad-slot.component.html',
-  styleUrls: ['./ad-slot.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./ad-slot.component.scss']
 })
 export class AdSlotComponent extends ChildComponent implements OnInit {
   @Input() adType = 'unknown';

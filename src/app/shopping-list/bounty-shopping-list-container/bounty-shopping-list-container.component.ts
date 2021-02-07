@@ -12,10 +12,10 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-bounty-shopping-list-container',
   templateUrl: './bounty-shopping-list-container.component.html',
-  styleUrls: ['./bounty-shopping-list-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./bounty-shopping-list-container.component.scss']
 })
 export class BountyShoppingListContainerComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});

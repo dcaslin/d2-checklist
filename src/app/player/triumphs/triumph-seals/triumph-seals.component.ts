@@ -5,10 +5,10 @@ import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-seals',
   templateUrl: './triumph-seals.component.html',
-  styleUrls: ['./triumph-seals.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-seals.component.scss']
 })
 export class TriumphSealsComponent extends ChildComponent implements OnInit {
   openEntryId: string|null = null;

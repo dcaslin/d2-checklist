@@ -5,10 +5,10 @@ import { Const, MilestoneStatus } from '@app/service/model';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-milestone-check',
   templateUrl: './milestone-check.component.html',
-  styleUrls: ['./milestone-check.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./milestone-check.component.scss']
 })
 export class MilestoneCheckComponent implements OnInit {
   public Const = Const;

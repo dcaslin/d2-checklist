@@ -7,10 +7,10 @@ import { PlayerStateService } from '../player-state.service';
 import { ProgressStepDialogComponent } from './progress-step-dialog/progress-step-dialog.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-progress',
   templateUrl: './progress.component.html',
-  styleUrls: ['./progress.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./progress.component.scss']
 })
 export class ProgressComponent extends ChildComponent implements OnInit {
   constructor(

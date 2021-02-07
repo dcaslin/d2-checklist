@@ -8,10 +8,10 @@ import { IconService } from '@app/service/icon.service';
 import * as moment from 'moment';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-milestones',
   templateUrl: './milestones.component.html',
-  styleUrls: ['./milestones.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./milestones.component.scss']
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {
   public today =  moment(new Date());

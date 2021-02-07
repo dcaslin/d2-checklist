@@ -1,10 +1,10 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-ad-unit',
   templateUrl: './ad-unit.component.html',
-  styleUrls: ['./ad-unit.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./ad-unit.component.scss']
 })
 export class AdUnitComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() title: string;

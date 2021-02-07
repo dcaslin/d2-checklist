@@ -6,10 +6,10 @@ import { IconService } from '@app/service/icon.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-seasons',
   templateUrl: './triumph-seasons.component.html',
-  styleUrls: ['./triumph-seasons.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumph-seasons.component.scss']
 })
 export class TriumphSeasonsComponent extends ChildComponent implements OnInit {
   public seasonIndex = 0;

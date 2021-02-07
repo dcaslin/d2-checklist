@@ -8,10 +8,10 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-vendors-container',
   templateUrl: './vendors-container.component.html',
-  styleUrls: ['./vendors-container.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./vendors-container.component.scss']
 })
 export class VendorsContainerComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});

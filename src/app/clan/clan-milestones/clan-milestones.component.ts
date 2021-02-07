@@ -8,10 +8,10 @@ import { BehaviorSubject } from 'rxjs';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-milestones',
   templateUrl: './clan-milestones.component.html',
-  styleUrls: ['./clan-milestones.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-milestones.component.scss']
 })
 export class ClanMilestonesComponent extends ChildComponent implements OnInit {  
   public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);

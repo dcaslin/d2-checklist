@@ -9,10 +9,10 @@ import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-collection-badge',
   templateUrl: './collection-badge.component.html',
-  styleUrls: ['./collection-badge.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./collection-badge.component.scss']
 })
 export class CollectionBadgeComponent extends ChildComponent implements OnInit {
   private selectedBadge: string = null;

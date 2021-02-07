@@ -12,10 +12,10 @@ import { AuthService } from '@app/service/auth.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-content-vault-search',
   templateUrl: './content-vault-search.component.html',
-  styleUrls: ['./content-vault-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./content-vault-search.component.scss']
 })
 export class ContentVaultSearchComponent extends ChildComponent implements OnInit {
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;

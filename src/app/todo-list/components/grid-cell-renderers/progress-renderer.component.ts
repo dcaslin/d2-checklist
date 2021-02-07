@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivityCharInfo, ActivityStatus, ProgressStyle } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'progress-cell',
   templateUrl: './progress-renderer.component.html',
-  styleUrls: ['./progress-renderer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./progress-renderer.component.scss']
 })
 export class ProgressRenderer implements ICellRendererAngularComp {
   public params: any;

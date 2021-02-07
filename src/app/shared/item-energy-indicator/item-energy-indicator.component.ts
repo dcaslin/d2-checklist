@@ -3,10 +3,10 @@ import { ItemType, DamageType, EnergyType, InventoryItem } from '@app/service/mo
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-item-energy-indicator',
   templateUrl: './item-energy-indicator.component.html',
-  styleUrls: ['./item-energy-indicator.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./item-energy-indicator.component.scss']
 
 })
 export class ItemEnergyIndicatorComponent{

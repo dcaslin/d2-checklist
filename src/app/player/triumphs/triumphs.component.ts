@@ -8,10 +8,10 @@ import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumphs',
   templateUrl: './triumphs.component.html',
-  styleUrls: ['./triumphs.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./triumphs.component.scss']
 })
 export class TriumphsComponent extends ChildComponent implements OnInit {
 

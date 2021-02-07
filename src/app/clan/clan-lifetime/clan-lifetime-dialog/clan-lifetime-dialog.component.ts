@@ -7,10 +7,10 @@ import { ChildComponent } from '@app/shared/child.component';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-lifetime-dialog',
   templateUrl: './clan-lifetime-dialog.component.html',
-  styleUrls: ['./clan-lifetime-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-lifetime-dialog.component.scss']
 })
 export class ClanLifetimeDialogComponent extends ChildComponent implements OnInit {
   sort: Sort = {

@@ -6,10 +6,10 @@ import { Character, InventoryPlug, Player } from '@app/service/model';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-armor-perks-dialog',
   templateUrl: './armor-perks-dialog.component.html',
-  styleUrls: ['./armor-perks-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./armor-perks-dialog.component.scss']
 })
 export class ArmorPerksDialogComponent {
   parent: GearComponent;

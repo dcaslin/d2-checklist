@@ -1,0 +1,71 @@
+@import 'styles-variables';
+
+.item-large {
+  width: 72px;
+  height: 72px;
+  
+}
+
+.item-image-large {
+  width: 70px;
+  height: 70px;
+}
+
+.icon-watermark-large {
+  height: 50px;
+  width: 50px;
+}
+
+
+.item-small {
+  
+  width: 36px;
+  height: 36px;
+}
+
+.item-image-small {
+  
+  width: 35px;
+  height: 35px;
+}
+
+.icon-watermark-small {
+
+  height: 25px;
+  width: 25px;
+}
+
+
+.item {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 6px;
+  contain: layout paint style;
+  box-sizing: border-box;
+  // background-size: cover;
+}
+
+.item-image {
+  display: block;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.icon-watermark {
+  overflow: hidden;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.img{
+  pointer-events: none;
+  width: inherit;
+  height: inherit;
+}
+
+.redacted {
+  background-color: blue;;
+}

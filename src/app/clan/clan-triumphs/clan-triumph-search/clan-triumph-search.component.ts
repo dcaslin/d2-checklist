@@ -7,10 +7,10 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-triumph-search',
   templateUrl: './clan-triumph-search.component.html',
-  styleUrls: ['./clan-triumph-search.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan-triumph-search.component.scss']
 })
 export class ClanTriumphSearchComponent extends ChildComponent implements OnInit {
   private triumphSearchSubject: Subject<void> = new Subject<void>();

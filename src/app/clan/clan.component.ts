@@ -9,10 +9,10 @@ import { IconService } from '@app/service/icon.service';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-history',
   templateUrl: './clan.component.html',
-  styleUrls: ['./clan.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./clan.component.scss']
 })
 export class ClanComponent extends ChildComponent implements OnInit, OnDestroy {
   constructor(

@@ -8,10 +8,10 @@ import { ClipboardService } from 'ngx-clipboard';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-possible-rolls-dialog',
   templateUrl: './possible-rolls-dialog.component.html',
-  styleUrls: ['../gear/gear.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['../gear/gear.component.scss']
 
 })
 export class PossibleRollsDialogComponent implements OnInit {

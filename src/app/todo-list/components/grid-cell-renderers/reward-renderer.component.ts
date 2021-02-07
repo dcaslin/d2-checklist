@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivityRow } from '@app/todo-list/interfaces/activity.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'details-cell',
   templateUrl: './reward-renderer.component.html',
-  styleUrls: ['./reward-renderer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./reward-renderer.component.scss']
 })
 export class RewardRenderer implements ICellRendererAngularComp {
   public params: any;

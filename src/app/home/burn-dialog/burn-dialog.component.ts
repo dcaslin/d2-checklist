@@ -4,10 +4,10 @@ import { IconService } from '@app/service/icon.service';
 import { MilestoneActivity } from '@app/service/model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-burn-dialog',
   templateUrl: './burn-dialog.component.html',
-  styleUrls: ['./burn-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./burn-dialog.component.scss']
 })
 export class BurnDialogComponent implements OnInit {
   constructor(

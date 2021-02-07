@@ -9,10 +9,10 @@ import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-history',
   templateUrl: './recent-players.component.html',
-  styleUrls: ['./recent-players.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styleUrls: ['./recent-players.component.scss']
 })
 export class RecentPlayersComponent extends ChildComponent implements OnInit, OnDestroy {
   activityModes: ActivityMode[];

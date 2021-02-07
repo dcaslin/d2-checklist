@@ -47,6 +47,7 @@ import { AdSlotComponent } from './ad-slot/ad-slot.component';
 import { AdUnitComponent } from './ad-slot/ad-unit/ad-unit.component';
 import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
 import { SignedOnLoadingIconComponent } from './signed-on-loading-icon/signed-on-loading-icon.component';
+import { ManifestItemIconComponent } from './manifest-item-icon/manifest-item-icon.component';
 
 @NgModule({
   imports: [
@@ -54,7 +55,7 @@ import { SignedOnLoadingIconComponent } from './signed-on-loading-icon/signed-on
     CommonModule,
     FormsModule,
     FontAwesomeModule,
-    MomentModule,    
+    MomentModule,
     MatButtonModule,
     MatToolbarModule,
     MatSelectModule,
@@ -97,9 +98,11 @@ import { SignedOnLoadingIconComponent } from './signed-on-loading-icon/signed-on
     AdSlotComponent,
     AdUnitComponent,
     NitroUnitComponent,
-    SignedOnLoadingIconComponent],
+    SignedOnLoadingIconComponent,
+    ManifestItemIconComponent],
   exports: [
     SortIndicatorComponent,
+    ManifestItemIconComponent,
     TriumphNameComponent,
     ItemIconComponent,
     FriendStarComponent,

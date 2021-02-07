@@ -1,5 +1,5 @@
 
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,10 +14,10 @@ import { BehaviorSubject } from 'rxjs';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-history',
   templateUrl: './history.component.html',
   styleUrls: ['./history.component.scss']
-  // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryComponent extends ChildComponent implements OnInit, OnDestroy {
 

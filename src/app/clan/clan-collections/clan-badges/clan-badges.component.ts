@@ -6,6 +6,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { ClanCollectionBadgeDialogComponent } from '../clan-collection-badge-dialog/clan-collection-badge-dialog.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-badges',
   templateUrl: './clan-badges.component.html',
   styleUrls: ['./clan-badges.component.scss']
