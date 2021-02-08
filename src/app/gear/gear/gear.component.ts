@@ -53,6 +53,7 @@ export class GearComponent extends ChildComponent {
     { value: 'is:godroll', desc: 'A god roll in EVERY slot' },
     { value: 'is:fixme', desc: 'Best perk unselected' },
     { value: 'is:light>=', desc: 'Filter by PL' },
+    { value: 'is:prefpoints>=', desc: 'Total of ALL stat pts' },
     { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },
     { value: 'is:postmaster' },
     { value: 'is:godrollpve', desc: 'Only PVE god rolls' },
@@ -72,6 +73,10 @@ export class GearComponent extends ChildComponent {
     { value: 'is:cap>=' },
     { value: 'is:cap<' },
     { value: 'is:cap>' },
+    { value: 'is:prefpoints<=' },
+    { value: 'is:prefpoints>' },
+    { value: 'is:prefpoints<' },
+    { value: 'is:prefpoints=' },
     { value: 'is:stattotal<=' },
     { value: 'is:stattotal>' },
     { value: 'is:stattotal<' },
@@ -754,6 +759,10 @@ export class GearComponent extends ChildComponent {
       return compResult;
     }
     compResult = GearComponent._processComparison('is:copies', actual, i.copies);
+    if (compResult != null) {
+      return compResult;
+    }
+    compResult = GearComponent._processComparison('is:prefpoints', actual, i.preferredStatPoints);
     if (compResult != null) {
       return compResult;
     }
