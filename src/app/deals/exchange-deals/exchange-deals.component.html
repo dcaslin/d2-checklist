@@ -5,7 +5,7 @@
         <table class="tidy-auto-table">
             <thead>
                 <tr>
-                    <th>Item</th>
+                    <th>Buy</th>
                     <th>You Have</th>
                     <th>Cost</th>
                     <th>You Have</th>
@@ -15,12 +15,14 @@
                 <tr *ngFor="let c of vd.data">
                     <td>
                         <d2c-manifest-item-icon [desc]="c.target" [small]="true"></d2c-manifest-item-icon>
-                        <div class="deal-label">{{c.target.displayProperties.name}}</div>
+                        <div class="deal-label">
+                            <span *ngIf="c.saleItem.vendorItemInfo.quantity>1">{{c.saleItem.vendorItemInfo.quantity|number}} </span>
+                            {{c.target.displayProperties.name}}</div>
                     </td>
                     <td>{{c.targetCount|number}}</td>
                     <td>
                         <d2c-manifest-item-icon [desc]="c.cost.desc" [small]="true"></d2c-manifest-item-icon>
-                        <div class="deal-label">{{c.cost.desc.displayProperties.name}}</div>
+                        <div class="deal-label">{{c.cost.count|number}} {{c.cost.desc.displayProperties.name}}</div>
                     </td>
                     <td>{{c.costCount|number}}</td>
                 </tr>
