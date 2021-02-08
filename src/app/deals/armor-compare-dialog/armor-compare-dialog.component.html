@@ -13,7 +13,7 @@
             </d2c-horizontal-sort>
           </th>
           <ng-container *ngFor="let i of sortedItems|async">
-            <th class="sticky" [class.owned]="i.vendorItemInfo==null">
+            <th class="sticky" >
               <div class="item-name">
                 {{i.name}}
               </div>
@@ -24,7 +24,7 @@
                   {{i.vendorItemInfo.vendor.name}}
                 </ng-container>
                 <ng-template #owned>
-                  Owned
+                  <span class="owned-label">Owned</span>
                 </ng-template> 
                 
 
