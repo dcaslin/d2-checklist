@@ -397,13 +397,6 @@ export class VendorService {
       i.lowLinks = this.lowlineService.buildItemLink(i.hash);
 
     }
-    // returnMe.sort((a, b) => {
-    //   if (a.tierType < b.tierType) { return 1; }
-    //   if (a.tierType > b.tierType) { return -1; }
-    //   if (a.name < b.name) { return -1; }
-    //   if (a.name > b.name) { return 1; }
-    //   return 0;
-    // });
     this.preferredStatService.processItems(returnMe);
     this.parseService.applyTagsToItem(returnMe);
     return returnMe;
