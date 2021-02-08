@@ -31,7 +31,8 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
   hideAnnouncement = true;
-  bountiesExpanded = true;
+  bountiesExpanded = false;
+  dealsExpanded = true;
 
   selectedPlatform: Platform;
   gamerTag: string;
@@ -46,6 +47,11 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   onToggleBounties(val: boolean) {
     this.bountiesExpanded = val;
     localStorage.setItem('expand-bounties', val.toString());
+  }
+
+  onToggleDeals(val: boolean) {
+    this.dealsExpanded = val;
+    localStorage.setItem('expand-deals', val.toString());
   }
 
   constructor(
@@ -67,6 +73,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     }
     this.hideAnnouncement = 'true' === localStorage.getItem('hide-announcement-content-vault');
     this.bountiesExpanded = 'true' === localStorage.getItem('expand-bounties');
+    this.dealsExpanded = 'true' === localStorage.getItem('expand-deals');
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
