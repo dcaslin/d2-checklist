@@ -19,9 +19,12 @@
 }
 
 .owned {
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
+.owned-label {
+  font-weight: 900;
+}
 
 $gear-table-padding: 0.3em;
 table.gear-table {
