@@ -144,6 +144,13 @@ export class VendorService {
     } else if (aN > bN) {
       return -1;
     }
+    // if they're equal, owned gear wins
+    if (a.vendorItemInfo && !b.vendorItemInfo) {
+      return 1;
+    }
+    if (!a.vendorItemInfo && b.vendorItemInfo) {
+      return -1;
+    }
     return 0;
   }
 
@@ -304,7 +311,8 @@ export class VendorService {
     for (const v of vendorExotics) {
       const copies = playerAndVendorExotics.filter(i => i.hash == v.hash);
       copies.sort(VendorService.sortByStats);
-      if (copies[0].vendorItemInfo != null) {
+      // it's a deal if it's a vendor item and it has any pref pts, pref pts = 0 means they don't want to see this class 
+      if (copies[0].vendorItemInfo != null && copies[0].preferredStatPoints > 0) {
         deals.push({
           gear: copies
         });
@@ -331,7 +339,8 @@ export class VendorService {
     }
     for (const bucket of buckets) {
       bucket.gear.sort(VendorService.sortByStats);
-      bucket.hasDeal = bucket.gear.length > 0 && bucket.gear[0].vendorItemInfo != null;
+      // it's a deal if it's a vendor item and it has any pref pts, pref pts = 0 means they don't want to see this class
+      bucket.hasDeal = bucket.gear.length > 0 && bucket.gear[0].vendorItemInfo != null && bucket.gear[0].preferredStatPoints > 0;
     }
     return buckets;
   }
