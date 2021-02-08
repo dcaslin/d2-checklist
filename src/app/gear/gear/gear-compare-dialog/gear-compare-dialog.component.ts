@@ -79,14 +79,14 @@ export class GearCompareDialogComponent extends ChildComponent {
     this.sortedItems.next(items);
   }
 
-  getAllStats(): InventoryStat[] {
+  public static getAllStatsStatic(items: InventoryItem[]) {
     const names = {};
-    const stats = this.items[0].stats.slice(0);
+    const stats = items[0].stats.slice(0);
     for (const s of stats) {
       names[s.name] = true;
     }
-    if (this.items.length > 1) {
-      for (const i of this.items.slice(1)) {
+    if (items.length > 1) {
+      for (const i of items.slice(1)) {
         for (const s of i.stats) {
           if (!names[s.name]) {
             names[s.name] = true;
@@ -102,8 +102,12 @@ export class GearCompareDialogComponent extends ChildComponent {
     return stats;
   }
 
-  getColor(targetStat: InventoryStat): string {
-    const percentile = this.getPercentile(targetStat);
+  getAllStats(): InventoryStat[] {
+    return GearCompareDialogComponent.getAllStatsStatic(this.items);
+  }
+
+  public static getColorStatic(items: InventoryItem[], targetStat: InventoryStat): string {
+    const percentile = GearCompareDialogComponent.getPercentile(items, targetStat);
     if (percentile <= 20) {
       return 'junk-color';
     } else if (percentile <= 40) {
@@ -115,11 +119,14 @@ export class GearCompareDialogComponent extends ChildComponent {
     } else {
       return 'upgrade-color';
     }
-
   }
 
-  getPercentile(i: InventoryStat): number {
-    const population = this.getComparableStats(i);
+  public getColor(targetStat: InventoryStat): string {
+    return GearCompareDialogComponent.getColorStatic(this.items, targetStat);
+  }
+
+  private static getPercentile(items: InventoryItem[], i: InventoryStat): number {
+    const population = GearCompareDialogComponent.getComparableStats(items, i);
     const target = i.getValue();
     let x = 0;
     let y = 0;
@@ -135,7 +142,7 @@ export class GearCompareDialogComponent extends ChildComponent {
     return Math.round(z);
   }
 
-  getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
+  public static getStatStatic(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
     if (i.stats == null) {
       return null;
     }
@@ -147,9 +154,13 @@ export class GearCompareDialogComponent extends ChildComponent {
     return null;
   }
 
-  getComparableStats(originalStat: InventoryStat): InventoryStat[] {
+  getStat(originalStat: InventoryStat, i: InventoryItem): InventoryStat {
+    return GearCompareDialogComponent.getStatStatic(originalStat, i);
+  }
+
+  static getComparableStats(items: InventoryItem[], originalStat: InventoryStat): InventoryStat[] {
     const returnMe: InventoryStat[] = [];
-    for (const i of this.items) {
+    for (const i of items) {
       if (i.stats == null) {
         continue;
       }

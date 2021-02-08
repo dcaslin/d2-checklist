@@ -21,6 +21,6 @@ import { SeasonBreakdownDialogComponent } from './gear/season-breakdown-dialog/s
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, HorizontalSortComponent, GodRollMwComponent, SeasonBreakdownDialogComponent]
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollPlugComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, GodRollMwComponent, SeasonBreakdownDialogComponent]
 })
 export class GearModule  { }
