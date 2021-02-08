@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { TargetArmorStatsDialogComponent } from '@app/gear/target-armor-stats-dialog/target-armor-stats-dialog.component';
+import { IconService } from '@app/service/icon.service';
 import { ClassAllowed, InventoryItem } from '@app/service/model';
 import { ParseService } from '@app/service/parse.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { ClassInventoryBucket, ExoticInventoryBucket, VendorDeals } from '@app/service/vendor.service';
 import { ArmorCompareDialogComponent } from '../armor-compare-dialog/armor-compare-dialog.component';
 
@@ -14,11 +17,27 @@ import { ArmorCompareDialogComponent } from '../armor-compare-dialog/armor-compa
 export class ArmorDealsComponent implements OnInit {
   @Input() vendorDeals: VendorDeals;
 
-  constructor(public dialog: MatDialog) { }
+  constructor(
+    public dialog: MatDialog,
+    public signedOnUserService: SignedOnUserService,
+    public iconService: IconService) { }
 
   ngOnInit(): void {
   }
 
+  public showTargetArmorStats(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+    };
+    const dialogRef = this.dialog.open(TargetArmorStatsDialogComponent, dc);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'Save') {
+        this.signedOnUserService.refreshPlayerAndVendors();
+      }
+    });
+  }
 
   showLegendaryDialog(show: ClassInventoryBucket) {
     const title = `${ParseService.cookEnergyType(show.energyType)} ${ClassAllowed[show.classType]} ${show.bucket.displayProperties.name}`;

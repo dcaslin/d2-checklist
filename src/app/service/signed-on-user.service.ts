@@ -205,14 +205,6 @@ export class SignedOnUserService implements OnDestroy {
       // this is just parsing, no network requests
       const state = this.vendorService.calcDeals(player, vendors);
       this.vendorDeals$.next(state);
-      // console.dir(state);
-
-      // DONE compare to collections
-      // DONE use this for "resources" page (make entire new page w/ better name?)
-      // Eh, kinda: look at gear vs vendors
-      // DONE look at spider exchanges vs what guardian has
-      // TODO tess bright dust ornaments
-      // TODO use this for bounty shopping list stuff on home page
     });
   }
 
