@@ -33,7 +33,7 @@ export class ArmorDealsComponent implements OnInit {
     };
     const dialogRef = this.dialog.open(TargetArmorStatsDialogComponent, dc);
     dialogRef.afterClosed().subscribe(result => {
-      if (result === 'Save') {
+      if (result === 'Save' || result === 'Reset') {
         this.signedOnUserService.refreshPlayerAndVendors();
       }
     });
