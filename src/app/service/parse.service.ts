@@ -3119,7 +3119,7 @@ export class ParseService {
     }
 
 
-    private cookEnergyType(energyType: EnergyType): string {
+    public static cookEnergyType(energyType: EnergyType): string {
         if (energyType == EnergyType.Any) {
             return 'Any';
         } else if (energyType == EnergyType.Arc) {
@@ -3712,7 +3712,7 @@ export class ParseService {
                 searchText += ' energy';
             }
             if (energyType != null) {
-                searchText += ' ' + this.cookEnergyType(energyType);
+                searchText += ' ' + ParseService.cookEnergyType(energyType);
             }
             if (ammoType != null) {
                 searchText += ' ' + DestinyAmmunitionType[ammoType];

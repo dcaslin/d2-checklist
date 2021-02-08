@@ -299,11 +299,10 @@ export class VendorService {
 
   private findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): ExoticInventoryBucket[] {
     const vendorExotics = vendorArmor.filter(i => i.tier == 'Exotic');
-    const playerExotics = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Exotic');
+    const playerAndVendorExotics = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Exotic');
     const deals: ExoticInventoryBucket[] = [];
     for (const v of vendorExotics) {
-      const copies = playerExotics.filter(i => i.hash == v.hash);
-      copies.push(v);
+      const copies = playerAndVendorExotics.filter(i => i.hash == v.hash);
       copies.sort(VendorService.sortByStats);
       if (copies[0].vendorItemInfo != null) {
         deals.push({

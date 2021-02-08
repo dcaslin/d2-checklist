@@ -48,6 +48,7 @@ import { AdUnitComponent } from './ad-slot/ad-unit/ad-unit.component';
 import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
 import { SignedOnLoadingIconComponent } from './signed-on-loading-icon/signed-on-loading-icon.component';
 import { ManifestItemIconComponent } from './manifest-item-icon/manifest-item-icon.component';
+import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
 
 @NgModule({
   imports: [
@@ -92,6 +93,7 @@ import { ManifestItemIconComponent } from './manifest-item-icon/manifest-item-ic
     SortIndicatorComponent,
     ItemEnergyIndicatorComponent,
     ItemIconComponent,
+    HorizontalSortComponent,
     FriendStarComponent,
     FriendStarComponent,
     TriumphNameComponent,
@@ -102,6 +104,7 @@ import { ManifestItemIconComponent } from './manifest-item-icon/manifest-item-ic
     ManifestItemIconComponent],
   exports: [
     SortIndicatorComponent,
+    HorizontalSortComponent,
     ManifestItemIconComponent,
     TriumphNameComponent,
     ItemIconComponent,

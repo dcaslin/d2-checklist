@@ -1,12 +1,12 @@
 <h3 matTooltip="Vendor armor &gt;=1310 cap whose preferred stat points are better
 than anything you currently have by slot and energy type.">Armor Stat Deals</h3>
 <div class="flex-row" *ngIf="(vendorDeals.legendary.length>0)||(vendorDeals.exotic.length>0); else noLegendaryArmor">
-    <div *ngFor="let cib of vendorDeals.legendary">
+    <div *ngFor="let cib of vendorDeals.legendary" class="fake-link" (click)="showLegendaryDialog(cib)">
         <d2c-item-icon [i]="cib.gear[0]" [hideMenu]="true"></d2c-item-icon>
         <div class="deal-label">{{cib.gear[0].name}}</div>
         <div class="vendor-deal-label">{{cib.gear[0].vendorItemInfo.vendor.name}}</div>
     </div>
-    <div *ngFor="let eib of vendorDeals.exotic">
+    <div *ngFor="let eib of vendorDeals.exotic" class="fake-link" (click)="showExoticDialog(eib)">
         <d2c-item-icon [i]="eib.gear[0]" [hideMenu]="true"></d2c-item-icon>
         <div class="deal-label">{{eib.gear[0].name}}</div>
         <div class="vendor-deal-label">{{eib.gear[0].vendorItemInfo.vendor.name}}</div>
