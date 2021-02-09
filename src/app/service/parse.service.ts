@@ -662,7 +662,7 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['2809059427'];  // TODO UPDATE ME  2007338097 -> 248573323
+        const s: Season = this.destinyCacheService.cache.Season['2809059426'];  // update me, chosen hash season 13
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
