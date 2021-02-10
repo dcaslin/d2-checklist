@@ -1245,9 +1245,9 @@ export class Const {
 
     public static readonly LIGHT_TOO_LOW = 1199; // TODO update me
 
-    private static readonly SEASON_SOFT_CAP = 1200; // TODO update me
-    private static readonly SEASON_HARD_CAP = 1250; // TODO update me
-    private static readonly SEASON_PINNACLE_CAP = 1260; // TODO update me
+    private static readonly SEASON_SOFT_CAP = 1250; // TODO update me
+    private static readonly SEASON_HARD_CAP = 1300; // TODO update me
+    private static readonly SEASON_PINNACLE_CAP = 1310; // TODO update me
 
     public static readonly BOOSTS: DropInfo[] = [
         {
