@@ -186,6 +186,13 @@ export class VendorService {
         data: bansheeMods
       });
     }
+    const warTableMods = this.checkCollectionForVendor(player, vendorItems, '3450165804', ItemType.GearMod);
+    if (warTableMods.length > 0) {
+      returnMe.push({
+        vendor: warTableMods[0].vendorItemInfo.vendor,
+        data: warTableMods
+      });
+    }
     const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
     if (tessShaders.length > 0) {
       returnMe.push({

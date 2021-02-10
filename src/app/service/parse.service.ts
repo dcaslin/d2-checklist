@@ -86,8 +86,8 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_POINT_PROG_HASH = '1196593248';
-    ARTIFACT_POWER_PROG_HASH = '1183600353';
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // TODO update me
+    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // TODO update me
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
@@ -290,8 +290,8 @@ export class ParseService {
             if (p.progressionHash === 3759191272) { name = 'Guided Trials'; }
             if (p.progressionHash === 1273404180) { name = 'Guided Nightfall'; }
             if (p.progressionHash === 3381682691) { name = 'Guided Raid'; }
-            if (p.progressionHash === +this.ARTIFACT_POINT_PROG_HASH) { name = 'Artifact Perk Unlocks'; }
-            if (p.progressionHash === +this.ARTIFACT_POWER_PROG_HASH) { name = 'Artifact Power Bonus'; }
+            if (p.progressionHash === +this.ARTIFACT_UNLOCK_PERK_PROG_HASH) { name = 'Artifact Perk Unlocks'; }
+            if (p.progressionHash === +this.ARTIFACT_POWER_BONUS_PROG_HASH) { name = 'Artifact Power Bonus'; }
 
 
             prog.name = name;
@@ -1473,14 +1473,14 @@ export class ParseService {
 
         let pointProg = _art.pointProgression;
         if (pointProg == null) {
-            pointProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POINT_PROG_HASH);
+            pointProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_UNLOCK_PERK_PROG_HASH);
             if (pointProg == null) {
                 return null;
             }
         }
         let powerProg = _art.powerBonusProgression;
         if (powerProg == null) {
-            powerProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POWER_PROG_HASH);
+            powerProg = this.getSpecificCharProg(resp, chars, this.ARTIFACT_POWER_BONUS_PROG_HASH);
             if (powerProg == null) {
                 return null;
             }
@@ -1724,87 +1724,87 @@ export class ParseService {
 
 
 
-    private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
-        const charPlugSetData = characterPlugSet?.data;
-        if (char && charPlugSetData) {
-            const plugObjectives = charPlugSetData[char.characterId]?.plugs['2611374829'];
-            if (plugObjectives?.length > 0) {
-                let obj = null;
-                // the artifact has a random set of plugs and we need to find one that discusses powerful rewards
-                for (const o of plugObjectives) {
-                    if (o.plugObjectives?.length > 0) {
-                        obj = o;
-                        break;
-                    }
-                }
-                // const obj = plugObjectives[0];
-                if (obj?.plugObjectives?.length > 0) {
-                    const powerfulObj = obj.plugObjectives[0];
-                    const total = powerfulObj.completionValue;
-                    const venatiks = milestonesByKey['2406589846'];
+    // private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
+    //     const charPlugSetData = characterPlugSet?.data;
+    //     if (char && charPlugSetData) {
+    //         const plugObjectives = charPlugSetData[char.characterId]?.plugs['2611374829'];
+    //         if (plugObjectives?.length > 0) {
+    //             let obj = null;
+    //             // the artifact has a random set of plugs and we need to find one that discusses powerful rewards
+    //             for (const o of plugObjectives) {
+    //                 if (o.plugObjectives?.length > 0) {
+    //                     obj = o;
+    //                     break;
+    //                 }
+    //             }
+    //             // const obj = plugObjectives[0];
+    //             if (obj?.plugObjectives?.length > 0) {
+    //                 const powerfulObj = obj.plugObjectives[0];
+    //                 const total = powerfulObj.completionValue;
+    //                 const venatiks = milestonesByKey['2406589846'];
 
-                    // they've unlocked crow's pinnacle
-                    if (total > 2) {
-                        // 2406589846
-                        venatiks.pl = Const.HIGH_BOOST;
-                        venatiks.rewards = 'Pinnacle Gear';
-                    }
-                    const powerfulDropsRemaining = powerfulObj.progress;
-                    const progress = total - powerfulDropsRemaining;
-                    const pct = progress / total;
-                    const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
-                    if (artifact.objectives?.length > 1) {
-                        const venatiksSupp = [];
-                        const huntObj = artifact.objectives.find(x => x.hash == '34632179');
-                        const storedObj = artifact.objectives.find(x => x.hash == '4186537209');
-                        const chargeObj = artifact.objectives.find(x => x.hash == '1514334696');
-                        if (huntObj != null) {
-                            venatiksSupp.push(`Configured for Hunt`);
-                        }
-                        if (chargeObj != null) {
-                            venatiksSupp.push(`${chargeObj.percent}% charged`);
-                        }
-                        if (storedObj != null) {
-                            venatiksSupp.push(`${storedObj.progress} stored`);
-                        }
-                        if (char.milestones['2406589846'].suppInfo?.length == 1) {
-                            char.milestones['2406589846'].info = char.milestones['2406589846'].suppInfo[0];
-                        }
-                        char.milestones['2406589846'].suppInfo = venatiksSupp;
-                    }
+    //                 // they've unlocked crow's pinnacle
+    //                 if (total > 2) {
+    //                     // 2406589846
+    //                     venatiks.pl = Const.HIGH_BOOST;
+    //                     venatiks.rewards = 'Pinnacle Gear';
+    //                 }
+    //                 const powerfulDropsRemaining = powerfulObj.progress;
+    //                 const progress = total - powerfulDropsRemaining;
+    //                 const pct = progress / total;
+    //                 const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
+    //                 if (artifact.objectives?.length > 1) {
+    //                     const venatiksSupp = [];
+    //                     const huntObj = artifact.objectives.find(x => x.hash == '34632179');
+    //                     const storedObj = artifact.objectives.find(x => x.hash == '4186537209');
+    //                     const chargeObj = artifact.objectives.find(x => x.hash == '1514334696');
+    //                     if (huntObj != null) {
+    //                         venatiksSupp.push(`Configured for Hunt`);
+    //                     }
+    //                     if (chargeObj != null) {
+    //                         venatiksSupp.push(`${chargeObj.percent}% charged`);
+    //                     }
+    //                     if (storedObj != null) {
+    //                         venatiksSupp.push(`${storedObj.progress} stored`);
+    //                     }
+    //                     if (char.milestones['2406589846'].suppInfo?.length == 1) {
+    //                         char.milestones['2406589846'].info = char.milestones['2406589846'].suppInfo[0];
+    //                     }
+    //                     char.milestones['2406589846'].suppInfo = venatiksSupp;
+    //                 }
 
-                    if (milestonesByKey[Const.MISSION_ARTIFACT_KEY] == null) {
-                        const reward = 'Powerful Gear';
-                        const ms: MileStoneName = {
-                            key: Const.MISSION_ARTIFACT_KEY,
-                            resets: char.endWeek.toISOString(),
-                            rewards: reward,
-                            pl: this.parseMilestonePl(reward),
-                            name: 'Wrathborn Hunts',
-                            desc: 'Your Cryptolith Lure gives a fixed number of powerful drops per week.',
-                            hasPartial: false,
-                            dependsOn: []
-                        };
-                        milestoneList.push(ms);
-                        milestonesByKey[Const.MISSION_ARTIFACT_KEY] = ms;
-                    }
-                    // constructor(hash, complete, pct, info, suppInfo, phases) {
-                    const complete = powerfulDropsRemaining === 0;
-                    let info = null;
-                    if (pct > 0 && pct < 1) {
-                        info = Math.floor(100 * pct) + '% complete';
-                    }
+    //                 if (milestonesByKey[Const.MISSION_ARTIFACT_KEY] == null) {
+    //                     const reward = 'Powerful Gear';
+    //                     const ms: MileStoneName = {
+    //                         key: Const.MISSION_ARTIFACT_KEY,
+    //                         resets: char.endWeek.toISOString(),
+    //                         rewards: reward,
+    //                         pl: this.parseMilestonePl(reward),
+    //                         name: 'Wrathborn Hunts',
+    //                         desc: 'Your Cryptolith Lure gives a fixed number of powerful drops per week.',
+    //                         hasPartial: false,
+    //                         dependsOn: []
+    //                     };
+    //                     milestoneList.push(ms);
+    //                     milestonesByKey[Const.MISSION_ARTIFACT_KEY] = ms;
+    //                 }
+    //                 // constructor(hash, complete, pct, info, suppInfo, phases) {
+    //                 const complete = powerfulDropsRemaining === 0;
+    //                 let info = null;
+    //                 if (pct > 0 && pct < 1) {
+    //                     info = Math.floor(100 * pct) + '% complete';
+    //                 }
 
 
-                    char.milestones[Const.MISSION_ARTIFACT_KEY] =
-                        new MilestoneStatus(Const.MISSION_ARTIFACT_KEY,
-                            complete, pct, info,
-                            suppInfo,
-                            null, false, false);
-                }
-            }
-        }
-    }
+    //                 char.milestones[Const.MISSION_ARTIFACT_KEY] =
+    //                     new MilestoneStatus(Const.MISSION_ARTIFACT_KEY,
+    //                         complete, pct, info,
+    //                         suppInfo,
+    //                         null, false, false);
+    //             }
+    //         }
+    //     }
+    // }
 
     public parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean, contentVaultOnly?: boolean): Player {
         if (resp.profile != null && resp.profile.privacy === 2) {
@@ -2123,9 +2123,10 @@ export class ParseService {
                         const parsed: InventoryItem = this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions);
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
-                            if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
-                                this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey, resp.characterPlugSets);
-                            } else if (parsed.type === ItemType.Bounty) {
+                            // if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
+                            //     this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey, resp.characterPlugSets);
+                            // } else 
+                            if (parsed.type === ItemType.Bounty) {
                                 // ignore expired
                                 if (!parsed.expired) {
                                     parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
