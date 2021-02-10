@@ -786,7 +786,7 @@ export class BungieService implements OnDestroy {
             rewards: 'Pinnacle Gear',
             pl: Const.HIGH_BOOST,
             name: 'Master Empire Hunt',
-            desc: 'Complete a 1280 Empire Hunt',
+            desc: 'Complete a Master Empire Hunt',
             hasPartial: true,
             neverDisappears: true,
             dependsOn: []

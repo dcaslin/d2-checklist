@@ -1953,7 +1953,7 @@ export class ParseService {
                                 availableActivities[aa.activityHash] = true;
                                 // while we're here check for Empire Hunt pinnacle.
                                 // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
-                                if (aa.recommendedLight == 1280) {
+                                if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
                                     const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
                                     // is this an empire hunt
                                     if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
