@@ -2125,7 +2125,7 @@ export class ParseService {
                             // don't deal with chalice if there are no milestones
                             // if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
                             //     this.handleMissionArtifact(char, parsed, milestoneList, milestonesByKey, resp.characterPlugSets);
-                            // } else 
+                            // } else
                             if (parsed.type === ItemType.Bounty) {
                                 // ignore expired
                                 if (!parsed.expired) {
@@ -2224,7 +2224,7 @@ export class ParseService {
             }
 
             if (collections.length > 0) {
-                const tempBadges = this.handleColPresNode([], '498211331', nodes, collections, []).children;
+                const tempBadges = this.handleColPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.badgesRootNode + '', nodes, collections, []).children;
                 for (const ts of tempBadges) {
                     const badge = this.buildBadge(ts);
                     if (badge != null) {
@@ -2250,7 +2250,7 @@ export class ParseService {
                 });
 
                 const collLeaves: TriumphCollectibleNode[] = [];
-                colTree = this.handleColPresNode([], '3790247699', nodes, collections, collLeaves).children;
+                colTree = this.handleColPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.collectionRootNode + '', nodes, collections, collLeaves).children;
                 searchableCollection = collLeaves.sort((a, b) => {
                     if (a.name < b.name) { return -1; }
                     if (a.name < b.name) { return 0; }
@@ -2266,7 +2266,7 @@ export class ParseService {
                 let triumphLeaves: TriumphRecordNode[] = [];
 
                 // Seals 1652422747
-                const tempSeals = this.handleRecPresNode([], '616318467', nodes, records, triumphLeaves, true, true, contentVaultOnly).children;
+                const tempSeals = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly).children;
                 for (const ts of tempSeals) {
                     const seal = this.buildSeal(ts, badges);
                     if (seal != null) {
@@ -2276,23 +2276,30 @@ export class ParseService {
                 // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
                 // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
-                recordTree = this.handleRecPresNode([], '1866538467', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly, []).children;
+                recordTree = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly, []).children;
 
                 // exotic catalysts
-                let oChild = this.handleRecPresNode([], '511607103', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                let oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
                 // medals
-                oChild = this.handleRecPresNode([], '3901403713', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.medalsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
+
+                // season challenges
+                oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                if (oChild && oChild.children && oChild.children.length > 0) {
+                    recordTree.push(oChild);
+                }
+
                 // metrics
                 // oChild = this.handleRecPresNode([], '1074663644', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 // recordTree.push(oChild);
                 // lore
-                oChild = this.handleRecPresNode([], '1993337477', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.loreRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
@@ -2853,6 +2860,27 @@ export class ParseService {
         if (complete) {
             earnedPts = totalPts;
         }
+
+        const rewardValues: NameQuantity[] = [];
+        if (rDesc.rewardItems) {
+            for (const ri of rDesc.rewardItems) {
+                if (ri.itemHash === 0) { continue; }
+                const valDesc: any = this.destinyCacheService.cache.InventoryItem[ri.itemHash];
+                if (valDesc != null) {
+
+                    searchText += ' ' + valDesc.displayProperties.name;
+
+                    rewardValues.push({
+                        hash: ri.itemHash,
+                        name: valDesc.displayProperties.name,
+                        quantity: ri.quantity,
+                        icon: valDesc.displayProperties.icon,
+                        itemTypeDisplayName: valDesc.itemTypeDisplayName?.trim().length > 0 ? valDesc.itemTypeDisplayName : null
+                    });
+                }
+            }
+        }
+
         return {
             type: 'record',
             hash: key,
@@ -2875,7 +2903,8 @@ export class ParseService {
             percent: complete ? 100 : incompIntPercent ? incompIntPercent : percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible,
-            pointsToBadge: pointsToBadge
+            pointsToBadge: pointsToBadge,
+            rewardItems: rewardValues
         };
     }
 

@@ -6,7 +6,7 @@
     <mat-tree-node class="tree-leaf" *matTreeNodeDef="let node" [hidden]="hideNode(node)" matTreeNodeToggle
       matTreeNodePadding (click)="selectedTreeNodeHash=node.data.hash; location.go(state.getPlayerRouteString(['collections','tree',node.data.hash]))">
       <button mat-icon-button disabled></button>
-      <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-leaf-icon"
+      <div *ngIf="node.data.icon!=null" class="transparent-icon transparent-branch-icon"
         [style.background-image]="'url(//www.bungie.net' + node.data.icon + ')'"></div>
       <div style="text-align: left; margin-bottom: 20px" [class.warn-text]="node.data.hash == selectedTreeNodeHash" [id]="'tree-node-'+node.data.hash">
         <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="node.data.acquired " class="accent-text mat-option.mat-selected"></fa-icon>        

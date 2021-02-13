@@ -1,11 +1,26 @@
-<div class="low-hanging-desc">{{triumph.desc}}</div>
-<div class="low-hanging-desc" *ngFor="let o of triumph.objectives">
-  <span class="obj-desc">    
-    <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="o.complete" class="accent-text mat-option.mat-selected"></fa-icon>    
-    <fa-icon [icon]="iconService.farSquare" *ngIf="!o.complete"></fa-icon>
-    {{o.progress}}/{{o.completionValue}} {{o.progressDescription}}
-    <span *ngIf="o.score"> - {{o.score}} pts</span>
-  </span>
-  <mat-progress-bar class="pres-node-prog" mode="determinate"
-    [value]="o.progress*100/o.completionValue"></mat-progress-bar>
+<div *ngIf="!hideDesc" class="low-hanging-desc">{{triumph.desc}}</div>
+<div class="container-row">
+  <div *ngIf="triumph.objectives?.length>0">
+    Objectives:
+    <div class="low-hanging-desc objective" *ngFor="let o of triumph.objectives">
+      <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="o.complete" class="accent-text mat-option.mat-selected">
+      </fa-icon>
+      <fa-icon [icon]="iconService.farSquare" *ngIf="!o.complete"></fa-icon>
+      {{o.progress|number}}/{{o.completionValue|number}} {{o.progressDescription}}
+      <span *ngIf="o.score"> - {{o.score}} pts</span>
+      <mat-progress-bar *ngIf="o.progress*100/o.completionValue < 100"class="pres-node-prog" mode="determinate" [value]="o.progress*100/o.completionValue">
+      </mat-progress-bar>
+    </div>
+  </div>
+  <div *ngIf="triumph.rewardItems?.length>0" class="low-hanging-desc">
+    Rewards:
+    <div class="reward-row" *ngFor="let ri of triumph.rewardItems">
+      <div *ngIf="ri.icon" class="reward-icon" [style.background-image]="'url(//www.bungie.net' + ri.icon + ')'">
+      </div>
+      <div>{{ri.name}}
+        <ng-container *ngIf="ri.itemTypeDisplayName"> - {{ri.itemTypeDisplayName}}</ng-container>
+        <ng-container *ngIf="ri.quanityt>1">{{ri.quantity}}</ng-container>
+      </div>
+    </div>
+  </div>
 </div>

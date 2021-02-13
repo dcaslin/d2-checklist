@@ -1,7 +1,7 @@
 <h3
     matTooltip="Vendor items for sale now that are missing for your collections that you should buy (includes Tess Bright Dust shaders, Banshee weapon mods and Xur armor).">
     Missing Collection Items</h3>
-<ng-container *ngIf="vendorDeals.collection.length > 0">
+<ng-container *ngIf="vendorDeals.collection.length > 0; else noDeals">
     <div class="flex-row">
         <div *ngFor="let vc of vendorDeals.collection">
             <div class="flex-row">
@@ -14,3 +14,8 @@
         </div>
     </div>
 </ng-container>
+
+
+<ng-template #noDeals>
+    <div class="vendor-deal-label">None right now</div>
+</ng-template>

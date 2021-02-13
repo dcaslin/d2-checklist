@@ -1,4 +1,38 @@
-.obj-desc {
-    opacity: 0.5;
-    font-size: 12px;;
+.reward-row {
+    font-size: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
 }
+.reward-row>div {
+  margin: 2px;
+}
+
+.objective { 
+  font-size: 12px;
+  margin: 5px;
+}
+
+
+.container-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+.container-row>div {
+  margin-left: 5px;
+  margin-top: 5px;
+  margin-right: 50px;
+}
+
+
+.reward-icon{
+    width: 24px;
+    height: 24px;
+  
+    background-size: cover;
+    display: inline-block;
+    border: 1px solid #000;
+  }
+  
