@@ -20,13 +20,14 @@ import { PursuitListComponent } from './pursuits/pursuit-list/pursuit-list.compo
 import { QuestDialogComponent } from './pursuits/pursuit-list/quest-dialog/quest-dialog.component';
 import { PursuitsComponent } from './pursuits/pursuits.component';
 import { TriumphClosestComponent } from './triumphs/triumph-closest/triumph-closest.component';
+import { TriumphObjectivesComponent } from './triumphs/triumph-objectives/triumph-objectives.component';
 import { TriumphSealsComponent } from './triumphs/triumph-seals/triumph-seals.component';
 import { TriumphSearchComponent } from './triumphs/triumph-search/triumph-search.component';
 import { TriumphSeasonsComponent } from './triumphs/triumph-seasons/triumph-seasons.component';
 import { TriumphTrackedComponent } from './triumphs/triumph-tracked/triumph-tracked.component';
 import { TriumphTreeComponent } from './triumphs/triumph-tree/triumph-tree.component';
 import { TriumphsComponent } from './triumphs/triumphs.component';
-import { TriumphObjectivesComponent } from './triumphs/triumph-objectives/triumph-objectives.component';
+
 
 
 @NgModule({
@@ -34,10 +35,10 @@ import { TriumphObjectivesComponent } from './triumphs/triumph-objectives/triump
     SharedModule,
     ChartsModule
   ],
-  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, CollectionsComponent, TriumphsComponent, 
-    CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent, 
-    TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent, 
-    CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent, 
+  declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, CollectionsComponent, TriumphsComponent,
+    CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent,
+    TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent,
+    CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent,
     PlayerEfficiencyGraphComponent, PursuitListComponent, TriumphObjectivesComponent]
 })
 export class PlayerModule { }

@@ -40,7 +40,7 @@ export class DestinyCacheService {
         }
         await this.load(key);
       } else {
-        this.cache = manifest;
+        this.cache = manifest as Cache;
       }
       this.percent.next(100);
       this.ready$.next(true);
@@ -125,7 +125,8 @@ export class DestinyCacheService {
 }
 
 export interface Cache {
-  version?: string;
+  version: string;
+  destiny2CoreSettings: Destiny2CoreSettings,
   Vendor?: any;
   Race?: any;
   Gender?: any;
@@ -160,6 +161,32 @@ export interface Cache {
   SeasonPass?: { [key: string]: SeasonPass };
   TagWeights?:  {[key: string]: number};
 }
+
+
+export interface Destiny2CoreSettings {
+  collectionRootNode: number;
+  badgesRootNode: number;
+  recordsRootNode: number;
+  medalsRootNode: number;
+  metricsRootNode: number;
+  activeTriumphsRootNodeHash: number;
+  activeSealsRootNodeHash: number;
+  legacyTriumphsRootNodeHash: number;
+  legacySealsRootNodeHash: number;
+  medalsRootNodeHash: number;
+  exoticCatalystsRootNodeHash: number;
+  loreRootNodeHash: number;
+  undiscoveredCollectibleImage: string;
+  ammoTypeHeavyIcon: string;
+  ammoTypeSpecialIcon: string;
+  ammoTypePrimaryIcon: string;
+  currentSeasonalArtifactHash: number;
+  currentSeasonHash: number;
+  seasonalChallengesPresentationNodeHash: number;
+  futureSeasonHashes: number[];
+  pastSeasonHashes: number[];
+}
+
 
 export interface ManifestInventoryItem {
   displayProperties: DisplayProperties;

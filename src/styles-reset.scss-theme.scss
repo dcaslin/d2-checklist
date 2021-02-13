@@ -203,11 +203,14 @@
 
     & td {
       padding: 0.625em;
-      text-align: center;
+      text-align: center;      
+      vertical-align: top;
     }
 
     & td.lead {
       padding: 0.625em;
+            
+      vertical-align: top;
       text-align: left;
       font-weight: bold;
 

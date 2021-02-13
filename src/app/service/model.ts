@@ -215,6 +215,7 @@ export interface TriumphRecordNode extends TriumphNode {
     invisible: boolean;
     pointsToBadge: boolean;
     badge?: Badge;
+    rewardItems: NameQuantity[];
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
@@ -234,6 +235,8 @@ export interface NameQuantity {
     hash: string;
     name: string;
     quantity: number;
+    icon?: string;
+    itemTypeDisplayName?: string;
 }
 
 export interface ItemPerks {

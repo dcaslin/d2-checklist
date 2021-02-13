@@ -96,10 +96,11 @@ import { ArmorCompareDialogComponent } from './deals/armor-compare-dialog/armor-
   declarations: [
     AppComponent,
     ChildComponent,
-    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent, 
-    SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent, 
-    ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent, 
-    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent, DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, ArmorCompareDialogComponent
+    SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
+    SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent,
+    ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
+    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
+    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, ArmorCompareDialogComponent
   ],
   providers: [
     AuthService,

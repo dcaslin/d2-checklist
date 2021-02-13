@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { Const, TriumphRecordNode } from '@app/service/model';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { TriumphRecordNode } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,6 +10,7 @@ import { IconService } from '@app/service/icon.service';
 })
 export class TriumphObjectivesComponent implements OnInit {
   @Input() triumph: TriumphRecordNode;
+  @Input() hideDesc = false;
 
   constructor(public iconService: IconService) { }
 
