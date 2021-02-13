@@ -1,24 +1,24 @@
 <ng-container *ngIf="state.player|async as player">
-  <h4 class="triumph-score">Seasons
+  <h4 class="triumph-score">Seasonal Challenges
     <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
       Hide Completed
     </mat-checkbox>
   </h4>
-  <div class="left" style="margin: 10px">
+  <div class="left" style="margin: 10px" *ngIf="player.seasonChallengeEntries?.length>0">
     <mat-form-field style="min-width: 250px">
       <mat-label>Season</mat-label>
       <mat-select [(ngModel)]="seasonIndex">
-        <mat-option [value]="i" *ngFor="let c of player.seasons; let i = index">{{c.name}}
+        <mat-option [value]="i" *ngFor="let c of player.seasonChallengeEntries; let i = index">{{c.name}}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <span class="simple-caption">
-      {{player.seasons[seasonIndex].records.length}} triumphs
+      {{player.seasonChallengeEntries[seasonIndex].records.length}} triumphs
     </span>
     <div>
       <table class="responsive-table">
         <tbody>
-          <ng-container *ngFor="let t of player.seasons[seasonIndex].records">
+          <ng-container *ngFor="let t of player.seasonChallengeEntries[seasonIndex].records">
 
             <tr *ngIf="t==null">
               <td colspan="4" class="lead" data-label="" ><span class="triumph-hidden">Triumph hidden for now</span></td>

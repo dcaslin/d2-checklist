@@ -103,6 +103,13 @@ export class WeekService {
     return list[index];
   }
 
+  // the week of the chosen season, so far
+  public static getChosenWeek(): number {
+    const seasonStart = '2021-02-09T17:00:00Z';
+    const numWeeks = Math.floor(moment.duration(moment(moment.now()).diff(seasonStart)).asWeeks());
+    return numWeeks + 1;
+  }
+
   private getCurrWeek(publicMilestones: PublicMilestonesAndActivities): Week {
     let currWeek: Week;
     if (publicMilestones && publicMilestones.weekStart) {

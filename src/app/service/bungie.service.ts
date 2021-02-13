@@ -547,23 +547,24 @@ export class BungieService implements OnDestroy {
         return allMatches;
     }
 
-    public async getCharsTryAllPlatforms(membershipType: number, membershipId: string, components: string[], detailedInv?: boolean): Promise<Player> {
+    public async getCharsTryAllPlatforms(likelyMembershipType: number, membershipId: string, components: string[], detailedInv?: boolean): Promise<Player> {
+        const player = await this.getChars(likelyMembershipType, membershipId, components, true, detailedInv);
+        if (player?.characters?.length > 0) {
+            return player;
+        }
         // try STEAM, then XBL, then PSN then STADIA
-        const alreadyTried = {};
-        for (const p of Const.PLATFORMS_ARRAY) {
-            alreadyTried[p.type + ''] = false;
-        }
-        let returnMe: Player = null;
-        let platformCntr = -1;
-        while (returnMe == null && platformCntr < Const.PLATFORMS_ARRAY.length) {
-            if (!alreadyTried[membershipType + '']) {
-                returnMe = await this.getChars(membershipType, membershipId, components, true, detailedInv);
-                alreadyTried[membershipType + ''] = true;
+        // skip the one we already tried above
+        for (let cntr = 0; cntr < Const.PLATFORMS_ARRAY.length; cntr++) {
+            const tryMe = Const.PLATFORMS_ARRAY[cntr].type;
+            if (tryMe === likelyMembershipType) {
+                continue;
             }
-            platformCntr++;
-            membershipType = Const.PLATFORMS_ARRAY[platformCntr].type;
+            const player = await this.getChars(tryMe, membershipId, components, true, detailedInv);
+            if (player?.characters?.length > 0) {
+                return player;
+            }
         }
-        return returnMe;
+        return null;
 
     }
 
@@ -800,7 +801,7 @@ export class BungieService implements OnDestroy {
             if (a.name > b.name) { return 1; }
             if (a.name < b.name) { return -1; }
             return 0;
-          });
+        });
         const empty1: MilestoneStatus = new MilestoneStatus(Const.HERESY_KEY, false, 0, null, ['Loading...'], null, false, false);
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
@@ -834,7 +835,7 @@ export class BungieService implements OnDestroy {
     private async loadActivityPseudoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
         // let d = new Date();
         // d.setDate(d.getDate() - 40)
-        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);        
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
         // extra filter just in case
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
         // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
