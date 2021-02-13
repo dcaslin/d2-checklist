@@ -136,6 +136,11 @@ export interface RecordSeason {
     records: TriumphRecordNode[];
 }
 
+export interface SeasonalChallengeEntry {
+    name: string;
+    records: TriumphRecordNode[];
+}
+
 export interface Badge {
     hash: string;
     name: string;
@@ -558,7 +563,7 @@ export class Player {
     readonly shared: Target;
     readonly raidChecked = false;
     readonly title;
-    readonly seasons: RecordSeason[];
+    readonly seasonChallengeEntries: SeasonalChallengeEntry[];
     readonly hasHiddenClosest: boolean;
     readonly accountProgressions: Progression[];
     readonly glory: Progression;
@@ -584,7 +589,7 @@ export class Player {
         lowHangingTriumphs: TriumphRecordNode[], searchableTriumphs: TriumphRecordNode[],
         searchableCollection: TriumphCollectibleNode[],
         seals: Seal[], badges: Badge[],
-        title: string, seasons: RecordSeason[], hasHiddenClosest: boolean,
+        title: string, seasonChallengeEntries: SeasonalChallengeEntry[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
         specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData) {
         this.profile = profile;
@@ -622,7 +627,7 @@ export class Player {
         this.seals = seals;
         this.badges = badges;
         this.title = title;
-        this.seasons = seasons;
+        this.seasonChallengeEntries = seasonChallengeEntries;
         this.hasHiddenClosest = hasHiddenClosest;
         this.accountProgressions = accountProgressions;
         this.artifactPowerBonus = artifactPowerBonus;
@@ -1231,7 +1236,7 @@ export class Const {
         '1': Const.XBL_PLATFORM,
         '2': Const.PSN_PLATFORM,
         '3': Const.STEAM_PLATFORM,
-        '4': Const.BNET_PLATFORM,
+        // '4': Const.BNET_PLATFORM,
         '5': Const.STADIA_PLATFORM
     };
 

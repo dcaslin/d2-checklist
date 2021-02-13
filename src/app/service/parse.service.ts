@@ -68,6 +68,7 @@ import {
     RecordSeason,
     Seal,
     SearchResult,
+    SeasonalChallengeEntry,
     Shared,
     SpecialAccountProgressions,
     TAG_WEIGHTS,
@@ -1288,6 +1289,8 @@ export class ParseService {
         for (const m of returnMe) {
             if (m.milestoneType == 3 && weekStart == null) {
                 weekStart = moment(m.start);
+
+                console.dir(m.start);
             }
         }
         const pmsa: PublicMilestonesAndActivities = {
@@ -2074,7 +2077,7 @@ export class ParseService {
         let recordTree = [];
         const seals: Seal[] = [];
         const badges: Badge[] = [];
-        const seasons: RecordSeason[] = [];
+        const seasonChallengeEntries: SeasonalChallengeEntry[] = [];
         let lowHangingTriumphs: TriumphRecordNode[] = [];
         let searchableTriumphs: TriumphRecordNode[] = [];
         let searchableCollection: TriumphCollectibleNode[] = [];
@@ -2266,7 +2269,8 @@ export class ParseService {
                 let triumphLeaves: TriumphRecordNode[] = [];
 
                 // Seals 1652422747
-                const tempSeals = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly).children;
+                let parent: TriumphPresentationNode = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                const tempSeals = parent?.children ? parent.children : [];
                 for (const ts of tempSeals) {
                     const seal = this.buildSeal(ts, badges);
                     if (seal != null) {
@@ -2276,8 +2280,8 @@ export class ParseService {
                 // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
                 // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
-                recordTree = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly, []).children;
-
+                parent = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly, []);
+                recordTree = parent?.children ? parent.children : [];
                 // exotic catalysts
                 let oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
@@ -2293,6 +2297,20 @@ export class ParseService {
                 oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild);
+                    let curChild: TriumphNode = oChild;
+                    // get down to the weeks
+                    while (curChild && curChild.children.length == 1) {
+                        curChild = curChild.children[0];
+                    }
+                    // we're on the "Weekly" each child is a week in the season
+                    if (curChild!=null) {
+                        for (const week of curChild.children) {
+                            seasonChallengeEntries.push({
+                                name: week.name,
+                                records: week.children as TriumphRecordNode[]
+                            });
+                        }
+                    }
                 }
 
                 // metrics
@@ -2303,8 +2321,6 @@ export class ParseService {
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
-
-
 
                 const leafSet = {};
                 for (const t of triumphLeaves) {
@@ -2363,25 +2379,6 @@ export class ParseService {
                     console.dir(exc);
                 }
                 lowHangingTriumphs = lowHangingTriumphs.slice(0, 50);
-                const seasonDescs: any[] = this.destinyCacheService.cache.RecordSeasons;
-                for (const seasonDesc of seasonDescs) {
-                    const seasonRecords: TriumphRecordNode[] = [];
-                    for (const hash of seasonDesc.hashes) {
-                        if (dictSearchableTriumphs[hash] == null) {
-                            // check to see if it's floating out in the ether
-                            const seasonOnly = this.handleRecordNode([], hash, records, showZeroPtTriumphs, showInvisTriumphs, false);
-                            searchableTriumphs.push(seasonOnly);
-                            seasonRecords.push(seasonOnly);
-                        } else {
-                            seasonRecords.push(dictSearchableTriumphs[hash]);
-                        }
-                    }
-                    seasons.push({
-                        name: seasonDesc.name,
-                        records: seasonRecords
-                    });
-                }
-
             }
         }
         let title = '';
@@ -2432,7 +2429,7 @@ export class ParseService {
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
-            seals, badges, title, seasons, hasHiddenClosest, accountProgressions, artifactPowerBonus,
+            seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
             transitoryData, specialProgressions, gearMeta);
     }
 
@@ -2629,6 +2626,9 @@ export class ParseService {
 
     private handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean, extraRoots?: string[]): TriumphPresentationNode {
         const val = this.getBestPres(pres, key);
+        if (!val) {
+            return null;
+        }
         const pDesc = this.destinyCacheService.cache.PresentationNode[key];
         if (pDesc == null) {
             return null;
