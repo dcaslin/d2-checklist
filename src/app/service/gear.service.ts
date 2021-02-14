@@ -116,6 +116,21 @@ export class GearService {
         }
     }
 
+    public static filterDupes(tempGear: InventoryItem[]) {
+        const gearHashes: { [key: string]: boolean; } = {};
+        const returnMe: InventoryItem[] = [];
+
+        for (const i of tempGear) {
+            if (!gearHashes[i.hash]) {
+                gearHashes[i.hash] = true;
+                returnMe.push(i);
+            } else if (i.type == ItemType.ExchangeMaterial) {
+                returnMe.push(i);
+            }
+        }
+        return returnMe;
+    }
+
     constructor(private bungieService: BungieService,
         public markService: MarkService,
         private signedOnUserService: SignedOnUserService,

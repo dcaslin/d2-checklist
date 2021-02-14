@@ -142,6 +142,8 @@ export class GearComponent extends ChildComponent {
   option: TabOption;
 
   sortBy = 'power';
+
+  hideDupes = false;
   sortDesc = true;
   gearToShow: InventoryItem[] = [];
   page = 0;
@@ -578,6 +580,11 @@ export class GearComponent extends ChildComponent {
     });
   }
 
+  public toggleDupes(hideDupes: boolean) {
+    this.hideDupes = hideDupes;
+    this.filterChanged();
+  }
+
   public async shardBlues() {
     await this.load(true);
     await this.gearService.shardBlues(this._player.getValue());
@@ -913,8 +920,6 @@ export class GearComponent extends ChildComponent {
     return returnMe;
   }
 
-
-
   filterGear() {
     if (this._player.getValue() == null) { return; }
     let tempGear = this._player.getValue().gear.filter(i => i.type == this.option.type);
@@ -924,6 +929,9 @@ export class GearComponent extends ChildComponent {
     tempGear = this.toggleFilter(tempGear, debugFilterNotes);
     this.debugFilterNotes = debugFilterNotes;
     GearService.sortGear(this.sortBy, this.sortDesc, tempGear);
+    if (this.hideDupes) {
+      tempGear = GearService.filterDupes(tempGear);
+    }
     const start = this.page * this.size;
     const end = Math.min(start + this.size, tempGear.length);
     if (start >= end) {
