@@ -108,6 +108,9 @@
       <button mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
         <fa-icon [icon]="iconService.fasSave"></fa-icon>
       </button>
+      <mat-checkbox [(ngModel)]="hideDupes" ngDefaultControl (ngModelChange)="toggleDupes(hideDupes)">
+        Hide Dupes
+      </mat-checkbox>
       <button mat-button *ngIf="filtersDirty==true" (click)="resetFilters()">
         <fa-stack>
           <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
@@ -115,7 +118,8 @@
         </fa-stack>
       </button>
 
-      <span class="simple-caption">{{pageStart}} - {{pageEnd}} / {{total}}</span>
+      <span class="pad-left pad-right simple-caption-no-margin">{{pageStart}} - {{pageEnd}} / {{total}}</span>
+
     </div>
   </div>
 
@@ -205,6 +209,15 @@
         <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
       </span>
     </button>
+    <button mat-menu-item *ngIf="!hideDupes" (click)="toggleDupes(true)">
+      <fa-icon [icon]="iconService.fasEyeSlash"></fa-icon>&ensp;Hide Dupes
+    </button>
+    <button mat-menu-item *ngIf="hideDupes" (click)="toggleDupes(false)">
+      <fa-icon [icon]="iconService.fasEye"></fa-icon>&ensp;Show Dupes
+    </button>
+    <button mat-menu-item (click)="syncLocks()">
+      <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
+    </button>
     <button mat-menu-item (click)="syncLocks()">
       <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
     </button>
@@ -258,7 +271,8 @@
           </span>
 
         </th>
-        <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
+        <th class="limited-gear-width hide-mobile-table-cell"
+          *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
           <span class="fake-link gear-sort" (click)="sort('energyCapacity')">Energy
             <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
             </d2c-sort-indicator>
@@ -450,7 +464,8 @@
 
 
           </td>
-          <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
+          <td class="limited-gear-width hide-mobile-table-cell"
+            *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
             <span class="mod-obj">{{i.energyCapacity}} / 10 <d2c-season-indicator [season]="i.seasonalModSlot">
               </d2c-season-indicator> </span>
             <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
