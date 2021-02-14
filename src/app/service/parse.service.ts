@@ -1726,6 +1726,9 @@ export class ParseService {
     }
 
 
+    // TODO high celebrant powerful notes: Activity 392314513 will track this, but only if it's on the lure
+    // will need to introspect the Lure to see it's availability perhaps... 
+    // not clear this is even rewarding a powerful though
 
     // private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
     //     const charPlugSetData = characterPlugSet?.data;
