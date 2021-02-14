@@ -1,4 +1,9 @@
-<h3>Exchange</h3>
+<h3>
+    Exchange
+    <span class="fake-link pad-left-more" (click)="signedOnUserService.refreshPlayer()">
+        <fa-icon [icon]="iconService.fasSyncAlt"  [spin]="signedOnUserService.playerLoading$|async"></fa-icon>
+    </span>
+</h3>
 <div class="flex-row">
     <div *ngFor="let vd of vendorDeals.exchange">
         <h4>{{vd.vendor.name}}</h4>

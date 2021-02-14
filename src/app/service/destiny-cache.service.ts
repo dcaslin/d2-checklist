@@ -1,9 +1,10 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { cookError, safeStringifyError } from '@app/shared/utilities';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
-import { BehaviorSubject } from 'rxjs';
-import { last, tap } from 'rxjs/operators';
+import { BehaviorSubject, throwError } from 'rxjs';
+import { catchError, last, retry, tap } from 'rxjs/operators';
 
 declare let JSZip: any;
 
@@ -16,6 +17,7 @@ export class DestinyCacheService {
   public readonly percent: BehaviorSubject<number> = new BehaviorSubject(0);
   public readonly unzipping: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly error: BehaviorSubject<string> = new BehaviorSubject(null);
+  public readonly errorDetails: BehaviorSubject<any> = new BehaviorSubject(null);
 
   constructor(private http: HttpClient) {
     this.init();
@@ -48,7 +50,9 @@ export class DestinyCacheService {
       console.log((t1 - t0) + ' ms to load manifest');
     } catch (exc) {
       console.log(`Error loading Bungie Manifest DB ${key}`);
-      console.dir(exc);
+      const s = safeStringifyError(exc);
+      console.log(s);
+      this.errorDetails.next(s);
       try {
         console.log('Deleting any existing cache entry');
         await del(key);
@@ -91,9 +95,8 @@ export class DestinyCacheService {
       }
     }
   }
-
-  async load(key: string): Promise<void> {
-    console.log('--- load ---');
+  private async download(key: string): Promise<Blob> {
+    console.log(`--- load remote cache ${env.versions.manifest} ---`);
 
     let headers = new HttpHeaders();
     headers = headers
@@ -106,15 +109,28 @@ export class DestinyCacheService {
       responseType: 'blob'
     });
 
-    const r = this.http.request(req).pipe(
+    const finalHttpEvt = await this.http.request(req).pipe(
       tap((evt: HttpEvent<any>) => this.showProgress(evt)),
-      last()
-    );
-    const event = await r.toPromise();
+      retry(1),
+      last(),
+      catchError( err =>  throwError(cookError(err)))
+    ).toPromise();
+
+    if (finalHttpEvt.type !== HttpEventType.Response) {
+      throw new Error(`Unexpected final http event type ${finalHttpEvt.type}`);
+    }
+    const dl = finalHttpEvt as HttpResponse<Blob>;
     this.percent.next(100);
+    return dl.body;
+  }
+
+
+  async load(key: string): Promise<void> {
+    const blob = await this.download(key);
+    console.log(`   Retrieved Blob size ${blob.size}. Beginning unzip...`);
     this.unzipping.next(true);
     try {
-      await this.unzip((event as HttpResponse<Blob>).body);
+      await this.unzip(blob);
       set(key, this.cache);
       return;
     }
@@ -126,7 +142,7 @@ export class DestinyCacheService {
 
 export interface Cache {
   version: string;
-  destiny2CoreSettings: Destiny2CoreSettings,
+  destiny2CoreSettings: Destiny2CoreSettings;
   Vendor?: any;
   Race?: any;
   Gender?: any;

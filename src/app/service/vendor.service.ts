@@ -311,6 +311,18 @@ export class VendorService {
     return returnMe;
   }
 
+  private static getMarginalValue(gear: InventoryItem[]): number {
+    const dealValue = gear[0].preferredStatPoints;
+    let bestHeld = 0;
+    for (const g of gear) {
+      if (g.vendorItemInfo == null) {
+        bestHeld = g.preferredStatPoints;
+        break;
+      }
+    }
+    return dealValue - bestHeld;
+  }
+
   private findExoticArmorDeals(player: Player, vendorArmor: InventoryItem[]): ExoticInventoryBucket[] {
     const vendorExotics = vendorArmor.filter(i => i.tier == 'Exotic');
     const playerAndVendorExotics = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Exotic');
@@ -321,7 +333,8 @@ export class VendorService {
       // it's a deal if it's a vendor item and it has any pref pts, pref pts = 0 means they don't want to see this class 
       if (copies[0].vendorItemInfo != null && copies[0].preferredStatPoints > 0) {
         deals.push({
-          gear: copies
+          gear: copies,
+          marginalValue: VendorService.getMarginalValue(copies)
         });
       }
     }
@@ -348,6 +361,9 @@ export class VendorService {
       bucket.gear.sort(VendorService.sortByStats);
       // it's a deal if it's a vendor item and it has any pref pts, pref pts = 0 means they don't want to see this class
       bucket.hasDeal = bucket.gear.length > 0 && bucket.gear[0].vendorItemInfo != null && bucket.gear[0].preferredStatPoints > 0;
+      if (bucket.hasDeal) {
+        bucket.marginalValue = VendorService.getMarginalValue(bucket.gear);
+      }
     }
     return buckets;
   }
@@ -367,7 +383,8 @@ export class VendorService {
               bucket: val,
               classType,
               energyType,
-              gear: []
+              gear: [],
+              marginalValue: 0
             });
           }
         }
@@ -667,6 +684,7 @@ export class VendorService {
 
 export interface ExoticInventoryBucket {
   gear: InventoryItem[];
+  marginalValue: number;
 }
 
 
@@ -675,6 +693,7 @@ export interface ClassInventoryBucket {
   classType: ClassAllowed;
   energyType: EnergyType;
   gear: InventoryItem[];
+  marginalValue: number;
   hasDeal?: boolean;
 }
 

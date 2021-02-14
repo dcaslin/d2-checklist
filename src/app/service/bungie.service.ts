@@ -758,7 +758,7 @@ export class BungieService implements OnDestroy {
         }
 
         const ms1: MileStoneName = {
-            key: Const.HERESY_KEY,
+            key: Const.PSUEDO_HERESY_KEY,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Masterwork Armor',
             pl: Const.NO_BOOST,
@@ -781,8 +781,48 @@ export class BungieService implements OnDestroy {
         //     dependsOn: []
         // };
         // p.milestoneList.push(ms2);
+
+        const msbg3: MileStoneName = {
+            key: Const.PSUEDO_BATTLEGROUND_3,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear (Tier 2)',
+            pl: Const.MID_BOOST,
+            name: 'Battlegrounds Playlist 3',
+            desc: 'Complete the Battlegrounds playlist 3 times this week',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(msbg3);
+
+        const msbg6: MileStoneName = {
+            key: Const.PSUEDO_BATTLEGROUND_6,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear (Tier 2)',
+            pl: Const.MID_BOOST,
+            name: 'Battlegrounds Playlist 6',
+            desc: 'Complete the Battlegrounds playlist 63 times this week',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(msbg6);
+        const msbg9: MileStoneName = {
+            key: Const.PSUEDO_BATTLEGROUND_9,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Powerful Gear (Tier 3)',
+            pl: Const.MID_BOOST,
+            name: 'Battlegrounds Playlist 9',
+            desc: 'Complete the Battlegrounds playlist 9 times this week',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(msbg9);
+
+
         const ms3: MileStoneName = {
-            key: Const.MASTER_EMPIRE_HUNT,
+            key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Pinnacle Gear',
             pl: Const.HIGH_BOOST,
@@ -802,10 +842,10 @@ export class BungieService implements OnDestroy {
             if (a.name < b.name) { return -1; }
             return 0;
         });
-        const empty1: MilestoneStatus = new MilestoneStatus(Const.HERESY_KEY, false, 0, null, ['Loading...'], null, false, false);
+        const empty1: MilestoneStatus = new MilestoneStatus(Const.PSUEDO_HERESY_KEY, false, 0, null, ['Loading...'], null, false, false);
         // load empty while we wait, so it doesn't show checked
         for (const c of p.characters) {
-            c.milestones[Const.HERESY_KEY] = empty1;
+            c.milestones[Const.PSUEDO_HERESY_KEY] = empty1;
         }
         playerSubject.next(p);
         for (const c of p.characters) {
@@ -839,7 +879,7 @@ export class BungieService implements OnDestroy {
         // extra filter just in case
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
         // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
-        BungieService.setPseudoMilestoneFromActivities(c, Const.HERESY_KEY, dungeonActivities, "Heresy");
+        BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_HERESY_KEY, dungeonActivities, "Heresy");
         p.next(p.getValue());
     }
 
