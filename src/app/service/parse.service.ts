@@ -1026,11 +1026,11 @@ export class ParseService {
         if (rewards) {
             if (rewards.startsWith('Powerful')) {
                 if (rewards.endsWith('3)')) {
-                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_1];
+                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_3];
                 } else if (rewards.endsWith('2)')) {
                     boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_2];
                 } else {
-                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_3];
+                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_1];
                 }
             } else if (rewards.startsWith('Pinnacle Gear (Weak)')) {
                 boost = Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE_WEAK];
