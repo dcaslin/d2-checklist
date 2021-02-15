@@ -1,0 +1,53 @@
+<ng-container *ngIf="character$|async as char">
+    <h4 mat-dialog-title>
+        {{char.className}} - {{char.basePLString}} Base PL
+        <span class="fake-link pad-left-more" (click)="playerStateService.requestRefresh()">
+            <fa-icon [icon]="iconService.fasSyncAlt" [spin]="playerStateService.loading|async"></fa-icon>
+        </span>
+    </h4>
+    <mat-dialog-content>
+        <div class="flex-row">
+            <div>
+                <table class="tidy-auto-table">
+                    <thead>
+                        <tr>
+                            <th>Slot</th>
+                            <th>Power</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let bucketHash of BUCKETS_ALL_POWER">
+                            <tr *ngIf="char.bestPlGear[bucketHash] as item">
+                                <td>{{item.inventoryBucket.displayProperties.name}}</td>
+                                <td>{{item.power}}</td>
+                            </tr>
+                        </ng-container>
+
+                    </tbody>
+
+                </table>
+            </div>
+            <div>
+                <table class="tidy-auto-table">
+                    <thead>
+                        <tr>
+                            <th>Drop</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let boost of boosts">
+                            <tr>
+                                <td>{{boost.name}}</td>
+                                <td>{{getSingleDropValue(char.basePL, boost)}}</td>
+                            </tr>
+                        </ng-container>
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </mat-dialog-content>
+</ng-container>

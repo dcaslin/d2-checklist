@@ -1,3 +1,4 @@
+import { BountySetsDialogComponent } from '@app/home/bounty-sets-dialog/bounty-sets-dialog.component';
 import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
@@ -270,7 +271,7 @@ export interface PublicMilestone {
     icon: string;
     activities: MilestoneActivity[];
     rewards: string;
-    pl: number;
+    boost: BoostInfo;
     milestoneType: number;
     type?: string;
     dependsOn: string[];
@@ -846,7 +847,7 @@ export interface MileStoneName {
     key: string;
     resets: string;
     rewards: string;
-    pl: number;
+    boost: BoostInfo;
     name: string;
     desc: string;
     hasPartial: boolean;
@@ -892,7 +893,9 @@ export class Character extends Target {
     readonly className: string;
     light: number;
     lightFraction?: Fraction;
+    basePL: number = 0;
     basePLString?: string;
+    bestPlGear: { [key: string]: InventoryItem } = {};
 
     dateLastPlayed: string;
     minutesPlayedThisSession: string;
@@ -1247,71 +1250,146 @@ export class Const {
     public static readonly PSUEDO_BATTLEGROUND_3 = 'PSUEDO-BG-3';
     public static readonly PSUEDO_BATTLEGROUND_6 = 'PSUEDO-BG-6';
     public static readonly PSUEDO_BATTLEGROUND_9 = 'PSUEDO-BG-9';
-    public static readonly UNKNOWN_BOOST = 0;
-    public static readonly NO_BOOST = 1;
-    public static readonly LOW_BOOST = 2;
-    public static readonly MID_BOOST = 3;
-    public static readonly WEAK_HIGH_BOOST = 4;
-    public static readonly HIGH_BOOST = 5;
 
-    public static readonly LIGHT_TOO_LOW = 1249; // TODO update me
+    public static readonly LIGHT_TOO_LOW = 1249; // update me
+    private static readonly SEASON_SOFT_CAP = 1250; // update me
+    public static readonly SEASON_HARD_CAP = 1300; // update me
+    public static readonly SEASON_PINNACLE_CAP = 1310; // update me
 
-    private static readonly SEASON_SOFT_CAP = 1250; // TODO update me
-    private static readonly SEASON_HARD_CAP = 1300; // TODO update me
-    public static readonly SEASON_PINNACLE_CAP = 1310; // TODO update me
 
-    public static readonly BOOSTS: DropInfo[] = [
-        {
-            level: Const.UNKNOWN_BOOST,
-            min: 0,
-            max: 1,
-            softCap: Const.SEASON_SOFT_CAP,
-            hardCap: Const.SEASON_HARD_CAP
+    public static readonly BOOST_UNKNOWN = 'BOOST_UNKNOWN';
+    public static readonly BOOST_SEASON_PASS = 'BOOST_SEASON_PASS';
+    public static readonly BOOST_LEGENDARY = 'BOOST_LEGENDARY';
+    public static readonly BOOST_POWERFUL_1 = 'BOOST_POWERFUL_1';
+    public static readonly BOOST_POWERFUL_2 = 'BOOST_POWERFUL_2';
+    public static readonly BOOST_POWERFUL_3 = 'BOOST_POWERFUL_3';
+    public static readonly BOOST_PINNACLE_WEAK = 'BOOST_PINNACLE_WEAK';
+    public static readonly BOOST_PINNACLE = 'BOOST_PINNACLE';
+
+    public static readonly BOOST_DROP_TABLE: { [key: string]: BoostInfo } = {
+        'BOOST_UNKNOWN': {
+            key: Const.BOOST_UNKNOWN,
+            name: 'Unknown',
+            hideFromTable: true,
+            sortVal: -10,
+            upToHardCap: {
+                bonus: 0,
+                min: 0,
+                max: 0
+            },
+            afterHardCap:  {
+                bonus: 0,
+                min: 0,
+                max: 0
+            },
+            cappedAt: Const.SEASON_HARD_CAP
         },
-        {
-            level: Const.NO_BOOST,
-            min: -3,
-            max: 0,
-            softCap: Const.SEASON_SOFT_CAP,
-            hardCap: Const.SEASON_HARD_CAP
+        'BOOST_LEGENDARY': {
+            key: Const.BOOST_UNKNOWN,
+            name: 'Legendary',
+            sortVal: 0,
+            upToHardCap: {
+                bonus: 0,
+                min: -3,
+                max: 0
+            },
+            afterHardCap: null,
+            cappedAt: Const.SEASON_HARD_CAP
         },
-        {
-            level: Const.LOW_BOOST,
-            min: 3,
-            max: 3,
-            softCap: Const.SEASON_SOFT_CAP,
-            hardCap: Const.SEASON_HARD_CAP
+        'BOOST_SEASON_PASS': {
+            key: Const.BOOST_SEASON_PASS,
+            name: 'Season Pass',
+            sortVal: 5,
+            upToHardCap: {
+                bonus: 0,
+                min: 0,
+                max: 0
+            },
+            afterHardCap:  {
+                bonus: 0,
+                min: 0,
+                max: 0
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
         },
-        {
-            level: Const.MID_BOOST,
-            min: 4,
-            max: 4,
-            softCap: Const.SEASON_SOFT_CAP,
-            hardCap: Const.SEASON_HARD_CAP
+        'BOOST_POWERFUL_1': {
+            key: Const.BOOST_POWERFUL_1,
+            name: 'Powerful (Tier 1)',
+            sortVal: 10,
+            upToHardCap: {
+                bonus: 3
+            },
+            afterHardCap: {
+                bonus: 0
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
         },
-        {
-            level: Const.WEAK_HIGH_BOOST,
-            min: 1,
-            max: 1,
-            softCap: Const.SEASON_PINNACLE_CAP,
-            hardCap: Const.SEASON_PINNACLE_CAP
+        'BOOST_POWERFUL_2': {
+            key: Const.BOOST_POWERFUL_2,
+            name: 'Powerful (Tier 2)',
+            sortVal: 20,
+            upToHardCap: {
+                bonus: 4
+            },
+            afterHardCap: {
+                bonus: 0
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
         },
-        {
-            level: Const.HIGH_BOOST,
-            min: 2,
-            max: 2,
-            softCap: Const.SEASON_PINNACLE_CAP,
-            hardCap: Const.SEASON_PINNACLE_CAP
+        'BOOST_POWERFUL_3': {
+            key: Const.BOOST_POWERFUL_3,
+            name: 'Powerful (Tier 3)',
+            sortVal: 30,
+            upToHardCap: {
+                bonus: 5
+            },
+            afterHardCap: {
+                bonus: 0
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
+        },
+        'BOOST_PINNACLE_WEAK': {
+            key: Const.BOOST_PINNACLE_WEAK,
+            name: 'Pinnacle (Weak)',
+            sortVal: 40,
+            upToHardCap: {
+                bonus: 3
+            },
+            afterHardCap: {
+                bonus: 1
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
+        },
+        'BOOST_PINNACLE': {
+            key: Const.BOOST_PINNACLE,
+            name: 'Pinnacle',
+            sortVal: 50,
+            upToHardCap: {
+                bonus: 5
+            },
+            afterHardCap: {
+                bonus: 2
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
         }
-    ];
+    };
 }
 
-export interface DropInfo {
-    level: number;
-    min: number;
-    max: number;
-    softCap: number;
-    hardCap: number;
+
+export interface BoostInfo {
+    key: string;
+    name: string;
+    hideFromTable?: boolean;
+    sortVal: number;
+    upToHardCap: Bonus;
+    afterHardCap: Bonus;
+    cappedAt: number;
+}
+
+export interface Bonus {
+    bonus: number;
+    min?: number;
+    max?: number;
 }
 
 export class InventoryStat {

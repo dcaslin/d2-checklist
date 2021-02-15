@@ -122,7 +122,7 @@ export class MilestoneCatalogService extends Destroyable {
       detailSubText: '',
       detailTooltip: m.desc,
       rewards: [this.rewardFromMilestone(m)],
-      rewardSort: `${m.pl}`,
+      rewardSort: `${m.boost.sortVal}`,
       charInfo: this.extractCharInfo(m, p, manifest),
       type: ActivityType.MILESTONE,
       subType: '', // TODO we might be able to remove this property.

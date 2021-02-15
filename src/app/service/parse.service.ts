@@ -8,7 +8,8 @@ import {
     ApiInventoryBucket,
     Badge,
     BadgeClass,
-    BountySet,
+    BoostInfo,
+
     BUCKETS_ALL_POWER,
     BUCKETS_ARMOR,
     BUCKETS_WEAPON,
@@ -65,21 +66,20 @@ import {
     Questline,
     QuestlineStep,
     Rankup,
-    RecordSeason,
+
     Seal,
     SearchResult,
     SeasonalChallengeEntry,
     Shared,
     SpecialAccountProgressions,
-    TAG_WEIGHTS,
+
     Target,
     TriumphCollectibleNode,
     TriumphNode,
     TriumphPresentationNode,
     TriumphRecordNode,
     UserInfo,
-    Vault,
-    Vendor
+    Vault
 } from './model';
 
 
@@ -87,8 +87,8 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // TODO update me
-    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // TODO update me
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // update me
+    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // update me
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
@@ -170,15 +170,13 @@ export class ParseService {
                     return false;
                 });
                 if (best) {
-                    // console.log(`${char.className} best for ${bucketHash} is ${best.name} - ${best.power}` );
-                    // console.dir(best);
                     powerLevels.push(best.power);
-                } else {
-                    // console.log(`${char.className} best for ${bucketHash} is none`);
+                    char.bestPlGear[bucketHash] = best;
                 }
             }
             if (powerLevels.length > 0) {
                 const basePL = powerLevels.reduce((sume, el) => sume + el, 0) / powerLevels.length;
+                char.basePL = Math.floor(basePL);
                 char.light = Math.floor(basePL) + artifactBonus;
                 char.lightFraction = ParseService.decimalToFraction(basePL + artifactBonus);
                 if (!char.lightFraction) {
@@ -390,7 +388,7 @@ export class ParseService {
                     key: skipDesc.hash + '',
                     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
                     rewards: descRewards,
-                    pl: this.parseMilestonePl(descRewards),
+                    boost: this.parseMilestonePl(descRewards),
                     name: skipDesc.displayProperties.name,
                     desc: skipDesc.displayProperties.description,
                     hasPartial: false,
@@ -1023,29 +1021,27 @@ export class ParseService {
         return rewards;
     }
 
-    private parseMilestonePl(rewards: string): number {
-        let pl = Const.UNKNOWN_BOOST;
+    private parseMilestonePl(rewards: string): BoostInfo {
+        let boost =  Const.BOOST_DROP_TABLE[Const.BOOST_UNKNOWN];
         if (rewards) {
             if (rewards.startsWith('Powerful')) {
                 if (rewards.endsWith('3)')) {
-                    pl = Const.MID_BOOST;
-
+                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_1];
                 } else if (rewards.endsWith('2)')) {
-                    pl = Const.MID_BOOST;
-
+                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_2];
                 } else {
-                    pl = Const.LOW_BOOST;
+                    boost = Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_3];
                 }
             } else if (rewards.startsWith('Pinnacle Gear (Weak)')) {
-                pl = Const.WEAK_HIGH_BOOST;
+                boost = Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE_WEAK];
             } else if (rewards.startsWith('Pinnacle')) {
-                pl = Const.HIGH_BOOST;
+                boost = Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE];
 
             } else if (rewards.startsWith('Legendary')) {
-                pl = Const.NO_BOOST;
+                boost = Const.BOOST_DROP_TABLE[Const.BOOST_LEGENDARY];
             }
         }
-        return pl;
+        return boost;
     }
 
     private static hasChallenge(act: any, hash: string): boolean {
@@ -1222,7 +1218,7 @@ export class ParseService {
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
                 rewards = 'Pinnacle Gear (Weak)';
             }
-            const pl = this.parseMilestonePl(rewards);
+            const boost = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
             const pushMe = {
                 hash: ms.milestoneHash + '',
@@ -1234,7 +1230,7 @@ export class ParseService {
                 icon: icon,
                 activities: activities,
                 rewards: rewards,
-                pl: pl,
+                boost,
                 milestoneType: desc.milestoneType,
                 dependsOn: []
             };
@@ -1275,8 +1271,8 @@ export class ParseService {
         }
 
         returnMe.sort((a, b) => {
-            if (a.pl < b.pl) { return 1; }
-            if (a.pl > b.pl) { return -1; }
+            if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+            if (a.boost.sortVal > b.boost.sortVal) { return -1; }
             if (a.rewards < b.rewards) { return 1; }
             if (a.rewards > b.rewards) { return -1; }
             if (a.name < b.name) { return -1; }
@@ -1857,7 +1853,7 @@ export class ParseService {
                     key: p.hash,
                     resets: p.end,
                     rewards: p.rewards,
-                    pl: p.pl,
+                    boost: p.boost,
                     name: p.name,
                     desc: p.desc,
                     hasPartial: false,
@@ -1885,7 +1881,7 @@ export class ParseService {
                     key: msDesc.hash + '',
                     resets: weekEnd,
                     rewards: rewards,
-                    pl: this.parseMilestonePl(rewards),
+                    boost: this.parseMilestonePl(rewards),
                     name: msDesc.displayProperties.name,
                     desc: msDesc.displayProperties.description,
                     hasPartial: false,
@@ -1901,7 +1897,7 @@ export class ParseService {
                     'key': '1713200903',
                     'resets': weekEnd,
                     'rewards': 'Pinnacle Gear',
-                    'pl': 5,
+                    boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
                     'name': 'Weekly Exo Challenge',
                     'desc': 'Complete an Exo Challenge.',
                     'hasPartial': false,
@@ -1912,8 +1908,8 @@ export class ParseService {
             }
             if (msAdded) {
                 milestoneList.sort((a, b) => {
-                    if (a.pl < b.pl) { return 1; }
-                    if (a.pl > b.pl) { return -1; }
+                    if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+                    if (a.boost.sortVal > b.boost.sortVal) { return -1; }
                     if (a.rewards < b.rewards) { return 1; }
                     if (a.rewards > b.rewards) { return -1; }
                     if (a.name < b.name) { return -1; }

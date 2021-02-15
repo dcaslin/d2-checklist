@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Const, MileStoneName, Player } from '@app/service/model';
+import { Character, Const, MileStoneName, Player } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../player-state.service';
 import { IconService } from '@app/service/icon.service';
 import * as moment from 'moment';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { PlBucketDialogComponent } from '../pl-bucket-dialog/pl-bucket-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +23,7 @@ export class MilestonesComponent extends ChildComponent implements OnInit {
   constructor(
     storageService: StorageService,
     public iconService: IconService,
+    public dialog: MatDialog,
     public state: PlayerStateService) {
     super(storageService);
   }
@@ -31,6 +34,19 @@ export class MilestonesComponent extends ChildComponent implements OnInit {
         console.log('new player');
       }
     });
+  }
+
+  public showPlBuckets(char: Character) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    // dc.height = '95vh';
+    // dc.width = '95vw';
+    // dc.maxWidth = '95vw';
+    // dc.maxHeight = '95vh';
+    dc.data = {
+      characterId: char.characterId
+    };
+    this.dialog.open(PlBucketDialogComponent, dc);
   }
 
   public showAllMilestones(): void {
