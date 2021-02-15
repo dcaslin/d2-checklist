@@ -1,18 +1,28 @@
-<span class="simple-caption">
-  <span class="fake-link" *ngIf="pl!=null && Const.BOOSTS[pl]!=null" style="opacity: 0.75"
-    (click)="sortClick.emit()"
-    [matTooltip]="pl>0?Const.BOOSTS[pl].softCap+' soft cap. '+Const.BOOSTS[pl].hardCap+' hard cap.':'Problem with milestone'">
+<span class="simple-caption" *ngIf="boost!=null">
+  <ng-container *ngIf="maxPl>= Const.SEASON_HARD_CAP; else belowHardCap">
     {{rewards}}
-    <ng-container *ngIf="pl>0">
-      <ng-container *ngIf="Const.BOOSTS[pl].min == Const.BOOSTS[pl].max else diff">
-        <ng-container *ngIf="Const.BOOSTS[pl].min>0">+</ng-container>{{Const.BOOSTS[pl].min}}
-      </ng-container>
-      <ng-template #diff>
-        <ng-container *ngIf="Const.BOOSTS[pl].min>0">+</ng-container>{{Const.BOOSTS[pl].min}} to
-        <ng-container *ngIf="Const.BOOSTS[pl].max>0">+</ng-container>{{Const.BOOSTS[pl].max}}
-      </ng-template>
-    </ng-container>
-    <fa-icon *ngIf="sort=='rewardsDesc'" [icon]="iconService.falSortDown"></fa-icon>
-    <fa-icon *ngIf="sort=='rewardsAsc'" [icon]="iconService.falSortUp"></fa-icon>
-  </span>
+    <ng-container *ngTemplateOutlet="bonus; context: {bonus: boost.afterHardCap}"></ng-container>
+  </ng-container>
+  <ng-template #belowHardCap>
+    <span class="fake-link" (click)="sortClick.emit()">
+      {{rewards}}
+      <ng-container *ngTemplateOutlet="bonus; context: {bonus: boost.upToHardCap}"></ng-container>
+    </span>
+  </ng-template>
+
+  <fa-icon *ngIf="sort=='rewardsDesc'" [icon]="iconService.falSortDown"></fa-icon>
+  <fa-icon *ngIf="sort=='rewardsAsc'" [icon]="iconService.falSortUp"></fa-icon>
 </span>
+
+<ng-template #bonus let-bonus="bonus">
+  <!-- Don't show bonus if empty, like legendary gear after hard cap -->
+  <ng-container *ngIf="bonus!=null">
+    <ng-container *ngIf="(bonus.min==null || (bonus.min  == bonus.max)) else diff">
+      <ng-container *ngIf="bonus.bonus>0">+</ng-container>{{bonus.bonus}}
+    </ng-container>
+    <ng-template #diff>
+      <ng-container *ngIf="bonus.min>0">+</ng-container>{{bonus.min}} to
+      <ng-container *ngIf="bonus.max>0">+</ng-container>{{bonus.max}}
+    </ng-template>
+  </ng-container>
+</ng-template>

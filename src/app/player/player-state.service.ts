@@ -195,8 +195,8 @@ export class PlayerStateService {
       this.applyTrackedTriumphs(x);
       this.applyTrackedPursuits(x);
       x.milestoneList.sort((a, b) => {
-        if (a.pl < b.pl) { return 1; }
-        if (a.pl > b.pl) { return -1; }
+        if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+        if (a.boost.sortVal > b.boost.sortVal) { return -1; }
         if (a.rewards < b.rewards) { return 1; }
         if (a.rewards > b.rewards) { return -1; }
         if (a.name > b.name) { return 1; }
@@ -225,8 +225,8 @@ export class PlayerStateService {
     if (player == null || player.milestoneList == null) { return; }
     if (sort === 'rewardsDesc') {
       player.milestoneList.sort((a, b) => {
-        if (a.pl < b.pl) { return 1; }
-        if (a.pl > b.pl) { return -1; }
+        if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+        if (a.boost.sortVal > b.boost.sortVal) { return -1; }
         if (a.rewards < b.rewards) { return 1; }
         if (a.rewards > b.rewards) { return -1; }
         if (a.name > b.name) { return 1; }
@@ -235,8 +235,8 @@ export class PlayerStateService {
       });
     } else if (sort === 'rewardsAsc') {
       player.milestoneList.sort((a, b) => {
-        if (a.pl < b.pl) { return -1; }
-        if (a.pl > b.pl) { return 1; }
+        if (a.boost.sortVal < b.boost.sortVal) { return -1; }
+        if (a.boost.sortVal > b.boost.sortVal) { return 1; }
         if (a.rewards < b.rewards) { return -1; }
         if (a.rewards > b.rewards) { return 1; }
         if (a.name > b.name) { return 1; }

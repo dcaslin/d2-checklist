@@ -25,30 +25,34 @@
       <tr>
         <th scope="col" style="width: 25%">Activity
 
-          <fa-icon *ngIf="'ALL'!=hideCompleteChars" [icon]="iconService.falEyeSlash" (click)="hideCompleteChars = 'ALL'"
-            matTooltip="Hide milestones where all chars are complete"></fa-icon>
+          <button mat-button *ngIf="'ALL'!=hideCompleteChars" (click)="hideCompleteChars = 'ALL'"
+            matTooltip="Hide milestones where all chars are complete">
+            <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
+          </button>
+          <button mat-button *ngIf="hideCompleteChars=='ALL'" matTooltip="Hide milestones where all chars are complete"
+            (click)="hideCompleteChars = null" matTooltip="Stop hiding milestones where all chars are complete">
+            <fa-icon [icon]="iconService.falEye" class="warn-text"></fa-icon>
+          </button>
 
-          <fa-icon *ngIf="hideCompleteChars=='ALL'" [icon]="iconService.falEye"
-            matTooltip="Hide milestones where all chars are complete" (click)="hideCompleteChars = null"
-            class="warn-text" matTooltip="Stop hiding milestones where all chars are complete"></fa-icon>
           <span *ngIf="(hiddenMilestones|async).length>0" matTooltip="Show all hidden milestones"
             class="warn-text pad-left fake-link pad-left-more" (click)="showAllMilestones()">Restore Hidden</span>
         </th>
         <th scope="col" *ngFor="let char of player.characters">
-          <span [matTooltip]="char.basePLString ? char.basePLString :null">
+          <button mat-stroked-button (click)="showPlBuckets(char)"
+            [matTooltip]="char.basePLString ? char.basePLString :null">
             {{char.className}} - {{char.light}}
             <ng-container *ngIf="char.lightFraction">
               <sup>{{char.lightFraction.top}}</sup>&frasl;<sub>{{char.lightFraction.bottom}}</sub>
             </ng-container>
-            {{char.title}}
-          </span>
-          <fa-icon [icon]="iconService.falEyeSlash" *ngIf="char.characterId!=hideCompleteChars"
-            (click)="hideCompleteChars = char.characterId" matTooltip="Hide milestones that this char has completed">
-          </fa-icon>
-          <fa-icon [icon]="iconService.falEye" *ngIf="char.characterId==hideCompleteChars"
-            (click)="hideCompleteChars = null" class="warn-text"
+          </button>
+          <button mat-button *ngIf="char.characterId!=hideCompleteChars" (click)="hideCompleteChars = char.characterId"
+            matTooltip="Hide milestones that this char has completed">
+            <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
+          </button>
+          <button mat-button *ngIf="char.characterId==hideCompleteChars" (click)="hideCompleteChars = null"
             matTooltip="Stop hiding milestones that this char has completed">
-          </fa-icon>
+            <fa-icon [icon]="iconService.falEye" class="warn-text"></fa-icon>
+          </button>
           <div *ngIf="debugmode|async">{{char.characterId}}</div>
         </th>
       </tr>
@@ -75,7 +79,7 @@
               <div class="ms-supp-info accent-text">{{mileStoneName.suppInfo}}</div>
             </div>
             <div class="milestone-row">
-              <d2c-reward-desc [pl]="mileStoneName.pl" [rewards]="mileStoneName.rewards" [sort]="state.sort"
+              <d2c-reward-desc [boost]="mileStoneName.boost" [maxPl]="player.characters[0].basePL" [rewards]="mileStoneName.rewards" [sort]="state.sort"
                 (sortClick)="sortByRewards()"></d2c-reward-desc>
               <div class="caption milestone-resets" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
                 <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
@@ -92,7 +96,7 @@
 
           </td>
           <td
-            [attr.data-label]="char.className+' - '+char.light+' '+(char.lightFraction?(char.lightFraction.top+'/'+char.lightFraction.bottom):'')+' '+char.title"
+            [attr.data-label]="char.className+' - '+char.light+' ' +(char.lightFraction?(char.lightFraction.top+'/'+char.lightFraction.bottom):'')+' '+char.title"
             *ngFor="let char of player.characters">
             <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]" [detailed]="true">
             </d2c-milestone-check>
@@ -133,7 +137,7 @@
 </ng-container>
 <div class="bottom-note">
   <ul class="left">
-    <!-- TODO UPDATE ME -->
+    <!-- UPDATE ME -->
     <!-- <li><span class="">[Beyond Light update]</span> First cut done, plenty of known issues to clean up soon. First of
       all is when milestones properly unlock in the API.
     </li>

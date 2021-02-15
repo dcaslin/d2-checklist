@@ -761,7 +761,7 @@ export class BungieService implements OnDestroy {
             key: Const.PSUEDO_HERESY_KEY,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Masterwork Armor',
-            pl: Const.NO_BOOST,
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_LEGENDARY],
             name: 'Pit of Heresy',
             desc: 'Complete the Pit of Heresy Dungeon',
             hasPartial: true,
@@ -773,7 +773,7 @@ export class BungieService implements OnDestroy {
         //     key: Const.PROPHECY_KEY,
         //     resets: p.characters[0].endWeek.toISOString(),
         //     rewards: 'Pinnacle Gear',
-        //     pl: Const.HIGH_BOOST,
+            // boostKey: Const.BOOST_PINNACLE,
         //     name: 'Prophecy',
         //     desc: 'Complete the Prophecy Dungeon',
         //     hasPartial: true,
@@ -786,7 +786,7 @@ export class BungieService implements OnDestroy {
             key: Const.PSUEDO_BATTLEGROUND_3,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Powerful Gear (Tier 2)',
-            pl: Const.MID_BOOST,
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_2],
             name: 'Battlegrounds Playlist 3',
             desc: 'Complete the Battlegrounds playlist 3 times this week',
             hasPartial: true,
@@ -799,7 +799,7 @@ export class BungieService implements OnDestroy {
             key: Const.PSUEDO_BATTLEGROUND_6,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Powerful Gear (Tier 2)',
-            pl: Const.MID_BOOST,
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_2],
             name: 'Battlegrounds Playlist 6',
             desc: 'Complete the Battlegrounds playlist 63 times this week',
             hasPartial: true,
@@ -811,7 +811,7 @@ export class BungieService implements OnDestroy {
             key: Const.PSUEDO_BATTLEGROUND_9,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Powerful Gear (Tier 3)',
-            pl: Const.MID_BOOST,
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_3],
             name: 'Battlegrounds Playlist 9',
             desc: 'Complete the Battlegrounds playlist 9 times this week',
             hasPartial: true,
@@ -825,7 +825,7 @@ export class BungieService implements OnDestroy {
             key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
             resets: p.characters[0].endWeek.toISOString(),
             rewards: 'Pinnacle Gear',
-            pl: Const.HIGH_BOOST,
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
             name: 'Master Empire Hunt',
             desc: 'Complete a Master Empire Hunt',
             hasPartial: true,
@@ -834,8 +834,8 @@ export class BungieService implements OnDestroy {
         };
         p.milestoneList.push(ms3);
         p.milestoneList.sort((a, b) => {
-            if (a.pl < b.pl) { return 1; }
-            if (a.pl > b.pl) { return -1; }
+            if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+            if (a.boost.sortVal > b.boost.sortVal) { return -1; }
             if (a.rewards < b.rewards) { return 1; }
             if (a.rewards > b.rewards) { return -1; }
             if (a.name > b.name) { return 1; }
