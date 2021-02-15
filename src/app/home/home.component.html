@@ -161,7 +161,7 @@
               [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
             <div mat-line>
               <span class="underline">{{removeActivityPrefixes(n.name)}}</span>
-              <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+              <span class="tiny" *ngIf="debugmode|async"> {{n.hash}}</span>
             </div>
             <div mat-line>
               {{n.ll}} PL - {{n.modifiers.length}}<fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>

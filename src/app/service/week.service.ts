@@ -23,13 +23,30 @@ export class WeekService {
   // concealed, 912873277  912873274
   // bunker, 1648125541    1648125538
 
+  readonly LS_MASTER_ROTATION = [
+    '567131519', // K1 Log
+    '2829206720', // K1 communion
+    '184186578', // K1 Crew
+    '3911969238', // K1 Revelation
+    '912873274', // concealed
+    '1648125538', // bunker
+    '1070981425', // Perdition
+    '2936791995', // exodus
+    '3094493727', // veles
+
+  ];
 
   readonly LS_LEGEND_ROTATION = [
-    '1070981430',
-    '2936791996',
-    '3094493720',
-    '912873277',
-    '1648125541'
+
+    '2829206727', // K1 communion
+    '184186581', // K1 Crew
+    '3911969233', // K1 Revelation
+    '912873277', // concealed
+    '1648125541', // bunker
+    '1070981430', // Perdition
+    '2936791996', // exodus
+    '3094493720', // veles
+    '567131512', // K1 Log
   ];
 
   readonly LS_LEGEND_LOOT = [
@@ -39,13 +56,7 @@ export class WeekService {
     'Legs'
   ];
 
-  readonly LS_MASTER_ROTATION = [
-    '1648125538',
-    '1070981425',
-    '2936791995',
-    '3094493727',
-    '912873274'
-  ];
+
 
   readonly LS_MASTER_LOOT = [
     'Legs',
@@ -142,9 +153,13 @@ export class WeekService {
       const pushMe: NameDesc = this.parseService.parseModifier(mod.activityModifierHash);
       modifiers.push(pushMe);
     }
+    let name = desc.displayProperties.name;
+    if (ll == 1330 && name.endsWith('Legend')) {
+      name = name.substring(0, name.length -'Legend'.length) + 'Master';
+    }
     const msa: MilestoneActivity = {
         hash: activityHash,
-        name: desc.displayProperties.name,
+        name: name,
         desc: '',
         ll,
         tier: 0,
@@ -180,8 +195,8 @@ export class WeekService {
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const currWeek = await this.getCurrWeek(publicMilestones);
 
-    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1250);
-    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1280);
+    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1300);
+    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1330);
 
     const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
     return {
