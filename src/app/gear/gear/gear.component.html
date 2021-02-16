@@ -208,16 +208,7 @@
       <span class="warn-text">
         <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
       </span>
-    </button>
-    <button mat-menu-item *ngIf="!hideDupes" (click)="toggleDupes(true)">
-      <fa-icon [icon]="iconService.fasEyeSlash"></fa-icon>&ensp;Hide Dupes
-    </button>
-    <button mat-menu-item *ngIf="hideDupes" (click)="toggleDupes(false)">
-      <fa-icon [icon]="iconService.fasEye"></fa-icon>&ensp;Show Dupes
-    </button>
-    <button mat-menu-item (click)="syncLocks()">
-      <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
-    </button>
+    </button>   
     <button mat-menu-item (click)="syncLocks()">
       <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
     </button>
