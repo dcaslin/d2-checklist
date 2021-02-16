@@ -1160,6 +1160,15 @@ export class ClanStateService {
         'CharacterActivities', 'Records', 'Collectibles', 'PresentationNodes'], true, true);
       target.player$.next(x);
       if (this.modelPlayer.getValue() == null && x != null && x.characters != null && x.characters[0].clanMilestones != null) {
+        x.milestoneList.sort((a, b) => {
+          if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+          if (a.boost.sortVal > b.boost.sortVal) { return -1; }
+          if (a.rewards < b.rewards) { return 1; }
+          if (a.rewards > b.rewards) { return -1; }
+          if (a.name > b.name) { return 1; }
+          if (a.name < b.name) { return -1; }
+          return 0;
+        });
         this.modelPlayer.next(x);
       }
       if (x != null && x.characters != null) {

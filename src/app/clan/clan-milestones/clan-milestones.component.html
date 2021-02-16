@@ -31,7 +31,7 @@
                     <th class="milestone-header" *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">
                         <span [matTooltip]="mileStoneName.desc"
                             matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
-                        <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
+                        <span *ngIf="debugmode|async">  {{mileStoneName.key}}</span>
                         <span class="fake-link"
                             matTooltip="Hide this milestone, click Show All to restore it later"
                             class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
@@ -102,7 +102,7 @@
                         <th *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1">
                             <span [matTooltip]="mileStoneName.desc"
                                 matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
-                            <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
+                            <span *ngIf="debugmode|async">  {{mileStoneName.key}}</span>
                             <span class="fake-link"
                                 matTooltip="Hide this milestone, click Show All to restore it later"
                                 class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
