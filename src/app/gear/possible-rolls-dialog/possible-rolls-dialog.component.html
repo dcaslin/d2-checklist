@@ -25,8 +25,9 @@
 
         <ng-container *ngFor="let socket of item.sockets">
             <tr *ngIf="socket.possiblePlugs.length>0">
-                <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug">
+                <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [class.half-opacity]="!plug.currentlyCanRoll">
                     <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
+                    <ng-container *ngIf="!plug.currentlyCanRoll">*</ng-container>
                 </td>
                 <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
                     &nbsp;
@@ -36,6 +37,7 @@
 
 
     </table>
+    <p class="simple-caption">Faded perks cannot roll on current weapons, only guns from previous seasons</p>
 
 
 </mat-dialog-content>

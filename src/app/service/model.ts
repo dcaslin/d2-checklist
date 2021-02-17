@@ -710,6 +710,7 @@ export class InventoryItem {
     readonly specialModSockets: string[];
     readonly collectibleHash: string;
     public lowLinks: LowLinks;
+    readonly versionNumber: number;
 
     damageTypeString(): string {
         return DamageType[this.damageType];
@@ -729,7 +730,7 @@ export class InventoryItem {
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string
+        specialModSockets: string[], collectibleHash: string, versionNumber: number
     ) {
         this.id = id;
         this.hash = hash;
@@ -785,6 +786,7 @@ export class InventoryItem {
         this.redacted = redacted;
         this.specialModSockets = specialModSockets;
         this.collectibleHash = collectibleHash;
+        this.versionNumber = versionNumber;
     }
 }
 
@@ -1440,6 +1442,7 @@ export class InventoryPlug {
     readonly active: boolean;
     readonly enabled: boolean;
     readonly objectives: ItemObjective[];
+    public currentlyCanRoll: boolean;
     public pandaPve = 0;
     public pandaPvp = 0;
 
@@ -1460,6 +1463,7 @@ export class InventoryPlug {
         } else {
             this.objectives = [];
         }
+        this.currentlyCanRoll = true;
     }
 }
 

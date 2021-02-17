@@ -228,12 +228,12 @@
       <fa-icon [icon]="iconService.fasWheat"></fa-icon>&ensp;Season Breakdown
     </button>
   </mat-menu>
-  <div *ngIf="debugmode|async">
+  <!-- <div *ngIf="debugmode|async">
     <h5>Filters</h5>
     <div *ngFor="let note of debugFilterNotes">
       {{note}}
     </div>
-  </div>
+  </div> -->
 
   <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()" (keydown.ArrowRight)="onRight()">
     <thead>
@@ -370,7 +370,7 @@
               </button>
 
             </mat-menu>
-            <span *ngIf="debugmode|async">[{{i.hash}}]</span>
+            <span *ngIf="debugmode|async">[{{i.hash}}] - version {{i.versionNumber}}</span>
 
             <div>
               <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}
