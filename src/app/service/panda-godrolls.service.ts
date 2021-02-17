@@ -26,17 +26,18 @@ export class PandaGodrollsService {
 
       const data: { [name: string]: GunInfo; } = {};
       for (const c of temp) {
-        if (data[c.name] == null) {
-          data[c.name] = {
+        const key = c.name + c.version;
+        if (data[key] == null) {
+          data[key] = {
             mnk: null,
             controller: null
           };
         }
         if (c.mnk) {
-          data[c.name].mnk = c;
+          data[key].mnk = c;
         }
         if (c.controller) {
-          data[c.name].controller = c;
+          data[key].controller = c;
         }
       }
       this.data = data;
@@ -58,8 +59,12 @@ export class PandaGodrollsService {
         continue;
       }
 
-      const name = i.name.toLowerCase();
-      const info = this.data[name];
+      let key = i.name.toLowerCase() + i.versionNumber;
+      let info = this.data[key];
+      if (i.versionNumber > 0 && info == null) {
+        key =  i.name.toLowerCase() + '0';
+        info = this.data[key];
+      }
       if (info == null) {
         i.noGodRollInfo = true;
         if (i.tier == 'Legendary') {
@@ -267,6 +272,7 @@ interface GunRolls {
   pvp: GunRoll;
   mnk: boolean;
   controller: boolean;
+  version: number;
 }
 
 interface GunRoll {

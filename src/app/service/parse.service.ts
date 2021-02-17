@@ -417,6 +417,11 @@ export class ParseService {
             }
             // repeat for each character
             for (const key of Object.keys(_prog.milestones)) {
+                if ('3031052508' === key || // Battleground 3
+                '2953722265' === key || // Battleground 6
+                '3632712541' === key) {
+                    continue;
+                }
                 const ms: PrivMilestone = _prog.milestones[key];
 
                 // special case for clan rewards
@@ -1723,7 +1728,7 @@ export class ParseService {
 
 
     // TODO high celebrant powerful notes: Activity 392314513 will track this, but only if it's on the lure
-    // will need to introspect the Lure to see it's availability perhaps... 
+    // will need to introspect the Lure to see it's availability perhaps...
     // not clear this is even rewarding a powerful though
 
     // private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
@@ -1833,6 +1838,9 @@ export class ParseService {
             for (const p of publicMilestones) {
                 // things to skip
                 if (
+                    '3031052508' === p.hash || // Battleground 3
+                    '2953722265' === p.hash || // Battleground 6
+                    '3632712541' === p.hash ||  // Battleground 9
                     '534869653' === p.hash ||   // xur
                     '4253138191' === p.hash ||  // weekly clan engrams
                     p.milestoneType == 5 || // special
@@ -2348,7 +2356,7 @@ export class ParseService {
                         curChild = curChild.children[0];
                     }
                     // we're on the "Weekly" each child is a week in the season
-                    if (curChild!=null) {
+                    if (curChild != null) {
                         for (const week of curChild.children) {
                             seasonChallengeEntries.push({
                                 name: week.name,
@@ -3708,11 +3716,12 @@ export class ParseService {
                                     if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
                                         for (const option of randomRollsDesc.reusablePlugItems) {
                                             const plugDesc: any = this.destinyCacheService.cache.InventoryItem[option.plugItemHash];
-                                            const name = this.getPlugName(plugDesc);
-                                            if (name == null) { continue; }
+                                            const plugName = this.getPlugName(plugDesc);
+                                            if (plugName == null) { continue; }
                                             const oPlug = new InventoryPlug(plugDesc.hash,
-                                                name, plugDesc.displayProperties.description,
+                                                plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false);
+                                            oPlug.currentlyCanRoll = option.currentlyCanRoll;
                                             possiblePlugs.push(oPlug);
                                         }
                                     }
@@ -3911,7 +3920,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, mods, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber
             );
         } catch (exc) {
             console.dir(itemComp);
