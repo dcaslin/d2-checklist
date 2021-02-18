@@ -95,16 +95,21 @@ export class DestinyCacheService {
       }
     }
   }
-  private async download(key: string): Promise<Blob> {
+  private async download(cacheBuster?: string): Promise<Blob> {
     console.log(`--- load remote cache ${env.versions.manifest} ---`);
 
     let headers = new HttpHeaders();
     headers = headers
-        .set('Content-Type', 'application/x-www-form-urlencoded');
+      .set('Content-Type', 'application/x-www-form-urlencoded');
     const httpOptions = {
-        headers: headers};
-
-    const req = new HttpRequest<Blob>('GET', '/assets/destiny2.zip?v=' + env.versions.manifest, {
+      headers: headers
+    };
+    let uri = `/assets/destiny2.zip?v=${env.versions.manifest}`;
+    if (cacheBuster && cacheBuster.trim().length > 0) {
+      uri = `/assets/destiny2.zip?v=${env.versions.manifest}-${cacheBuster}`;
+    }
+    console.log(`Downloading zip from URI: ${uri}`);
+    const req = new HttpRequest<Blob>('GET', uri, {
       reportProgress: true,
       responseType: 'blob'
     });
@@ -113,7 +118,7 @@ export class DestinyCacheService {
       tap((evt: HttpEvent<any>) => this.showProgress(evt)),
       retry(1),
       last(),
-      catchError( err =>  throwError(cookError(err)))
+      catchError(err => throwError(cookError(err)))
     ).toPromise();
 
     if (finalHttpEvt.type !== HttpEventType.Response) {
@@ -125,12 +130,28 @@ export class DestinyCacheService {
   }
 
 
-  async load(key: string): Promise<void> {
-    const blob = await this.download(key);
+  async load(key: string, isRetry?: boolean): Promise<void> {
+    let blob = await this.download();
+    // retry if size zero to try to get to the bottom of weird problem
+    if (blob.size == 0) {
+      console.log(`   Retrieved zero length blob, adding cache buster and retrying.`);
+      blob = await this.download('' + new Date().getTime());
+    }
     console.log(`   Retrieved Blob size ${blob.size}. Beginning unzip...`);
     this.unzipping.next(true);
     try {
-      await this.unzip(blob);
+      try {
+        await this.unzip(blob);
+      } catch (unzipExc) {
+        console.dir(unzipExc);
+        if (!isRetry) {
+          console.log('Initial error unzipping blob. Retrying...');
+          await this.load(key, true);
+        } else {
+          console.log('Secondary error unzipping blob. Fail');
+          throw unzipExc;
+        }
+      }
       set(key, this.cache);
       return;
     }
@@ -175,7 +196,7 @@ export interface Cache {
   PursuitTags?: { [key: string]: string[] };
   Season?: { [key: string]: Season };
   SeasonPass?: { [key: string]: SeasonPass };
-  TagWeights?:  {[key: string]: number};
+  TagWeights?: { [key: string]: number };
 }
 
 
