@@ -20,6 +20,8 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
   private characterId: string;
   public BUCKETS_ALL_POWER = BUCKETS_ALL_POWER;
   public boosts: BoostInfo[];
+  public minBest = 0;
+  public maxBest = 0;
 
   private static getBonus(basePl: number, boost: BoostInfo): Bonus {
     if (basePl >= Const.SEASON_HARD_CAP) {
@@ -41,12 +43,21 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
   }
 
   public getSingleDropValue(basePl: number, boost: BoostInfo) {
-
     const bonus = PlBucketDialogComponent.getBonus(basePl, boost);
     if (bonus == null) {
       return Const.SEASON_HARD_CAP;
     }
-    return basePl + bonus.bonus;
+    const dropValue = basePl + bonus.bonus;
+
+    // if we're at 1298 and the reported bonus +5 that will take us to 1303
+    // but it should really be 1300
+    // so recalc as if we're at 1300
+    if (basePl < Const.SEASON_HARD_CAP && dropValue > Const.SEASON_HARD_CAP) {
+      const specialBonus = PlBucketDialogComponent.getBonus(Const.SEASON_HARD_CAP, boost);
+      return Const.SEASON_HARD_CAP + specialBonus.bonus;
+    }
+    return dropValue;
+
 
   }
 
@@ -74,6 +85,18 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
       if (player && player.characters && player.characters.length > 0) {
         const char = player.characters.find(c => c.characterId === this.characterId);
         this.character$.next(char);
+        for (const bucketHash of BUCKETS_ALL_POWER) {
+          const best = char.bestPlGear[bucketHash];
+          if (!best) {
+            continue;
+          }
+          if (!this.maxBest || (best.power > this.maxBest)) {
+            this.maxBest = best.power;
+          }
+          if (!this.minBest || (best.power < this.minBest)) {
+            this.minBest = best.power;
+          }
+        }
       }
     });
 

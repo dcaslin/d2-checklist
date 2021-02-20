@@ -1,53 +1,79 @@
 <ng-container *ngIf="character$|async as char">
-    <h4 mat-dialog-title>
-        {{char.className}} - {{char.basePLString}} Base PL
-        <span class="fake-link pad-left-more" (click)="playerStateService.requestRefresh()">
-            <fa-icon [icon]="iconService.fasSyncAlt" [spin]="playerStateService.loading|async"></fa-icon>
-        </span>
-    </h4>
-    <mat-dialog-content>
-        <div class="flex-row">
-            <div>
-                <table class="tidy-auto-table">
-                    <thead>
-                        <tr>
-                            <th>Slot</th>
-                            <th>Power</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngFor="let bucketHash of BUCKETS_ALL_POWER">
-                            <tr *ngIf="char.bestPlGear[bucketHash] as item">
-                                <td>{{item.inventoryBucket.displayProperties.name}}</td>
-                                <td>{{item.power}}</td>
-                            </tr>
-                        </ng-container>
-
-                    </tbody>
-
-                </table>
-            </div>
-            <div>
-                <table class="tidy-auto-table">
-                    <thead>
-                        <tr>
-                            <th>Drop</th>
-                            <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngFor="let boost of boosts">
-                            <tr>
-                                <td>{{boost.name}}</td>
-                                <td>{{getSingleDropValue(char.basePL, boost)}}</td>
-                            </tr>
-                        </ng-container>
-
-                    </tbody>
-
-                </table>
-            </div>
+    <ng-container *ngIf="char.basePLString; else notPublic">
+        <div mat-dialog-title>
+            <h4>
+                {{char.className}} - {{char.basePLString}}
+                <span class="fake-link pad-left-more" (click)="playerStateService.requestRefresh()">
+                    <fa-icon [icon]="iconService.fasSyncAlt" [spin]="playerStateService.loading|async"></fa-icon>
+                </span>
+            </h4>
         </div>
+        <h5></h5>
+        <mat-dialog-content>
+            <div class="flex-row">
+                <div>
+                    <table class="tidy-auto-table">
+                        <thead>
+                            <tr>
+                                <th>Slot</th>
+                                <th>Power</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let bucketHash of BUCKETS_ALL_POWER">
+                                <tr *ngIf="char.bestPlGear[bucketHash] as item">
+                                    <td>{{item.inventoryBucket.displayProperties.name}}</td>
+                                    <td [class.upgrade-color]="item.power==maxBest"
+                                        [class.junk-color]="item.power==minBest">
+                                        {{item.power}}
+                                    </td>
+                                </tr>
+                            </ng-container>
 
-    </mat-dialog-content>
+                        </tbody>
+
+                    </table>
+                </div>
+                <div>
+                    <table class="tidy-auto-table">
+                        <thead>
+                            <tr>
+                                <th>Drop</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let boost of boosts">
+                                <tr>
+                                    <td>{{boost.name}}</td>
+                                    <td>{{getSingleDropValue(char.basePL, boost)}}</td>
+                                </tr>
+                            </ng-container>
+
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </mat-dialog-content>
+    </ng-container>
+
+    <ng-template #notPublic>
+        <h4 mat-dialog-title>
+            Private Inventory Not Available
+        </h4>
+
+        <mat-dialog-content>
+            <p class="private">If this is your account, please sign in.
+            </p>
+            <p class="private">
+                If this is someone else's account, this user hasn't enabled viewing their non-equipped inventory. They'd
+                need to <a class="underline" href="https://www.bungie.net/en/Profile/Settings?category=Privacy"
+                    target="_blank" rel="noopener">
+                    check the "Show my non-equipped Inventory" at Bungie.net.</a> Hiding non-equipped inventory is the
+                default
+                privacy setting.
+            </p>
+        </mat-dialog-content>
+    </ng-template>
 </ng-container>

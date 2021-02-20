@@ -3,7 +3,7 @@
 
     <div mat-dialog-title style="margin-bottom: 0px" *ngIf="!showAllNames">
         {{model.name}}
-        <d2c-season-indicator [season]="model.seasonalModSlot"></d2c-season-indicator>
+        <d2c-season-indicator *ngIf="model.type == ItemType.Armor" [season]="model.seasonalModSlot"></d2c-season-indicator>
         <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{model.typeName}}</span><br><span
             class="simple-caption-no-margin hide-mobile-inline">{{model.desc}}</span>
     </div>
@@ -30,7 +30,7 @@
                                     {{i.name}}
                                     <!-- <span class="accent-text" *ngIf="i===source">*</span> -->
                                 </div>
-                                <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
+                                <d2c-season-indicator *ngIf="i.type == ItemType.Armor" [season]="i.seasonalModSlot"></d2c-season-indicator>
                             </button>
                             <mat-menu #itemMenu="matMenu">
                                 <button mat-menu-item *ngIf="i.postmaster"
