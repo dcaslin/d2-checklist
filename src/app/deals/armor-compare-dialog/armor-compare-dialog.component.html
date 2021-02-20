@@ -17,7 +17,7 @@
               <div class="item-name">
                 {{i.name}}
               </div>
-              <d2c-season-indicator [season]="i.seasonalModSlot"></d2c-season-indicator>
+              <d2c-season-indicator *ngIf="i.type == ItemType.Armor" [season]="i.seasonalModSlot"></d2c-season-indicator>
 
               <div class="simple-caption-no-margin">
                 <ng-container *ngIf="i.vendorItemInfo!=null; else owned">

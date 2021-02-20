@@ -1314,6 +1314,18 @@ export class Const {
             },
             cappedAt: Const.SEASON_PINNACLE_CAP
         },
+        'BOOST_PRIME': {
+            key: Const.BOOST_POWERFUL_1,
+            name: 'Prime Engram',
+            sortVal: 7,
+            upToHardCap: {
+                bonus: 3
+            },
+            afterHardCap: {
+                bonus: 0
+            },
+            cappedAt: Const.SEASON_PINNACLE_CAP
+        },
         'BOOST_POWERFUL_1': {
             key: Const.BOOST_POWERFUL_1,
             name: 'Powerful (Tier 1)',
