@@ -259,9 +259,11 @@ export class GearService {
         let tagCount = 0;
         for (const item of player.gear) {
             if (item.tier == 'Rare' && item.mark == null && (item.type == ItemType.Weapon || item.type == ItemType.Armor)) {
-                item.mark = 'junk';
-                this.markService.updateItem(item);
-                tagCount++;
+                if (!item.isHighest) {
+                    item.mark = 'junk';
+                    this.markService.updateItem(item);
+                    tagCount++;
+                }
             }
         }
         this.notificationService.success(`Tagged ${tagCount} unmarked blues as junk. Starting blue shard mode.`);
