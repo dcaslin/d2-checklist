@@ -684,6 +684,7 @@ export class InventoryItem {
     readonly energyUsed: number;
     readonly totalStatPoints: number;
     public searchText: string;
+    public isHighest = false;
     public markLabel: string;
     public mark: string;
     public notes: string;

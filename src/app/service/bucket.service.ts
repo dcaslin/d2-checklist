@@ -22,6 +22,7 @@ export class Pile {
                 return;
             }
             itm.searchText += 'is:highest ';
+            itm.isHighest = true;
         }
     }
 }
