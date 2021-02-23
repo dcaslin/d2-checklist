@@ -443,7 +443,13 @@ export class BungieService implements OnDestroy {
     // }
 
     private async _publicMsHack(): Promise<any> {
-        return await this.makeReq('Destiny2/Milestones/');
+        try {
+            return await this.makeReq('Destiny2/Milestones/');
+        } catch (err) {
+            this.notificationService.info('Public milestone endpoint failed, falling back on saved milestones from 2-23-2021');
+            return await this.makeFakeReq('/assets/fake-milestones.json');
+        }
+
         // try {
         // } catch (err) {
         //     console.log('!!!Returning canned reply ');
@@ -729,6 +735,12 @@ export class BungieService implements OnDestroy {
     ngOnDestroy(): void {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+    }
+
+    private async makeFakeReq(url: string): Promise<any> {
+        const hResp = await this.httpClient.get<any>(url).toPromise();
+        const resp = this.parseBungieResponse(hResp);
+        return resp;
     }
 
     private async makeReq(uri: string): Promise<any> {
