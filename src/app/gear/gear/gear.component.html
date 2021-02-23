@@ -208,7 +208,7 @@
       <span class="warn-text">
         <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
       </span>
-    </button>   
+    </button>
     <button mat-menu-item (click)="syncLocks()">
       <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
     </button>
@@ -523,7 +523,7 @@
               </span>
             </div>
           </td>
-          <td class="hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
+          <td class="hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Weapon">
             <table class="stat-table" *ngIf="i.type==ItemType.Weapon">
               <tbody>
                 <ng-container *ngFor="let stat of i.stats">
