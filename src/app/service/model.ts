@@ -294,6 +294,10 @@ export interface MilestoneActivity {
     specialLoot?: ItemDisplay;
 }
 
+export interface LegendLostSectorActivity extends MilestoneActivity {
+    info: LostSectorInfo;
+}
+
 export interface PrivPublicMilestone {
     milestoneHash: number;
     activities: PrivMilestoneActivity[];
@@ -1280,7 +1284,7 @@ export class Const {
                 min: 0,
                 max: 0
             },
-            afterHardCap:  {
+            afterHardCap: {
                 bonus: 0,
                 min: 0,
                 max: 0
@@ -1308,7 +1312,7 @@ export class Const {
                 min: 0,
                 max: 0
             },
-            afterHardCap:  {
+            afterHardCap: {
                 bonus: 0,
                 min: 0,
                 max: 0
@@ -1594,6 +1598,30 @@ export interface VendorItemInfo {
     objectives: ItemObjective[];
     searchText: string;
 }
+
+
+
+export interface LostSector {
+    activity: LegendLostSectorActivity;
+    icon: string;
+    soloReward: string;
+    special: boolean;
+}
+
+export interface LostSectorInfo {
+    abbrev: string;
+    hash: string;
+    shields: string[];
+    champions: Champion[];
+}
+
+
+interface Champion {
+    name: string;
+    count: number;
+}
+
+
 
 // export interface VendorInventoryItem {
 //     tags?: string[];

@@ -73,7 +73,7 @@
       </mat-panel-title>
 
       <mat-panel-description>
-        Vendor items you should check out 
+        Vendor items you should check out
       </mat-panel-description>
     </mat-expansion-panel-header>
 
@@ -109,15 +109,23 @@
 <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
 
   <div>
-    <mat-card>
+    <mat-card *ngIf="today?.lostSectors as ls">
       <mat-card-header>
-        <mat-card-title>Lost Sectors
+        <mat-card-title>
+          <div class="flex-row">
+            <div>Lost Sectors </div>
+            <div>
+              <button class="pad-left-more" mat-stroked-button (click)="showLostSectorNextDays()">
+                <fa-icon class="pad-right" [icon]="iconService.farCalendar"></fa-icon> Next 30 Days
+              </button>
+            </div>
+          </div>
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <mat-list>
-          <ng-container *ngTemplateOutlet="lostSector; context: {ls: today.masterLostSector}"></ng-container>
-          <ng-container *ngTemplateOutlet="lostSector; context: {ls: today.legendaryLostSector}"></ng-container>
+          <d2c-legendary-lost-sector [ls]="ls.masterLostSector"></d2c-legendary-lost-sector>
+          <d2c-legendary-lost-sector [ls]="ls.legendaryLostSector"></d2c-legendary-lost-sector>
         </mat-list>
       </mat-card-content>
     </mat-card>
@@ -265,22 +273,4 @@
       </mat-list>
     </mat-card-content>
   </mat-card>
-</ng-template>
-
-<ng-template #lostSector let-ls="ls">
-  <mat-list-item *ngIf="ls.activity as n" class="fake-link" (click)="showBurns(n)">
-    <span mat-list-icon class="list-icon" [class.invert]="ls.icon.endsWith('png')"
-      [class.brighten]="ls.icon.endsWith('jpg')" *ngIf="ls.icon"
-      [style.background-image]="'url(//www.bungie.net' + ls.icon + ')'"></span>
-    <div mat-line>
-      <span class="underline">{{n.name}}</span>
-      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-    </div>
-    <div mat-line>
-      {{n.ll}} PL - {{n.modifiers?.length}}<fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
-    </div>
-    <div mat-line>
-      Exotic {{ls.soloReward}} <span class="accent-text" *ngIf="ls.special"> BL exclusive</span>
-    </div>
-  </mat-list-item>
 </ng-template>

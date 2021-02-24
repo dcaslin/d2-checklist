@@ -1,0 +1,42 @@
+<div mat-dialog-title>
+    <nav mat-tab-nav-bar>
+        <a mat-tab-link *ngFor="let link of links" (click)="activeLink = link" [active]="activeLink == link"> {{link}}
+        </a>
+    </nav>
+</div>
+<mat-dialog-content>
+    <div class="center">
+
+
+        <table class="tidy-auto-table striped">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Location</th>
+                    <th>Loot</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ls of days; let first = first;">
+                    <td>
+                        <ng-container *ngIf="first">Today</ng-container>
+                        <ng-container *ngIf="!first">{{ls.day|date:'EEE, M/d'}}</ng-container>
+                    </td>
+                    <ng-container *ngIf="activeLink=='Legendary LS'; else masterLostSectors">
+
+                        <td>{{ls.legendaryLostSector.activity.name}}</td>
+                        <td>{{ls.legendaryLostSector.soloReward}}
+                        </td>
+                    </ng-container>
+                    <ng-template #masterLostSectors>
+                        <td>{{ls.masterLostSector.activity.name}}</td>
+                        <td>{{ls.masterLostSector.soloReward}}
+                        </td>
+                    </ng-template>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</mat-dialog-content>
