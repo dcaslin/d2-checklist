@@ -1,0 +1,31 @@
+.list-icon {
+  background-size: cover;
+  display: block;
+}
+
+.fa-icon {
+  opacity: 0.5;
+  margin-left: 0.25em;
+}
+
+
+.invert {
+  filter: invert(50%);
+}
+
+.brighten {
+  filter: brightness(1.8);
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.ls-details {
+  margin: 10px !important;
+}
+
+.ls-line {
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+}

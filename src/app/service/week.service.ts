@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
-import { ItemDisplay, NameDesc, PublicMilestonesAndActivities, MilestoneActivity } from './model';
+import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInfo, NameDesc, PublicMilestonesAndActivities } from './model';
 import { ParseService } from './parse.service';
 
 @Injectable({
@@ -16,37 +16,289 @@ export class WeekService {
   // boots->arms->chest->head->boots   - master (+3 offset)
 
 
-  // ls: legend, master
-  // perdition,  1070981430     1070981425
-  // exodus, 2936791996  2936791995
-  // veles, 3094493720, 3094493727
-  // concealed, 912873277  912873274
-  // bunker, 1648125541    1648125538
+  // https://docs.google.com/spreadsheets/d/1f_t8xy_uTT1hYZgGLDpfvW7NEhAuVb6rRV8ooScVh6Y/edit#gid=0
 
-  readonly LS_MASTER_ROTATION = [
-    '567131519', // K1 Log
-    '2829206720', // K1 communion
-    '184186578', // K1 Crew
-    '3911969238', // K1 Revelation
-    '912873274', // concealed
-    '1648125538', // bunker
-    '1070981425', // Perdition
-    '2936791995', // exodus
-    '3094493727', // veles
-
+  readonly LS_MASTER_ROTATION: LostSectorInfo[] = [
+    {
+      abbrev: 'K1 Log',
+      hash: '567131519',
+      shields: ['Arc Captain', 'Solar Shank'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 4
+        },
+        {
+          name: 'Overload Captain',
+          count: 6
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 communion',
+      hash: '2829206720',
+      shields: ['Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 5
+        },
+        {
+          name: 'Overload Captain',
+          count: 6
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 Crew',
+      hash: '184186578',
+      shields: ['Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 4
+        },
+        {
+          name: 'Overload Captain',
+          count: 6
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 Revelation',
+      hash: '3911969238',
+      shields: ['Arc Knight'],
+      champions: [
+        {
+          name: 'Barrier Knight',
+          count: 7
+        },
+        {
+          name: 'Unstoppable Ogre',
+          count: 3
+        },
+      ]
+    },
+    {
+      abbrev: 'Concealed Void',
+      hash: '912873274',
+      shields: ['Solar Shank', 'Void Servitor'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 5
+        }]
+    },
+    {
+      abbrev: 'Bunker',
+      hash: '1648125538',
+      shields: ['Void Minotaurs'],
+      champions: [
+        {
+          name: 'Barrier Hobgoblin',
+          count: 2
+        },
+        {
+          name: 'Overload Captain',
+          count: 3
+        },
+        {
+          name: 'Overload Minotaur',
+          count: 3
+        }
+      ]
+    },
+    {
+      abbrev: 'Perdition',
+      hash: '1070981425',
+      shields: ['Arc Harpies', 'Void Minotaurs'],
+      champions: [
+        {
+          name: 'Barrier Hobgoblin',
+          count: 2
+        },
+        {
+          name: 'Overload Minotaur',
+          count: 3
+        },
+      ]
+    },
+    {
+      abbrev: 'Exodus Garden',
+      hash: '2936791995',
+      shields: ['Void Servitors'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 1
+        }
+      ]
+    },
+    {
+      abbrev: 'Veles Labyrinth',
+      hash: '3094493727',
+      shields: ['Solar Wizards'],
+      champions: [
+        {
+          name: 'Barrier Knight',
+          count: 2
+        },
+        {
+          name: 'Unstoppable Ogre',
+          count: 4
+        }
+      ]
+    }
   ];
 
-  readonly LS_LEGEND_ROTATION = [
-
-    '2829206727', // K1 communion
-    '184186581', // K1 Crew
-    '3911969233', // K1 Revelation
-    '912873277', // concealed
-    '1648125541', // bunker
-    '1070981430', // Perdition
-    '2936791996', // exodus
-    '3094493720', // veles
-    '567131512', // K1 Log
+  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
+    {
+      abbrev: 'K1 communion',
+      hash: '2829206727',
+      shields: ['Void Servitors', 'Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 2
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 Crew',
+      hash: '184186581',
+      shields: ['Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 2
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 Revelation',
+      hash: '3911969233',
+      shields: ['Arc Knights'],
+      champions: [
+        {
+          name: 'Barrier Knight',
+          count: 3
+        },
+        {
+          name: 'Unstoppable Ogre',
+          count: 3
+        },
+      ]
+    },
+    {
+      abbrev: 'Concealed Void',
+      hash: '912873277',
+      shields: ['Arc Captain', 'Solar Shank', 'Void Servitor'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 2
+        },
+        {
+          name: 'Overload Captain',
+          count: 3
+        },
+      ]
+    },
+    {
+      abbrev: 'Bunker',
+      hash: '1648125541',
+      shields: ['Void Minotaur'],
+      champions: [
+        {
+          name: 'Barrier Hobgoblin',
+          count: 1
+        },
+        {
+          name: 'Overload Captain',
+          count: 1
+        },
+        {
+          name: 'Overload Minotaur',
+          count: 3
+        },
+      ]
+    },
+    {
+      abbrev: 'Perdition',
+      hash: '1070981430',
+      shields: ['Arc Harpies', 'Void Minotaurs'],
+      champions: [
+        {
+          name: 'Barrier Hobgoblin',
+          count: 1
+        },
+        {
+          name: 'Overload Minotaur',
+          count: 2
+        }
+      ]
+    },
+    {
+      abbrev: 'Exodus Garden',
+      hash: '2936791996',
+      shields: ['Void Servitors'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 2
+        },
+        {
+          name: 'Overload Captain',
+          count: 2
+        },
+      ]
+    },
+    {
+      abbrev: 'Veles Labyrinth',
+      hash: '3094493720',
+      shields: ['Arc Knights', 'Solar Wizards'],
+      champions: [
+        {
+          name: 'Barrier Knight',
+          count: 3
+        },
+        {
+          name: 'Unstoppable Ogre',
+          count: 1
+        }
+      ]
+    },
+    {
+      abbrev: 'K1 Log',
+      hash: '567131512',
+      shields: ['Arc Captain', 'Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 3
+        },
+      ]
+    },
   ];
 
   readonly LS_LEGEND_LOOT = [
@@ -143,10 +395,10 @@ export class WeekService {
     return currWeek;
   }
 
-  private buildLostSectorActivity(activityHash: string, ll: number): MilestoneActivity {
-    const desc: any = this.destinyCacheService.cache.Activity[activityHash];
+  private buildLostSectorActivity(info: LostSectorInfo, ll: number): LegendLostSectorActivity {
+    const desc: any = this.destinyCacheService.cache.Activity[info.hash];
     if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
-        return null;
+      return null;
     }
     const modifiers: NameDesc[] = [];
     for (const mod of desc.modifiers) {
@@ -154,29 +406,69 @@ export class WeekService {
       modifiers.push(pushMe);
     }
     let name = desc.displayProperties.name;
-    if (ll == 1330 && name.endsWith('Legend')) {
-      name = name.substring(0, name.length -'Legend'.length) + 'Master';
+    if (name.endsWith(': Legend')) {
+      name = name.substring(0, name.length - ': Legend'.length);
     }
-    const msa: MilestoneActivity = {
-        hash: activityHash,
-        name: name,
-        desc: '',
-        ll,
-        tier: 0,
-        icon: desc.displayProperties.icon,
-        modifiers: modifiers
+    if (name.endsWith(': Master')) {
+      name = name.substring(0, name.length - ': Master'.length);
+    }
+    return {
+      hash: info.hash,
+      name: name,
+      desc: '',
+      ll,
+      tier: 0,
+      icon: desc.displayProperties.icon,
+      modifiers: modifiers,
+      info: info
     };
-    return msa;
-}
+  }
 
-  public async  getToday(): Promise<Today> {
+  public getLostSectors(delta?: number): LostSectors {
+    const today = moment(moment.now());
+    if (delta) {
+      today.add(delta, 'days');
+    }
+    // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
+    if (moment.utc().hour()<17) {
+      today.subtract(1, 'days');
+    }
+
+    // set our reference time to 5PM arbitrarily so we're consistent
+    today.hour(17);
+    const lsEpoch = moment.utc([2020, 11, 15, 17, 0]); // Dev 15 2019
+    const lsDays = Math.floor(moment.duration(today.diff(lsEpoch)).asDays());
+    const lsIndex = lsDays % 5;
+    const lsLootIndex = lsDays % 4;
+    const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
+    const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
+    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1300);
+    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1330);
+
+    const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
+    return {
+      day: today.toISOString(),
+      legendaryLostSector: {
+        icon: recordDescForIcon.displayProperties.icon,
+        activity: legendActivity,
+        soloReward: legendLoot,
+        special: legendLoot == 'Head' || legendLoot == 'Arms' || legendLoot == 'Chest'
+      },
+      masterLostSector: {
+        icon: recordDescForIcon.displayProperties.icon,
+        activity: masterActivity,
+        soloReward: masterLoot,
+        special: masterLoot == 'Head' || masterLoot == 'Arms' || masterLoot == 'Chest'
+      }
+    };
+  }
+
+  public async getToday(): Promise<Today> {
 
     const altarEpoch = moment.utc([2019, 10, 9, 17, 0]); // nov 9 2019
     const today = moment(moment.now());
     const altarDays = Math.floor(moment.duration(today.diff(altarEpoch)).asDays());
     const alterIndex = altarDays % 3;
-
-
 
     let altarWeaponKey = null;
     if (alterIndex == 0) {
@@ -186,35 +478,15 @@ export class WeekService {
     } else if (alterIndex == 2) {
       altarWeaponKey = '2164448701'; // apostate
     }
-    const lsEpoch = moment.utc([2020, 11, 15, 17, 0]); // Dev 15 2019
-    const lsDays = Math.floor(moment.duration(today.diff(lsEpoch)).asDays());
-    const lsIndex = lsDays % 5;
-    const lsLootIndex = lsDays % 4;
-    const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
-    const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const currWeek = await this.getCurrWeek(publicMilestones);
+    const lostSectors = this.getLostSectors();
 
-    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1300);
-    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1330);
-
-    const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
     return {
       week: currWeek,
       publicMilestones: publicMilestones,
       altarOfSorrowsWeapon: this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
-      legendaryLostSector: {
-        icon: recordDescForIcon.displayProperties.icon,
-        activity: legendActivity,
-        soloReward: legendLoot,
-        special: legendLoot == 'Head' || legendLoot == 'Arms'
-      },
-      masterLostSector: {
-        icon: recordDescForIcon.displayProperties.icon,
-        activity: masterActivity,
-        soloReward: masterLoot,
-        special: masterLoot == 'Head' || masterLoot == 'Arms'
-      },
+      lostSectors: lostSectors
     };
   }
 }
@@ -223,16 +495,13 @@ export interface Today {
   week: Week;
   publicMilestones: PublicMilestonesAndActivities;
   altarOfSorrowsWeapon: ItemDisplay;
-  legendaryLostSector: LostSector;
-  masterLostSector: LostSector;
-
+  lostSectors: LostSectors;
 }
 
-interface LostSector {
-  activity: MilestoneActivity;
-  icon: string;
-  soloReward: string;
-  special: boolean;
+export interface LostSectors {
+  day: string;
+  legendaryLostSector: LostSector;
+  masterLostSector: LostSector;
 }
 
 

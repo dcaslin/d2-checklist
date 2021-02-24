@@ -1,0 +1,22 @@
+<mat-list-item *ngIf="ls.activity as n" class="fake-link" (click)="showBurns(n)">
+    <span mat-list-icon class="list-icon" [class.invert]="ls.icon.endsWith('png')"
+      [class.brighten]="ls.icon.endsWith('jpg')" *ngIf="ls.icon"
+      [style.background-image]="'url(//www.bungie.net' + ls.icon + ')'"></span>
+    <div mat-line class="ls-line">
+      <span class="underline">{{n.name}}</span>
+      <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
+    </div>
+    <div mat-line class="ls-line">
+      {{n.ll}} PL - {{n.modifiers?.length}}<fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
+    </div>
+    <div mat-line class="ls-line">
+      Exotic {{ls.soloReward}} <span class="accent-text" *ngIf="ls.special"> BL exclusive</span>
+    </div>
+    <div mat-line class="ls-details">
+      <div *ngFor="let s of n.info.shields">{{s}}</div>
+      <div *ngFor="let c of n.info.champions">{{c.name}} x {{c.count}}</div>
+    </div>
+    
+    
+   
+  </mat-list-item>

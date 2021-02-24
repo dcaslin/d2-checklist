@@ -11,6 +11,8 @@ import {
   faCrosshairs as falCrosshairs,
   faBowArrow as falBowArrow,
   faShoppingCart as falShoppingCart,
+
+  faCalendarAlt as farCalendar,
   faBolt as falBolt,
   faWheat as falWheat,
   faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare, faUpload as falUpload
@@ -72,6 +74,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly farCalendar = farCalendar;
   public readonly fasPlug = fasPlug;
   public readonly farAward = farAward;
   public readonly farPercent = farPercent;

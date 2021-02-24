@@ -15,6 +15,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import {MatDividerModule} from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -49,6 +50,8 @@ import { NitroUnitComponent } from './ad-slot/nitro-unit/nitro-unit.component';
 import { SignedOnLoadingIconComponent } from './signed-on-loading-icon/signed-on-loading-icon.component';
 import { ManifestItemIconComponent } from './manifest-item-icon/manifest-item-icon.component';
 import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
+import { LegendaryLostSectorComponent } from './legendary-lost-sector/legendary-lost-sector.component';
+import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector-next-days.component';
 
 @NgModule({
   imports: [
@@ -72,6 +75,7 @@ import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/hori
     MatCheckboxModule,
     MatAutocompleteModule,
     MatListModule,
+    MatDividerModule,
     MatMenuModule,
     MatTreeModule,
     MatIconModule,
@@ -101,7 +105,9 @@ import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/hori
     AdUnitComponent,
     NitroUnitComponent,
     SignedOnLoadingIconComponent,
-    ManifestItemIconComponent],
+    ManifestItemIconComponent,
+    LegendaryLostSectorComponent,
+    LostSectorNextDaysComponent],
   exports: [
     SortIndicatorComponent,
     HorizontalSortComponent,
@@ -113,6 +119,7 @@ import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/hori
     AdSlotComponent,
     ItemEnergyIndicatorComponent,
     SignedOnLoadingIconComponent,
+    LegendaryLostSectorComponent,
     RouterModule,
     PipeModule,
     CommonModule,
@@ -136,6 +143,7 @@ import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/hori
     MatDialogModule,
     MatSidenavModule,
     MatListModule,
+    MatDividerModule,
     MatBadgeModule,
     MatSelectModule,
     MatToolbarModule,

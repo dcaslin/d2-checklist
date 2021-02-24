@@ -1214,11 +1214,11 @@ export class ParseService {
             if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
                 // rewards = 'Pinnacle Gear';
                 rewards = 'Pinnacle Gear';
-            } else if (ms.milestoneHash == 3312774044 && rewards == '???') { // Crucible Playlist
+            } else if (ms.milestoneHash == 3312774044) { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 3448738070 && rewards == '???') { // Weekly Gambit
+            } else if (ms.milestoneHash == 3448738070) { // Weekly Gambit
                 rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 1437935813 && rewards == '???') { // Weekly Vanguard
+            } else if (ms.milestoneHash == 1437935813) { // Weekly Vanguard
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
                 rewards = 'Pinnacle Gear (Weak)';
@@ -1314,6 +1314,29 @@ export class ParseService {
                 if (mla < mlb) { return 1; }
                 return 0;
             });
+            for (const nfa of pmsa.nightfall.activities) {
+                if (nfa.name.endsWith('Grandmaster')) {
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 40)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP + 40;
+                    }
+                } else if (nfa.name.endsWith('Master')) {
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 20)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP + 20;
+                    }
+                } else if (nfa.name.endsWith('Legend')) {
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP - 10)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP - 10;
+                    }
+                } else if (nfa.name.endsWith('Hero')) {
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP - 40)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP - 40;
+                    }
+                } else if (nfa.name.endsWith('Adept')) {
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP - 80)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP - 80;
+                    }
+                }
+            }
         }
         if (pmsa.empireHunts) {
             pmsa.empireHunts.sort((a, b) => {

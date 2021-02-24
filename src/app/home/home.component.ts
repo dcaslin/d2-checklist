@@ -12,6 +12,7 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { Today, WeekService } from '@app/service/week.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { LostSectorNextDaysComponent } from '@app/shared/lost-sector-next-days/lost-sector-next-days.component';
 import { environment as env } from '@env/environment';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -140,6 +141,12 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     dc.disableClose = false;
     dc.data = msa;
     this.dialog.open(BurnDialogComponent, dc);
+  }
+
+  showLostSectorNextDays() {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    this.dialog.open(LostSectorNextDaysComponent, dc);
   }
 
   logon() {

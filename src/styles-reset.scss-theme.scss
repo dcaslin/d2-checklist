@@ -361,6 +361,13 @@
     background-color: mat-color($background, card);
   }
 
+  table.striped {
+    & tbody {
+      & tr:nth-child(even) {background: mat-color($background, card);}
+      & tr:nth-child(odd) {background: mat-color($background, status-bar)}
+    }
+  }
+
   table.simple-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;
