@@ -420,17 +420,15 @@ export class WeekService {
   }
 
   public getLostSectors(delta?: number): LostSectors {
-    const today = moment(moment.now());
+    const today = moment(moment.utc());
     if (delta) {
       today.add(delta, 'days');
     }
-    // TODO fix this
-    // // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
-    // if (moment.utc().hour() < 17) {
-    //   console.log(`Prior to reset ${moment.utc().hour()}`);
-    //   today.subtract(1, 'days');
-    // }
-
+    // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
+    if (today.hour() < 17) {
+      console.log(`Prior to reset ${moment.utc().hour()}`);
+      today.subtract(1, 'days');
+    }
     // set our reference time to 5PM arbitrarily so we're consistent
     today.hour(17);
     const lsEpoch = moment.utc([2020, 11, 15, 17, 0]); // Dev 15 2019
