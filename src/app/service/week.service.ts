@@ -10,30 +10,10 @@ import { ParseService } from './parse.service';
 })
 export class WeekService {
 
-  // perdition->exodus->veles->concealed->bunker->Perdition - legend
-  // bunker->Perdition->exodus->veles->concealed  ->bunker - master  (+4 offset)
-  // arms->chest->head->boots->arms     - legend
-  // boots->arms->chest->head->boots   - master (+3 offset)
-
 
   // https://docs.google.com/spreadsheets/d/1f_t8xy_uTT1hYZgGLDpfvW7NEhAuVb6rRV8ooScVh6Y/edit#gid=0
 
   readonly LS_MASTER_ROTATION: LostSectorInfo[] = [
-    {
-      abbrev: 'K1 Log',
-      hash: '567131519',
-      shields: ['Arc Captain', 'Solar Shank'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
-          count: 4
-        },
-        {
-          name: 'Overload Captain',
-          count: 6
-        },
-      ]
-    },
     {
       abbrev: 'K1 communion',
       hash: '2829206720',
@@ -156,25 +136,25 @@ export class WeekService {
           count: 4
         }
       ]
-    }
-  ];
-
-  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
+    },
     {
-      abbrev: 'K1 communion',
-      hash: '2829206727',
-      shields: ['Void Servitors', 'Solar Shanks'],
+      abbrev: 'K1 Log',
+      hash: '567131519',
+      shields: ['Arc Captain', 'Solar Shank'],
       champions: [
         {
           name: 'Barrier Servitor',
-          count: 3
+          count: 4
         },
         {
           name: 'Overload Captain',
-          count: 2
+          count: 6
         },
       ]
     },
+  ];
+
+  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
     {
       abbrev: 'K1 Crew',
       hash: '184186581',
@@ -296,6 +276,21 @@ export class WeekService {
         {
           name: 'Overload Captain',
           count: 3
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 communion',
+      hash: '2829206727',
+      shields: ['Void Servitors', 'Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 2
         },
       ]
     },
@@ -429,10 +424,12 @@ export class WeekService {
     if (delta) {
       today.add(delta, 'days');
     }
-    // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
-    if (moment.utc().hour()<17) {
-      today.subtract(1, 'days');
-    }
+    // TODO fix this
+    // // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
+    // if (moment.utc().hour() < 17) {
+    //   console.log(`Prior to reset ${moment.utc().hour()}`);
+    //   today.subtract(1, 'days');
+    // }
 
     // set our reference time to 5PM arbitrarily so we're consistent
     today.hour(17);
