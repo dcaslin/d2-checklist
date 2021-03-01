@@ -38,7 +38,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   disableads: boolean; // for GA
   // signed on info
 
-  public loggingOn: BehaviorSubject<boolean> = new BehaviorSubject(true);
   public signedOnUser: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
   public showInstallButton: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -190,7 +189,6 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit(): void {
     this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.signedOnUser.next(selectedUser);
-      this.loggingOn.next(false);
       if (selectedUser == null) { return; }
       if (selectedUser.promptForPlatform === true) {
         selectedUser.promptForPlatform = false;
