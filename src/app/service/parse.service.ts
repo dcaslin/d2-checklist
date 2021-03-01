@@ -462,6 +462,13 @@ export class ParseService {
                 // weekly strikes
                 // this.addPseudoMilestone('1437935813', milestonesByKey, milestoneList);
 
+
+                // harbinger is not in public milestones and will dissappear if done
+                this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
+
+                // same w/ weekly empire hunt
+                this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
+
                 let total = 0;
                 let complete = 0;
                 let phases = [];
