@@ -21,6 +21,12 @@
           &nbsp;&nbsp;*You have filters active
         </span>
       </div>
+      <div *ngIf="signedOnUserService.signedOnUser$|async as currUser">
+        <a mat-raised-button 
+            [routerLink]="['/',currUser.userInfo.membershipType, currUser.userInfo.membershipId]">
+            Main Player Page
+          </a>
+      </div>
       <div class="quick-actions">
         <div class="action"
         matTooltip="If hiding completed, activities in the table will be hidden if all characters have completed it.">
