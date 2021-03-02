@@ -1,7 +1,7 @@
 {
   "name": "d2-checklist",
   "version": "13.4.4",
-  "manifest": "91445.21.02.09.2156-11-bnet.35841",
+  "manifest": "91788.21.02.24.1457-2-bnet.36002",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
