@@ -79,12 +79,12 @@ export class MilestoneCatalogService extends Destroyable {
     ).subscribe();
     this.playerService.player.pipe(
       filter(x => !!x),
-      distinctUntilChanged((a, b) =>
-        // we really only care about updates to the milestones.
-        // The characters also have milestone data, but that _should_
-        // be applied at the same time (I'm going to regret this assumption, aren't I)
-        isEqual(a.milestoneList, b.milestoneList)
-      ),
+      // distinctUntilChanged((a, b) =>
+      //   // we really only care about updates to the milestones.
+      //   // The characters also have milestone data, but that _should_
+      //   // be applied at the same time (I'm going to regret this assumption, aren't I)
+      //   isEqual(a.milestoneList, b.milestoneList)
+      // ),
       takeUntil(this.destroy$)
     ).subscribe((player) => {
       this.extractMilestones(player);
@@ -133,7 +133,7 @@ export class MilestoneCatalogService extends Destroyable {
   }
 
   private milestoneIcon(manifest: Milestone, m: MileStoneName): string {
-    return manifest?.displayProperties?.icon || MORE_INFO[m.key]?.icon
+    return manifest?.displayProperties?.icon || MORE_INFO[m.key]?.icon || ZAVALA_ICON
   }
 
   private rewardFromMilestone(m: MileStoneName): CookedReward {

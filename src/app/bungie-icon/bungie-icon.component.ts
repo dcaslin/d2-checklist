@@ -8,10 +8,10 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   `
 })
 export class BungieIconComponent {
-
-  @Input() set icon(path: string) { this.iconUrl = `//www.bungie.net${path}`; }
-  @Input() iconClass: string = 'icon';
+  @Input() iconClass = 'icon';
 
   public iconUrl: string;
+
+  @Input() set icon(path: string) { this.iconUrl = `//www.bungie.net${path}`; }
 
 }

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { AuthService } from '@app/service/auth.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 import { ActivityFilterService } from '../services/activity-filter.service';
 import { ContextService } from '../services/context-service';
@@ -20,6 +21,7 @@ export class TodoListComponent {
 
   constructor(
     public auth: AuthService,
+    public signedOnUserService: SignedOnUserService,
     public filters: ActivityFilterService,
     public gridSettings: GridSettingsService,
     private context: ContextService
