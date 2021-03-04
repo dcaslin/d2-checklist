@@ -15,36 +15,6 @@ export class WeekService {
 
   readonly LS_MASTER_ROTATION: LostSectorInfo[] = [
     {
-      abbrev: 'K1 communion',
-      hash: '2829206720',
-      shields: ['Solar Shanks'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
-          count: 5
-        },
-        {
-          name: 'Overload Captain',
-          count: 6
-        },
-      ]
-    },
-    {
-      abbrev: 'K1 Crew',
-      hash: '184186578',
-      shields: ['Solar Shanks'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
-          count: 4
-        },
-        {
-          name: 'Overload Captain',
-          count: 6
-        },
-      ]
-    },
-    {
       abbrev: 'K1 Revelation',
       hash: '3911969238',
       shields: ['Arc Knight'],
@@ -152,39 +122,39 @@ export class WeekService {
         },
       ]
     },
-  ];
-
-  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
     {
-      abbrev: 'K1 Crew',
-      hash: '184186581',
+      abbrev: 'K1 communion',
+      hash: '2829206720',
       shields: ['Solar Shanks'],
       champions: [
         {
           name: 'Barrier Servitor',
-          count: 3
+          count: 5
         },
         {
           name: 'Overload Captain',
-          count: 2
+          count: 6
         },
       ]
     },
     {
-      abbrev: 'K1 Revelation',
-      hash: '3911969233',
-      shields: ['Arc Knights'],
+      abbrev: 'K1 Crew',
+      hash: '184186578',
+      shields: ['Solar Shanks'],
       champions: [
         {
-          name: 'Barrier Knight',
-          count: 3
+          name: 'Barrier Servitor',
+          count: 4
         },
         {
-          name: 'Unstoppable Ogre',
-          count: 3
+          name: 'Overload Captain',
+          count: 6
         },
       ]
     },
+  ];
+
+  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
     {
       abbrev: 'Concealed Void',
       hash: '912873277',
@@ -291,6 +261,36 @@ export class WeekService {
         {
           name: 'Overload Captain',
           count: 2
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 Crew',
+      hash: '184186581',
+      shields: ['Solar Shanks'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
+          count: 3
+        },
+        {
+          name: 'Overload Captain',
+          count: 2
+        },
+      ]
+    },
+    {
+      abbrev: 'K1 Revelation',
+      hash: '3911969233',
+      shields: ['Arc Knights'],
+      champions: [
+        {
+          name: 'Barrier Knight',
+          count: 3
+        },
+        {
+          name: 'Unstoppable Ogre',
+          count: 3
         },
       ]
     },
@@ -433,8 +433,8 @@ export class WeekService {
     today.hour(17);
     const lsEpoch = moment.utc([2020, 11, 15, 17, 0]); // Dev 15 2019
     const lsDays = Math.floor(moment.duration(today.diff(lsEpoch)).asDays());
-    const lsIndex = lsDays % 5;
-    const lsLootIndex = lsDays % 4;
+    const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
+    const lsLootIndex = lsDays % this.LS_LEGEND_LOOT.length;
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
     const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
     const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1300);
