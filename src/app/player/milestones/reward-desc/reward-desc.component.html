@@ -1,7 +1,9 @@
 <span class="simple-caption" *ngIf="boost!=null">
   <ng-container *ngIf="maxPl>= Const.SEASON_HARD_CAP; else belowHardCap">
-    {{rewards}}
-    <ng-container *ngTemplateOutlet="bonus; context: {bonus: boost.afterHardCap}"></ng-container>
+    <span class="fake-link" (click)="sortClick.emit()">
+      {{rewards}}
+      <ng-container *ngTemplateOutlet="bonus; context: {bonus: boost.afterHardCap}"></ng-container>
+    </span>
   </ng-container>
   <ng-template #belowHardCap>
     <span class="fake-link" (click)="sortClick.emit()">

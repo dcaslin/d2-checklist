@@ -78,8 +78,6 @@ export class StorageService {
     this.setItem(CLAN_MS_KEY, this.getDefaultHideClanMs());
   }
 
-  
-
   public getDefaultHideClanMs(): string[] {
     return ['3628293753',
     '2406589846',
@@ -95,7 +93,11 @@ export class StorageService {
     '2712317338',
     '1424672028',
     '291895718',
-    '3181387331'];
+    '3181387331',
+    '3632712541',
+    '2953722265',
+    '3031052508'
+  ];
     // return [
     //   '1342567285',
     //   '3181387331',

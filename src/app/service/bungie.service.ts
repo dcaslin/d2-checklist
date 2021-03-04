@@ -781,56 +781,6 @@ export class BungieService implements OnDestroy {
             dependsOn: []
         };
         p.milestoneList.push(ms1);
-        // const ms2: MileStoneName = {
-        //     key: Const.PROPHECY_KEY,
-        //     resets: p.characters[0].endWeek.toISOString(),
-        //     rewards: 'Pinnacle Gear',
-            // boostKey: Const.BOOST_PINNACLE,
-        //     name: 'Prophecy',
-        //     desc: 'Complete the Prophecy Dungeon',
-        //     hasPartial: true,
-        //     neverDisappears: true,
-        //     dependsOn: []
-        // };
-        // p.milestoneList.push(ms2);
-
-        const msbg3: MileStoneName = {
-            key: Const.PSUEDO_BATTLEGROUND_3,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear (Tier 2)',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_2],
-            name: 'Battlegrounds Playlist 3',
-            desc: 'Complete the Battlegrounds playlist 3 times this week',
-            hasPartial: true,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(msbg3);
-
-        const msbg6: MileStoneName = {
-            key: Const.PSUEDO_BATTLEGROUND_6,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear (Tier 2)',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_2],
-            name: 'Battlegrounds Playlist 6',
-            desc: 'Complete the Battlegrounds playlist 63 times this week',
-            hasPartial: true,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(msbg6);
-        const msbg9: MileStoneName = {
-            key: Const.PSUEDO_BATTLEGROUND_9,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Powerful Gear (Tier 3)',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_POWERFUL_3],
-            name: 'Battlegrounds Playlist 9',
-            desc: 'Complete the Battlegrounds playlist 9 times this week',
-            hasPartial: true,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(msbg9);
 
 
         const ms3: MileStoneName = {
@@ -840,11 +790,24 @@ export class BungieService implements OnDestroy {
             boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
             name: 'Master Empire Hunt',
             desc: 'Complete a Master Empire Hunt',
-            hasPartial: true,
+            hasPartial: false,
             neverDisappears: true,
             dependsOn: []
         };
         p.milestoneList.push(ms3);
+
+        const ms4: MileStoneName = {
+            key: Const.PSUEDO_PRESAGE,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Pinnacle Gear',
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+            name: 'Presage Weekly',
+            desc: 'Search the Glykon to earn Dead Man\'s Tale, and get yourself a Pinnacle drop while you\'re there',
+            hasPartial: false,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(ms4);
         p.milestoneList.sort((a, b) => {
             if (a.boost.sortVal < b.boost.sortVal) { return 1; }
             if (a.boost.sortVal > b.boost.sortVal) { return -1; }
