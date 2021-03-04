@@ -1,4 +1,3 @@
-import { BountySetsDialogComponent } from '@app/home/bounty-sets-dialog/bounty-sets-dialog.component';
 import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
@@ -900,7 +899,7 @@ export class Character extends Target {
     readonly className: string;
     light: number;
     lightFraction?: Fraction;
-    basePL: number = 0;
+    basePL = 0;
     basePLString?: string;
     bestPlGear: { [key: string]: InventoryItem } = {};
 
@@ -1238,6 +1237,13 @@ export class Const {
     public static readonly BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', faWindows);
     public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', faGoogle);
 
+
+
+    public static readonly HIDE_MILESTONES: string[] = [
+        '534869653', // xur
+        // '3031052508','2953722265','3632712541' // battlegrounds
+    ];
+
     public static readonly PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM
     ]; // Const.BNET_PLATFORM
@@ -1253,10 +1259,8 @@ export class Const {
     public static readonly MISSION_ARTIFACT_KEY = '22222222';
     public static readonly PSUEDO_HERESY_KEY = 'PSUEDO-HERESY';
     // public static readonly PROPHECY_KEY = '44444444';
+    public static readonly PSUEDO_PRESAGE = 'PSUEDO_PRESAGE';
     public static readonly PSUEDO_MASTER_EMPIRE_HUNT = 'PSUEDO_MASTER_EMPIRE';
-    public static readonly PSUEDO_BATTLEGROUND_3 = 'PSUEDO-BG-3';
-    public static readonly PSUEDO_BATTLEGROUND_6 = 'PSUEDO-BG-6';
-    public static readonly PSUEDO_BATTLEGROUND_9 = 'PSUEDO-BG-9';
 
     public static readonly LIGHT_TOO_LOW = 1249; // update me
     private static readonly SEASON_SOFT_CAP = 1250; // update me
@@ -1393,7 +1397,6 @@ export class Const {
         }
     };
 }
-
 
 export interface BoostInfo {
     key: string;
@@ -1559,7 +1562,6 @@ export interface ItemDisplay {
     displayProperties: ApiDisplayProperties;
 }
 
-
 interface ApiDisplayProperties {
     description: string;
     hasIcon: boolean;
@@ -1599,8 +1601,6 @@ export interface VendorItemInfo {
     searchText: string;
 }
 
-
-
 export interface LostSector {
     activity: LegendLostSectorActivity;
     icon: string;
@@ -1615,22 +1615,7 @@ export interface LostSectorInfo {
     champions: Champion[];
 }
 
-
 interface Champion {
     name: string;
     count: number;
 }
-
-
-
-// export interface VendorInventoryItem {
-//     tags?: string[];
-//     vendor: Vendor;
-//     status: string;
-//     quantity: number;
-//     values: NameQuantity[];
-//     costs: NameQuantity[];
-//     objectives: ItemObjective[];
-//     data: InventoryItem;
-//     searchText: string;
-// }

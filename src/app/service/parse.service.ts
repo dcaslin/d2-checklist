@@ -417,9 +417,7 @@ export class ParseService {
             }
             // repeat for each character
             for (const key of Object.keys(_prog.milestones)) {
-                if ('3031052508' === key || // Battleground 3
-                '2953722265' === key || // Battleground 6
-                '3632712541' === key) {
+                if (Const.HIDE_MILESTONES.includes(key)) {
                     continue;
                 }
                 const ms: PrivMilestone = _prog.milestones[key];
@@ -1254,6 +1252,14 @@ export class ParseService {
             } else if (pushMe.hash == '3628293753') {
                 pushMe.name = 'Trials Seven Wins';
                 pushMe.dependsOn = ['3628293757', '3628293755'];
+            } else if (pushMe.hash == '3632712541') {
+                pushMe.name = 'Battlegrounds Playlist 3';
+            } else if (pushMe.hash == '2953722265') {
+                pushMe.name = 'Battlegrounds Playlist 6';
+                pushMe.dependsOn = ['3632712541'];
+            } else if (pushMe.hash == '3031052508') {
+                pushMe.name = 'Battlegrounds Playlist 9';
+                pushMe.dependsOn = ['3632712541', '2953722265'];
             }
             returnMe.push(pushMe);
         }
@@ -1868,9 +1874,7 @@ export class ParseService {
             for (const p of publicMilestones) {
                 // things to skip
                 if (
-                    '3031052508' === p.hash || // Battleground 3
-                    '2953722265' === p.hash || // Battleground 6
-                    '3632712541' === p.hash ||  // Battleground 9
+                    Const.HIDE_MILESTONES.includes(p.hash) ||
                     '534869653' === p.hash ||   // xur
                     '4253138191' === p.hash ||  // weekly clan engrams
                     p.milestoneType == 5 || // special
@@ -1989,15 +1993,24 @@ export class ParseService {
                             // do some weirdness for Master Empire hunts
                             let hasAccessTo1280EmpireHunt = false;
                             let incomplete1280Hunt = false;
-                            let hasBattlegroundsPlaylist = false;
-                            let battlegroundChallenges = null;
+                            let hasAccessToPresage = false;
+                            let incompletePresage = false;
                             for (const aa of resp.characterActivities.data[key].availableActivities) {
                                 availableActivities[aa.activityHash] = true;
-                                // find battlegrounds
-                                if (aa.activityHash == 3207968872) {
-                                    hasBattlegroundsPlaylist = true;
-                                    battlegroundChallenges = aa.challenges;
+                                if (aa.activityHash == 4212753278) { // presage master
+                                    hasAccessToPresage = true;
+                                    if (aa.challenges?.length > 0) {
+                                        for (const challenge of aa.challenges) {
+                                            if (challenge.objective?.objectiveHash == 3278614711) { // weekly completion challenge
+                                                // if this is here it shouldn't be complete, these disappear when complete
+                                                if (!challenge.objective.complete) {
+                                                    incompletePresage = true;
+                                                    break;
+                                                }
 
+                                            }
+                                        }
+                                    }
                                 } else if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
                                     // while we're here check for Empire Hunt pinnacle.
                                     // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
@@ -2020,46 +2033,10 @@ export class ParseService {
                                     }
                                 }
                             }
+                            console.log(`Presage: incomplete=${incompletePresage} hasAccess=${hasAccessToPresage}`);
+                            c.milestones[Const.PSUEDO_PRESAGE] = new MilestoneStatus(Const.PSUEDO_PRESAGE, !incompletePresage, incompletePresage ? 0 : 1, null, null, [], !hasAccessToPresage, c.notReady);
+
                             c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
-                            if (!hasBattlegroundsPlaylist) {
-                                c.milestones[Const.PSUEDO_BATTLEGROUND_3] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_3, true, 0, null, null, [], true, c.notReady);
-                                c.milestones[Const.PSUEDO_BATTLEGROUND_6] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_6, true, 0, null, null, [], true, c.notReady);
-                                c.milestones[Const.PSUEDO_BATTLEGROUND_9] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_9, true, 0, null, null, [], true, c.notReady);
-                            } else {
-                                if (battlegroundChallenges) {
-                                    for (const ch of battlegroundChallenges) {
-                                        let targetKey = null;
-                                        if (ch.objective?.objectiveHash == 252439031) {
-                                            targetKey = Const.PSUEDO_BATTLEGROUND_3;
-                                            c.milestones[Const.PSUEDO_BATTLEGROUND_6] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_6, false, 0, null, null, [], false, false);
-                                            c.milestones[Const.PSUEDO_BATTLEGROUND_9] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_9, false, 0, null, null, [], false, false);
-                                        } else if (ch.objective?.objectiveHash == 1117876708) {
-                                            c.milestones[Const.PSUEDO_BATTLEGROUND_3] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_3, true, 1, null, null, [], false, false);
-                                            targetKey = Const.PSUEDO_BATTLEGROUND_6;
-                                            c.milestones[Const.PSUEDO_BATTLEGROUND_9] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_9, false, 0, null, null, [], false, false);
-                                        } else if (ch.objective?.objectiveHash == 1850228384) {
-                                            c.milestones[Const.PSUEDO_BATTLEGROUND_3] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_3, true, 1, null, null, [], false, false);
-                                            c.milestones[Const.PSUEDO_BATTLEGROUND_6] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_6, true, 1, null, null, [], false, false);
-                                            targetKey = Const.PSUEDO_BATTLEGROUND_9;
-                                        } else {
-                                            continue;
-                                        }
-                                        const obj = ch.objective;
-                                        const total = obj.completionValue ? obj.completionValue : 1;
-                                        const pct = obj.progress / total;
-                                        let info = null;
-                                        if (pct > 0 && pct < 1) {
-                                            info = Math.floor(100 * pct) + '% complete';
-                                        }
-                                        const suppInfo = obj.progress + ' / ' + obj.completionValue;
-                                        c.milestones[targetKey] = new MilestoneStatus(targetKey, obj.complete, pct, info, [suppInfo], [], false, false);
-                                    }
-                                } else { // has access and all 3 are done
-                                    c.milestones[Const.PSUEDO_BATTLEGROUND_3] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_3, true, 1, null, null, [], false, false);
-                                    c.milestones[Const.PSUEDO_BATTLEGROUND_6] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_6, true, 1, null, null, [], false, false);
-                                    c.milestones[Const.PSUEDO_BATTLEGROUND_9] = new MilestoneStatus(Const.PSUEDO_BATTLEGROUND_9, true, 1, null, null, [], false, false);
-                                }
-                            }
                         }
                         for (const missingKey of Object.keys(milestonesByKey)) {
                             if (c.milestones[missingKey] == null) {
