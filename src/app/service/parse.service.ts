@@ -2033,9 +2033,7 @@ export class ParseService {
                                     }
                                 }
                             }
-                            console.log(`Presage: incomplete=${incompletePresage} hasAccess=${hasAccessToPresage}`);
                             c.milestones[Const.PSUEDO_PRESAGE] = new MilestoneStatus(Const.PSUEDO_PRESAGE, !incompletePresage, incompletePresage ? 0 : 1, null, null, [], !hasAccessToPresage, c.notReady);
-
                             c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
                         }
                         for (const missingKey of Object.keys(milestonesByKey)) {
