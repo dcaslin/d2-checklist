@@ -6,7 +6,7 @@
 <mat-dialog-content>
 
     <table class="tidy-auto-table">
-        <tr>
+        <tr *ngIf="item.masterwork">
             <th [attr.colspan]="maxPlugs">
                 PVP Masterwork:
                 <span class="pad-right" *ngFor="let mw of item.masterwork.recommendedPvpMws; last as isLast">
@@ -14,7 +14,7 @@
                 </span>
             </th>
         </tr>
-        <tr>
+        <tr *ngIf="item.masterwork">
             <th [attr.colspan]="maxPlugs">
                 PVE Masterwork:
                 <span class="pad-right" *ngFor="let mw of item.masterwork.recommendedPveMws; last as isLast">
