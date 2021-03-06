@@ -33,8 +33,8 @@ export class TriumphSeasonsComponent extends ChildComponent implements OnInit {
   ngOnInit() {
   }
 
-  navigate(triumphHash: string) {
-    this.router.navigate(['..', 'tree', triumphHash], { relativeTo: this.route });
+  navigate(membershipType: number, membershipId: number, triumphHash: string) {
+    this.router.navigate(['/', membershipType, membershipId, 'triumphs', 'tree', triumphHash], { relativeTo: this.route });
   }
 
 }
