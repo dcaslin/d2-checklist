@@ -26,7 +26,7 @@ export class FriendsComponent extends ChildComponent implements OnInit {
     private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);
-    this.favoritesList.pipe(
+    this.favoritesList$.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(
         (x: UserInfo[]) => {

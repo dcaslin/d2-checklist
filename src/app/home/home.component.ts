@@ -30,6 +30,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly version = env.versions.app;
   manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
+  readonly platformMap = Const.PLATFORMS_DICT;
 
   hideAnnouncement = true;
   bountiesExpanded = 'true' === localStorage.getItem('expand-bounties');
