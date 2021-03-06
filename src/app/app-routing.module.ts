@@ -360,6 +360,10 @@ export class AuthGuard implements CanActivate {
               component: PursuitListComponent,
             },
             {
+              path: 'seasons',
+              component: TriumphSeasonsComponent,
+            },
+            {
               path: 'tracked',
               component: PursuitListComponent,
             }
