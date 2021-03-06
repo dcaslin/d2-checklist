@@ -12,7 +12,7 @@ import { StorageService } from '../service/storage.service';
 })
 export class ChildComponent implements OnDestroy {
     unsubscribe$: Subject<void> = new Subject<void>();
-    public favoritesList: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
+    public favoritesList$: BehaviorSubject<UserInfo[]> = new BehaviorSubject([]);
     public favoritesMap: BehaviorSubject<{ [id: string]: UserInfo }> = new BehaviorSubject({});
     public disableAds: BehaviorSubject<boolean> = new BehaviorSubject(false);
     public debugmode: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -41,7 +41,7 @@ export class ChildComponent implements OnDestroy {
                         for (const key of Object.keys(x.friends)) {
                             aFavs.push(x.friends[key]);
                         }
-                        this.favoritesList.next(aFavs);
+                        this.favoritesList$.next(aFavs);
                     }
                     if (x.hiddenmilestones != null) {
                         this.hiddenMilestones.next(x.hiddenmilestones);

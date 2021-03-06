@@ -1,6 +1,5 @@
 <div class="top-section">
-  <div class="normal-top-section">
-    <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
+  <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
               <div class="announcement-body">
                 Check out the new <a class="no-break" routerLink="/content-vault"> <fa-icon  class="warn-text" [icon]="iconService.fadHourGlassHalf"></fa-icon><span class="link-text">Content Vault page</span></a>! 
               </div>
@@ -8,46 +7,65 @@
                 <button mat-icon-button (click)="onHideAnnouncement()"><fa-icon  [icon]="iconService.fasTimes"></fa-icon></button>
               </div>
             </div> -->
-
+  <div *ngIf="debugmode|async">
+    <div>Version: {{version}}</div>
+    <div>Manifest: {{manifestVersion}}</div>
+  </div>
+  <div class="searchRow">
+    <mat-form-field class="searchField searchPlatform">
+      <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
+        <mat-select-trigger>
+          <fa-icon [icon]="selectedPlatform.icon"></fa-icon>
+          <span class="d-none d-md-inline pad-left">{{selectedPlatform.name }}</span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let p of platforms" [value]="p">
+          <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="searchField searchGt" class="gt">
+      <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
+        (change)="onGtChange()">
+    </mat-form-field>
+    <button mat-mini-fab class="searchField" (click)="routeSearch()" color="primary">
+      <mat-icon>search</mat-icon>
+    </button>
+  </div>
+  <div class="home-button-row">
     <div>
-      <div *ngIf="debugmode|async" style="margin-bottom: 25px; text-align: left">
-        <div>Version: {{version}}</div>
-        <div>Manifest: {{manifestVersion}}</div>
-        <div class="d-block d-sm-none">Screen: XS</div>
-        <div class="d-none d-sm-block d-md-none">Screen: SM</div>
-        <div class="d-none d-md-block d-lg-none">Screen: MD</div>
-        <div class="d-none d-lg-block d-xl-none">Screen: LG</div>
-        <div class="d-none d-xl-block">Screen: XL</div>
-      </div>
-      <div class="searchRow">
-        <mat-form-field class="searchField searchPlatform">
-          <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
-            <mat-select-trigger>
-              <fa-icon [icon]="selectedPlatform.icon"></fa-icon>
-              <span class="d-none d-md-inline pad-left">{{selectedPlatform.name }}</span>
-            </mat-select-trigger>
-            <mat-option *ngFor="let p of platforms" [value]="p">
-              <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="searchField searchGt" class="gt">
-          <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
-            (change)="onGtChange()">
-        </mat-form-field>
-        <button mat-mini-fab class="searchField" (click)="routeSearch()" color="primary">
-          <mat-icon>search</mat-icon>
-        </button>
-      </div>
-    </div>
-    <div class="home-button-row">
       <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/2CwNvcz">
         <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Grimoire Anthology, Vol III
       </a>
-      <div class="spacer"></div>
+    </div>
+    <div>
       <a mat-raised-button class="home-button" color="primary" target="_blank" href="https://imgur.com/a/dUlLzny">
         <fa-icon [icon]="iconService.fasVideo"></fa-icon> Video tutorials
       </a>
+    </div>
+    <div>
+      <ng-container *ngIf="favoritesList$|async as fl">
+        <ng-container *ngIf="fl.length>0; else noFriends">
+          <button mat-raised-button class="home-button" color="primary" [matMenuTriggerFor]="friendsMenu"
+          [matBadge]="fl.length" matBadgePosition="after"
+            matBadgeColor="warn">
+            <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
+          </button>
+
+          <mat-menu #friendsMenu="matMenu">
+            <button *ngFor="let ui of fl" mat-menu-item>
+              <fa-icon [icon]="platformMap[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
+            </button>
+          </mat-menu>
+        </ng-container>
+        <ng-template #noFriends>
+          <div matTooltip="Click the heart icon on player pages to save friends">
+            <button mat-raised-button disabled class="home-button" color="primary">
+              <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
+            </button>
+          </div>
+        </ng-template>
+      </ng-container>
+
     </div>
 
   </div>

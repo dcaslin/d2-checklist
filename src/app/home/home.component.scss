@@ -1,4 +1,4 @@
-@import 'styles-variables';
+@import "styles-variables";
 
 .grid-parent {
   display: grid;
@@ -10,7 +10,6 @@
   grid-auto-flow: row dense;
 }
 
-
 @media (min-width: 1300px) {
   .grid-parent {
     min-width: 900px;
@@ -19,7 +18,7 @@
 
 .bounty-shopping-list-parent {
   text-align: left;
-  margin-top:10px;
+  margin-top: 10px;
 }
 
 .ll {
@@ -27,7 +26,7 @@
 }
 
 .lighter {
-  opacity: .6;
+  opacity: 0.6;
 }
 
 .activity-icon {
@@ -39,7 +38,6 @@
   background-size: cover;
   display: inline-block;
 }
-
 
 .modifier-chip {
   padding: 5px;
@@ -96,21 +94,6 @@
   }
 }
 
-.top-section {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-}
-
-.normal-top-section {
-  flex-grow: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .info {
   //max-width: 700px;
   margin-right: 10px;
@@ -130,7 +113,6 @@
   flex-direction: row;
   text-align: left;
   align-items: center;
-  ;
   margin-top: 5px;
   margin-bottom: 10px;
   margin-left: 16px;
@@ -174,7 +156,6 @@ a.underline:link {
 }
 
 .no-break {
-
   white-space: nowrap;
 }
 
@@ -183,21 +164,15 @@ a.underline:link {
 }
 
 .home-button-row {
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-bottom: 25px;
-  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
-
-.home-button {
+.home-button-row div {
   margin-bottom: 5px;
 }
 
-.spacer {
-  width: 5px;
-  height: auto;
-  display: inline-block;
-}
 
 .mat-card {
   margin-bottom: 20px;
@@ -245,7 +220,7 @@ a.underline:link {
 .shopping-row {
   display: flex;
   flex-direction: row;
-  align-items: center
+  align-items: center;
 }
 
 .shopping-cell {
@@ -255,7 +230,6 @@ a.underline:link {
 .shopping-done {
   text-decoration: line-through;
 }
-
 
 .shopping-icon {
   width: 24px;
@@ -271,15 +245,6 @@ dl {
   margin-left: 20px;
 }
 
-.searchRow {
-  display: inline-block;
-  margin-left: 20px;
-  text-align: left;
-}
-
-.searchField {
-  margin-bottom: 10px;
-}
 
 .searchPlatform {
   // width: 75px;
@@ -302,4 +267,28 @@ dl {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+}
+
+.top-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.top-section > div {
+  margin: 7px;
+}
+
+.searchRow {
+  margin-bottom: 0px !important;
+}
+
+.home-button-row > div {
+  margin: 7px;
+}
+
+.searchField {
+  margin-bottom: 10px;
+  margin-right: 5px;
 }
