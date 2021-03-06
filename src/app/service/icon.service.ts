@@ -35,7 +35,7 @@ import {
 import {
   faPlug as fasPlug,
   faGamepadAlt as fasGamepadAlt, faMinus as fasMinus, faUniversity as fasUniversity, faEnvelope as fasEnvelope,
-  faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare,
+  faHeart as fasHeart, faSort as fasSort, faPlusSquare as fasPlusSquare, faMinusSquare as fasMinusSquare,
   faHorizontalRule as fasHorizontalRule, faSignInAlt as fasSignInAlt,
   faTreasureChest as fasTreasureChest, faSlidersV as fasSlidersV, faBolt as fasBolt,
   faBurn as fasBurn, faSack as fasSack, faLayerGroup as fasLayerGroup,
@@ -155,6 +155,7 @@ export class IconService {
   public readonly fasSigma = fasSigma;
   public readonly fasWheat = fasWheat;
   public readonly fasPlusSquare = fasPlusSquare;
+  public readonly fasMinusSquare = fasMinusSquare;
 
   public readonly fabXbox = fabXbox;
   public readonly farTimesSquare = farTimesSquare;

@@ -5,12 +5,20 @@
       <span class="hide-mobile-inline">&ensp;{{state.config.title}}</span>
     </button>
     <mat-menu #menu="matMenu">
-      <button *ngIf="!state.allSelected" mat-menu-item (click)="selectAll()">
-        <fa-icon [icon]="iconService.fasTimes"></fa-icon>
-        Clear Filter
+      <button mat-menu-item (click)="selectAll()">        
+        Select All
       </button>
       <a *ngFor="let choice of state.choices" mat-menu-item (click)="exclusiveSelect(choice)">
-        <mat-checkbox [(ngModel)]="choice.value" (click)="select($event, choice); false"></mat-checkbox>
+        
+          <button mat-icon-button (click)="select($event, choice); false" [color]="choice.value?'accent':'primary'">
+            <ng-container *ngIf="choice.value">
+              <fa-icon size="lg" [fixedWidth]="true" [icon]="iconService.fasPlusSquare"></fa-icon>
+            </ng-container>
+            <ng-container *ngIf="!choice.value">
+              <fa-icon size="lg" [fixedWidth]="true" [icon]="iconService.fasMinusSquare"></fa-icon>
+            </ng-container>
+          </button>     
+        <!-- <mat-checkbox [(ngModel)]="choice.value" (click)="select($event, choice); false"></mat-checkbox> -->
         {{choice.display}}
       </a>
     </mat-menu>
