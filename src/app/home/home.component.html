@@ -52,9 +52,13 @@
           </button>
 
           <mat-menu #friendsMenu="matMenu">
-            <button *ngFor="let ui of fl" mat-menu-item>
+            <a mat-menu-item [routerLink]="['/','friends']" color="primary">
+              <fa-icon [icon]="iconService.farList"></fa-icon> Show all
+            </a>
+            <a *ngFor="let ui of fl" mat-menu-item [routerLink]="['/',ui.membershipType, ui.membershipId]">
               <fa-icon [icon]="platformMap[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
-            </button>
+            </a>
+            
           </mat-menu>
         </ng-container>
         <ng-template #noFriends>

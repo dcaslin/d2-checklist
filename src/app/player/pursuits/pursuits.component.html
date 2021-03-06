@@ -1,10 +1,11 @@
 <ng-container *ngIf="state.player|async as player">
-  <ng-container *ngIf="player.bounties==null || player.bounties.length==0">
+  <ng-container *ngIf="player.bounties==null || (player.bounties.length==0 && player.quests==0)">
     
     <div class="privacy-note left" *ngIf="(state.isSignedOn|async) && !(state.signedOnUserIsCurrent|async)">
       <h4>Privacy</h4>
       <p>
-        This user hasn't enabled viewing their non-equipped inventory. They'd need to <a class="underline"
+        The API is reporting zero bounties and quests for this player. They probably 
+        haven't enabled viewing their non-equipped inventory. They'd need to <a class="underline"
           href="https://www.bungie.net/en/Profile/Settings?category=Privacy" target="_blank" rel="noopener">
           check the "Show my non-equipped Inventory" at Bungie.net.</a> Hiding non-equipped inventory is the default
         privacy setting.
