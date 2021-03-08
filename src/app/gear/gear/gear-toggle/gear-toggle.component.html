@@ -8,7 +8,7 @@
       <button mat-menu-item (click)="selectAll()">        
         Select All
       </button>
-      <a *ngFor="let choice of state.choices" mat-menu-item (click)="exclusiveSelect(choice)">
+      <a *ngFor="let choice of state.choices" class="toggle-menu-button" mat-menu-item (click)="exclusiveSelect(choice)">
         
           <button mat-icon-button (click)="select($event, choice); false" [color]="choice.value?'accent':'primary'">
             <ng-container *ngIf="choice.value">
