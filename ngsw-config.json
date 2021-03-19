@@ -20,8 +20,8 @@
       "updateMode": "prefetch",
       "resources": {
         "files": [
-          "/assets/**",
-          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani|zip)"
+          "/assets/**/!(*.zip|*.json)",
+          "/*.(eot|svg|jpg|png|webp|gif|otf|ttf|xml|txt|woff|woff2)"
         ]
       }
     }
