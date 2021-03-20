@@ -81,13 +81,19 @@
                     </td>
                     <td>
 
-                        <div>{{member.lastOnlineStatusChange | amFromUnix | amTimeAgo}}</div>
+                        <div>
+                            {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
+                            <!-- {{member.lastOnlineStatusChange | amFromUnix | amTimeAgo}} -->
+                        </div>
                         <div class="simple-caption">
                             {{member.lastOnlineStatusChange | amFromUnix | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}
                         </div>
                     </td>
                     <td>
-                        <div>{{member.joinDate | amTimeAgo}}</div>
+                        <div>
+                            {{today| amDifference:(member.joinDate) | amDuration:'ms'}} ago
+                            <!-- {{member.joinDate | amTimeAgo}} -->
+                        </div>
                         <div class="simple-caption">{{member.joinDate | amDateFormat:'MMMM Do YYYY'}}</div>
                     </td>
                 </tr>

@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
 import { Sort } from '@app/service/model';
 import { IconService } from '@app/service/icon.service';
+import * as moment from 'moment';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +16,7 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./clan-info.component.scss']
 })
 export class ClanInfoComponent extends ChildComponent implements OnInit {
+  public today =  moment(new Date());
   sort: Sort = {
     name: 'name',
     ascending: true

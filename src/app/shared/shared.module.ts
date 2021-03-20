@@ -33,7 +33,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { MomentModule } from 'ngx-moment';
 
 import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energy-indicator.component';
 import { ItemIconComponent } from './item-icon/item-icon.component';
@@ -59,7 +58,6 @@ import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector
     CommonModule,
     FormsModule,
     FontAwesomeModule,
-    MomentModule,
     MatButtonModule,
     MatToolbarModule,
     MatSelectModule,
@@ -125,7 +123,6 @@ import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MomentModule,
     FontAwesomeModule,
     MatButtonModule,
     MatButtonToggleModule,
