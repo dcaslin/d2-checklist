@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
 import { ClanStateService, ClanAggHistoryEntry } from '../clan-state.service';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { ClanLifetimeDialogComponent } from './clan-lifetime-dialog/clan-lifetime-dialog.component';
 import { ClanUserListDialogComponent } from '../clan-settings/clan-user-list-dialog/clan-user-list-dialog.component';
@@ -25,11 +25,12 @@ export class ClanLifetimeComponent extends ChildComponent implements OnInit {
 
   ngOnInit() {
     this.state.allLoaded.pipe(
-      takeUntil(this.unsubscribe$))
+      takeUntil(this.unsubscribe$),
+      distinctUntilChanged(),
+      filter(x => x)
+      )
       .subscribe((done: boolean) => {
-        if (done) {
           this.state.loadAggHistory();
-        }
       });
   }
 
@@ -43,7 +44,7 @@ export class ClanLifetimeComponent extends ChildComponent implements OnInit {
     dc.minWidth = '50vw';
     this.dialog.open(ClanLifetimeDialogComponent, dc);
   }
-  
+
   openIncompleteDialog(entry: ClanAggHistoryEntry) {
     const dc = new MatDialogConfig();
     dc.disableClose = false;

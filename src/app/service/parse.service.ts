@@ -817,6 +817,9 @@ export class ParseService {
                     model.kd = model.activityKills / model.activityDeaths;
                 }
                 model.hash = ParseService.dedupeArray(model.hash);
+                model.hash.sort((a, b) => {
+                    if (b > a) { return 1; } else if (b < a) { return -1; } else { return 0; }
+                });
                 returnMe.push(model);
             }
         }
@@ -838,6 +841,7 @@ export class ParseService {
                     activityDeaths: null,
                     activityPrecisionKills: null,
                     activitySecondsPlayed: null,
+                    activityLightLevel: null,
                     efficiency: null
                 };
                 returnMe.push(addMe);
@@ -845,11 +849,16 @@ export class ParseService {
             }
         }
         returnMe.sort((a, b) => {
-            if (a.name > b.name) {
+            if (b.activityLightLevel > a.activityLightLevel) {
                 return 1;
-            } else if (a.name < b.name) {
+            } else if (b.activityLightLevel < a.activityLightLevel) {
                 return -1;
             } else {
+                if (a.name > b.name) {
+                    return 1;
+                } else if (a.name < b.name) {
+                    return -1;
+                }
                 return 0;
             }
         });
@@ -867,7 +876,7 @@ export class ParseService {
             if (!a.activityHash) { continue; }
             const vDesc: any = this.destinyCacheService.cache.Activity[a.activityHash];
             if (vDesc == null || (vDesc.activityModeHashes == null) && vDesc.activityTypeHash == null) { continue; }
-            const name = vDesc.displayProperties.name;
+            let name = vDesc.displayProperties.name;
             if (name == null) {
                 continue;
             }
@@ -875,7 +884,13 @@ export class ParseService {
             const nf = ParseService.isActivityType(vDesc, 547513715) && vDesc.tier >= 2;
             const raid = ParseService.isActivityType(vDesc, 2043403989);
             if (nf || raid) {
-                const entry = this.parseAggHistoryEntry(char, name, a, nf ? 'nf' : 'raid');
+                if (nf) {
+                    if (name.includes('The Ordeal') && !name.endsWith(vDesc.displayProperties.description)) {
+                        name = name + ': ' + vDesc.displayProperties.description;
+                    }
+                }
+                console.log(name);
+                const entry = this.parseAggHistoryEntry(char, name, a, nf ? 'nf' : 'raid', vDesc);
                 if (dict[name] == null) {
                     dict[name] = entry;
                 } else {
@@ -945,13 +960,14 @@ export class ParseService {
             activityDeaths: a.activityDeaths + b.activityDeaths,
             activityPrecisionKills: a.activityPrecisionKills + b.activityPrecisionKills,
             activitySecondsPlayed: timePlayed,
+            activityLightLevel: Math.max(a.activityLightLevel, b.activityLightLevel),
             efficiency: 0
         };
         ParseService.setEfficiency(returnMe);
         return returnMe;
     }
 
-    private parseAggHistoryEntry(char: Character, name: string, a: any, type: string): AggHistoryEntry {
+    private parseAggHistoryEntry(char: Character, name: string, a: any, type: string, vDesc: any): AggHistoryEntry {
         let fastest = ParseService.getBasicValue(a.values.fastestCompletionMsForActivity);
         if (fastest == 0) {
             fastest = null;
@@ -975,6 +991,7 @@ export class ParseService {
 
             activityPrecisionKills: ParseService.getBasicValue(a.values.activityPrecisionKills),
             activitySecondsPlayed: ParseService.getBasicValue(a.values.activitySecondsPlayed),
+            activityLightLevel: vDesc.activityLightLevel,
             efficiency: 0
         };
         ParseService.setEfficiency(returnMe);

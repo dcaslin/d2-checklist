@@ -989,6 +989,7 @@ export interface AggHistoryEntry {
 
     activityPrecisionKills: number;
     activitySecondsPlayed: number;
+    activityLightLevel: number;
     kd?: number;
     highScore?: number;
     highScorePGCR?: string;
