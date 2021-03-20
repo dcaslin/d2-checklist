@@ -48,6 +48,7 @@
     "@fortawesome/pro-regular-svg-icons": "^5.13.0",
     "@fortawesome/pro-solid-svg-icons": "^5.13.0",
     "chart.js": "^2.9.3",
+    "date-fns": "^2.19.0",
     "idb-keyval": "^3.2.0",
     "jszip-utils": "^0.1.0",
     "lodash.isequal": "^4.5.0",
