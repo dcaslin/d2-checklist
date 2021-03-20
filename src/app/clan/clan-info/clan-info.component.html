@@ -12,7 +12,7 @@
                         <fa-icon *ngIf="!clanMs.earned==true" [icon]="iconService.farSquare"></fa-icon>
                     </span>
                 </div>
-                <div class="clan-progress-row simple-caption-no-margin">
+                <div class="clan-progress-row simple-caption-darker-no-margin">
 
                     Level {{info.primaryProgression.level}}/{{info.primaryProgression.levelCap}} |
                     XP progress this week:&ensp;{{(info.primaryProgression.weeklyProgress)|number}}
@@ -34,7 +34,7 @@
 
     <h3>Membership Status</h3>
     <div class="section">
-        <div class="simple-caption">
+        <div class="simple-caption-darker">
             Clan created: {{info.creationDate|date:'short'}} | {{info.memberCount}} members
         </div>
 
@@ -83,18 +83,16 @@
 
                         <div>
                             {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
-                            <!-- {{member.lastOnlineStatusChange | amFromUnix | amTimeAgo}} -->
                         </div>
-                        <div class="simple-caption">
-                            {{member.lastOnlineStatusChange | amFromUnix | amDateFormat:'MMMM Do YYYY, h:mm:ss a'}}
+                        <div class="simple-caption-darker">
+                            {{member.lastOnlineStatusChange | xmFromUnix | xmDateFormat:'MMMM do yyyy, h:mm:ss a'}}
                         </div>
                     </td>
                     <td>
                         <div>
                             {{today| amDifference:(member.joinDate) | amDuration:'ms'}} ago
-                            <!-- {{member.joinDate | amTimeAgo}} -->
                         </div>
-                        <div class="simple-caption">{{member.joinDate | amDateFormat:'MMMM Do YYYY'}}</div>
+                        <div class="simple-caption-darker">{{member.joinDate | xmDateFormat:'MMMM do yyyy'}}</div>
                     </td>
                 </tr>
             </tbody>

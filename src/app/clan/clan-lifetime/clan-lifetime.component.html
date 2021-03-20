@@ -81,14 +81,14 @@
                     <td *ngIf="type=='nf'" data-label="Fastest">
                         <ng-container *ngIf="a.fastestCompletionMsForActivity.length==0">-</ng-container>
                         <div *ngFor="let c of a.fastestCompletionMsForActivity; first as isFirst">
-                            <div *ngIf="isFirst">{{c.data.fastestCompletionMsForActivity| amnsTiming:'ms'}}</div>
+                            <div *ngIf="isFirst">{{c.data.fastestCompletionMsForActivity| xmnsTiming:'ms'}}</div>
                             <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
                         </div>
                     </td>
                     <td data-label="Time Played">
                         <ng-container *ngIf="a.activitySecondsPlayed.length==0">-</ng-container>
                         <div *ngFor="let c of a.activitySecondsPlayed; first as isFirst">
-                            <div *ngIf="isFirst">{{c.data.activitySecondsPlayed | amnsTiming:'s'}}</div>
+                            <div *ngIf="isFirst">{{c.data.activitySecondsPlayed | xmnsTiming:'s'}}</div>
                             <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
                         </div>
                     </td>
