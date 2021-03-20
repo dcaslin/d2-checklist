@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
-import { TimingPipe } from './timing.pipe';
+import { TimingPipe, FromUnixPipe, DurationPipe, DifferencePipe, DateFormatPipe } from './timing.pipe';
 
 @NgModule({
   imports: [
   ],
-  declarations: [TimingPipe],
-  exports: [TimingPipe]
+  declarations: [TimingPipe, FromUnixPipe, DurationPipe, DifferencePipe, DateFormatPipe],
+  exports: [TimingPipe, FromUnixPipe, DurationPipe, DifferencePipe, DateFormatPipe]
 })
 export class PipeModule { }

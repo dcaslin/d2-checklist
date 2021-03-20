@@ -21,7 +21,7 @@
             <ng-container *ngTemplateOutlet="aggTable; context: {type: 'nf', history: history}">
             </ng-container>
         </mat-tab>
-        
+
     </mat-tab-group>
 
 </div>
@@ -45,7 +45,8 @@
                     <td class="lead">
                         <button mat-stroked-button (click)="openDialog(a)">
                             <span matTooltip="Weekly Nightfall">
-                                <fa-icon [icon]="iconService.fasCalendarStar" *ngIf="a.data.special" class="pad-right accent-text"></fa-icon>
+                                <fa-icon [icon]="iconService.fasCalendarStar" *ngIf="a.data.special"
+                                    class="pad-right accent-text"></fa-icon>
                                 <b>{{a.data.name}}</b>
                             </span>
                         </button>
@@ -87,7 +88,7 @@
                     <td data-label="Time Played">
                         <ng-container *ngIf="a.activitySecondsPlayed.length==0">-</ng-container>
                         <div *ngFor="let c of a.activitySecondsPlayed; first as isFirst">
-                            <div *ngIf="isFirst">{{c.data.activitySecondsPlayed|amnsTiming:'s'}}</div>
+                            <div *ngIf="isFirst">{{c.data.activitySecondsPlayed | amnsTiming:'s'}}</div>
                             <ng-container *ngTemplateOutlet="playerLabel; context: {member: c.member}"></ng-container>
                         </div>
                     </td>
@@ -118,7 +119,8 @@
 </ng-template>
 
 <ng-template #playerLabel let-member="member">
-    <a class="player-link" [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
+    <a class="player-link"
+        [routerLink]="['/',member.destinyUserInfo.membershipType, member.destinyUserInfo.membershipId]">
         {{member.destinyUserInfo.displayName}}
     </a>
 </ng-template>
