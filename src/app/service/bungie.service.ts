@@ -120,19 +120,20 @@ export class BungieService implements OnDestroy {
 
     // type can be 'force', 'cache' or 'best'
     public async applyAggHistoryForPlayer(player: Player, type: string): Promise<boolean> {
+        console.log(`applyAggHistoryForPlayer ${type}`);
         if (type !== 'force') {
             const cache = await this.getCachedAggHistoryForPlayer(player);
             if (cache != null) {
                 player.aggHistory = cache.data;
                 if (type == 'cache') {
-                    // console.log(player.profile.userInfo.displayName + ' found cached history, fresh = ' + (!cache.stale));
+                    console.log(player.profile.userInfo.displayName + ' found cached history, fresh = ' + (!cache.stale));
                     return cache.stale;
                 } else if (!cache.stale) {
-                    // console.log(player.profile.userInfo.displayName + ' found cached history, fresh = ' + (!cache.stale));
+                    console.log(player.profile.userInfo.displayName + ' found cached history, fresh = ' + (!cache.stale));
                     return cache.stale;
                 }
             } else if (type == 'cache') {
-                // console.log(player.profile.userInfo.displayName + ' no cached history');
+                console.log(player.profile.userInfo.displayName + ' no cached history');
                 return true;
             }
         }

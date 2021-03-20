@@ -734,14 +734,18 @@ export class ClanStateService {
         if (x.lastOnlineStatusChange > sCutoff) {
           return true;
         } else {
-
           this.inactiveMembers.push(x);
+          return false;
         }
       });
       this.members = members;
       this.sortedMembers.next(this.members.slice(0));
+      // this will filter members by platform as well
+      this.sortData();
+      const operateOnMe = this.sortedMembers.getValue();
+      console.log(`Active ${operateOnMe.length} / ${functMembers.length}`);
       this.loading.next(false);
-      for (const t of this.members) {
+      for (const t of operateOnMe) {
         if (this.modelPlayer.getValue() == null) {
           await this.loadSpecificPlayer(t, false);
         } else {
@@ -828,7 +832,7 @@ export class ClanStateService {
             if (char.milestones[mileStoneName.key] != null
               && !char.milestones[mileStoneName.key].locked
               && !char.milestones[mileStoneName.key].tooLowPower
-              ) {
+            ) {
               if (char.milestones[mileStoneName.key].pct != null) {
                 pctTotal += char.milestones[mileStoneName.key].pct;
                 possible++;
@@ -1037,6 +1041,7 @@ export class ClanStateService {
   // dialog
   // graph
   private async sweepAggHistory(type: string, msg: string) {
+    console.log(`Sweep agg history ${type} - ${msg}: ${this.sortedMembers.getValue().length}`);
     this.sweepMsg.next(msg);
     const loadAggDenom = this.sortedMembers.getValue().length;
     let loadAggNum = 0;
@@ -1045,6 +1050,7 @@ export class ClanStateService {
         if (!m.currentPlayer()) {
           continue;
         }
+        console.log(`    Sweep ${m.currentPlayer().profile.userInfo.displayName}`);
         if (type != 'nf') {
           await this.bungieService.applyAggHistoryForPlayer(m.currentPlayer(), type);
         }
@@ -1067,6 +1073,7 @@ export class ClanStateService {
     if (this.aggHistoryAllLoaded.getValue()) {
       return;
     }
+    console.log(`Load agg history`);
     await this.sweepAggHistory('cache', 'Checking cached history info: ');
     await this.sweepAggHistory('best', 'Loading latest history info: ');
     await this.sweepAggHistory('nf', 'Checking NF high scores: ');
@@ -1129,19 +1136,33 @@ export class ClanStateService {
       ClanStateService.cookAggHistoryEntry(pushMe, sortedMembers);
       clanAggHistoryEntrys.push(pushMe);
     }
-    clanAggHistoryEntrys.sort((a, b) => {
-      let aN = ClanStateService.removePrefix(a.data.name, 'The ', true);
-      const bN = ClanStateService.removePrefix(b.data.name, 'The ', true);
-      if (aN.startsWith('The ')) {
-        aN = aN.substr('The '.length);
-      }
-      if (aN > bN) {
+    clanAggHistoryEntrys.sort((xa, xb) => {
+      const a = xa.data;
+      const b = xb.data;
+      if (b.activityLightLevel > a.activityLightLevel) {
         return 1;
-      }
-      if (bN > aN) {
+      } else if (b.activityLightLevel < a.activityLightLevel) {
         return -1;
+      } else {
+        if (a.name > b.name) {
+          return 1;
+        } else if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
       }
-      return 0;
+      //   let aN = ClanStateService.removePrefix(a.data.name, 'The ', true);
+      //   const bN = ClanStateService.removePrefix(b.data.name, 'The ', true);
+      //   if (aN.startsWith('The ')) {
+      //     aN = aN.substr('The '.length);
+      //   }
+      //   if (aN > bN) {
+      //     return 1;
+      //   }
+      //   if (bN > aN) {
+      //     return -1;
+      //   }
+      //   return 0;
     });
     this.aggHistory.next(clanAggHistoryEntrys);
   }
@@ -1195,6 +1216,7 @@ export class ClanStateService {
     const pct = loadNum / loadDenom;
     this.profilesLoaded.next(pct);
     if (pct >= 1) {
+      console.log(`All players loaded`);
       this.allLoaded.next(true);
     }
     this.sortData();

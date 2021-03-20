@@ -45,7 +45,7 @@
         <tbody>
             <ng-container *ngFor="let a of player.aggHistory">
                 <tr *ngIf="type==a.type">
-                    <td>
+                    <td class="lead">
                         <span *ngIf="a.special" matTooltip="Weekly Nightfall">
                             <b>{{a.name}}</b>
                             <fa-icon [icon]="iconService.fasCalendarStar" class="pad-left accent-text"></fa-icon>
@@ -53,6 +53,9 @@
                         <span *ngIf="!a.special">
                             {{a.name}}
                         </span>
+                        <div *ngIf="debugmode|async">
+                            [{{a.hash}}]
+                        </div>
 
                     </td>
                     <td data-label="Efficiency">
