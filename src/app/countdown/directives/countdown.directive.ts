@@ -1,10 +1,10 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import * as moment from 'moment';
+import { differenceInSeconds, parseISO } from 'date-fns';
 import { Subject } from 'rxjs';
 import { switchMap, take, takeUntil, tap } from 'rxjs/operators';
-
 import { Destroyable } from '../../util/destroyable';
 import { SecondService } from '../services/second.service';
+
 
 @Directive({
   selector: '[expDateToSeconds]'
@@ -35,9 +35,9 @@ export class CountdownDirective extends Destroyable {
   }
 
   private getSecondsUntilDate(date: string): number {
-    const futureInputDate = moment(date);
-    const now = moment();
-    const seconds = futureInputDate.diff(now, 'seconds');
+    const futureInputDate = parseISO(date);
+    const now = new Date();
+    const seconds = differenceInSeconds(futureInputDate, now);
     return seconds > 0 ? seconds : 1;
   }
 

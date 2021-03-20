@@ -74,7 +74,7 @@
       <ng-container cdkColumnDef="timePlayedSeconds">
         <mat-header-cell *cdkHeaderCellDef mat-sort-header>Duration</mat-header-cell>
         <mat-cell *cdkCellDef="let row">
-          {{ row.timePlayedSeconds | xmnsTiming:'s' }}
+          {{ row.timePlayedSeconds | d2cTiming:'s' }}
         </mat-cell>
       </ng-container>
 

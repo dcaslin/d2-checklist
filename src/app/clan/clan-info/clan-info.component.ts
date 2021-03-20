@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { BungieGroupMember } from '@app/service/model';
+import { IconService } from '@app/service/icon.service';
+import { BungieGroupMember, Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ClanStateService } from '../clan-state.service';
-import { Sort } from '@app/service/model';
-import { IconService } from '@app/service/icon.service';
-import * as moment from 'moment';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +14,6 @@ import * as moment from 'moment';
   styleUrls: ['./clan-info.component.scss']
 })
 export class ClanInfoComponent extends ChildComponent implements OnInit {
-  public today =  moment(new Date());
   sort: Sort = {
     name: 'name',
     ascending: true

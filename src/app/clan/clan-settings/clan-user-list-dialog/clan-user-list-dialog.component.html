@@ -31,7 +31,7 @@
                         {{member.destinyUserInfo.platformName}}
                     </td>
                     <td data-label="Last Logon">
-                        {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
+                        {{member.lastOnlineStatusChange|d2cAgoHumanized}}
                     </td>
                 </tr>
             </tbody>

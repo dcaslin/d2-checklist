@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ItemType } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import * as moment from 'moment';
+import { differenceInMilliseconds, parseISO  } from 'date-fns';
 import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
@@ -198,7 +198,8 @@ export class BountyCatalogService extends Destroyable {
 
   private isExpired(expiration: string) {
     if (!expiration) { return false; } // not expired if there is no expiration
-    return moment(expiration).diff(moment()) <= 0;
+    const expDate = parseISO(expiration);
+    return differenceInMilliseconds(expDate, new Date()) <= 0;
   }
 
   // Meant to help some of the weirdness around only-in-inventory bounties

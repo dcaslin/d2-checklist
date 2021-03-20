@@ -1,16 +1,15 @@
 
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActivatedRoute, Router, Params } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
+import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
-import { Character, Const, NameDesc, Platform, Player, PublicMilestonesAndActivities } from '../service/model';
+import { Character, Const, Player, PublicMilestonesAndActivities } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
 import { PlayerStateService } from './player-state.service';
-import { BehaviorSubject } from 'rxjs';
-import * as moment from 'moment';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +18,6 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy {
-  public today = moment(new Date());
   public const: Const = Const;
   public PLATFORMS_DICT = Const.PLATFORMS_DICT;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);

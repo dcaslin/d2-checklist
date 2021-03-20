@@ -2,16 +2,15 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ArmorPerksDialogComponent, PlayerMods } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
 import { PlayerComponent } from '@app/player';
+import { IconService } from '@app/service/icon.service';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../service/bungie.service';
-import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult, InventoryPlug } from '../service/model';
+import { Character, DamageType, InventoryItem, ItemType, Player, SearchResult } from '../service/model';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from '../shared/child.component';
-import { IconService } from '@app/service/icon.service';
-import * as moment from 'moment';
-import { PlayerMods, ArmorPerksDialogComponent } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,8 +19,6 @@ import { PlayerMods, ArmorPerksDialogComponent } from '@app/gear/gear/armor-perk
   styleUrls: ['./party.component.scss']
 })
 export class PartyComponent extends ChildComponent implements OnInit, OnDestroy {
-  public today = moment(new Date());
-
   DamageType = DamageType;
   public errorMsg: BehaviorSubject<string> = new BehaviorSubject(null);
   public _player: BehaviorSubject<Player> = new BehaviorSubject(null);
@@ -104,7 +101,6 @@ export class PartyComponent extends ChildComponent implements OnInit, OnDestroy 
       this._player.next(x);
       const party: PartyPlayer[] = [];
       if (x.transitoryData != null) {
-        console.dir(x);
         for (const p of x.transitoryData.partyMembers) {
           party.push({
             searchResult: p,

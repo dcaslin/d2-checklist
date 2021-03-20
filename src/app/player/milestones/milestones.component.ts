@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { IconService } from '@app/service/icon.service';
 import { Character, Const, MileStoneName, Player } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { takeUntil } from 'rxjs/operators';
-import { PlayerStateService } from '../player-state.service';
-import { IconService } from '@app/service/icon.service';
-import * as moment from 'moment';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { PlBucketDialogComponent } from '../pl-bucket-dialog/pl-bucket-dialog.component';
+import { PlayerStateService } from '../player-state.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +15,6 @@ import { PlBucketDialogComponent } from '../pl-bucket-dialog/pl-bucket-dialog.co
   styleUrls: ['./milestones.component.scss']
 })
 export class MilestonesComponent extends ChildComponent implements OnInit {
-  public today =  moment(new Date());
   hideCompleteChars: string = null;
   Const = Const;
 

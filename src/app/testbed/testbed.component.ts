@@ -13,8 +13,7 @@ import { ChildComponent } from '@app/shared/child.component';
 export class TestbedComponent extends ChildComponent implements OnInit, OnDestroy {
 
   constructor(
-    storageService: StorageService,
-    public signedOnUserService: SignedOnUserService,
+    storageService: StorageService,    
     public iconService: IconService) {
     super(storageService);
 

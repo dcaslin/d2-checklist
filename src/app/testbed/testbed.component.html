@@ -1,49 +1,5 @@
 <div class="left test-container">
     <h1>Test Bed</h1>
-    <!-- <div class="flex-row">
-        <div><button mat-stroked-button (click)="signedOnUserService.refreshPlayer()">Refresh Player</button></div>        
-        <div><button mat-stroked-button (click)="signedOnUserService.loadVendorsIfNotLoaded()">Load Vendors</button></div>
-        <div><button mat-stroked-button (click)="signedOnUserService.refreshVendors()">Refresh Vendors</button></div>
-        <d2c-signed-on-loading-icon></d2c-signed-on-loading-icon>
-    </div>
-
-    <div *ngIf="signedOnUserService.vendors$|async as vendors">
-        <div class="flex-row">
-            <div *ngFor="let v of vendors">
-                <div *ngIf="v!=null">
-                    {{v.char.className}} {{v.cached}} {{v.ts}} <span *ngIf="v.loading"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></span>
-                </div>
-                <div *ngIf="v==null">
-                    Null
-                </div>
-            </div>
-        </div>
-    </div> -->
-    <hr>
-    <d2c-deals-container></d2c-deals-container>
-    <hr>
     
-    <!-- <div *ngIf="signedOnUserService.vendorDeals$|async as vendorDeals">
-        <div *ngIf="signedOnUserService.playerLoading$|async"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Player Loading</div>
-
-        <div *ngIf="vendorDeals.vendorsLoading>0"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon> Vendors Loading {{vendorDeals.vendorsLoading}} / {{vendorDeals.totalVendors}} </div>
-        <h3>Exchange</h3>
-        <h5>Banshee {{vendorDeals.exchange.banshee.length}}</h5>
-        <div *ngFor="let c of vendorDeals.exchange.banshee">
-            {{c.target.displayProperties.name}} (you have {{c.targetCount|number}}) costs {{c.cost.desc.displayProperties.name}} (you have {{c.costCount|number}})
-        </div>
-        <h5>Spider {{vendorDeals.exchange.spider.length}}</h5>
-        <div *ngFor="let c of vendorDeals.exchange.spider">
-            {{c.target?.displayProperties.name}} (you have {{c.targetCount|number}}}) costs {{c.cost?.desc?.displayProperties?.name}} (you have {{c.costCount|number}})
-        </div>
-        <h3>Collection</h3>
-        <h5>- Banshee</h5>
-        {{vendorDeals.collection.banshee.length}}
-        <h5>- Tess</h5>
-        {{vendorDeals.collection.tess.length}}
-        <h3>Exotic</h3>
-        {{vendorDeals.exotic.length}}
-        <h3>Legendary</h3>
-        {{vendorDeals.legendary.length}}
-    </div>     -->
+    <hr>
 </div>

@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { IconService } from '@app/service/icon.service';
 import { FriendListEntry, Player, UserInfo } from '@app/service/model';
-import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
@@ -17,7 +16,6 @@ import { ChildComponent } from '../../shared/child.component';
   styleUrls: ['./friends.component.scss']
 })
 export class FriendsComponent extends ChildComponent implements OnInit {
-  public today =  moment(new Date());
   public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject([]);
   modelPlayer: Player;
   playerCntr: 0;

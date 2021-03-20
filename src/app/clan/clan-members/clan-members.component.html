@@ -42,7 +42,7 @@
                             </ng-container>
 
                             <ng-template #lastPlayed>
-                                    {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                                {{player.profile.dateLastPlayed|d2cAgoHumanized}}
                             </ng-template>
                         </ng-container>
                         <ng-container *ngIf="player.superprivate">
@@ -51,7 +51,7 @@
                     </ng-container>
 
                     <ng-container *ngIf="(member.player$|async)==null">
-                        {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
+                        {{member.lastOnlineStatusChange|d2cAgoHumanized}}
                     </ng-container>
 
                 </td>
@@ -112,7 +112,7 @@
                     </td>
                     <td data-label="Time played">
                         <span *ngIf="!player.superprivate && player.minsPlayed" [matTooltip]="player.minsPlayed + ' mins'">
-                            {{ player.minsPlayed * 60 | amDuration:'seconds' }}
+                            {{ player.minsPlayed | d2cMinsHumanized }}
                         </span>
                     </td>
                 </ng-container>

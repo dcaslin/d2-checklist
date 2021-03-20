@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ClanUserList } from '@app/clan/clan-state.service';
+import { BungieGroupMember } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { BungieGroupMember } from '@app/service/model';
-import { ClanUserList } from '@app/clan/clan-state.service';
-import * as moment from 'moment';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,7 +12,6 @@ import * as moment from 'moment';
   styleUrls: ['./clan-user-list-dialog.component.scss']
 })
 export class ClanUserListDialogComponent extends ChildComponent implements OnInit {
-  public today =  moment(new Date());
   public title: string;
   public desc: string;
   public users: BungieGroupMember[];

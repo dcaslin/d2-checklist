@@ -61,7 +61,7 @@
               <br>
               <span class="simple-caption-no-margin">{{player.maxLL}} <ng-container *ngIf="player.maxLLFraction"><sup>{{player.maxLLFraction.top}}</sup>&frasl;<sub>{{player.maxLLFraction.bottom}}</sub></ng-container>
                 <br>
-                {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                {{player.profile.dateLastPlayed|d2cAgoHumanized}}
                 <br>
                 {{player.triumphScore|number : '2.0-0'}} <fa-icon [icon]="iconService.falTrophy">
                 </fa-icon>

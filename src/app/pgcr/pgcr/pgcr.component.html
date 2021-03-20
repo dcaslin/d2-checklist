@@ -31,7 +31,7 @@
         <td>{{data.period|date:'shortDate'}}</td>
         <td>{{data.period|date:'shortTime'}}</td>
         <td>{{data.finish|date:'shortTime'}}</td>
-        <td>{{data.activityDurationSeconds | xmnsTiming:'s' }}</td>
+        <td>{{data.activityDurationSeconds | d2cTiming:'s' }}</td>
         <td>
           <ng-container *ngIf="avgGlory|async as ag">
             {{ag|number: '0.0-0'}}

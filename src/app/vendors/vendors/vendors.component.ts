@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, On
 import { IconService } from '@app/service/icon.service';
 import { Character, CharacterVendorData, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser } from '@app/service/model';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
-import { StorageService } from '@app/service/storage.service';
 import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
-import * as moment from 'moment';
 import { BehaviorSubject, combineLatest, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
@@ -34,9 +32,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
   public option$: BehaviorSubject<VendorChoice> = new BehaviorSubject(this.options[0]);
   public data$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   private vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
-
   private unsubscribe$: Subject<void> = new Subject<void>();
-  public today = moment(new Date());
 
   ItemType = ItemType;
   ClassAllowed = ClassAllowed;

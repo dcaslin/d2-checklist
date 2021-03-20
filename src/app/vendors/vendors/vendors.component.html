@@ -143,10 +143,7 @@
                             <td>
                                 <ng-container *ngIf="i.vendorItemInfo as vi">
                                     {{vi.vendor.name}}
-                                    <span class="type-caption">Resets in {{ vi.vendor.nextRefreshDate | amDifference:
-                                        today
-                                        |
-                                        amDuration:'ms'}}</span>
+                                    <span class="type-caption">Resets {{ vi.vendor.nextRefreshDate | d2cAgoHumanized}}</span>
                                     <div *ngFor="let c of vi.costs">
                                         <small>{{c.desc.displayProperties.name}} {{c.count}}</small>
                                     </div>

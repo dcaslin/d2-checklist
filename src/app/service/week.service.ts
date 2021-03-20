@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
+import { add, differenceInDays, differenceInWeeks, parseISO, setHours, sub } from 'date-fns';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
 import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInfo, NameDesc, PublicMilestonesAndActivities } from './model';
@@ -363,19 +363,17 @@ export class WeekService {
 
   // the week of the chosen season, so far
   public static getChosenWeek(): number {
-    const seasonStart = '2021-02-09T17:00:00Z';
-    const numWeeks = Math.floor(moment.duration(moment(moment.now()).diff(seasonStart)).asWeeks());
+    const seasonEpoch = parseISO('2021-02-09T17:00:00Z');
+    const numWeeks = differenceInWeeks(new Date(), seasonEpoch);
     return numWeeks + 1;
   }
 
   private getCurrWeek(publicMilestones: PublicMilestonesAndActivities): Week {
     let currWeek: Week;
     if (publicMilestones && publicMilestones.weekStart) {
-      const weekEpoch = moment.utc([2019, 3, 2, 17, 0]); // 4/2/2019
-      const thisWeek: moment.Moment = publicMilestones.weekStart;
-      const numWeeks = Math.floor(moment.duration(thisWeek.diff(weekEpoch)).asWeeks());
-
-
+      const weekEpoch = parseISO('2019-04-02T17:00:00.000Z'); // 4/2/2019
+      const thisWeek = publicMilestones.weekStart;
+      const numWeeks = differenceInWeeks(thisWeek, weekEpoch);
       const ascInfo = WeekService.getRotation(numWeeks, this.ASCENDENT_INFO) as DreamingCityRow;
 
       currWeek = {
@@ -420,19 +418,19 @@ export class WeekService {
   }
 
   public getLostSectors(delta?: number): LostSectors {
-    const today = moment(moment.utc());
+    let referenceDate = new Date();
     if (delta) {
-      today.add(delta, 'days');
+      referenceDate = add(referenceDate, { days: delta});
     }
     // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
-    if (today.hour() < 17) {
-      console.log(`Prior to reset ${moment.utc().hour()}`);
-      today.subtract(1, 'days');
+    if (referenceDate.getUTCHours() < 17) {
+      console.log(`Prior to reset ${referenceDate.getHours()}`);
+      referenceDate = sub(referenceDate, { days: 1});
     }
     // set our reference time to 5PM arbitrarily so we're consistent
-    today.hour(17);
-    const lsEpoch = moment.utc([2020, 11, 15, 17, 0]); // Dev 15 2019
-    const lsDays = Math.floor(moment.duration(today.diff(lsEpoch)).asDays());
+    referenceDate = setHours(referenceDate, 17);
+    const lsEpoch = parseISO('2020-12-15T17:00:00.000Z'); // Dec 15 2020
+    const lsDays = differenceInDays(referenceDate, lsEpoch);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
     const lsLootIndex = lsDays % this.LS_LEGEND_LOOT.length;
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
@@ -442,7 +440,7 @@ export class WeekService {
 
     const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
     return {
-      day: today.toISOString(),
+      day: referenceDate.toISOString(),
       legendaryLostSector: {
         icon: recordDescForIcon.displayProperties.icon,
         activity: legendActivity,
@@ -460,9 +458,9 @@ export class WeekService {
 
   public async getToday(): Promise<Today> {
 
-    const altarEpoch = moment.utc([2019, 10, 9, 17, 0]); // nov 9 2019
-    const today = moment(moment.now());
-    const altarDays = Math.floor(moment.duration(today.diff(altarEpoch)).asDays());
+    const altarEpoch = parseISO('2019-11-09T17:00:00.000Z'); // nov 9 2019
+    const today = new Date();
+    const altarDays = differenceInDays(today, altarEpoch);
     const alterIndex = altarDays % 3;
 
     let altarWeaponKey = null;

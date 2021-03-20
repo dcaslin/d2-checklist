@@ -12,9 +12,9 @@
 
       </mat-card-title>
       <mat-card-subtitle *ngIf="!player.superprivate">
-        Last played {{today| amDifference:char.dateLastPlayed| amDuration:'ms'}} ago, for
+        Last played {{char.dateLastPlayed | d2cAgoHumanized }}, for
         {{char.minutesPlayedThisSession}} mins
-        <br> Total time played: {{ char.minutesPlayedTotal*60 | amDuration:'seconds' }} |
+        <br> Total time played: {{ char.minutesPlayedTotal | d2cMinsHumanized }} |
         {{char.minutesPlayedTotal/60|
         number : '1.0-0'}} hours | {{char.minutesPlayedTotal|number : '0.0-0'}} mins
         <br>

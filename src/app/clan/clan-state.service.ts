@@ -3,7 +3,8 @@ import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
-import * as moment from 'moment';
+import { parseISO } from 'date-fns';
+import { differenceInDays } from 'date-fns/esm';
 import { BehaviorSubject } from 'rxjs';
 import { AggHistoryEntry, Badge, BungieGroupMember, ClanInfo, Const, Platform, Player, Seal, TriumphCollectibleNode, TriumphRecordNode } from '../service/model';
 
@@ -728,9 +729,9 @@ export class ClanStateService {
       });
       const cutoff = new Date();
       cutoff.setMonth(cutoff.getMonth() - this.inactivityMonthThreshold);
-      const cutoffUnix = cutoff.getTime() / 1000;
+      const sCutoff = cutoff.toISOString();
       const members = functMembers.filter(x => {
-        if (x.lastOnlineStatusChange > cutoffUnix) {
+        if (x.lastOnlineStatusChange > sCutoff) {
           return true;
         } else {
 
@@ -784,11 +785,10 @@ export class ClanStateService {
       } else {
         sCsv += '0,';
       }
-
-      const today = moment();
-      const lastPlayed = moment(member.currentPlayer().profile.dateLastPlayed);
-      const diff = today.diff(lastPlayed, 'days');
-      sCsv += diff + ',';
+      const now = new Date();
+      const lastPlayed = parseISO(member.currentPlayer().profile.dateLastPlayed);
+      const daysSinceLastPlayed = differenceInDays(now, lastPlayed);
+      sCsv += daysSinceLastPlayed + ',';
       sCsv += member.currentPlayer().artifactPowerBonus + ',';
       if (member.currentPlayer().seasonRank) {
         sCsv += member.currentPlayer().seasonRank.level + ',';
@@ -940,22 +940,18 @@ export class ClanStateService {
   }
 
 
-  // private static compareDate(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
-  //   return ClanStateService.simpleCompare(-1 * a.lastOnlineStatusChange, -1 * b.lastOnlineStatusChange, reverse);
-  // }
-
   private static compareDate(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aD = 0;
     let bD = 0;
     if (a.currentPlayer() != null) {
       aD = Date.parse(a.currentPlayer().profile.dateLastPlayed);
     } else {
-      aD = a.lastOnlineStatusChange * 1000;
+      aD = Date.parse(a.lastOnlineStatusChange);
     }
     if (b.currentPlayer() != null) {
       bD = Date.parse(b.currentPlayer().profile.dateLastPlayed);
     } else {
-      bD = b.lastOnlineStatusChange * 1000;
+      bD = Date.parse(b.lastOnlineStatusChange);
     }
     return ClanStateService.simpleCompare(aD, bD, reverse);
   }
@@ -1174,7 +1170,7 @@ export class ClanStateService {
       if (x != null && x.characters != null) {
         // in case this is a retry
         target.errorMsg = null;
-        this.bungieService.loadActivityPseudoMilestones(target.player$);
+        // this.bungieService.loadActivityPseudoMilestones(target.player$);
       } else {
         target.errorMsg = 'Unabled to load player data';
       }
