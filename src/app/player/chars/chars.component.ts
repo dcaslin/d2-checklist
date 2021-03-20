@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../player-state.service';
-import * as moment from 'moment';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +11,6 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./chars.component.scss']
 })
 export class CharsComponent extends ChildComponent implements OnInit {
-  public today =  moment(new Date());
 
   constructor(
     storageService: StorageService,

@@ -90,7 +90,6 @@ export class SignedOnUserService implements OnDestroy {
               if (sPlatform != null) {
                 platform = parseInt(sPlatform, 10);
               } else {
-                console.log('No preferred platform using: ' + platform);
                 if (membership.destinyMemberships.length > 1) {
                   selectedUser.promptForPlatform = true;
                 }
@@ -113,7 +112,6 @@ export class SignedOnUserService implements OnDestroy {
       });
     // handle clans
     this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-      console.log("Apply clans");
       if (selectedUser != null) {
         this.applyClans(selectedUser);
       }

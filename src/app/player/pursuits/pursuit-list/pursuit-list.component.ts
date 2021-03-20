@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerStateService } from '@app/player/player-state.service';
+import { IconService } from '@app/service/icon.service';
 import { InventoryItem, Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
-import { IconService } from '@app/service/icon.service';
-import * as moment from 'moment';
 
 
 @Component({
@@ -19,7 +18,6 @@ import * as moment from 'moment';
   styleUrls: ['./pursuit-list.component.scss']
 })
 export class PursuitListComponent extends ChildComponent implements OnInit {
-  public today =  moment(new Date());
   public displayFilterText: string = null;
   public realFilterText: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public searchSubject: Subject<void> = new Subject<void>();

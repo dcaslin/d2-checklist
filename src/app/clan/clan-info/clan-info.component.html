@@ -82,17 +82,18 @@
                     <td>
 
                         <div>
-                            {{today| amDifference:(member.lastOnlineStatusChange | amFromUnix) | amDuration:'ms'}} ago
+                            {{member.lastOnlineStatusChange | d2cAgoHumanized }}
                         </div>
                         <div class="simple-caption-darker">
-                            {{member.lastOnlineStatusChange | xmFromUnix | xmDateFormat:'MMMM do yyyy, h:mm:ss a'}}
+                            {{member.lastOnlineStatusChange | d2cDateFormat:'MMMM do yyyy, h:mm:ss a'}}
                         </div>
                     </td>
                     <td>
                         <div>
-                            {{today| amDifference:(member.joinDate) | amDuration:'ms'}} ago
+                            
+                            {{member.joinDate | d2cAgoHumanized }}
                         </div>
-                        <div class="simple-caption-darker">{{member.joinDate | xmDateFormat:'MMMM do yyyy'}}</div>
+                        <div class="simple-caption-darker">{{member.joinDate | d2cDateFormat:'MMMM do yyyy'}}</div>
                     </td>
                 </tr>
             </tbody>

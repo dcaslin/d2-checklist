@@ -120,12 +120,12 @@
           </td>
           <td data-label="Expiration" *ngIf="mode!='quests'">
             <span *ngIf="g.expired else notExpired" class="expire-caption warn-text">
-              Expired {{ g.expirationDate | amDifference: today | amDuration:'ms'}} ago
+              Expired {{ g.expirationDate | d2cAgoHumanized }}
             </span>
             <ng-template #notExpired>
               <span *ngIf="g.expirationDate!=null else noExp" class="expire-caption">
                 <fa-icon [icon]="iconService.fasClock"></fa-icon>
-                {{ g.expirationDate | amDifference: today | amDuration:'ms'}}
+                {{ g.expirationDate | d2cAgoHumanized:true }}
               </span>
               <ng-template #noExp>
                 <span class="expire-caption">

@@ -111,12 +111,12 @@
                                     <ng-container *ngIf="a.activityCompletions>0; else emptyCell">
                                         <ng-container
                                             *ngIf="a.activityCompletions>0 && a.fastestCompletionMsForActivity; else emptyCell">
-                                            {{a.fastestCompletionMsForActivity| xmnsTiming:'ms'}}
+                                            {{a.fastestCompletionMsForActivity| d2cTiming:'ms'}}
                                         </ng-container>
                                     </ng-container>
                                 </td>
                                 <td data-label="Time Played">
-                                    {{a.activitySecondsPlayed| xmnsTiming:'s'}}
+                                    {{a.activitySecondsPlayed| d2cTiming:'s'}}
                                 </td>
                                 <td data-label="K/D">
                                     {{a.kd| number:'1.1-1'}}

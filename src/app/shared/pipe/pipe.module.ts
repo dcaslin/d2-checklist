@@ -1,17 +1,14 @@
 import { NgModule } from '@angular/core';
-import { FromUnixPipe, DurationPipe, DifferencePipe } from './timing.pipe';
-import { XTimingPipe, XFromUnixPipe, XDurationPipe, XDifferencePipe, XDateFormatPipe } from './timing2.pipe';
+import { AgoHumanizedPipe, TimingPipe, MinsHumanizedPipe, DateFormatPipe } from './timing.pipe';
 
 @NgModule({
   imports: [
   ],
   declarations: [
-    FromUnixPipe, DurationPipe, DifferencePipe,
-    XTimingPipe, XFromUnixPipe, XDurationPipe, XDifferencePipe, XDateFormatPipe
+    AgoHumanizedPipe, TimingPipe, MinsHumanizedPipe, DateFormatPipe
   ],
   exports: [
-    FromUnixPipe, DurationPipe, DifferencePipe,
-    XTimingPipe, XFromUnixPipe, XDurationPipe, XDifferencePipe, XDateFormatPipe
+    AgoHumanizedPipe, TimingPipe, MinsHumanizedPipe, DateFormatPipe
   ]
 })
 export class PipeModule { }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
+import { fromUnixTime, parseISO } from 'date-fns';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
@@ -1297,14 +1297,12 @@ export class ParseService {
             if (a.name > b.name) { return 1; }
             return 0;
         });
-        let weekStart: moment.Moment = null;
+        let weekStart: Date = null;
 
         // grab special milestones to have them for the home screen and such
         for (const m of returnMe) {
             if (m.milestoneType == 3 && weekStart == null) {
-                weekStart = moment(m.start);
-
-                console.dir(m.start);
+                weekStart = parseISO(m.start);
             }
         }
         const pmsa: PublicMilestonesAndActivities = {
@@ -3969,7 +3967,7 @@ export class ParseService {
         members.forEach(x => {
             const b: BungieGroupMember = new BungieGroupMember();
             b.groupId = x.groupId;
-            b.lastOnlineStatusChange = x.lastOnlineStatusChange;
+            b.lastOnlineStatusChange = fromUnixTime(x.lastOnlineStatusChange).toISOString();
             b.isOnline = x.isOnline;
             b.memberType = x.memberType;
             b.destinyUserInfo = this.parseUserInfo(x.destinyUserInfo);

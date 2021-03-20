@@ -42,14 +42,13 @@
               </ng-container>
             </ng-container>
 
-            <div class="simple-caption" *ngIf="player!=null && !player.superprivate">
+            <div class="simple-caption-darker" *ngIf="player!=null && !player.superprivate">
               <ng-container *ngIf="player.currentActivity==null">
-                Last played: {{today| amDifference:player.profile.dateLastPlayed | amDuration:'ms'}} ago
+                Last played: {{player.profile.dateLastPlayed | d2cAgoHumanized }}
               </ng-container>
               <span *ngIf="player.currentActivity!=null">
-                Playing now: {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started {{today|
-                    amDifference:player.currentActivity.dateActivityStarted|
-                    amDuration:'ms'}} ago
+                Playing now: {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started 
+                {{player.currentActivity.dateActivityStarted | d2cAgoHumanized }}
               </span>
             </div>
 

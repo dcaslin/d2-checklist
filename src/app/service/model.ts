@@ -1,7 +1,6 @@
 import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
-import { Moment } from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { ManifestInventoryItem } from './destiny-cache.service';
 
@@ -257,7 +256,7 @@ export interface PublicMilestonesAndActivities {
     strikes: PublicMilestone;
     nightfall: PublicMilestone;
     empireHunts: MilestoneActivity[];
-    weekStart: Moment;
+    weekStart: Date;
 }
 
 export interface PublicMilestone {
@@ -410,7 +409,7 @@ export class SelectedUser {
 export class BungieGroupMember {
     memberType: number;
     isOnline: boolean;
-    lastOnlineStatusChange: number;
+    lastOnlineStatusChange: string; // TODO make ISO string
     groupId: string;
     destinyUserInfo: UserInfo;
     bungieNetUserInfo: BungieNetUserInfo;
