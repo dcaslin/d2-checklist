@@ -55,7 +55,7 @@
     "lz-string": "^1.4.4",
     "ng2-charts": "^2.4.2",
     "ngx-clipboard": "^12.3.1",
-    "rxjs": "~6.6.3",
+    "rxjs": "~6.6.6",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
   },
