@@ -889,7 +889,6 @@ export class ParseService {
                         name = name + ': ' + vDesc.displayProperties.description;
                     }
                 }
-                console.log(name);
                 const entry = this.parseAggHistoryEntry(char, name, a, nf ? 'nf' : 'raid', vDesc);
                 if (dict[name] == null) {
                     dict[name] = entry;

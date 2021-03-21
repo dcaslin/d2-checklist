@@ -739,7 +739,6 @@ export class ClanStateService {
         }
       });
       this.members = members;
-      this.sortedMembers.next(this.members.slice(0));
       // this will filter members by platform as well
       this.sortData();
       const operateOnMe = this.sortedMembers.getValue();
@@ -778,7 +777,7 @@ export class ClanStateService {
     });
     sCsv += '\n';
 
-    this.members.forEach(member => {
+    this.sortedMembers.getValue().forEach(member => {
       if (member.destinyUserInfo == null) { return; }
       if (member.currentPlayer() == null) { return; }
 
@@ -1047,7 +1046,9 @@ export class ClanStateService {
     let loadAggNum = 0;
     for (const m of this.sortedMembers.getValue()) {
       try {
+        // asdf
         if (!m.currentPlayer()) {
+          console.log(`    Skipping ${m.destinyUserInfo.displayName}`);
           continue;
         }
         console.log(`    Sweep ${m.currentPlayer().profile.userInfo.displayName}`);
@@ -1193,29 +1194,17 @@ export class ClanStateService {
         target.errorMsg = null;
         // this.bungieService.loadActivityPseudoMilestones(target.player$);
       } else {
-        target.errorMsg = 'Unabled to load player data';
+        target.errorMsg = 'Unable to load player data';
       }
-
-
     } catch (err) {
       console.dir(err);
       console.log('Skipping error on ' + target.destinyUserInfo.displayName + ' and continuing');
-      target.errorMsg = 'Unabled to load player data';
+      target.errorMsg = 'Unable to load player data';
     }
-    let loadNum = 0;
-    let loadDenom = 0;
-    for (const t of this.members) {
-      if (t.errorMsg != null || target.currentPlayer() != null) {
-        loadNum++;
-      }
-      loadDenom++;
-    }
-    if (loadDenom === 0) {
-      loadDenom++;
-    }
-    const pct = loadNum / loadDenom;
-    this.profilesLoaded.next(pct);
-    if (pct >= 1) {
+
+    const loaded = this.sortedMembers.getValue().filter(x => (x.errorMsg != null || x.currentPlayer() != null)).length;
+    const total = this.sortedMembers.getValue().length;
+    if (loaded >= total && total > 0) {
       console.log(`All players loaded`);
       this.allLoaded.next(true);
     }
