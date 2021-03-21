@@ -51,8 +51,6 @@
               }
             ],
             "scripts": [
-              "node_modules/jszip/dist/jszip.min.js",
-              "node_modules/jszip-utils/dist/jszip-utils.js"
             ]
           },
           "configurations": {
@@ -110,8 +108,6 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "node_modules/jszip/dist/jszip.min.js",
-              "node_modules/jszip-utils/dist/jszip-utils.js"
             ],
             "styles": [
               {
