@@ -1,0 +1,25 @@
+.currency-icon {
+    width: 24px;
+    height: 24px;
+    background-size: cover;
+    display: inline-block;
+}
+
+.defer-block {
+    display: inline-block;
+}
+
+.slide-left {
+    animation: slide-left-anim 0.4s ease;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.flex-row > span {
+    padding: 10px;
+}

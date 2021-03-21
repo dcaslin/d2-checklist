@@ -2493,6 +2493,7 @@ export class ParseService {
             this.handleCurrency('4257549985', gear, currencies); // shards
             this.handleCurrency('4257549984', gear, currencies); // prisms
             this.handleCurrency('3853748946', gear, currencies); // cores
+            this.handleCurrency('3702027555', gear, currencies); // spoils
         }
         if (resp.profileInventory?.data) {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
@@ -3523,6 +3524,8 @@ export class ParseService {
                 } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
                     type = ItemType.CurrencyExchange;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
+                    type = ItemType.ExchangeMaterial;
+                } else if (type === ItemType.None && desc.displayProperties.name === 'Spoils of Conquest') {
                     type = ItemType.ExchangeMaterial;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Currency') >= 0) {
                     type = ItemType.ExchangeMaterial;
