@@ -166,7 +166,7 @@
           <div class="currency-icons slide-left d-none d-xxl-block"
             *ngIf="signedOnUserService.gearMetadata$|async as gm">
             <div class="gm-section">
-              <a class="currency-chip fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
+              <a class="margin-left-10 fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
                 [queryParams]="{ owner: 'vault'}">
                 <mat-icon>account_balance</mat-icon> {{gm.vault.count}} / {{gm.vault.total}}
               </a>
@@ -175,7 +175,7 @@
               <mat-icon>email</mat-icon>
 
               <ng-container *ngFor="let p of gm.postmaster">
-                <a class="currency-chip fake-link" [matTooltip]="p.char.className + ' postmaster' "
+                <a class="margin-left-10 fake-link" [matTooltip]="p.char.className + ' postmaster' "
                   [routerLink]="['/gear']" [queryParams]="{ postmaster: 'true', owner: p.char.characterId}">
                   <span *ngIf="p.char.emblemPath!=null" class="currency-icon"
                     [style.background-image]="'url(//www.bungie.net' + p.char.emblemPath + ')'">
@@ -194,13 +194,7 @@
 
           </div>
           <div class="currency-icons">
-            <div class="defer-block slide-left" *ngFor="let c of signedOnUserService.currencies$|async">
-              <span *ngIf="c.hash!='3147280338' && c.hash!='2817410917'" class="currency-chip"
-                [matTooltip]="c.count+' '+c.name">
-                <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-                <span> {{c.count|number}}</span>
-              </span>
-            </div>
+            <d2c-player-currencies></d2c-player-currencies>
           </div>
           <ng-container *ngIf="signedOnUserService.clans$|async as clans">
             <button *ngIf="clans.length==1" mat-button class="slide-left d-none d-md-inline nav-button"

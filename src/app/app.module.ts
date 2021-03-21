@@ -62,6 +62,7 @@ import { CollectionDealsComponent } from './deals/collection-deals/collection-de
 import { ExchangeDealsComponent } from './deals/exchange-deals/exchange-deals.component';
 import { ArmorDealsComponent } from './deals/armor-deals/armor-deals.component';
 import { ArmorCompareDialogComponent } from './deals/armor-compare-dialog/armor-compare-dialog.component';
+import { PlayerCurrenciesComponent } from './player-currencies/player-currencies.component';
 
 
 
@@ -100,7 +101,7 @@ import { ArmorCompareDialogComponent } from './deals/armor-compare-dialog/armor-
     SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent,
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
-    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, ArmorCompareDialogComponent
+    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, ArmorCompareDialogComponent, PlayerCurrenciesComponent
   ],
   providers: [
     AuthService,
