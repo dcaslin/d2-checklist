@@ -1,12 +1,11 @@
-import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { cookError, safeStringifyError } from '@app/shared/utilities';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError, last, retry, tap } from 'rxjs/operators';
-
-declare let JSZip: any;
+import { unzipSync, strFromU8 } from 'fflate';
 
 @Injectable()
 export class DestinyCacheService {
@@ -69,10 +68,11 @@ export class DestinyCacheService {
   }
 
   async unzip(blob: Blob): Promise<void> {
-    const zip: any = new JSZip();
-    const zip2 = await zip.loadAsync(blob);
-    const z2f = zip2.file('destiny2.json');
-    const data2 = await z2f.async('string');
+    const ab = await blob.arrayBuffer();
+    const unzipMe = new Uint8Array(ab);
+    const decompressed = unzipSync(unzipMe);
+    const binaryData = decompressed['destiny2.json'];
+    const data2 = strFromU8(binaryData);
     this.cache = JSON.parse(data2);
     this.ready$.next(true);
   }
@@ -98,12 +98,6 @@ export class DestinyCacheService {
   private async download(cacheBuster?: string): Promise<Blob> {
     console.log(`--- load remote cache ${env.versions.manifest} ---`);
 
-    let headers = new HttpHeaders();
-    headers = headers
-      .set('Content-Type', 'application/x-www-form-urlencoded');
-    const httpOptions = {
-      headers: headers
-    };
     let uri = `/assets/destiny2.zip?v=${env.versions.manifest}`;
     if (cacheBuster && cacheBuster.trim().length > 0) {
       uri = `/assets/destiny2.zip?v=${env.versions.manifest}-${cacheBuster}`;

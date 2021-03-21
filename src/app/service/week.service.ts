@@ -424,7 +424,7 @@ export class WeekService {
     }
     // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
     if (referenceDate.getUTCHours() < 17) {
-      console.log(`Prior to reset ${referenceDate.getHours()}`);
+      // console.log(`Prior to reset ${referenceDate.getHours()}`);
       referenceDate = sub(referenceDate, { days: 1});
     }
     // set our reference time to 5PM arbitrarily so we're consistent
