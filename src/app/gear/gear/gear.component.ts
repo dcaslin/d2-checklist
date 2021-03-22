@@ -174,6 +174,13 @@ export class GearComponent extends ChildComponent {
       wildcard: true,
       grabValue: (x: InventoryItem) => x.godRollInfo
     };
+    const armorStatPointsConfig: ToggleConfig = {
+      title: 'Stat Points',
+      debugKey: 'Stat Points',
+      icon: iconService.fasStar,
+      displayTabs: [ItemType.Armor],
+      grabValue: (x: InventoryItem) => x.statPointTier()
+    };
     const weaponBucketsConfig: ToggleConfig = {
       title: 'Slot',
       debugKey: 'Weapon Bucket',
@@ -212,7 +219,7 @@ export class GearComponent extends ChildComponent {
     const seasonConfig: ToggleConfig = {
       title: 'Season Mods',
       debugKey: 'Seasonal Mods',
-      icon: iconService.fasWheat,
+      icon: iconService.fasTicketAlt,
       displayTabs: [ItemType.Armor],
       grabValue: (x: InventoryItem) => x.specialModSockets  // this is a string[]
     };
@@ -261,7 +268,7 @@ export class GearComponent extends ChildComponent {
     const classTypeConfig: ToggleConfig = {
       title: 'Class',
       debugKey: 'Class Type',
-      icon: iconService.fasBalanceScale,
+      icon: iconService.fasChessKnight,
       displayTabs: [ItemType.Armor],
       grabValue: (x: InventoryItem) => x.classAllowed
     };
@@ -326,6 +333,13 @@ export class GearComponent extends ChildComponent {
         new Choice(true, 'Postmaster'),
         new Choice(false, 'Not postmaster')
       ], currentTab.type),
+      armorStatPoints: GearToggleComponent.generateState(armorStatPointsConfig,
+        [
+          new Choice(3, ' > 65'),
+          new Choice(2, ' 60 - 65 '),
+          new Choice(1, ' 50 - 59'),
+          new Choice(0, ' < 50'),
+        ], currentTab.type),
       godRolls: GearToggleComponent.generateState(godRollConfig,
         [
           new Choice('is:godroll', 'God Roll'),
@@ -1353,6 +1367,7 @@ interface ToggleData {
   tags: ToggleState;
   weaponBuckets: ToggleState;
   godRolls: ToggleState;
+  armorStatPoints: ToggleState;
   weaponTypes: ToggleState;
   ammoTypes: ToggleState;
   armorBuckets: ToggleState;

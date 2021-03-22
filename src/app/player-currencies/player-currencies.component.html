@@ -1,7 +1,7 @@
 <div class="d-none d-xl-inline-block slide-left" *ngFor="let c of signedOnUserService.currencies$|async">
     <span class="margin-left-10" [matTooltip]="c.count+' '+c.name">
         <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-        <span>{{c.count|number}}</span>
+        <span class="pad-left-5">{{c.count|number}}</span>
     </span>
 </div>
 <div class='defer-block d-xl-none'>
@@ -9,7 +9,7 @@
         <ng-container *ngIf="c.hash=='3159615086' || c.hash=='1022552290'">
             <span class="margin-left-10" [matTooltip]="c.count+' '+c.name">
                 <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-                <span>{{c.count|number}}</span>
+                <span class="pad-left-5">{{c.count|number}}</span>
             </span>
         </ng-container>
 

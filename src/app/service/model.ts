@@ -715,6 +715,21 @@ export class InventoryItem {
     public lowLinks: LowLinks;
     readonly versionNumber: number;
 
+    statPointTier(): number {
+        if (!this.totalStatPoints || this.totalStatPoints < 50) {
+            return 0;
+        }
+        if (this.totalStatPoints < 60) {
+            return 1;
+        }
+        if (this.totalStatPoints <= 65) {
+            return 2;
+        }
+        if (this.totalStatPoints > 65) {
+            return 3;
+        }
+    }
+
     damageTypeString(): string {
         return DamageType[this.damageType];
     }
