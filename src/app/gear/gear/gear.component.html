@@ -63,18 +63,18 @@
   </div>
   <div class="filter-buttons" [hidden]="selectedUser==null">
     <d2c-gear-toggle [(state)]="toggleData.godRolls" (change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.armorStatPoints" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.tags" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.weaponBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.powerCaps" (change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.armorBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.damageType" (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.seasons" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.energyType" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.weaponTypes" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.ammoTypes" (change)="filterChanged()"> </d2c-gear-toggle>
-    <d2c-gear-toggle [(state)]="toggleData.armorBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.vehicleBuckets" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.exchangeType" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.classType" (change)="filterChanged()"> </d2c-gear-toggle>
+    <d2c-gear-toggle [(state)]="toggleData.seasons" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.owners" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.equipped" (change)="filterChanged()"> </d2c-gear-toggle>
     <d2c-gear-toggle [(state)]="toggleData.rarities" (change)="filterChanged()"> </d2c-gear-toggle>
