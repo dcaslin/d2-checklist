@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { add, differenceInDays, differenceInWeeks, parseISO, setHours, sub } from 'date-fns';
+import { add, differenceInDays, differenceInWeeks, parseISO, subHours } from 'date-fns';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
 import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInfo, NameDesc, PublicMilestonesAndActivities } from './model';
@@ -422,13 +422,28 @@ export class WeekService {
     if (delta) {
       referenceDate = add(referenceDate, { days: delta});
     }
-    // if it's prior to reset today, call today yesterday (so 10AM on Tuesday is "Monday")
+
+    if (!delta) {
+      console.log(referenceDate.getUTCDay());
+    }
+
+    // let's pretend this is in UTC, so right now it's 1AM Tuesday UTC
+    // in game that means it's "Monday" b/c it's < 5PM on that day
     if (referenceDate.getUTCHours() < 17) {
       // console.log(`Prior to reset ${referenceDate.getHours()}`);
-      referenceDate = sub(referenceDate, { days: 1});
+      referenceDate = subHours(referenceDate,  24);
     }
-    // set our reference time to 5PM arbitrarily so we're consistent
-    referenceDate = setHours(referenceDate, 17);
+    if (!delta) {
+      console.log(referenceDate.getUTCDay());
+    }
+
+    // set our reference time to 5PM UTC arbitrarily so we're consistent
+    referenceDate.setUTCHours(17);
+    if (!delta) {
+      console.log(referenceDate.getUTCDay());
+      console.log(referenceDate);
+    }
+
     const lsEpoch = parseISO('2020-12-15T17:00:00.000Z'); // Dec 15 2020
     const lsDays = differenceInDays(referenceDate, lsEpoch);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
