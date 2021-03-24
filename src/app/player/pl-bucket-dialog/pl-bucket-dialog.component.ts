@@ -97,6 +97,9 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
             this.minBest = best.power;
           }
         }
+        if (this.minBest === this.maxBest) {
+          this.minBest = 0;
+        }
       }
     });
 

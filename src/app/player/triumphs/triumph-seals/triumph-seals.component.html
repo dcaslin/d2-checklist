@@ -33,7 +33,7 @@
           <table class="checklist-table">
             <tbody>
               <ng-container *ngFor="let c of s.children">
-                <tr *ngIf="!state.hideCompleteTriumphs || !c.complete">
+                <tr *ngIf="!state.hideCompleteTriumphs || !c.complete || !c.redeemed">
                   <td>
                     <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="c.complete && c.redeemed"
                       class="accent-text mat-option.mat-selected"></fa-icon>
@@ -63,8 +63,8 @@
                       <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
                     </span>
                     <br>
-                    <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">Not yet
-                      redeemed.<br></span>
+                    <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">
+                      Not yet redeemed.<br></span>
 
                     <span class="simple-caption">
                       {{c.score}} pts. {{c.desc}}
