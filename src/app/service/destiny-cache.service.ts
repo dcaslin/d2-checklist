@@ -12,6 +12,7 @@ export class DestinyCacheService {
   public cache: Cache;
 
   public readonly ready$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonly version$: BehaviorSubject<string> = new BehaviorSubject('');
   public readonly checkingCache: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly percent: BehaviorSubject<number> = new BehaviorSubject(0);
   public readonly unzipping: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -42,6 +43,9 @@ export class DestinyCacheService {
         await this.load(key);
       } else {
         this.cache = manifest as Cache;
+      }
+      if (this.cache?.version) {
+        this.version$.next(this.cache.version);
       }
       this.percent.next(100);
       this.ready$.next(true);

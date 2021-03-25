@@ -28,7 +28,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly version = env.versions.app;
-  manifestVersion = '';
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
   readonly platformMap = Const.PLATFORMS_DICT;
 
@@ -57,11 +56,10 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private destinyCacheService: DestinyCacheService,
+    public destinyCacheService: DestinyCacheService,
     private signedOnUserService: SignedOnUserService,
     public bungieService: BungieService,
     private authService: AuthService,
-    private parseService: ParseService,
     public iconService: IconService,
     public dialog: MatDialog,
     storageService: StorageService,
@@ -70,9 +68,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     private ref: ChangeDetectorRef) {
     super(storageService);
     this.selectedPlatform = this.platforms[0];
-    if (this.destinyCacheService.cache != null) {
-      this.manifestVersion = this.destinyCacheService.cache.version;
-    }
     this.hideAnnouncement = 'true' === localStorage.getItem('hide-announcement-content-vault');
 
     this.storageService.settingFeed.pipe(
