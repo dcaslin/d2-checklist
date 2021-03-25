@@ -9,7 +9,7 @@
             </div> -->
   <div *ngIf="debugmode|async">
     <div>Version: {{version}}</div>
-    <div>Manifest: {{manifestVersion}}</div>
+    <div>Manifest: {{destinyCacheService.version$|async}}</div>
   </div>
   <div class="searchRow">
     <mat-form-field class="searchField searchPlatform">
