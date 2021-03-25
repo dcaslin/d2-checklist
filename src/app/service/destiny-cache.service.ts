@@ -68,7 +68,13 @@ export class DestinyCacheService {
   }
 
   async unzip(blob: Blob): Promise<void> {
-    const ab = await blob.arrayBuffer();
+    let ab: ArrayBuffer;
+    // if blob.arraybuffer is not suppported, copy to a new request
+    if (!blob.arrayBuffer) {
+      ab = await new Response(blob).arrayBuffer();
+    } else {
+      ab = await blob.arrayBuffer();
+    }
     const unzipMe = new Uint8Array(ab);
     const decompressed = unzipSync(unzipMe);
     const binaryData = decompressed['destiny2.json'];

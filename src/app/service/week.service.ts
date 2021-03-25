@@ -423,9 +423,6 @@ export class WeekService {
       referenceDate = add(referenceDate, { days: delta});
     }
 
-    if (!delta) {
-      console.log(referenceDate.getUTCDay());
-    }
 
     // let's pretend this is in UTC, so right now it's 1AM Tuesday UTC
     // in game that means it's "Monday" b/c it's < 5PM on that day
@@ -433,17 +430,8 @@ export class WeekService {
       // console.log(`Prior to reset ${referenceDate.getHours()}`);
       referenceDate = subHours(referenceDate,  24);
     }
-    if (!delta) {
-      console.log(referenceDate.getUTCDay());
-    }
-
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(17);
-    if (!delta) {
-      console.log(referenceDate.getUTCDay());
-      console.log(referenceDate);
-    }
-
     const lsEpoch = parseISO('2020-12-15T17:00:00.000Z'); // Dec 15 2020
     const lsDays = differenceInDays(referenceDate, lsEpoch);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
