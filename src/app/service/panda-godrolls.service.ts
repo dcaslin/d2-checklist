@@ -58,8 +58,12 @@ export class PandaGodrollsService {
       if (!i.isRandomRoll) {
         continue;
       }
-
-      let key = i.name.toLowerCase() + i.versionNumber;
+      let name = i.name.toLowerCase();
+      const suffix = ' (Adept)'.toLowerCase();
+      if (name.endsWith(suffix)) {
+        name = name.substring(0, name.length - suffix.length);
+      }
+      let key = name + i.versionNumber;
       let info = this.data[key];
       if (i.versionNumber > 0 && info == null) {
         key =  i.name.toLowerCase() + '0';
