@@ -26,10 +26,10 @@ jobs:
     - run: npm config set "@fortawesome:registry" https://npm.fontawesome.com && npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONT }}
     - run: npm install
     - run: npm install -g @angular/cli > /dev/null
-    - run: npm run stage-prod-keys
+    - run: npm run stage-beta-keys
       env:
-        PROD_API_KEY: ${{ secrets.API_KEY }}
-        PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        PROD_API_KEY: ${{ secrets.BETA_API_KEY }}
+        PROD_CLIENT_SECRET: ${{ secrets.BETA_CLIENT_SECRET }}
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }} 
     - run: ng build --prod
     - name: copy file via ssh key
