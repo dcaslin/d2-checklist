@@ -28,8 +28,8 @@ jobs:
     - run: npm install -g @angular/cli > /dev/null
     - run: npm run stage-beta-keys
       env:
-        PROD_API_KEY: ${{ secrets.BETA_API_KEY }}
-        PROD_CLIENT_SECRET: ${{ secrets.BETA_CLIENT_SECRET }}
+        BETA_API_KEY: ${{ secrets.BETA_API_KEY }}
+        BETA_CLIENT_SECRET: ${{ secrets.BETA_CLIENT_SECRET }}
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }} 
     - run: ng build --prod
     - name: copy file via ssh key
