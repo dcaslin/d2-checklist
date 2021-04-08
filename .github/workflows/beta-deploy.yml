@@ -1,4 +1,4 @@
-name: deploy
+name: beta-deploy
 on:
   push:
     branches: [ beta ]
