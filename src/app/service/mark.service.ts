@@ -8,6 +8,9 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
 
+// const MARK_URL = 'https://www.destinychecklist.net/api/mark/';
+
+const MARK_URL = 'https://localhost:4200/api/mark';
 
 @Injectable()
 export class MarkService implements OnDestroy {
@@ -60,7 +63,7 @@ export class MarkService implements OnDestroy {
         const postMe = {
             data: lzSaveMe
         };
-        this.httpClient.post<SaveResult>('https://www.destinychecklist.net/api/mark/', postMe)
+        this.httpClient.post<SaveResult>(MARK_URL, postMe)
             .toPromise().then(result => {
                 if (result.status && result.status === 'success') {
                     this.dirty.next(false);
@@ -83,7 +86,8 @@ export class MarkService implements OnDestroy {
             }
             this.currentMarks = marks;
             this.notificationService.success(`Successfully imported ${Object.keys(this.currentMarks.marked).length} marks from ${file.name}`);
-            // await this.saveMarks();
+            // also save to server
+            await this.saveMarks();
             return true;
         } catch (x) {
             this.notificationService.fail('Failed to parse input file: ' + x);
@@ -102,7 +106,7 @@ export class MarkService implements OnDestroy {
     }
 
     private async load(platform: number, memberId: string): Promise<Marks> {
-        const requestUrl = 'https://www.destinychecklist.net/api/mark/' + platform + '/' + memberId;
+        const requestUrl = `${MARK_URL}/${platform}/${memberId}`;
         return this.httpClient.get<Marks>(requestUrl).toPromise();
     }
 
