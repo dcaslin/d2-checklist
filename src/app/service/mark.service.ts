@@ -5,8 +5,10 @@ import { faLevelUpAlt as fasLevelUpAlt, faSave as fasSave, faSyringe as fasSyrin
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
+import { SignedOnUserService } from './signed-on-user.service';
 
 // const MARK_URL = 'https://www.destinychecklist.net/api/mark/';
 
@@ -22,10 +24,16 @@ export class MarkService implements OnDestroy {
     public markDict: { [id: string]: MarkChoice };
     private currentMarks: Marks = null;
     private badState = false;
+    private failCount = 0;
 
     private unsubscribe$: Subject<void> = new Subject<void>();
 
-    constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
+    constructor(
+        private httpClient: HttpClient,
+        private notificationService: NotificationService,
+        private authService: AuthService,
+        private signedOnUserService: SignedOnUserService
+        ) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};
@@ -57,6 +65,9 @@ export class MarkService implements OnDestroy {
             return;
         }
         this.currentMarks.magic = 'this is magic!';
+        this.currentMarks.token = await this.authService.getKey();
+        this.currentMarks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;
+        console.log(this.currentMarks.bungieId);
         this.currentMarks.modified = new Date().toJSON();
         const s = JSON.stringify(this.currentMarks);
         const lzSaveMe: string = LZString.compressToBase64(s);
@@ -67,6 +78,14 @@ export class MarkService implements OnDestroy {
             .toPromise().then(result => {
                 if (result.status && result.status === 'success') {
                     this.dirty.next(false);
+                    this.failCount = 0;
+                } else {
+                    this.failCount++;
+                    // if we failed 5 times in a row, stop spamming the server
+                    if (this.failCount > 5) {
+                        this.notificationService.fail('Mark service is down. Marks will not be saved, please try again later.');
+                        this.dirty.next(false);
+                    }
                 }
             });
     }
@@ -297,6 +316,8 @@ export interface Marks {
     platform: number;
     memberId: string;
     modified?: string;
+    token?: string;
+    bungieId?: string;
 }
 
 export interface MarkChoice {
