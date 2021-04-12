@@ -12,7 +12,8 @@ import { SignedOnUserService } from './signed-on-user.service';
 
 // const MARK_URL = 'https://www.destinychecklist.net/api/mark/';
 
-const MARK_URL = 'https://localhost:4200/api/mark';
+// const MARK_URL = 'https://localhost:4200/api/mark';
+const MARK_URL = 'https://api.d2checklist.com/api/mark';
 
 @Injectable()
 export class MarkService implements OnDestroy {
@@ -66,8 +67,7 @@ export class MarkService implements OnDestroy {
         }
         this.currentMarks.magic = 'this is magic!';
         this.currentMarks.token = await this.authService.getKey();
-        this.currentMarks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;
-        console.log(this.currentMarks.bungieId);
+        this.currentMarks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;        
         this.currentMarks.modified = new Date().toJSON();
         const s = JSON.stringify(this.currentMarks);
         const lzSaveMe: string = LZString.compressToBase64(s);
