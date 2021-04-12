@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://api.d2checklist.com/",
+    "target": "https://beta.d2checklist.com/api",
     "secure": false,
     "changeOrigin": true,
     "pathRewrite": {
