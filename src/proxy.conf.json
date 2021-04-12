@@ -1,7 +1,8 @@
 {
   "/api": {
-    "target": "http://localhost:3000",
+    "target": "https://api.d2checklist.com/",
     "secure": false,
+    "changeOrigin": true,
     "pathRewrite": {
       "^/api": ""
     },
