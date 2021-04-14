@@ -10,10 +10,10 @@ import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
 import { SignedOnUserService } from './signed-on-user.service';
 
-// const MARK_URL = 'https://www.destinychecklist.net/api/mark/';
+const MARK_URL = 'https://www.destinychecklist.net/api/mark';
 
 // const MARK_URL = 'https://localhost:4200/api/mark';
-const MARK_URL = 'https://beta.d2checklist.com/api/mark';
+// const MARK_URL = 'https://beta.d2checklist.com/api/mark';
 
 @Injectable()
 export class MarkService implements OnDestroy {
