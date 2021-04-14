@@ -41,5 +41,5 @@ jobs:
         KEY: ${{ secrets.SSH }}
       with:
         source: "./dist/"
-        target: "/opt/stage/d2-checklist/"
+        target: "/home/${{ secrets.UID }}/d2checklist/"
         strip_components: 2 # this is important
