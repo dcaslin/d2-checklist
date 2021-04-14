@@ -41,5 +41,5 @@ jobs:
         KEY: ${{ secrets.BETA_SSH }}
       with:
         source: "./dist/"
-        target: "/home/caslin/d2checklist-beta/"
+        target: "/home/${{ secrets.BETA_UID }}/d2checklist-beta/"
         strip_components: 2 # this is important
