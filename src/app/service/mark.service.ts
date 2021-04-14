@@ -5,9 +5,15 @@ import { faLevelUpAlt as fasLevelUpAlt, faSave as fasSave, faSyringe as fasSyrin
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
+import { SignedOnUserService } from './signed-on-user.service';
 
+const MARK_URL = 'https://www.destinychecklist.net/api/mark';
+
+// const MARK_URL = 'https://localhost:4200/api/mark';
+// const MARK_URL = 'https://beta.d2checklist.com/api/mark';
 
 @Injectable()
 export class MarkService implements OnDestroy {
@@ -19,10 +25,16 @@ export class MarkService implements OnDestroy {
     public markDict: { [id: string]: MarkChoice };
     private currentMarks: Marks = null;
     private badState = false;
+    private failCount = 0;
 
     private unsubscribe$: Subject<void> = new Subject<void>();
 
-    constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
+    constructor(
+        private httpClient: HttpClient,
+        private notificationService: NotificationService,
+        private authService: AuthService,
+        private signedOnUserService: SignedOnUserService
+        ) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};
@@ -54,16 +66,26 @@ export class MarkService implements OnDestroy {
             return;
         }
         this.currentMarks.magic = 'this is magic!';
+        this.currentMarks.token = await this.authService.getKey();
+        this.currentMarks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;        
         this.currentMarks.modified = new Date().toJSON();
         const s = JSON.stringify(this.currentMarks);
         const lzSaveMe: string = LZString.compressToBase64(s);
         const postMe = {
             data: lzSaveMe
         };
-        this.httpClient.post<SaveResult>('https://www.destinychecklist.net/api/mark/', postMe)
+        this.httpClient.post<SaveResult>(MARK_URL, postMe)
             .toPromise().then(result => {
                 if (result.status && result.status === 'success') {
                     this.dirty.next(false);
+                    this.failCount = 0;
+                } else {
+                    this.failCount++;
+                    // if we failed 5 times in a row, stop spamming the server
+                    if (this.failCount > 5) {
+                        this.notificationService.fail('Mark service is down. Marks will not be saved, please try again later.');
+                        this.dirty.next(false);
+                    }
                 }
             });
     }
@@ -83,7 +105,8 @@ export class MarkService implements OnDestroy {
             }
             this.currentMarks = marks;
             this.notificationService.success(`Successfully imported ${Object.keys(this.currentMarks.marked).length} marks from ${file.name}`);
-            // await this.saveMarks();
+            // also save to server
+            await this.saveMarks();
             return true;
         } catch (x) {
             this.notificationService.fail('Failed to parse input file: ' + x);
@@ -102,7 +125,7 @@ export class MarkService implements OnDestroy {
     }
 
     private async load(platform: number, memberId: string): Promise<Marks> {
-        const requestUrl = 'https://www.destinychecklist.net/api/mark/' + platform + '/' + memberId;
+        const requestUrl = `${MARK_URL}/${platform}/${memberId}`;
         return this.httpClient.get<Marks>(requestUrl).toPromise();
     }
 
@@ -293,6 +316,8 @@ export interface Marks {
     platform: number;
     memberId: string;
     modified?: string;
+    token?: string;
+    bungieId?: string;
 }
 
 export interface MarkChoice {

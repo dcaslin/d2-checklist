@@ -90,7 +90,8 @@
             "browserTarget": "d2-checklist:build",
             "ssl": true,
             "sslCert": "dev-certs/server.crt",
-            "sslKey": "dev-certs/server.key"
+            "sslKey": "dev-certs/server.key",
+            "proxyConfig": "src/proxy.beta.conf.json"
           },
           "configurations": {
             "production": {

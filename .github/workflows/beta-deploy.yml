@@ -1,7 +1,7 @@
-name: deploy
+name: beta-deploy
 on:
   push:
-    branches: [ master ]
+    branches: [ beta ]
 
 jobs:
   build:
@@ -26,20 +26,20 @@ jobs:
     - run: npm config set "@fortawesome:registry" https://npm.fontawesome.com && npm config set "//npm.fontawesome.com/:_authToken" ${{ secrets.FONT }}
     - run: npm install
     - run: npm install -g @angular/cli > /dev/null
-    - run: npm run stage-prod-keys
+    - run: npm run stage-beta-keys
       env:
-        PROD_API_KEY: ${{ secrets.API_KEY }}
-        PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        BETA_API_KEY: ${{ secrets.BETA_API_KEY }}
+        BETA_CLIENT_SECRET: ${{ secrets.BETA_CLIENT_SECRET }}
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }} 
     - run: ng build --prod
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       env:
-        HOST: ${{ secrets.HOST }}
-        USERNAME: ${{ secrets.UID }}
-        PORT: ${{ secrets.PORT }}
-        KEY: ${{ secrets.SSH }}
+        HOST: ${{ secrets.BETA_HOST }}
+        USERNAME: ${{ secrets.BETA_UID }}
+        PORT: ${{ secrets.BETA_PORT }}
+        KEY: ${{ secrets.BETA_SSH }}
       with:
         source: "./dist/"
-        target: "/home/${{ secrets.UID }}/d2checklist/"
+        target: "/home/${{ secrets.BETA_UID }}/d2checklist-beta/"
         strip_components: 2 # this is important
