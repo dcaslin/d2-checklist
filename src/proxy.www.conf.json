@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://www.d2checklist.com/api",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "logLevel": "debug"
+  }
+}
