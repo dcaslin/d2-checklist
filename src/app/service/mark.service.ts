@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
 import { SignedOnUserService } from './signed-on-user.service';
+import { environment } from '@env/environment';
 
 // const MARK_URL = 'https://www.destinychecklist.net/api/mark';
 // const MARK_URL = 'https://localhost:4200/api/mark';
@@ -69,7 +70,8 @@ export class MarkService implements OnDestroy {
         }
         this.currentMarks.magic = 'this is magic!';
         this.currentMarks.token = await this.authService.getKey();
-        this.currentMarks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;        
+        this.currentMarks.apiKey = environment.bungie.apiKey;
+        this.currentMarks.bungieId = this.signedOnUserService.signedOnUser$.getValue()?.membership.bungieId;
         this.currentMarks.modified = new Date().toJSON();
         const s = JSON.stringify(this.currentMarks);
         const lzSaveMe: string = LZString.compressToBase64(s);
@@ -320,6 +322,7 @@ export interface Marks {
     modified?: string;
     token?: string;
     bungieId?: string;
+    apiKey?: string;
 }
 
 export interface MarkChoice {
