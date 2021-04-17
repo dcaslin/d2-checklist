@@ -1,5 +1,9 @@
 <ng-container *ngIf="state.player|async as player">
-    <h4 class="triumph-score">Tracked Triumphs</h4>
+    <h4 class="triumph-score">Tracked Triumphs
+        <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
+            Hide Completed
+        </mat-checkbox>
+    </h4>
     <div>
         <div *ngIf="(state.trackedTriumphs|async).length==0" class="left" style="margin: 10px">
             Click a star on a triumph on another tab to track it here
@@ -7,7 +11,7 @@
         <table class="responsive-table">
             <tbody>
                 <ng-container *ngFor="let t of state.trackedTriumphs|async">
-                    <tr>
+                    <tr *ngIf="!state.hideCompleteTriumphs || !t.complete || !t.redeemed">
                         <td class="lead" data-label="">                            
                             <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)"></d2c-triumph-name>
                         </td>

@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { ActivatedRoute } from '@angular/router';
 import { CollectionTreeComponent, TriumphFlatNode } from '@app/player/collections/collection-tree/collection-tree.component';
-import { TriumphNode } from '@app/service/model';
+import { TriumphNode, TriumphRecordNode } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Observable, of as observableOf } from 'rxjs';
@@ -56,7 +56,7 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
 
   hasChild = (_: number, _nodeData: TriumphFlatNode) => _nodeData.expandable;
 
-  hideNode = (_nodeData: TriumphFlatNode) => this.state.hideCompleteTriumphs && _nodeData.data.complete;
+  hideNode = (_nodeData: TriumphFlatNode) => this.state.hideCompleteTriumphs && _nodeData.data.complete && (_nodeData.data as TriumphRecordNode).redeemed !== false;
 
 
   transformer = (node: TriumphNode, level: number) => {
