@@ -65,7 +65,9 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
     for (const t of player.searchableTriumphs) {
       if (temp.length > 20) { break; }
       if (t.searchText.indexOf(filterText) >= 0) {
-        temp.push(t);
+        if (!this.state.hideCompleteTriumphs || !t.complete || !t.redeemed) {
+          temp.push(t);
+        }
       }
     }
     this.filteredTriumphs.next(temp);

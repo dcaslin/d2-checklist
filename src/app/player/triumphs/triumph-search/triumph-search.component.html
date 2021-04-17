@@ -5,6 +5,12 @@
                 <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText"
                     placeholder="Wildcard Search triumphs">
             </mat-form-field>
+            <mat-checkbox class="hide-complete-triumphs" 
+            [(ngModel)]="state.hideCompleteTriumphs"
+            (change)="triumphSearchChange()"
+            >
+                Hide Completed
+            </mat-checkbox>
         </div>
 
         <div *ngIf="(filteredTriumphs|async).length==0" class="left" style="margin: 10px">
@@ -21,7 +27,8 @@
                 <ng-container *ngFor="let t of filteredTriumphs|async">
                     <tr>
                         <td class="lead" data-label="">
-                            <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)"></d2c-triumph-name>
+                            <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)">
+                            </d2c-triumph-name>
                         </td>
 
 
@@ -37,7 +44,7 @@
 
                         <td class="left" data-label="">
                             <d2c-triumph-objectives [triumph]="t"></d2c-triumph-objectives>
-                        </td>                        
+                        </td>
                     </tr>
                 </ng-container>
             </tbody>
