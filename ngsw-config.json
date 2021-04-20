@@ -17,7 +17,7 @@
     }, {
       "name": "assets",
       "installMode": "lazy",
-      "updateMode": "prefetch",
+      "updateMode": "lazy",
       "resources": {
         "files": [
           "/assets/**/!(*.zip|*.json)",

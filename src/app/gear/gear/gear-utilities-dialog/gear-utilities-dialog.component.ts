@@ -4,6 +4,7 @@ import { IconService } from '@app/service/icon.service';
 import { GearComponent } from '../gear.component';
 import { MarkService } from '@app/service/mark.service';
 import { faGameConsoleHandheld } from '@fortawesome/pro-light-svg-icons';
+import { DimSyncService } from '@app/service/dim-sync.service';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class GearUtilitiesDialogComponent {
     private markService: MarkService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
+    private dimSyncService: DimSyncService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
   }
