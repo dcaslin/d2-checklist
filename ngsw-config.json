@@ -20,7 +20,6 @@
       "updateMode": "lazy",
       "resources": {
         "files": [
-          "/assets/**/!(*.zip|*.json)",
           "/*.(eot|svg|jpg|png|webp|gif|otf|ttf|xml|txt|woff|woff2)"
         ]
       }
