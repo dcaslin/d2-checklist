@@ -108,9 +108,9 @@ export class DestinyCacheService {
   private async download(cacheBuster?: string): Promise<Blob> {
     console.log(`--- load remote cache ${env.versions.manifest} ---`);
 
-    let uri = `/assets/destiny2.zip?v=${env.versions.manifest}`;
+    let uri = `/assets/destiny2.zip?ngsw-bypass=true&v=${env.versions.manifest}`;
     if (cacheBuster && cacheBuster.trim().length > 0) {
-      uri = `/assets/destiny2.zip?v=${env.versions.manifest}-${cacheBuster}`;
+      uri = `/assets/destiny2.zip?ngsw-bypass=true&v=${env.versions.manifest}-${cacheBuster}`;
     }
     console.log(`Downloading zip from URI: ${uri}`);
     const req = new HttpRequest<Blob>('GET', uri, {
