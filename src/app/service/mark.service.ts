@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
-import { faLevelUpAlt as fasLevelUpAlt, faSave as fasSave, faSyringe as fasSyringe, faTrashAlt as fasTrashAlt } from '@fortawesome/pro-solid-svg-icons';
+import { faBolt, faHeart, faSave as fasSave, faTrashAlt as fasTrashAlt } from '@fortawesome/pro-solid-svg-icons';
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -10,6 +10,8 @@ import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
 import { SignedOnUserService } from './signed-on-user.service';
 import { environment } from '@env/environment';
+import { faCabinetFiling } from '@fortawesome/pro-regular-svg-icons';
+import { ItemAnnotation, ProfileUpdate, TagValue } from '@destinyitemmanager/dim-api-types';
 
 // const MARK_URL = 'https://www.destinychecklist.net/api/mark';
 // const MARK_URL = 'https://localhost:4200/api/mark';
@@ -37,7 +39,7 @@ export class MarkService implements OnDestroy {
         private notificationService: NotificationService,
         private authService: AuthService,
         private signedOnUserService: SignedOnUserService
-        ) {
+    ) {
         // auto save every 5 seconds if dirty
         this.markChoices = MarkService.buildMarkChoices();
         this.markDict = {};
@@ -138,7 +140,7 @@ export class MarkService implements OnDestroy {
         a.push({
             label: 'Upgrade',
             value: 'upgrade',
-            icon: fasLevelUpAlt
+            icon: faHeart
         });
         a.push({
             label: 'Keep',
@@ -148,12 +150,17 @@ export class MarkService implements OnDestroy {
         a.push({
             label: 'Infuse',
             value: 'infuse',
-            icon: fasSyringe
+            icon: faBolt
         });
         a.push({
             label: 'Junk',
             value: 'junk',
             icon: fasTrashAlt
+        });
+        a.push({
+            label: 'Archive',
+            value: 'archive',
+            icon: faCabinetFiling
         });
         return a;
     }
@@ -193,9 +200,12 @@ export class MarkService implements OnDestroy {
                 } else if (mark == 'junk') {
                     item.markLabel = 'Junk';
                     item.mark = mark;
+                } else if (mark == 'archive') {
+                    item.markLabel = 'Archive';
+                    item.mark = mark;
                 } else {
                     console.log('Ignoring mark: ' + mark);
-                    return;
+                    break;
                 }
                 usedKeys[item.id] = true;
             }
@@ -307,15 +317,13 @@ export class MarkService implements OnDestroy {
             reader.readAsText(file);
         });
     }
-
-
 }
 
 export interface Marks {
     marked: { [key: string]: string };
     notes: { [key: string]: string };
-    favs: { [key: string]: boolean };
-    todo: any;
+    favs: { [key: string]: boolean }; // not used for anything in d2
+    todo: any; // not used for anything in d2
     magic: string;
     platform: number;
     memberId: string;

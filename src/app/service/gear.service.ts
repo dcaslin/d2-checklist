@@ -177,7 +177,7 @@ export class GearService {
                     if (copies) {
                         let taggedToKeep = 0;
                         for (const i of copies) {
-                            if (i.mark == 'upgrade' || i.mark == 'keep') {
+                            if (i.mark == 'upgrade' || i.mark == 'keep' || i.mark == 'archive') {
                                 taggedToKeep++;
                             }
                         }
@@ -562,7 +562,7 @@ export class GearService {
         let errCnt = 0;
         for (const i of gear) {
             if (i.mark == null) { continue; }
-            if (i.mark == 'upgrade' || i.mark == 'keep') {
+            if (i.mark == 'upgrade' || i.mark == 'keep' || i.mark == 'archive') {
                 if (i.locked.getValue() == false) {
                     try {
                         await this.setLock(player, i, true);
