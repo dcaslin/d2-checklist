@@ -1,10 +1,8 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
-import { GearComponent } from '../gear.component';
 import { MarkService } from '@app/service/mark.service';
-import { faGameConsoleHandheld } from '@fortawesome/pro-light-svg-icons';
-import { DimSyncService } from '@app/service/dim-sync.service';
+import { GearComponent } from '../gear.component';
 
 
 @Component({
@@ -16,10 +14,9 @@ import { DimSyncService } from '@app/service/dim-sync.service';
 export class GearUtilitiesDialogComponent {
   parent: GearComponent;
   constructor(
-    private markService: MarkService,
+    public markService: MarkService,
     public iconService: IconService,
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
-    private dimSyncService: DimSyncService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
   }
@@ -40,17 +37,14 @@ export class GearUtilitiesDialogComponent {
     this.markService.downloadMarks();
   }
 
-  async importTagsFromDIM() {
-    const tags = await this.dimSyncService.getDimTags();
-    console.dir(tags);
+  async importTagsFromDIM(includeDelete?: boolean) {
+    const success = await this.markService.importTagsFromDim(includeDelete === true);
+    if (success) {
+      this.parent.load(true);
+    }
   }
 
-  async exportTagsToDIM() {
-    await this.dimSyncService.setDimTags(['6917529202015898222'], [{
-      id: '6917529119282334710',
-      tag: 'keep',
-      notes: 'This was generated from the API'
-    }]);
-
+  async exportTagsToDIM(includeDelete?: boolean) {
+    await this.markService.exportTagsToDim(includeDelete === true);
   }
 }
