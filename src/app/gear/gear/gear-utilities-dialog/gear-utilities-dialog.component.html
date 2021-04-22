@@ -1,31 +1,48 @@
 <mat-dialog-content>
+    <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(markService.loading$|async)===true"></mat-spinner>
+    </div>
     <mat-tab-group>
         <mat-tab label="Tag Sync & Backup">
             <div class="utility-body">
                 <p>Warning, importing tags will overwrite your existing tags and notes</p>
                 <div class="utility-download">
                     <button mat-stroked-button (click)="exportTagsToFile()">
-                        <fa-icon [icon]="iconService.falDownload"></fa-icon> 
-                        Backup tags to file</button>
-                    
-                    <input #importInput hidden="true" type="file" 
-                        onclick="this.value=null" 
-                        (change)="importTagsFromFile($event)" accept=".json"/>
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+                        Backup tags to file
+                    </button>
+
+                    <input #importInput hidden="true" type="file" onclick="this.value=null"
+                        (change)="importTagsFromFile($event)" accept=".json" />
                     <button mat-stroked-button (click)="importInput.click()">
-                        <fa-icon [icon]="iconService.falUpload"></fa-icon> 
-                        Import tags from file</button>
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Import tags from file
+                    </button>
                 </div>
                 <hr>
                 <div class="utility-download">
                     <button mat-stroked-button (click)="exportTagsToDIM()">
-                        <fa-icon [icon]="iconService.falDownload"></fa-icon> 
-                        Export tags to DIM</button>
-                    
-                    <button mat-stroked-button (click)="importTagsFromDIM()">
-                        <fa-icon [icon]="iconService.falUpload"></fa-icon> 
-                        Import tags from DIM</button>
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+                        Export to DIM
+                    </button>
+                    <button mat-stroked-button (click)="exportTagsToDIM(true)" color="warn">
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+                        Export to DIM + delete
+                    </button>
+
                 </div>
-                
+                <div class="utility-download">
+
+                    <button mat-stroked-button (click)="importTagsFromDIM()">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Import from DIM
+                    </button>
+                    <button mat-stroked-button (click)="importTagsFromDIM(true)" color="warn">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Import from DIM + delete
+                    </button>
+                </div>
+
             </div>
         </mat-tab>
         <mat-tab label="God rolls">
@@ -43,12 +60,13 @@
                 <p class="compact">Match God/Good rolls on:</p>
                 <div>
                     <mat-radio-group class="radio-group" [(ngModel)]="parent.godRollLastTwoOnly">
-                        <mat-radio-button class="radio-button" [value]="false">All Sockets (recommended)</mat-radio-button>
+                        <mat-radio-button class="radio-button" [value]="false">All Sockets (recommended)
+                        </mat-radio-button>
                         <mat-radio-button class="radio-button" [value]="true">Last 2 Sockets only</mat-radio-button>
                     </mat-radio-group>
                 </div>
             </div>
-            
+
         </mat-tab>
     </mat-tab-group>
 
