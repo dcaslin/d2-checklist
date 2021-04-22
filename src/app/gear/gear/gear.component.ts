@@ -293,6 +293,7 @@ export class GearComponent extends ChildComponent {
         new Choice('keep', 'Keep'),
         new Choice('infuse', 'Infuse'),
         new Choice('junk', 'Junk'),
+        new Choice('archive', 'Archive'),
         new Choice(null, 'Unmarked')
       ], currentTab.type),
       energyType: GearToggleComponent.generateState(energyConfig, [

@@ -41,20 +41,16 @@ export class GearUtilitiesDialogComponent {
   }
 
   async importTagsFromDIM() {
-    window.alert('Coming soon');
     const tags = await this.dimSyncService.getDimTags();
     console.dir(tags);
-
   }
 
   async exportTagsToDIM() {
-    
-    window.alert('Coming soon');
-    // await this.dimSyncService.setDimTags(['6917529202015898222'], [{
-    //   id: '6917529119282334710',
-    //   tag: 'keep',
-    //   notes: 'This was generated from the API'
-    // }]);
+    await this.dimSyncService.setDimTags(['6917529202015898222'], [{
+      id: '6917529119282334710',
+      tag: 'keep',
+      notes: 'This was generated from the API'
+    }]);
 
   }
 }

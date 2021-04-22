@@ -6,13 +6,16 @@ import { AuthInfo, AuthService } from './auth.service';
 import { SelectedUser } from './model';
 import { SignedOnUserService } from './signed-on-user.service';
 import { environment } from '../../environments/environment';
-import { AuthTokenRequest, AuthTokenResponse, ItemAnnotation, ProfileResponse, ProfileUpdate, ProfileUpdateRequest, ProfileUpdateResponse } from '@destinyitemmanager/dim-api-types';
+import { AuthTokenRequest, AuthTokenResponse, ItemAnnotation, ProfileResponse, ProfileUpdate, ProfileUpdateRequest, ProfileUpdateResponse, TagValue } from '@destinyitemmanager/dim-api-types';
+import { BehaviorSubject } from 'rxjs';
+import { faGameConsoleHandheld } from '@fortawesome/pro-light-svg-icons';
+import { Marks } from './mark.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DimSyncService {
-  // TODO finish this
+  public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private httpClient: HttpClient,
@@ -70,8 +73,6 @@ export class DimSyncService {
 
   async setDimTags(deleteTags: string[], newTags: ItemAnnotation[]): Promise<void> {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
-    const headers = await this.buildHeaders();
-    const url = `https://api.destinyitemmanager.com/profile`;
     const newTagUpdates: ProfileUpdate[] = newTags.map((x) => {
       return {
         action: 'tag',
@@ -92,19 +93,107 @@ export class DimSyncService {
       destinyVersion: 2,
       updates
     };
-    const hResp = await this.httpClient.post<ProfileUpdateResponse>(url, body, { headers }).toPromise();
-    console.dir(hResp);
+    this.loading$.next(true);
+    try {
+      const headers = await this.buildHeaders();
+      const url = `https://api.destinyitemmanager.com/profile`;
+      const hResp = await this.httpClient.post<ProfileUpdateResponse>(url, body, { headers }).toPromise();
+      console.dir(hResp);
+      this.notificationService.success('Updated DIM-sync tags');
+    } catch (x) {
+      this.notificationService.fail('Failed to set DIM sync tags');
+      console.dir(x);
+    }
+    finally {
+      this.loading$.next(false);
+    }
   }
 
 
   async getDimTags(): Promise<ItemAnnotation[]> {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
-    // try {
-    const headers = await this.buildHeaders();
-    const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser.userInfo.membershipId}&components=tags`;
-    const hResp = await this.httpClient.get<ProfileResponse>(url, { headers }).toPromise();
-    return hResp.tags;
+    this.loading$.next(true);
+    try {
+      const headers = await this.buildHeaders();
+      const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser.userInfo.membershipId}&components=tags`;
+      const hResp = await this.httpClient.get<ProfileResponse>(url, { headers }).toPromise();
+      this.notificationService.success('Got latest DIM-sync tags');
+      return hResp.tags;
+    } catch (x) {
+      this.notificationService.fail('Failed to get DIM-sync tags');
+      console.dir(x);
+      return [];
+    }
+    finally {
+      this.loading$.next(false);
+    }
+
   }
+
+
+  private static d2cTagToDimTag(tag: string): TagValue {
+    return tag === 'upgrade' ? 'favorite' : tag as TagValue;
+}
+
+private static dimTagToD2cTag(tag: TagValue): string {
+    return tag === 'favorite' ? 'upgrade' : tag;
+}
+
+private static mergeDimIntoD2C(d2cMarks: Marks, dimMarks: ItemAnnotation[], deleteUnmatched: boolean) {
+    // we should be careful w/ this
+    if (deleteUnmatched) {
+        d2cMarks.marked = {};
+        d2cMarks.notes = {};
+    }
+    for (const d of dimMarks) {
+        if (d.tag) {
+            d2cMarks.marked[d.id] = DimSyncService.dimTagToD2cTag(d.tag);
+        }
+        if (d.notes) {
+            d2cMarks.notes[d.id] = d.notes;
+        }
+    }
+}
+
+private static mergeD2CIntoDim(d2cMarks: Marks, dimMarks: ItemAnnotation[], deleteUnmatched: boolean): ProfileUpdate[] {
+    const dAnnots: { [key: string]: ItemAnnotation } = {};
+    for (const key of Object.keys(d2cMarks.marked)) {
+        const tag = d2cMarks.marked[key];
+        dAnnots[key] = {
+            id: key,
+            tag: DimSyncService.d2cTagToDimTag(tag)
+        };
+    }
+    for (const key of Object.keys(d2cMarks.notes)) {
+        if (!dAnnots[key]) {
+            dAnnots[key] = {
+                id: key
+            };
+        }
+        dAnnots[key].notes = d2cMarks.notes[key];
+    }
+    const returnMe: ProfileUpdate[] = [];
+    if (deleteUnmatched) {
+        const deleteTags: string[] = [];
+        for (const d of dimMarks) {
+            if (!dAnnots[d.id]) {
+                deleteTags.push(d.id);
+            }
+        }
+        returnMe.push({
+            action: 'tag_cleanup',
+            payload: deleteTags
+        });
+    }
+    for (const key of Object.keys(dAnnots)) {
+        returnMe.push({
+            action: 'tag',
+            payload: dAnnots[key]
+        });
+    }
+    return returnMe;
+}
+
 }
 
 interface CustomAuthTokenResponse extends AuthTokenResponse {
