@@ -195,7 +195,7 @@ export class MarkService implements OnDestroy {
                     item.mark = mark;
                 } else {
                     console.log('Ignoring mark: ' + mark);
-                    break;
+                    continue;
                 }
                 usedKeys[item.id] = true;
             }
