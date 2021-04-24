@@ -91,7 +91,7 @@
             "ssl": true,
             "sslCert": "dev-certs/server.crt",
             "sslKey": "dev-certs/server.key",
-            "proxyConfig": "src/proxy.www.conf.json"
+            "proxyConfig": "src/proxy.local.conf.json"
           },
           "configurations": {
             "production": {
