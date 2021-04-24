@@ -1023,7 +1023,7 @@ export class GearComponent extends ChildComponent {
       return;
     }
     this.resetFilters(true);
-    if  (this.shortcutInfo.owner) {
+    if (this.shortcutInfo.owner) {
       GearToggleComponent.selectExclusiveVal(this.toggleData.owners, this.shortcutInfo.owner);
       this.toggleData.owners = GearToggleComponent.cloneState(this.toggleData.owners);
     }
@@ -1194,8 +1194,12 @@ export class GearComponent extends ChildComponent {
 
   async loadMarks() {
     if (this.selectedUser) {
-      await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
+      const chooseDimSyncNeeded = await this.markService.loadPlayer(this.selectedUser.userInfo.membershipType,
         this.selectedUser.userInfo.membershipId);
+      // force choice if not selected once we're set
+      if (chooseDimSyncNeeded) {
+        this.showUtilities();
+      }
       if (this._player.getValue() != null) {
         this.markService.processItems(this._player.getValue().gear);
       }

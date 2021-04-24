@@ -7,13 +7,11 @@ import {
   ProfileResponse,
   ProfileUpdate,
   ProfileUpdateRequest,
-  ProfileUpdateResponse,
-  TagValue
+  ProfileUpdateResponse
 } from '@destinyitemmanager/dim-api-types';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
-import { Marks } from './mark.service';
 import { NotificationService } from './notification.service';
 import { SignedOnUserService } from './signed-on-user.service';
 
@@ -28,7 +26,7 @@ export class DimSyncService {
     private notificationService: NotificationService,
     private signedOnUserService: SignedOnUserService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   private async buildHeaders(): Promise<HttpHeaders> {
     const auth = await this.logon();
@@ -122,7 +120,7 @@ export class DimSyncService {
       const hResp = await this.httpClient
         .get<ProfileResponse>(url, { headers })
         .toPromise();
-      this.notificationService.success('Got latest DIM-sync tags');
+      // this.notificationService.success('Got latest DIM-sync tags');
       return hResp.tags;
     } catch (x) {
       this.notificationService.fail('Failed to get DIM-sync tags');

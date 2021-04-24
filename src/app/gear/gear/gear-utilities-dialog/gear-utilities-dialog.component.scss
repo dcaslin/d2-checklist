@@ -1,0 +1,39 @@
+.utility-body {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.utility-download {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+
+    button {
+        margin: 5px;
+    }
+
+    div {
+        margin: 5px;
+    }
+}
+
+.compact {
+    margin: 2px;
+}
+
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+}
+
+.radio-button {
+    margin: 5px;
+}
+
+.dim-sync-setup {
+    max-width: 500px;
+}
