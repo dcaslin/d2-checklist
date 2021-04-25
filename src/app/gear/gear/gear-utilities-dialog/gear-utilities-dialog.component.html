@@ -10,15 +10,18 @@
                     Enabling DIM-sync will save your tags and notes to the DIM servers and sync them between DIM and
                     D2Checklist.
                     <a href="https://destinyitemmanager.fandom.com/wiki/DIM_Sync" style="text-decoration: underline"
-                        target="_blank" rel="noopener"> Learn more about DIM Sync here. </a>
+                        target="_blank" rel="noopener"> Learn more about DIM Sync here.</a> See <a href="https://www.reddit.com/r/destinychecklistnet/comments/mxxm00/d2checklist_introducing_dim_sync_for_d2checklist/"
+                        style="text-decoration: underline" target="_blank" rel="noopener">this reddit guide</a> for more information.
 
                 </p>
                 <div>
                     <form #f="ngForm">
                         <mat-form-field>
-                            <mat-select #select="ngModel" placeholder="DIM Sync Choice" name="dimSyncSelect" required [(ngModel)]="dimSyncChoice"
-                                [errorStateMatcher]="matcher" (selectionChange)="dimSyncChosen($event)">                                
-                                <mat-option *ngFor="let i of dimSyncChoices" [value]="i.value">
+                            <mat-select #select="ngModel" placeholder="DIM Sync Choice" name="dimSyncSelect" required
+                                [(ngModel)]="dimSyncChoice" [errorStateMatcher]="matcher"
+                                (selectionChange)="dimSyncChosen($event)">
+                                <mat-option *ngFor="let i of dimSyncChoices" [value]="i.value"
+                                    [disabled]="i.value==null">
                                     {{i.text}}
                                 </mat-option>
                             </mat-select>

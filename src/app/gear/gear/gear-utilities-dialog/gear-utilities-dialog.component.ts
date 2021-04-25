@@ -85,7 +85,7 @@ export class GearUtilitiesDialogComponent {
     this.dimSyncOption = this.getOptionFromValue();
     if (this.dimSyncChoice == 'enabled') {
       // if they're switching to enable DIM sync, auto download a backup of their tags
-      this.exportTagsToFile();
+      // this.exportTagsToFile();
       const success = await this.markService.doInitialDimSync();
       console.log(`Initial sync success: ${success}`);
       // refresh marks
