@@ -1,31 +1,64 @@
 <mat-dialog-content>
+    <div class="center-spinner">
+        <mat-spinner class="loading" class="center-spinner" *ngIf="(markService.loading$|async)===true"></mat-spinner>
+    </div>
     <mat-tab-group>
         <mat-tab label="Tag Sync & Backup">
-            <div class="utility-body">
-                <p>Warning, importing tags will overwrite your exsting tags and notes</p>
+            <div class="utility-body dim-sync-setup">
+                <h4>DIM Sync</h4>
+                <p>
+                    Enabling DIM-sync will save your tags and notes to the DIM servers and sync them between DIM and
+                    D2Checklist.
+                    <a href="https://destinyitemmanager.fandom.com/wiki/DIM_Sync" style="text-decoration: underline"
+                        target="_blank" rel="noopener"> Learn more about DIM Sync here.</a> See <a href="https://www.reddit.com/r/destinychecklistnet/comments/mxxm00/d2checklist_introducing_dim_sync_for_d2checklist/"
+                        style="text-decoration: underline" target="_blank" rel="noopener">this reddit guide</a> for more information.
+
+                </p>
+                <div>
+                    <form #f="ngForm">
+                        <mat-form-field>
+                            <mat-select #select="ngModel" placeholder="DIM Sync Choice" name="dimSyncSelect" required
+                                [(ngModel)]="dimSyncChoice" [errorStateMatcher]="matcher"
+                                (selectionChange)="dimSyncChosen($event)">
+                                <mat-option *ngFor="let i of dimSyncChoices" [value]="i.value"
+                                    [disabled]="i.value==null">
+                                    {{i.text}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="select.hasError('required')">Please select a sync option</mat-error>
+                        </mat-form-field>
+                    </form>
+                </div>
+                <hr style="width: 100%">
+
+                <h4>Backup & Restore</h4>
+                <p>Warning: importing tags will overwrite your existing tags and notes</p>
                 <div class="utility-download">
+
                     <button mat-stroked-button (click)="exportTagsToFile()">
-                        <fa-icon [icon]="iconService.falDownload"></fa-icon> 
-                        Backup tags to file</button>
-                    
-                    <input #importInput hidden="true" type="file" 
-                        onclick="this.value=null" 
-                        (change)="importTagsFromFile($event)" accept=".json"/>
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+                        Backup tags to file
+                    </button>
+
+                    <input #importInput hidden="true" type="file" onclick="this.value=null"
+                        (change)="importTagsFromFile($event)" accept=".json" />
                     <button mat-stroked-button (click)="importInput.click()">
-                        <fa-icon [icon]="iconService.falUpload"></fa-icon> 
-                        Import tags from file</button>
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Import tags from file
+                    </button>
                 </div>
-                <hr>
-                <div class="utility-download">
-                    <button mat-stroked-button (click)="exportTagsToDIM()">
-                        <fa-icon [icon]="iconService.falDownload"></fa-icon> 
-                        Export tags to DIM</button>
-                    
-                    <button mat-stroked-button (click)="importTagsFromDIM()">
-                        <fa-icon [icon]="iconService.falUpload"></fa-icon> 
-                        Import tags from DIM</button>
-                </div>
-                
+                <!-- <hr style="width: 100%">
+                <h4>Advanced</h4>
+                <div class="utility-download">                    
+                    <button mat-stroked-button (click)="exportTagsToDIM(true)">
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+                        Force Export to DIM
+                    </button>
+                    <button mat-stroked-button (click)="importTagsFromDIM(true)">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Force Import from DIM
+                    </button>
+                </div> -->
             </div>
         </mat-tab>
         <mat-tab label="God rolls">
@@ -38,17 +71,18 @@
                     </mat-radio-group>
                 </div>
             </div>
-            <hr>
+            <hr style="width: 100%">
             <div class="utility-body">
                 <p class="compact">Match God/Good rolls on:</p>
                 <div>
                     <mat-radio-group class="radio-group" [(ngModel)]="parent.godRollLastTwoOnly">
-                        <mat-radio-button class="radio-button" [value]="false">All Sockets (recommended)</mat-radio-button>
+                        <mat-radio-button class="radio-button" [value]="false">All Sockets (recommended)
+                        </mat-radio-button>
                         <mat-radio-button class="radio-button" [value]="true">Last 2 Sockets only</mat-radio-button>
                     </mat-radio-group>
                 </div>
             </div>
-            
+
         </mat-tab>
     </mat-tab-group>
 

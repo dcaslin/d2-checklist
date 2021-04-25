@@ -1,30 +1,58 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {
+  AuthTokenRequest,
+  AuthTokenResponse,
+  ItemAnnotation,
+  ProfileResponse,
+  ProfileUpdate,
+  ProfileUpdateRequest,
+  ProfileUpdateResponse
+} from '@destinyitemmanager/dim-api-types';
+import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
-import { environment as env } from '@env/environment';
-import { AuthInfo, AuthService } from './auth.service';
-import { SelectedUser } from './model';
+import { SignedOnUserService } from './signed-on-user.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DimSyncService {
-  // TODO finish this
+  public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private httpClient: HttpClient,
     private notificationService: NotificationService,
-    private authService: AuthService) { }
+    private signedOnUserService: SignedOnUserService,
+    private authService: AuthService
+  ) { }
 
-  async logon(selectedUser: SelectedUser): Promise<AuthResp> {
+  private async buildHeaders(): Promise<HttpHeaders> {
+    const auth = await this.logon();
+    let headers = new HttpHeaders();
+    headers = headers
+      .set('X-API-Key', environment.bungie.dimApiKey)
+      .set('Authorization', 'Bearer ' + auth.accessToken);
+    return headers;
+  }
+
+  async logon(): Promise<CustomAuthTokenResponse> {
+    const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
+    if (!selectedUser) {
+      return null;
+    }
+
     const sDimAuth = localStorage.getItem('dim-authorization');
     if (sDimAuth) {
       try {
-        const dimAuth: AuthResp = JSON.parse(sDimAuth);
+        const dimAuth: CustomAuthTokenResponse = JSON.parse(sDimAuth);
         if (dimAuth && dimAuth.expiration) {
           const now = new Date();
           if (now < new Date(dimAuth.expiration)) {
             return dimAuth;
+          } else {
+            console.log('DIM token expired, grabbing new one.');
           }
         }
       } catch (x) {
@@ -32,69 +60,79 @@ export class DimSyncService {
         console.dir(x);
       }
     }
-    const req = {
-      app: 'd2checklist',
-      bungieAccessToken: this.authService.getKey(),
-      membershipId: selectedUser.membership.bungieId
+    const req: AuthTokenRequest = {
+      bungieAccessToken: await this.authService.getKey(),
+      membershipId: selectedUser.membership.bungieId,
     };
-    const resp = await this.httpClient.post<AuthResp>('https://api.destinyitemmanager.com/auth/token', req).toPromise();
+
+    const headers = new HttpHeaders().set(
+      'X-API-Key',
+      environment.bungie.dimApiKey
+    );
+    const resp = await this.httpClient
+      .post<CustomAuthTokenResponse>(
+        'https://api.destinyitemmanager.com/auth/token',
+        req,
+        { headers }
+      )
+      .toPromise();
     if (resp.accessToken) {
-      resp.expiration = new Date(1000 * (new Date().getTime() / 1000 + resp.expiresInSeconds - 100)).toJSON();
+      resp.expiration = new Date(
+        1000 * (new Date().getTime() / 1000 + resp.expiresInSeconds - 100)
+      ).toJSON();
       localStorage.setItem('dim-authorization', JSON.stringify(resp));
       return resp;
     }
     return null;
   }
+
+  async setDimTags(updates: ProfileUpdate[]): Promise<boolean> {
+    const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
+    const body: ProfileUpdateRequest = {
+      platformMembershipId: selectedUser.userInfo.membershipId,
+      destinyVersion: 2,
+      updates,
+    };
+    this.loading$.next(true);
+    try {
+      const headers = await this.buildHeaders();
+      const url = `https://api.destinyitemmanager.com/profile`;
+      const hResp = await this.httpClient
+        .post<ProfileUpdateResponse>(url, body, { headers })
+        .toPromise();
+      console.dir(hResp);
+      return true;
+    } catch (x) {
+      this.notificationService.fail('Failed to set DIM sync tags');
+      console.dir(x);
+      return false;
+    } finally {
+      this.loading$.next(false);
+    }
+  }
+
+  async getDimTags(): Promise<ItemAnnotation[]> {
+    const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
+    this.loading$.next(true);
+    try {
+      const headers = await this.buildHeaders();
+      const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser.userInfo.membershipId}&components=tags`;
+      const hResp = await this.httpClient
+        .get<ProfileResponse>(url, { headers })
+        .toPromise();
+      // this.notificationService.success('Got latest DIM-sync tags');
+      return hResp.tags;
+    } catch (x) {
+      this.notificationService.fail('Failed to get DIM-sync tags');
+      console.dir(x);
+      return [];
+    } finally {
+      this.loading$.next(false);
+    }
+  }
+
 }
 
-interface AuthReq {
-  app: string;
-  bungieAccessToken: string;
-  membershipId: string;
+interface CustomAuthTokenResponse extends AuthTokenResponse {
+  expiration: string;
 }
-
-interface AuthResp {
-  accessToken: string;
-  expiresInSeconds: number;
-  expiration?: string;
-}
-
-interface UpdateRequest {
-  platformMembershipId: string;
-  destinyVersion: number;
-  updates: UpdateRow[];
-}
-
-interface UpdateRow {
-  action: string;
-  payload: UpdateRowPayload;
-}
-
-interface UpdateRowPayload {
-  id: string;
-  tag: string;
-}
-
-interface TagsResp {
-  tags: Tag[];
-}
-
-interface Tag {
-  id: string;
-  tag: string;
-  notes?: string;
-}
-
-// Upgrade -> Favorite
-// Keep -> keep
-// infuse -> infuse
-// junk -> junk
-// ? -> archive
-// notes to notes
-
-
-// 0. Allow downloading and restoring tags/notes in D2Checklist
-// 1. Store config for dim api key
-// 2. Show dialog with proper information re: using it
-// 3. Sync from d2checklist to DIM
-// 4. Sync from DIM to d2checklist
