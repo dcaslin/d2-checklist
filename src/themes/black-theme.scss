@@ -24,42 +24,57 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         color: hsl(200, 65%, 45%);
         font-weight: bold;
     }
+
     .keep-color {
         color: hsl(103, 44%, 43%);
         font-weight: bold;
     }
+
     .infuse-color {
         color: hsla(40, 81%, 48%, 1);
         font-weight: bold;
     }
+
     .junk-color {
         color: #d60505;
         font-weight: bold;
     }
 
-    .mark-table > tbody > tr.upgrade > td,
-    .mark-table > tbody > tr > td.upgrade {
+    .archive-color {
+        color: #868686;
+        font-weight: bold;
+    }
+
+    .mark-table>tbody>tr.upgrade>td,
+    .mark-table>tbody>tr>td.upgrade {
         background-color: #303d4d;
     }
-    .mark-table > tbody > tr.keep > td,
-    .mark-table > tbody > tr > td.keep {
+
+    .mark-table>tbody>tr.keep>td,
+    .mark-table>tbody>tr>td.keep {
         background-color: #344235;
     }
 
-    .mark-table > tbody > tr.infuse > td,
+    .mark-table>tbody>tr.infuse>td,
     ,
-    .mark-table > tbody > tr > td.infuse {
+    .mark-table>tbody>tr>td.infuse {
         background-color: #604532;
     }
 
-    .mark-table > tbody > tr.junk > td,
-    .mark-table > tbody > tr > td.junk {
+    .mark-table>tbody>tr.junk>td,
+    .mark-table>tbody>tr>td.junk {
         background-color: #553332;
+    }
+
+    .mark-table>tbody>tr.archive>td,
+    .mark-table>tbody>tr>td.archive {
+        background-color: #555555;
     }
 
     button.upgrade {
         background-color: #2c4674;
     }
+
     button.keep {
         background-color: #2c552d;
     }
@@ -67,12 +82,17 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
     button.infuse {
         background-color: #9f5927;
     }
+
     button.junk {
         background-color: #84302f;
+    }
+    button.archive {
+        background-color: #808080;
     }
 
     .nitro-consent-link button {
         color: mat-color($primary, 300);
+
         &:hover {
             color: mat-color($accent);
         }
@@ -85,8 +105,10 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         .links,
         .signature {
             color: mat-color($primary, 400);
+
             a {
                 color: mat-color($primary, 300);
+
                 &:hover {
                     color: mat-color($accent);
                 }

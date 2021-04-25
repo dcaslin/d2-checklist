@@ -582,7 +582,7 @@
             *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <div class="hide-mobile-block">
               <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
-                [ngClass]="['tag-button',mc.value]" [matTooltip]="mc.label">
+                [ngClass]="['tag-icon-button','tag-button',mc.value]" [matTooltip]="mc.label">
                 <fa-icon [icon]="mc.icon"></fa-icon>
               </button>
             </div>

@@ -23,6 +23,10 @@ $d2c-theme: mat-light-theme($d2c-primary, $d2c-accent);
         color: hsla(0, 76%, 36%, 1);
         font-weight: bold;
     }
+    .archive-color {
+        color: rgb(156, 156, 156);
+        font-weight: bold;
+    }
 
     .fake-link {
         color: rgba(0, 0, 0, 0.87);
@@ -56,9 +60,17 @@ $d2c-theme: mat-light-theme($d2c-primary, $d2c-accent);
     button.junk {
         background-color: hsl(0, 43%, 71%);
     }
+    button.archive {
+        background-color: hsl(0, 0%, 79%);
+    }
     .mark-table > tbody > tr.junk > td,
     .mark-table > tbody > tr > td.junk {
         background-color: hsl(0, 43%, 91%);
+    }
+
+    .mark-table > tbody > tr.archive > td,
+    .mark-table > tbody > tr > td.archive {
+        background-color: hsl(0, 0%, 80%);
     }
 
     // transparent icons are impossible to see on a light theme

@@ -1,5 +1,12 @@
 @import "styles-variables";
 
+
+.tag-icon-button {
+  width: 30px;
+  height: 30px;
+  line-height: 14px;
+}
+
 .mod-obj {
   font-size: smaller;
 }
@@ -392,37 +399,9 @@ table.stat-table {
   }
 }
 
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  margin: 15px 0;
-}
-
-.radio-button {
-  margin: 5px;
-}
-
 .compare-icon-cell {
   display: flex;
   flex-direction: row;
-}
-
-.utility-body {
-  margin: 10px;
-}
-
-.utility-download {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-
-  button {
-    margin: 5px;
-  }
-}
-
-.compact { 
-  margin: 2px;
 }
 
 .toggle-menu-button {
