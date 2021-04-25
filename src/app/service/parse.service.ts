@@ -1920,9 +1920,6 @@ export class ParseService {
                 if (ms.resets === '1970-01-01T00:00:00.000Z') {
                     ms.resets = null;
                 }
-                if (p.hash == '825965416') {
-                    ms.name = 'Prophecy Weekly';
-                }
                 milestoneList.push(ms);
             }
             const missingMilestones = [];
@@ -2047,7 +2044,7 @@ export class ParseService {
                                     }
                                 }
                             }
-                            c.milestones[Const.PSUEDO_PRESAGE] = new MilestoneStatus(Const.PSUEDO_PRESAGE, !incompletePresage, incompletePresage ? 0 : 1, null, null, [], !hasAccessToPresage, c.notReady);
+                            // c.milestones[Const.PSUEDO_PRESAGE] = new MilestoneStatus(Const.PSUEDO_PRESAGE, !incompletePresage, incompletePresage ? 0 : 1, null, null, [], !hasAccessToPresage, c.notReady);
                             c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
                         }
                         for (const missingKey of Object.keys(milestonesByKey)) {
@@ -2077,6 +2074,7 @@ export class ParseService {
                             }
                         }
                     }
+
                     // do a third pass for any dependent milestones
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
@@ -2499,11 +2497,28 @@ export class ParseService {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
         }
         // this.handleChallengeMilestones(chars, quests, milestoneList);
+        ParseService.cookMileStones(milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
             transitoryData, specialProgressions, gearMeta);
+    }
+
+    // do this all in one place at the last minute
+    // since we gather up milestones from all sorts of places
+    private static cookMileStones(milestoneList: MileStoneName[]) {
+        const presage = milestoneList.find(x => x.key == '3927548661');
+        if (presage) {
+            console.log(`old name: ${presage.name}`);
+            presage.name = 'Presage Weekly';
+        }
+
+        const prophecy = milestoneList.find(x => x.key == '825965416');
+        if (prophecy) {
+            console.log(`old name: ${prophecy.name}`);
+            prophecy.name = 'Prophecy Weekly';
+        }
     }
 
     private handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): GearMetaData {
