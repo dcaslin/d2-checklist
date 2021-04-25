@@ -797,18 +797,18 @@ export class BungieService implements OnDestroy {
         };
         p.milestoneList.push(ms3);
 
-        const ms4: MileStoneName = {
-            key: Const.PSUEDO_PRESAGE,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Pinnacle Gear',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-            name: 'Presage Weekly',
-            desc: 'Search the Glykon to earn Dead Man\'s Tale, and get yourself a Pinnacle drop while you\'re there',
-            hasPartial: false,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(ms4);
+        // const ms4: MileStoneName = {
+        //     key: Const.PSUEDO_PRESAGE,
+        //     resets: p.characters[0].endWeek.toISOString(),
+        //     rewards: 'Pinnacle Gear',
+        //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+        //     name: 'Presage Weekly',
+        //     desc: 'Search the Glykon to earn Dead Man\'s Tale, and get yourself a Pinnacle drop while you\'re there',
+        //     hasPartial: false,
+        //     neverDisappears: true,
+        //     dependsOn: []
+        // };
+        // p.milestoneList.push(ms4);
         p.milestoneList.sort((a, b) => {
             if (a.boost.sortVal < b.boost.sortVal) { return 1; }
             if (a.boost.sortVal > b.boost.sortVal) { return -1; }

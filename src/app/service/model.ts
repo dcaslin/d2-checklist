@@ -1274,7 +1274,7 @@ export class Const {
     public static readonly MISSION_ARTIFACT_KEY = '22222222';
     public static readonly PSUEDO_HERESY_KEY = 'PSUEDO-HERESY';
     // public static readonly PROPHECY_KEY = '44444444';
-    public static readonly PSUEDO_PRESAGE = 'PSUEDO_PRESAGE';
+    // public static readonly PSUEDO_PRESAGE = 'PSUEDO_PRESAGE';
     public static readonly PSUEDO_MASTER_EMPIRE_HUNT = 'PSUEDO_MASTER_EMPIRE';
 
     public static readonly LIGHT_TOO_LOW = 1249; // update me
