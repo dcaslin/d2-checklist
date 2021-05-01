@@ -1,6 +1,6 @@
 import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { cookError, safeStringifyError } from '@app/shared/utilities';
+import { cookError, isSearchBot, safeStringifyError } from '@app/shared/utilities';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, throwError } from 'rxjs';
@@ -18,9 +18,12 @@ export class DestinyCacheService {
   public readonly unzipping: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly error: BehaviorSubject<string> = new BehaviorSubject(null);
   public readonly errorDetails: BehaviorSubject<any> = new BehaviorSubject(null);
+  public readonly searchBot: boolean = isSearchBot();
 
   constructor(private http: HttpClient) {
-    this.init();
+    if (!this.searchBot) {
+      this.init();
+    }
   }
 
   private async init() {
