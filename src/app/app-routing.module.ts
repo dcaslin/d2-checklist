@@ -70,6 +70,12 @@ export class AuthGuard implements CanActivate {
   }
 }
 
+// TODO remove auth guard from about
+// todo detect search bot and use basic version of home
+// todo otherwise add that home write up to bottom of full funcitoned home
+// goal, don't have search bots mess with downloading the manifest and calling back to the bungie API
+// todo cleanup app component page for that as well.
+
 @NgModule({
   imports: [RouterModule.forRoot(
     [{
