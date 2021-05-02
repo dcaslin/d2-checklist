@@ -1,38 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-    <loc>https://www.d2checklist.com</loc>
+    <loc>https://www.d2checklist.com/index.html</loc>
     <priority>1.0</priority>
     <changefreq>daily</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/gear</loc>
-    <priority>0.8</priority>
-    <changefreq>weekly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/vendors</loc>
-    <priority>0.6</priority>
-    <changefreq>weekly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/search</loc>
-    <priority>0.5</priority>
-    <changefreq>weekly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/searchClans</loc>
-    <priority>0.5</priority>
-    <changefreq>weekly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/settings</loc>
-    <priority>0.5</priority>
-    <changefreq>weekly</changefreq>
-</url>
-<url>
-    <loc>https://www.d2checklist.com/about</loc>
-    <priority>0.5</priority>
-    <changefreq>weekly</changefreq>
 </url>
 </urlset>
