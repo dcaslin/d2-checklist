@@ -5,11 +5,11 @@ a:link {
 
 .robot-grid-parent {
     display: grid;
-
+    max-width: 1400px;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-column-gap: 10px;
     grid-row-gap: 10px;
-    //margin:1em 0;
+    margin:5px;
     grid-auto-flow: row dense;
 }
 
