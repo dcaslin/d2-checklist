@@ -1,16 +1,17 @@
 @import 'styles-variables';
 
-.logo{
+.logo {
   height: 38px;
   width: 38px;
 }
 
-.sub-row{
-   font-size: smaller;
-   height: 40px;
-   animation: slide-down-anim 1.0s ease;
+.sub-row {
+  font-size: smaller;
+  height: 40px;
+  animation: slide-down-anim 1.0s ease;
 }
-.currency-icons{
+
+.currency-icons {
   margin-right: 10px;
   margin-left: 10px;
 }
@@ -25,28 +26,31 @@
 
 @keyframes slide-down-anim {
   0% {
-      opacity: 0;
-      height: 0;
-      transform: translateY(-20px);
+    opacity: 0;
+    height: 0;
+    transform: translateY(-20px);
   }
+
   100% {
-      opacity: 1;
-      height: 40px;
-      transform: translateX(0);
+    opacity: 1;
+    height: 40px;
+    transform: translateX(0);
   }
 }
 
 @keyframes slide-left-anim {
   0% {
-      opacity: 0;
-      transform: translateX(20px);
+    opacity: 0;
+    transform: translateX(20px);
   }
+
   100% {
-      opacity: 1;
-      transform: translateX(0);
+    opacity: 1;
+    transform: translateX(0);
   }
 }
-.currency-icon{
+
+.currency-icon {
   width: 24px;
   height: 24px;
 
@@ -54,7 +58,7 @@
   display: inline-block;
 }
 
-.currency-chip{
+.currency-chip {
   margin-left: 10px;
 }
 
@@ -86,6 +90,7 @@ mat-sidenav-container {
         min-width: 0;
         padding: 0 10px;
       }
+
       .sign-in-button {
         min-width: 0;
         padding: 0 10px;
@@ -126,9 +131,9 @@ mat-sidenav {
 }
 
 
-.holder{
-  min-height:100vh;
-  display: flex; 
+.holder {
+  min-height: 100vh;
+  display: flex;
   flex-direction: column;
 }
 
@@ -136,7 +141,7 @@ mat-sidenav {
   flex-grow: 1;
 }
 
-.footer{
+.footer {
   height: 140px;
   max-height: 140px;
   flex-grow: 0;
@@ -202,7 +207,7 @@ mat-sidenav {
 }
 
 
-.childComponent{
+.childComponent {
   // height: 100%;
   flex: 1 0 auto;
   display: flex;
@@ -210,7 +215,7 @@ mat-sidenav {
   // background-color: goldenrod;
 }
 
-.childVert{
+.childVert {
   flex: 1 1 auto;
   display: inline-flex;
   flex-direction: row;
@@ -218,26 +223,26 @@ mat-sidenav {
 }
 
 
-.main{
+.main {
   flex-grow: 1;
   // height: 100%;
   padding: 20px;
-  
+
   text-align: center;
-  margin-left: auto; 
+  margin-left: auto;
   margin-right: auto;
   // background-color: green;
 }
 
 .component-holder {
-  display: flex; 
+  display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 
 @media (max-width: 960px) {
-  .main{
+  .main {
     padding: 5px;
   }
 }
