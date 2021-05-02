@@ -1,22 +1,19 @@
 
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, OnDestroy, OnInit, HostListener, AfterViewInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, HostListener, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { AuthGuard } from '@app/app-routing.module';
 import { environment as env } from '@env/environment';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 import { AuthService } from './service/auth.service';
-import { BungieService } from './service/bungie.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { IconService } from './service/icon.service';
 import { ClanRow, Const, SelectedUser, UserInfo } from './service/model';
 import { NotificationService } from './service/notification.service';
-import { StorageService } from './service/storage.service';
-import { PwaService } from './service/pwa.service';
 import { SignedOnUserService } from './service/signed-on-user.service';
+import { StorageService } from './service/storage.service';
 
 
 @Component({
@@ -47,16 +44,13 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
   deferredPrompt: any;
 
   constructor(
-    public authGuard: AuthGuard,
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     private notificationService: NotificationService, private storageService: StorageService,
     private authService: AuthService,
-    public bungieService: BungieService,
     public overlayContainer: OverlayContainer,
     public destinyCacheService: DestinyCacheService,
     private router: Router, public snackBar: MatSnackBar,
-    private pwaService: PwaService,
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private ref: ChangeDetectorRef) {

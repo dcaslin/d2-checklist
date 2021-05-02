@@ -106,7 +106,8 @@
             </a>
           </span>
 
-          <button mat-button class="sign-in-button" *ngIf="(signedOnUser|async)==null && !(signedOnUserService.authorizing$|async)"
+          <button mat-button class="sign-in-button"
+            *ngIf="(signedOnUser|async)==null && !(signedOnUserService.authorizing$|async)"
             matTooltip="Grants access to private endpoints" matTooltipPosition="before" (click)="onLoginClick()">
             <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign in
           </button>
@@ -222,46 +223,8 @@
         </mat-toolbar-row>
       </mat-toolbar>
       <d2c-ad-slot [navigating]="navigating$|async" adType="top"></d2c-ad-slot>
-      <mat-card class='apiAlert' *ngIf="bungieService.apiDown===true">
-        <mat-card-content>
-          <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new
-            releases and lasts a few hours
-            past when the game is back online.
-            <a href="https://twitter.com/D2Checklist">Msg me on Twitter</a> if you have any problems or questions.
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-
-      <div class="db-error" *ngIf="(destinyCacheService.error | async) != null">
-        
-          <div>
-            <p style="font-weight: bold;">{{destinyCacheService.error | async}}</p>
-            <p>If you can't get past this error, please copy and paste or take a screenshot of this and DM @D2Checklist so I can help you fix it. Thanks!</p>
-          </div>
-          
-            
-          <div class="json-error-text">{{destinyCacheService.errorDetails|async}}</div>
-      </div>
-      <div class="center-spinner db-progress">
-        <div *ngIf="destinyCacheService.unzipping | async">
-          <br>
-          <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
-          Processing manifest DB...
-        </div>
-        <div *ngIf="(destinyCacheService.percent | async) < 100">
-          <br>
-          <div *ngIf="destinyCacheService.checkingCache|async">
-            <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
-            Checking cache...
-          </div>
-          <div *ngIf="!(destinyCacheService.checkingCache|async)">
-            <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
-            </mat-progress-bar>
-            Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
-          </div>
-        </div>
-      </div>
+      <d2c-app-status></d2c-app-status>
+      
       <div class="childComponent">
         <div class="childVert">
           <div class="main">
@@ -304,7 +267,8 @@
       </div>
       <div class="row">
         <div class="col-12 links">
-          &#169; {{year}} - Destiny Checklist | <span [matTooltip]="destinyCacheService.version$|async">v{{version}}</span> | 
+          &#169; {{year}} - Destiny Checklist | <span
+            [matTooltip]="destinyCacheService.version$|async">v{{version}}</span> |
           <a routerLink="/privacy">Privacy Policy </a> | Not affiliated with Bungie
           <span id="ncmp-consent-link" class="nitro-consent-link"></span>
           <span class="nitro-consent-link" data-ccpa-link="1"></span>

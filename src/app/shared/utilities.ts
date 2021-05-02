@@ -102,6 +102,7 @@ const BOTS = [
 const IS_BOT_REGEXP = new RegExp('^.*(' + BOTS.join('|') + ').*$');
 
 export function isSearchBot(): boolean {
+  return true;
   try {
     if (!navigator || !navigator.userAgent) {
       return false;

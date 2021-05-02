@@ -26,6 +26,7 @@ import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.com
 import { GearComponent } from './gear';
 import { HistoryComponent } from './history';
 import { HomeComponent } from './home/home.component';
+import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { PartyComponent } from './party/party.component';
 import { PGCRComponent } from './pgcr';
 import { PlayerComponent } from './player';
@@ -53,13 +54,15 @@ import { PrivacyComponent } from './privacy/privacy.component';
 import { RecentPlayersComponent } from './recent-players';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
+import { isSearchBot } from './shared/utilities';
 import { TestbedComponent } from './testbed/testbed.component';
 import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
 
 
+const searchBot = isSearchBot();
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class ManifestLoadedGuard implements CanActivate {
   public loader$ = new Subject<boolean>();
 
   constructor(private destinyCacheService: DestinyCacheService) {
@@ -70,12 +73,12 @@ export class AuthGuard implements CanActivate {
   }
 }
 
-// TODO remove auth guard from about
 // todo detect search bot and use basic version of home
 // todo otherwise add that home write up to bottom of full funcitoned home
 // goal, don't have search bots mess with downloading the manifest and calling back to the bungie API
 // todo cleanup app component page for that as well.
 // todo update sitemap to point to index.html and research soft 404 problem
+
 
 @NgModule({
   imports: [RouterModule.forRoot(
@@ -87,30 +90,29 @@ export class AuthGuard implements CanActivate {
       , {
       path: 'home',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
-      component: HomeComponent
+      canActivate: searchBot ? null : [ManifestLoadedGuard],
+      component: searchBot ? RobotHomeComponent : HomeComponent
     },
     {
       path: 'auth',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: AuthComponent
     },
     {
       path: 'test',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: TestbedComponent
     },
     {
       path: 'settings',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: SettingsComponent
     }, {
       path: 'about',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
       component: AboutComponent
     }, {
       path: 'privacy',
@@ -119,7 +121,7 @@ export class AuthGuard implements CanActivate {
     }, {
       path: 'friends',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: FriendsComponent
     },
     {
@@ -130,28 +132,28 @@ export class AuthGuard implements CanActivate {
     {
       path: 'gear/:tab',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: GearComponent
     },
     {
       path: 'search',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: BungieSearchComponent
     }, {
       path: 'searchClans',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: ClanSearchComponent
     }, {
       path: 'search/:name',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: BungieSearchComponent
     }, {
       path: 'clan/:id',
       pathMatch: 'prefix',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: ClanComponent,
       children: [
         {
@@ -226,13 +228,13 @@ export class AuthGuard implements CanActivate {
     {
       path: 'pgcr/:instanceId',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: PGCRComponent
     },
     {
       path: 'vendors/:characterId/:tab',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: VendorsContainerComponent
     },
     {
@@ -243,31 +245,31 @@ export class AuthGuard implements CanActivate {
     {
       path: 'vendors',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: VendorsContainerComponent
     },
     {
       path: 'history/:platform/:memberId/:characterId',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: HistoryComponent
     },
     {
       path: 'recent-players/:platform/:memberId/:characterId',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: RecentPlayersComponent
     },
     {
       path: 'party/:platform/:memberId',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: PartyComponent
     },
     {
       path: 'gt/:platform/:gamertag',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: GamerTagSearchComponent
     },
     // {
@@ -337,7 +339,7 @@ export class AuthGuard implements CanActivate {
     {
       path: ':platform/:memberId',
       pathMatch: 'prefix',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       component: PlayerComponent,
       children: [
         {
@@ -478,7 +480,7 @@ export class AuthGuard implements CanActivate {
     {
       path: 'todo-list',
       pathMatch: 'full',
-      canActivate: [AuthGuard],
+      canActivate: [ManifestLoadedGuard],
       loadChildren: () => import('./todo-list/todo-list.module').then(m => m.TodoListModule)
     },
     {
@@ -487,6 +489,6 @@ export class AuthGuard implements CanActivate {
     }
     ], { useHash: false, relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
-  providers: [AuthGuard]
+  providers: [ManifestLoadedGuard]
 })
 export class AppRoutingModule { }
