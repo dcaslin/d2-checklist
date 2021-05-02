@@ -4,30 +4,6 @@
   height: 38px;
   width: 38px;
 }
-.db-progress{
-  width: 250px;
-}
-
-.db-error{  
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 25px;
-}
-
-.db-error > div {
-  
-  text-align: left;
-  margin: 5px;
-}
-
-.json-error-text {
-  max-width: 350px;
-  text-align: left;
-  margin-top:15px;
-}
-
 
 .sub-row{
    font-size: smaller;
@@ -70,18 +46,6 @@
       transform: translateX(0);
   }
 }
-
-.apiAlert{
-
-  max-width: 600px;
-  margin: auto;
-  padding-left: 30px;
-  padding-right: 30px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-
-}
-
 .currency-icon{
   width: 24px;
   height: 24px;

@@ -1,0 +1,55 @@
+<mat-card class='api-alert' *ngIf="bungieService.apiDown===true">
+    <mat-card-content>
+        <div class="warn-text">The Bungie API is currently down for maintenance. This typically coincides with new
+            releases and lasts a few hours
+            past when the game is back online.
+            <a href="https://twitter.com/D2Checklist">Msg me on Twitter</a> if you have any problems or questions.
+        </div>
+    </mat-card-content>
+</mat-card>
+<ng-container *ngif="!destinyCacheService.searchBot">
+
+    <div class="db-error mat-typography" *ngIf="(destinyCacheService.error | async) != null">
+        <div>
+            <p style="font-weight: bold;">{{destinyCacheService.error | async}}</p>
+            <p>So far 100% of the folks seeing this error have had a problem with their browser. See below for tips on
+                fixing it easily.</p>
+            <div class="dashed-border margin-10">
+                <ol>
+                    <li class="margin-10">If you're using Google Chrome, try loading the site in an Incognito Window
+                    </li>
+                    <li class="margin-10">If that works, but normal loading of the site contiues to fail, it's HIGHLY
+                        likely that you have an extension breaking the site.</li>
+                    <li class="margin-10">Go through and disable your extensions one by one until the site works. So
+                        far the culprits have all been random extensions people didn't even know they were even using.
+                    </li>
+                </ol>
+            </div>
+            <p>If you can't get past this error, please copy and paste or take a screenshot of this and DM @D2Checklist
+                so
+                I can help you fix it. Thanks!</p>
+        </div>
+
+
+        <div class="json-error-text">{{destinyCacheService.errorDetails|async}}</div>
+    </div>
+    <div class="center-spinner db-progress" *ngIf="(destinyCacheService.error | async) == null">
+        <div *ngIf="destinyCacheService.unzipping | async">
+            <br>
+            <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+            Processing manifest DB...
+        </div>
+        <div *ngIf="(destinyCacheService.percent | async) < 100">
+            <br>
+            <div *ngIf="destinyCacheService.checkingCache|async">
+                <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
+                Checking cache...
+            </div>
+            <div *ngIf="!(destinyCacheService.checkingCache|async)">
+                <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
+                </mat-progress-bar>
+                Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%
+            </div>
+        </div>
+    </div>
+</ng-container>

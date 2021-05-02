@@ -1,0 +1,54 @@
+<h1 *ngIf="searchBot">D2 Checklist</h1>
+<hr>
+<p>D2Checklist uses the Bungie API to help make achieving your goals in Destiny easier and more fun.</p>
+<div class="mat-typography robot-grid-parent">
+    
+    <div>
+        <h4>Player Page</h4>
+        <p class="panel-info">Search on your gamertag or logon and use "My Info" to see your player page. This page is great for tracking
+            your weekly milestones, bounties, quests, and triumphs. You can also look up other players to check their
+            raid completions or progress</p>
+
+    </div>
+    <div>
+        <h4>Gear Management</h4>
+        <p class="panel-info">The <a routerLink="/gear">D2Checklist gear manager</a> lets you view all your gear in a clean table format
+            for sorting and tagging. It will flag God rolls on your guns and help you keep your vault clean and tidy. Be
+            sure to check out Shard Mode and Cheap Upgrade Mode</p>
+
+    </div>
+    
+    
+    <div>
+        <h4>Home page</h4>
+        <p class="panel-info">This home page is a great place to check what's going on today at a glance. Things like today's Legendary Lost sectors and this week's strike burns. 
+            It will also show you vendor items that you should check out, like armor with better rolls than you're currently holding, or exotic gear Xur is selling that you're missing.
+            It also lets you see groups of bounties that are worth completing together and lets you build a "Bounty Shopping List" of those items.
+        </p>
+    </div>
+    <div>
+        <h4>Clan Info</h4>
+        <p class="panel-info">You can <a routerLink="/searchClans">search for a clan</a> or sign in and click "My Clan" to view clan info.
+            It's a great tool for clan leaders to find duplicate members or folks that haven't played in a while.
+            The Clan Milestones and Triumphs pages are a great way to check out which of your clanmates share a similar
+            goal with you, so you can reach out and party up with them (perhaps to win 5 more Gambit matches to gild
+            your Dredgen).
+        </p>
+
+    </div>
+    
+    <div>
+        <h4>Todo List</h4>
+        <p class="panel-info">The <a routerLink="/todo-list">Todo list</a> offers a limited view of the data from your player page, 
+            in a single filterable todo list that combines milestones, held bounties and bounties being offered by vendors.
+        </p>
+    </div>    
+    <div>
+        <h4>This site</h4>
+        <p class="panel-info">
+            I've been building Destiny API sites as a hobby since I created <a href="https://www.destinychecklist.net" target="_blank" rel="noopener">www.destinychecklist.net</a> all the way back in Destiny 1.             
+            See the <a routerLink="/todo-list">About page</a> for more info.
+        </p>
+    </div>
+
+</div>

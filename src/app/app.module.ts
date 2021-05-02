@@ -63,6 +63,8 @@ import { ExchangeDealsComponent } from './deals/exchange-deals/exchange-deals.co
 import { ArmorDealsComponent } from './deals/armor-deals/armor-deals.component';
 import { ArmorCompareDialogComponent } from './deals/armor-compare-dialog/armor-compare-dialog.component';
 import { PlayerCurrenciesComponent } from './player-currencies/player-currencies.component';
+import { RobotHomeComponent } from './home/robot-home/robot-home.component';
+import { AppStatusComponent } from './app-status/app-status.component';
 
 
 
@@ -101,7 +103,7 @@ import { PlayerCurrenciesComponent } from './player-currencies/player-currencies
     SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent,
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
-    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, ArmorCompareDialogComponent, PlayerCurrenciesComponent
+    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent
   ],
   providers: [
     AuthService,
