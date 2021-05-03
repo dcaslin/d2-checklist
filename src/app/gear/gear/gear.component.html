@@ -247,6 +247,9 @@
           <span class="fake-link gear-sort" (click)="sort('name')">Name
             <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
           </span>
+          <span class="fake-link gear-sort pad-left-more" (click)="sort('id')">Age
+            <d2c-sort-indicator field="id" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+          </span>
         </th>
         <th class="limited-gear-width hide-mobile-table-cell"
           *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
