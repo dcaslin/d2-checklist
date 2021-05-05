@@ -105,7 +105,7 @@
       <button mat-button [matMenuTriggerFor]="menuMoreOptions">
         <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
       </button>
-      <button mat-button *ngIf="markService.dirty|async" (click)="markService.saveMarks()">
+      <button mat-button *ngIf="markService.dirty$|async" (click)="markService.saveMarks()">
         <fa-icon [icon]="iconService.fasSave"></fa-icon>
       </button>
       <mat-checkbox [(ngModel)]="hideDupes" ngDefaultControl (ngModelChange)="toggleDupes(hideDupes)">
@@ -604,7 +604,7 @@
             <div>
               <mat-form-field class="full-width">
                 <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
-                  (change)="itemNotesChanged(i)">
+                  (ngModelChange)="itemNotesChanged(i)" [matAutocomplete]="hashTagAuto">
               </mat-form-field>
             </div>
           </td>
@@ -665,3 +665,9 @@
     </span>
   </div>
 </ng-template>
+
+<mat-autocomplete #hashTagAuto="matAutocomplete">
+  <mat-option *ngFor="let hashTag of markService.hashTags$|async" [value]="hashTag">
+    {{hashTag}}
+  </mat-option>
+</mat-autocomplete>
