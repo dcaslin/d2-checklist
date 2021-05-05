@@ -1243,6 +1243,15 @@ export class GearComponent extends ChildComponent {
             newFilteredOptions.push(o);
           }
         }
+      } else if (rawFilter.startsWith('#')) {
+        const hashTags = this.markService.hashTags$.getValue();
+        for (const hashTag of hashTags) {
+          if (hashTag.startsWith(rawFilter)) {
+            newFilteredOptions.push({
+              value: hashTag
+            });
+          }
+        }
       }
       this.filteredAutoCompleteOptions.next(newFilteredOptions);
     }

@@ -15,6 +15,7 @@ import {
     faHeart,
     faSave as fasSave
 } from '@fortawesome/pro-solid-svg-icons';
+import { format } from 'date-fns';
 import * as LZString from 'lz-string';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -23,8 +24,6 @@ import { DimSyncService } from './dim-sync.service';
 import { InventoryItem } from './model';
 import { NotificationService } from './notification.service';
 import { SignedOnUserService } from './signed-on-user.service';
-import { format } from 'date-fns';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 
 const MARK_URL = '/api/mark';
 
@@ -36,7 +35,8 @@ export class MarkService implements OnDestroy {
     private cleanMarks$: BehaviorSubject<Marks | null> = new BehaviorSubject(null); // the original marks loaded from the server
     // have an observable for dirty that's debounced to once every second that writes updates to server
     private marksChanged: Subject<boolean> = new Subject<boolean>();
-    public dirty: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public dirty$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    public hashTags$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
     public markChoices: MarkChoice[];
     public markDict: { [id: string]: MarkChoice };
     private badState = false;
@@ -60,7 +60,7 @@ export class MarkService implements OnDestroy {
         this.marksChanged
             .pipe(takeUntil(this.unsubscribe$), debounceTime(5000))
             .subscribe(() => {
-                if (this.dirty.value === true && !this.badState) {
+                if (this.dirty$.value === true && !this.badState) {
                     this.saveMarks();
                 }
             });
@@ -147,7 +147,7 @@ export class MarkService implements OnDestroy {
         }
 
         if (success) {
-            this.dirty.next(false);
+            this.dirty$.next(false);
             this.failCount = 0;
         } else {
             this.failCount++;
@@ -156,7 +156,7 @@ export class MarkService implements OnDestroy {
                 this.notificationService.fail(
                     'Mark service is down. Marks will not be saved, please try again later.'
                 );
-                this.dirty.next(false);
+                this.dirty$.next(false);
             }
         }
     }
@@ -299,7 +299,12 @@ export class MarkService implements OnDestroy {
         return unusedDelete;
     }
 
-    private static processNotes(
+    private static grabHashTags(note: string): string[] {
+        return note.split(' ').filter(v => v.startsWith('#'));
+    }
+
+
+    private processNotes(
         m: { [key: string]: string },
         items: InventoryItem[]
     ): boolean {
@@ -311,11 +316,16 @@ export class MarkService implements OnDestroy {
             usedKeys[key] = false;
             totalKeys++;
         }
+        const hashTags = new Set();
         for (const item of items) {
             const note: string = m[item.id];
             if (note != null && note.trim().length > 0) {
                 item.notes = note;
                 usedKeys[item.id] = true;
+                const noteHashTags = MarkService.grabHashTags(note);
+                for (const n of noteHashTags) {
+                    hashTags.add(n);
+                }
             }
         }
         for (const key of Object.keys(usedKeys)) {
@@ -327,6 +337,8 @@ export class MarkService implements OnDestroy {
             }
         }
         console.log('Notes: ' + missingKeys + ' unused out of total ' + totalKeys);
+        this.hashTags$.next((Array.from(hashTags) as string[]).sort());
+        console.dir(this.hashTags$.getValue());
         return unusedDelete;
     }
 
@@ -358,11 +370,11 @@ export class MarkService implements OnDestroy {
             currentMarks.marked,
             items
         );
-        const updatedNotes: boolean = MarkService.processNotes(
+        const updatedNotes: boolean = this.processNotes(
             currentMarks.notes,
             items
         );
-        this.dirty.next(this.dirty.value || updatedNotes || updatedMarks);
+        this.dirty$.next(this.dirty$.value || updatedNotes || updatedMarks);
     }
 
     updateItem(item: InventoryItem): void {
@@ -390,7 +402,7 @@ export class MarkService implements OnDestroy {
         } else {
             currentMarks.notes[item.id] = item.notes;
         }
-        this.dirty.next(true);
+        this.dirty$.next(true);
         this.marksChanged.next(true);
     }
 
