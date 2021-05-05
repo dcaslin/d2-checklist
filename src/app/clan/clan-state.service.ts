@@ -1204,6 +1204,7 @@ export class ClanStateService {
 
     const loaded = this.sortedMembers.getValue().filter(x => (x.errorMsg != null || x.currentPlayer() != null)).length;
     const total = this.sortedMembers.getValue().length;
+    this.profilesLoaded.next(loaded / total);
     if (loaded >= total && total > 0) {
       console.log(`All players loaded`);
       this.allLoaded.next(true);

@@ -42,8 +42,9 @@
                       class="warn-text mat-option.mat-selected"></fa-icon>
                     <fa-icon [icon]="iconService.farSquare" *ngIf="!c.complete"></fa-icon>
 
-                    
+                    <fa-icon *ngIf="c.forTitleGilding" class="pad-left pad-right accent-text" [icon]="iconService.fadShieldAlt" matTooltip="For title guilding"></fa-icon>
                     {{c.name}}
+                    
                     <ng-container *ngIf="c.lowLinks!=null">                      
                       <a [href]="c.lowLinks.mapLink" class="pad-left" *ngIf="c.lowLinks.mapLink!=null && c.lowLinks.mapLink!=null" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.farMapMarkerAlt" class="accent-text"></fa-icon> </a>
                       <a [href]="c.lowLinks.loreLink" class="pad-left" *ngIf="c.lowLinks.loreLink!=null && c.lowLinks.loreLink.length>1" target="_blank" rel="noopener"> <fa-icon [icon]="iconService.fasBookSpells"></fa-icon></a>
@@ -61,7 +62,7 @@
                     <span class="pad-left" *ngIf="c.contentVault && c.complete"
                       matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
                       <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
-                    </span>
+                    </span>                    
                     <br>
                     <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">
                       Not yet redeemed.<br></span>

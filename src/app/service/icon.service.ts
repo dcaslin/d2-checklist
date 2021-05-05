@@ -30,7 +30,7 @@ import {
 
 import {
   faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp, faArchive as fadArchive,
-  faHourglassHalf as fadHourGlassHalf
+  faHourglassHalf as fadHourGlassHalf, faShieldAlt as fadShieldAlt
  } from '@fortawesome/pro-duotone-svg-icons';
 import {
   faPlug as fasPlug,
@@ -75,6 +75,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fadShieldAlt = fadShieldAlt;
   public readonly fasCabinetFiling = fasCabinetFiling;
   public readonly fasChessKnight = fasChessKnight;
   public readonly farList = farList;

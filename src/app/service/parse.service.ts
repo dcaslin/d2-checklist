@@ -1,3 +1,4 @@
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Injectable } from '@angular/core';
 import { fromUnixTime, parseISO } from 'date-fns';
 import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
@@ -364,7 +365,7 @@ export class ParseService {
     }
 
 
-    private addPseudoMilestone(key: string, milestonesByKey: any, milestoneList: MileStoneName[]) {
+    private addPseudoMilestone(key: string, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[]) {
         if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = this.destinyCacheService.cache.Milestone[key];
             if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
@@ -405,7 +406,7 @@ export class ParseService {
     }
 
 
-    private populateProgressions(c: Character, _prog: any, milestonesByKey: any, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
+    private populateProgressions(c: Character, _prog: any, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[], accountProgressions: Progression[]): void {
         c.milestones = {};
         c.notReady = false;
 
@@ -460,12 +461,6 @@ export class ParseService {
                 // weekly strikes
                 // this.addPseudoMilestone('1437935813', milestonesByKey, milestoneList);
 
-
-                // harbinger is not in public milestones and will dissappear if done
-                this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
-
-                // same w/ weekly empire hunt
-                this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
 
                 let total = 0;
                 let complete = 0;
@@ -1048,7 +1043,7 @@ export class ParseService {
     }
 
     private parseMilestonePl(rewards: string): BoostInfo {
-        let boost =  Const.BOOST_DROP_TABLE[Const.BOOST_UNKNOWN];
+        let boost = Const.BOOST_DROP_TABLE[Const.BOOST_UNKNOWN];
         if (rewards) {
             if (rewards.startsWith('Powerful')) {
                 if (rewards.endsWith('3)')) {
@@ -1944,21 +1939,11 @@ export class ParseService {
                 milestonesByKey[ms.key] = ms;
                 msAdded = true;
             }
-            // --- FORCE ANY SPECIAL MILESTONES HERE
-            if (!milestoneList.find(x => x.key == '1713200903')) {
-                milestoneList.push({
-                    'key': '1713200903',
-                    'resets': weekEnd,
-                    'rewards': 'Pinnacle Gear',
-                    boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-                    'name': 'Weekly Exo Challenge',
-                    'desc': 'Complete an Exo Challenge.',
-                    'hasPartial': false,
-                    'dependsOn': [
-                    ]
-                }
-                );
+            for (const milestone of milestoneList) {
+                milestonesByKey[milestone.key] = milestone;
             }
+            this.addDisappearingMileStones(milestonesByKey, milestoneList);
+
             if (msAdded) {
                 milestoneList.sort((a, b) => {
                     if (a.boost.sortVal < b.boost.sortVal) { return 1; }
@@ -1970,9 +1955,6 @@ export class ParseService {
                     return 0;
                 });
 
-            }
-            for (const milestone of milestoneList) {
-                milestonesByKey[milestone.key] = milestone;
             }
         }
 
@@ -2505,18 +2487,42 @@ export class ParseService {
             transitoryData, specialProgressions, gearMeta);
     }
 
+    // these are items that are not in the public milestones and also disappear on completion
+    // we'll explicitly add them if they're not already present
+    // do this all in one place for sanity sake
+    private addDisappearingMileStones(milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[]) {
+        // if we don't have a clan milestone we probably don't have any milestones, nm
+        if (milestonesByKey['3603098564'] == null) {
+            return;
+        }
+
+        // Harbinger
+        this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
+        // Weekly Empire Hunt
+        this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
+
+        // Weekly Exo Challenge
+        this.addPseudoMilestone('1713200903', milestonesByKey, milestoneList);
+        // Presage
+        this.addPseudoMilestone('3927548661', milestonesByKey, milestoneList);
+        // Prophecy
+        this.addPseudoMilestone('825965416', milestonesByKey, milestoneList);
+        // GoS
+        this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
+    }
+
+
+
     // do this all in one place at the last minute
     // since we gather up milestones from all sorts of places
     private static cookMileStones(milestoneList: MileStoneName[]) {
         const presage = milestoneList.find(x => x.key == '3927548661');
         if (presage) {
-            console.log(`old name: ${presage.name}`);
             presage.name = 'Presage Weekly';
         }
 
         const prophecy = milestoneList.find(x => x.key == '825965416');
         if (prophecy) {
-            console.log(`old name: ${prophecy.name}`);
             prophecy.name = 'Prophecy Weekly';
         }
     }
@@ -2981,6 +2987,7 @@ export class ParseService {
             intervalsRedeemedCount: intervalsRedeemedCount,
             complete: complete,
             redeemed: redeemed,
+            forTitleGilding: rDesc.forTitleGilding,
             title: title,
             children: null,
             path: path,
