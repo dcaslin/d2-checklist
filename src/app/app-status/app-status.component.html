@@ -7,7 +7,7 @@
         </div>
     </mat-card-content>
 </mat-card>
-<ng-container *ngif="!destinyCacheService.searchBot">
+<ng-container *ngIf="!destinyCacheService.searchBot">
 
     <div class="db-error mat-typography" *ngIf="(destinyCacheService.error | async) != null">
         <div>

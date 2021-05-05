@@ -209,6 +209,7 @@ export interface TriumphRecordNode extends TriumphNode {
     contentVault: boolean;
     intervalsRedeemedCount: number;
     redeemed: boolean;
+    forTitleGilding: boolean;
     title: boolean;
     interval: boolean;
     earned: number;
