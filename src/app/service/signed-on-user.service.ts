@@ -127,7 +127,9 @@ export class SignedOnUserService implements OnDestroy {
           selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
           'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
           'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-          'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles'], false, true))
+          'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles',
+          'CharacterProgressions', 'CharacterActivities', 'ProfileProgression', 'Records' // added for uberlist
+        ], false, true))
       ),
       concatAll(),
       catchError((err) => {

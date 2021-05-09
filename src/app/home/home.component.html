@@ -160,9 +160,6 @@
         <mat-card-content>
           <mat-list>
             <mat-list-item *ngFor="let n of hunts" class="fake-link" (click)="showBurns(n)">
-              <!-- <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-                [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-                [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span> -->
               <div mat-line>
                 <span class="underline">{{removeActivityPrefixes(n.name)}}</span> - {{n.ll}} PL - {{n.modifiers.length}}
                 <fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>

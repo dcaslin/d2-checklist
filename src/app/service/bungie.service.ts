@@ -769,7 +769,6 @@ export class BungieService implements OnDestroy {
         if (!p.characters[0].endWeek) {
             return;
         }
-
         const ms1: MileStoneName = {
             key: Const.PSUEDO_HERESY_KEY,
             resets: p.characters[0].endWeek.toISOString(),
@@ -782,33 +781,6 @@ export class BungieService implements OnDestroy {
             dependsOn: []
         };
         p.milestoneList.push(ms1);
-
-
-        const ms3: MileStoneName = {
-            key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Pinnacle Gear',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-            name: 'Master Empire Hunt',
-            desc: 'Complete a Master Empire Hunt',
-            hasPartial: false,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(ms3);
-
-        // const ms4: MileStoneName = {
-        //     key: Const.PSUEDO_PRESAGE,
-        //     resets: p.characters[0].endWeek.toISOString(),
-        //     rewards: 'Pinnacle Gear',
-        //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-        //     name: 'Presage Weekly',
-        //     desc: 'Search the Glykon to earn Dead Man\'s Tale, and get yourself a Pinnacle drop while you\'re there',
-        //     hasPartial: false,
-        //     neverDisappears: true,
-        //     dependsOn: []
-        // };
-        // p.milestoneList.push(ms4);
         p.milestoneList.sort((a, b) => {
             if (a.boost.sortVal < b.boost.sortVal) { return 1; }
             if (a.boost.sortVal > b.boost.sortVal) { return -1; }
@@ -855,7 +827,7 @@ export class BungieService implements OnDestroy {
         // extra filter just in case
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
         // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
-        BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_HERESY_KEY, dungeonActivities, "Heresy");
+        BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_HERESY_KEY, dungeonActivities, 'Heresy');
         p.next(p.getValue());
     }
 

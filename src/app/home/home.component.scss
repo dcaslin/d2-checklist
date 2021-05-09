@@ -186,14 +186,6 @@ a.underline:link {
   border-radius: 0%;
 }
 
-.invert {
-  filter: invert(50%);
-}
-
-.brighten {
-  filter: brightness(1.8);
-}
-
 .nf-sub {
   margin-top: 5px !important;
   margin-left: 0.5em !important;
@@ -208,11 +200,6 @@ a.underline:link {
   height: 24px;
   width: 24px;
   margin-right: 10px;
-  background-size: cover;
-  display: block;
-}
-
-.list-icon {
   background-size: cover;
   display: block;
 }
