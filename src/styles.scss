@@ -472,3 +472,16 @@ mat-form-field.full-width .mat-form-field-infix{
 .margin-10 {
   margin: 10px !important;
 }
+
+.invert {
+  filter: invert(50%);
+}
+
+.brighten {
+  filter: brightness(1.8);
+}
+
+.list-icon {
+  background-size: cover;
+  display: block;
+}

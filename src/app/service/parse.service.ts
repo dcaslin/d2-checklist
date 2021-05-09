@@ -372,19 +372,7 @@ export class ParseService {
                 let descRewards = this.parseMilestoneRewards(skipDesc);
                 if (descRewards == null || descRewards.trim().length == 0) {
                     descRewards = 'Unknown';
-                    // weekly pinnacle challenge
-                    // if (key == '3881226684') {
-                    //     descRewards = 'Pinnacle Gear';
-                    // } else if (key == '1437935813') {
-                    //     descRewards = 'Pinnacle Gear (Weak)';
-                    // }
                 }
-                // if (skipDesc.hash == 979073379) { // force exo challenge to pinnacle    12/12/2020 this key is wrong? it is
-                //  979073379 and that works fine
-                //     // this is actually unlocked by Europa Explorer III which is too much trouble to track b/c we'd have to load
-                //     // the slow varik's vendor endpoint
-                //     descRewards = 'Pinnacle Gear';
-                // }
                 const ms2: MileStoneName = {
                     key: skipDesc.hash + '',
                     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
@@ -1986,25 +1974,9 @@ export class ParseService {
                             // do some weirdness for Master Empire hunts
                             let hasAccessTo1280EmpireHunt = false;
                             let incomplete1280Hunt = false;
-                            let hasAccessToPresage = false;
-                            let incompletePresage = false;
                             for (const aa of resp.characterActivities.data[key].availableActivities) {
                                 availableActivities[aa.activityHash] = true;
-                                if (aa.activityHash == 4212753278) { // presage master
-                                    hasAccessToPresage = true;
-                                    if (aa.challenges?.length > 0) {
-                                        for (const challenge of aa.challenges) {
-                                            if (challenge.objective?.objectiveHash == 3278614711) { // weekly completion challenge
-                                                // if this is here it shouldn't be complete, these disappear when complete
-                                                if (!challenge.objective.complete) {
-                                                    incompletePresage = true;
-                                                    break;
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                } else if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
+                                if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
                                     // while we're here check for Empire Hunt pinnacle.
                                     // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
                                     const vDesc: any = this.destinyCacheService.cache.Activity[aa.activityHash];
@@ -2026,7 +1998,6 @@ export class ParseService {
                                     }
                                 }
                             }
-                            // c.milestones[Const.PSUEDO_PRESAGE] = new MilestoneStatus(Const.PSUEDO_PRESAGE, !incompletePresage, incompletePresage ? 0 : 1, null, null, [], !hasAccessToPresage, c.notReady);
                             c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
                         }
                         for (const missingKey of Object.keys(milestonesByKey)) {
@@ -2509,6 +2480,20 @@ export class ParseService {
         this.addPseudoMilestone('825965416', milestonesByKey, milestoneList);
         // GoS
         this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
+
+        const mseh: MileStoneName = {
+            key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
+            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+            rewards: 'Pinnacle Gear',
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+            name: 'Master Empire Hunt',
+            desc: 'Complete a Master Empire Hunt',
+            hasPartial: false,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        milestoneList.push(mseh);
+        milestonesByKey[mseh.key] = mseh;
     }
 
 
