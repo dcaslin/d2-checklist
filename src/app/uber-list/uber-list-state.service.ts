@@ -1,22 +1,39 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { BungieService } from '@app/service/bungie.service';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import {
   InventoryItem,
   ItemType,
   MileStoneName,
   MilestoneStatus,
-  Player,
+  NameQuantity
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-interface UberListRow {
+
+interface PrivRewardDesc {
+  itemHash: number;
+  quantity: number;
+}
+
+interface MilestoneRow {
+  type: string;
+  title: MileStoneName;
   desc: any;
-  name: string;
-  hash: string;
-  item: InventoryItem;
+  rewards: NameQuantity[];
+  characterEntries: { [key: string]: MilestoneStatus };
+}
+
+interface PursuitRow {
+  type: string;
+  title: InventoryItem;
+  characterEntries: { [key: string]: PursuitTuple };
+}
+
+interface PursuitTuple {
+  vendorItem: InventoryItem;
+  characterItem: InventoryItem;
 }
 
 
@@ -25,15 +42,14 @@ const ICON_FIXES = {
   '3899487295': '672118013',  // GUNSMITH_WEEKLY_BOUNTIES
   '2709491520': '69482069',   // VANGUARD_WEEKLY_BOUNTIES
   '3802603984': '248695599',  // GAMBIT_WEEKLY_BOUNTIES
-
-}
+};
 
 @Injectable({
   providedIn: 'root',
 })
 export class UberListStateService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
-  public rows$: BehaviorSubject<UberListRow[]> = new BehaviorSubject([]);
+  public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
 
   constructor(
     private signedOnUserService: SignedOnUserService,
@@ -48,14 +64,15 @@ export class UberListStateService implements OnDestroy {
         filter(([player, vendors]) => player != null && vendors != null)
       )
       .subscribe(([player, charVendors]) => {
-        const rowData: { [key: string]: UberListRow } = {};
+        const rowData: { [key: string]: MilestoneRow | PursuitRow } = {};
         for (const char of player.characters) {
           const vendors = charVendors.find((x) => x.char.id == char.id);
           if (vendors) {
             for (const vi of vendors.data) {
               if (vi.type == ItemType.Bounty) {
+                // create empty pursuit row
                 if (!rowData[vi.hash]) {
-                  rowData[vi.hash] = this.buildVendorBountyRow(vi);
+                  rowData[vi.hash] = this.buildInitialPursuitRow(vi);
                 }
               }
             }
@@ -65,19 +82,19 @@ export class UberListStateService implements OnDestroy {
           );
           for (const b of bounties) {
             if (!rowData[b.hash]) {
-              rowData[b.hash] = this.buildCharBountyRow(b);
+              rowData[b.hash] = this.buildInitialPursuitRow(b);
             }
           }
-          for (const pl of player.milestoneList) {
-            const c = char.milestones[pl.key];
+          for (const msn of player.milestoneList) {
+            const c = char.milestones[msn.key];
             if (c) {
               if (!rowData[c.hash]) {
-                rowData[c.hash] = this.buildCharMilestoneRow(pl, c);
+                rowData[c.hash] = this.buildInitialMilesoneRow(msn);
               }
             }
           }
         }
-        const rows: UberListRow[] = [];
+        const rows: (MilestoneRow | PursuitRow)[] = [];
         for (const key of Object.keys(rowData)) {
           rows.push(rowData[key]);
         }
@@ -90,49 +107,87 @@ export class UberListStateService implements OnDestroy {
         // Held bounties: InventoryItem
         // Char.milestones: { [key: string]: MilestoneStatus };
         // player.milestoneList: MileStoneName[] = [];
-        console.log('hi');
       });
   }
 
-  private buildVendorBountyRow(ii: InventoryItem): UberListRow {
+  private buildInitialPursuitRow(i: InventoryItem): PursuitRow {
     return {
-      desc: null,
-      hash: ii.hash,
-      name: 'Vendor sale: ' + ii.name,
-      item: ii,
+      type: 'pursuit',
+      title: i,
+      characterEntries: {}
     };
   }
 
-  private buildCharBountyRow(ii: InventoryItem): UberListRow {
-    return {
-      desc: null,
-      hash: ii.hash,
-      name: 'Char bounty: ' + ii.name,
-      item: ii,
-    };
+  private handleRewardItem(val: PrivRewardDesc, rewards: NameQuantity[]) {
+    if (val.itemHash === 0) { return; }
+    const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+    if (valDesc != null) {
+      rewards.push({
+        hash: val.itemHash + '',
+        icon: valDesc.displayProperties.icon,
+        name: valDesc.displayProperties.name,
+        quantity: val.quantity
+      });
+    }
   }
 
-  private buildCharMilestoneRow(
-    msn: MileStoneName,
-    mss: MilestoneStatus
-  ): UberListRow {
-    const desc = this.destinyCacheService.cache.Milestone[mss.hash];
+  private buildInitialMilesoneRow(msn: MileStoneName): MilestoneRow {
+    const desc = this.destinyCacheService.cache.Milestone[msn.key];
     if (desc?.displayProperties != null && desc?.displayProperties?.icon == null) {
-      const vendorHash = ICON_FIXES[mss.hash];
+      const vendorHash = ICON_FIXES[msn.key];
       if (vendorHash) {
-        console.dir(this.destinyCacheService.cache.Vendor[vendorHash]);
         desc.displayProperties.icon = this.destinyCacheService.cache.Vendor[vendorHash].displayProperties?.smallTransparentIcon;
       }
     }
+    const rewards: NameQuantity[] = [];
+    // try quest rewards approach, this works for things like Shady Schemes 3802603984
+    if (desc?.quests) {
+      for (const key of Object.keys(desc.quests)) {
+        const q = desc.quests[key];
+        if (q.questItemHash) {
+          const qDesc = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
+          if (qDesc.value != null && qDesc.value.itemValue != null) {
+            for (const val of qDesc.value.itemValue) {
+              this.handleRewardItem(val, rewards);
+            }
+          }
+        }
+      }
+    }
+    if (desc?.rewards) {
+      for (const key of Object.keys(desc.rewards)) {
+        const reward = desc.rewards[key];
+        if (reward.rewardEntries) {
+          for (const key2 of Object.keys(reward.rewardEntries)) {
+            const rewardEntry = reward.rewardEntries[key2];
+            if (rewardEntry.items) {
+              for (const val of rewardEntry.items) {
+                this.handleRewardItem(val, rewards);
+              }
+            }
+          }
+        }
+      }
+    }
+    // Raids tend to be missing rewards, luckily we already did the work in ParseService to get the string reward value, so we'll just parse out an icon on it
+    if (rewards.length == 0 && msn.rewards != null) {
+      console.log(`---- ${msn.rewards}`);
+      if ('Pinnacle Gear' == msn.rewards) {
+        this.handleRewardItem({ itemHash: 73143230, quantity: 0 }, rewards);
+      }
+      if ('Legendary Gear' == msn.rewards) {
+        this.handleRewardItem({ itemHash: 2127149322, quantity: 0 }, rewards);
+      }
+    }
+
     return {
+      type: 'milestone',
+      title: msn,
+      rewards,
       desc: desc,
-      hash: mss.hash,
-      name: 'char ms: ' + msn.name,
-      item: null,
+      characterEntries: {}
     };
   }
-
-  
 
   public init() {
     this.signedOnUserService.loadVendorsIfNotLoaded();
