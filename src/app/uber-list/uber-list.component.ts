@@ -15,6 +15,7 @@ import { UberListStateService } from './uber-list-state.service';
 export class UberListComponent extends ChildComponent implements OnInit {
   constructor(
     public state: UberListStateService,
+    public signedOnUserService: SignedOnUserService,
     public iconService: IconService,
     private dialog: MatDialog,
     storageService: StorageService
