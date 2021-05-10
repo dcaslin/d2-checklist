@@ -3121,6 +3121,7 @@ export class ParseService {
                 if (valDesc != null) {
                     values.push({
                         hash: valDesc.hash,
+                        icon: valDesc.displayProperties.icon,
                         name: valDesc.displayProperties.name,
                         quantity: val.quantity
                     });
@@ -3770,6 +3771,7 @@ export class ParseService {
                     if (valDesc != null) {
                         values.push({
                             hash: val.itemHash,
+                            icon: valDesc.displayProperties.icon,
                             name: valDesc.displayProperties.name,
                             quantity: val.quantity
                         });

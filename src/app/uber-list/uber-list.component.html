@@ -1,27 +1,38 @@
 <p>uber-list works!</p>
-<d2c-signed-on-loading-icon></d2c-signed-on-loading-icon>
+
 <div>
-  <span class="fake-link pad-left-more" (click)="state.refresh()">
-    <fa-icon [icon]="iconService.fasSyncAlt"></fa-icon>
-  </span>
+  <d2c-signed-on-loading-icon></d2c-signed-on-loading-icon> 
+  <button mat-icon-button class="pad-left-more" (click)="state.refresh()"><fa-icon [icon]="iconService.fasSyncAlt"></fa-icon></button>
 </div>
 
 <ng-container *ngIf="state.rows$|async as rows">
 
   <div *ngFor="let row of rows">
+    <ng-container *ngIf="row.type=='pursuit'">
+      <ng-container *ngIf="row?.title?.icon as icon">
+        <div class="list-icon divider-border" [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+      </ng-container>
+      {{row.title.hash}} {{row.title.name}}
 
-    <ng-container  *ngIf="row?.item?.icon as icon">
-      <div class="list-icon divider-border" 
-      [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+      <div class="flex-row" *ngIf="row.title.values as rewards">
+        <div *ngFor="let r of rewards">
+          <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy" [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+        </div>
+      </div>      
     </ng-container>
-    <ng-container  *ngIf="row.desc?.displayProperties?.icon as icon">
-      <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
-      [class.brighten]="icon.endsWith('jpg')"
-      [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+    <ng-container *ngIf="row.type=='milestone'">
+      <ng-container *ngIf="row.desc?.displayProperties?.icon as icon">
+        <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
+          [class.brighten]="icon.endsWith('jpg')" [style.background-image]="'url(//www.bungie.net' + icon + ')'">
+        </div>
+      </ng-container>
+      {{row.title.key}} {{row.title.name}}
+      <div class="flex-row" *ngIf="row.rewards as rewards">
+        <div *ngFor="let r of rewards">
+          <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy" [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+        </div>
+      </div>     
     </ng-container>
-   
-
-    {{row.hash}} {{row.name}} {{row.desc?.displayProperties?.icon}}
 
   </div>
 </ng-container>

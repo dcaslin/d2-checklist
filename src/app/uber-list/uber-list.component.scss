@@ -1,6 +1,22 @@
-.list-icon{
+.list-icon {
   display: inline-block;
   box-sizing: content-box;
   width: 48px;
   height: 48px;
+}
+
+.reward-icon {
+  background-color: #636363;
+  width: 22px;
+  height: 22px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-row>div {
+  margin: 5px;
 }
