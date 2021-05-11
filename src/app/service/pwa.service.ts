@@ -10,6 +10,7 @@ import { NotificationService } from './notification.service';
 export class PwaService {
 
     constructor(appRef: ApplicationRef, updates: SwUpdate, private notificationService: NotificationService) {
+        console.log('PWAService loaded');
         try {
             // Allow the app to stabilize first, before starting polling for updates with `interval()`.
             const appIsStable$ = appRef.isStable.pipe(first(isStable => {
