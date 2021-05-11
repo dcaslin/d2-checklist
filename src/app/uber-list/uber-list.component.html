@@ -10,7 +10,7 @@
 <ng-container *ngIf="signedOnUserService.player$|async as player">
 
   <ng-container *ngIf="state.rows$|async as rows">
-    <table class="tidy-table">
+    <table class="responsive-table">
       <thead>
         <tr>
           <th class="sticky">&nbsp;</th>
@@ -44,7 +44,10 @@
 
             </td>
             <td *ngFor="let char of player.characters">
-              {{char.className}} - {{char.light}}
+              <ng-container *ngIf="row.characterEntries[char.id] as data">
+                <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
+              </ng-container>
+              
             </td>
           </ng-container>
           <ng-container *ngIf="row.type=='milestone'">
@@ -68,7 +71,10 @@
               </div>
             </td>
             <td *ngFor="let char of player.characters">
-              {{char.className}} - {{char.light}}
+              <ng-container *ngIf="row.characterEntries[char.id] as data">
+                <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
+              </ng-container>
+              
             </td>
           </ng-container>
         </tr>
