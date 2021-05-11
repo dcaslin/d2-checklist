@@ -66,6 +66,7 @@ import { PlayerCurrenciesComponent } from './player-currencies/player-currencies
 import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { AppStatusComponent } from './app-status/app-status.component';
 import { UberListComponent } from './uber-list/uber-list.component';
+import { UberPursuitCheckComponent } from './uber-list/uber-pursuit-check/uber-pursuit-check.component';
 
 
 
@@ -105,7 +106,7 @@ import { UberListComponent } from './uber-list/uber-list.component';
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
     DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, 
-    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberListComponent
+    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberListComponent, UberPursuitCheckComponent
   ],
   providers: [
     AuthService,

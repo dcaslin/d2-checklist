@@ -1,0 +1,8 @@
+<div class="check">
+    <ng-container *ngIf="pursuit else isNull">
+        xxx
+    </ng-container>
+    <ng-template #isNull>
+        <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Pursuit missing, probably not available"></fa-icon>
+    </ng-template>
+</div>

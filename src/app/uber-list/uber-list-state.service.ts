@@ -31,7 +31,7 @@ interface PursuitRow {
   characterEntries: { [key: string]: PursuitTuple };
 }
 
-interface PursuitTuple {
+export interface PursuitTuple {
   vendorItem: InventoryItem;
   characterItem: InventoryItem;
 }
@@ -74,6 +74,14 @@ export class UberListStateService implements OnDestroy {
                 if (!rowData[vi.hash]) {
                   rowData[vi.hash] = this.buildInitialPursuitRow(vi);
                 }
+                const target = rowData[vi.hash] as PursuitRow;
+                if (!target.characterEntries[char.id]) {
+                  target.characterEntries[char.id] = {
+                    characterItem: null,
+                    vendorItem: null
+                  };
+                }
+                target.characterEntries[char.id].vendorItem = vi;
               }
             }
           }
@@ -84,13 +92,23 @@ export class UberListStateService implements OnDestroy {
             if (!rowData[b.hash]) {
               rowData[b.hash] = this.buildInitialPursuitRow(b);
             }
+            const target = rowData[b.hash] as PursuitRow;
+            if (!target.characterEntries[char.id]) {
+              target.characterEntries[char.id] = {
+                characterItem: null,
+                vendorItem: null
+              };
+            }
+            target.characterEntries[char.id].characterItem = b;
           }
           for (const msn of player.milestoneList) {
             const c = char.milestones[msn.key];
             if (c) {
               if (!rowData[c.hash]) {
-                rowData[c.hash] = this.buildInitialMilesoneRow(msn);
+                rowData[c.hash] = this.buildInitialMilestoneRow(msn);
               }
+              const target = rowData[c.hash];
+              target.characterEntries[char.id] = c;
             }
           }
         }
@@ -131,7 +149,7 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  private buildInitialMilesoneRow(msn: MileStoneName): MilestoneRow {
+  private buildInitialMilestoneRow(msn: MileStoneName): MilestoneRow {
     const desc = this.destinyCacheService.cache.Milestone[msn.key];
     if (desc?.displayProperties != null && desc?.displayProperties?.icon == null) {
       const vendorHash = ICON_FIXES[msn.key];
