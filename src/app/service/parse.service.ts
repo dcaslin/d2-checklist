@@ -88,8 +88,8 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // update me for splicer
-    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // update me for splicer
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '2557524386 '; // update me for splicer was 3094108685
+    ARTIFACT_POWER_BONUS_PROG_HASH = '1793560787'; // update me for splicer 978389300
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
