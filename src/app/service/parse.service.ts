@@ -1229,7 +1229,7 @@ export class ParseService {
             }
             if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
                 // rewards = 'Pinnacle Gear';
-                rewards = 'Pinnacle Gear';
+                rewards = 'Legendary Gear';
             } else if (ms.milestoneHash == 3312774044) { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070) { // Weekly Gambit
