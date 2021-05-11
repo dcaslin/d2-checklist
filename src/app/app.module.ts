@@ -65,6 +65,7 @@ import { ArmorCompareDialogComponent } from './deals/armor-compare-dialog/armor-
 import { PlayerCurrenciesComponent } from './player-currencies/player-currencies.component';
 import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { AppStatusComponent } from './app-status/app-status.component';
+import { PwaService } from './service/pwa.service';
 
 
 
@@ -120,6 +121,7 @@ import { AppStatusComponent } from './app-status/app-status.component';
     PandaGodrollsService,
     PlayerStateService,
     PreferredStatService,
+    PwaService,
     StorageService,
     WeekService,
     LoggedInGuard
