@@ -88,8 +88,8 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // update me
-    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // update me
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // update me for splicer
+    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // update me for splicer
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
@@ -666,7 +666,7 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['2809059426'];  // update me, chosen hash season 13
+        const s: Season = this.destinyCacheService.cache.Season['2809059429'];  // update me, splicer hash season 14
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
@@ -2349,14 +2349,19 @@ export class ParseService {
                 oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild);
-                    let curChild: TriumphNode = oChild;
-                    // get down to the weeks
-                    while (curChild && curChild.children.length == 1) {
-                        curChild = curChild.children[0];
+                    let weeklyChild: TriumphNode;
+                    // we're at "Seasonal Challenges" which has two children, "Past Challenges" and "Weekly", we want weekly
+                    // get down to the weeks, we have "weekly" and "past challenges"
+                    if (oChild?.children?.length > 0) {
+                        for (const c of oChild.children) {
+                            if (c.name == 'Weekly') {
+                                weeklyChild = c;
+                            }
+                        }
                     }
                     // we're on the "Weekly" each child is a week in the season
-                    if (curChild != null) {
-                        for (const week of curChild.children) {
+                    if (weeklyChild != null) {
+                        for (const week of weeklyChild.children) {
                             seasonChallengeEntries.push({
                                 name: week.name,
                                 records: week.children as TriumphRecordNode[]
