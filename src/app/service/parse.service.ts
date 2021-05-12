@@ -2501,6 +2501,8 @@ export class ParseService {
             return;
         }
 
+        // Digital Trove - 1684722553
+        this.addPseudoMilestone('1684722553', milestonesByKey, milestoneList);
         // Harbinger
         this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
         // Weekly Empire Hunt
@@ -2529,6 +2531,16 @@ export class ParseService {
         const prophecy = milestoneList.find(x => x.key == '825965416');
         if (prophecy) {
             prophecy.name = 'Prophecy Weekly';
+        }
+
+        const nfScore = milestoneList.find(x => x.key == '2029743966');
+        if (nfScore) {
+            nfScore.name = 'Nightfall - 100K';
+        }
+        
+        const nfCompletions = milestoneList.find(x => x.key == '1942283261');
+        if (nfCompletions) {
+            nfCompletions.name = 'Nightfall - Completions';
         }
     }
 
