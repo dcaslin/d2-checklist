@@ -112,8 +112,6 @@ export class VendorService {
     const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
     const goodLegendaryDeals = legendaryDeals.filter(i => i.hasDeal);
     // if any vendor exotic armor (Xur), look exactly by item type
-    // TODO any exotics you don't have yet as well
-    // TODO give list of that exotic to compare
     const exoticDeals = this.findExoticArmorDeals(player, interestingVendorArmor);
     const collectionItems = this.checkCollections(player, vendorItems);
     const exchange = this.getExchangeInfo(player, vendorItems);
@@ -158,6 +156,10 @@ export class VendorService {
     const checkMe = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == vendorHash && i.type == checkType);
     const returnMe = [];
     for (const c of checkMe) {
+
+      if (c.vendorItemInfo?.status !== null) {
+        continue;
+      }
       if (c.collectibleHash) {
         const collectionItem = player.searchableCollection.find(i => i.hash == c.collectibleHash);
         if (!collectionItem || !collectionItem.complete) {
@@ -186,11 +188,18 @@ export class VendorService {
         data: bansheeMods
       });
     }
-    const warTableMods = this.checkCollectionForVendor(player, vendorItems, '3450165804', ItemType.GearMod);
-    if (warTableMods.length > 0) {
+    const adaMods = this.checkCollectionForVendor(player, vendorItems, '350061650', ItemType.GearMod);
+    if (adaMods.length > 0) {
       returnMe.push({
-        vendor: warTableMods[0].vendorItemInfo.vendor,
-        data: warTableMods
+        vendor: adaMods[0].vendorItemInfo.vendor,
+        data: adaMods
+      });
+    }
+    const seasonVendorMods = this.checkCollectionForVendor(player, vendorItems, '1712236153', ItemType.GearMod);
+    if (seasonVendorMods.length > 0) {
+      returnMe.push({
+        vendor: seasonVendorMods[0].vendorItemInfo.vendor,
+        data: seasonVendorMods
       });
     }
     const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
@@ -548,7 +557,7 @@ export class VendorService {
     }
     data.vendorItemInfo = {
       vendor: vendor,
-      status: this.parseSaleItemStatus(i.saleStatus),
+      status: this.parseSaleItemStatus(vendor.hash, i.failureIndexes),
       quantity: i.quantity,
       objectives: objectives,
       values: values,
@@ -626,17 +635,16 @@ export class VendorService {
     return copies;
   }
 
-  private parseSaleItemStatus(s: number): string {
-    if ((s & 8) > 0) {
-      return 'Already completed';
-    } else if ((s & 32) > 0) {
-      return 'Not for sale right now';
-    } else if ((s & 64) > 0) {
-      return 'Not available';
-    } else if ((s & 128) > 0) {
-      return 'Already held';
+  private parseSaleItemStatus(vendorHash: string, failureIndexes: number[]): string {
+    if (failureIndexes == null || failureIndexes.length==0) {
+      return null;
     }
-    return null;
+    const index = failureIndexes[0];
+    const vDesc: any = this.destinyCacheService.cache.Vendor[vendorHash];
+    if (!vDesc || !vDesc.failureStrings || vDesc.failureStrings.length <= index) {
+      return 'Unknown';
+    }
+    return vDesc.failureStrings[index];
   }
 
   private streamReq(operation: string, uri: string): Observable<any> {
