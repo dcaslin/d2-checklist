@@ -88,8 +88,8 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3094108685'; // update me
-    ARTIFACT_POWER_BONUS_PROG_HASH = '978389300'; // update me
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '2557524386 '; // update me for splicer was 3094108685
+    ARTIFACT_POWER_BONUS_PROG_HASH = '1793560787'; // update me for splicer 978389300
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
@@ -654,7 +654,7 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['2809059426'];  // update me, chosen hash season 13
+        const s: Season = this.destinyCacheService.cache.Season['2809059429'];  // update me, splicer hash season 14
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
@@ -1217,7 +1217,7 @@ export class ParseService {
             }
             if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
                 // rewards = 'Pinnacle Gear';
-                rewards = 'Pinnacle Gear';
+                rewards = 'Legendary Gear';
             } else if (ms.milestoneHash == 3312774044) { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070) { // Weekly Gambit
@@ -2320,14 +2320,19 @@ export class ParseService {
                 oChild = this.handleRecPresNode([], this.destinyCacheService.cache.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild);
-                    let curChild: TriumphNode = oChild;
-                    // get down to the weeks
-                    while (curChild && curChild.children.length == 1) {
-                        curChild = curChild.children[0];
+                    let weeklyChild: TriumphNode;
+                    // we're at "Seasonal Challenges" which has two children, "Past Challenges" and "Weekly", we want weekly
+                    // get down to the weeks, we have "weekly" and "past challenges"
+                    if (oChild?.children?.length > 0) {
+                        for (const c of oChild.children) {
+                            if (c.name == 'Weekly') {
+                                weeklyChild = c;
+                            }
+                        }
                     }
                     // we're on the "Weekly" each child is a week in the season
-                    if (curChild != null) {
-                        for (const week of curChild.children) {
+                    if (weeklyChild != null) {
+                        for (const week of weeklyChild.children) {
                             seasonChallengeEntries.push({
                                 name: week.name,
                                 records: week.children as TriumphRecordNode[]
@@ -2450,7 +2455,7 @@ export class ParseService {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
         }
         // this.handleChallengeMilestones(chars, quests, milestoneList);
-        ParseService.cookMileStones(milestoneList);
+        this.cookMileStones(milestoneList);
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -2466,6 +2471,8 @@ export class ParseService {
         if (milestonesByKey['3603098564'] == null) {
             return;
         }
+        // Digital Trove - 1684722553
+        this.addPseudoMilestone('1684722553', milestonesByKey, milestoneList);
 
         // Harbinger
         this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
@@ -2500,15 +2507,32 @@ export class ParseService {
 
     // do this all in one place at the last minute
     // since we gather up milestones from all sorts of places
-    private static cookMileStones(milestoneList: MileStoneName[]) {
+    private cookMileStones(milestoneList: MileStoneName[]) {
         const presage = milestoneList.find(x => x.key == '3927548661');
         if (presage) {
             presage.name = 'Presage Weekly';
         }
-
         const prophecy = milestoneList.find(x => x.key == '825965416');
         if (prophecy) {
             prophecy.name = 'Prophecy Weekly';
+        }
+        const nfScore = milestoneList.find(x => x.key == '2029743966');
+        if (nfScore) {
+            nfScore.name = 'Nightfall - 100K';
+        }
+        const nfCompletions = milestoneList.find(x => x.key == '1942283261');
+        if (nfCompletions) {
+            nfCompletions.name = 'Nightfall - Completions';
+        }
+        const digitalTrove = milestoneList.find(x => x.key == '1684722553');
+        if (digitalTrove && digitalTrove.rewards == 'Pinnacle Gear') {
+            digitalTrove.rewards = 'Pinnacle Gear (Weak)';
+            digitalTrove.boost = this.parseMilestonePl(digitalTrove.rewards);
+        }
+        const rewiringTheLight = milestoneList.find(x => x.key == '3341030123');
+        if (rewiringTheLight && rewiringTheLight.rewards == 'Pinnacle Gear') {
+            rewiringTheLight.rewards = 'Powerful Gear (Tier 3)';
+            rewiringTheLight.boost = this.parseMilestonePl(rewiringTheLight.rewards);
         }
     }
 

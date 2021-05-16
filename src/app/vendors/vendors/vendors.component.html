@@ -142,7 +142,7 @@
                             </td>
                             <td>
                                 <ng-container *ngIf="i.vendorItemInfo as vi">
-                                    {{vi.vendor.name}}
+                                    {{vi.vendor.name}} <span *ngIf="debugmode==true"> {{vi.vendor.hash}} </span>
                                     <span class="type-caption">Resets {{ vi.vendor.nextRefreshDate | d2cAgoHumanized}}</span>
                                     <div *ngFor="let c of vi.costs">
                                         <small>{{c.desc.displayProperties.name}} {{c.count}}</small>

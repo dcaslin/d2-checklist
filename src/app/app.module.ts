@@ -67,6 +67,7 @@ import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { AppStatusComponent } from './app-status/app-status.component';
 import { UberListComponent } from './uber-list/uber-list.component';
 import { UberPursuitCheckComponent } from './uber-list/uber-pursuit-check/uber-pursuit-check.component';
+import { PwaService } from './service/pwa.service';
 
 
 
@@ -123,6 +124,7 @@ import { UberPursuitCheckComponent } from './uber-list/uber-pursuit-check/uber-p
     PandaGodrollsService,
     PlayerStateService,
     PreferredStatService,
+    PwaService,
     StorageService,
     WeekService,
     LoggedInGuard
