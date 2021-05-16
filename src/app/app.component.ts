@@ -12,6 +12,7 @@ import { DestinyCacheService } from './service/destiny-cache.service';
 import { IconService } from './service/icon.service';
 import { ClanRow, Const, SelectedUser, UserInfo } from './service/model';
 import { NotificationService } from './service/notification.service';
+import { PwaService } from './service/pwa.service';
 import { SignedOnUserService } from './service/signed-on-user.service';
 import { StorageService } from './service/storage.service';
 
@@ -53,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router, public snackBar: MatSnackBar,
     private route: ActivatedRoute,
     public dialog: MatDialog,
+    private pwaService: PwaService,
     private ref: ChangeDetectorRef) {
 
 
