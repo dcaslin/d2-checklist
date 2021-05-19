@@ -103,7 +103,8 @@ export class ParseService {
     ];
 
     ACCOUNT_LEVEL = [
-        '3611983588', // CROW
+        '1983115403', // House of light UPDATE ME
+        // '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
         // '2468902004', // Obelisk: Nessus
         // '3258748553', // Obelisk: Tangled Shore
@@ -574,18 +575,12 @@ export class ParseService {
         if (_prog.progressions) {
             const sp = this.getSeasonProgression();
             Object.keys(_prog.progressions).forEach((key) => {
-                if (key === '2626549951' || key === '2000925172' || key === '2772425241'
+                // valor 2083746873, infamy 3008065600, glory 1647151960
+                if (key === '2083746873' || key === '3008065600' || key === '1647151960'
                     || key == sp.rewardProgressionHash
                     || key == sp.prestigeProgressionHash) {
                     const p: PrivProgression = _prog.progressions[key];
-                    let suppProg: PrivProgression = null;
-                    if (key === '2626549951') { // VALOR
-                        suppProg = _prog.progressions['3882308435'];
-                    } else if (key === '2772425241') { // INFAMY is itself
-                        suppProg = p;
-                    } else if (key === '2000925172') { // GLORY
-                        suppProg = _prog.progressions['2679551909'];
-                    }
+                    const suppProg: PrivProgression = p;
                     let progDesc = this.destinyCacheService.cache.Progression[p.progressionHash];
                     // SEE SEASON PASS TABLE FOR THESE
                     if (key == sp.rewardProgressionHash) { // Season of dawn
@@ -2693,12 +2688,12 @@ export class ParseService {
             let prestige: Progression = null;
             const sp = this.getSeasonProgression();
             for (const ap of accountProgressions) {
-                // valor
-                if (ap.hash == '2626549951') {
+                // valor 2083746873, infamy 3008065600, glory 1647151960
+                if (ap.hash == '2083746873') {
                     returnMe.valor = ap;
-                } else if (ap.hash == '2772425241') {
+                } else if (ap.hash == '3008065600') {
                     returnMe.infamy = ap;
-                } else if (ap.hash == '2000925172') {
+                } else if (ap.hash == '1647151960') {
                     returnMe.glory = ap;
                 } else if (ap.hash == sp.rewardProgressionHash) {
                     returnMe.seasonRank = ap;
