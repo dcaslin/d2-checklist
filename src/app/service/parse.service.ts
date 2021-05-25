@@ -2482,6 +2482,8 @@ export class ParseService {
         this.addPseudoMilestone('825965416', milestonesByKey, milestoneList);
         // GoS
         this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
+        // VoG
+        this.addPseudoMilestone('2279677721', milestonesByKey, milestoneList);
 
         const mseh: MileStoneName = {
             key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
@@ -2510,6 +2512,10 @@ export class ParseService {
         const prophecy = milestoneList.find(x => x.key == '825965416');
         if (prophecy) {
             prophecy.name = 'Prophecy Weekly';
+        }
+        const vog = milestoneList.find(x => x.key == '2279677721');
+        if (vog) {
+            vog.name = 'Vault of Glass';
         }
         const nfScore = milestoneList.find(x => x.key == '2029743966');
         if (nfScore) {
@@ -3893,7 +3899,9 @@ export class ParseService {
                                     s.enhancement = 0;
                                 }
                                 s.enhancement += modStat.value;
-                                s.value -= modStat.value;
+                                if (modStat.value>0) {
+                                    s.value -= modStat.value;
+                                }
                             }
                         }
                     }
