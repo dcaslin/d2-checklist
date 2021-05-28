@@ -781,6 +781,18 @@ export class BungieService implements OnDestroy {
             dependsOn: []
         };
         p.milestoneList.push(ms1);
+        const ms2: MileStoneName = {
+            key: Const.PSUEDO_PRESAGE,
+            resets: p.characters[0].endWeek.toISOString(),
+            rewards: 'Pinnacle Gear',
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+            name: 'Presage Weekly',
+            desc: 'Complete Presage',
+            hasPartial: true,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        p.milestoneList.push(ms2);
         p.milestoneList.sort((a, b) => {
             if (a.boost.sortVal < b.boost.sortVal) { return 1; }
             if (a.boost.sortVal > b.boost.sortVal) { return -1; }
@@ -823,11 +835,14 @@ export class BungieService implements OnDestroy {
     private async loadActivityPseudoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
         // let d = new Date();
         // d.setDate(d.getDate() - 40)
-        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 82, c.startWeek);
+        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 7, c.startWeek);
         // extra filter just in case
         const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
         // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
         BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_HERESY_KEY, dungeonActivities, 'Heresy');
+        const storyActivities = activities.filter(a => a.mode == 'Story');
+        BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_PRESAGE, storyActivities, 'Presage');
+        console.dir(storyActivities);
         p.next(p.getValue());
     }
 
