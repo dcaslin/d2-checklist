@@ -51,6 +51,7 @@ import { ManifestItemIconComponent } from './manifest-item-icon/manifest-item-ic
 import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
 import { LegendaryLostSectorComponent } from './legendary-lost-sector/legendary-lost-sector.component';
 import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector-next-days.component';
+import { GodRollPlugComponent } from '../gear/god-roll-plug/god-roll-plug.component';
 
 @NgModule({
   imports: [
@@ -101,6 +102,7 @@ import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector
     TriumphNameComponent,
     AdSlotComponent,
     AdUnitComponent,
+    GodRollPlugComponent,
     NitroUnitComponent,
     SignedOnLoadingIconComponent,
     ManifestItemIconComponent,
@@ -113,6 +115,7 @@ import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector
     TriumphNameComponent,
     ItemIconComponent,
     FriendStarComponent,
+    GodRollPlugComponent,
     SeasonIndicatorComponent,
     AdSlotComponent,
     ItemEnergyIndicatorComponent,
