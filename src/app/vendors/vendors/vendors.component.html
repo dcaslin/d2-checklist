@@ -42,6 +42,7 @@
                         <th></th>
                         <th *ngIf="option.text == 'Bounties'">Name</th>
                         <th class="hide-mobile-table-cell" *ngIf="option.text != 'Bounties'">Name</th>
+                        <th *ngIf="option.text == 'Weapons'">Sockets</th>
                         <th *ngIf="option.text == 'Armor'">Random Stats</th>
                         <th class="hide-mobile-table-cell" *ngIf="option.text == 'Bounties'">Objectives</th>
                         <th class="hide-mobile-table-cell" *ngIf="option.text == 'Bounties'">Reward</th>
@@ -100,6 +101,16 @@
                                     <div class="type-caption">{{i.typeName}}</div>
                                 </td>
                             </ng-template>
+
+                            <td *ngIf="option.text == 'Weapons' && i.type==ItemType.Weapon">
+                                <div *ngFor="let socket of i.sockets" class="bottom-divider">
+                                    <div *ngIf="debugmode">Socket Cat: {{socket.socketCategoryHash}} </div>
+                                    <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
+                                      <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode"></d2c-god-roll-plug>
+                                      <ng-container *ngIf="!isLastPlug">|</ng-container>
+                                    </span>
+                                  </div>
+                            </td>
                             <td *ngIf="option.text == 'Armor' && i.type==ItemType.Armor">
                                 <div *ngIf="i.preferredStatPoints>0 && i.stats">
                                     <table class="stat-table">

@@ -12,6 +12,8 @@ import { NotificationService } from './notification.service';
   providedIn: 'root'
 })
 export class SignedOnUserService implements OnDestroy {
+  //TODO load wishlist here, and handle settings around controller and top two items here rather than in gear controller
+
   unsubscribe$: Subject<void> = new Subject<void>();
   public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
