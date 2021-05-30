@@ -7,13 +7,12 @@ import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
 import { BungieMembership, CharacterVendorData, ClanRow, Currency, GearMetaData, Player, SelectedUser, UserInfo } from './model';
 import { NotificationService } from './notification.service';
+import { PandaGodrollsService } from './panda-godrolls.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SignedOnUserService implements OnDestroy {
-  //TODO load wishlist here, and handle settings around controller and top two items here rather than in gear controller
-
   unsubscribe$: Subject<void> = new Subject<void>();
   public signedOnUser$: BehaviorSubject<SelectedUser> = new BehaviorSubject(null);
 
@@ -60,6 +59,7 @@ export class SignedOnUserService implements OnDestroy {
     private bungieService: BungieService,
     private vendorService: VendorService,
     private authService: AuthService,
+    private pandaGodRollsService: PandaGodrollsService,
     private destinyCacheService: DestinyCacheService,
     private notificationService: NotificationService
   ) {
@@ -116,6 +116,7 @@ export class SignedOnUserService implements OnDestroy {
     this.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       if (selectedUser != null) {
         this.applyClans(selectedUser);
+        this.pandaGodRollsService.updateUser(selectedUser);
       }
     });
 

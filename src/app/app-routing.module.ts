@@ -73,13 +73,6 @@ export class ManifestLoadedGuard implements CanActivate {
   }
 }
 
-// todo detect search bot and use basic version of home
-// todo otherwise add that home write up to bottom of full funcitoned home
-// goal, don't have search bots mess with downloading the manifest and calling back to the bungie API
-// todo cleanup app component page for that as well.
-// todo update sitemap to point to index.html and research soft 404 problem
-
-
 @NgModule({
   imports: [RouterModule.forRoot(
     [{

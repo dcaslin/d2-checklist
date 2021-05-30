@@ -15,7 +15,7 @@ import { NotificationService } from '@app/service/notification.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil, filter } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { PossibleRollsDialogComponent } from '../possible-rolls-dialog/possible-rolls-dialog.component';
@@ -120,8 +120,6 @@ export class GearComponent extends ChildComponent {
   debugFilterNotes: string[] = [];
 
   showAllWeaponStats = false;
-  controller = true;
-  godRollLastTwoOnly = false;
 
   private filterChangedSubject: Subject<void> = new Subject<void>();
   private noteChanged: Subject<InventoryItem> = new Subject<InventoryItem>();
@@ -501,7 +499,6 @@ export class GearComponent extends ChildComponent {
 
     this.autoCompleteOptions = this.fixedAutoCompleteOptions.slice(0);
     this.toggleData = GearComponent.initToggles(this.iconService, this.option, this.cacheService);
-    this.godRollLastTwoOnly = localStorage.getItem('god-roll-last-two-only') == 'true';
     const savedSize = parseInt(localStorage.getItem('page-size'), 10);
     if (savedSize > 2 && savedSize < 800) {
       this.size = savedSize;
@@ -509,20 +506,16 @@ export class GearComponent extends ChildComponent {
     // selected user changed
     this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
       this.selectedUser = selectedUser;
-      const controllerPref = localStorage.getItem('mnk-vs-controller');
-      if (controllerPref != null) {
-        this.controller = 'true' == controllerPref;
-      } else {
-        // if no explicit prep, assume MnK on steam, controller otherwise
-        if (this.selectedUser != null && this.selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type) {
-          this.controller = false;
-        } else {
-          this.controller = true;
-        }
-      }
       this.loadMarks();
-      this.loadWishlist();
+      this.load(true);
     });
+    // god rolls loaded for the first time or notably changed
+    this.pandaGodRollsService.loaded$.pipe(
+      takeUntil(this.unsubscribe$),
+      filter(x => x)
+      ).subscribe(x => {
+        this.load(true);
+      });
 
     this.route.queryParams.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       // only care if magic params are here
@@ -1206,14 +1199,6 @@ export class GearComponent extends ChildComponent {
     }
   }
 
-  async loadWishlist() {
-    await this.pandaGodRollsService.init(this.controller, this.godRollLastTwoOnly);
-    if (this._player.getValue() != null) {
-      this.pandaGodRollsService.processItems(this._player.getValue().gear);
-    }
-    this.load(true);
-  }
-
   parseWildcardFilter() {
     const val: string = this.visibleFilterText;
     if (val == null || val.trim().length == 0) {
@@ -1308,14 +1293,16 @@ export class GearComponent extends ChildComponent {
     dc.disableClose = false;
     dc.data = {
       parent: this,
-    };
-    const previousController = this.controller;
-    const previousGodRollLastTwoOnly = this.godRollLastTwoOnly;
-    const dialogRef = this.dialog.open(GearUtilitiesDialogComponent, dc);
+      isController: this.pandaGodRollsService.isController,
+      matchLastTwoSockets: this.pandaGodRollsService.matchLastTwoSockets
 
+    };
+    const dialogRef = this.dialog.open(GearUtilitiesDialogComponent, dc);
     dialogRef.afterClosed().subscribe(result => {
-      if (this.controller != previousController || this.godRollLastTwoOnly != previousGodRollLastTwoOnly) {
-        this.saveSettingsAndRefreshWishlist(this.controller, this.godRollLastTwoOnly);
+      console.dir(dc.data);
+      if (dc.data.isController != this.pandaGodRollsService.isController ||
+        dc.data.matchLastTwoSockets != this.pandaGodRollsService.matchLastTwoSockets) {
+        this.pandaGodRollsService.saveSettingsAndRefreshWishlist(dc.data.isController, dc.data.matchLastTwoSockets);
       }
     });
   }
@@ -1360,11 +1347,6 @@ export class GearComponent extends ChildComponent {
     this.paginator.nextPage();
   }
 
-  public async saveSettingsAndRefreshWishlist(controller: boolean, godRollLastTwoOnly: boolean) {
-    localStorage.setItem('mnk-vs-controller', controller ? 'true' : 'false');
-    localStorage.setItem('god-roll-last-two-only', godRollLastTwoOnly ? 'true' : 'false');
-    this.loadWishlist();
-  }
 }
 
 interface AutoCompleteOption {

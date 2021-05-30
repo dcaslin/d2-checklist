@@ -63,6 +63,7 @@ export class GearUtilitiesDialogComponent {
     this.dimSyncChoice = this.markService.currentMarks$.getValue().dimSyncChoice;
     this.dimSyncOption = this.getOptionFromValue();
     this.parent = data.parent;
+    this.data = data;
   }
 
   private getOptionFromValue(): DimSyncOption {
@@ -101,16 +102,4 @@ export class GearUtilitiesDialogComponent {
   exportTagsToFile() {
     this.markService.downloadMarks();
   }
-
-  // async importTagsFromDIM(includeDelete?: boolean) {
-  //   const success = await this.markService.importTagsFromDim(includeDelete === true);
-  //   if (success) {
-  //     this.parent.load(true);
-  //   }
-  // }
-
-  // async exportTagsToDIM(includeDelete?: boolean) {
-  //   await this.markService.exportTagsToDim(includeDelete === true);
-  // }
-
 }
