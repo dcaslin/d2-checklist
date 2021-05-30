@@ -88,8 +88,9 @@ export class GearComponent extends ChildComponent {
     { value: 'is:unlocked' },
     { value: 'is:extratagged', desc: 'It\'s complicated. See help button' },
     { value: 'has:moddeepstone', desc: 'Armor includes Deepstone Crypt mod slot' },
-    { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' },
-    { value: 'has:modlegacy', desc: 'Armor can use legacy mods' }
+    { value: 'has:modvog', desc: 'Armor includes Vault of Glass mod slot' },
+    { value: 'has:modgos', desc: 'Armor includes Garden of Salvation Crypt mod slot' },
+    { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' }
   ];
 
   public autoCompleteOptions: AutoCompleteOption[];
@@ -301,9 +302,10 @@ export class GearComponent extends ChildComponent {
         new Choice(`${EnergyType.Any}`, 'Any')
       ], currentTab.type),
       seasons: GearToggleComponent.generateState(seasonConfig, [
-        new Choice('deepstone', 'Deepstone Crypt Mod Slot'),
-        new Choice('combat', 'Combat Mod Slot'),
-        new Choice('legacy', 'Legacy Mod Slot'),
+        new Choice('vog', 'Vault of Glass Raid'),
+        new Choice('deepstone', 'Deepstone Crypt'),
+        new Choice('gos', 'Garden of Salvation'),
+        new Choice('combat', 'Combat'),
         new Choice('none', 'None')
       ], currentTab.type),
       damageType: GearToggleComponent.generateState(damageConfig,

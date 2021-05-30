@@ -80,7 +80,8 @@ import {
     TriumphPresentationNode,
     TriumphRecordNode,
     UserInfo,
-    Vault
+    Vault,
+    StatHashes
 } from './model';
 
 
@@ -3428,7 +3429,7 @@ export class ParseService {
         return name;
     }
 
-    private parseItemStats(instanceData: any, desc: any, type: ItemType) {
+    private parseItemStats(instanceData: any, desc: any, type: ItemType): InventoryStat[] {
         const stats: InventoryStat[] = [];
         if (desc && instanceData) {
             const statDict: { [hash: string]: InventoryStat; } = {};
@@ -3470,7 +3471,7 @@ export class ParseService {
     }
 
 
-    public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
+    public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {        
         try {
             // baryon bough
             // if (itm.itemHash == 778553120) {
@@ -3677,9 +3678,9 @@ export class ParseService {
                     stats = this.parseItemStats(instanceData, desc, type);
                 }
 
-                if (itemComp.sockets != null && itemComp.sockets.data != null && desc.sockets != null) {
+                if (itemComp?.sockets?.data != null && desc?.sockets?.socketCategories != null) {
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
-                    if (itemSockets != null && desc.sockets != null && desc.sockets.socketCategories != null) {
+                    if (itemSockets != null) {
                         let reusablePlugs = null;
                         if (itemComp.reusablePlugs && itemComp.reusablePlugs.data && itemComp.reusablePlugs.data[itm.itemInstanceId] && itemComp.reusablePlugs.data[itm.itemInstanceId].plugs) {
                             reusablePlugs = itemComp.reusablePlugs.data[itm.itemInstanceId].plugs;
@@ -3698,6 +3699,30 @@ export class ParseService {
                             if (760375309 == jCat.socketCategoryHash) {
                                 continue;
                             }
+                            // armor stats are socket plugs, sum them up
+                            if (3154740035 == jCat.socketCategoryHash && jCat.socketIndexes) {
+                                // reset all our stats to zero
+                                for (const stat of stats) {
+                                    stat.value = 0;
+                                }
+                                const socketArray = itemSockets.sockets;
+                                for (const index of jCat.socketIndexes) {
+                                    const socketDesc = desc.sockets.socketEntries[index];
+                                    const socketVal = socketArray[index];
+                                    if (socketVal.plugHash != null && socketVal.isEnabled) {
+                                        const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                                        if (plugDesc?.investmentStats) {
+                                            for (const investmentStat of plugDesc.investmentStats) {
+                                                const stat = stats.find(x => x.hash == investmentStat.statTypeHash);
+                                                if (stat) {
+                                                    stat.value += investmentStat.value;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             const isMod = jCat.socketCategoryHash == 590099826 || jCat.socketCategoryHash == 2685412949;
                             const socketArray = itemSockets.sockets;
                             if (jCat.socketIndexes == null) { continue; }
@@ -3711,17 +3736,21 @@ export class ParseService {
                                         specialModSockets.push('combat');
                                         seasonalModSlot = 1;
                                         coveredSeasons.push(1);
-
+                                    } else if ('Garden of Salvation Raid Mod' == modSocketType) {
+                                        specialModSockets.push('gos');
+                                        searchText += 'has:modgos';
+                                        seasonalModSlot = 2;
+                                        coveredSeasons.push(2);
                                     } else if ('Deep Stone Crypt Raid Mod' == modSocketType) {
                                         specialModSockets.push('deepstone');
                                         searchText += 'has:moddeepstone';
-                                        seasonalModSlot = 2;
-                                        coveredSeasons.push(2);
-                                    } else if ('Legacy Armor Mod' == modSocketType) {
-                                        searchText += 'has:modlegacy';
-                                        specialModSockets.push('legacy');
-                                        seasonalModSlot = 0;
-                                        coveredSeasons.push(0);
+                                        seasonalModSlot = 3;
+                                        coveredSeasons.push(3);
+                                    } else if ('Vault of Glass Armor Mod' == modSocketType) {
+                                        specialModSockets.push('vog');
+                                        searchText += 'has:modvog';
+                                        seasonalModSlot = 4;
+                                        coveredSeasons.push(4);
                                     }
                                 }
                                 const socketVal = socketArray[index];
@@ -3895,13 +3924,27 @@ export class ParseService {
                         if (m.inventoryStats) {
                             const modStat = m.inventoryStats.find(x => (x.hash == s.hash));
                             if (modStat) {
+
+                                // Charge Harvester needs to be filtered by class to stat
+                                if (m.hash == '2263321587') {
+                                    if (ClassAllowed.Hunter == desc.classType) {
+                                        if (modStat.hash!=StatHashes.Mobility) {
+                                            continue;
+                                        }
+                                    } else if (ClassAllowed.Titan == desc.classType) {
+                                        if (modStat.hash!=StatHashes.Resilience) {
+                                            continue;
+                                        }
+                                    } else if (ClassAllowed.Warlock == desc.classType) {
+                                        if (modStat.hash!=StatHashes.Recovery) {
+                                            continue;
+                                        }
+                                    }
+                                }
                                 if (s.enhancement == null) {
                                     s.enhancement = 0;
                                 }
                                 s.enhancement += modStat.value;
-                                if (modStat.value>0) {
-                                    s.value -= modStat.value;
-                                }
                             }
                         }
                     }
@@ -3910,7 +3953,6 @@ export class ParseService {
                             s.enhancement = 0;
                         }
                         s.enhancement += 2;
-                        s.value -= 2;
                     }
                     totalStatPoints += s.value;
                 }

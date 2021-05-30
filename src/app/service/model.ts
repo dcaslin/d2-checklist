@@ -15,6 +15,66 @@ export const BUCKET_ARMOR_CHEST = 14239492;
 export const BUCKET_ARMOR_LEG = 20886954;
 export const BUCKET_ARMOR_CLASS = 1585787867;
 
+export const enum StatHashes {
+    Accuracy = 1591432999,
+    AimAssistance = 1345609583,
+    AmmoCapacity = 925767036,
+    AnyEnergyTypeCost = 3578062600,
+    ArcCost = 3779394102,
+    ArcDamageResistance = 1546607978,
+    ArcEnergyCapacity = 3625423501,
+    AspectEnergyCapacity = 2223994109,
+    Attack = 1480404414,
+    BlastRadius = 3614673599,
+    Boost = 3017642079,
+    ChargeRate = 3022301683,
+    ChargeTime = 2961396640,
+    Defense = 3897883278,
+    Discipline = 1735777505,
+    DrawTime = 447667954,
+    Durability = 360359141,
+    FragmentCost = 119204074,
+    GhostEnergyCapacity = 237763788,
+    GuardEfficiency = 2762071195,
+    GuardEndurance = 3736848092,
+    GuardResistance = 209426660,
+    Handicap = 2341766298,
+    Handling = 943549884,
+    HeroicResistance = 1546607977,
+    Impact = 4043523819,
+    Intellect = 144602215,
+    InventorySize = 1931675084,
+    Magazine = 3871231066,
+    Mobility = 2996146975,
+    ModCost = 514071887,
+    MoveSpeed = 3907551967,
+    Power = 1935470627,
+    PowerBonus = 3289069874,
+    PrecisionDamage = 3597844532,
+    Range = 1240592695,
+    RecoilDirection = 2715839340,
+    Recovery = 1943323491,
+    ReloadSpeed = 4188031367,
+    Resilience = 392767087,
+    RoundsPerMinute = 4284893193,
+    ScoreMultiplier = 2733264856,
+    SolarCost = 3344745325,
+    SolarDamageResistance = 1546607979,
+    SolarEnergyCapacity = 2018193158,
+    Speed = 1501155019,
+    Stability = 155624089,
+    StasisCost_3950461274 = 3950461274,
+    StasisCost_998798867 = 998798867,
+    Strength = 4244567218,
+    SwingSpeed = 2837207746,
+    TimeToAimDownSights = 3988418950,
+    Velocity = 2523465841,
+    VoidCost = 2399985800,
+    VoidDamageResistance = 1546607980,
+    VoidEnergyCapacity = 16120457,
+    Zoom = 3555269338,
+  }
+
 export const BUCKETS_ARMOR = [BUCKET_ARMOR_HELMET, BUCKET_ARMOR_GAUNTLETS,
     BUCKET_ARMOR_CHEST, BUCKET_ARMOR_LEG, BUCKET_ARMOR_CLASS];
 
@@ -1438,16 +1498,14 @@ export class InventoryStat {
     baseValue: number;
     enhancement: number;
     index: number;
-    isConditionallyActive: boolean; // only used for stats on mods
 
-    constructor(hash, name, desc, value, baseValue, index, isConditionallyActive?: boolean) {
+    constructor(hash, name, desc, value, baseValue, index) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.value = value;
         this.baseValue = baseValue;
         this.index = index;
-        this.isConditionallyActive = isConditionallyActive;
     }
 
     getValue(): number {
