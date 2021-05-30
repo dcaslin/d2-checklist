@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?k2tb9j');
-  src:  url('fonts/icomoon.eot?k2tb9j#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?k2tb9j') format('truetype'),
-    url('fonts/icomoon.woff?k2tb9j') format('woff'),
-    url('fonts/icomoon.svg?k2tb9j#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?ofew2j');
+  src:  url('fonts/icomoon.eot?ofew2j#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?ofew2j') format('truetype'),
+    url('fonts/icomoon.woff?ofew2j') format('woff'),
+    url('fonts/icomoon.svg?ofew2j#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -13,7 +13,7 @@
 [class^="icon-"], [class*=" icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'icomoon' !important;
-  speak: none;
+  speak: never;
   font-style: normal;
   font-weight: normal;
   font-variant: normal;
@@ -25,6 +25,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-raid:before {
+  content: "\e90f";
+}
 .icon-ammo_heavy_mono:before {
   content: "\e900";
 }
