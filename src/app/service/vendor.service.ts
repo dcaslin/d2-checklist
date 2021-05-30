@@ -15,6 +15,7 @@ import {
   VendorCost
 } from './model';
 import { NotificationService } from './notification.service';
+import { PandaGodrollsService } from './panda-godrolls.service';
 import { ParseService } from './parse.service';
 import { PreferredStatService } from './preferred-stat.service';
 
@@ -31,6 +32,7 @@ export class VendorService {
     private destinyCacheService: DestinyCacheService,
     private lowlineService: LowLineService,
     private preferredStatService: PreferredStatService,
+    private pandaGodRollsService: PandaGodrollsService,
     private parseService: ParseService) {
 
   }
@@ -440,6 +442,7 @@ export class VendorService {
 
     }
     this.preferredStatService.processItems(returnMe);
+    this.pandaGodRollsService.processItems(returnMe);
     this.parseService.applyTagsToItem(returnMe);
     return returnMe;
   }

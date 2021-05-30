@@ -65,7 +65,7 @@
             <div class="utility-body">
                 <p class="compact">Show God rolls for:</p>
                 <div>
-                    <mat-radio-group class="radio-group" [(ngModel)]="parent.controller">
+                    <mat-radio-group class="radio-group" [(ngModel)]="data.isController">
                         <mat-radio-button class="radio-button" [value]="true">Controller</mat-radio-button>
                         <mat-radio-button class="radio-button" [value]="false">Mouse and Keyboard</mat-radio-button>
                     </mat-radio-group>
@@ -75,7 +75,7 @@
             <div class="utility-body">
                 <p class="compact">Match God/Good rolls on:</p>
                 <div>
-                    <mat-radio-group class="radio-group" [(ngModel)]="parent.godRollLastTwoOnly">
+                    <mat-radio-group class="radio-group" [(ngModel)]="data.matchLastTwoSockets">
                         <mat-radio-button class="radio-button" [value]="false">All Sockets (recommended)
                         </mat-radio-button>
                         <mat-radio-button class="radio-button" [value]="true">Last 2 Sockets only</mat-radio-button>

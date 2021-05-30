@@ -373,7 +373,7 @@
               </button>
 
             </mat-menu>
-            <span *ngIf="debugmode|async">[{{i.hash}}] - version {{i.versionNumber}}</span>
+            <span *ngIf="debugmode|async">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>
 
             <div>
               <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}

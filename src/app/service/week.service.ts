@@ -78,6 +78,39 @@ export class WeekService {
       ]
     },
     {
+      abbrev: 'The Quarry',
+      hash: '3253890600',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },
+    {
+      abbrev: 'Scavenger\'s Den',
+      hash: '1905792146',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },
+    {
+      abbrev: 'Excavation Site',
+      hash: '548616653',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },
+    {
       abbrev: 'Exodus Garden',
       hash: '2936791995',
       shields: ['Void Servitors'],
@@ -104,6 +137,17 @@ export class WeekService {
         {
           name: 'Unstoppable Ogre',
           count: 4
+        }
+      ]
+    },
+    {
+      abbrev: 'The Empty Tank',
+      hash: '2019961993',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
         }
       ]
     },
@@ -204,6 +248,40 @@ export class WeekService {
         }
       ]
     },
+
+    {
+      abbrev: 'The Quarry',
+      hash: '3253890607',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },
+    {
+      abbrev: 'Scavenger\'s Den',
+      hash: '1905792149',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },
+    {
+      abbrev: 'Excavation Site',
+      hash: '548616650',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },
     {
       abbrev: 'Exodus Garden',
       hash: '2936791996',
@@ -234,6 +312,18 @@ export class WeekService {
         }
       ]
     },
+    {
+      abbrev: 'The Empty Tank',
+      hash: '2019961998',
+      shields: ['tbd', 'tbd'],
+      champions: [
+        {
+          name: 'tbd',
+          count: 1
+        }
+      ]
+    },//The empty tank 2019961998
+
     {
       abbrev: 'K1 Log',
       hash: '567131512',
@@ -432,14 +522,14 @@ export class WeekService {
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(17);
-    const lsEpoch = parseISO('2020-12-15T17:00:00.000Z'); // Dec 15 2020
+    const lsEpoch = parseISO('2021-05-22T17:00:00.000Z'); // Dec 15 2020
     const lsDays = differenceInDays(referenceDate, lsEpoch);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
     const lsLootIndex = lsDays % this.LS_LEGEND_LOOT.length;
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
     const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
-    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1300);
-    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1330);
+    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1310);
+    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1340);
 
     const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
     return {

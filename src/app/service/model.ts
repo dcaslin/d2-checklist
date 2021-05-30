@@ -1438,14 +1438,16 @@ export class InventoryStat {
     baseValue: number;
     enhancement: number;
     index: number;
+    isConditionallyActive: boolean; // only used for stats on mods
 
-    constructor(hash, name, desc, value, baseValue, index) {
+    constructor(hash, name, desc, value, baseValue, index, isConditionallyActive?: boolean) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.value = value;
         this.baseValue = baseValue;
         this.index = index;
+        this.isConditionallyActive = isConditionallyActive;
     }
 
     getValue(): number {

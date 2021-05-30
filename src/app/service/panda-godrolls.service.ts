@@ -1,36 +1,73 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { InventoryItem, ItemType } from './model';
+import { Const, InventoryItem, ItemType, SelectedUser } from './model';
 import { NotificationService } from './notification.service';
 import { del, get, keys, set } from 'idb-keyval';
 import { environment as env } from '@env/environment';
 import { ParseService } from './parse.service';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { SignedOnUserService } from './signed-on-user.service';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class PandaGodrollsService {
+export class PandaGodrollsService implements OnDestroy {
+  private unsubscribe$: Subject<void> = new Subject<void>();
+  public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  private data: { [name: string]: GunInfo; };
-  private isController = true;
-  private matchLastTwoSockets = false;
-  constructor(private httpClient: HttpClient, private notificationService: NotificationService) {
-
+  private data: { [name: string]: GunInfo };
+  public isController = true;
+  public matchLastTwoSockets = false;
+  constructor(
+    private httpClient: HttpClient
+  ) {
   }
 
-  public async init(isController: boolean, matchLastTwoSockets: boolean): Promise<void> {
+  public async updateUser(selectedUser: SelectedUser) {
+    const controllerPref = localStorage.getItem('mnk-vs-controller');
+    const godRollLastTwoOnly = localStorage.getItem('god-roll-last-two-only') == 'true';
+    let controller = false;
+    if (controllerPref != null) {
+      controller = 'true' == controllerPref;
+    } else {
+      // if no explicit prep, assume MnK on steam, controller otherwise
+      if (selectedUser != null && selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type) {
+        controller = false;
+      } else {
+        controller = true;
+      }
+    }
+    await this.update(controller, godRollLastTwoOnly);
+  }
+
+  public async saveSettingsAndRefreshWishlist(
+    controller: boolean,
+    godRollLastTwoOnly: boolean
+  ) {
+    localStorage.setItem('mnk-vs-controller', controller ? 'true' : 'false');
+    localStorage.setItem('god-roll-last-two-only', godRollLastTwoOnly ? 'true' : 'false'
+    );
+    await this.update(controller, godRollLastTwoOnly);
+  }
+
+  public async update(
+    isController: boolean,
+    matchLastTwoSockets: boolean
+  ): Promise<void> {
     this.isController = isController;
     this.matchLastTwoSockets = matchLastTwoSockets;
-    if (this.data != null) { return; } else {
+    if (this.data != null) {
+      // no need to reload
+    } else {
       const temp = await this.load();
-
-      const data: { [name: string]: GunInfo; } = {};
+      const data: { [name: string]: GunInfo } = {};
       for (const c of temp) {
         const key = c.name + c.version;
         if (data[key] == null) {
           data[key] = {
             mnk: null,
-            controller: null
+            controller: null,
           };
         }
         if (c.mnk) {
@@ -43,6 +80,7 @@ export class PandaGodrollsService {
       this.data = data;
       console.log('Loaded ' + temp.length + ' panda guns.');
     }
+    this.loaded$.next(true);
   }
 
   public processItems(items: InventoryItem[]): void {
@@ -66,7 +104,7 @@ export class PandaGodrollsService {
       let key = name + i.versionNumber;
       let info = this.data[key];
       if (i.versionNumber > 0 && info == null) {
-        key =  i.name.toLowerCase() + '0';
+        key = i.name.toLowerCase() + '0';
         info = this.data[key];
       }
       if (info == null) {
@@ -128,7 +166,10 @@ export class PandaGodrollsService {
         if (p.pandaPvp > bestPerkHad) {
           bestPerkHad = p.pandaPvp;
         }
-        if (p.active && (p.pandaPve > bestPerkSelected || p.pandaPvp > bestPerkSelected)) {
+        if (
+          p.active &&
+          (p.pandaPve > bestPerkSelected || p.pandaPvp > bestPerkSelected)
+        ) {
           bestPerkSelected = Math.max(p.pandaPve, p.pandaPvp);
         }
       }
@@ -146,11 +187,15 @@ export class PandaGodrollsService {
     return phrase
       .toLowerCase()
       .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   }
 
-  private processGunRoll(i: InventoryItem, roll: GunRoll, pve: boolean): number {
+  private processGunRoll(
+    i: InventoryItem,
+    roll: GunRoll,
+    pve: boolean
+  ): number {
     let goodRollFound = true;
     let greatRollFound = true;
     if (i.masterwork) {
@@ -164,7 +209,6 @@ export class PandaGodrollsService {
           }
         }
         target.push(PandaGodrollsService.toTitleCase(pm));
-
       }
       if (pve) {
         i.masterwork.recommendedPveMws = target;
@@ -206,7 +250,7 @@ export class PandaGodrollsService {
           }
         }
       }
-      if (!this.matchLastTwoSockets || cntr >= (i.sockets.length - 1)) {
+      if (!this.matchLastTwoSockets || cntr >= i.sockets.length - 1) {
         goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
         greatRollFound = greatPerkFound && greatRollFound;
       }
@@ -251,17 +295,25 @@ export class PandaGodrollsService {
           del(k);
         }
       }
-      rolls = await this.httpClient.get<GunRolls[]>(`/assets/panda-godrolls.min.json?v=${env.versions.app}`).toPromise();
+      rolls = await this.httpClient
+        .get<GunRolls[]>(
+          `/assets/panda-godrolls.min.json?v=${env.versions.app}`
+        )
+        .toPromise();
       set(key, rolls);
       console.log(`    ${prefix} downloaded, parsed and saved.`);
     } else {
       console.log(`    Using cached ${prefix}: ${key}`);
     }
     const t1 = performance.now();
-    console.log(`${(t1 - t0)}ms to load wishlists`);
+    console.log(`${t1 - t0}ms to load wishlists`);
     return rolls;
   }
 
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
+}
 }
 
 interface GunInfo {
