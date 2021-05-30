@@ -64,10 +64,11 @@
             <div class="milestone-row">
               <div [matTooltip]="mileStoneName.desc" matTooltipClass="preserve-white-space">
                 <span class="fake-link" (click)="sortByName()">
-                  {{mileStoneName.name}} <span *ngIf="debugmode|async" class="simple-caption-no-margin"> {{mileStoneName.key}}</span>
+                  {{mileStoneName.name}}
                   <fa-icon *ngIf="state.sort=='nameDesc'" [icon]="iconService.falSortDown"></fa-icon>
                   <fa-icon *ngIf="state.sort=='nameAsc'" [icon]="iconService.falSortUp"></fa-icon>
                 </span>
+                <span *ngIf="debugmode|async" class="simple-caption-no-margin"> {{mileStoneName.key}}</span>
               </div>
               <div class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
                 class="hideMilestoneButton" (click)="hideMilestone(mileStoneName.key)">

@@ -1212,8 +1212,7 @@ export class ParseService {
                 }
             }
             if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
-                // rewards = 'Pinnacle Gear';
-                rewards = 'Legendary Gear';
+                rewards = 'Powerful Gear (Tier 1)';
             } else if (ms.milestoneHash == 3312774044) { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070) { // Weekly Gambit
@@ -1222,6 +1221,8 @@ export class ParseService {
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
                 rewards = 'Pinnacle Gear (Weak)';
+            }  else if (ms.milestoneHash == 3632712541 && rewards == '???') { // battlegrounds
+                rewards = 'Powerful Gear (Tier 1)';
             }
             const boost = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
