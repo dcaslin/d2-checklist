@@ -70,6 +70,7 @@ import { UberPursuitCheckComponent } from './uber-list/uber-pursuit-check/uber-p
 import { PwaService } from './service/pwa.service';
 import { WeaponDealsComponent } from './deals/weapon-deals/weapon-deals.component';
 import { WeaponCompareDialogComponent } from './deals/weapon-compare-dialog/weapon-compare-dialog.component';
+import { PerkbenchComponent } from './perkbench/perkbench.component';
 
 
 
@@ -109,7 +110,7 @@ import { WeaponCompareDialogComponent } from './deals/weapon-compare-dialog/weap
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
     DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, 
-    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberListComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent
+    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberListComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent, PerkbenchComponent
   ],
   providers: [
     AuthService,
