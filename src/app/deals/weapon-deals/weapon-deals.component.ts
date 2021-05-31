@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
+import { InventoryItem } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { VendorDeals } from '@app/service/vendor.service';
+import { WeaponCompareDialogComponent } from '../weapon-compare-dialog/weapon-compare-dialog.component';
 
 @Component({
   selector: 'd2c-weapon-deals',
@@ -19,4 +21,21 @@ export class WeaponDealsComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  
+  showLegendaryDialog(ii: InventoryItem[]) {    
+    this.showDialog(ii[0].name, ii);
+  }
+  
+  private showDialog(title: string, gear: InventoryItem[]) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      title,
+      gear
+    };
+    return this.dialog.open(WeaponCompareDialogComponent, dc);
+
+  }
+
 }

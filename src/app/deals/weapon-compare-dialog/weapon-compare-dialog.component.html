@@ -1,0 +1,204 @@
+<ng-container *ngIf="items[0] as model">
+    <h4 mat-dialog-title>{{title}}</h4>
+  
+    <mat-dialog-content>
+      <table class="gear-table">
+        <thead>
+          <tr>
+  
+          </tr>
+          <tr>
+            <th class="sticky">
+              <d2c-horizontal-sort field="name" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Name
+              </d2c-horizontal-sort>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <th class="sticky" >
+                <div class="item-name">
+                  {{i.name}}
+                </div>
+                <d2c-season-indicator *ngIf="i.type == ItemType.Armor" [season]="i.seasonalModSlot"></d2c-season-indicator>
+  
+                <div class="simple-caption-no-margin">
+                  <ng-container *ngIf="i.vendorItemInfo!=null; else owned">
+                    {{i.vendorItemInfo.vendor.name}}
+                  </ng-container>
+                  <ng-template #owned>
+                    <span class="owned-label">Owned</span>
+                  </ng-template> 
+                  
+  
+                  <span *ngIf="i.postmaster" class="margin-left warn-text">
+                    <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
+                  </span>
+                </div>
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="compare-icon-lead">
+              <div>
+                <d2c-horizontal-sort field="power" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Light
+                </d2c-horizontal-sort>
+              </div>
+              <div>
+                <d2c-horizontal-sort *ngIf="model.type == ItemType.Weapon" field="damageType" [currVal]="sortBy"
+                  [descending]="sortDesc" (sort)="sort($event)">Energy
+                </d2c-horizontal-sort>
+                <d2c-horizontal-sort *ngIf="model.type == ItemType.Armor" field="energyType" [currVal]="sortBy"
+                  [descending]="sortDesc" (sort)="sort($event)">Energy
+                </d2c-horizontal-sort>
+              </div>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <td [class.owned]="i.vendorItemInfo==null">
+                <div class="compare-icon-cell">                
+                  <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+          <tr *ngIf="model.type==ItemType.Armor">
+            <th>
+              <d2c-horizontal-sort field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc"
+                (sort)="sort($event)">Capacity</d2c-horizontal-sort>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <td [class.owned]="i.vendorItemInfo==null">
+                {{i.energyCapacity}}
+              </td>
+            </ng-container>
+          </tr>
+  
+  
+          <tr *ngIf="model.type==ItemType.Armor">
+            <th>
+              <d2c-horizontal-sort field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc"
+                (sort)="sort($event)">Pref Pts</d2c-horizontal-sort>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <td [class.owned]="i.vendorItemInfo==null">
+                {{i.preferredStatPoints}}
+              </td>
+            </ng-container>
+          </tr>
+          <tr *ngIf="model.type==ItemType.Armor">
+            <th>
+              <d2c-horizontal-sort field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc"
+                (sort)="sort($event)">Total Pts</d2c-horizontal-sort>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <td [class.owned]="i.vendorItemInfo==null">
+                {{i.totalStatPoints}}
+              </td>
+            </ng-container>
+          </tr>      
+          <tr *ngIf="model.type==ItemType.Weapon">
+            <th>
+                <div>
+                    <d2c-horizontal-sort field="masterwork.name" [currVal]="sortBy" [descending]="sortDesc"
+                        (sort)="sort($event)">MW Type</d2c-horizontal-sort>
+                </div>
+                <div>
+                    <d2c-horizontal-sort field="masterwork.tier" [currVal]="sortBy" [descending]="sortDesc"
+                        (sort)="sort($event)">MW Tier</d2c-horizontal-sort>
+                </div>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+                <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                    <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
+                </td>
+            </ng-container>
+        </tr>
+          <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
+            <th>
+              <d2c-horizontal-sort field="powerCap" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Cap
+              </d2c-horizontal-sort>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <td [class.owned]="i.vendorItemInfo==null">
+                <ng-container *ngIf="i.powerCap<10000; else highCap">
+                  <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
+                </ng-container>
+                <ng-template #highCap>
+                  <span class="simple-darker-caption-no-margin">None</span>
+                </ng-template>
+              </td>
+            </ng-container>
+          </tr>
+          <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
+            <th>
+              <d2c-horizontal-sort field="mods" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Mod
+              </d2c-horizontal-sort>
+            </th>
+            <ng-container *ngFor="let i of sortedItems|async">
+              <td [class.owned]="i.vendorItemInfo==null">
+                <ng-container *ngFor="let mod of i.mods">
+                  <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
+                    {{mod.name}}
+                  </div>
+                </ng-container>
+              </td>
+            </ng-container>
+          </tr>
+          <ng-container
+            *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
+            <tr *ngFor="let mp of maxPlugs; index as i1">
+              <th *ngIf="i1==0">
+                Sockets
+              </th>
+              <th *ngIf="i1>0">
+                <div *ngFor="let item of [].constructor(mp); index as plugIndex">
+                  <d2c-horizontal-sort [field]="'plug.'+i1+'.'+plugIndex" [currVal]="sortBy" [descending]="sortDesc"
+                    (sort)="sort($event)"></d2c-horizontal-sort>
+                </div>
+  
+              </th>
+              <ng-container *ngFor="let i of sortedItems|async">
+                <td [class.owned]="i.vendorItemInfo==null">
+                  <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">                    
+                    <div *ngIf="i2 == i1">
+                        
+                      <span *ngFor="let plug of socket.plugs; last as isLastPlug"
+                        [class.not-selected-plug]="!plug.active">             
+                        <d2c-god-roll-plug [plug]="plug" [debugmode]="false"></d2c-god-roll-plug>         
+                        <ng-container *ngIf="!isLastPlug"><br></ng-container>
+                      </span>
+                    </div>
+                  </ng-container>
+                </td>
+              </ng-container>
+            </tr>
+  
+          </ng-container>
+  
+          <ng-container *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor">
+            <tr *ngFor="let stat of getAllStats(); let cntr = index">
+              <th>
+                <d2c-horizontal-sort [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc"
+                  (sort)="sort($event)">{{stat.name}}</d2c-horizontal-sort>
+              </th>
+              <ng-container *ngFor="let i of sortedItems|async">
+  
+                <td [class.owned]="i.vendorItemInfo==null">
+                  <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
+                    <span [class.baseonly]="targetStat.value==null">
+                      <span [ngClass]="getColor(targetStat)">
+                        {{targetStat.getValue()}}
+                      </span>
+                    </span>
+                    <span *ngIf="targetStat.enhancement>0" class="accent-text pad-left">+{{targetStat.enhancement}}</span>
+                    <span *ngIf="targetStat.enhancement<0" class="warn-text pad-left">{{targetStat.enhancement}}</span>
+  
+                  </ng-container>
+                  <ng-template #noState>0</ng-template>
+                </td>
+              </ng-container>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </mat-dialog-content>
+  </ng-container>

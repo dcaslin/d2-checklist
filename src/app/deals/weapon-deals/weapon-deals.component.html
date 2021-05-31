@@ -1,1 +1,16 @@
-<p>weapon-deals works!</p>
+<h3>
+    <span matTooltip="Random rolled Banshee weapons that have good or god rolls">Banshee Weapon Deals</span>
+</h3>
+<div class="flex-row" *ngIf="vendorDeals.bansheeWeapons.length>0 else noWeaponDeals">
+    <div *ngFor="let ii of vendorDeals.bansheeWeapons" class="fake-link" (click)="showLegendaryDialog(ii)">
+        <ng-container *ngIf="ii[0] as i">
+            <d2c-item-icon [i]="i" [hideMenu]="true"></d2c-item-icon>
+            <div class="deal-label"><d2c-god-roll-item [item]="i" [simple]="true"></d2c-god-roll-item> {{i.name}}</div>
+            <div class="vendor-deal-label">{{i.vendorItemInfo.vendor.name}}</div>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #noWeaponDeals>
+    <div class="vendor-deal-label">None right now</div>
+</ng-template>

@@ -219,6 +219,8 @@ export class PandaGodrollsService implements OnDestroy {
 
     let first = true;
     let cntr = 0;
+    // 2021-05-31 if this is a great roll that only missed by one socket, mark it as a good roll
+    let greatCount = 0;
     for (const s of i.sockets) {
       cntr++;
       if (first) {
@@ -250,6 +252,10 @@ export class PandaGodrollsService implements OnDestroy {
           }
         }
       }
+      if (greatPerkFound) {
+        greatCount++;
+      }
+      // if we're only matching on the last 2 sockets, downgrade roll on last two sockets
       if (!this.matchLastTwoSockets || cntr >= i.sockets.length - 1) {
         goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
         greatRollFound = greatPerkFound && greatRollFound;
@@ -274,6 +280,14 @@ export class PandaGodrollsService implements OnDestroy {
             }
           }
         }
+      }
+    }
+    // if we're doing normal processing and we don't have a good or great roll, double check to see if we only missed by one on a god roll
+    // if so, count it as a good roll
+    if (!this.matchLastTwoSockets && !(greatRollFound || goodRollFound)) {      
+      // we have one throwaway socket for frame, after that if we're off by only one on great rolls let's call it good
+      if (greatCount >= (i.sockets.length-2)) {
+        goodRollFound = true;
       }
     }
     return greatRollFound ? 2 : goodRollFound ? 1 : 0;
