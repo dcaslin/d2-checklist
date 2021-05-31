@@ -28,6 +28,7 @@ import { HistoryComponent } from './history';
 import { HomeComponent } from './home/home.component';
 import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { PartyComponent } from './party/party.component';
+import { PerkbenchComponent } from './perkbench/perkbench.component';
 import { PGCRComponent } from './pgcr';
 import { PlayerComponent } from './player';
 import { CharsComponent } from './player/chars/chars.component';
@@ -103,7 +104,14 @@ export class ManifestLoadedGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [ManifestLoadedGuard],
       component: SettingsComponent
-    }, {
+    }, 
+    {
+      path: 'perkbench',
+      pathMatch: 'full',
+      canActivate: [ManifestLoadedGuard],
+      component: PerkbenchComponent
+    }, 
+    {
       path: 'about',
       pathMatch: 'full',
       component: AboutComponent
