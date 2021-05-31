@@ -335,7 +335,7 @@ interface GunInfo {
   controller: GunRolls | null;
 }
 
-interface GunRolls {
+export interface GunRolls {
   name: string;
   sheet: string;
   pve: GunRoll;

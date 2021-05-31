@@ -3473,11 +3473,7 @@ export class ParseService {
 
 
     public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {        
-        try {
-            // baryon bough
-            // if (itm.itemHash == 778553120) {
-            //     console.dir('xxx');
-            // }
+        try {          
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
                 console.log('Skipping - no desc: ' + itm.itemHash);

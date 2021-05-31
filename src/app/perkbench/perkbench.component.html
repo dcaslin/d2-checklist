@@ -1,1 +1,22 @@
 <p>perkbench works!</p>
+
+<div>
+    
+    <button mat-stroked-button (click)="exportToFile()">
+        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+        Backup tags to file
+    </button>
+    <input #importInput hidden="true" type="file" onclick="this.value=null"
+    (change)="importFromFile($event)" accept=".json" />
+    <button mat-stroked-button (click)="importInput.click()">
+        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+        Import tags from file
+    </button>
+</div>
+
+<div>
+        {{rolls.length}}
+        {{weapons.length}}
+        {{mappedRolls.length}}
+        {{status}}
+</div>
