@@ -94,15 +94,18 @@
                             </td>
                             <ng-template #notBounty>
                                 <td class="hide-mobile-table-cell">
-                                    <div>{{i.name}}
+                                    <div>{{i.name}} <d2c-god-roll-item [item]="i" [simple]="true"></d2c-god-roll-item>
                                         <span class="secondary-text bold"
                                             *ngIf="i.vendorItemInfo?.quantity>1">({{i.vendorItemInfo.quantity}})</span>
                                     </div>
                                     <div class="type-caption">{{i.typeName}}</div>
+                                    <div class="type-caption"*ngIf="i.masterwork?.name">
+                                        <b>MW: {{i.masterwork.name}}</b>
+                                    </div>
                                 </td>
                             </ng-template>
 
-                            <td *ngIf="option.text == 'Weapons' && i.type==ItemType.Weapon">
+                            <td *ngIf="option.text == 'Weapons' && i.type==ItemType.Weapon">                                
                                 <div *ngFor="let socket of i.sockets" class="bottom-divider">
                                     <div *ngIf="debugmode">Socket Cat: {{socket.socketCategoryHash}} </div>
                                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">

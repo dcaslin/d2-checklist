@@ -105,11 +105,14 @@ export class VendorService {
         legendary: [],
         exotic: [],
         collection: [],
-        exchange: []
+        exchange: [], 
+        bansheeWeapons: []
       };
     }
     const vendorItems = VendorService.getUniqueVendorItems(vendors);
     const interestingVendorArmor = vendorItems.filter(val => val.type === ItemType.Armor && (val.tier == 'Legendary' || val.tier == 'Exotic') && val.powerCap >= 1310);
+    const interestingVendorWeapons = vendorItems.filter(val => val.type === ItemType.Weapon && (val.tier == 'Legendary') && val?.vendorItemInfo?.vendor?.name=='Banshee-44' && (val.pandaPve>0||val.pandaPvp>0));
+    const bansheeWeapons = this.findBansheeDeals(player, interestingVendorWeapons);
     // look just at legendary armor grouped by class and bucket
     const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
     const goodLegendaryDeals = legendaryDeals.filter(i => i.hasDeal);
@@ -124,7 +127,8 @@ export class VendorService {
       legendary: goodLegendaryDeals,
       exotic: exoticDeals,
       collection: collectionItems,
-      exchange: exchange
+      exchange: exchange,
+      bansheeWeapons: bansheeWeapons
     };
     return returnMe;
   }
@@ -350,6 +354,19 @@ export class VendorService {
       }
     }
     return deals;
+  }
+
+  private findBansheeDeals(player: Player, vendorWeapons: InventoryItem[]): InventoryItem[][] {
+    
+    const playerWeapons = player.gear.filter(i => i.type == ItemType.Weapon).filter(i => i.tier == 'Legendary');
+    this.pandaGodRollsService.processItems(playerWeapons);
+    const returnMe: InventoryItem[][] = [];
+    for (const vi of vendorWeapons) {
+      const pw = playerWeapons.filter(i => i.hash == vi.hash);
+      const all = [vi].concat(pw);
+      returnMe.push(all);
+    }
+    return returnMe;
   }
 
   private findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
@@ -736,4 +753,5 @@ export interface VendorDeals {
   exotic: ExoticInventoryBucket[];
   collection: VendorCollection[];
   exchange: VendorCurrencies[];
+  bansheeWeapons: InventoryItem[][];
 }

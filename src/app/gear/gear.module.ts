@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared';
 import { ClipboardModule } from 'ngx-clipboard';
 import { GearComponent} from './gear/gear.component';
-import { GodRollItemComponent } from './god-roll-item/god-roll-item.component';
 import { PossibleRollsDialogComponent } from './possible-rolls-dialog/possible-rolls-dialog.component';
 import { TargetArmorStatsDialogComponent } from './target-armor-stats-dialog/target-armor-stats-dialog.component';
 import { GearCompareDialogComponent } from './gear/gear-compare-dialog/gear-compare-dialog.component';
@@ -11,8 +10,6 @@ import { BulkOperationsHelpDialogComponent } from './gear/bulk-operations-help-d
 import { GearUtilitiesDialogComponent } from './gear/gear-utilities-dialog/gear-utilities-dialog.component';
 import { ArmorPerksDialogComponent } from './gear/armor-perks-dialog/armor-perks-dialog.component';
 import { GearToggleComponent } from './gear/gear-toggle/gear-toggle.component';
-import { HorizontalSortComponent } from './gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
-import { GodRollMwComponent } from './god-roll-mw/god-roll-mw.component';
 import { SeasonBreakdownDialogComponent } from './gear/season-breakdown-dialog/season-breakdown-dialog.component';
 
 @NgModule({
@@ -20,6 +17,6 @@ import { SeasonBreakdownDialogComponent } from './gear/season-breakdown-dialog/s
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, GodRollItemComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, GodRollMwComponent, SeasonBreakdownDialogComponent]
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent]
 })
 export class GearModule  { }

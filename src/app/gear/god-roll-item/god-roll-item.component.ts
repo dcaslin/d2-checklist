@@ -14,6 +14,10 @@ export class GodRollItemComponent implements OnInit {
   vertical = false;
 
   @Input()
+  simple = false;
+
+
+  @Input()
   item: InventoryItem;
 
 

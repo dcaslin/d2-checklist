@@ -36,6 +36,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { ItemEnergyIndicatorComponent } from './item-energy-indicator/item-energy-indicator.component';
 import { ItemIconComponent } from './item-icon/item-icon.component';
+import { GodRollItemComponent } from '../gear/god-roll-item/god-roll-item.component';
+import { GodRollMwComponent } from '../gear/god-roll-mw/god-roll-mw.component';
 import { MilestoneCheckModule } from './milestone-check/milestone-check.module';
 import { PipeModule } from './pipe';
 import { SeasonIndicatorComponent } from './season-indicator/season-indicator.component';
@@ -96,6 +98,8 @@ import { GodRollPlugComponent } from '../gear/god-roll-plug/god-roll-plug.compon
     SortIndicatorComponent,
     ItemEnergyIndicatorComponent,
     ItemIconComponent,
+    GodRollItemComponent,
+    GodRollMwComponent,
     HorizontalSortComponent,
     FriendStarComponent,
     FriendStarComponent,
@@ -114,6 +118,8 @@ import { GodRollPlugComponent } from '../gear/god-roll-plug/god-roll-plug.compon
     ManifestItemIconComponent,
     TriumphNameComponent,
     ItemIconComponent,
+    GodRollItemComponent,
+    GodRollMwComponent,
     FriendStarComponent,
     GodRollPlugComponent,
     SeasonIndicatorComponent,
