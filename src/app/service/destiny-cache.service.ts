@@ -243,6 +243,7 @@ export interface ManifestInventoryItem {
   displaySource: string;
   tooltipStyle: string;
   inventory: any;
+  damageTypes: any[];
   stats: any;
   value: any;
   objectives: Objectives;

@@ -3803,6 +3803,9 @@ export class ParseService {
                                                 plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false);
                                             oPlug.currentlyCanRoll = option.currentlyCanRoll;
+                                            if (!option.currentlyCanRoll) {
+                                                console.log(`wow ${desc.displayProperties.name}` );
+                                            }
                                             possiblePlugs.push(oPlug);
                                         }
                                     }
