@@ -14,9 +14,29 @@
     </button>
 </div>
 
-<div>
+<div *ngIf="rolls$|async as rolls">
         {{rolls.length}}
-        {{weapons.length}}
-        {{mappedRolls.length}}
-        {{status}}
+    <table class="tidy-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Bucket</th>
+                <th>Damage</th>
+                <th>Hash</th>
+                <th>HashRoll</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container  *ngFor="let r of rolls">
+                <tr>
+                    <td>{{r.info.desc.displayProperties.name}}</td>
+                    <td>{{r.info.bucket}}</td>
+                    <td>{{r.info.damage}}</td>
+                    <td>{{r.info.desc.hash}}</td>
+                    <td>{{r.roll!=null}}</td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </table>
+
 </div>
