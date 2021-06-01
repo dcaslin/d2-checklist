@@ -10,7 +10,7 @@ import { format } from 'date-fns';
 import { BehaviorSubject } from 'rxjs';
 import { ro } from 'date-fns/locale';
 import { DestinyCacheService, ManifestInventoryItem } from '@app/service/destiny-cache.service';
-import { InventoryPlug, InventorySocket } from '@app/service/model';
+import { DamageType, InventoryPlug, InventorySocket, ItemType } from '@app/service/model';
 
 @Component({
   selector: 'd2c-perkbench',
@@ -18,10 +18,10 @@ import { InventoryPlug, InventorySocket } from '@app/service/model';
   styleUrls: ['./perkbench.component.scss']
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
-  public rolls: GunRolls[] = [];
-  public weapons: GunInfo[] = [];
-  public mappedRolls: MappedRoll[] = [];
-  public status = "loading";
+  public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
+  public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private weapons: GunInfo[] = [];
+
 
   constructor(storageService: StorageService,
     public iconService: IconService,
@@ -38,15 +38,46 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
   async init() {
     this.weapons = this.getWeaponDescs();
-    this.rolls = await this.load();
-    this.mappedRolls = this.combine(this.rolls, this.weapons);
-    console.log("loaded");
-    this.status = "Loaded";
+    this.load();
   }
 
-  async load(): Promise<GunRolls[]> {
-    return await this.httpClient.get<GunRolls[]>(`/assets/panda-godrolls.min.json`).toPromise();
+  async load() {
+    this.loading$.next(true);
+    try { 
+      const gunRolls = await this.httpClient.get<GunRolls[]>(`/assets/panda-godrolls.min.json`).toPromise();
+      const rolls = PerkbenchComponent.loadPandaJson(JSON.stringify(gunRolls), this.weapons);
+      this.rolls$.next(rolls);
+    } catch (x) {
+      console.dir(x);
+      this.notificationService.fail(x);
+    } 
+    finally {
+      this.loading$.next(false);
+    }
     
+  }
+
+  static loadPandaJson(sGodRolls: string, weapons: GunInfo[]): MappedRoll[] {
+    const gunRolls: GunRolls[] = JSON.parse(sGodRolls);
+    return PerkbenchComponent.combine(gunRolls, weapons);
+  }
+
+  private static combine(gunRolls: GunRolls[], weapons: GunInfo[]): MappedRoll[] {
+    const returnMe: MappedRoll[] = [];
+    for (const w of weapons) {
+      let name = w.desc.displayProperties.name.toLowerCase();
+      const suffix = ' (Adept)'.toLowerCase();
+      if (name.endsWith(suffix)) {
+        name = name.substring(0, name.length - suffix.length);
+      }
+      const g = gunRolls.find(x => x.name == name);
+      returnMe.push({
+        roll: g,
+        info: w
+      });
+
+    }
+    return returnMe;
   }
 
   async importFromFile(fileInputEvent: any) {
@@ -59,23 +90,6 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     console.dir(sJson);
   }
 
-  private combine(gunRolls: GunRolls[], weapons: GunInfo[]): MappedRoll[] {
-    const returnMe: MappedRoll[] = [];
-    for (const w of weapons) {
-      let name = w.desc.displayProperties.name.toLowerCase();
-      const suffix = ' (Adept)'.toLowerCase();
-      if (name.endsWith(suffix)) {
-        name = name.substring(0, name.length - suffix.length);
-      }
-      const g = gunRolls.find(x => x.name==name); 
-      returnMe.push({
-        roll: g,
-        info: w
-      });
-
-    }
-    return returnMe;
-  }
 
   private getWeaponDescs(): GunInfo[] {
     const guns: ManifestInventoryItem[] = [];
@@ -93,14 +107,19 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         ii.inventory.bucketTypeHash == 2465295065 ||
         ii.inventory.bucketTypeHash == 953998645) {
         // gunCandidates.add(ii.displayProperties.name.toLowerCase());
-        if (ii.displayProperties?.name && ii.sockets?.socketCategories?.length>0) {
-          guns.push(ii);
+        if (ii.displayProperties?.name && ii.sockets?.socketCategories?.length > 0) {
+          if (ii.itemType!=ItemType.Dummy) {
+            if (!ii.displayProperties.name.endsWith('(Adept)')) {
+              guns.push(ii);
+            }
+          }
         }
       }
     }
     const gunsWithSockets: GunInfo[] = [];
     for (const desc of guns) {
-      for (const jCat of desc.sockets.socketCategories) {        
+      let hasRandomRoll = false;
+      for (const jCat of desc.sockets.socketCategories) {
         // we only care about weapon perks
         if (jCat.socketCategoryHash != '4241085061') {
           continue;
@@ -110,6 +129,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           const socketDesc = desc.sockets.socketEntries[index];
           const possiblePlugs: InventoryPlug[] = [];
           if (socketDesc.randomizedPlugSetHash) {
+            hasRandomRoll = true;
             const randomRollsDesc: any = this.destinyCacheService.cache.PlugSet[socketDesc.randomizedPlugSetHash];
             if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
               for (const option of randomRollsDesc.reusablePlugItems) {
@@ -130,9 +150,14 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         }
         const gi: GunInfo = {
           desc,
-          sockets
+          sockets,
+          bucket: this.destinyCacheService.cache.InventoryBucket[desc.inventory.bucketTypeHash].displayProperties.name,
+          damage: DamageType[desc.defaultDamageType]
         }
-        gunsWithSockets.push(gi);
+        if (hasRandomRoll) {
+          gunsWithSockets.push(gi);
+        }
+        
       }
     }
 
@@ -140,7 +165,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     //   const stat = db.Stat[key];
     //   mwCandidates.add(stat.displayProperties.name.toLowerCase());
     // }
-      return gunsWithSockets;
+    return gunsWithSockets;
 
   }
 
@@ -168,4 +193,6 @@ interface MappedRoll {
 interface GunInfo {
   desc: ManifestInventoryItem;
   sockets: InventorySocket[];
+  bucket: string,
+  damage: string;
 }
