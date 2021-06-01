@@ -1,39 +1,53 @@
 <p>perkbench works!</p>
 
-<div>
-    
+<div class="spaced">
     <button mat-stroked-button (click)="exportToFile()">
         <fa-icon [icon]="iconService.falDownload"></fa-icon>
-        Backup tags to file
+        Load JSON from file
     </button>
     <input #importInput hidden="true" type="file" onclick="this.value=null"
     (change)="importFromFile($event)" accept=".json" />
     <button mat-stroked-button (click)="importInput.click()">
         <fa-icon [icon]="iconService.falUpload"></fa-icon>
-        Import tags from file
+        Save JSON to file
     </button>
 </div>
-
-<div *ngIf="rolls$|async as rolls">
+<div class="spaced">
+    <mat-form-field>
+        <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText"
+            placeholder="Wildcard Search">
+    </mat-form-field>
+    <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showMissingOnly">
+        Only show missing rolls
+    </mat-checkbox>
+</div>
+<div *ngIf="filteredRolls$|async as rolls">
         {{rolls.length}}
     <table class="tidy-table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Bucket</th>
+                <th>
+                    <span class="fake-link gear-sort" (click)="sort('name')">Name <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span>
+                </th>
+                <th>
+                    <span class="fake-link gear-sort" (click)="sort('type')">Type <d2c-sort-indicator field="type" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span></th>
                 <th>Damage</th>
-                <th>Hash</th>
-                <th>HashRoll</th>
+                <th>
+                    <span class="fake-link gear-sort" (click)="sort('season')">Season <d2c-sort-indicator field="season" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span></th>
+                <th>Has Roll</th>
             </tr>
         </thead>
         <tbody>
             <ng-container  *ngFor="let r of rolls">
                 <tr>
-                    <td>{{r.info.desc.displayProperties.name}}</td>
-                    <td>{{r.info.bucket}}</td>
+                    <td><span class="fake-link underline" (click)="showRolls(r)">{{r.info.desc.displayProperties.name}}</span></td>
+                    <td>{{r.info.type}}</td>  
                     <td>{{r.info.damage}}</td>
-                    <td>{{r.info.desc.hash}}</td>
-                    <td>{{r.roll!=null}}</td>
+                    <td>{{r.info.season}}</td>                  
+                    <td>
+                        <fa-icon *ngIf="r.roll!=null" [icon]="iconService.fasCheckSquare"></fa-icon>
+                        <fa-icon *ngIf="r.roll==null" [icon]="iconService.farSquare"></fa-icon>
+                    </td>
                 </tr>
             </ng-container>
         </tbody>

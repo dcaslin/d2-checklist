@@ -7,10 +7,51 @@ import { StorageService } from '@app/service/storage.service';
 import { GunRolls } from '@app/service/panda-godrolls.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { format } from 'date-fns';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { ro } from 'date-fns/locale';
 import { DestinyCacheService, ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { DamageType, InventoryPlug, InventorySocket, ItemType } from '@app/service/model';
+import { debounceTime, takeUntil } from 'rxjs/operators';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component'
+
+
+// God bless DIM
+
+const WATERMARK_TO_SEASON = {
+  "/common/destiny2_content/icons/0dac2f181f0245cfc64494eccb7db9f7.png": 1,
+  "/common/destiny2_content/icons/dd71a9a48c4303fd8546433d63e46cc7.png": 1,
+  "/common/destiny2_content/icons/591f14483308beaad3278c3cd397e284.png": 2,
+  "/common/destiny2_content/icons/50d36366595897d49b5d33e101c8fd07.png": 2,
+  "/common/destiny2_content/icons/e10338777d1d8633e073846e613a1c1f.png": 3,
+  "/common/destiny2_content/icons/aaa61f6c70478d87de0df41e5709a773.png": 3,
+  "/common/destiny2_content/icons/0669efb55951e8bc9e99f3989eacc861.png": 4,
+  "/common/destiny2_content/icons/02478e165d7d8d2a9f39c2796e7aac12.png": 4,
+  "/common/destiny2_content/icons/bbddbe06ab72b61e708afc4fdbe15d95.png": 5,
+  "/common/destiny2_content/icons/c23c9ec8709fecad87c26b64f5b2b9f5.png": 5,
+  "/common/destiny2_content/icons/f9110e633634d112cff72a67159e3b12.png": 6,
+  "/common/destiny2_content/icons/e4a1a5aaeb9f65cc5276fd4d86499c70.png": 6,
+  "/common/destiny2_content/icons/785e5a64153cabd5637d68dcccb7fea6.png": 7,
+  "/common/destiny2_content/icons/69bb11f24279c7a270c6fac3317005b2.png": 7,
+  "/common/destiny2_content/icons/d4141b2247cf999c73d3dc409f9d00f7.png": 8,
+  "/common/destiny2_content/icons/82a8d6f2b1e4ee14e853d4ffbe031406.png": 8,
+  "/common/destiny2_content/icons/8aae1c411642683d341b2c4f16a7130c.png": 8,
+  "/common/destiny2_content/icons/ee3f5bb387298acbdb03c01940701e63.png": 8,
+  "/common/destiny2_content/icons/ac012e11fa8bb032b923ad85e2ffb29c.png": 9,
+  "/common/destiny2_content/icons/9b7e4bbc576fd15fbf44dfa259f8b86a.png": 9,
+  "/common/destiny2_content/icons/3d335ddc3ec6668469aae60baad8548d.png": 10,
+  "/common/destiny2_content/icons/e27a4f39c1bb8c6f89613648afaa3e9f.png": 10,
+  "/common/destiny2_content/icons/796813aa6cf8afe55aed4efc2f9c609b.png": 11,
+  "/common/destiny2_content/icons/49dc693c5f3411b9638b97f38a70b69f.png": 11,
+  "/common/destiny2_content/icons/2347cc2407b51e1debbac020bfcd0224.png": 12,
+  "/common/destiny2_content/icons/d3cffdcb881085bc4fe19d9671c9eb0c.png": 12,
+  "/common/destiny2_content/icons/0aff1f4463f6f44e9863370ab1ce6983.png": 12,
+  "/common/destiny2_content/icons/1f702463c5e0c4e25c9f00a730dbc6ac.png": 12,
+  "/common/destiny2_content/icons/6a52f7cd9099990157c739a8260babea.png": 13,
+  "/common/destiny2_content/icons/e197b731c11556b17664b90a87dd0c11.png": 13,
+  "/common/destiny2_content/icons/b07d89064a1fc9a8e061f59b7c747fa5.png": 14,
+  "/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png": 14
+  };
 
 @Component({
   selector: 'd2c-perkbench',
@@ -18,24 +59,79 @@ import { DamageType, InventoryPlug, InventorySocket, ItemType } from '@app/servi
   styleUrls: ['./perkbench.component.scss']
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
+  public sortBy = 'name';
+  public sortDesc = false;
+  public filterText = '';
+  public showMissingOnly = false;
+  public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
+  public filteredRolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
   public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private weapons: GunInfo[] = [];
 
-
   constructor(storageService: StorageService,
     public iconService: IconService,
+    public dialog: MatDialog,
     private destinyCacheService: DestinyCacheService,
     private notificationService: NotificationService,
     private httpClient: HttpClient
   ) {
     super(storageService);
     this.init();
+
+    combineLatest([this.filterChanged$, this.rolls$]).pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(50))
+      .subscribe(([changed, rolls]) => {
+        let showMe = rolls;
+        if (this.showMissingOnly) {
+          showMe = showMe.filter(x=>x.roll==null);
+        }
+        if (this.filterText.trim().length>0) {
+          showMe = showMe.filter(x=>JSON.stringify(x).toLowerCase().indexOf(this.filterText.toLowerCase())>=0);
+        }
+        
+
+        showMe.sort((a, b) => {
+          let aV, bV;
+          if (this.sortBy == 'name') {
+            aV = a.info.desc.displayProperties.name != null ? a.info.desc.displayProperties.name : '';
+            bV = b.info.desc.displayProperties.name != null ? b.info.desc.displayProperties.name : '';
+          } else if (this.sortBy == 'type') {
+            aV = a.info.type != null ? a.info.type : '';
+            bV = b.info.type != null ? b.info.type : '';
+          } else if (this.sortBy == 'season') {
+            aV = a.info.season != null ? a.info.season : '';
+            bV = b.info.season != null ? b.info.season : '';
+          }
+
+          if (aV < bV) {
+              return this.sortDesc ? 1 : -1;
+          } else if (aV > bV) {
+              return this.sortDesc ? -1 : 1;
+          } else {
+              return 0;
+          }
+        });
+        console.log("done");
+        this.filteredRolls$.next(showMe);
+      });
   }
 
   ngOnInit(): void {
   }
 
+  sort(val: string) {
+    if (val == this.sortBy) {
+      this.sortDesc = !this.sortDesc;
+    } else {
+      this.sortBy = val;
+      this.sortDesc = true;
+    }
+    this.filterChanged$.next(true);
+
+  }
+  
   async init() {
     this.weapons = this.getWeaponDescs();
     this.load();
@@ -78,6 +174,10 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
     }
     return returnMe;
+  }
+
+  public searchChange() {
+
   }
 
   async importFromFile(fileInputEvent: any) {
@@ -148,11 +248,19 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
             sockets.push(new InventorySocket(jCat.socketCategoryHash, [], possiblePlugs));
           }
         }
+        let dmgType = DamageType[desc.damageTypes[0]];
+        if (dmgType=='Thermal') {
+          dmgType = 'Solar';
+        }
         const gi: GunInfo = {
           desc,
           sockets,
-          bucket: this.destinyCacheService.cache.InventoryBucket[desc.inventory.bucketTypeHash].displayProperties.name,
-          damage: DamageType[desc.defaultDamageType]
+          type: desc.itemTypeDisplayName,
+          damage: dmgType,
+          season: WATERMARK_TO_SEASON[desc.iconWatermark]
+        }
+        if (gi.season==null) {
+          gi.season = -1;
         }
         if (hasRandomRoll) {
           gunsWithSockets.push(gi);
@@ -183,9 +291,20 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     anch.click();
   }
 
+
+  showRolls(i: MappedRoll) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+      item: i
+    };
+    this.dialog.open(PerkBenchDialogComponent, dc);
+  }
+
 }
 
-interface MappedRoll {
+export interface MappedRoll {
   roll: GunRolls;
   info: GunInfo;
 }
@@ -193,6 +312,7 @@ interface MappedRoll {
 interface GunInfo {
   desc: ManifestInventoryItem;
   sockets: InventorySocket[];
-  bucket: string,
+  type: string,
   damage: string;
+  season: number;
 }
