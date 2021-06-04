@@ -1,36 +1,42 @@
 
 <div mat-dialog-title style="margin-bottom: 0px">
-    {{r.info.desc.displayProperties.name}}
+    {{r.info.desc.displayProperties.name}} 
     <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{r.info.type}}</span>
+    <span style="margin-left: 10px" class="simple-caption-no-margin"><ng-container *ngIf="isController">Console</ng-container><ng-container *ngIf="!isController">MnK</ng-container></span>
 
 </div>
 <mat-dialog-content>
     <table class="tidy-auto-table">
         <tr>
-            <th>Show MW options</th>
+            <td>Show MW options</td>
         </tr>
         <tr>
-            <th>Highlight perks based on god roll</th>
+            <td>Highlight perks based on god roll</td>
         </tr>
         <tr>
-            <th>Allow clicking to modify roll in real time</th>
+            <td>Allow clicking to modify roll in real time</td>
         </tr>
-        <!-- <tr>
+        <tr>
+            <td>
+                r.roll?
+            </td>
+        </tr>
+        <tr>
             <th [attr.colspan]="maxPlugs">
                 PVP Masterwork:
-                <span class="pad-right" *ngFor="let mw of item.masterwork.recommendedPvpMws; last as isLast">
+                <span class="pad-right" *ngFor="let mw of mwOptions; last as isLast">
                     {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
                 </span>
             </th>
-        </tr> -->
-        <!-- <tr *ngIf="item.masterwork">
+        </tr>
+        <tr>
             <th [attr.colspan]="maxPlugs">
-                PVE Masterwork:
-                <span class="pad-right" *ngFor="let mw of item.masterwork.recommendedPveMws; last as isLast">
+                PVE Masterwork:                
+                <span class="pad-right" *ngFor="let mw of mwOptions; last as isLast">
                     {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
                 </span>
             </th>
-        </tr> -->
+        </tr>
 
         <ng-container *ngFor="let socket of r.info.sockets">
             <tr *ngIf="socket.possiblePlugs.length>0">

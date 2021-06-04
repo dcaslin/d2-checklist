@@ -4,7 +4,7 @@ import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
 import { NotificationService } from '@app/service/notification.service';
 import { StorageService } from '@app/service/storage.service';
-import { GunRolls } from '@app/service/panda-godrolls.service';
+import { GunRoll, GunRolls } from '@app/service/panda-godrolls.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { format } from 'date-fns';
 import { BehaviorSubject, combineLatest } from 'rxjs';
@@ -51,7 +51,9 @@ const WATERMARK_TO_SEASON = {
   "/common/destiny2_content/icons/e197b731c11556b17664b90a87dd0c11.png": 13,
   "/common/destiny2_content/icons/b07d89064a1fc9a8e061f59b7c747fa5.png": 14,
   "/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png": 14
-  };
+};
+
+const PERK_BENCH_IS_CONTROLLER_KEY = 'perkbench-is-controller';
 
 @Component({
   selector: 'd2c-perkbench',
@@ -59,6 +61,7 @@ const WATERMARK_TO_SEASON = {
   styleUrls: ['./perkbench.component.scss']
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
+  public isController: boolean = true;
   public sortBy = 'name';
   public sortDesc = false;
   public filterText = '';
@@ -69,6 +72,19 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private weapons: GunInfo[] = [];
 
+  // public getRoll(i: MappedRoll): GunRoll {
+  //   for (const r of i.roll.) {
+
+  //   }
+  //   if (this.isController && i?.roll?.controller) {
+  //     return i.roll.controller;
+  //   }
+  //   else if (i?.roll?.mnk) {
+  //     return i.roll.mnk;
+  //   }
+  //   return null;
+  // }
+
   constructor(storageService: StorageService,
     public iconService: IconService,
     public dialog: MatDialog,
@@ -78,20 +94,18 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   ) {
     super(storageService);
     this.init();
-
+    this.isController = localStorage.getItem(PERK_BENCH_IS_CONTROLLER_KEY) == 'true';
     combineLatest([this.filterChanged$, this.rolls$]).pipe(
       takeUntil(this.unsubscribe$),
       debounceTime(50))
       .subscribe(([changed, rolls]) => {
         let showMe = rolls;
         if (this.showMissingOnly) {
-          showMe = showMe.filter(x=>x.roll==null);
+          showMe = showMe.filter(x => x.roll == null || this.isController ? x.roll.controller == null : x.roll.mnk == null);
         }
-        if (this.filterText.trim().length>0) {
-          showMe = showMe.filter(x=>JSON.stringify(x).toLowerCase().indexOf(this.filterText.toLowerCase())>=0);
+        if (this.filterText.trim().length > 0) {
+          showMe = showMe.filter(x => JSON.stringify(x).toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0);
         }
-        
-
         showMe.sort((a, b) => {
           let aV, bV;
           if (this.sortBy == 'name') {
@@ -106,11 +120,11 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           }
 
           if (aV < bV) {
-              return this.sortDesc ? 1 : -1;
+            return this.sortDesc ? 1 : -1;
           } else if (aV > bV) {
-              return this.sortDesc ? -1 : 1;
+            return this.sortDesc ? -1 : 1;
           } else {
-              return 0;
+            return 0;
           }
         });
         console.log("done");
@@ -119,6 +133,10 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  changeConsole() {
+    localStorage.setItem('perkbench-is-console', '' + this.isController);
   }
 
   sort(val: string) {
@@ -131,7 +149,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     this.filterChanged$.next(true);
 
   }
-  
+
   async init() {
     this.weapons = this.getWeaponDescs();
     this.load();
@@ -139,18 +157,18 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
   async load() {
     this.loading$.next(true);
-    try { 
+    try {
       const gunRolls = await this.httpClient.get<GunRolls[]>(`/assets/panda-godrolls.min.json`).toPromise();
       const rolls = PerkbenchComponent.loadPandaJson(JSON.stringify(gunRolls), this.weapons);
       this.rolls$.next(rolls);
     } catch (x) {
       console.dir(x);
       this.notificationService.fail(x);
-    } 
+    }
     finally {
       this.loading$.next(false);
     }
-    
+
   }
 
   static loadPandaJson(sGodRolls: string, weapons: GunInfo[]): MappedRoll[] {
@@ -208,7 +226,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         ii.inventory.bucketTypeHash == 953998645) {
         // gunCandidates.add(ii.displayProperties.name.toLowerCase());
         if (ii.displayProperties?.name && ii.sockets?.socketCategories?.length > 0) {
-          if (ii.itemType!=ItemType.Dummy) {
+          if (ii.itemType != ItemType.Dummy) {
             if (!ii.displayProperties.name.endsWith('(Adept)')) {
               guns.push(ii);
             }
@@ -249,7 +267,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           }
         }
         let dmgType = DamageType[desc.damageTypes[0]];
-        if (dmgType=='Thermal') {
+        if (dmgType == 'Thermal') {
           dmgType = 'Solar';
         }
         const gi: GunInfo = {
@@ -259,22 +277,16 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           damage: dmgType,
           season: WATERMARK_TO_SEASON[desc.iconWatermark]
         }
-        if (gi.season==null) {
+        if (gi.season == null) {
           gi.season = -1;
         }
         if (hasRandomRoll) {
           gunsWithSockets.push(gi);
         }
-        
+
       }
     }
-
-    // for (const key of Object.keys(db.Stat)) {
-    //   const stat = db.Stat[key];
-    //   mwCandidates.add(stat.displayProperties.name.toLowerCase());
-    // }
     return gunsWithSockets;
-
   }
 
 
@@ -297,7 +309,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     dc.disableClose = false;
     dc.data = {
       parent: this,
-      item: i
+      item: i,
+      isController: this.isController
     };
     this.dialog.open(PerkBenchDialogComponent, dc);
   }
@@ -309,7 +322,12 @@ export interface MappedRoll {
   info: GunInfo;
 }
 
-interface GunInfo {
+export interface PlatformGunRolls {
+  mnk: GunRolls;
+  controller: GunRolls;
+}
+
+export interface GunInfo {
   desc: ManifestInventoryItem;
   sockets: InventorySocket[];
   type: string,

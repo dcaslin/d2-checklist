@@ -343,9 +343,9 @@ export interface GunRolls {
   mnk: boolean;
   controller: boolean;
   version: number;
-}
+} // todo remove sheet and version, replace with note and URL
 
-interface GunRoll {
+export interface GunRoll {
   masterwork: string[];
   greatPerks: string[];
   goodPerks: string[];
