@@ -89,7 +89,7 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_UNLOCK_PERK_PROG_HASH = '2557524386 '; // update me for splicer was 3094108685
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '2557524386'; // update me for splicer was 3094108685
     ARTIFACT_POWER_BONUS_PROG_HASH = '1793560787'; // update me for splicer 978389300
 
     HIDE_PROGRESSIONS = [
@@ -575,9 +575,10 @@ export class ParseService {
         // only progression we care about right now are Legend, Glory, Valor, and Season Pass
         if (_prog.progressions) {
             const sp = this.getSeasonProgression();
+            const currentRankProgressionHashes: number[] = this.destinyCacheService.cache.destiny2CoreSettings.currentRankProgressionHashes;
             Object.keys(_prog.progressions).forEach((key) => {
-                // valor 2083746873, infamy 3008065600, glory 1647151960
-                if (key === '2083746873' || key === '3008065600' || key === '1647151960'
+                const iKey: number = parseInt(key, 10);
+                if ((currentRankProgressionHashes.indexOf(iKey)>=0) // valor/infamy/glory
                     || key == sp.rewardProgressionHash
                     || key == sp.prestigeProgressionHash) {
                     const p: PrivProgression = _prog.progressions[key];
@@ -650,7 +651,8 @@ export class ParseService {
     }
 
     private getSeasonProgression(): SeasonPass {
-        const s: Season = this.destinyCacheService.cache.Season['2809059429'];  // update me, splicer hash season 14
+        const hash = this.destinyCacheService.cache.destiny2CoreSettings.currentSeasonHash;
+        const s: Season = this.destinyCacheService.cache.Season[hash];
         const sp: SeasonPass = this.destinyCacheService.cache.SeasonPass[s.seasonPassHash];
         return sp;
     }
@@ -2693,16 +2695,21 @@ export class ParseService {
             infamy: null
         };
         if (accountProgressions != null) {
+            const currentRankProgressionHashes: number[] = this.destinyCacheService.cache.destiny2CoreSettings.currentRankProgressionHashes;
             let prestige: Progression = null;
             const sp = this.getSeasonProgression();
             for (const ap of accountProgressions) {
-                // valor 2083746873, infamy 3008065600, glory 1647151960
-                if (ap.hash == '2083746873') {
+                const iHash = parseInt(ap.hash, 10);
+                const isSpecialRankProgression = currentRankProgressionHashes.indexOf(iHash)>=0;
+                if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Valor')>=0) {
                     returnMe.valor = ap;
-                } else if (ap.hash == '3008065600') {
+
+                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Infamy')>=0) {
                     returnMe.infamy = ap;
-                } else if (ap.hash == '1647151960') {
+
+                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Glory')>=0) {
                     returnMe.glory = ap;
+
                 } else if (ap.hash == sp.rewardProgressionHash) {
                     returnMe.seasonRank = ap;
                 } else if (ap.hash == sp.prestigeProgressionHash) {
@@ -3473,11 +3480,7 @@ export class ParseService {
 
 
     public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {        
-        try {
-            // baryon bough
-            // if (itm.itemHash == 778553120) {
-            //     console.dir('xxx');
-            // }
+        try {          
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
                 console.log('Skipping - no desc: ' + itm.itemHash);
@@ -3706,7 +3709,14 @@ export class ParseService {
                                 for (const stat of stats) {
                                     stat.value = 0;
                                 }
-                                const socketArray = itemSockets.sockets;
+                                // add in any item desc inv stats
+                                for (const investmentStat of desc.investmentStats) {
+                                    const stat = stats.find(x => x.hash == investmentStat.statTypeHash);
+                                    if (stat) {
+                                        stat.value += investmentStat.value;
+                                    }
+                                }
+                                const socketArray = itemSockets.sockets;                                
                                 for (const index of jCat.socketIndexes) {
                                     const socketDesc = desc.sockets.socketEntries[index];
                                     const socketVal = socketArray[index];
@@ -3807,6 +3817,9 @@ export class ParseService {
                                                 plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false);
                                             oPlug.currentlyCanRoll = option.currentlyCanRoll;
+                                            if (!option.currentlyCanRoll) {
+                                                console.log(`wow ${desc.displayProperties.name}` );
+                                            }
                                             possiblePlugs.push(oPlug);
                                         }
                                     }

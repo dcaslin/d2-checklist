@@ -220,6 +220,7 @@ export interface Destiny2CoreSettings {
   medalsRootNodeHash: number;
   exoticCatalystsRootNodeHash: number;
   loreRootNodeHash: number;
+  currentRankProgressionHashes: number[];
   undiscoveredCollectibleImage: string;
   ammoTypeHeavyIcon: string;
   ammoTypeSpecialIcon: string;
@@ -243,6 +244,7 @@ export interface ManifestInventoryItem {
   displaySource: string;
   tooltipStyle: string;
   inventory: any;
+  damageTypes: any[];
   stats: any;
   value: any;
   objectives: Objectives;
@@ -267,6 +269,7 @@ export interface ManifestInventoryItem {
   redacted: boolean;
   blacklisted: boolean;
   quality: Quality;
+  sockets: any;
 }
 
 interface Quality {

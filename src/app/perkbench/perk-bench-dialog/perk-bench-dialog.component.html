@@ -1,0 +1,60 @@
+
+<div mat-dialog-title style="margin-bottom: 0px">
+    {{r.info.desc.displayProperties.name}} 
+    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{r.info.type}}</span>
+    <span style="margin-left: 10px" class="simple-caption-no-margin"><ng-container *ngIf="isController">Console</ng-container><ng-container *ngIf="!isController">MnK</ng-container></span>
+
+</div>
+<mat-dialog-content>
+    <table class="tidy-auto-table">
+        <tr>
+            <td>Show MW options</td>
+        </tr>
+        <tr>
+            <td>Highlight perks based on god roll</td>
+        </tr>
+        <tr>
+            <td>Allow clicking to modify roll in real time</td>
+        </tr>
+        <tr>
+            <td>
+                r.roll?
+            </td>
+        </tr>
+        <tr>
+            <th [attr.colspan]="maxPlugs">
+                PVP Masterwork:
+                <span class="pad-right" *ngFor="let mw of mwOptions; last as isLast">
+                    {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
+                </span>
+            </th>
+        </tr>
+        <tr>
+            <th [attr.colspan]="maxPlugs">
+                PVE Masterwork:                
+                <span class="pad-right" *ngFor="let mw of mwOptions; last as isLast">
+                    {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
+                </span>
+            </th>
+        </tr>
+
+        <ng-container *ngFor="let socket of r.info.sockets">
+            <tr *ngIf="socket.possiblePlugs.length>0">
+                <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [class.half-opacity]="!plug.currentlyCanRoll">
+                    <fa-icon [icon]="iconService.fasSwords"></fa-icon>
+                    <i class="icon-strike perk"></i>
+                    <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">{{plug.name}}</span>                    
+                    <ng-container *ngIf="!plug.currentlyCanRoll">*</ng-container>
+                </td>
+                <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
+                    &nbsp;
+                </td>
+            </tr>
+        </ng-container>
+
+
+    </table>
+    <p class="simple-caption">Faded perks cannot roll on current weapons, only guns from previous seasons</p>
+
+
+</mat-dialog-content>
