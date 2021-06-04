@@ -220,6 +220,7 @@ export interface Destiny2CoreSettings {
   medalsRootNodeHash: number;
   exoticCatalystsRootNodeHash: number;
   loreRootNodeHash: number;
+  currentRankProgressionHashes: number[];
   undiscoveredCollectibleImage: string;
   ammoTypeHeavyIcon: string;
   ammoTypeSpecialIcon: string;
