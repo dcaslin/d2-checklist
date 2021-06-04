@@ -464,7 +464,7 @@ export class MarkService implements OnDestroy {
         return targetMarks;
     }
 
-    private static readFileAsString(file: File): Promise<string | null> {
+    public static readFileAsString(file: File): Promise<string | null> {
         return new Promise<string>((resolve, reject) => {
             if (!file) {
                 resolve(null);
