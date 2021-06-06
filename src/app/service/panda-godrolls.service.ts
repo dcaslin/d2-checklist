@@ -63,7 +63,7 @@ export class PandaGodrollsService implements OnDestroy {
       const temp = await this.load();
       const data: { [name: string]: GunInfo } = {};
       for (const c of temp) {
-        const key = c.name + c.version;
+        const key = c.name;
         if (data[key] == null) {
           data[key] = {
             mnk: null,
@@ -101,12 +101,8 @@ export class PandaGodrollsService implements OnDestroy {
       if (name.endsWith(suffix)) {
         name = name.substring(0, name.length - suffix.length);
       }
-      let key = name + i.versionNumber;
-      let info = this.data[key];
-      if (i.versionNumber > 0 && info == null) {
-        key = i.name.toLowerCase() + '0';
-        info = this.data[key];
-      }
+      let key = name;
+      let info = this.data[key];      
       if (info == null) {
         i.noGodRollInfo = true;
         if (i.tier == 'Legendary') {
@@ -342,8 +338,7 @@ export interface GunRolls {
   pvp: GunRoll;
   mnk: boolean;
   controller: boolean;
-  version: number;
-} // todo remove sheet and version, replace with note and URL
+} // todo remove sheet and version, replace with note and URL?
 
 export interface GunRoll {
   masterwork: string[];

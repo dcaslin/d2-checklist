@@ -101,7 +101,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       .subscribe(([changed, rolls]) => {
         let showMe = rolls;
         if (this.showMissingOnly) {
-          showMe = showMe.filter(x => x.roll == null || this.isController ? x.roll.controller == null : x.roll.mnk == null);
+          showMe = showMe.filter(x => x.roll == null || (this.isController ? x.roll.controller == null : x.roll.mnk == null));
         }
         if (this.filterText.trim().length > 0) {
           showMe = showMe.filter(x => JSON.stringify(x).toLowerCase().indexOf(this.filterText.toLowerCase()) >= 0);
@@ -176,17 +176,30 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     return PerkbenchComponent.combine(gunRolls, weapons);
   }
 
-  private static combine(gunRolls: GunRolls[], weapons: GunInfo[]): MappedRoll[] {
-    const returnMe: MappedRoll[] = [];
-    for (const w of weapons) {
-      let name = w.desc.displayProperties.name.toLowerCase();
-      const suffix = ' (Adept)'.toLowerCase();
+  private static cookNameForRolls(name: string): string {
+    name = name.toLowerCase();
+    const suffix = ' (Adept)'.toLowerCase();
       if (name.endsWith(suffix)) {
         name = name.substring(0, name.length - suffix.length);
       }
-      const g = gunRolls.find(x => x.name == name);
+      return name;
+  }
+
+  private static combine(gunRolls: GunRolls[], weapons: GunInfo[]): MappedRoll[] {
+    const returnMe: MappedRoll[] = [];
+    for (const w of weapons) {
+      const name = PerkbenchComponent.cookNameForRolls(w.desc.displayProperties.name);
+      const controllerRoll = gunRolls.find(x => x.name == name && x.controller);
+      let mnkRoll = gunRolls.find(x => x.name == name && x.mnk);
+      // we're using one roll for both, split it
+      if (controllerRoll!=null &&mnkRoll === controllerRoll) {
+        mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
+      }
       returnMe.push({
-        roll: g,
+        roll: {
+          controller: controllerRoll,
+          mnk: mnkRoll
+        },
         info: w
       });
 
@@ -310,15 +323,19 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     dc.data = {
       parent: this,
       item: i,
-      isController: this.isController
+      name: PerkbenchComponent.cookNameForRolls(i.info.desc.displayProperties.name)
     };
-    this.dialog.open(PerkBenchDialogComponent, dc);
+    const dialogRef = this.dialog.open(PerkBenchDialogComponent, dc);
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      this.filterChanged$.next(true);
+    });
   }
 
 }
 
 export interface MappedRoll {
-  roll: GunRolls;
+  roll: PlatformGunRolls;
   info: GunInfo;
 }
 

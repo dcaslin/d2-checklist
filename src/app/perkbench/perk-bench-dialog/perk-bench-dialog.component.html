@@ -1,60 +1,94 @@
-
 <div mat-dialog-title style="margin-bottom: 0px">
-    {{r.info.desc.displayProperties.name}} 
+    {{r.info.desc.displayProperties.name}}
     <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{r.info.type}}</span>
-    <span style="margin-left: 10px" class="simple-caption-no-margin"><ng-container *ngIf="isController">Console</ng-container><ng-container *ngIf="!isController">MnK</ng-container></span>
-
 </div>
-<mat-dialog-content>
-    <table class="tidy-auto-table">
-        <tr>
-            <td>Show MW options</td>
-        </tr>
-        <tr>
-            <td>Highlight perks based on god roll</td>
-        </tr>
-        <tr>
-            <td>Allow clicking to modify roll in real time</td>
-        </tr>
-        <tr>
-            <td>
-                r.roll?
-            </td>
-        </tr>
-        <tr>
-            <th [attr.colspan]="maxPlugs">
-                PVP Masterwork:
-                <span class="pad-right" *ngFor="let mw of mwOptions; last as isLast">
-                    {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
-                </span>
-            </th>
-        </tr>
-        <tr>
-            <th [attr.colspan]="maxPlugs">
-                PVE Masterwork:                
-                <span class="pad-right" *ngFor="let mw of mwOptions; last as isLast">
-                    {{mw}}<ng-container *ngIf="!isLast">, </ng-container>
-                </span>
-            </th>
-        </tr>
+<mat-dialog-content class="mat-typography">
+    <ng-container *ngIf="pve$|async as pve">
+        <ng-container *ngIf="pvp$|async as pvp">
 
-        <ng-container *ngFor="let socket of r.info.sockets">
-            <tr *ngIf="socket.possiblePlugs.length>0">
-                <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [class.half-opacity]="!plug.currentlyCanRoll">
-                    <fa-icon [icon]="iconService.fasSwords"></fa-icon>
-                    <i class="icon-strike perk"></i>
-                    <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">{{plug.name}}</span>                    
-                    <ng-container *ngIf="!plug.currentlyCanRoll">*</ng-container>
-                </td>
-                <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
-                    &nbsp;
-                </td>
-            </tr>
+            <div class="flex-row">
+                <div>
+                    <mat-button-toggle-group class="pad-left" [(ngModel)]="parent.isController"
+                        (change)="parent.changeConsole();parent.filterChanged$.next(true);updatePlatform()">
+                        <mat-button-toggle [value]="false">MnK</mat-button-toggle>
+                        <mat-button-toggle [value]="true">Console</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                
+                <div>
+                    <mat-button-toggle-group class="pad-left" [(ngModel)]="clickMode">
+                        <mat-button-toggle *ngFor="let enum of clickModeEnum | keyvalue" [value]="enum.value">
+                            <fa-icon
+                                *ngIf="enum.value==clickModeEnum.GodRollPvP || enum.value==clickModeEnum.GoodRollPvP"
+                                [class.accent-text]="enum.value==clickModeEnum.GodRollPvP"
+                                [icon]="iconService.fasSwords"></fa-icon>
+                            <i *ngIf="enum.value==clickModeEnum.GodRollPvE || enum.value==clickModeEnum.GoodRollPvE"
+                                [class.accent-text]="enum.value==clickModeEnum.GodRollPvE" class="icon-strike"></i>
+                            {{enum.value}}
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+                <div>
+                    <button mat-stroked-button color="warn" (click)="clearRoll()">
+                        <fa-icon [icon]="iconService.fasTrashAlt"></fa-icon> Clear
+                    </button>
+                </div>
+            </div>
+
+            <table class="tidy-auto-table">
+
+                <!-- <tr>
+                    <td>
+                        PVE: {{pve|json}}
+                    </td>
+                    <td>
+                        PVP: {{pvp|json}}
+                    </td>
+                </tr> -->
+                <tr>
+                    <th [attr.colspan]="maxPlugs">
+                        PVP Masterwork:
+                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
+                            <mat-checkbox [checked]="pvp.masterwork.includes(mw.toLowerCase())"
+                                (change)="onMwCheckChange($event.checked, mw, pvp.masterwork)">{{mw}}</mat-checkbox>
+                        </span>
+                    </th>
+                </tr>
+                <tr>
+                    <th [attr.colspan]="maxPlugs">
+                        PVE Masterwork:
+                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
+                            <mat-checkbox [checked]="pve.masterwork.includes(mw.toLowerCase())"
+                                (change)="onMwCheckChange($event.checked,mw, pve.masterwork)">{{mw}}</mat-checkbox>
+                        </span>
+                    </th>
+                </tr>
+
+                <ng-container *ngFor="let socket of r.info.sockets">
+                    <tr *ngIf="socket.possiblePlugs.length>0">
+                        <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc" matTooltipClass="preserve-white-space"
+                            [class.half-opacity]="!plug.currentlyCanRoll">
+                            <div class="fake-link" (click)="togglePerk(plug.name.toLowerCase())">
+                                <fa-icon *ngIf="pvp.greatPerks.includes(plug.name.toLowerCase())" class="accent-text"
+                                    [icon]="iconService.fasSwords"></fa-icon>
+                                <fa-icon *ngIf="pvp.goodPerks.includes(plug.name.toLowerCase())"
+                                    [icon]="iconService.fasSwords"></fa-icon>
+                                <i *ngIf="pve.greatPerks.includes(plug.name.toLowerCase())"
+                                    class="icon-strike accent-text perk"></i>
+                                <i *ngIf="pve.goodPerks.includes(plug.name.toLowerCase())" class="icon-strike perk"></i>
+                                {{plug.name}}
+                            </div>
+                        </td>
+                        <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </ng-container>
+
+
+            </table>
+
         </ng-container>
-
-
-    </table>
-    <p class="simple-caption">Faded perks cannot roll on current weapons, only guns from previous seasons</p>
-
+    </ng-container>
 
 </mat-dialog-content>

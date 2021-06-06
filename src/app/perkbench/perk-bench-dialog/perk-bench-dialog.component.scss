@@ -1,0 +1,18 @@
+
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  
+  .flex-row>div {
+    margin: 15px;
+  }
+
+  .perk{
+    margin-left: 2px;
+    margin-right: 2px;
+}
