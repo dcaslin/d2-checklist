@@ -220,7 +220,7 @@ export class IconService {
   public readonly fasCopy = fasCopy;
   public readonly fasQuestionCircle = fasQuestionCircle;
   public readonly fasTrash = fasTrash;
-  public readonly fasLevelUp = fasLevelUp;
+  public readonly fasLevelUp = fasLevelUp;  
 
   public readonly falBowArrow = falBowArrow;
 
