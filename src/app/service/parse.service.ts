@@ -578,7 +578,7 @@ export class ParseService {
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cache.destiny2CoreSettings.currentRankProgressionHashes;
             Object.keys(_prog.progressions).forEach((key) => {
                 const iKey: number = parseInt(key, 10);
-                if ((currentRankProgressionHashes.indexOf(iKey)>=0) // valor/infamy/glory
+                if ((currentRankProgressionHashes.indexOf(iKey) >= 0) // valor/infamy/glory
                     || key == sp.rewardProgressionHash
                     || key == sp.prestigeProgressionHash) {
                     const p: PrivProgression = _prog.progressions[key];
@@ -2700,14 +2700,14 @@ export class ParseService {
             const sp = this.getSeasonProgression();
             for (const ap of accountProgressions) {
                 const iHash = parseInt(ap.hash, 10);
-                const isSpecialRankProgression = currentRankProgressionHashes.indexOf(iHash)>=0;
-                if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Valor')>=0) {
+                const isSpecialRankProgression = currentRankProgressionHashes.indexOf(iHash) >= 0;
+                if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Valor') >= 0) {
                     returnMe.valor = ap;
 
-                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Infamy')>=0) {
+                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Infamy') >= 0) {
                     returnMe.infamy = ap;
 
-                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Glory')>=0) {
+                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Glory') >= 0) {
                     returnMe.glory = ap;
 
                 } else if (ap.hash == sp.rewardProgressionHash) {
@@ -3479,8 +3479,8 @@ export class ParseService {
     }
 
 
-    public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {        
-        try {          
+    public parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any): InventoryItem {
+        try {
             const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
             if (desc == null) {
                 console.log('Skipping - no desc: ' + itm.itemHash);
@@ -3716,7 +3716,7 @@ export class ParseService {
                                         stat.value += investmentStat.value;
                                     }
                                 }
-                                const socketArray = itemSockets.sockets;                                
+                                const socketArray = itemSockets.sockets;
                                 for (const index of jCat.socketIndexes) {
                                     const socketDesc = desc.sockets.socketEntries[index];
                                     const socketVal = socketArray[index];
@@ -3745,8 +3745,8 @@ export class ParseService {
                                     if ('Combat Style Armor Mod' == modSocketType) {
                                         searchText += 'has:modcombat';
                                         specialModSockets.push('combat');
-                                        seasonalModSlot = 1;
-                                        coveredSeasons.push(1);
+                                        seasonalModSlot = 0;
+                                        coveredSeasons.push(0);
                                     } else if ('Garden of Salvation Raid Mod' == modSocketType) {
                                         specialModSockets.push('gos');
                                         searchText += 'has:modgos';
@@ -3762,6 +3762,11 @@ export class ParseService {
                                         searchText += 'has:modvog';
                                         seasonalModSlot = 4;
                                         coveredSeasons.push(4);
+                                    } else if (modSocketType?.indexOf('Last Wish Raid Mod') >= 0) {
+                                        specialModSockets.push('lw');
+                                        searchText += 'has:modlw';
+                                        seasonalModSlot = 1;
+                                        coveredSeasons.push(1);
                                     }
                                 }
                                 const socketVal = socketArray[index];
@@ -3942,15 +3947,15 @@ export class ParseService {
                                 // Charge Harvester needs to be filtered by class to stat
                                 if (m.hash == '2263321587') {
                                     if (ClassAllowed.Hunter == desc.classType) {
-                                        if (modStat.hash!=StatHashes.Mobility) {
+                                        if (modStat.hash != StatHashes.Mobility) {
                                             continue;
                                         }
                                     } else if (ClassAllowed.Titan == desc.classType) {
-                                        if (modStat.hash!=StatHashes.Resilience) {
+                                        if (modStat.hash != StatHashes.Resilience) {
                                             continue;
                                         }
                                     } else if (ClassAllowed.Warlock == desc.classType) {
-                                        if (modStat.hash!=StatHashes.Recovery) {
+                                        if (modStat.hash != StatHashes.Recovery) {
                                             continue;
                                         }
                                     }
