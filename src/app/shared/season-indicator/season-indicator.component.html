@@ -1,4 +1,7 @@
 <ng-container *ngIf="season!=null">
+    <span class="indicator" *ngIf="season==1" matTooltip="Last Wish Raid slot">
+        <fa-icon [icon]="iconService.fasSkull"></fa-icon>
+    </span>
     <span class="indicator" *ngIf="season==2" matTooltip="Garden of Salvation Raid slot">
         <fa-icon [icon]="iconService.fasSkull"></fa-icon>
     </span>
@@ -8,7 +11,7 @@
     <span class="indicator" *ngIf="season==4" matTooltip="Vault of Glass Raid slot">
         <fa-icon [icon]="iconService.fasSkull"></fa-icon>
     </span>
-    <span class="indicator" *ngIf="season==1" matTooltip="Combat mod slot">
+    <span class="indicator" *ngIf="season==0" matTooltip="Combat mod slot">
         <fa-icon [icon]="iconService.falSwords"></fa-icon>
     </span>
 </ng-container>

@@ -90,6 +90,7 @@ export class GearComponent extends ChildComponent {
     { value: 'has:moddeepstone', desc: 'Armor includes Deepstone Crypt mod slot' },
     { value: 'has:modvog', desc: 'Armor includes Vault of Glass mod slot' },
     { value: 'has:modgos', desc: 'Armor includes Garden of Salvation Crypt mod slot' },
+    { value: 'has:modlw', desc: 'Armor includes Last Wish raid mod slot' },
     { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' }
   ];
 
@@ -305,6 +306,7 @@ export class GearComponent extends ChildComponent {
         new Choice('vog', 'Vault of Glass Raid'),
         new Choice('deepstone', 'Deepstone Crypt'),
         new Choice('gos', 'Garden of Salvation'),
+        new Choice('lw', 'Last Wish'),
         new Choice('combat', 'Combat'),
         new Choice('none', 'None')
       ], currentTab.type),
