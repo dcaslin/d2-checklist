@@ -42,19 +42,19 @@ export class VendorService {
   public loadVendors(c: Character, skipCache: boolean): Observable<CharacterVendorData> {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
       c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
-    const remoteReq =  this.streamReq('loadVendors', url).pipe(
-        map((resp) => {
-          // parse it
-          const returnMe = {
-            char: c,
-            data: this.parseVendorData(c, resp),
-            cached: false
-          };
-          // if that worked out well, cache it for next time
-          this.setCachedVendor(c, resp);
-          return returnMe;
-        })
-      );
+    const remoteReq = this.streamReq('loadVendors', url).pipe(
+      map((resp) => {
+        // parse it
+        const returnMe = {
+          char: c,
+          data: this.parseVendorData(c, resp),
+          cached: false
+        };
+        // if that worked out well, cache it for next time
+        this.setCachedVendor(c, resp);
+        return returnMe;
+      })
+    );
     if (skipCache) {
       return remoteReq;
     }
@@ -105,13 +105,13 @@ export class VendorService {
         legendary: [],
         exotic: [],
         collection: [],
-        exchange: [], 
+        exchange: [],
         bansheeWeapons: []
       };
     }
     const vendorItems = VendorService.getUniqueVendorItems(vendors);
     const interestingVendorArmor = vendorItems.filter(val => val.type === ItemType.Armor && (val.tier == 'Legendary' || val.tier == 'Exotic') && val.powerCap >= 1310);
-    const interestingVendorWeapons = vendorItems.filter(val => val.type === ItemType.Weapon && (val.tier == 'Legendary') && val?.vendorItemInfo?.vendor?.name=='Banshee-44' && (val.pandaPve>0||val.pandaPvp>0));
+    const interestingVendorWeapons = vendorItems.filter(val => val.type === ItemType.Weapon && (val.tier == 'Legendary') && val?.vendorItemInfo?.vendor?.name == 'Banshee-44' && (val.pandaPve > 0 || val.pandaPvp > 0));
     const bansheeWeapons = this.findBansheeDeals(player, interestingVendorWeapons);
     // look just at legendary armor grouped by class and bucket
     const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
@@ -345,7 +345,7 @@ export class VendorService {
     for (const v of vendorExotics) {
       const copies = playerAndVendorExotics.filter(i => i.hash == v.hash);
       copies.sort(VendorService.sortByStats);
-      // it's a deal if it's a vendor item and it has any pref pts, pref pts = 0 means they don't want to see this class 
+      // it's a deal if it's a vendor item and it has any pref pts, pref pts = 0 means they don't want to see this class
       if (copies[0].vendorItemInfo != null && copies[0].preferredStatPoints > 0) {
         deals.push({
           gear: copies,
@@ -357,7 +357,7 @@ export class VendorService {
   }
 
   private findBansheeDeals(player: Player, vendorWeapons: InventoryItem[]): InventoryItem[][] {
-    
+
     const playerWeapons = player.gear.filter(i => i.type == ItemType.Weapon).filter(i => i.tier == 'Legendary');
     this.pandaGodRollsService.processItems(playerWeapons);
     const returnMe: InventoryItem[][] = [];
@@ -372,13 +372,15 @@ export class VendorService {
   private findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
     this.preferredStatService.processGear(player);
     const bucketMap: { [key: string]: ClassInventoryBucket; } = {};
-    const buckets = this.getBuckets();
+    const shouldIgnoreEnergy = this.preferredStatService.stats.getValue()?.ignoreEnergyOnVendorArmorDeals;
+    const buckets = this.getBuckets(shouldIgnoreEnergy);
     for (const bucket of buckets) {
       bucketMap[bucket.bucket.hash.toString() + bucket.energyType.toString() + bucket.classType.toString()] = bucket;
     }
     const allItems = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Legendary');
     for (const i of allItems) {
-      const bucket = bucketMap[i.inventoryBucket.hash.toString() + i.energyType.toString() + i.classAllowed.toString()];
+      const energyType = shouldIgnoreEnergy ? EnergyType.Any : i.energyType;
+      const bucket = bucketMap[i.inventoryBucket.hash.toString() + energyType.toString() + i.classAllowed.toString()];
       if (!bucket) {
         // console.log(`Skipping ${i.name}`);
         continue;
@@ -396,7 +398,7 @@ export class VendorService {
     return buckets;
   }
 
-  private getBuckets(): ClassInventoryBucket[] {
+  private getBuckets(shouldIgnoreEnergy: boolean): ClassInventoryBucket[] {
     // one per armor slot, one per class
     const buckets = this.destinyCacheService.cache['InventoryBucket'];
     const returnMe: ClassInventoryBucket[] = [];
@@ -406,14 +408,26 @@ export class VendorService {
       const val: ApiInventoryBucket = buckets[key];
       if (val.index >= 3 && val.index <= 7) {
         for (const classType of classTypes) {
-          for (const energyType of energyTypes) {
+          if (shouldIgnoreEnergy) {
+
             returnMe.push({
               bucket: val,
               classType,
-              energyType,
+              energyType: EnergyType.Any,
               gear: [],
               marginalValue: 0
             });
+
+          } else {
+            for (const energyType of energyTypes) {
+              returnMe.push({
+                bucket: val,
+                classType,
+                energyType,
+                gear: [],
+                marginalValue: 0
+              });
+            }
           }
         }
       }
@@ -656,7 +670,7 @@ export class VendorService {
   }
 
   private parseSaleItemStatus(vendorHash: string, failureIndexes: number[]): string {
-    if (failureIndexes == null || failureIndexes.length==0) {
+    if (failureIndexes == null || failureIndexes.length == 0) {
       return null;
     }
     const index = failureIndexes[0];

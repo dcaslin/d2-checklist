@@ -321,6 +321,7 @@ export class MarkService implements OnDestroy {
             const note: string = m[item.id];
             if (note != null && note.trim().length > 0) {
                 item.notes = note;
+                item.searchText = item.searchText + ' has:notes';
                 usedKeys[item.id] = true;
                 const noteHashTags = MarkService.grabHashTags(note);
                 for (const n of noteHashTags) {

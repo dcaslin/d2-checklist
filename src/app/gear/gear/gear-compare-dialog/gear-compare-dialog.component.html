@@ -101,6 +101,7 @@
                     <ng-container *ngFor="let i of sortedItems|async">
 
                         <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <fa-icon *ngIf="i.notes" [matTooltip]="i.notes" class="accent-text pad-right" [icon]="iconService.fasStickyNote"></fa-icon>
                             <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
                                 [matMenuTriggerFor]="menu">
                                 <ng-container *ngIf="i.mark==null">
@@ -123,7 +124,7 @@
                                 <button *ngIf="i.mark!=null" mat-menu-item (click)="parent.mark(null,i)">
                                     Remove Mark
                                 </button>
-                            </mat-menu>
+                            </mat-menu>                            
                         </td>
                     </ng-container>
                 </tr>
