@@ -35,7 +35,6 @@ export class GearCompareDialogComponent extends ChildComponent {
     storageService: StorageService,
     public iconService: IconService,
     public gearService: GearService,
-    private cacheService: DestinyCacheService,
     public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
@@ -60,7 +59,7 @@ export class GearCompareDialogComponent extends ChildComponent {
     this.parent = data.parent;
     this.showAllNames = this.items.length > 1;
     // if this is armor, sort by preferred stat points rather than power
-    if (this.items.length>0 && this.items[0].type==ItemType.Armor) {
+    if (this.items.length > 0 && this.items[0].type == ItemType.Armor) {
       this.sortBy = 'preferredStatPoints';
     }
     this._sort();

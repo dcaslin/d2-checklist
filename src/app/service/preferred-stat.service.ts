@@ -60,7 +60,8 @@ export class PreferredStatService {
     };
     return {
       stats: stats,
-      showAllStats: false
+      showAllStats: false,
+      ignoreEnergyOnVendorArmorDeals: false
     };
   }
 
@@ -109,7 +110,6 @@ export class PreferredStatService {
   public processGear(player: Player) {
     const items = player.gear;
     this.processItems(items);
-    
   }
 }
 
@@ -117,6 +117,7 @@ export interface PreferredStats {
   // class, stat name, true/false
   stats: { [key: string]: { [key: string]: boolean } };
   showAllStats: boolean;
+  ignoreEnergyOnVendorArmorDeals: boolean;
 }
 
 
