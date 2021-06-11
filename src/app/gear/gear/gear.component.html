@@ -429,7 +429,7 @@
             </div>
           </td>
           <td class="limited-gear-width hide-mobile-table-cell"
-            *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+            *ngIf="option.type==ItemType.Weapon">
             <ng-container *ngIf="i.powerCap<9999; else highCap">
               <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
             </ng-container>
