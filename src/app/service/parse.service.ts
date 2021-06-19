@@ -2478,6 +2478,9 @@ export class ParseService {
         // Weekly Empire Hunt
         this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
 
+        // Corrupted Cache
+        this.addPseudoMilestone('2065253185', milestonesByKey, milestoneList);
+
         // Weekly Exo Challenge
         this.addPseudoMilestone('1713200903', milestonesByKey, milestoneList);
         // Presage
