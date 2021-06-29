@@ -46,8 +46,7 @@
       <ng-container *ngIf="favoritesList$|async as fl">
         <ng-container *ngIf="fl.length>0; else noFriends">
           <button mat-raised-button class="home-button" color="primary" [matMenuTriggerFor]="friendsMenu"
-          [matBadge]="fl.length" matBadgePosition="after"
-            matBadgeColor="warn">
+            [matBadge]="fl.length" matBadgePosition="after" matBadgeColor="warn">
             <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
           </button>
 
@@ -58,7 +57,7 @@
             <a *ngFor="let ui of fl" mat-menu-item [routerLink]="['/',ui.membershipType, ui.membershipId]">
               <fa-icon [icon]="platformMap[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
             </a>
-            
+
           </mat-menu>
         </ng-container>
         <ng-template #noFriends>
@@ -131,6 +130,24 @@
 <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
 
   <div>
+    <mat-card *ngIf="today.raidChallenge as rc">
+      <mat-card-header>
+        <mat-card-title>Raid Challenge: {{rc.topic}}</mat-card-title>
+        <mat-card-subtitle>{{rc.name}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+
+        <mat-list>
+          <mat-list-item>
+            <a *ngIf="rc.video" [href]="rc.video" target="_blank" rel="noopener"> {{rc.desc}} <fa-icon
+                [icon]="iconService.fabYoutube" class="accent-text">
+              </fa-icon>
+            </a>
+          </mat-list-item>
+        </mat-list>
+
+      </mat-card-content>
+    </mat-card>
     <mat-card *ngIf="today?.lostSectors as ls">
       <mat-card-header>
         <mat-card-title>
@@ -148,6 +165,31 @@
         <mat-list>
           <d2c-legendary-lost-sector [ls]="ls.legendaryLostSector"></d2c-legendary-lost-sector>
           <d2c-legendary-lost-sector [ls]="ls.masterLostSector"></d2c-legendary-lost-sector>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div>
+    <mat-card *ngIf="today.publicMilestones.nightfall as nightfall">
+      <mat-card-header>
+        <mat-card-title>Nightfall
+          <ng-container *ngIf="nightfall.activities.length>0">: {{nightfall.activities[0].desc}}</ng-container>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let n of nightfall.activities" class="fake-link" (click)="showBurns(n)">
+            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
+              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
+              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
+            <div mat-line>
+              <span class="underline">{{removeActivityPrefixes(n.name)}}</span>
+              <span class="tiny" *ngIf="debugmode|async"> {{n.hash}}</span>
+            </div>
+            <div mat-line>
+              {{n.ll}} PL - {{n.modifiers.length}}<fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
+            </div>
+          </mat-list-item>
         </mat-list>
       </mat-card-content>
     </mat-card>
@@ -170,33 +212,6 @@
         </mat-card-content>
       </mat-card>
     </ng-container>
-  </div>
-  <div>
-    <mat-card *ngIf="today.publicMilestones.nightfall as nightfall">
-      <mat-card-header>
-        <mat-card-title>Nightfall
-
-          <ng-container *ngIf="nightfall.activities.length>0">: {{nightfall.activities[0].desc}}</ng-container>
-
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let n of nightfall.activities" class="fake-link" (click)="showBurns(n)">
-            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-            <div mat-line>
-              <span class="underline">{{removeActivityPrefixes(n.name)}}</span>
-              <span class="tiny" *ngIf="debugmode|async"> {{n.hash}}</span>
-            </div>
-            <div mat-line>
-              {{n.ll}} PL - {{n.modifiers.length}}<fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
-            </div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
   </div>
   <div>
     <mat-card *ngIf="today.publicMilestones.strikes as strikes">

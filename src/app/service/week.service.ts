@@ -13,6 +13,39 @@ export class WeekService {
 
   // https://docs.google.com/spreadsheets/d/1f_t8xy_uTT1hYZgGLDpfvW7NEhAuVb6rRV8ooScVh6Y/edit#gid=0
 
+  readonly VOG_CHALLENGES: { [key: string]: RaidChallengeData } = {
+    3178242090: {
+      hash: 3178242090,
+      topic: 'Confluxes',
+      desc: 'Don\'t  defeat the Wyverns until they begin sacrificing.',
+      video: 'https://www.youtube.com/watch?v=WZR0a2WsjoU&t=79s'
+    },
+    711293738: {
+      hash: 711293738,
+      topic: 'Oracles',
+      desc: 'Each Guardian can destroy the same Oracle only once.',
+      video: 'https://www.youtube.com/watch?v=WZR0a2WsjoU&t=210s'
+    },
+    435557544: {
+      hash: 435557544,
+      topic: 'Templar',
+      desc: 'Don\'t let the Templar teleport during DPS',
+      video: 'https://www.youtube.com/watch?v=WZR0a2WsjoU&t=379s'
+    },
+    4189771983: {
+      hash: 4189771983,
+      topic: 'Gatekeepers',
+      desc: 'Kill Wyvern and Minotaur simultaneously',
+      video: 'https://www.youtube.com/watch?v=WZR0a2WsjoU&t=434s'
+    },
+    678808956: {
+      hash: 678808956,
+      topic: 'Atheon',
+      desc: '1 Oracle per person during teleport',
+      video: 'https://www.youtube.com/watch?v=WZR0a2WsjoU&t=585s'
+    }
+  };
+
   readonly LS_MASTER_ROTATION: LostSectorInfo[] = [
     {
       abbrev: 'K1 Revelation',
@@ -510,7 +543,7 @@ export class WeekService {
   public getLostSectors(delta?: number): LostSectors {
     let referenceDate = new Date();
     if (delta) {
-      referenceDate = add(referenceDate, { days: delta});
+      referenceDate = add(referenceDate, { days: delta });
     }
 
 
@@ -518,7 +551,7 @@ export class WeekService {
     // in game that means it's "Monday" b/c it's < 5PM on that day
     if (referenceDate.getUTCHours() < 17) {
       // console.log(`Prior to reset ${referenceDate.getHours()}`);
-      referenceDate = subHours(referenceDate,  24);
+      referenceDate = subHours(referenceDate, 24);
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(17);
@@ -549,6 +582,28 @@ export class WeekService {
     };
   }
 
+  private getRaidChallenge(publicMilestones: PublicMilestonesAndActivities): RaidChallenge | null {
+    if (publicMilestones?.publicMilestones) {
+      const vogMs = publicMilestones.publicMilestones.find(x => x.hash == '2279677721');
+      if (vogMs?.activities) {
+        for (const a of vogMs.activities) {
+          if (a.modifiers) {
+            for (const mod of a.modifiers) {
+              const challenge  = this.VOG_CHALLENGES[mod.hash];
+              if (challenge) {
+                return {
+                  ...challenge,
+                  name: mod.name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   public async getToday(): Promise<Today> {
 
     const altarEpoch = parseISO('2019-11-09T17:00:00.000Z'); // nov 9 2019
@@ -567,9 +622,10 @@ export class WeekService {
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const currWeek = await this.getCurrWeek(publicMilestones);
     const lostSectors = this.getLostSectors();
-
+    const raidChallenge = this.getRaidChallenge(publicMilestones);
     return {
       week: currWeek,
+      raidChallenge,
       publicMilestones: publicMilestones,
       altarOfSorrowsWeapon: this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
       lostSectors: lostSectors
@@ -579,6 +635,7 @@ export class WeekService {
 
 export interface Today {
   week: Week;
+  raidChallenge: RaidChallenge;
   publicMilestones: PublicMilestonesAndActivities;
   altarOfSorrowsWeapon: ItemDisplay;
   lostSectors: LostSectors;
@@ -609,4 +666,20 @@ interface DreamingCityRow {
   challenge: string;
   video: string;
   location: string;
+}
+
+interface RaidChallengeData {
+  hash: number;
+  topic: string;
+  desc: string;
+  video?: string;
+}
+
+
+interface RaidChallenge {
+  hash: number;
+  name: string;
+  topic: string;
+  desc: string;
+  video?: string;
 }
