@@ -173,7 +173,11 @@ export class VendorService {
         }
       }
     }
-    return returnMe;
+    // filter to be unique by hash
+    return returnMe.filter((a, b) => {
+      const first = returnMe.find(x => x.hash === a.hash);
+      return returnMe.indexOf(first) === b;
+    });
   }
 
   private checkCollections(player: Player, vendorItems: InventoryItem[]): VendorCollection[] {
