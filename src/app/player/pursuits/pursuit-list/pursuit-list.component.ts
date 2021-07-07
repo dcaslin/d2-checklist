@@ -84,6 +84,8 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
       return 'Bounty';
     } else if ('quests' == this.mode) {
       return 'Quest';
+    } else if ('gear' == this.mode) {
+      return 'Gear';
     } else if ('tracked' == this.mode) {
       return 'Pursuit';
     } else {
@@ -98,6 +100,8 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
       return player.bounties;
     } else if ('quests' == this.mode) {
       return player.quests;
+    }  else if ('gear' == this.mode) {
+      return player.pursuitGear;
     } else if ('tracked' == this.mode) {
       return this.state.trackedPursuits.getValue();
     } else {
