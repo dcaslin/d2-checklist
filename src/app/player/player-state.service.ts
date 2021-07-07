@@ -321,6 +321,11 @@ export class PlayerStateService {
           tempPursuits.push(t);
         }
       }
+      for (const t of player.pursuitGear) {
+        if (this.dTrackedPursuits[t.hash] == true) {
+          tempPursuits.push(t);
+        }
+      }
     }
     this.trackedPursuits.next(tempPursuits);
   }

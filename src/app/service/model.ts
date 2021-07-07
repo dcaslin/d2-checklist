@@ -73,7 +73,7 @@ export const enum StatHashes {
     VoidDamageResistance = 1546607980,
     VoidEnergyCapacity = 16120457,
     Zoom = 3555269338,
-  }
+}
 
 export const BUCKETS_ARMOR = [BUCKET_ARMOR_HELMET, BUCKET_ARMOR_GAUNTLETS,
     BUCKET_ARMOR_CHEST, BUCKET_ARMOR_LEG, BUCKET_ARMOR_CLASS];
@@ -611,6 +611,7 @@ export class Player {
     readonly currencies: Currency[];
     readonly bounties: InventoryItem[];
     readonly quests: InventoryItem[];
+    readonly pursuitGear: InventoryItem[];
     readonly rankups: Rankup[];
     readonly checklists: Checklist[];
     readonly charChecklists: CharChecklist[];
@@ -702,7 +703,8 @@ export class Player {
             this.valor = specialAccountProgressions.valor;
             this.seasonRank = specialAccountProgressions.seasonRank;
         }
-        this.gearMetaData = gearMeta;
+        this.gearMetaData = gearMeta; 
+        this.pursuitGear = this.gear ? this.gear.filter(g => g.objectives?.length > 0 && g.type != ItemType.Subclass) : [];
     }
 
     public getWeeklyXp(): number {
