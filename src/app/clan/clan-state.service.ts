@@ -948,14 +948,21 @@ export class ClanStateService {
     let bD = 0;
     if (a.currentPlayer() != null) {
       aD = Date.parse(a.currentPlayer().profile.dateLastPlayed);
+      if (a.currentPlayer().superprivate) {
+        aD = 0;
+      }
     } else {
       aD = Date.parse(a.lastOnlineStatusChange);
     }
     if (b.currentPlayer() != null) {
       bD = Date.parse(b.currentPlayer().profile.dateLastPlayed);
+      if (b.currentPlayer().superprivate) {
+        bD = 0;
+      }
     } else {
       bD = Date.parse(b.lastOnlineStatusChange);
     }
+
     return ClanStateService.simpleCompare(aD, bD, reverse);
   }
 
