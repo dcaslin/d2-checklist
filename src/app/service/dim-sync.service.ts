@@ -15,6 +15,8 @@ import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
 import { SignedOnUserService } from './signed-on-user.service';
 
+const LOG_CSS = `color: mediumseagreen`;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -69,6 +71,7 @@ export class DimSyncService {
       'X-API-Key',
       environment.bungie.dimApiKey
     );
+    console.log('%cGetting DIM token', LOG_CSS);
     const resp = await this.httpClient
       .post<CustomAuthTokenResponse>(
         'https://api.destinyitemmanager.com/auth/token',
@@ -86,6 +89,19 @@ export class DimSyncService {
     return null;
   }
 
+  private logUpdates(updates: ProfileUpdate[]): void {
+    const summary: any = {};
+    for (const u of updates){
+      if (summary[u.action] == null) {
+        summary[u.action] = 0;
+      }
+      summary[u.action] = summary[u.action] + 1;
+    }
+    for (const key of Object.keys(summary)) {
+      console.log(`    %c${key}: ${summary[key]}`, LOG_CSS);
+    }
+  }
+
   async setDimTags(updates: ProfileUpdate[]): Promise<boolean> {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
     const body: ProfileUpdateRequest = {
@@ -97,10 +113,12 @@ export class DimSyncService {
     try {
       const headers = await this.buildHeaders();
       const url = `https://api.destinyitemmanager.com/profile`;
+      console.log('%cSetting DIM tags', LOG_CSS);
+      this.logUpdates(updates);
+      console.dir(body);
       const hResp = await this.httpClient
         .post<ProfileUpdateResponse>(url, body, { headers })
         .toPromise();
-      console.dir(hResp);
       return true;
     } catch (x) {
       this.notificationService.fail('Failed to set DIM sync tags');
@@ -115,6 +133,7 @@ export class DimSyncService {
     const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
     this.loading$.next(true);
     try {
+      console.log('%cGetting DIM tags', LOG_CSS);
       const headers = await this.buildHeaders();
       const url = `https://api.destinyitemmanager.com/profile?destinyVersion=2&platformMembershipId=${selectedUser.userInfo.membershipId}&components=tags`;
       const hResp = await this.httpClient
