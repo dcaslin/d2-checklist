@@ -3824,10 +3824,7 @@ export class ParseService {
                                             const oPlug = new InventoryPlug(plugDesc.hash,
                                                 plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false);
-                                            oPlug.currentlyCanRoll = option.currentlyCanRoll;
-                                            if (!option.currentlyCanRoll) {
-                                                console.log(`wow ${desc.displayProperties.name}` );
-                                            }
+                                            oPlug.currentlyCanRoll = option.currentlyCanRoll;                                           
                                             possiblePlugs.push(oPlug);
                                         }
                                     }
