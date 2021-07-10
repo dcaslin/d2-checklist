@@ -658,13 +658,13 @@ export class ParseService {
     }
 
 
-    private static getBasicValue(val: any): number {
+    public static getBasicValue(val: any): number {
         if (val == null) { return null; }
         if (val.basic == null) { return; }
         return val.basic.value;
     }
 
-    private static getBasicDisplayValue(val: any): string {
+    public static getBasicDisplayValue(val: any): string {
         if (val == null) { return null; }
         if (val.basic == null) { return; }
         return val.basic.displayValue;
@@ -3825,9 +3825,6 @@ export class ParseService {
                                                 plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false);
                                             oPlug.currentlyCanRoll = option.currentlyCanRoll;
-                                            if (!option.currentlyCanRoll) {
-                                                console.log(`wow ${desc.displayProperties.name}` );
-                                            }
                                             possiblePlugs.push(oPlug);
                                         }
                                     }
@@ -4089,7 +4086,7 @@ export class ParseService {
             b.lastOnlineStatusChange = fromUnixTime(x.lastOnlineStatusChange).toISOString();
             b.isOnline = x.isOnline;
             b.memberType = x.memberType;
-            b.destinyUserInfo = this.parseUserInfo(x.destinyUserInfo);
+            b.destinyUserInfo = ParseService.parseUserInfo(x.destinyUserInfo);
             b.bungieNetUserInfo = x.bungieNetUserInfo;
             b.joinDate = x.joinDate;
             returnMe.push(b);
@@ -4133,9 +4130,6 @@ export class ParseService {
             r.assists = ParseService.getBasicValue(e.values.assists);
             r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
             r.team = ParseService.getBasicDisplayValue(e.values.team);
-            if (r.team == '18') {
-                r.team = 'Alpha';
-            }
             r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
             r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
             r.timePlayedSeconds = ParseService.getBasicValue(e.values.timePlayedSeconds);
@@ -4218,7 +4212,7 @@ export class ParseService {
         r.lightLevel = e.player.lightLevel;
         if (!r.fireteamId) { r.fireteamId = -1; }
         if (!r.score) { r.score = 0; }
-        r.user = this.parseUserInfo(e.player.destinyUserInfo);
+        r.user = ParseService.parseUserInfo(e.player.destinyUserInfo);
         return r;
     }
 
@@ -4241,7 +4235,7 @@ export class ParseService {
         };
     }
 
-    public parseUserInfo(i: any): UserInfo {
+    public static parseUserInfo(i: any): UserInfo {
         let platformName = '';
         if (i.membershipType === 1) {
             platformName = 'XBL';
@@ -4271,6 +4265,7 @@ export class ParseService {
         const desc: any = this.destinyCacheService.cache.Activity[r.referenceId];
         if (desc) {
             r.name = desc.displayProperties.name;
+            r.pgcrImage = desc.pgcrImage;
             r.level = desc.activityLevel;
             r.ll = desc.activityLightLevel + 1;
         } else {
@@ -4326,9 +4321,10 @@ export class ParseService {
             r.teams = [];
             p.teams.forEach(t => {
                 const team = new PGCRTeam();
-                team.name = '18' == t.teamName ? 'Alpha' : t.teamName;
                 team.standing = ParseService.getBasicDisplayValue(t.standing);
                 team.score = ParseService.getBasicValue(t.score);
+                team.id = t.teamId;
+                team.name = t.teamName;
                 r.teams.push(team);
             });
             r.teams.sort(function (a, b) {
