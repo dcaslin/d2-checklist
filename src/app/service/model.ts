@@ -1107,6 +1107,7 @@ export interface ClanMilestoneResult {
 
 export class PGCR {
     period: string;
+    pgcrImage: string;
     activityDurationSeconds: number;
     finish: string;
     // Acitivity Details
@@ -1127,6 +1128,7 @@ export class PGCR {
 }
 
 export class PGCRTeam {
+    id: string;
     name: string;
     standing: string;
     score: number;

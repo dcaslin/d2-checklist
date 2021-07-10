@@ -1,1 +1,15 @@
 <p>pgcr2 works!</p>
+
+<pre style="text-align: left" *ngIf="game$|async as g">   
+    {{g|json}}
+    <div class="pgcrImage" [style.background-image]="'url(//www.bungie.net' + g.pgcrImage + ')' ">xxx</div>
+</pre>
+
+
+
+<div *ngFor="let team of teams$|async">
+    {{team.team.name}}  {{team.entries.length}}
+    
+</div>
+
+
