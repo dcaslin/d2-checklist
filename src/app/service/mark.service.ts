@@ -27,6 +27,9 @@ import { SignedOnUserService } from './signed-on-user.service';
 
 const MARK_URL = '/api/mark';
 
+const LOG_CSS = `color: royalblue`;
+
+
 @Injectable()
 export class MarkService implements OnDestroy {
     // right now we only use this for DIM-sync
@@ -57,6 +60,7 @@ export class MarkService implements OnDestroy {
         for (const mc of this.markChoices) {
             this.markDict[mc.value] = mc;
         }
+        // asdf
         this.marksChanged
             .pipe(takeUntil(this.unsubscribe$), debounceTime(5000))
             .subscribe(() => {
@@ -135,6 +139,8 @@ export class MarkService implements OnDestroy {
             success = await this.dimSyncService.setDimTags(updates);
             try {
                 await this.httpClient.post<SaveResult>(MARK_URL, postMe).toPromise();
+                // DIM sync is incremental, so we need to reset our cleanMarks here
+                this.cleanMarks$.next(cloneMarks(marks));
             } catch (x) {
                 // just log an error saving to D2C, it's not our golden copy anymore
                 console.log('Error saving to D2Checklist, ignoring b/c we\'re using DIM sync');
@@ -281,7 +287,7 @@ export class MarkService implements OnDestroy {
                     item.markLabel = 'Archive';
                     item.mark = mark;
                 } else {
-                    console.log('Ignoring mark: ' + mark);
+                    console.log('%c   Ignoring mark: ' + mark, LOG_CSS);
                     continue;
                 }
                 usedKeys[item.id] = true;
@@ -289,13 +295,13 @@ export class MarkService implements OnDestroy {
         }
         for (const key of Object.keys(usedKeys)) {
             if (usedKeys[key] === false) {
-                console.log('Deleting unused key: ' + key);
+                console.log('%c   Deleting unused key (tag) : ' + key, LOG_CSS);
                 delete m[key];
                 unusedDelete = true;
                 missingKeys++;
             }
         }
-        console.log('Marks: ' + missingKeys + ' unused out of total ' + totalKeys);
+        console.log('%c   Marks: ' + missingKeys + ' unused out of total ' + totalKeys, LOG_CSS);
         return unusedDelete;
     }
 
@@ -331,15 +337,14 @@ export class MarkService implements OnDestroy {
         }
         for (const key of Object.keys(usedKeys)) {
             if (usedKeys[key] === false) {
-                console.log('Deleting unused key: ' + key);
+                console.log('%c   Deleting unused key (note): ' + key, LOG_CSS);
                 delete m[key];
                 unusedDelete = true;
                 missingKeys++;
             }
         }
-        console.log('Notes: ' + missingKeys + ' unused out of total ' + totalKeys);
+        console.log('%c   Notes: ' + missingKeys + ' unused out of total ' + totalKeys, LOG_CSS);
         this.hashTags$.next((Array.from(hashTags) as string[]).sort());
-        console.dir(this.hashTags$.getValue());
         return unusedDelete;
     }
 
@@ -375,7 +380,11 @@ export class MarkService implements OnDestroy {
             currentMarks.notes,
             items
         );
-        this.dirty$.next(this.dirty$.value || updatedNotes || updatedMarks);
+        // if we changed anything here, push the new marks and mark things as dirty
+        if (updatedMarks || updatedNotes) {
+            this.currentMarks$.next(currentMarks);
+            this.dirty$.next(true);
+        }
     }
 
     updateItem(item: InventoryItem): void {
@@ -392,7 +401,7 @@ export class MarkService implements OnDestroy {
             if (mc != null) {
                 item.markLabel = mc.label;
             } else {
-                console.log('Ignoring mark: ' + item.mark);
+                console.log('%c   Ignoring mark: ' + item.mark, LOG_CSS);
                 item.mark = null;
                 return;
             }
@@ -594,129 +603,9 @@ export class MarkService implements OnDestroy {
                 }
             }
         }
-        console.log(`Folded in ${updateCount} updates from DIM sync`);
+        console.log(`%c   Folded in ${updateCount} updates from DIM sync`, LOG_CSS);
         return d2cMarks;
     }
-
-    // async importTagsFromDim(includeDelete: boolean): Promise<boolean> {
-    //     this.loading$.next(true);
-    //     try {
-    //         try {
-    //             const dimMarks = await this.dimSyncService.getDimTags();
-    //             let marks = this.currentMarks$.getValue();
-    //             if (!marks) {
-    //                 const selectedUser = this.signedOnUserService.signedOnUser$.getValue();
-    //                 marks = MarkService.buildEmptyMarks(
-    //                     selectedUser.userInfo.membershipType,
-    //                     selectedUser.userInfo.membershipId
-    //                 );
-    //             }
-    //             // update marks in place
-    //             const importResult = MarkService.mergeDimIntoD2C(
-    //                 marks,
-    //                 dimMarks,
-    //                 includeDelete
-    //             );
-    //             this.currentMarks$.next(marks);
-    //             console.dir(importResult);
-    //             this.notificationService.success(
-    //                 `Successfully imported tags and notes from DIM-sync. Imported ${importResult.imported}. Deleted ${importResult.deleted}`
-    //             );
-    //         } catch (x) {
-    //             this.notificationService.fail('Failed to import marks from DIM: ' + x);
-    //             return false;
-    //         }
-    //         // it worked, now save back to the server
-    //         await this.saveMarks();
-    //         return true;
-    //     } finally {
-    //         this.loading$.next(false);
-    //     }
-    // }
-
-    // async exportTagsToDim(includeDelete: boolean): Promise<void> {
-    //     this.loading$.next(true);
-    //     try {
-    //         const marks = this.currentMarks$.getValue();
-    //         if (marks == null || this.badState) {
-    //             this.notificationService.info(
-    //                 'No valid marks to sync to DIM right now.'
-    //             );
-    //             return;
-    //         }
-    //         let updates: ProfileUpdate[];
-    //         if (!includeDelete) {
-    //             updates = MarkService.mergeD2CIntoDim(marks);
-    //         } else {
-    //             const dimMarks = await this.dimSyncService.getDimTags();
-    //             updates = MarkService.mergeD2CIntoDim(marks, true, dimMarks);
-    //         }
-    //         const updateCount = updates.filter((x) => x.action === 'tag').length;
-    //         const cleanupElem: TagCleanupUpdate = updates.find(
-    //             (x) => x.action === 'tag_cleanup'
-    //         ) as TagCleanupUpdate;
-    //         const delCount = cleanupElem ? cleanupElem.payload.length : 0;
-    //         if (updateCount > 0) {
-    //             const success = await this.dimSyncService.setDimTags(updates);
-    //             if (success) {
-    //                 this.notificationService.success(
-    //                     `Exported ${updateCount} tags to DIM-sync. Removed ${delCount}.`
-    //                 );
-    //             }
-    //         } else {
-    //             this.notificationService.info('No changes to send to DIM');
-    //         }
-    //     } finally {
-    //         this.loading$.next(false);
-    //     }
-    // }
-
-
-    // private static mergeD2CIntoDim(
-    //     d2cMarks: Marks,
-    //     deleteUnmatched?: boolean,
-    //     dimMarks?: ItemAnnotation[]
-    // ): ProfileUpdate[] {
-    //     const dAnnots: { [key: string]: ItemAnnotation } = {};
-    //     for (const key of Object.keys(d2cMarks.marked)) {
-    //         const tag = d2cMarks.marked[key];
-    //         dAnnots[key] = {
-    //             id: key,
-    //             tag: MarkService.d2cTagToDimTag(tag),
-    //         };
-    //     }
-    //     for (const key of Object.keys(d2cMarks.notes)) {
-    //         if (!dAnnots[key]) {
-    //             dAnnots[key] = {
-    //                 id: key,
-    //             };
-    //         }
-    //         dAnnots[key].notes = d2cMarks.notes[key];
-    //     }
-    //     const returnMe: ProfileUpdate[] = [];
-    //     if (deleteUnmatched) {
-    //         const deleteTags: string[] = [];
-    //         for (const d of dimMarks) {
-    //             if (!dAnnots[d.id]) {
-    //                 deleteTags.push(d.id);
-    //             }
-    //         }
-    //         returnMe.push({
-    //             action: 'tag_cleanup',
-    //             payload: deleteTags,
-    //         });
-    //     }
-    //     for (const key of Object.keys(dAnnots)) {
-    //         returnMe.push({
-    //             action: 'tag',
-    //             payload: dAnnots[key],
-    //         });
-    //     }
-    //     return returnMe;
-    // }
-
-
-
 }
 
 export declare type DimSyncChoice =
