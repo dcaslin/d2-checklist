@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
-import { Const, InventoryItem, ItemType, SelectedUser } from './model';
-import { NotificationService } from './notification.service';
-import { del, get, keys, set } from 'idb-keyval';
 import { environment as env } from '@env/environment';
-import { ParseService } from './parse.service';
+import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { SignedOnUserService } from './signed-on-user.service';
-import { filter, takeUntil } from 'rxjs/operators';
+import { Const, InventoryItem, ItemType, SelectedUser } from './model';
+
+const LOG_CSS = `color: mediumpurple`;
 
 @Injectable({
   providedIn: 'root',
@@ -78,14 +76,14 @@ export class PandaGodrollsService implements OnDestroy {
         }
       }
       this.data = data;
-      console.log('Loaded ' + temp.length + ' panda guns.');
+      console.log('%cLoaded ' + temp.length + ' panda guns.', LOG_CSS);
     }
     this.loaded$.next(true);
   }
 
   public processItems(items: InventoryItem[]): void {
     if (this.data == null) {
-      console.log('No panda data present.');
+      console.log('%cNo panda data present.', LOG_CSS);
       return;
     }
     for (const i of items) {
@@ -101,13 +99,13 @@ export class PandaGodrollsService implements OnDestroy {
       if (name.endsWith(suffix)) {
         name = name.substring(0, name.length - suffix.length);
       }
-      let key = name;
-      let info = this.data[key];      
+      const key = name;
+      const info = this.data[key];
       if (info == null) {
         i.noGodRollInfo = true;
         if (i.tier == 'Legendary') {
           i.searchText = i.searchText + ' is:nodata';
-          console.log('No panda for: ' + i.name);
+          console.log('%cNo panda for: ' + i.name, LOG_CSS);
         }
         continue;
       }
@@ -280,9 +278,9 @@ export class PandaGodrollsService implements OnDestroy {
     }
     // if we're doing normal processing and we don't have a good or great roll, double check to see if we only missed by one on a god roll
     // if so, count it as a good roll
-    if (!this.matchLastTwoSockets && !(greatRollFound || goodRollFound)) {      
+    if (!this.matchLastTwoSockets && !(greatRollFound || goodRollFound)) {
       // we have one throwaway socket for frame, after that if we're off by only one on great rolls let's call it good
-      if (greatCount >= (i.sockets.length-2)) {
+      if (greatCount >= (i.sockets.length - 2)) {
         goodRollFound = true;
       }
     }
@@ -296,7 +294,7 @@ export class PandaGodrollsService implements OnDestroy {
     const key = `${prefix}-${env.versions.app}`;
     let rolls: GunRolls[] = await get(key);
     if (rolls == null || rolls.length == 0) {
-      console.log(`    No cached ${prefix}: ${key}`);
+      console.log(`'%c    No cached ${prefix}: ${key}`, LOG_CSS);
 
       // clear cache
       const ks = await keys();
@@ -311,12 +309,12 @@ export class PandaGodrollsService implements OnDestroy {
         )
         .toPromise();
       set(key, rolls);
-      console.log(`    ${prefix} downloaded, parsed and saved.`);
+      console.log(`'%c    ${prefix} downloaded, parsed and saved.`, LOG_CSS);
     } else {
-      console.log(`    Using cached ${prefix}: ${key}`);
+      console.log(`'%c    Using cached ${prefix}: ${key}`, LOG_CSS);
     }
     const t1 = performance.now();
-    console.log(`${t1 - t0}ms to load wishlists`);
+    console.log(`'%c    ${t1 - t0}ms to load wishlists`, LOG_CSS);
     return rolls;
   }
 

@@ -542,7 +542,6 @@ export class GearComponent extends ChildComponent {
         for (const o of this.options) {
           if (o.path == sTab) {
             this.option = o;
-            console.log('Updating toggles from new tab');
             // update toggles view of current state
             for (const key of Object.keys(this.toggleData)) {
               const data: ToggleState = this.toggleData[key];
@@ -936,7 +935,7 @@ export class GearComponent extends ChildComponent {
   filterGear() {
     if (this._player.getValue() == null) { return; }
     let tempGear = this._player.getValue().gear.filter(i => i.type == this.option.type);
-    console.log(`Filtering gear - ${tempGear.length}`);
+    // console.log(`Filtering gear - ${tempGear.length}`);
     const debugFilterNotes = [];
     tempGear = this.wildcardFilter(tempGear, debugFilterNotes);
     tempGear = this.toggleFilter(tempGear, debugFilterNotes);
