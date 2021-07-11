@@ -139,6 +139,8 @@ export class MarkService implements OnDestroy {
             success = await this.dimSyncService.setDimTags(updates);
             try {
                 await this.httpClient.post<SaveResult>(MARK_URL, postMe).toPromise();
+                // DIM sync is incremental, so we need to reset our cleanMarks here
+                this.cleanMarks$.next(cloneMarks(marks));
             } catch (x) {
                 // just log an error saving to D2C, it's not our golden copy anymore
                 console.log('Error saving to D2Checklist, ignoring b/c we\'re using DIM sync');
@@ -378,7 +380,11 @@ export class MarkService implements OnDestroy {
             currentMarks.notes,
             items
         );
-        this.dirty$.next(this.dirty$.value || updatedNotes || updatedMarks);
+        // if we changed anything here, push the new marks and mark things as dirty
+        if (updatedMarks || updatedNotes) {
+            this.currentMarks$.next(currentMarks);
+            this.dirty$.next(true);
+        }
     }
 
     updateItem(item: InventoryItem): void {

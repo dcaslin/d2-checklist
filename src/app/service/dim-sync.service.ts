@@ -95,7 +95,11 @@ export class DimSyncService {
       if (summary[u.action] == null) {
         summary[u.action] = 0;
       }
-      summary[u.action] = summary[u.action] + 1;
+      if ((u.payload as string[]).length > 0) {
+        summary[u.action] = summary[u.action] + (u.payload as string[]).length;
+      } else {
+        summary[u.action] = summary[u.action] + 1;
+      }
     }
     for (const key of Object.keys(summary)) {
       console.log(`    %c${key}: ${summary[key]}`, LOG_CSS);
