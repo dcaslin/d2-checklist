@@ -9,7 +9,7 @@ import { NotificationService } from '@app/service/notification.service';
 import { ParseService } from '@app/service/parse.service';
 import { StreamingChildComponent } from '@app/shared/streaming-child.component';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, max, takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
 
@@ -21,6 +21,7 @@ import { StorageService } from '../../service/storage.service';
 export class Pgcr2Component extends StreamingChildComponent implements OnInit, OnDestroy {
   public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject(null);
   public game$: Observable<Game | null>;
+  public ViewMode = ViewMode;
 
   constructor(
     storageService: StorageService,
@@ -37,15 +38,15 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
   private parsePGCREntry(e: any): Entry {
     const info: EntryInfo = {
       bungieNetUserInfo: e.player.bungieNetUserInfo,
-      characterId:  e.characterId,
-      standing:  e.standing,
-      score:  ParseService.getBasicValue(e.score)
+      characterId: e.characterId,
+      standing: e.standing,
+      score: ParseService.getBasicValue(e.score)
     };
 
     const general: MedalOrStat[] = [];
     const medals: MedalOrStat[] = [];
     const weapons: WeaponInfo[] = [];
-    let values: EntryValues|null = null;
+    let values: EntryValues | null = null;
     if (e.values) {
       const deaths = ParseService.getBasicValue(e.values.deaths);
       const kills = ParseService.getBasicValue(e.values.kills);
@@ -58,6 +59,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         kd: ParseService.getBasicValue(e.values.killsDeathsRatio),
         kda: ParseService.getBasicValue(e.values.killsDeathsAssists),
         activityDurationSeconds: ParseService.getBasicValue(e.values.activityDurationSeconds),
+        activityDurationSecondsText: ParseService.getBasicDisplayValue(e.values.activityDurationSeconds),
         standing: ParseService.getBasicValue(e.values.standing),
         standingText: ParseService.getBasicDisplayValue(e.values.standing),
         fireteamId: ParseService.getBasicValue(e.values.fireteamId),
@@ -87,7 +89,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
             statName = desc.statName;
             if (desc.statName && desc.statName.startsWith('###historicalstats.StatName_')) {
               const tempName = desc.statName.replace('###historicalstats.StatName_', '').replace(/([a-z])([A-Z])/g, '$1 $2').replace('###', '');
-              statName =  tempName.charAt(0).toUpperCase() + tempName.slice(1);
+              statName = tempName.charAt(0).toUpperCase() + tempName.slice(1);
             }
             statDesc = desc.statDescription;
             statIcon = desc.iconImage;
@@ -119,8 +121,8 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
           const weaponInfo: WeaponInfo = {
             type: desc ? desc.itemTypeAndTierDisplayName : 'Classified',
             displayProperties: desc ? desc.displayProperties : null,
-            kills:  ParseService.getBasicValue(w.values.uniqueWeaponKills),
-            precPct:  ParseService.getBasicValue(w.values.uniqueWeaponKillsPrecisionKills),
+            kills: ParseService.getBasicValue(w.values.uniqueWeaponKills),
+            precPct: ParseService.getBasicValue(w.values.uniqueWeaponKillsPrecisionKills),
           };
           weapons.push(weaponInfo);
         }
@@ -149,7 +151,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         console.dir(desc);
         const mode = ParseService.lookupMode(resp.activityDetails.mode);
         const modes = desc.activityModeTypes;
-        const viewMode = modes?.indexOf(63) >= 0 ? ViewMode.GAMBIT :  modes?.indexOf(48) >= 0 ? ViewMode.RUMBLE : modes?.indexOf(5) >= 0 ? ViewMode.PVP : ViewMode.PVE;
+        const viewMode = modes?.indexOf(63) >= 0 ? ViewMode.GAMBIT : modes?.indexOf(48) >= 0 ? ViewMode.RUMBLE : modes?.indexOf(5) >= 0 ? ViewMode.PVP : ViewMode.PVE;
         const entries: Entry[] = [];
         const teams: Team[] = [];
         for (const entry of resp.entries) {
@@ -176,12 +178,35 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
             console.log(team.entries.length);
             teams.push(team);
           }
-        }        
+        }
+        const maxDuration = entries.map(e => e?.values?.activityDurationSeconds > 0 ? e.values.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
+        const minCompletionValue = entries.map(e => e?.values?.completionReason > 0 ? e.values.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
+
+        let pveTeamScore: number|null = null;
+        let pveTotalTeamScore: number|null = null;
+        let pveSuccess = null;
+        if (viewMode == ViewMode.PVE) {
+          if (minCompletionValue === 0) {
+            pveSuccess = true;
+          } else if (minCompletionValue < 255) {
+            pveSuccess = false;
+          }
+          pveTeamScore = entries.map(e => e?.values?.teamScore > 0 ? e.values.teamScore : 0).reduce((a, b) => Math.max(a, b), 0);
+          pveTotalTeamScore = entries.map(e => e?.info?.score > 0 ? e.info.score : 0).reduce((a, b) => a + b, 0);
+        }
+        console.log(`Min completion value: ${minCompletionValue} ${pveSuccess}`);
+        const longestEntry = entries.find(e => e.values?.activityDurationSeconds == maxDuration);
         return {
           instanceId,
           activityHash: resp.activityDetails.referenceId,
           activityName: desc.displayProperties.name,
           activityLocation: desc.displayProperties.description,
+          activityDurationSeconds: longestEntry ? longestEntry.values.activityDurationSeconds : 0,
+          activityDurationSecondsText: longestEntry ? longestEntry.values.activityDurationSecondsText : '',
+          pveSuccess,
+          pveTeamScore,
+          pveTotalTeamScore,
+          timeLostPoints: pveTeamScore != null && pveTotalTeamScore != null ? pveTotalTeamScore - pveTeamScore : null,
           mode,
           period: resp?.period,
           pgcrImage: desc?.pgcrImage,
@@ -241,6 +266,12 @@ interface Game {
   activityHash: string;
   activityName: string;
   activityLocation: string;
+  activityDurationSeconds: number;
+  activityDurationSecondsText: string;
+  pveSuccess: boolean | null;
+  pveTeamScore: number | null;
+  pveTotalTeamScore: number | null;
+  timeLostPoints: number | null;
   mode: string;
   period: string;
   pgcrImage: string;
@@ -267,7 +298,7 @@ interface Team {
 
 interface Entry {
   info: EntryInfo;
-  values: EntryValues|null;
+  values: EntryValues | null;
   medals: MedalOrStat[];
   general: MedalOrStat[];
   weapons: WeaponInfo[];
@@ -289,6 +320,7 @@ interface EntryValues {
   kd: number;
   kda: number;
   activityDurationSeconds: number;
+  activityDurationSecondsText: string;
   standing: number;
   standingText: string;
   fireteamId: number;
