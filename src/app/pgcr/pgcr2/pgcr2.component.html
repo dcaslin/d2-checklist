@@ -10,23 +10,26 @@
             <tbody>
                 <tr>
                     <th>Start</th>
-                    <td>a</td>
+                    <td>{{g.period|date:'shortDate'}} {{g.period|date:'shortTime'}}</td>
                 </tr>
                 <tr>
                     <th>Duration</th>
-                    <td>b</td>
+                    <td>{{g.activityDurationSecondsText}}</td>
                 </tr>
-                <tr>
-                    <th>PVE Success?</th>
-                    <td>c</td>
+                <tr *ngIf="g.pveSuccess!=null">
+                    <th>PVE Success</th>
+                    <td>
+                        <fa-icon [icon]="iconService.fasTimes" *ngIf="g.pveSuccess==false" class="warn-text"> </fa-icon>
+                        <fa-icon [icon]="iconService.fasCheck" *ngIf="g.pveSuccess==true" class="accent-text"></fa-icon>
+                    </td>
                 </tr>
-                <tr>
-                    <th>Score?</th>
-                    <td>d</td>
+                <tr *ngIf="g.pveTeamScore">
+                    <th>Score</th>
+                    <td>{{g.pveTeamScore|number}}</td>
                 </tr>
-                <tr>
-                    <th>Score lost to time?</th>
-                    <td>e</td>
+                <tr *ngIf="g.timeLostPoints">
+                    <th>Score lost to time</th>
+                    <td>{{g.timeLostPoints|number}}</td>
                 </tr>
             </tbody>
         </table>
