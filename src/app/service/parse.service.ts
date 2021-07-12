@@ -702,7 +702,8 @@ export class ParseService {
             act.teamScore = ParseService.getBasicValue(a.values.teamScore);
             act.kd = ParseService.getBasicValue(a.values.killsDeathsRatio);
             act.completionReason = ParseService.getBasicValue(a.values.completionReason);
-            if (desc && desc.isPvP) {
+            const isGambit = desc.activityModeTypes?.indexOf(63) >= 0;
+            if (desc && (desc.isPvP || isGambit)) {
                 act.success = act.standing === 0;
             } else {
                 act.success = act.completionReason === 0;
@@ -4404,7 +4405,7 @@ export class ParseService {
         if (mode === 43) { return 'Iron Banner Control'; }
         if (mode === 44) { return 'Iron Banner Clash'; }
         if (mode === 45) { return 'Iron Banner Supremacy'; }
-        if (mode === 46) { return 'Legendary Lost Sector'; }
+        if (mode === 46) { return 'Scored Nightfall'; }
         if (mode === 47) { return 'Heroic NightFall (Scored)'; }
         if (mode === 48) { return 'Rumble'; }
         if (mode === 49) { return 'All Doubles'; }
