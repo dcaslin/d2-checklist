@@ -270,7 +270,7 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(37, 'Survival', 'Survival'),
             // new ActivityMode(38, 'Countdown', 'Countdown'),
             // new ActivityMode(40, 'Social', 'Social'),
-            // new ActivityMode(48, 'Rumble', 'Rumble'),
+            new ActivityMode(48, 'Rumble', 'Rumble'),
             // new ActivityMode(49, 'All Doubles', 'All Doubles'),
             // new ActivityMode(50, 'Doubles', 'Doubles')
         ];

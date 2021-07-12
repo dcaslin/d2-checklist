@@ -1642,7 +1642,7 @@ export interface ItemDisplay {
     displayProperties: ApiDisplayProperties;
 }
 
-interface ApiDisplayProperties {
+export interface ApiDisplayProperties {
     description: string;
     hasIcon: boolean;
     name: string;

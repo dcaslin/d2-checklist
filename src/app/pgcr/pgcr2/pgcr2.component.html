@@ -1,15 +1,36 @@
-<p>pgcr2 works!</p>
+<h3>PGCR2</h3>
 
-<pre style="text-align: left" *ngIf="game$|async as g">   
-    {{g|json}}
-    <div class="pgcrImage" [style.background-image]="'url(//www.bungie.net' + g.pgcrImage + ')' ">xxx</div>
-</pre>
+<ng-container *ngIf="game$|async as g">
+    <div class="flex-row">
+        <div class="pgcrImage" [style.background-image]="'url(//www.bungie.net' + g.pgcrImage + ')' ">
+            <h3 class="pgcrImageText">{{g.mode}}: {{g.activityName}}</h3>
+            <p class="pgcrImageText">{{g.activityLocation}}</p>
+        </div>
+        <table class="checklist-table">
+            <tbody>
+                <tr>
+                    <th>Start</th>
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <th>Duration</th>
+                    <td>b</td>
+                </tr>
+                <tr>
+                    <th>PVE Success?</th>
+                    <td>c</td>
+                </tr>
+                <tr>
+                    <th>Score?</th>
+                    <td>d</td>
+                </tr>
+                <tr>
+                    <th>Score lost to time?</th>
+                    <td>e</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-
-
-<div *ngFor="let team of teams$|async">
-    {{team.team.name}}  {{team.entries.length}}
-    
-</div>
-
-
+    <pre style="text-align: left">{{g|json}}</pre>
+</ng-container>
