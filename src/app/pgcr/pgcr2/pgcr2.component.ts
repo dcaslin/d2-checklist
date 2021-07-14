@@ -22,6 +22,14 @@ function sortEntries(a: Entry, b: Entry): number {
   return b.values.kills - a.values.kills;
 }
 
+
+// https://localhost:4200/pgcr2/8734723341
+// https://localhost:4200/pgcr2/8799990279
+// https://localhost:4200/pgcr2/8829500950
+// https://localhost:4200/pgcr2/8746496605
+// https://localhost:4200/pgcr2/8805145035
+// https://localhost:4200/pgcr2/6200880412
+// https://localhost:4200/pgcr2/8798052147
 @Component({
   selector: 'd2c-pgcr2',
   templateUrl: './pgcr2.component.html',
