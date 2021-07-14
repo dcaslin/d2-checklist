@@ -7,6 +7,8 @@
   $foreground: map-get($theme, foreground);
   $background: map-get($theme, background);
 
+  
+
   a {
     color: mat-color($foreground, text);
 
@@ -50,7 +52,7 @@
     background-color: mat-color($accent, lighter);
   }
 
-  .bounty-chip {
+  .bounty-chip {    
     background-color: mat-color($background, unselected-chip);
     color: mat-color($foreground, unselected-chip);
     // background-color: #e0e0e0;
@@ -153,7 +155,7 @@
     font-weight: lighter;
     color: mat-color($foreground, secondary-text);
   }
-  
+
   .simple-caption-darker-no-margin {
     font-size: smaller;
     color: mat-color($foreground, secondary-text);
@@ -209,13 +211,13 @@
 
     & td {
       padding: 0.625em;
-      text-align: center;      
+      text-align: center;
       vertical-align: top;
     }
 
     & td.lead {
       padding: 0.625em;
-            
+
       vertical-align: top;
       text-align: left;
       font-weight: bold;
@@ -363,8 +365,13 @@
 
   table.striped {
     & tbody {
-      & tr:nth-child(even) {background: mat-color($background, card);}
-      & tr:nth-child(odd) {background: mat-color($background, status-bar)}
+      & tr:nth-child(even) {
+        background: mat-color($background, card);
+      }
+
+      & tr:nth-child(odd) {
+        background: mat-color($background, status-bar)
+      }
     }
   }
 
@@ -392,6 +399,7 @@
     }
   }
 
+
   table.tidy-table {
     border: 1px solid mat-color($background, disabled-list-option);
     border-collapse: collapse;
@@ -412,6 +420,7 @@
 
       padding: 0.35em;
     }
+
 
     & td {
       padding: 0.625em;
@@ -624,6 +633,12 @@
     border-collapse: collapse;
     width: 100%;
     margin-bottom: 10px;
+  }
+
+  tr.pgcr-hover-row:hover {
+    background: mat-color($background, app-bar);
+    border-width: 2px;
+    cursor: pointer;
   }
 
 

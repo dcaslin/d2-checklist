@@ -13,6 +13,15 @@ import { map, max, takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
 
+
+function sortEntries(a: Entry, b: Entry): number {
+  const scoreComp = b.info.score - a.info.score;
+  if (scoreComp !== 0) {
+    return scoreComp;
+  }
+  return b.values.kills - a.values.kills;
+}
+
 @Component({
   selector: 'd2c-pgcr2',
   templateUrl: './pgcr2.component.html',
@@ -37,7 +46,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
 
   private parsePGCREntry(e: any): Entry {
     const info: EntryInfo = {
-      bungieNetUserInfo: e.player.bungieNetUserInfo,
+      player: e.player,
       characterId: e.characterId,
       standing: e.standing,
       score: ParseService.getBasicValue(e.score)
@@ -137,6 +146,49 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
     };
   }
 
+  public show(e: Entry): void {
+    console.dir(e);
+  }
+
+
+
+  private static groupAndSortEntries(entries: Entry[]): Entry[] {
+
+    // sort by score/kills first
+    entries.sort(sortEntries);
+    const grouped: { [key: string]: Entry[] } = {};
+    for (const e of entries) {
+      const group = e.values.fireteamId;
+      if (!grouped[group]) {
+        grouped[group] = [];
+      }
+      grouped[group].push(e);
+    }
+    const groups: Entry[][] = [];
+    for (const g of Object.keys(grouped)) {
+      if (grouped[g].length > 1) {
+        const first = false;
+        for (let cntr = 0; cntr < grouped[g].length; cntr++) {
+          const entry = grouped[g][cntr];
+          entry.fireTeamStatus = cntr == 0 ? 'first' : cntr == (grouped[g].length - 1) ? 'last' : 'middle';
+          entry.fireTeamSize = grouped[g].length;
+        }
+      }
+      groups.push(grouped[g]);
+    }
+    groups.sort((a, b) => {
+      return sortEntries(a[0], b[0]);
+    });
+    console.dir(groups);
+    const finalEntries: Entry[] = [];
+    for (const g of groups) {
+      for (const e of g) {
+        finalEntries.push(e);
+      }
+    }
+    return finalEntries;
+  }
+
   public loadPGCR(instanceId: string): Observable<Game> {
     const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/';
     const remoteReq = this.streamReq('loadVendors', url).pipe(
@@ -182,8 +234,8 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         const maxDuration = entries.map(e => e?.values?.activityDurationSeconds > 0 ? e.values.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
         const minCompletionValue = entries.map(e => e?.values?.completionReason > 0 ? e.values.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
 
-        let pveTeamScore: number|null = null;
-        let pveTotalTeamScore: number|null = null;
+        let pveTeamScore: number | null = null;
+        let pveTotalTeamScore: number | null = null;
         let pveSuccess = null;
         if (viewMode == ViewMode.PVE) {
           if (minCompletionValue === 0) {
@@ -213,7 +265,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
           isPrivate: resp.activityDetails.isPrivate,
           viewMode: viewMode,
           teams,
-          entries: entries
+          entries: Pgcr2Component.groupAndSortEntries(entries)
         };
       })
     );
@@ -302,10 +354,12 @@ interface Entry {
   medals: MedalOrStat[];
   general: MedalOrStat[];
   weapons: WeaponInfo[];
+  fireTeamStatus?: 'first' | 'last' | 'middle';
+  fireTeamSize?: number;
 }
 
 interface EntryInfo {
-  bungieNetUserInfo: BungieNetUserInfo;
+  player: PGCRPlayer;
   characterId: string;
   standing: number;
   score: number;
@@ -346,4 +400,25 @@ interface WeaponInfo {
   displayProperties: ApiDisplayProperties | null;
   kills: number;
   precPct: number;
+}
+
+interface PGCRPlayer {
+  destinyUserInfo: DestinyUserInfo;
+  characterClass: string;
+  classHash: number;
+  raceHash: number;
+  genderHash: number;
+  characterLevel: number;
+  lightLevel: number;
+  emblemHash: number;
+}
+
+export interface DestinyUserInfo {
+  iconPath: string;
+  crossSaveOverride: number;
+  applicableMembershipTypes: number[];
+  isPublic: boolean;
+  membershipType: number;
+  membershipId: string;
+  displayName: string;
 }
