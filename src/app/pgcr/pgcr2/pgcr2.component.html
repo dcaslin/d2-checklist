@@ -21,11 +21,15 @@
                 <tr>
                     <th></th>
                     <th></th>
-                    <th>Kills</th>
-                    <th>Assists</th>
+                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Reaper</th>
+                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Collector</th>
+                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Invader</th>
+                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Primeval</th>
+                    <th *ngIf="g.viewMode!=ViewMode.GAMBIT">Kills</th>
+                    <th *ngIf="g.viewMode!=ViewMode.GAMBIT">Assists</th>
                     <th>KD</th>
-                    <th>Fireteam Id</th>
-                    <th>Score</th>
+                    <th *ngIf="g.viewMode!=ViewMode.PVE">Medals</th>
+                    <th *ngIf="!g.allScoresZero && (g.viewMode==ViewMode.PVP || g.pveTeamScore)">Score</th>
                 </tr>
             </thead>
             <tbody>
@@ -50,14 +54,70 @@
                         </ng-container>
                         
                     </td>
-                    <td>{{e.values.kills}}</td>
-                    <td>{{e.values.assists}}</td>
+                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Hostiles Defeated')}}</td>
+                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Motes Deposited')}} 
+                        <ng-container *ngIf="findGeneralStat(e, 'Motes Lost') as lost">
+                            <div class="simple-caption-darker-no-margin warn-text margin-top-5" *ngIf="lost>0">
+                                {{lost}} lost
+                            </div>
+                        </ng-container>
+                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">
+                        <ng-container *ngIf="findGeneralStat(e, 'Guardians Defeated') as kills"><div *ngIf="kills>0">{{kills}} kills</div></ng-container>
+                        <ng-container *ngIf="findGeneralStat(e, 'Motes Denied') as denied"><div class="simple-caption-darker-no-margin  margin-top-5" *ngIf="denied>0">{{denied}} denied</div></ng-container>
+                    </td>
+                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Primeval Damage')|number}}</td>
+                    <td *ngIf="g.viewMode!=ViewMode.GAMBIT">{{e.values.kills}}</td>
+                    <td *ngIf="g.viewMode!=ViewMode.GAMBIT">{{e.values.assists}}</td>
                     <td>{{e.values.kd|number:'1.0-2'}}</td>
-                    <td>{{e.values.fireteamId}}</td>
-                    <td>{{e.info.score}}</td>
+                    <td *ngIf="g.viewMode!=ViewMode.PVE">{{e.info.medalsEarned}}</td>
+                    
+                    <td *ngIf="!g.allScoresZero && (g.viewMode==ViewMode.PVP || g.pveTeamScore)">{{e.info.score|number}}</td>
                 </tr>
             </tbody>
         </table>
+
+        <div class="flex-row">
+            <div *ngFor="let e of g.entries">
+                <div class="detail-list">
+                    <h3>Values</h3>
+                    <ng-container *ngFor="let key of Object.keys(e.values)">
+                        <div>
+                            {{key}}: {{e.values[key]}}
+                        </div>
+                    </ng-container>
+                    
+                </div>
+                <div class="detail-list">
+                    <h3>General</h3>
+                    <ng-container *ngFor="let g of e.general">
+                        <div>
+                            <span [matTooltip]="g.statDesc">{{g.statName}}: {{g.value}}</span>
+                        </div>
+                    </ng-container>
+                    
+                </div>
+                
+                <div class="detail-list">
+                    <h3>Medals</h3>
+                    <ng-container *ngFor="let g of e.medals">
+                        <div>
+                            <span [matTooltip]="g.statDesc">{{g.statName}}: {{g.value}}</span>
+                        </div>
+                    </ng-container>
+                    
+                </div>
+                
+                <div class="detail-list">
+                    <h3>Weapons</h3>
+                    <ng-container *ngFor="let w of e.weapons">
+                        <div>
+                            {{w.displayProperties.name}}: {{w.kills}}
+                        </div>
+                    </ng-container>
+                    
+                </div>
+            </div>
+        </div>
     </div>
     
 
