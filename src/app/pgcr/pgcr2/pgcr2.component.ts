@@ -23,13 +23,24 @@ function sortEntries(a: Entry, b: Entry): number {
 }
 
 
-// https://localhost:4200/pgcr2/8734723341
-// https://localhost:4200/pgcr2/8799990279
-// https://localhost:4200/pgcr2/8829500950
-// https://localhost:4200/pgcr2/8746496605
-// https://localhost:4200/pgcr2/8805145035
-// https://localhost:4200/pgcr2/6200880412
-// https://localhost:4200/pgcr2/8798052147
+// https://localhost:4200/pgcr2/8734723341 gambit fireteam
+// https://localhost:4200/pgcr2/8799990279 override fireteam
+// https://localhost:4200/pgcr2/8829500950 VoG Success
+// https://localhost:4200/pgcr2/8746496605 Patrol
+// https://localhost:4200/pgcr2/8805145035 Matcmade NF
+// https://localhost:4200/pgcr2/6200880412 Rumble
+// https://localhost:4200/pgcr2/8798052147 Failed GM NF
+// https://localhost:4200/pgcr2/8810508456 pvp momentrum w/ fireteam
+// https://localhost:4200/pgcr2/8507432172 Iron Banner w/ fireteam
+// https://localhost:4200/pgcr2/8775211882 trials
+
+// Notes, significant gambit stats are present but broken to display 0. These include: 
+// invasions, invadasion deaths, invader kills  (NOT invader deaths?)
+// Things that work: 
+// Reaper: kills (nothing on blockers)
+// Collector: Motes picked up and deposited and lost 
+// Invader: Guardians Defeated, Motes Denied  (not Primeval Healing, oddly includes Invader Deaths
+// Sentry: Primeval Damage (nothing on blockers)
 @Component({
   selector: 'd2c-pgcr2',
   templateUrl: './pgcr2.component.html',
@@ -39,6 +50,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
   public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject(null);
   public game$: Observable<Game | null>;
   public ViewMode = ViewMode;
+  public Object = Object;
 
   constructor(
     storageService: StorageService,
@@ -52,12 +64,18 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
     this.game$ = of(null);
   }
 
+  public findGeneralStat(entry: Entry, stat: string): number {
+    const statVal = entry?.general?.find(x => x.statName == stat);
+    return statVal?.value;
+  }
+
   private parsePGCREntry(e: any): Entry {
     const info: EntryInfo = {
       player: e.player,
       characterId: e.characterId,
       standing: e.standing,
-      score: ParseService.getBasicValue(e.score)
+      score: ParseService.getBasicValue(e.score),
+      medalsEarned: 0
     };
 
     const general: MedalOrStat[] = [];
@@ -125,8 +143,12 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
             console.log(`weapons ${statName}`);
           }
           if (desc.group == 3) {
-            medals.push(extraEntry);
-            console.log(`medals ${statName}`);
+            if ('Medals Earned' === statName) {
+              // ignore
+            } else {
+              medals.push(extraEntry);
+              info.medalsEarned += basicVal;
+            }
           }
           // extra.push(extraEntry);
         }
@@ -272,6 +294,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
           pgcrImage: desc?.pgcrImage,
           isPrivate: resp.activityDetails.isPrivate,
           viewMode: viewMode,
+          allScoresZero: entries.every(e => !(e.info?.score)),
           teams,
           entries: Pgcr2Component.groupAndSortEntries(entries)
         };
@@ -337,6 +360,7 @@ interface Game {
   pgcrImage: string;
   isPrivate: boolean;
   viewMode: ViewMode;
+  allScoresZero: boolean;
   teams: Team[];
   entries: Entry[];
 }
@@ -371,6 +395,7 @@ interface EntryInfo {
   characterId: string;
   standing: number;
   score: number;
+  medalsEarned: number;
 }
 
 interface EntryValues {
