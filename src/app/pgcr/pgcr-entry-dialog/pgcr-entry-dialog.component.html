@@ -1,0 +1,69 @@
+<h2 mat-dialog-title>Title</h2>
+<mat-dialog-content>
+    <mat-card class="card" >
+      <mat-card-header class="full-width"  *ngIf="entry.info.player as player" >
+        <div *ngIf="player.destinyUserInfo?.iconPath as icon"  class="icon" mat-card-avatar [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+        <mat-card-title class="full-width"  *ngIf="player.destinyUserInfo as user">
+          <b>
+            <a [routerLink]="['/'+user.membershipType, user.membershipId]" color="accent">{{user.displayName}}</a>
+            <d2c-friend-star [userInfo]="user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+          </b>          
+        </mat-card-title>
+        <!-- <mat-card-subtitle class="full-width">
+          <ng-container *ngIf="players|async as ps">
+            <div>
+              <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}} PL</span>
+              <span class="pad-left-more" *ngIf="ps[entry.user.membershipId] as player">
+                Glory: 
+                <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
+                <ng-container *ngIf="!player.glory">hidden</ng-container>
+              </span>
+              
+            </div>
+          </ng-container>
+
+          <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
+          <div>
+            <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+            <span class="pad-left-more">{{entry.fireteamSize}} members</span>
+          </div>
+          <div>
+            <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score|number}}</span>
+            <span class="pad-left" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
+            <span class="pad-left" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
+            <span class="pad-left" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
+          </div>
+        </mat-card-subtitle> -->
+      </mat-card-header>
+      <mat-card-content class="full-width">
+        <mat-tab-group>
+          <mat-tab>
+              <ng-template mat-tab-label>
+                  <fa-icon [icon]="iconService.fasChartLine"></fa-icon><span class="d-none d-md-inline">&ensp;Chart</span>
+              </ng-template>
+              <div class="tab-body">
+                 1
+              </div>
+          </mat-tab>
+          <mat-tab>
+              <ng-template mat-tab-label>
+                  <fa-icon [icon]="iconService.farSquare"></fa-icon><span class="d-none d-md-inline">&ensp;Incomplete&ensp;-</span>&ensp;2
+              </ng-template>
+              <div class="tab-body">
+                2
+              </div>
+          </mat-tab>
+          <mat-tab label="Complete">
+              <ng-template mat-tab-label>
+                  <fa-icon [icon]="iconService.farCheckSquare"></fa-icon><span class="d-none d-md-inline">&ensp;Complete&ensp;-</span>&ensp;3
+              </ng-template>
+              <div class="tab-body">
+                  3
+              </div>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card-content>
+    </mat-card>
+
+
+</mat-dialog-content>

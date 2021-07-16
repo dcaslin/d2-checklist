@@ -14,78 +14,122 @@
             </div>
             <div class="pgcrImageText">{{g.activityLocation}}</div>
             <div class="pgcr-spacer"></div>            
-            <p *ngIf="g.pveTeamScore" class="pgcrImageText">{{g.pveTotalTeamScore|number}} - {{g.timeLostPoints|number}} =  <b>{{g.pveTeamScore|number}} pts</b></p>
-        </div>       
+            <p *ngIf="g.viewMode==ViewMode.PVE && g.pveTeamScore" class="pgcrImageText">{{g.pveTotalTeamScore|number}} - {{g.timeLostPoints|number}} =  <b>{{g.pveTeamScore|number}} pts</b></p>
+            <ng-container *ngIf="g.teams?.length==2">
+                <div class="flex-row full-width">
+                    <h4 class="pgcrImageText" *ngIf="g.teams[0] as team">
+                        {{team.name}} {{team.score|number}} - {{team.standingText}} 
+                    </h4>
+                    <div class="pgcr-spacer"></div>      
+                    <h4 class="pgcrImageText" *ngIf="g.teams[1] as team">
+                        {{team.name}} {{team.score|number}} - {{team.standingText}}
+                    </h4>
+                </div>
+            </ng-container>    
+        </div>         
         <table class="tidy-auto-table">
             <thead>
                 <tr>
                     <th></th>
                     <th></th>
-                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Reaper</th>
-                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Collector</th>
-                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Invader</th>
-                    <th *ngIf="g.viewMode==ViewMode.GAMBIT">Primeval</th>
+                    <th class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">Reaper</th>
+                    <th class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">Collector</th>
+                    <th class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">Invader</th>
+                    <th class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">Primeval</th>
                     <th *ngIf="g.viewMode!=ViewMode.GAMBIT">Kills</th>
-                    <th *ngIf="g.viewMode!=ViewMode.GAMBIT">Assists</th>
+                    <th class="d-none d-md-table-cell" *ngIf="g.viewMode!=ViewMode.GAMBIT">Assists</th>
                     <th>KD</th>
                     <th *ngIf="g.viewMode!=ViewMode.PVE">Medals</th>
                     <th *ngIf="!g.allScoresZero && (g.viewMode==ViewMode.PVP || g.pveTeamScore)">Score</th>
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let e of g.entries" class="pgcr-hover-row" (click)="show(e)">
-                    <ng-container *ngIf="e.fireTeamStatus=='first'">
-                        <td [attr.rowspan]="e.fireTeamSize" class="fireteam-group-cell">
-                            <div class="accent-bg-text fireteam-group">&nbsp;</div>
-                        </td>
+                <ng-container *ngIf="g.teams.length>1; else noTeams">
+                    <ng-container *ngFor="let team of g.teams">
+                        <tr><th colspan="100%">{{team.name}} {{team.score|number}} - {{team.standingText}}</th></tr>
+                        <ng-container *ngFor="let e of team.entries">
+                            <ng-container *ngTemplateOutlet="entryRow; context: {e: e}">
+                            </ng-container>
+                        </ng-container>
+                    
+                       
                     </ng-container>
-                    <ng-container *ngIf="e.fireTeamStatus==null">
-                        <td> </td>
-                    </ng-container>                    
-                    <td>
-                        <ng-container *ngIf="e?.info.player as player">
-                            <div class="flex-row">
+                </ng-container>
+                <ng-template #noTeams>
+                    <ng-container *ngFor="let e of g.entries">
+                        <ng-container *ngTemplateOutlet="entryRow; context: {e: e}">
+                        </ng-container>
+                    </ng-container>
+                  </ng-template>
+
+            </tbody>
+        </table>
+
+        
+        <ng-template #entryRow let-e='e'>
+            <tr class="pgcr-hover-row" (click)="show(e)">
+                <ng-container *ngIf="e.fireTeamStatus=='first'">
+                    <td [attr.rowspan]="e.fireTeamSize" class="fireteam-group-cell">
+                        <div class="accent-bg-text fireteam-group">&nbsp;</div>
+                    </td>
+                </ng-container>
+                <ng-container *ngIf="e.fireTeamStatus==null">
+                    <td> </td>
+                </ng-container>                    
+                <td>
+                    <ng-container *ngIf="e?.info.player as player">
+                        <div class="flex-row">
                             <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon size-40" [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
                             <div>
                                 <div>{{player.destinyUserInfo.displayName}}</div>
                                 <div class="simple-caption-darker-no-margin">{{player.characterClass}} {{player.lightLevel}}</div>
                             </div>
-                            </div>
-                        </ng-container>
-                        
-                    </td>
-                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Hostiles Defeated')}}</td>
-                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Motes Deposited')}} 
-                        <ng-container *ngIf="findGeneralStat(e, 'Motes Lost') as lost">
-                            <div class="simple-caption-darker-no-margin warn-text margin-top-5" *ngIf="lost>0">
-                                {{lost}} lost
-                            </div>
-                        </ng-container>
-                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">
-                        <ng-container *ngIf="findGeneralStat(e, 'Guardians Defeated') as kills"><div *ngIf="kills>0">{{kills}} kills</div></ng-container>
-                        <ng-container *ngIf="findGeneralStat(e, 'Motes Denied') as denied"><div class="simple-caption-darker-no-margin  margin-top-5" *ngIf="denied>0">{{denied}} denied</div></ng-container>
-                    </td>
-                    <td *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Primeval Damage')|number}}</td>
-                    <td *ngIf="g.viewMode!=ViewMode.GAMBIT">{{e.values.kills}}</td>
-                    <td *ngIf="g.viewMode!=ViewMode.GAMBIT">{{e.values.assists}}</td>
-                    <td>{{e.values.kd|number:'1.0-2'}}</td>
-                    <td *ngIf="g.viewMode!=ViewMode.PVE">{{e.info.medalsEarned}}</td>
+                        </div>
+                    </ng-container>
                     
-                    <td *ngIf="!g.allScoresZero && (g.viewMode==ViewMode.PVP || g.pveTeamScore)">{{e.info.score|number}}</td>
-                </tr>
-            </tbody>
-        </table>
-
+                </td>
+                <td class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Hostiles Defeated')}}</td>
+                <td class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Motes Deposited')}} 
+                    <ng-container *ngIf="findGeneralStat(e, 'Motes Lost') as lost">
+                        <div class="simple-caption-darker-no-margin warn-text margin-top-5" *ngIf="lost>0">
+                            {{lost}} lost
+                        </div>
+                    </ng-container>
+                <td class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">
+                    <ng-container *ngIf="findGeneralStat(e, 'Guardians Defeated') as kills"><div *ngIf="kills>0">{{kills}} kills</div></ng-container>
+                    <ng-container *ngIf="findGeneralStat(e, 'Motes Denied') as denied"><div class="simple-caption-darker-no-margin  margin-top-5" *ngIf="denied>0">{{denied}} denied</div></ng-container>
+                </td>
+                <td class="d-none d-md-table-cell" *ngIf="g.viewMode==ViewMode.GAMBIT">{{findGeneralStat(e, 'Primeval Damage')|number}}</td>
+                <td *ngIf="g.viewMode!=ViewMode.GAMBIT">{{e.values.kills}}</td>
+                <td class="d-none d-md-table-cell" *ngIf="g.viewMode!=ViewMode.GAMBIT">{{e.values.assists}}</td>
+                <td>{{e.values.kd|number:'1.0-2'}}</td>
+                <td *ngIf="g.viewMode!=ViewMode.PVE">{{e.info.medalsEarned}}</td>
+                
+                <td *ngIf="!g.allScoresZero && (g.viewMode==ViewMode.PVP || g.pveTeamScore)">{{e.info.score|number}}</td>
+            </tr>
+        </ng-template>
+        <br>
+        <h1>Details</h1>
         <div class="flex-row">
             <div *ngFor="let e of g.entries">
+                <div class="detail-list">                
+                    <ng-container *ngIf="e?.info.player as player">
+                        <div class="flex-row">
+                            <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon size-40" [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+                            <div>
+                                <div>{{player.destinyUserInfo.displayName}}</div>
+                                <div class="simple-caption-darker-no-margin">{{player.characterClass}} {{player.lightLevel}}</div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>                
                 <div class="detail-list">
                     <h3>Values</h3>
                     <ng-container *ngFor="let key of Object.keys(e.values)">
                         <div>
                             {{key}}: {{e.values[key]}}
                         </div>
-                    </ng-container>
-                    
+                    </ng-container>                    
                 </div>
                 <div class="detail-list">
                     <h3>General</h3>

@@ -1,6 +1,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
@@ -12,6 +13,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, max, takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
 import { StorageService } from '../../service/storage.service';
+import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog.component';
 
 
 function sortEntries(a: Entry, b: Entry): number {
@@ -59,6 +61,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
     notificationService: NotificationService,
     public iconService: IconService,
     private destinyCacheService: DestinyCacheService,
+    public dialog: MatDialog,
     private route: ActivatedRoute) {
     super(storageService, httpClient, bungieService, notificationService);
     this.game$ = of(null);
@@ -176,8 +179,13 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
     };
   }
 
-  public show(e: Entry): void {
-    console.dir(e);
+
+  public show(entry: Entry): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.autoFocus = true;
+    dc.data = entry;
+    this.dialog.open(PgcrEntryDialogComponent, dc);
   }
 
 
@@ -232,9 +240,10 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         }
         console.dir(desc);
         const mode = ParseService.lookupMode(resp.activityDetails.mode);
-        const modes = desc.activityModeTypes;
+        const modes = resp.activityDetails.modes;
+        console.dir(modes);
         const viewMode = modes?.indexOf(63) >= 0 ? ViewMode.GAMBIT : modes?.indexOf(48) >= 0 ? ViewMode.RUMBLE : modes?.indexOf(5) >= 0 ? ViewMode.PVP : ViewMode.PVE;
-        const entries: Entry[] = [];
+        let entries: Entry[] = [];
         const teams: Team[] = [];
         for (const entry of resp.entries) {
           const parsedEntry = this.parsePGCREntry(entry);
@@ -242,6 +251,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
             entries.push(parsedEntry);
           }
         }
+        entries = Pgcr2Component.groupAndSortEntries(entries);
         if (resp.teams) {
           let firstTeamNameDone = false;
           for (const t of resp.teams) {
@@ -261,6 +271,10 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
             teams.push(team);
           }
         }
+        // sort teams by standing
+        teams.sort( (a, b) => {
+          return a.standing - b.standing;
+        });
         const maxDuration = entries.map(e => e?.values?.activityDurationSeconds > 0 ? e.values.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
         const minCompletionValue = entries.map(e => e?.values?.completionReason > 0 ? e.values.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
 
@@ -380,7 +394,7 @@ interface Team {
   entries: Entry[];
 }
 
-interface Entry {
+export interface Entry {
   info: EntryInfo;
   values: EntryValues | null;
   medals: MedalOrStat[];
