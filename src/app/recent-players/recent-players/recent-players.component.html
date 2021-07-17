@@ -74,7 +74,7 @@
           <td class="d-none d-lg-table-cell">
             <div *ngFor="let i of friend.instances">
               <a color="primary" [routerLink]="['/pgcr', i.instanceId]">
-                {{i.mode}} - {{i.name}}
+                {{i.mode}} - {{i.activityName}}
               </a>
               , {{i.period|date:'shortDate'}}
             </div>
