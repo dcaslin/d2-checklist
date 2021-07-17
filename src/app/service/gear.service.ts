@@ -350,17 +350,17 @@ export class GearService {
                 if (i.typeName != g.typeName) {
                     continue;
                 }
-                let iArchetype = null;
+                let iArchetype: string = null;
                 let gArchetype = null;
                 for (const s of i.sockets) {
                     if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
-                        iArchetype = s.plugs[0].hash;
+                        iArchetype = s.plugs[0].name;
                         break;
                     }
                 }
                 for (const s of g.sockets) {
                     if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
-                        gArchetype = s.plugs[0].hash;
+                        gArchetype = s.plugs[0].name;
                         break;
                     }
                 }
