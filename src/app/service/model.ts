@@ -501,7 +501,6 @@ export class FriendListEntry {
 }
 
 export interface BungieNetUserInfo {
-    supplementalDisplayName: string;
     iconPath: string;
     membershipType: number;
     membershipId: string;
@@ -1105,37 +1104,6 @@ export interface ClanMilestoneResult {
     redeemed: boolean;
 }
 
-export class PGCR {
-    period: string;
-    activityDurationSeconds: number;
-    finish: string;
-    // Acitivity Details
-    referenceId: number;
-    instanceId: string;
-    mode: string;
-    name: string; // from referenceId
-    isPrivate: boolean;
-    entries: PGCREntry[];
-    level: number;
-    teams: PGCRTeam[];
-    pveSuccess?: boolean;
-    pve: boolean;
-    ll: number;
-    teamScore: number;
-    timeLostPoints: number;
-
-}
-
-export class PGCRTeam {
-    name: string;
-    standing: string;
-    score: number;
-    totalGlory: number;
-    size: number;
-    avgGlory: number;
-}
-
-
 export class CurrentActivity {
     dateActivityStarted: string;
     name: string;
@@ -1180,52 +1148,6 @@ export class Activity {
     activityTypeHashOverride: number;
     isPrivate: boolean;
 }
-
-
-export class PGCREntry {
-    standing: number;
-    score: number;
-    teamScore: number;
-    values: any;
-    kd: number;
-    user: UserInfo;
-    bungieNetUserInfo: BungieNetUserInfo;
-
-    characterId: string;
-    characterClass: string;
-    characterLevel: number;
-    lightLevel: number;
-
-    kills: number;
-    deaths: number;
-    assists: number;
-    fireteamId: number;
-    fireteamSize: number;
-    team: string;
-    completionReason: number;
-
-    startSeconds: number;
-    activityDurationSeconds: number;
-    timePlayedSeconds: number;
-    weapons: PGCRWeaponData[];
-    extra: PGCRExtraData[];
-}
-
-
-export class PGCRExtraData {
-    name: string;
-    value: number;
-    desc: any;
-}
-
-export class PGCRWeaponData {
-    hash: string;
-    name: string;
-    type: string;
-    kills: number;
-    precPct: number;
-}
-
 
 export class Platform {
     name: string;
@@ -1640,7 +1562,7 @@ export interface ItemDisplay {
     displayProperties: ApiDisplayProperties;
 }
 
-interface ApiDisplayProperties {
+export interface ApiDisplayProperties {
     description: string;
     hasIcon: boolean;
     name: string;

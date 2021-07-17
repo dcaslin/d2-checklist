@@ -1,0 +1,117 @@
+<div mat-dialog-title *ngIf="entry.info.player as player">
+  <div class="flex-row">
+    <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon size-48"
+      [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+    <div style="flex-shrink: 1">
+      <div>{{player.destinyUserInfo.displayName}}</div>
+      <div class="simple-caption-darker-no-margin sub-title">{{player.characterClass}} {{player.lightLevel}}</div>
+    </div>
+    <div>
+      <d2c-friend-star [userInfo]="player.destinyUserInfo" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+    </div>
+  </div>
+</div>
+<!-- <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon" mat-card-avatar
+    [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+  <ng-container *ngIf="player.destinyUserInfo as user">
+    <b>
+      <a [routerLink]="['/'+user.membershipType, user.membershipId]" color="accent">{{user.displayName}}</a>
+      <d2c-friend-star [userInfo]="user" [favoritesMap]=(favoritesMap|async)></d2c-friend-star>
+    </b>
+  </ng-container>
+</div> -->
+<mat-dialog-content>
+  <!-- <mat-card-subtitle class="full-width">
+          <ng-container *ngIf="players|async as ps">
+            <div>
+              <span class="pad-left"> {{entry.characterClass}} {{entry.lightLevel}} PL</span>
+              <span class="pad-left-more" *ngIf="ps[entry.user.membershipId] as player">
+                Glory: 
+                <ng-container *ngIf="player.glory">{{player.glory.currentProgress|number}}</ng-container>
+                <ng-container *ngIf="!player.glory">hidden</ng-container>
+              </span>
+              
+            </div>
+          </ng-container>
+
+          <div class="pad-left" *ngIf="entry.team!=null">Team {{entry.team}}</div>
+          <div>
+            <span class="pad-left" *ngIf="entry.fireteam!=null">Fireteam: {{entry.fireteam}}</span>
+            <span class="pad-left-more">{{entry.fireteamSize}} members</span>
+          </div>
+          <div>
+            <span class="pad-left" *ngIf="entry.score!=null && entry.score>0">Score: {{entry.score|number}}</span>
+            <span class="pad-left" *ngIf="entry.kills!=null">Kills: {{entry.kills}}</span>
+            <span class="pad-left" *ngIf="entry.assists!=null">Deaths: {{entry.deaths}}</span>
+            <span class="pad-left" *ngIf="entry.assists!=null">Assists: {{entry.assists}}</span>
+          </div>
+        </mat-card-subtitle> -->
+  <div class="flex-row margin-5">
+    <div>Time played: {{entry.values.timePlayedSecondsText}}</div>
+    <div>Kills: {{entry.values.kills|number}}</div>
+    <div>Deaths: {{entry.values.deaths|number}}</div>
+    <div>Assists: {{entry.values.assists|number}}</div>
+  </div>
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <fa-icon [icon]="iconService.fasInfoCircle"></fa-icon><span class="d-none d-md-inline pad-left">Info</span>
+      </ng-template>
+      <div class="tab-body">
+        <table class="tidy-auto-table">
+          <!-- <tr><td>Kills</td><td>{{entry.values.kills|number}}</td><td></td></tr>
+          <tr><td>Deaths</td><td>{{entry.values.deaths|number}}</td><td></td></tr>
+          <tr><td>Assists</td><td>{{entry.values.assists|number}}</td><td></td></tr>
+          <tr><td>KD</td><td>{{entry.values.kd|number:'1.0-2'}}</td><td></td></tr>
+          <tr><td>KDA</td><td>{{entry.values.kda|number:'1.0-2'}}</td><td></td></tr>
+          <tr><td>Time Played</td><td>{{entry.values.timePlayedSecondsText}}</td><td></td></tr> -->
+          <tr *ngFor="let v of entry.general">
+            <td class="vert-middle">{{v.statName}}</td>
+            <td class="vert-middle">{{v.value|number}}</td>
+            <td class="d-none d-md-table-cell simple-caption-darker-no-margin vert-middle">{{v.statDesc}}</td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <fa-icon [icon]="iconService.farAxeBattle"></fa-icon><span class="d-none d-md-inline pad-left">Weapons</span>
+      </ng-template>
+      <div class="tab-body">
+        <table class="tidy-auto-table">
+          <tr>
+            <th></th>
+            <th>Weapon</th>
+            <th>Kills</th>
+            <th class="d-none d-md-table-cell"><fa-icon [icon]="iconService.falCrosshairs"></fa-icon></th>
+          </tr>
+          <tr *ngFor="let v of entry.weapons">
+            <td class="vert-middle">
+              <div *ngIf="v.displayProperties.icon as icon" class="icon size-22" 
+                  [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+            </td>
+            <td class="vert-middle">{{v.displayProperties.name}}</td>
+            <td class="vert-middle">{{v.kills|number}}</td>
+            <td class="d-none d-md-table-cell vert-middle">{{(v.precPct * 100)|number:'1.0-0'}}%</td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+    <mat-tab *ngIf="entry.medals.length > 0">
+      <ng-template mat-tab-label>
+        <fa-icon [icon]="iconService.farMedal"></fa-icon><span class="d-none d-md-inline pad-left">Medals</span>
+      </ng-template>
+      <div class="tab-body">
+        <table class="tidy-auto-table">
+          <tr *ngFor="let v of entry.medals">
+            <td class="vert-middle">{{v.statName}}</td>
+            <td class="vert-middle">{{v.value|number}}</td>
+            <td class="d-none d-md-table-cell simple-caption-darker-no-margin vert-middle">{{v.statDesc}}</td>
+          </tr>
+        </table>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+
+
+</mat-dialog-content>

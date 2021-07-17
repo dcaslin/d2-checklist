@@ -1,0 +1,30 @@
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.flex-row>* {
+  margin: 5px;
+}
+
+.sub-title {
+  font-size: 14px;
+}
+
+.vert-middle {
+  vertical-align: middle !important;
+}
+
+.tidy-auto-table {
+  margin: auto !important;
+}
+
+.tab-body{
+  margin: 10px;
+  text-align: center;
+}

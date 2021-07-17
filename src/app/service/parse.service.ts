@@ -52,11 +52,6 @@ import {
     NameDesc,
     NameQuantity,
     PathEntry,
-    PGCR,
-    PGCREntry,
-    PGCRExtraData,
-    PGCRTeam,
-    PGCRWeaponData,
     Player,
     PrivPublicMilestone,
     Profile,
@@ -658,13 +653,13 @@ export class ParseService {
     }
 
 
-    private static getBasicValue(val: any): number {
+    public static getBasicValue(val: any): number {
         if (val == null) { return null; }
         if (val.basic == null) { return; }
         return val.basic.value;
     }
 
-    private static getBasicDisplayValue(val: any): string {
+    public static getBasicDisplayValue(val: any): string {
         if (val == null) { return null; }
         if (val.basic == null) { return; }
         return val.basic.displayValue;
@@ -702,7 +697,8 @@ export class ParseService {
             act.teamScore = ParseService.getBasicValue(a.values.teamScore);
             act.kd = ParseService.getBasicValue(a.values.killsDeathsRatio);
             act.completionReason = ParseService.getBasicValue(a.values.completionReason);
-            if (desc && desc.isPvP) {
+            const isGambit = desc.activityModeTypes?.indexOf(63) >= 0;
+            if (desc && (desc.isPvP || isGambit)) {
                 act.success = act.standing === 0;
             } else {
                 act.success = act.completionReason === 0;
@@ -3824,7 +3820,7 @@ export class ParseService {
                                             const oPlug = new InventoryPlug(plugDesc.hash,
                                                 plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false);
-                                            oPlug.currentlyCanRoll = option.currentlyCanRoll;                                           
+                                            oPlug.currentlyCanRoll = option.currentlyCanRoll;
                                             possiblePlugs.push(oPlug);
                                         }
                                     }
@@ -4086,7 +4082,7 @@ export class ParseService {
             b.lastOnlineStatusChange = fromUnixTime(x.lastOnlineStatusChange).toISOString();
             b.isOnline = x.isOnline;
             b.memberType = x.memberType;
-            b.destinyUserInfo = this.parseUserInfo(x.destinyUserInfo);
+            b.destinyUserInfo = ParseService.parseUserInfo(x.destinyUserInfo);
             b.bungieNetUserInfo = x.bungieNetUserInfo;
             b.joinDate = x.joinDate;
             returnMe.push(b);
@@ -4111,114 +4107,6 @@ export class ParseService {
         return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
-    private parsePGCREntry(e: any): PGCREntry {
-        const r: PGCREntry = new PGCREntry();
-        r.bungieNetUserInfo = e.player.bungieNetUserInfo;
-        r.characterId = e.characterId;
-        r.standing = e.standing;
-        r.score = ParseService.getBasicValue(e.score);
-        if (e.values != null) {
-
-            r.kills = ParseService.getBasicValue(e.values.kills);
-            r.deaths = ParseService.getBasicValue(e.values.deaths);
-            r.teamScore = ParseService.getBasicValue(e.values.teamScore);
-            if (r.deaths === 0) {
-                r.kd = r.kills;
-            } else {
-                r.kd = r.kills / r.deaths;
-            }
-            r.assists = ParseService.getBasicValue(e.values.assists);
-            r.fireteamId = ParseService.getBasicValue(e.values.fireteamId);
-            r.team = ParseService.getBasicDisplayValue(e.values.team);
-            if (r.team == '18') {
-                r.team = 'Alpha';
-            }
-            r.startSeconds = ParseService.getBasicValue(e.values.startSeconds);
-            r.activityDurationSeconds = ParseService.getBasicValue(e.values.activityDurationSeconds);
-            r.timePlayedSeconds = ParseService.getBasicValue(e.values.timePlayedSeconds);
-            r.completionReason = ParseService.getBasicValue(e.values.completionReason);
-            r.weapons = [];
-            r.extra = [];
-
-            if (e.extended != null) {
-                if (e.extended.values != null) {
-                    for (const key of Object.keys(e.extended.values)) {
-                        const val = e.extended.values[key];
-                        const basicVal = ParseService.getBasicValue(val);
-                        if (key.startsWith('weaponKills')) {
-                            if (basicVal > 0) {
-                                const name = ParseService.camelKebab('weaponKills', key);
-                                const data = new PGCRWeaponData();
-                                data.hash = '-1';
-                                data.kills = basicVal;
-                                data.name = name;
-                                data.type = name;
-                                r.weapons.push(data);
-                            }
-                        } else {
-                            const desc: any = this.destinyCacheService.cache.HistoricalStats[key];
-                            if (key.startsWith('medal')) {
-
-                                const name = ParseService.camelKebab('medal', key);
-                                const extraEntry = new PGCRExtraData();
-                                extraEntry.name = name;
-                                extraEntry.value = basicVal;
-                                extraEntry.desc = desc;
-                                r.extra.push(extraEntry);
-                            } else {
-                                const extraEntry = new PGCRExtraData();
-                                const name = ParseService.camelKebab(null, key);
-                                extraEntry.name = name;
-                                extraEntry.value = basicVal;
-                                extraEntry.desc = desc;
-                                r.extra.push(extraEntry);
-                            }
-                        }
-
-                    }
-
-                }
-                if (e.extended.weapons != null) {
-                    e.extended.weapons.forEach(w => {
-                        const data = new PGCRWeaponData();
-                        data.hash = w.referenceId;
-                        data.kills = ParseService.getBasicValue(w.values.uniqueWeaponKills);
-                        data.precPct = ParseService.getBasicValue(w.values.uniqueWeaponKillsPrecisionKills);
-                        const desc: any = this.destinyCacheService.cache.InventoryItem[data.hash];
-                        if (desc != null) {
-                            data.type = desc.itemTypeAndTierDisplayName;
-                            data.name = desc.displayProperties.name;
-                        } else {
-                            data.type = 'Classified';
-                            data.name = 'Classified';
-                        }
-                        r.weapons.push(data);
-
-                    });
-                }
-            }
-        }
-        r.weapons.sort(function (a, b) {
-            return b.kills - a.kills;
-        });
-        r.extra.sort(function (a, b) {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        });
-        r.characterClass = e.player.characterClass;
-        r.characterLevel = e.player.characterLevel;
-        r.lightLevel = e.player.lightLevel;
-        if (!r.fireteamId) { r.fireteamId = -1; }
-        if (!r.score) { r.score = 0; }
-        r.user = this.parseUserInfo(e.player.destinyUserInfo);
-        return r;
-    }
-
     public parseUserProfile(i: any, iconPath: string): UserInfo {
         let platformName = '';
         if (i.membershipType === 1) {
@@ -4238,7 +4126,7 @@ export class ParseService {
         };
     }
 
-    public parseUserInfo(i: any): UserInfo {
+    public static parseUserInfo(i: any): UserInfo {
         let platformName = '';
         if (i.membershipType === 1) {
             platformName = 'XBL';
@@ -4255,114 +4143,6 @@ export class ParseService {
             icon: i.iconPath,
             platformName: platformName
         };
-
-    }
-
-    public parsePGCR(p: any): PGCR {
-        const r: PGCR = new PGCR();
-        r.period = p.period;
-        r.referenceId = p.activityDetails.referenceId;
-        r.instanceId = p.activityDetails.instanceId;
-        r.mode = ParseService.lookupMode(p.activityDetails.mode);
-
-        const desc: any = this.destinyCacheService.cache.Activity[r.referenceId];
-        if (desc) {
-            r.name = desc.displayProperties.name;
-            r.level = desc.activityLevel;
-            r.ll = desc.activityLightLevel + 1;
-        } else {
-            r.name = 'redacted';
-        }
-
-        r.isPrivate = p.activityDetails.isPrivate;
-        r.entries = [];
-        const fireTeamCounts: any = {};
-
-        let teamPveSuccess = false;
-        let scoreSum = 0;
-        r.pve = desc && !desc.isPvP;
-
-        p.entries.forEach((ent) => {
-            const entry = this.parsePGCREntry(ent);
-
-            // pve
-            if (r.pve) {
-                if (entry.completionReason === 0) {
-                    teamPveSuccess = true;
-                }
-            }
-
-            if (p.activityDetails.mode == 46) {
-                if (entry.teamScore != null && (r.teamScore == null || entry.teamScore > r.teamScore)) {
-
-                    r.teamScore = entry.teamScore;
-                }
-                if (entry.score != null) {
-                    scoreSum += entry.score;
-                }
-            }
-            if (entry.activityDurationSeconds != null) {
-                r.activityDurationSeconds = entry.activityDurationSeconds;
-                r.finish = new Date(Date.parse(r.period) + r.activityDurationSeconds * 1000).toISOString();
-            }
-            if (fireTeamCounts[entry.fireteamId] == null) {
-                fireTeamCounts[entry.fireteamId] = 0;
-            }
-            fireTeamCounts[entry.fireteamId] = fireTeamCounts[entry.fireteamId] + 1;
-            r.entries.push(entry);
-        });
-        r.pveSuccess = teamPveSuccess;
-        if (scoreSum && r.teamScore) {
-            r.timeLostPoints = scoreSum - r.teamScore;
-        }
-        r.entries.forEach(e => {
-            e.fireteamSize = fireTeamCounts[e.fireteamId];
-        });
-
-        if (p.teams != null) {
-            r.teams = [];
-            p.teams.forEach(t => {
-                const team = new PGCRTeam();
-                team.name = '18' == t.teamName ? 'Alpha' : t.teamName;
-                team.standing = ParseService.getBasicDisplayValue(t.standing);
-                team.score = ParseService.getBasicValue(t.score);
-                r.teams.push(team);
-            });
-            r.teams.sort(function (a, b) {
-                return b.score - a.score;
-            });
-        }
-
-        const fireTeamList = {};
-
-        r.entries.forEach((ent) => {
-            let list = fireTeamList[ent.fireteamId];
-            if (list == null) {
-                fireTeamList[ent.fireteamId] = [];
-                list = fireTeamList[ent.fireteamId];
-            }
-            list.push(ent);
-        });
-
-        let cntr = 0;
-        Object.keys(fireTeamList).forEach((key) => {
-            cntr++;
-
-            const list = fireTeamList[key];
-            list.forEach((ent) => {
-                ent.fireteam = cntr;
-            });
-        });
-        r.entries.sort(function (a, b) {
-            let returnMe = b.score - a.score;
-            if (returnMe === 0) {
-                returnMe = b.kills - a.kills;
-            }
-            return returnMe;
-        });
-
-
-        return r;
 
     }
 
@@ -4405,7 +4185,7 @@ export class ParseService {
         if (mode === 43) { return 'Iron Banner Control'; }
         if (mode === 44) { return 'Iron Banner Clash'; }
         if (mode === 45) { return 'Iron Banner Supremacy'; }
-        if (mode === 46) { return 'Legendary Lost Sector'; }
+        if (mode === 46) { return 'Scored Nightfall'; }
         if (mode === 47) { return 'Heroic NightFall (Scored)'; }
         if (mode === 48) { return 'Rumble'; }
         if (mode === 49) { return 'All Doubles'; }

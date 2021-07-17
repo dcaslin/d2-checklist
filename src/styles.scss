@@ -252,6 +252,14 @@ mat-form-field.full-width .mat-form-field-infix{
   font-weight: lighter;
 }
 
+.margin-top-5 {
+  margin-top: 5px;
+}
+
+.margin-5 {
+  margin: 5px;
+}
+
 .collection-header {
   margin: 10px;
   text-align: left;
@@ -336,6 +344,11 @@ mat-form-field.full-width .mat-form-field-infix{
   &.size-40 {
     width: 40px;
     height: 40px;
+  }
+
+  &.size-48 {
+    width: 48px;
+    height: 48px;
   }
 }
 
@@ -484,4 +497,9 @@ mat-form-field.full-width .mat-form-field-infix{
 .list-icon {
   background-size: cover;
   display: block;
+}
+
+
+.full-width {
+  width: 100%;
 }

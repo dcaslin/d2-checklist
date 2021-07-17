@@ -43,7 +43,7 @@ export class HistoryComponent extends ChildComponent implements OnInit, OnDestro
     public iconService: IconService,
     private route: ActivatedRoute, private router: Router) {
     super(storageService);
-    this.activityModes = bungieService.getActivityModes();
+    this.activityModes = BungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [100, 200, 500, 1000, 2000];
     this.selectedMaxResults = this.maxResults[0];
