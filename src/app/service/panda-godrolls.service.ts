@@ -99,6 +99,10 @@ export class PandaGodrollsService implements OnDestroy {
       if (name.endsWith(suffix)) {
         name = name.substring(0, name.length - suffix.length);
       }
+      const vogsuffix = ' (Timelost)'.toLowerCase();
+      if (name.endsWith(vogsuffix)) {
+        name = name.substring(0, name.length - vogsuffix.length);
+      }
       const key = name;
       const info = this.data[key];
       if (info == null) {
