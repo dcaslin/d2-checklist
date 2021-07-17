@@ -3558,6 +3558,8 @@ export class ParseService {
                     type = ItemType.Shader;
                 } else if (type === ItemType.Dummy && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
                     type = ItemType.Shader;
+                } else if (type === ItemType.None && desc.itemTypeDisplayName ==  'Mask') {
+                    type = ItemType.Armor;
                 } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
                     type = ItemType.CurrencyExchange;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
