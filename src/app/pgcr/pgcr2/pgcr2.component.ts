@@ -104,6 +104,7 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         team: ParseService.getBasicDisplayValue(e.values.team),
         startSeconds: ParseService.getBasicValue(e.values.startSeconds),
         timePlayedSeconds: ParseService.getBasicValue(e.values.timePlayedSeconds),
+        timePlayedSecondsText: ParseService.getBasicDisplayValue(e.values.timePlayedSeconds),
         completionReason: ParseService.getBasicValue(e.values.completionReason),
         completionReasonText: ParseService.getBasicDisplayValue(e.values.completionReason),
         teamScore: ParseService.getBasicValue(e.values.teamScore),
@@ -140,26 +141,24 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
           };
           if (desc.group == 1) {
             general.push(extraEntry);
-            console.log(`General ${statName}`);
           }
           if (desc.group == 2) {
-            console.log(`weapons ${statName}`);
+            // push to general anyway
+            general.push(extraEntry);
           }
           if (desc.group == 3) {
             if ('Medals Earned' === statName) {
-              // ignore
+              // ignore, we already have this
             } else {
               medals.push(extraEntry);
               info.medalsEarned += basicVal;
             }
           }
-          // extra.push(extraEntry);
         }
       }
       if (e.extended.weapons != null) {
         for (const w of e.extended.weapons) {
           const desc: any = this.destinyCacheService.cache.InventoryItem[w.referenceId];
-
           const weaponInfo: WeaponInfo = {
             type: desc ? desc.itemTypeAndTierDisplayName : 'Classified',
             displayProperties: desc ? desc.displayProperties : null,
@@ -170,6 +169,13 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         }
       }
     }
+
+    // sort medals by value
+    medals.sort((a, b) => b.value - a.value);
+    // sort general by value
+    general.sort((a, b) => b.value - a.value);
+    // sort weapons by kills
+    weapons.sort((a, b) => b.kills - a.kills);
     return {
       info,
       values: values,
@@ -217,7 +223,6 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
     groups.sort((a, b) => {
       return sortEntries(a[0], b[0]);
     });
-    console.dir(groups);
     const finalEntries: Entry[] = [];
     for (const g of groups) {
       for (const e of g) {
@@ -238,10 +243,8 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
         if (!desc) {
           return null;
         }
-        console.dir(desc);
         const mode = ParseService.lookupMode(resp.activityDetails.mode);
         const modes = resp.activityDetails.modes;
-        console.dir(modes);
         const viewMode = modes?.indexOf(63) >= 0 ? ViewMode.GAMBIT : modes?.indexOf(48) >= 0 ? ViewMode.RUMBLE : modes?.indexOf(5) >= 0 ? ViewMode.PVP : ViewMode.PVE;
         let entries: Entry[] = [];
         const teams: Team[] = [];
@@ -267,7 +270,6 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
               score: ParseService.getBasicValue(t.score),
               entries: entries.filter((entry) => entry.values?.team === ('' + t.teamId))
             };
-            console.log(team.entries.length);
             teams.push(team);
           }
         }
@@ -290,7 +292,6 @@ export class Pgcr2Component extends StreamingChildComponent implements OnInit, O
           pveTeamScore = entries.map(e => e?.values?.teamScore > 0 ? e.values.teamScore : 0).reduce((a, b) => Math.max(a, b), 0);
           pveTotalTeamScore = entries.map(e => e?.info?.score > 0 ? e.info.score : 0).reduce((a, b) => a + b, 0);
         }
-        console.log(`Min completion value: ${minCompletionValue} ${pveSuccess}`);
         const longestEntry = entries.find(e => e.values?.activityDurationSeconds == maxDuration);
         return {
           instanceId,
@@ -428,6 +429,7 @@ interface EntryValues {
   team: string;
   startSeconds: number;
   timePlayedSeconds: number;
+  timePlayedSecondsText: string;
   completionReason: number;
   completionReasonText: string;
   teamScore: number;
