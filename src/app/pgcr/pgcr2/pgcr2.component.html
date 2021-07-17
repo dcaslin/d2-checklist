@@ -108,65 +108,63 @@
                 <td *ngIf="!g.allScoresZero && (g.viewMode==ViewMode.PVP || g.pveTeamScore)">{{e.info.score|number}}</td>
             </tr>
         </ng-template>
-        <br>
+    </div>
+    <ng-container  *ngIf="debugmode|async">
         <h1>Details</h1>
-        <div class="flex-row">
-            <div *ngFor="let e of g.entries">
-                <div class="detail-list">                
-                    <ng-container *ngIf="e?.info.player as player">
-                        <div class="flex-row">
-                            <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon size-40" [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
-                            <div>
-                                <div>{{player.destinyUserInfo.displayName}}</div>
-                                <div class="simple-caption-darker-no-margin">{{player.characterClass}} {{player.lightLevel}}</div>
+            <div class="flex-row">
+                <div *ngFor="let e of g.entries">
+                    <div class="detail-list">                
+                        <ng-container *ngIf="e?.info.player as player">
+                            <div class="flex-row">
+                                <div *ngIf="player.destinyUserInfo?.iconPath as icon" class="icon size-40" [style.background-image]="'url(//www.bungie.net' + icon + ')'"></div>
+                                <div>
+                                    <div>{{player.destinyUserInfo.displayName}}</div>
+                                    <div class="simple-caption-darker-no-margin">{{player.characterClass}} {{player.lightLevel}}</div>
+                                </div>
                             </div>
-                        </div>
-                    </ng-container>
-                </div>                
-                <div class="detail-list">
-                    <h3>Values</h3>
-                    <ng-container *ngFor="let key of Object.keys(e.values)">
-                        <div>
-                            {{key}}: {{e.values[key]}}
-                        </div>
-                    </ng-container>                    
-                </div>
-                <div class="detail-list">
-                    <h3>General</h3>
-                    <ng-container *ngFor="let g of e.general">
-                        <div>
-                            <span [matTooltip]="g.statDesc">{{g.statName}}: {{g.value}}</span>
-                        </div>
-                    </ng-container>
+                        </ng-container>
+                    </div>                
+                    <div class="detail-list">
+                        <h3>Values</h3>
+                        <ng-container *ngFor="let key of Object.keys(e.values)">
+                            <div>
+                                {{key}}: {{e.values[key]}}
+                            </div>
+                        </ng-container>                    
+                    </div>
+                    <div class="detail-list">
+                        <h3>General</h3>
+                        <ng-container *ngFor="let g of e.general">
+                            <div>
+                                <span [matTooltip]="g.statDesc">{{g.statName}}: {{g.value}}</span>
+                            </div>
+                        </ng-container>
+                        
+                    </div>
                     
-                </div>
-                
-                <div class="detail-list">
-                    <h3>Medals</h3>
-                    <ng-container *ngFor="let g of e.medals">
-                        <div>
-                            <span [matTooltip]="g.statDesc">{{g.statName}}: {{g.value}}</span>
-                        </div>
-                    </ng-container>
+                    <div class="detail-list">
+                        <h3>Medals</h3>
+                        <ng-container *ngFor="let g of e.medals">
+                            <div>
+                                <span [matTooltip]="g.statDesc">{{g.statName}}: {{g.value}}</span>
+                            </div>
+                        </ng-container>
+                        
+                    </div>
                     
+                    <div class="detail-list">
+                        <h3>Weapons</h3>
+                        <ng-container *ngFor="let w of e.weapons">
+                            <div>
+                                {{w.displayProperties.name}}: {{w.kills}}
+                            </div>
+                        </ng-container>
+                        
+                    </div>
                 </div>
-                
-                <div class="detail-list">
-                    <h3>Weapons</h3>
-                    <ng-container *ngFor="let w of e.weapons">
-                        <div>
-                            {{w.displayProperties.name}}: {{w.kills}}
-                        </div>
-                    </ng-container>
-                    
-                </div>
-            </div>
         </div>
-    </div>
-    
-
-    <div style="max-width: 300px; overflow: scroll;">
-        <pre style="text-align: left">{{g|json}}</pre>
-    </div>
-
+        <div style="max-width: 300px; overflow: scroll;">
+            <pre style="text-align: left">{{g|json}}</pre>
+        </div>
+    </ng-container>
 </ng-container>
