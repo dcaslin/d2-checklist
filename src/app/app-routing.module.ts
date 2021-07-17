@@ -29,7 +29,6 @@ import { HomeComponent } from './home/home.component';
 import { RobotHomeComponent } from './home/robot-home/robot-home.component';
 import { PartyComponent } from './party/party.component';
 import { PerkbenchComponent } from './perkbench/perkbench.component';
-import { PGCRComponent } from './pgcr';
 import { Pgcr2Component } from './pgcr/pgcr2/pgcr2.component';
 import { PlayerComponent } from './player';
 import { CharsComponent } from './player/chars/chars.component';
@@ -231,7 +230,7 @@ export class ManifestLoadedGuard implements CanActivate {
       path: 'pgcr/:instanceId',
       pathMatch: 'full',
       canActivate: [ManifestLoadedGuard],
-      component: PGCRComponent
+      component: Pgcr2Component
     },
     {
       path: 'pgcr2/:instanceId',

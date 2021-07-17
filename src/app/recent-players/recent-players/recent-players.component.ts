@@ -1,12 +1,13 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
+import { Entry, Game, PgcrService } from '@app/service/pgcr.service';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
-import { Activity, ActivityMode, BungieNetUserInfo, Const, PGCR, PGCREntry, Player } from '../../service/model';
+import { Activity, ActivityMode, Const, Player, UserInfo } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,10 +37,11 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public iconService: IconService,
+    private pgcrService: PgcrService,
     private route: ActivatedRoute, private router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);
-    this.activityModes = bungieService.getActivityModes();
+    this.activityModes = BungieService.getActivityModes();
     this.selectedMode = this.activityModes[0];
     this.maxResults = [5, 10, 20, 50];
     this.selectedMaxResults = this.maxResults[0];
@@ -73,7 +75,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     }
     const row = this.rows[this.rowCntr];
     try {
-      const data: PGCR = await this.bungieService.getPGCR(row.instanceId);
+      const data: Game = await this.pgcrService.loadPGCR(row.instanceId).toPromise();
       this.processPGCR(data);
       this.ref.markForCheck();
     }
@@ -83,40 +85,41 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     this.loadNextRow();
   }
 
-  private processPGCR(p: PGCR) {
+  private processPGCR(p: Game) {
     if (p == null) { return; }
     let targetFireTeamId = null;
     for (const e of p.entries) {
-      if (e.characterId === this.characterId) {
-        targetFireTeamId = e.fireteamId;
+      if (e.info.characterId === this.characterId) {
+        targetFireTeamId = e.values.fireteamId;
         break;
       }
     }
     if (targetFireTeamId == null) { return; }
     for (const e of p.entries) {
-      if (e.characterId !== this.characterId) {
-        if (e.fireteamId === targetFireTeamId) {
+      if (e.info.characterId !== this.characterId) {
+        if (e.values.fireteamId === targetFireTeamId) {
           this.countFriend(p, e);
         }
       }
     }
   }
 
-  private countFriend(p: PGCR, e: PGCREntry) {
-    if (this.friendsDict[e.user.membershipId] == null) {
-      this.friendsDict[e.user.membershipId] = {
-        user: e.user,
-        bungieNetUserInfo: e.bungieNetUserInfo,
+  private countFriend(p: Game, e: Entry) {
+    const user = e.info.player.destinyUserInfo;
+    const membershipId = user.membershipId;
+    if (this.friendsDict[e.info.player.destinyUserInfo.membershipId] == null) {
+      this.friendsDict[e.info.player.destinyUserInfo.membershipId] = {
+        user: e.info.player.destinyUserInfo,
         instances: []
       };
       // async store clans
-      this.bungieService.loadClansForUser(e.user).then(() => {
+      this.bungieService.loadClansForUser(user as unknown as UserInfo).then(() => {
         // update view if clan updates
         this.ref.markForCheck();
       });
-      this.friends.push(this.friendsDict[e.user.membershipId]);
+      this.friends.push(this.friendsDict[membershipId]);
     }
-    this.friendsDict[e.user.membershipId].instances.push(p);
+    this.friendsDict[membershipId].instances.push(p);
 
     this.friends.sort((a, b) => {
       if (a.instances.length > b.instances.length ) { return -1; }
