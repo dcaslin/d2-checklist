@@ -1221,6 +1221,8 @@ export class ParseService {
                 rewards = 'Pinnacle Gear (Weak)';
             }  else if (ms.milestoneHash == 3632712541 && rewards == '???') { // battlegrounds
                 rewards = 'Powerful Gear (Tier 1)';
+            }   else if (ms.milestoneHash == 1888320892 && rewards == '???') { // battlegrounds
+                rewards = 'Pinnacle Gear';
             }
             const boost = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
