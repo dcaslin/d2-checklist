@@ -1,13 +1,21 @@
 <h1 class="warn-text">This is not ready for release, nothing to see here, please move along ;)</h1>
+<ng-container  *ngIf="completeRolls$|async as c">
+    <h3>{{c.title}} </h3>
+    <div class="simple-darker-caption-no-margin">
+        {{c.manifestVersion}}<br>{{c.date|date:'short'}}
+    </div>
+</ng-container>
+
 <div class="spaced">
-    <button mat-stroked-button (click)="exportToFile()">
-        <fa-icon [icon]="iconService.falDownload"></fa-icon>
-        Load JSON from file
-    </button>
+    
     <input #importInput hidden="true" type="file" onclick="this.value=null" (change)="importFromFile($event)"
         accept=".json" />
     <button mat-stroked-button (click)="importInput.click()">
         <fa-icon [icon]="iconService.falUpload"></fa-icon>
+        Load JSON from file
+    </button>
+    <button mat-stroked-button (click)="exportToFile()">
+        <fa-icon [icon]="iconService.falDownload"></fa-icon>    
         Save JSON to file
     </button>
 </div>
