@@ -15,6 +15,7 @@ export class PandaGodrollsService implements OnDestroy {
   public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   private data: { [name: string]: GunInfo };
+  private meta: RollMeta|null = null;
   public isController = true;
   public matchLastTwoSockets = false;
   constructor(
@@ -58,7 +59,16 @@ export class PandaGodrollsService implements OnDestroy {
     if (this.data != null) {
       // no need to reload
     } else {
-      const temp = await this.load();
+      const allRolls = await this.load();
+      const temp = allRolls.rolls;
+      const meta: RollMeta = {
+        title: allRolls.title,
+        date: allRolls.date,
+        manifestVersion: allRolls.manifestVersion
+      }
+      this.meta = meta;
+      console.dir(meta);
+
       const data: { [name: string]: GunInfo } = {};
       for (const c of temp) {
         const key = c.name;
@@ -291,13 +301,13 @@ export class PandaGodrollsService implements OnDestroy {
     return greatRollFound ? 2 : goodRollFound ? 1 : 0;
   }
 
-  private async load(): Promise<GunRolls[]> {
+  private async load(): Promise<CompleteGodRolls> {
     const prefix = 'panda-rolls';
     const t0 = performance.now();
 
     const key = `${prefix}-${env.versions.app}`;
-    let rolls: GunRolls[] = await get(key);
-    if (rolls == null || rolls.length == 0) {
+    let completeGodRolls: CompleteGodRolls = await get(key);
+    if (completeGodRolls == null || completeGodRolls.rolls?.length == 0) {
       console.log(`'%c    No cached ${prefix}: ${key}`, LOG_CSS);
 
       // clear cache
@@ -307,19 +317,19 @@ export class PandaGodrollsService implements OnDestroy {
           del(k);
         }
       }
-      rolls = await this.httpClient
-        .get<GunRolls[]>(
+      completeGodRolls = await this.httpClient
+        .get<CompleteGodRolls>(
           `/assets/panda-godrolls.min.json?v=${env.versions.app}`
         )
         .toPromise();
-      set(key, rolls);
+      set(key, completeGodRolls);
       console.log(`'%c    ${prefix} downloaded, parsed and saved.`, LOG_CSS);
     } else {
       console.log(`'%c    Using cached ${prefix}: ${key}`, LOG_CSS);
     }
     const t1 = performance.now();
     console.log(`'%c    ${t1 - t0}ms to load wishlists`, LOG_CSS);
-    return rolls;
+    return completeGodRolls;
   }
 
   ngOnDestroy(): void {
@@ -346,4 +356,17 @@ export interface GunRoll {
   masterwork: string[];
   greatPerks: string[];
   goodPerks: string[];
+}
+
+export interface CompleteGodRolls {
+  title: string;
+  date: string; // iso date format
+  manifestVersion: string;
+  rolls: GunRolls[];
+}
+
+export interface RollMeta {
+  title: string;
+  date: string; // iso date format
+  manifestVersion: string;
 }
