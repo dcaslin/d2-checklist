@@ -403,6 +403,11 @@ mat-form-field.full-width .mat-form-field-infix{
   cursor: pointer;
 }
 
+.fake-link-underlined {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .fake-link-disabled {
   cursor: default;
 }
