@@ -7,6 +7,7 @@ import {
 } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
+import { del, get, keys, set } from 'idb-keyval';
 import {
   DamageType,
   InventoryPlug,
@@ -14,18 +15,20 @@ import {
   ItemType
 } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { CompleteGodRolls, GunRolls } from '@app/service/panda-godrolls.service';
+import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRolls, PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { format } from 'date-fns';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
+import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 
 // TODO show guns with unrollable perks
-// TODO offer option to apply god rolls to local storage
-// TODO offer option to clear god rolls from local storage
+// x offer option to apply god rolls to local storage
+// x offer option to clear god rolls from local storage
 // TODO clean up UI and add menu link
+// TODO show current god rolls that are being used
 
 // God bless DIM
 
@@ -80,11 +83,14 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
   public completeRolls$: BehaviorSubject<CompleteGodRolls|null> = new BehaviorSubject(null);
+  public customGodRollsApplied$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public filteredRolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject(
     []
   );
   public loading$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private weapons: GunInfo[] = [];
+
+
 
   constructor(
     storageService: StorageService,
@@ -96,6 +102,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   ) {
     super(storageService);
     this.init();
+
     this.isController =
       localStorage.getItem(PERK_BENCH_IS_CONTROLLER_KEY) == 'true';
     combineLatest([this.filterChanged$, this.rolls$])
@@ -172,16 +179,30 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     this.load();
   }
 
+  async fetchGodrolls(): Promise<CompleteGodRolls> {
+    return await this.httpClient
+    .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json`)
+    .toPromise();
+  }
+
   async load() {
     this.loading$.next(true);
     try {
-      const gunRolls = await this.httpClient
-        .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json`)
-        .toPromise();
-      this.loadPandaJson(
-        JSON.stringify(gunRolls),
-        this.weapons
-      );
+      let gunRolls = await PandaGodrollsService.getCustomGodRolls();
+      if (gunRolls) {
+        this.loadPandaJson(
+          JSON.stringify(gunRolls),
+          this.weapons,
+          true
+        );
+      } else {
+        gunRolls = await this.fetchGodrolls();
+        this.loadPandaJson(
+          JSON.stringify(gunRolls),
+          this.weapons,
+          false
+        );
+      }
     } catch (x) {
       console.dir(x);
       this.notificationService.fail(x);
@@ -199,21 +220,23 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     const sJson = await MarkService.readFileAsString(file);
     this.loadPandaJson(
       sJson,
-      this.weapons
+      this.weapons,
+      false
     );
   }
 
-  loadPandaJson(sGodRolls: string, weapons: GunInfo[]): void {
+  loadPandaJson(sGodRolls: string, weapons: GunInfo[], custom: boolean): void {
     this.loading$.next(true);
     try {
       const completeRolls: CompleteGodRolls = JSON.parse(sGodRolls);
-      if (!completeRolls.rolls?.length || !completeRolls.date || !completeRolls.manifestVersion) {
+      if (!PandaGodrollsService.isValid(completeRolls)) {
         throw new Error('Invalid JSON, must be valid D2Checklist god roll format.');
       }
       const gunRolls: GunRolls[] = completeRolls.rolls;
       const mappedRolls:  MappedRoll[] = PerkbenchComponent.combine(gunRolls, weapons);
       this.rolls$.next(mappedRolls);
       this.completeRolls$.next(completeRolls);
+      this.customGodRollsApplied$.next(custom);
     } catch (x) {
       console.dir(x);
       this.notificationService.fail(x);
@@ -391,6 +414,18 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     anch.setAttribute('visibility', 'hidden');
     document.body.appendChild(anch);
     anch.click();
+  }
+
+  public applyCurrentRolls() {
+    const rolls = this.buildRollJson();
+    set(CUSTOM_GOD_ROLLS, rolls);
+    this.notificationService.success(`Using your custom god rolls on this browser.`);
+    this.load();
+  }
+
+  public clearCustomRolls() {
+    del(CUSTOM_GOD_ROLLS);
+    this.load();
   }
 
 

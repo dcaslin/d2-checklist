@@ -4,8 +4,10 @@ import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Const, InventoryItem, ItemType, SelectedUser } from './model';
+import { NotificationService } from './notification.service';
 
 const LOG_CSS = `color: mediumpurple`;
+export const CUSTOM_GOD_ROLLS = 'custom-god-rolls';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +21,7 @@ export class PandaGodrollsService implements OnDestroy {
   public isController = true;
   public matchLastTwoSockets = false;
   constructor(
+    private notificationService: NotificationService,
     private httpClient: HttpClient
   ) {
   }
@@ -301,12 +304,38 @@ export class PandaGodrollsService implements OnDestroy {
     return greatRollFound ? 2 : goodRollFound ? 1 : 0;
   }
 
+  public static isValid(completeRolls: CompleteGodRolls): boolean {
+
+    if (!completeRolls || !completeRolls.rolls) {
+      return false;
+    }
+    if (!completeRolls.rolls?.length || !completeRolls.date || !completeRolls.manifestVersion) {
+      return false;
+    }
+    return true;
+  }
+
+  public static async  getCustomGodRolls(): Promise<CompleteGodRolls|null> {
+    const custom: CompleteGodRolls = await get(CUSTOM_GOD_ROLLS);
+    if (PandaGodrollsService.isValid(custom)) {
+      return custom;
+    }
+    return null;
+  }
+
   private async load(): Promise<CompleteGodRolls> {
     const prefix = 'panda-rolls';
     const t0 = performance.now();
 
     const key = `${prefix}-${env.versions.app}`;
-    let completeGodRolls: CompleteGodRolls = await get(key);
+    let completeGodRolls: CompleteGodRolls = await PandaGodrollsService.getCustomGodRolls();
+    let customGodRolls = false;
+    if (!completeGodRolls) {
+      completeGodRolls = await get(key);
+    } else {
+      console.log(`'%c    USING CUSTOM GOD ROLLS: ${completeGodRolls.title}`, LOG_CSS);
+      customGodRolls = true;
+    }
     if (completeGodRolls == null || completeGodRolls.rolls?.length == 0) {
       console.log(`'%c    No cached ${prefix}: ${key}`, LOG_CSS);
 
@@ -329,6 +358,13 @@ export class PandaGodrollsService implements OnDestroy {
     }
     const t1 = performance.now();
     console.log(`'%c    ${t1 - t0}ms to load wishlists`, LOG_CSS);
+    const loadDate = new Date(completeGodRolls.date);
+    if (customGodRolls) {
+      this.notificationService.success(`CUSTOM GOD ROLLS: Loaded '${completeGodRolls.title}' from ${loadDate.toLocaleDateString()}. You can use /perkbench to undo this override`);
+    } else {
+      this.notificationService.success(`God rolls: Loaded '${completeGodRolls.title}' from ${loadDate.toLocaleDateString()}`);
+    }
+    
     return completeGodRolls;
   }
 
