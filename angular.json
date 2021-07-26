@@ -89,8 +89,8 @@
           "options": {
             "browserTarget": "d2-checklist:build",
             "ssl": true,
-            "sslCert": "dev-certs/server.crt",
-            "sslKey": "dev-certs/server.key",
+            "sslCert": "dev-certs/localhost.crt",
+            "sslKey": "dev-certs/localhost.key",
             "proxyConfig": "src/proxy.www.conf.json"
           },
           "configurations": {

@@ -8,7 +8,7 @@
 
 <div class="spaced">
     
-    <input #importInput hidden="true" type="file" onclick="this.value=null" (change)="importFromFile($event)"
+    <input #importInput hidden="true" tyspe="file" onclick="this.value=null" (change)="importFromFile($event)"
         accept=".json" />
     <button mat-stroked-button (click)="importInput.click()">
         <fa-icon [icon]="iconService.falUpload"></fa-icon>
@@ -18,6 +18,16 @@
         <fa-icon [icon]="iconService.falDownload"></fa-icon>    
         Save JSON to file
     </button>
+    <button mat-stroked-button (click)="applyCurrentRolls()">
+        <fa-icon [icon]="iconService.fasSave"></fa-icon>    
+        Apply Current Rolls
+    </button>
+    
+    <button *ngIf="customGodRollsApplied$|async" mat-stroked-button (click)="clearCustomRolls()">
+        <fa-icon [icon]="iconService.fasBan"></fa-icon>    
+        Clear Applied Custom Rolls
+    </button>
+{{customGodRollsApplied$|async}}
 </div>
 <div class="spaced">
     <mat-button-toggle-group [(ngModel)]="isController" (change)="changeConsole();filterChanged$.next(true)"
