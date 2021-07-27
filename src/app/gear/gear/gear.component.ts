@@ -483,7 +483,7 @@ export class GearComponent extends ChildComponent {
     public iconService: IconService,
     public markService: MarkService,
     public gearService: GearService,
-    private pandaGodRollsService: PandaGodrollsService,
+    public pandaGodRollsService: PandaGodrollsService,
     private clipboardService: ClipboardService,
     private notificationService: NotificationService,
     public dialog: MatDialog,

@@ -15,9 +15,9 @@ export const CUSTOM_GOD_ROLLS = 'custom-god-rolls';
 export class PandaGodrollsService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public meta$: BehaviorSubject<RollMeta|null> = new BehaviorSubject(null);
 
   private data: { [name: string]: GunInfo };
-  private meta: RollMeta|null = null;
   public isController = true;
   public matchLastTwoSockets = false;
   constructor(
@@ -53,6 +53,11 @@ export class PandaGodrollsService implements OnDestroy {
     await this.update(controller, godRollLastTwoOnly);
   }
 
+  public async reload() {
+    this.data = null;
+    await this.update(this.isController, this.matchLastTwoSockets);
+  }
+
   public async update(
     isController: boolean,
     matchLastTwoSockets: boolean
@@ -68,8 +73,8 @@ export class PandaGodrollsService implements OnDestroy {
         title: allRolls.title,
         date: allRolls.date,
         manifestVersion: allRolls.manifestVersion
-      }
-      this.meta = meta;
+      };
+      this.meta$.next(meta);
       console.dir(meta);
 
       const data: { [name: string]: GunInfo } = {};
@@ -362,9 +367,9 @@ export class PandaGodrollsService implements OnDestroy {
     if (customGodRolls) {
       this.notificationService.success(`CUSTOM GOD ROLLS: Loaded '${completeGodRolls.title}' from ${loadDate.toLocaleDateString()}. You can use /perkbench to undo this override`);
     } else {
-      this.notificationService.success(`God rolls: Loaded '${completeGodRolls.title}' from ${loadDate.toLocaleDateString()}`);
+      // this.notificationService.success(`God rolls: Loaded '${completeGodRolls.title}' from ${loadDate.toLocaleDateString()}`);
     }
-    
+
     return completeGodRolls;
   }
 

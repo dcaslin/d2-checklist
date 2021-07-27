@@ -1,133 +1,178 @@
-<h1 class="warn-text">This is not ready for release, nothing to see here, please move along ;)</h1>
-<ng-container  *ngIf="completeRolls$|async as c">
-    <h3>{{c.title}} </h3>
-    <div class="simple-darker-caption-no-margin">
-        {{c.manifestVersion}}<br>{{c.date|date:'short'}}
-    </div>
-</ng-container>
+<div class="flex-row justify-center">
+    <div class="flex-column">
+        <mat-card>
+            <mat-card-header class="align-left">
+                <mat-card-title>Last loaded</mat-card-title>
+                <mat-card-subtitle>Viewing in PerkBench</mat-card-subtitle>
+              </mat-card-header>
+            <mat-card-content class="align-left flex-column">
 
-<div class="spaced">
-    
-    <input #importInput hidden="true" tyspe="file" onclick="this.value=null" (change)="importFromFile($event)"
-        accept=".json" />
-    <button mat-stroked-button (click)="importInput.click()">
-        <fa-icon [icon]="iconService.falUpload"></fa-icon>
-        Load JSON from file
-    </button>
-    <button mat-stroked-button (click)="exportToFile()">
-        <fa-icon [icon]="iconService.falDownload"></fa-icon>    
-        Save JSON to file
-    </button>
-    <button mat-stroked-button (click)="applyCurrentRolls()">
-        <fa-icon [icon]="iconService.fasSave"></fa-icon>    
-        Apply Current Rolls
-    </button>
-    
-    <button *ngIf="customGodRollsApplied$|async" mat-stroked-button (click)="clearCustomRolls()">
-        <fa-icon [icon]="iconService.fasBan"></fa-icon>    
-        Clear Applied Custom Rolls
-    </button>
-{{customGodRollsApplied$|async}}
-</div>
-<div class="spaced">
-    <mat-button-toggle-group [(ngModel)]="isController" (change)="changeConsole();filterChanged$.next(true)"
-        aria-label="Font Style">
-        <mat-button-toggle [value]="false">MnK</mat-button-toggle>
-        <mat-button-toggle [value]="true">Console</mat-button-toggle>
-    </mat-button-toggle-group>
-    <mat-form-field>
-        <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText" placeholder="Wildcard Search">
-    </mat-form-field>
-    <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showMissingOnly">
-        Only show missing rolls
-    </mat-checkbox>
-</div>
-<div *ngIf="filteredRolls$|async as rolls">
-    {{rolls.length}}
-    <table class="tidy-table">
-        <thead>
-            <tr>
-                <th>
-                    <span class="fake-link gear-sort" (click)="sort('name')">Name <d2c-sort-indicator field="name"
-                            [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span>
-                </th>
-                <th>
-                    <span class="fake-link gear-sort" (click)="sort('type')">Type <d2c-sort-indicator field="type"
-                            [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span>
-                </th>
-                <th>Damage</th>
-                <th>
-                    <span class="fake-link gear-sort" (click)="sort('season')">Season <d2c-sort-indicator field="season"
-                            [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span>
-                </th>
-                <th>Has Roll</th>
-            </tr>
-        </thead>
-        <tbody>
-            <ng-container *ngFor="let r of rolls">
-                <tr>
-                    <td><span class="fake-link underline"
-                            (click)="showRolls(r)">{{r.info.desc.displayProperties.name}}</span></td>
-                    <td>{{r.info.type}}</td>
-                    <td>{{r.info.damage}}</td>
-                    <td>{{r.info.season}}</td>
-                    <td>
-                        <fa-icon *ngIf="r.roll == null || (isController ? r.roll.controller == null : r.roll.mnk == null); else hasRoll" [icon]="iconService.farSquare"></fa-icon>
-                        <ng-template #hasRoll>
-                            <fa-icon *ngIf="r.roll!=null" [icon]="iconService.fasCheckSquare"></fa-icon>
-                        </ng-template>
-                    </td>
-                </tr>
-                
-                <ng-container *ngIf="(isController? r.roll.controller : r.roll.mnk) as roll">
-                    <tr *ngIf="roll.pve">
-                        <td></td>
-                        <th>PVE</th>
-                        <td>
-                            <ng-container *ngFor="let mw of roll.pve.masterwork; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container>
-                        </td>
-                        <td><ng-container *ngFor="let mw of roll.pve.greatPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                        <td><ng-container *ngFor="let mw of roll.pve.goodPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                    </tr>
-                    <tr *ngIf="roll.pve">
-                        <td></td>
-                        <th>PVP</th>
-                        <td>
-                            <ng-container *ngFor="let mw of roll.pvp.masterwork; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container>
-                        </td>
-                        <td><ng-container *ngFor="let mw of roll.pvp.greatPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                        <td><ng-container *ngFor="let mw of roll.pvp.goodPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                    </tr>
+                <ng-container *ngIf="completeRolls$|async as c">
+                    <div>{{c.title}}</div>
+                    <div>{{c.date|date:'short'}}</div>
+                    <div class="simple-caption-darker-no-margin">{{c.manifestVersion}}</div>
+
                 </ng-container>
-<!--                
-                <tr>
-                    <td colspan="5">
+                <div>
+                    <input #importInput hidden="true" type="file" onclick="this.value=null"
+                        (change)="importFromFile($event)" accept=".json" />
+                    <button mat-stroked-button (click)="importInput.click()">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Load JSON from file
+                    </button>
+                </div>
+                
+
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-header class="align-left">
+                <mat-card-title>Applied</mat-card-title>
+                <mat-card-subtitle>Your Gear Mgr is using this locally</mat-card-subtitle>
+              </mat-card-header>
+            <mat-card-content class="align-left flex-column">
+                <ng-container *ngIf="pandaGodrollsService.meta$|async as c">
+                    <div>{{c.title}}</div>
+                    <div>{{c.date|date:'short'}}</div>
+                    <div class="simple-caption-darker-no-margin">{{c.manifestVersion}}</div>
+                </ng-container>
+                
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <div>
+
+
+        <div *ngIf="filteredRolls$|async as rolls">
+            <div class="spaced align-left">
+                <mat-button-toggle-group [(ngModel)]="isController" (change)="changeConsole();filterChanged$.next(true)"
+                    aria-label="Font Style">
+                    <mat-button-toggle [value]="false">MnK</mat-button-toggle>
+                    <mat-button-toggle [value]="true">Console</mat-button-toggle>
+                </mat-button-toggle-group>
+                <mat-form-field>
+                    <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText"
+                        placeholder="Wildcard Search">
+                </mat-form-field>
+                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showMissingOnly">
+                    Only missing rolls
+                </mat-checkbox>
+                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showOutOfDateOnly">
+                    Only out-of-date rolls
+                </mat-checkbox>
+            </div>
+            <div class="flex-row spaced align-left">
+                <mat-form-field>
+                    <input matInput [(ngModel)]="currentTitle" placeholder="Current Title">                    
+                </mat-form-field>
+                <div>
+                    <button mat-stroked-button (click)="exportToFile()">
+                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
+                        Save JSON to file
+                    </button>
+                </div>
+                <div>
+                    <button mat-stroked-button (click)="applyCurrentRolls()">
+                        <fa-icon [icon]="iconService.fasSave"></fa-icon>
+                        Apply Current Rolls
+                    </button>
+                </div>
+                <div>
+                    <button *ngIf="customGodRollsApplied$|async" mat-stroked-button (click)="clearCustomRolls()">
+                        <fa-icon [icon]="iconService.fasBan"></fa-icon>
+                        Clear Applied Custom Rolls
+                    </button>
+                </div>
+            </div>
+            <table class="tidy-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <span class="fake-link gear-sort" (click)="sort('name')">Name <d2c-sort-indicator
+                                    field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span>
+                        </th>
+                        <th>
+                            <span class="fake-link gear-sort" (click)="sort('type')">Type <d2c-sort-indicator
+                                    field="type" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator></span>
+                        </th>
+                        <th>Damage</th>
+                        <th>
+                            <span class="fake-link gear-sort" (click)="sort('season')">Season <d2c-sort-indicator
+                                    field="season" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+                            </span>
+                        </th>
+                        <th>Has Roll
+                            <span class="simple-caption-no-margin float-right" *ngIf="rolls$|async as allRolls"> {{rolls.length}} /
+                                {{allRolls.length}}</span>
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let r of rolls">
+                        <tr>
+                            <td><span class="fake-link underline"
+                                    (click)="showRolls(r)">{{r.info.desc.displayProperties.name}}</span></td>
+                            <td>{{r.info.type}}</td>
+                            <td>{{r.info.damage}}</td>
+                            <td>{{r.info.season}}</td>
+                            <td>
+                                <fa-icon
+                                    *ngIf="r.roll == null || (isController ? r.roll.controller == null : r.roll.mnk == null); else hasRoll"
+                                    [icon]="iconService.farSquare"></fa-icon>
+                                <ng-template #hasRoll>
+                                    <fa-icon *ngIf="r.roll!=null" [icon]="iconService.fasCheckSquare"></fa-icon>
+                                </ng-template>
+                            </td>
+                        </tr>
                         <ng-container *ngIf="(isController? r.roll.controller : r.roll.mnk) as roll">
-                        <table>                            
-                            <tbody>
-                                <tr *ngIf="roll.pve">
-                                    <th>PVE</th>
-                                    <td>
-                                        <ng-container *ngFor="let mw of roll.pve.masterwork; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container>
-                                    </td>
-                                    <td><ng-container *ngFor="let mw of roll.pve.greatPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                                    <td><ng-container *ngFor="let mw of roll.pve.goodPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                                </tr>
-                                <tr *ngIf="roll.pve">
-                                    <th>PVP</th>
-                                    <td>
-                                        <ng-container *ngFor="let mw of roll.pvp.masterwork; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container>
-                                    </td>
-                                    <td><ng-container *ngFor="let mw of roll.pvp.greatPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                                    <td><ng-container *ngFor="let mw of roll.pvp.goodPerks; last as isLast">{{mw}}<ng-container *ngIf="!isLast">, </ng-container></ng-container></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <tr *ngIf="roll.pve">
+                                <td></td>
+                                <th>PVE</th>
+                                <td>
+                                    <ng-container *ngFor="let mw of roll.pve.masterwork; last as isLast">
+                                        {{mw|titlecase}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngFor="let mw of roll.pve.greatPerks; last as isLast">
+                                        {{mw|titlecase}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td colspan="1">
+                                    <ng-container *ngFor="let mw of roll.pve.goodPerks; last as isLast">
+                                        {{mw|titlecase}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                            </tr>
+                            <tr *ngIf="roll.pve">
+                                <td></td>
+                                <th>PVP</th>
+                                <td>
+                                    <ng-container *ngFor="let mw of roll.pvp.masterwork; last as isLast">
+                                        {{mw|titlecase}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td>
+                                    <ng-container *ngFor="let mw of roll.pvp.greatPerks; last as isLast">
+                                        {{mw|titlecase}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                                <td colspan="1">
+                                    <ng-container *ngFor="let mw of roll.pvp.goodPerks; last as isLast">
+                                        {{mw|titlecase}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                            </tr>
                         </ng-container>
-                    </td>
-                </tr> -->
-            </ng-container>
-        </tbody>
-    </table>
+                    </ng-container>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
 
 </div>
