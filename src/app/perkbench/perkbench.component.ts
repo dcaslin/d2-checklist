@@ -23,6 +23,7 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
 import { throwToolbarMixedModesError } from '@angular/material/toolbar';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 // TODO show guns with unrollable perks
 // x offer option to apply god rolls to local storage
@@ -67,7 +68,6 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
 };
 
-const PERK_BENCH_IS_CONTROLLER_KEY = 'perkbench-is-controller';
 
 @Component({
   selector: 'd2c-perkbench',
@@ -76,10 +76,12 @@ const PERK_BENCH_IS_CONTROLLER_KEY = 'perkbench-is-controller';
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
   public isController = true;
-  public sortBy = 'name';
-  public sortDesc = false;
+  public sortBy = 'season';
+  public sortDesc = true;
   public filterText = '';
+  public currentTitle = 'asdf';
   public showMissingOnly = false;
+  public showOutOfDateOnly = false;
   public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
   public completeRolls$: BehaviorSubject<CompleteGodRolls|null> = new BehaviorSubject(null);
@@ -96,15 +98,15 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     storageService: StorageService,
     public iconService: IconService,
     public dialog: MatDialog,
+    private signedOnUserService: SignedOnUserService,
+    public pandaGodrollsService: PandaGodrollsService,
     private destinyCacheService: DestinyCacheService,
     private notificationService: NotificationService,
     private httpClient: HttpClient
   ) {
     super(storageService);
     this.init();
-
-    this.isController =
-      localStorage.getItem(PERK_BENCH_IS_CONTROLLER_KEY) == 'true';
+    this.isController = this.pandaGodrollsService.isController;
     combineLatest([this.filterChanged$, this.rolls$])
       .pipe(takeUntil(this.unsubscribe$), debounceTime(50))
       .subscribe(([changed, rolls]) => {
@@ -117,6 +119,9 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
                 ? x.roll.controller == null
                 : x.roll.mnk == null)
           );
+        }
+        if (this.showOutOfDateOnly) {
+          // TODO figure this out
         }
         if (this.filterText.trim().length > 0) {
           showMe = showMe.filter(
@@ -237,6 +242,9 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       this.rolls$.next(mappedRolls);
       this.completeRolls$.next(completeRolls);
       this.customGodRollsApplied$.next(custom);
+      let name = this.signedOnUserService.signedOnUser$.getValue()?.userInfo?.displayName;
+      name = name ? name : 'My';
+      this.currentTitle = `${name} Godrolls`;
     } catch (x) {
       console.dir(x);
       this.notificationService.fail(x);
@@ -289,12 +297,11 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   private buildRollJson(): CompleteGodRolls {
     const currentRolls = this.completeRolls$.getValue();
     const downloadMe: CompleteGodRolls = {
-      title: 'Custom Perkbench Rolls',
+      title: this.currentTitle,
       date: new Date().toISOString(),
       manifestVersion: this.destinyCacheService.cache.version,
       rolls: currentRolls.rolls
     }
-
     return downloadMe;
   }
 
@@ -402,7 +409,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
   public exportToFile() {
     const anch: HTMLAnchorElement = document.createElement('a');
-    const sMarks = JSON.stringify(this.buildRollJson());
+    const sMarks = JSON.stringify(this.buildRollJson(), null, 2);
     anch.setAttribute(
       'href',
       'data:text/csv;charset=utf-8,' + encodeURIComponent(sMarks)
@@ -421,11 +428,15 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     set(CUSTOM_GOD_ROLLS, rolls);
     this.notificationService.success(`Using your custom god rolls on this browser.`);
     this.load();
+    // refresh rolls
+    this.pandaGodrollsService.reload();
   }
 
   public clearCustomRolls() {
     del(CUSTOM_GOD_ROLLS);
     this.load();
+    // refresh rolls
+    this.pandaGodrollsService.reload();
   }
 
 

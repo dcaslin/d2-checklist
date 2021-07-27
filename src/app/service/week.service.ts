@@ -561,6 +561,7 @@ export class WeekService {
     const lsLootIndex = lsDays % this.LS_LEGEND_LOOT.length;
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
     const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
+    // TODO update this when PL's change
     const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1310);
     const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1340);
 
