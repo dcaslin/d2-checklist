@@ -15,7 +15,7 @@ import {
   ItemType
 } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRolls, PandaGodrollsService } from '@app/service/panda-godrolls.service';
+import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, PandaGodrollsService, RYKER_GOD_ROLLS_URL } from '@app/service/panda-godrolls.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { format } from 'date-fns';
@@ -76,12 +76,14 @@ const WATERMARK_TO_SEASON = {
 })
 export class PerkbenchComponent extends ChildComponent implements OnInit {
   public isController = true;
+  public RYKER_GOD_ROLLS_URL = RYKER_GOD_ROLLS_URL;
   public sortBy = 'season';
   public sortDesc = true;
   public filterText = '';
   public currentTitle = 'asdf';
   public showMissingOnly = false;
   public showOutOfDateOnly = false;
+  public showWrongOnly = false;
   public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
   public completeRolls$: BehaviorSubject<CompleteGodRolls|null> = new BehaviorSubject(null);
@@ -121,7 +123,10 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           );
         }
         if (this.showOutOfDateOnly) {
-          // TODO figure this out
+          showMe = showMe.filter(x => x.defunctPerks.length > 0);
+        }
+        if (this.showWrongOnly) {
+          showMe = showMe.filter(x => x.missingPerks.length > 0);
         }
         if (this.filterText.trim().length > 0) {
           showMe = showMe.filter(
@@ -158,7 +163,6 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
             return 0;
           }
         });
-        console.log('done');
         this.filteredRolls$.next(showMe);
       });
   }
@@ -228,6 +232,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       this.weapons,
       false
     );
+    this.currentTitle = this.completeRolls$.getValue().title;
   }
 
   loadPandaJson(sGodRolls: string, weapons: GunInfo[], custom: boolean): void {
@@ -283,15 +288,47 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       if (controllerRoll != null && mnkRoll === controllerRoll) {
         mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
       }
-      returnMe.push({
+      const addMe =   {
         roll: {
           controller: controllerRoll,
           mnk: mnkRoll,
         },
         info: w,
-      });
+        missingPerks: [],
+        defunctPerks: []
+      };
+      PerkbenchComponent.checkRolls(addMe);
+      returnMe.push(addMe);
     }
     return returnMe;
+  }
+
+  private static checkRolls(mr: MappedRoll): void {
+    this.checkRoll(mr, mr.roll.controller?.pve, mr.info);
+    this.checkRoll(mr, mr.roll.controller?.pvp, mr.info);
+    this.checkRoll(mr, mr.roll.mnk?.pve, mr.info);
+    this.checkRoll(mr, mr.roll.mnk?.pvp, mr.info);
+  }
+
+  private static checkRoll(parent: MappedRoll, roll: GunRoll, w: GunInfo): void {
+    if (!roll) {
+      return;
+    }
+    const checkMe = roll.goodPerks.concat(roll.greatPerks);
+    // map reduce concat possiblePlugs
+    const allPlugs = w.sockets.map(x => x.possiblePlugs).reduce( (a, b) => a.concat(b), []);
+    const allPlugNames = allPlugs.map(x => x.name.toLowerCase());
+    const currentCanRollPlugName = allPlugs.filter(x => x.currentlyCanRoll).map( x => x.name.toLowerCase());
+
+    for (const c of checkMe) {
+      if (allPlugNames.indexOf(c) < 0) {
+        parent.missingPerks.push(c);
+        console.log(`${w.desc.displayProperties.name} has missing perk: ${c}`);
+      } else if (currentCanRollPlugName.indexOf(c) < 0) {
+        parent.defunctPerks.push(c);
+        console.log(`${w.desc.displayProperties.name} has defunct perks: ${c}`);
+      }
+    }
   }
 
   private buildRollJson(): CompleteGodRolls {
@@ -461,6 +498,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 export interface MappedRoll {
   roll: PlatformGunRolls;
   info: GunInfo;
+  defunctPerks: string[];
+  missingPerks: string[];
 }
 
 export interface PlatformGunRolls {
