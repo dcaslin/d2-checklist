@@ -1219,9 +1219,9 @@ export class ParseService {
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
                 rewards = 'Pinnacle Gear (Weak)';
-            }  else if (ms.milestoneHash == 3632712541 && rewards == '???') { // battlegrounds
+            } else if (ms.milestoneHash == 3632712541 && rewards == '???') { // battlegrounds
                 rewards = 'Powerful Gear (Tier 1)';
-            }   else if (ms.milestoneHash == 1888320892 && rewards == '???') { // battlegrounds
+            } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // battlegrounds
                 rewards = 'Pinnacle Gear';
             }
             const boost = this.parseMilestonePl(rewards);
@@ -3560,7 +3560,7 @@ export class ParseService {
                     type = ItemType.Shader;
                 } else if (type === ItemType.Dummy && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
                     type = ItemType.Shader;
-                } else if (type === ItemType.None && desc.itemTypeDisplayName ==  'Mask') {
+                } else if (type === ItemType.None && desc.itemTypeDisplayName == 'Mask') {
                     type = ItemType.Armor;
                 } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
                     type = ItemType.CurrencyExchange;
@@ -3828,6 +3828,16 @@ export class ParseService {
                                             possiblePlugs.push(oPlug);
                                         }
                                     }
+                                } else if (socketDesc.singleInitialItemHash) {
+                                    const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+                                    const plugName = this.getPlugName(plugDesc);
+                                    if (plugName == null) { continue; }
+                                    const oPlug = new InventoryPlug(plugDesc.hash,
+                                        plugName, plugDesc.displayProperties.description,
+                                        plugDesc.displayProperties.icon, false);
+                                    oPlug.currentlyCanRoll = true;
+                                    possiblePlugs.push(oPlug);
+
                                 }
                             }
                         }

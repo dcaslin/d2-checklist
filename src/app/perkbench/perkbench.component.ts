@@ -194,6 +194,15 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     .toPromise();
   }
 
+  async loadOfficialRolls() {
+    let gunRolls = await this.fetchGodrolls();
+    this.loadPandaJson(
+      JSON.stringify(gunRolls),
+      this.weapons,
+      false
+    );
+  }
+
   async load() {
     this.loading$.next(true);
     try {
@@ -415,7 +424,17 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
                 possiblePlugs.push(oPlug);
               }
             }
-          }
+          } else if (socketDesc.singleInitialItemHash && !(socketDesc.socketTypeHash == 1282012138) ) {
+            const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+            const plugName = plugDesc?.displayProperties?.name;
+            if (plugName == null) { continue; }
+            const oPlug = new InventoryPlug(plugDesc.hash,
+                plugName, plugDesc.displayProperties.description,
+                plugDesc.displayProperties.icon, false);
+            oPlug.currentlyCanRoll = true;
+            possiblePlugs.push(oPlug);
+
+        }
           if (possiblePlugs.length > 0) {
             sockets.push(
               new InventorySocket(jCat.socketCategoryHash, [], possiblePlugs)
