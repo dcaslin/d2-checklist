@@ -2,70 +2,13 @@
     <div class="flex-column">
         <mat-card>
             <mat-card-header class="align-left">
-                <mat-card-title>Last loaded</mat-card-title>
-                <mat-card-subtitle>Viewing in PerkBench</mat-card-subtitle>
-              </mat-card-header>
-            <mat-card-content class="align-left flex-column">
-
-                <ng-container *ngIf="completeRolls$|async as c">
-                    <div>{{c.title}}</div>
-                    <div>{{c.date|date:'short'}}</div>
-                    <div class="simple-caption-darker-no-margin">{{c.manifestVersion}}</div>
-
-                </ng-container>
-                <div>
-                    <input #importInput hidden="true" type="file" onclick="this.value=null"
-                        (change)="importFromFile($event)" accept=".json" />
-                    <button mat-stroked-button (click)="importInput.click()">
-                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
-                        Load JSON from file
-                    </button>
-                </div>
-                
-
-            </mat-card-content>
-        </mat-card>
-        <mat-card>
-            <mat-card-header class="align-left">
-                <mat-card-title>Applied</mat-card-title>
-                <mat-card-subtitle>Your Gear Mgr is using this locally</mat-card-subtitle>
-              </mat-card-header>
-            <mat-card-content class="align-left flex-column">
-                <ng-container *ngIf="pandaGodrollsService.meta$|async as c">
-                    <div>{{c.title}}</div>
-                    <div>{{c.date|date:'short'}}</div>
-                    <div class="simple-caption-darker-no-margin">{{c.manifestVersion}}</div>
-                </ng-container>
-                
-            </mat-card-content>
-        </mat-card>
-    </div>
-
-    <div>
-
-
-        <div *ngIf="filteredRolls$|async as rolls">
-            <div class="spaced align-left">
-                <mat-button-toggle-group [(ngModel)]="isController" (change)="changeConsole();filterChanged$.next(true)"
-                    aria-label="Font Style">
-                    <mat-button-toggle [value]="false">MnK</mat-button-toggle>
-                    <mat-button-toggle [value]="true">Console</mat-button-toggle>
-                </mat-button-toggle-group>
-                <mat-form-field>
-                    <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText"
-                        placeholder="Wildcard Search">
-                </mat-form-field>
-                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showMissingOnly">
-                    Only missing rolls
-                </mat-checkbox>
-                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showOutOfDateOnly">
-                    Only out-of-date rolls
-                </mat-checkbox>
-            </div>
-            <div class="flex-row spaced align-left">
-                <mat-form-field>
-                    <input matInput [(ngModel)]="currentTitle" placeholder="Current Title">                    
-                </mat-form-field>
+                <mat-card-title>
+                    <mat-form-field>
+                        <input matInput [(ngModel)]="currentTitle" placeholder="Working Title">
+                    </mat-form-field>
+                </mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="align-left flex-column">                              
                 <div>
                     <button mat-stroked-button (click)="exportToFile()">
                         <fa-icon [icon]="iconService.falDownload"></fa-icon>
@@ -83,8 +26,85 @@
                         <fa-icon [icon]="iconService.fasBan"></fa-icon>
                         Clear Applied Custom Rolls
                     </button>
+                </div>  
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-header class="align-left">
+                <mat-card-title>Last loaded</mat-card-title>
+                <mat-card-subtitle>Viewing in PerkBench</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="align-left flex-column">
+
+                <ng-container *ngIf="completeRolls$|async as c">
+                    <div>{{c.title}}</div>
+                    <div>{{c.date|date:'short'}}</div>
+                    <div class="simple-caption-darker-no-margin">{{c.manifestVersion}}</div>
+
+                </ng-container>
+                <div>
+                    <input #importInput hidden="true" type="file" onclick="this.value=null"
+                        (change)="importFromFile($event)" accept=".json" />
+                    <button mat-stroked-button (click)="importInput.click()">
+                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
+                        Load JSON from file
+                    </button>
                 </div>
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-header class="align-left">
+                <mat-card-title>Applied</mat-card-title>
+                <mat-card-subtitle>Your Gear Mgr is using this locally</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content class="align-left flex-column">
+                <ng-container *ngIf="pandaGodrollsService.meta$|async as c">
+                    <div>{{c.title}}</div>
+                    <div>{{c.date|date:'short'}}</div>
+                    <div class="simple-caption-darker-no-margin">{{c.manifestVersion}}</div>
+                </ng-container>
+            </mat-card-content>
+        </mat-card>
+        <mat-card>
+            <mat-card-header class="align-left">
+                <mat-card-title>Info</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="align-left flex-column info-text">
+                <p>On this page you can:</p>
+                <ul>
+                    <li>View those rolls</li>
+                    <li>Load/save rolls to file</li>
+                    <li>Edit your current rolls</li>
+                    <li>Apply them to be used in your Gear Mgr</li>                    
+                </ul>
+                <p>Default god rolls are loaded from the <a class="underline" [href]="RYKER_GOD_ROLLS_URL" target="_blank" rel="noopener">D2Checklist Google Sheet</a>. </p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    <div>
+        <div *ngIf="filteredRolls$|async as rolls">
+
+            <div class="spaced align-left">
+                <mat-button-toggle-group [(ngModel)]="isController" (change)="changeConsole();filterChanged$.next(true)"
+                    aria-label="Font Style">
+                    <mat-button-toggle [value]="false">MnK</mat-button-toggle>
+                    <mat-button-toggle [value]="true">Console</mat-button-toggle>
+                </mat-button-toggle-group>
+                <mat-form-field>
+                    <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText"
+                        placeholder="Wildcard Search">
+                </mat-form-field>
+                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showMissingOnly">
+                    Only missing rolls
+                </mat-checkbox>
+                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showOutOfDateOnly">
+                    Only out-of-date rolls
+                </mat-checkbox>
+                <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showWrongOnly">
+                    Only rolls with incorrect perks
+                </mat-checkbox>
             </div>
+
             <table class="tidy-table">
                 <thead>
                     <tr>
@@ -103,7 +123,8 @@
                             </span>
                         </th>
                         <th>Has Roll
-                            <span class="simple-caption-no-margin float-right" *ngIf="rolls$|async as allRolls"> {{rolls.length}} /
+                            <span class="simple-caption-no-margin float-right" *ngIf="rolls$|async as allRolls">
+                                {{rolls.length}} /
                                 {{allRolls.length}}</span>
 
                         </th>
@@ -127,6 +148,24 @@
                             </td>
                         </tr>
                         <ng-container *ngIf="(isController? r.roll.controller : r.roll.mnk) as roll">
+                            <tr *ngIf="r.missingPerks.length>0">
+                                <td></td>
+                                <th>Incorrect Perks</th>
+                                <td colspan="3">
+                                    <ng-container *ngFor="let p of r.missingPerks; last as isLast">
+                                        {{p}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                            </tr>
+                            <tr *ngIf="r.defunctPerks.length>0">
+                                <td></td>
+                                <th>Defunct Perks</th>
+                                <td colspan="3">
+                                    <ng-container *ngFor="let p of r.defunctPerks; last as isLast">
+                                        {{p}}<ng-container *ngIf="!isLast">, </ng-container>
+                                    </ng-container>
+                                </td>
+                            </tr>
                             <tr *ngIf="roll.pve">
                                 <td></td>
                                 <th>PVE</th>
