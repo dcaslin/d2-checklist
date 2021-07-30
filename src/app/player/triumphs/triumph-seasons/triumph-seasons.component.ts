@@ -26,6 +26,8 @@ export class TriumphSeasonsComponent extends ChildComponent implements OnInit {
       const week = WeekService.getSplicerWeek();
       if (week < maxEntries) {
         this.seasonIndex = week;
+      } else {
+        this.seasonIndex = maxEntries - 1;
       }
     }
   }

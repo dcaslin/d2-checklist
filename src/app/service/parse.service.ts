@@ -2329,12 +2329,22 @@ export class ParseService {
                     }
                     // we're on the "Weekly" each child is a week in the season
                     if (weeklyChild != null) {
+                        const incomplete = {
+                            name: 'All Incomplete',
+                            records: []
+                        };
                         for (const week of weeklyChild.children) {
                             seasonChallengeEntries.push({
                                 name: week.name,
                                 records: week.children as TriumphRecordNode[]
                             });
+                            for (const r of week.children) {
+                                if (!r.complete) {
+                                    incomplete.records.push(r);
+                                }
+                            }
                         }
+                        seasonChallengeEntries.push(incomplete);
                     }
                 }
 
