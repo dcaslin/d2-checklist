@@ -29,18 +29,6 @@ function sortByIndexReverse(a: any, b: any): number {
   return 0;
 }
 
-
-function selectExclusiveToggleVal(state: ToggleState, val: any) {
-  for (const c of state.choices) {
-    if (c.matchValue == val) {
-      c.value = true;
-    } else {
-      c.value = false;
-    }
-  }
-}
-
-
 function sortByIndex(a: any, b: any): number {
   if (a.index < b.index) {
     return -1;
@@ -193,13 +181,15 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' }
 ];
 
+const GEAR_FILTER_KEY = 'D2C-GEAR-FILTER';
+
 @Injectable({
   providedIn: 'root'
 })
 export class GearFilterStateService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   public toggleData: ToggleData;
-  public toggleDataArray: BehaviorSubject<ToggleState>[];;
+  public toggleDataArray: BehaviorSubject<ToggleState>[];
   public autoCompleteOptions: AutoCompleteOption[];
   public filteredAutoCompleteOptions$: BehaviorSubject<AutoCompleteOption[]> = new BehaviorSubject([]);
   private filterTags$: BehaviorSubject<string[]> = new BehaviorSubject([]);
@@ -216,11 +206,30 @@ export class GearFilterStateService implements OnDestroy {
     // tap into the filter changes to mark things dirty if necessary
     this.filterUpdated$.pipe(
       takeUntil(this.unsubscribe$),
-      debounceTime(10))
+      debounceTime(20))
       .subscribe(() => {
         const dirty = this.isFilterDirty();
         if (dirty != this.filtersDirty$.getValue()) {
           this.filtersDirty$.next(dirty);
+        }
+        if (this.isToggleDataInit()) {
+          // we have no filters, so clear everything in localstorage
+          if (!dirty) {
+            localStorage.removeItem(GEAR_FILTER_KEY);
+          } else {
+            const filterSettings: FilterSettings = {
+              filterText: this.visibleFilterText,
+              deselectedChoices: {}
+            };
+            for (const key of Object.keys(this.toggleData)) {
+              const t = this.toggleData[key];
+              const deselectedVals: string[] = t.getValue().choices.filter(c => !c.value).map(c => c.matchValue);
+              if (deselectedVals.length > 0) {
+                filterSettings.deselectedChoices[key] = deselectedVals;
+              }
+            }
+            localStorage.setItem(GEAR_FILTER_KEY, JSON.stringify(filterSettings));
+          }
         }
       });
   }
@@ -235,16 +244,11 @@ export class GearFilterStateService implements OnDestroy {
     }
     combineLatest(thingsToListenTo$).pipe(
       takeUntil(this.unsubscribe$),
-      debounceTime(10)).subscribe (() => {
+      debounceTime(10)).subscribe(() => {
         this.filterUpdated$.next();
-    });
+      });
     this.toggleDataArray = a;
     this.autoCompleteOptions = FIXED_AUTO_COMPLETE_OPTIONS.slice(0);
-    const gFilter = localStorage.getItem('gear-filter');
-    if (gFilter != null) {
-      this.visibleFilterText = gFilter;
-      this.parseWildcardFilter();
-    }
   }
 
 
@@ -276,7 +280,7 @@ export class GearFilterStateService implements OnDestroy {
 
 
   private shouldKeepItem(i: InventoryItem): boolean {
-    
+
     for (const f of this.filterTags$.getValue()) {
       const match = processFilterTag(f, i);
       if (!this.orMode && !match) {
@@ -362,14 +366,6 @@ export class GearFilterStateService implements OnDestroy {
     return returnMe;
   }
 
-  public updateToggle(event: ToggleStateUpdate) {
-    event.choices;
-    event.state;
-
-
-  }
-
-
   public resetFilters(noEmit?: boolean): void {
     // TODO is this necessary?
     // if (this.filter) {
@@ -390,17 +386,37 @@ export class GearFilterStateService implements OnDestroy {
     if (!this.isToggleDataInit()) {
       this.generateDynamicChoices(player, this.toggleData);
       this.autoCompleteOptions = this.generateDynamicAutocompleteOptions(player.gear);
+
+      const sSettings = localStorage.getItem(GEAR_FILTER_KEY);
+      if (sSettings) {
+        const filterSettings: FilterSettings = JSON.parse(sSettings);
+        this.visibleFilterText = filterSettings.filterText;
+        this.parseWildcardFilter();
+        for (const key of Object.keys(this.toggleData)) {
+          let changeMade = false;
+          const t: ToggleState = this.toggleData[key].getValue();
+          const deselectedVals: string[] = filterSettings.deselectedChoices[key];
+          if (deselectedVals) {
+            const choices = t.choices.slice(0);
+            for (const deselectedVal of deselectedVals) {
+              const choice = t.choices.find(x => x.matchValue === deselectedVal);
+              if (choice) {
+                choice.value = false;
+                changeMade = true;
+              }
+            }
+            if (changeMade) {
+              this.toggleData[key].next(generateState(t.config, choices, t.visibleItemType));
+            }
+          }
+        }
+      }
     }
     this.applyShortcutInfo(shortcutInfo$);
   }
 
   public parseWildcardFilter() {
     const val: string = this.visibleFilterText;
-    if (val == null || val.trim().length == 0) {
-      localStorage.removeItem('gear-filter');
-    } else {
-      localStorage.setItem('gear-filter', val);
-    }
     if (val == null || val.trim().length === 0) {
       this.filteredAutoCompleteOptions$.next([]);
       this.filterTags$.next([]);
@@ -473,13 +489,14 @@ export class GearFilterStateService implements OnDestroy {
     if (shortcutInfo.owner) {
       const val = this.toggleData.owners$.getValue();
       const choices = val.choices.slice(0);
-      choices.forEach(x => x.matchValue == shortcutInfo.owner);
+
+      choices.forEach(x => x.value = (x.matchValue == shortcutInfo.owner));
       this.toggleData.owners$.next(generateState(val.config, choices, val.visibleItemType));
     }
     if (shortcutInfo.postmaster) {
       const val = this.toggleData.postmaster$.getValue();
       const choices = val.choices.slice(0);
-      choices.forEach(x => x.matchValue == true);
+      choices.forEach(x => x.value = (x.matchValue == true));
       this.toggleData.postmaster$.next(generateState(val.config, choices, val.visibleItemType));
     }
     shortcutInfo$.next(null);
@@ -824,7 +841,7 @@ export class GearFilterStateService implements OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-}
+  }
 }
 
 
@@ -900,4 +917,9 @@ export interface ShortcutInfo {
 export interface AutoCompleteOption {
   value: string;
   desc?: string;
+}
+
+interface FilterSettings {
+  filterText: string;
+  deselectedChoices: { [key: string]: string[] }; // toggle key, and matched values that are deslected
 }
