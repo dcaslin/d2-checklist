@@ -1,6 +1,6 @@
 <h2 mat-dialog-title>Equipped Armor Perks
 </h2>
-<mat-dialog-content *ngIf="data.parent._player|async as player">
+<mat-dialog-content *ngIf="data.parent.player$|async as player">
 
     <mat-tab-group>
         <mat-tab [label]="char.className+' - '+char.light" *ngFor="let char of player.characters">

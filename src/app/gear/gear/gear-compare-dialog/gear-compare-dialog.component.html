@@ -12,7 +12,7 @@
         <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk</mat-checkbox>
 
     </div>
-    <mat-dialog-content *ngIf="parent._player|async as player">
+    <mat-dialog-content *ngIf="parent.player$|async as player">
         <table class="gear-table mark-table">
             <thead>
                 <tr *ngIf="showAllNames">
