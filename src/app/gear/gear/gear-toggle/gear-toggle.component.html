@@ -1,25 +1,26 @@
-<ng-container *ngIf="!state.hidden">
-    <button mat-button class="toggle-button" [matMenuTriggerFor]="menu" [class.warn-text]="!state.allSelected">
-      <fa-icon *ngIf="state.config.icon" [icon]="state.config.icon"></fa-icon>
-      <i *ngIf="state.config.iconClass" [class]="state.config.iconClass"></i>
-      <span class="hide-mobile-inline">&ensp;{{state.config.title}}</span>
-    </button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="selectAll()">        
-        Select All
+<ng-container *ngIf="state$|async as state">
+  <ng-container *ngIf="!state.hidden">
+      <button mat-button class="toggle-button" [matMenuTriggerFor]="menu" [class.warn-text]="!state.allSelected">
+        <fa-icon *ngIf="state.config.icon" [icon]="state.config.icon"></fa-icon>
+        <i *ngIf="state.config.iconClass" [class]="state.config.iconClass"></i>
+        <span class="hide-mobile-inline">&ensp;{{state.config.title}}</span>
       </button>
-      <a *ngFor="let choice of state.choices" class="toggle-menu-button" mat-menu-item (click)="exclusiveSelect(choice)">
-        
-          <button mat-icon-button (click)="select($event, choice); false" [color]="choice.value?'accent':'primary'">
-            <ng-container *ngIf="choice.value">
-              <fa-icon size="lg" [fixedWidth]="true" [icon]="iconService.fasPlusSquare"></fa-icon>
-            </ng-container>
-            <ng-container *ngIf="!choice.value">
-              <fa-icon size="lg" [fixedWidth]="true" [icon]="iconService.fasMinusSquare"></fa-icon>
-            </ng-container>
-          </button>     
-        <!-- <mat-checkbox [(ngModel)]="choice.value" (click)="select($event, choice); false"></mat-checkbox> -->
-        {{choice.display}}
-      </a>
-    </mat-menu>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="selectAll()">        
+          Select All
+        </button>
+        <a *ngFor="let choice of state.choices" class="toggle-menu-button" mat-menu-item (click)="exclusiveSelect(choice)">
+          
+            <button mat-icon-button (click)="select($event, choice); false" [color]="choice.value?'accent':'primary'">
+              <ng-container *ngIf="choice.value">
+                <fa-icon size="lg" [fixedWidth]="true" [icon]="iconService.fasPlusSquare"></fa-icon>
+              </ng-container>
+              <ng-container *ngIf="!choice.value">
+                <fa-icon size="lg" [fixedWidth]="true" [icon]="iconService.fasMinusSquare"></fa-icon>
+              </ng-container>
+            </button>          
+          {{choice.display}}
+        </a>
+      </mat-menu>
+  </ng-container>
 </ng-container>

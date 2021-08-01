@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy, AfterViewInit } from '@angular/core';
-import { InventoryItem, ItemType } from '@app/service/model';
-import { IconDefinition } from '@fortawesome/pro-solid-svg-icons';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { BehaviorSubject, generate } from 'rxjs';
+import { ItemType } from '@app/service/model';
+import { BehaviorSubject } from 'rxjs';
+import { Choice, generateState, ToggleConfig, ToggleState, ToggleStateUpdate } from '../gear-filter-state.service';
+
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,143 +11,43 @@ import { BehaviorSubject, generate } from 'rxjs';
   templateUrl: './gear-toggle.component.html',
   styleUrls: ['../gear.component.scss']
 })
-export class GearToggleComponent implements OnInit {
+export class GearToggleComponent {
 
-  @Output() change = new EventEmitter<void>();
-
-
-  @Input() state: ToggleState;
-  @Output() stateChange = new EventEmitter<ToggleState>();
-
-  public static cloneState(val: ToggleState): ToggleState {
-    return GearToggleComponent.generateState(val.config, val.choices, val.visibleItemType);
-  }
-
-  public static generateState(config: ToggleConfig, choices: Choice[], visibleItemType: ItemType): ToggleState {
-    const hidden = true === (config.displayTabs?.indexOf(visibleItemType) < 0);
-    const allSelected = choices && choices.every(x => x.value);
-    return {
-      config,
-      visibleItemType,
-      hidden,
-      allSelected,
-      choices
-    };
-  }
-
+  @Input() state$: BehaviorSubject<ToggleState>;
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit() {
-
-  }
-
-  public static selectAllState(state: ToggleState) {
-    if (state?.choices) {
-      for (const ch of state.choices) {
-        ch.value = true;
-      }
-    }
-  }
-
   selectAll() {
-    try {
-      GearToggleComponent.selectAllState(this.state);
-      this.state = GearToggleComponent.generateState(this.state.config, this.state.choices, this.state.visibleItemType);
-
-      this.stateChange.emit(this.state);
-      this.change.emit();
-    } catch (e) {
-      console.log('Error selectAll: ' + e);
+    if (!this.state$?.getValue()?.choices?.length) {
+      return;
     }
-  }
-
-  public static selectExclusiveVal(state: ToggleState, val: any) {
-    for (const c of state.choices) {
-      if (c.matchValue == val) {
-        c.value = true;
-      } else {
-        c.value = false;
-      }
-    }
+    const state = this.state$?.getValue();
+    const choices = this.state$.getValue().choices.slice(0);
+    choices.forEach(x => x.value = true);
+    const newState = generateState(state.config, choices, state.visibleItemType);
+    this.state$.next(newState);
   }
 
   exclusiveSelect(choice) {
-    try {
-      for (const ch of this.state.choices) {
-        if (ch !== choice) {
-          ch.value = false;
-        }
-      }
-      choice.value = true;
-      this.state = GearToggleComponent.generateState(this.state.config, this.state.choices, this.state.visibleItemType);
-      this.stateChange.emit(this.state);
-      this.change.emit();
-    } catch (e) {
-      console.log('Error exclusiveSelect: ' + e);
+    if (!this.state$?.getValue()?.choices?.length) {
+      return;
     }
+    const state = this.state$?.getValue();
+    const choices = this.state$.getValue().choices.slice(0);
+    choices.forEach(x => x.value = (x == choice));
+    const newState = generateState(state.config, choices, state.visibleItemType);
+    this.state$.next(newState);
   }
 
   select(event, choice) {
-    try {
-      choice.value = !choice.value;
-      this.state = GearToggleComponent.generateState(this.state.config, this.state.choices, this.state.visibleItemType);
-      event.stopPropagation();
-      this.stateChange.emit(this.state);
-      this.change.emit();
-    } catch (e) {
-      console.log('Error select: ' + e);
+    event.stopPropagation();
+    if (!this.state$?.getValue()?.choices?.length) {
+      return;
     }
-  }
-
-  public static getNote(state: ToggleState) {
-    let returnMe = `${state.config.title}: `;
-    if (state.hidden == true) {
-        returnMe = returnMe + ' hidden';
-    } else if (state.choices.length == null || state.choices.length == 0) {
-      returnMe = returnMe + ' empty choices';
-    } else if (state.allSelected) {
-      returnMe = returnMe + 'all selected';
-    } else {
-      returnMe = returnMe + '\n';
-      for (const c of state.choices) {
-        if (c.value == false) {
-          returnMe = '    ' + c.display + '\n';
-        }
-      }
-    }
-    return returnMe;
-  }
-
-}
-
-export class Choice {
-  readonly matchValue: any;
-  readonly display: string;
-  public value = true;
-
-  constructor(matchValue: any, display: string, value?: boolean) {
-    this.matchValue = matchValue;
-    this.display = display;
-    if (value != undefined) { this.value = value; }
+    const state = this.state$?.getValue();
+    choice.value = !choice.value;
+    const choices = this.state$.getValue().choices.slice(0);
+    const newState = generateState(state.config, choices, state.visibleItemType);
+    this.state$.next(newState);
   }
 }
-
-export interface ToggleConfig {
-  title: string;
-  debugKey: string;
-  icon?: IconDefinition;
-  iconClass?: string;
-  displayTabs: ItemType[];
-  wildcard?: boolean;
-  grabValue(i: InventoryItem): any;
-}
-
-export interface ToggleState {
-  config: ToggleConfig;
-  visibleItemType: ItemType;
-  hidden: boolean;
-  allSelected: boolean;
-  choices: Choice[];
-}
-

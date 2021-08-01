@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
@@ -208,7 +208,7 @@ export class GearService {
         }
     }
 
-    private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], itemType: ItemType, vaultStatus: VaultStatus): Promise<boolean> {
+    private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], itemType: ItemType, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<boolean> {
         console.log('Clearing inventory ahead of a mode.');
         this.notificationService.info('Clearing inventory ahead of time...');
         const buckets = this.bucketService.getBuckets(target);
@@ -227,7 +227,7 @@ export class GearService {
                             }
                             try {
                                 this.notificationService.info('Moving ' + i.name + ' to vault');
-                                await this.transfer(player, i, player.vault, vaultStatus);
+                                await this.transfer(player, i, player.vault, vaultStatus, progressTracker$);
                                 if (vaultStatus.isFull) {
                                     this.notificationService.info('Vault is full. Ending clear prematurely');
                                     return false;
@@ -254,7 +254,7 @@ export class GearService {
         return true;
     }
 
-    public async shardBlues(player: Player) {
+    public async shardBlues(player: Player, progressTracker$: Subject<void>): Promise<void> {
         // tag all unmarked blues as junk
         let tagCount = 0;
         for (const item of player.gear) {
@@ -267,10 +267,10 @@ export class GearService {
             }
         }
         this.notificationService.success(`Tagged ${tagCount} unmarked blues as junk. Starting blue shard mode.`);
-        this.shardMode(player, null, true);
+        this.shardMode(player, progressTracker$, null, true);
     }
 
-    public async shardMode(player: Player, itemType?: ItemType, bluesOnly?: boolean) {
+    public async shardMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType, bluesOnly?: boolean) {
         const target = player.characters[0];
         let moved = 0;
         let tryCount = 0;
@@ -283,7 +283,7 @@ export class GearService {
             if (tryCount > 1) {
                 console.log(`Shard mode, pass # ${tryCount} - last run moved ${incrementalWork} items`);
             }
-            invClearedSuccessfully = await this.clearInvForMode(target, player, ['junk'], itemType, vaultStatus);
+            invClearedSuccessfully = await this.clearInvForMode(target, player, ['junk'], itemType, vaultStatus, progressTracker$);
             if (!vaultStatus.isFull) {
                 console.log(`Shard mode cleared inv successfully.`);
             } else {
@@ -305,7 +305,7 @@ export class GearService {
                                 let success;
                                 if (i.postmaster === true) {
                                     const owner = i.owner.getValue();
-                                    success = await this.transfer(player, i, owner, vaultStatus);
+                                    success = await this.transfer(player, i, owner, vaultStatus, progressTracker$);
                                     if (success) {
                                         if (owner.id === target.characterId) {
                                             moved++;
@@ -313,7 +313,7 @@ export class GearService {
                                         }
                                     }
                                 }
-                                success = await this.transfer(player, i, target, vaultStatus);
+                                success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                                 if (success) {
                                     moved++;
                                     incrementalWork++;
@@ -350,17 +350,17 @@ export class GearService {
                 if (i.typeName != g.typeName) {
                     continue;
                 }
-                let iArchetype = null;
+                let iArchetype: string = null;
                 let gArchetype = null;
                 for (const s of i.sockets) {
                     if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
-                        iArchetype = s.plugs[0].hash;
+                        iArchetype = s.plugs[0].name;
                         break;
                     }
                 }
                 for (const s of g.sockets) {
                     if (s.socketCategoryHash == '3956125808' && s.plugs && s.plugs.length == 1) {
-                        gArchetype = s.plugs[0].hash;
+                        gArchetype = s.plugs[0].name;
                         break;
                     }
                 }
@@ -430,7 +430,7 @@ export class GearService {
         return copies;
     }
 
-    public async bulkMove(player: Player, items: InventoryItem[], target: Target) {
+    public async bulkMove(player: Player, items: InventoryItem[], target: Target, progressTracker$: Subject<void>) {
         console.log('Moving ' + items.length + ' items.');
         const vaultStatus = { isFull: false };
         let successCnt = 0;
@@ -438,7 +438,7 @@ export class GearService {
             try {
                 if (target.id !== i.owner.getValue().id) {
                     this.notificationService.info('Moving ' + i.name + ' to ' + target.label);
-                    const success = await this.transfer(player, i, target, vaultStatus);
+                    const success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                     if (!success) {
                         console.log(`${i.name} could not be moved to ${target.label} b/c bucket was full.`);
                         this.notificationService.info(`${i.name} could not be moved to ${target.label} b/c target was full.`);
@@ -451,7 +451,7 @@ export class GearService {
                     }
                 } else if (i.postmaster) {
                     this.notificationService.info('Pulling ' + i.name + ' from postmaster.');
-                    const success = await this.transfer(player, i, target, vaultStatus);
+                    const success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                     if (!success) {
                         console.log(`${i.name} could not be moved to ${target.label} b/c bucket was full.`);
                         this.notificationService.info(`${i.name} could not be moved to ${target.label} b/c target was full.`);
@@ -469,10 +469,10 @@ export class GearService {
 
     }
 
-    public async clearInv(player: Player, itemType?: ItemType) {
+    public async clearInv(player: Player, progressTracker$: Subject<void>, itemType?: ItemType) {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
-        const clearSuccess = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], itemType, vaultStatus);
+        const clearSuccess = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], itemType, vaultStatus, progressTracker$);
         if (!clearSuccess) {
             this.notificationService.info('Inventory could not be fully cleared, your vault ran out of space');
         } else {
@@ -482,10 +482,10 @@ export class GearService {
     }
 
 
-    public async upgradeMode(player: Player, itemType?: ItemType) {
+    public async upgradeMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType) {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
-        const clearSuccess = await this.clearInvForMode(target, player, [], itemType, vaultStatus);
+        const clearSuccess = await this.clearInvForMode(target, player, [], itemType, vaultStatus, progressTracker$);
         let totalErr = 0;
         let moved = 0;
         for (const i of player.gear) {
@@ -519,13 +519,13 @@ export class GearService {
                             let postMasterSuccess = true;
                             if (moveMe.postmaster === true) {
                                 const owner = moveMe.owner.getValue();
-                                postMasterSuccess = await this.transfer(player, moveMe, owner, { isFull: false });
+                                postMasterSuccess = await this.transfer(player, moveMe, owner, { isFull: false }, progressTracker$);
                                 if (owner.id === target.characterId) {
                                     continue;
                                 }
                             }
                             if (postMasterSuccess && moveMe.owner.getValue().id != target.id) {
-                                success = await this.transfer(player, moveMe, target, { isFull: false });
+                                success = await this.transfer(player, moveMe, target, { isFull: false }, progressTracker$);
                             }
                             if (success) {
                                 moved++;
@@ -589,7 +589,7 @@ export class GearService {
         this.notificationService.info('Sync complete. Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
     }
 
-    public async transfer(player: Player, itm: InventoryItem, target: Target, vaultStatus: VaultStatus): Promise<boolean> {
+    public async transfer(player: Player, itm: InventoryItem, target: Target, vaultStatus: VaultStatus, progressTracker$?: Subject<void>): Promise<boolean> {
         try {
             this.loading.next(true);
 
@@ -679,6 +679,9 @@ export class GearService {
                 itm.options.push(itm.owner.getValue());
                 itm.owner.next(target);
                 itm.options.splice(itm.options.indexOf(itm.owner.getValue()), 1);
+            }
+            if (progressTracker$ != null) {
+                progressTracker$.next();
             }
             return true;
         }

@@ -15,7 +15,7 @@ import {
   faCalendarAlt as farCalendar,
   faBolt as falBolt,
   faWheat as falWheat,
-  faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare, faUpload as falUpload
+  faPlusSquare as falPlusSquare, faMinusSquare as falMinusSquare, faUpload as falUpload, faCloudDownload as falCloudDownload
 } from '@fortawesome/pro-light-svg-icons';
 import {
 
@@ -25,7 +25,8 @@ import {
   faInfinity as falInfinity,
   faSwords as falSwords,
   faScrollOld as falScrollOld,
-  faBan as falBan, faList as farList
+  faBan as falBan, faList as farList,
+  faTools as farTools
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -77,6 +78,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly farTools = farTools;
   public readonly fasStickyNote = fasStickyNote;
   public readonly fasSkull = fasSkull;
   public readonly fasSkullCrossbones = fasSkullCrossbones;
@@ -137,6 +139,7 @@ export class IconService {
   public readonly fasChevronRight = fasChevronRight;
   public readonly farProjectDiagram = farProjectDiagram;
   public readonly fasClock = fasClock;
+  public readonly falCloudDownload = falCloudDownload;
   public readonly farGift = farGift;
   public readonly farCog = farCog;
   public readonly farBalanceScale = farBalanceScale;
