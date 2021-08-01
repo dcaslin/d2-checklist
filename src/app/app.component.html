@@ -59,6 +59,9 @@
       <a mat-list-item (click)="sidenav.close()" routerLink="settings" routerLinkActive="active">
         <mat-icon>settings</mat-icon>&ensp;Settings
       </a>
+      <a mat-list-item (click)="sidenav.close()" routerLink="perkbench" routerLinkActive="active">
+        <mat-icon>construction</mat-icon>&ensp;PerkBench
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
@@ -133,6 +136,9 @@
             <a mat-menu-item class="nav-button" routerLink="settings">
               <mat-icon>settings</mat-icon> Settings
             </a>
+            <a mat-menu-item class="nav-button" routerLink="perkbench">
+              <mat-icon>construction</mat-icon> PerkBench
+            </a>
           </mat-menu>
 
           <ng-container *ngIf="signedOnUser|async as currUser">
@@ -157,11 +163,15 @@
 
         </mat-toolbar-row>
         <mat-toolbar-row *ngIf="(signedOnUser|async) as currUser" class="sub-row">
-
-          <a mat-button class="d-none d-md-inline"
+          <a mat-button 
             [routerLink]="[currUser.userInfo.membershipType, signedOnUser.value.userInfo.membershipId]"
-            *ngIf="currUser.userInfo!=null">{{currUser.userInfo.displayName}} -
-            {{currUser.userInfo.platformName}}</a>
+            *ngIf="currUser.userInfo!=null">
+            <fa-icon class="d-sm-none" [icon]="iconService.fasUser"></fa-icon>
+            <span class="d-none d-sm-inline">
+              {{currUser.userInfo.displayName}} -
+              {{currUser.userInfo.platformName}}
+            </span>
+          </a>
           <span class="spacer"></span>
 
           <div class="currency-icons slide-left d-none d-xl-block"
@@ -191,8 +201,6 @@
                 </a>
               </ng-container>
             </div>
-
-
           </div>
           <div class="currency-icons">
             <d2c-player-currencies></d2c-player-currencies>
@@ -215,11 +223,10 @@
           </ng-container>
           <a mat-button class="d-none d-md-inline nav-button"
             [routerLink]="[currUser.userInfo.membershipType, currUser.userInfo.membershipId]">
+
             <fa-icon [icon]="PLATFORMS_DICT[currUser.userInfo.membershipType+''].icon"></fa-icon>
             My Info
           </a>
-
-
         </mat-toolbar-row>
       </mat-toolbar>
       <d2c-ad-slot [navigating]="navigating$|async" adType="top"></d2c-ad-slot>

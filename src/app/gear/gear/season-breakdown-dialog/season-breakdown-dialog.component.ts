@@ -25,7 +25,7 @@ export class SeasonBreakdownDialogComponent {
     public dialogRef: MatDialogRef<SeasonBreakdownDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
-    const player = this.parent._player.getValue();
+    const player = this.parent.player$.getValue();
     this.chars = SeasonBreakdownDialogComponent.generateTable(player);
     this.mats = this.generateMats(player);
   }
@@ -36,7 +36,7 @@ export class SeasonBreakdownDialogComponent {
     }
     const dialogRef = this.parent.openGearDialog(items.items[0], items.items, true);
     dialogRef.afterClosed().subscribe(result => {
-      SeasonBreakdownDialogComponent.fillinTable(this.parent._player.getValue(), this.chars);
+      SeasonBreakdownDialogComponent.fillinTable(this.parent.player$.getValue(), this.chars);
     });
   }
 

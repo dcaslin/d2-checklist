@@ -10,8 +10,10 @@
                     Enabling DIM-sync will save your tags and notes to the DIM servers and sync them between DIM and
                     D2Checklist.
                     <a href="https://destinyitemmanager.fandom.com/wiki/DIM_Sync" style="text-decoration: underline"
-                        target="_blank" rel="noopener"> Learn more about DIM Sync here.</a> See <a href="https://www.reddit.com/r/destinychecklistnet/comments/mxxm00/d2checklist_introducing_dim_sync_for_d2checklist/"
-                        style="text-decoration: underline" target="_blank" rel="noopener">this reddit guide</a> for more information.
+                        target="_blank" rel="noopener"> Learn more about DIM Sync here.</a> See <a
+                        href="https://www.reddit.com/r/destinychecklistnet/comments/mxxm00/d2checklist_introducing_dim_sync_for_d2checklist/"
+                        style="text-decoration: underline" target="_blank" rel="noopener">this reddit guide</a> for more
+                    information.
 
                 </p>
                 <div>
@@ -46,22 +48,26 @@
                         <fa-icon [icon]="iconService.falUpload"></fa-icon>
                         Import tags from file
                     </button>
-                </div>
-                <!-- <hr style="width: 100%">
-                <h4>Advanced</h4>
-                <div class="utility-download">                    
-                    <button mat-stroked-button (click)="exportTagsToDIM(true)">
-                        <fa-icon [icon]="iconService.falDownload"></fa-icon>
-                        Force Export to DIM
-                    </button>
-                    <button mat-stroked-button (click)="importTagsFromDIM(true)">
-                        <fa-icon [icon]="iconService.falUpload"></fa-icon>
-                        Force Import from DIM
-                    </button>
-                </div> -->
+                </div>                
             </div>
         </mat-tab>
         <mat-tab label="God rolls">
+            <div class="utility-body" *ngIf="parent.pandaGodRollsService.meta$|async as meta">
+                <h4>Currently using</h4>
+                <ul>
+                    <li>Title: {{meta.title}}</li>
+                    <li>Created: {{meta.date|date:'short'}}</li>
+                    <li>Based on Manifest<br>{{meta.manifestVersion}}</li>
+                </ul>
+            </div>
+            <hr style="width: 90%">
+            <div class="utility-body">
+                <a mat-stroked-button routerLink="perkbench">
+                    <fa-icon [icon]="iconService.farTools"></fa-icon>
+                    Edit god rolls at the PerkBench
+                </a>
+            </div>
+            <hr style="width: 90%">
             <div class="utility-body">
                 <p class="compact">Show God rolls for:</p>
                 <div>
@@ -71,7 +77,7 @@
                     </mat-radio-group>
                 </div>
             </div>
-            <hr style="width: 100%">
+            <hr style="width: 90%">
             <div class="utility-body">
                 <p class="compact">Match God/Good rolls on:</p>
                 <div>

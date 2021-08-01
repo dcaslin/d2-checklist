@@ -20,7 +20,7 @@ export class ArmorPerksDialogComponent {
     public dialogRef: MatDialogRef<ArmorPerksDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
-    const player = this.parent._player.getValue();
+    const player = this.parent.player$.getValue();
     this.charPerks = {};
     if (player) {
       for (const char of player.characters) {

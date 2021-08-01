@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, ItemType, MileStoneName, MilestoneStatus, PGCR, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, MileStoneName, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -234,7 +234,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public getActivityModes(): ActivityMode[] {
+    public static getActivityModes(): ActivityMode[] {
         return [
             new ActivityMode(0, 'All', 'All'), // None
             new ActivityMode(7, 'All - PvE', 'All PvE'),
@@ -270,7 +270,7 @@ export class BungieService implements OnDestroy {
             // new ActivityMode(37, 'Survival', 'Survival'),
             // new ActivityMode(38, 'Countdown', 'Countdown'),
             // new ActivityMode(40, 'Social', 'Social'),
-            // new ActivityMode(48, 'Rumble', 'Rumble'),
+            new ActivityMode(48, 'Rumble', 'Rumble'),
             // new ActivityMode(49, 'All Doubles', 'All Doubles'),
             // new ActivityMode(50, 'Doubles', 'Doubles')
         ];
@@ -354,19 +354,6 @@ export class BungieService implements OnDestroy {
         }
         this.apiDown = false;
         return j.Response;
-    }
-
-    public async getPGCR(instanceId: string): Promise<PGCR> {
-        try {
-            const opt = await this.buildReqOptions();
-            const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/';
-            const hResp = await this.httpClient.get<any>(url, opt).toPromise();
-            const resp = this.parseBungieResponse(hResp);
-            return this.parseService.parsePGCR(resp);
-        } catch (err) {
-            this.handleError(err);
-            return null;
-        }
     }
 
     // private createVendorMilestone(targetVendorHash: string, key: string, vendorData: SaleItem[], p: Player, c: Character) {
