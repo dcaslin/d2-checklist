@@ -5,7 +5,7 @@ import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { UberListStateService } from './uber-list-state.service';
+import { MilestoneRow, PursuitRow, UberListStateService } from './uber-list-state.service';
 
 @Component({
   selector: 'd2c-uber-list',
@@ -21,6 +21,10 @@ export class UberListComponent extends ChildComponent implements OnInit {
     storageService: StorageService
   ) {
     super(storageService);
+  }
+
+  trackUberRow(index, item: (MilestoneRow|PursuitRow)): string {
+    return item ? item.id: undefined;
   }
 
   ngOnInit(): void {

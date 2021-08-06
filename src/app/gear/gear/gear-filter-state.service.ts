@@ -863,11 +863,6 @@ export interface ToggleState {
   choices: Choice[];
 }
 
-export interface ToggleStateUpdate {
-  state: BehaviorSubject<ToggleState>;
-  choices: Choice[];
-}
-
 
 export class Choice {
   readonly matchValue: any;
