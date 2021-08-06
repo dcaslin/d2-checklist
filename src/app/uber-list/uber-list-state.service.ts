@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { IconService } from '@app/service/icon.service';
 import {
   InventoryItem,
   ItemType,
@@ -9,7 +10,8 @@ import {
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { generateUberState, UberChoice, UberToggleConfig, UberToggleState } from './uber-list-toggle/uber-list-toggle.component';
 
 
 interface PrivRewardDesc {
@@ -17,16 +19,19 @@ interface PrivRewardDesc {
   quantity: number;
 }
 
-interface MilestoneRow {
-  type: string;
+
+export interface MilestoneRow {
+  id: string;
+  type: 'milestone';
   title: MileStoneName;
   desc: any;
   rewards: NameQuantity[];
   characterEntries: { [key: string]: MilestoneStatus };
 }
 
-interface PursuitRow {
-  type: string;
+export interface PursuitRow {
+  id: string;
+  type: 'pursuit';
   title: InventoryItem;
   characterEntries: { [key: string]: PursuitTuple };
 }
@@ -44,17 +49,52 @@ const ICON_FIXES = {
   '3802603984': '248695599',  // GAMBIT_WEEKLY_BOUNTIES
 };
 
+
+interface UberFilterSettings {
+  filterText: string;
+  deselectedChoices: { [key: string]: string[] }; // toggle key, and matched values that are deslected
+}
+
+interface UberToggleData {
+  activityType$: BehaviorSubject<UberToggleState>;
+}
+
+const UBER_FILTER_KEY = 'D2C-UBER-FILTER';
+
 @Injectable({
   providedIn: 'root',
 })
 export class UberListStateService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public toggleData: UberToggleData | null = null;
+  public toggleDataArray: BehaviorSubject<UberToggleState>[] = [];
+  public visibleFilterText = '';
+  public filtersDirty$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public filterText$: BehaviorSubject<string> = new BehaviorSubject('');
+  public filterUpdated$: Subject<void> = new Subject<void>();
+  private toggleDataInit = false;
 
   constructor(
     private signedOnUserService: SignedOnUserService,
-    private destinyCacheService: DestinyCacheService
+    private destinyCacheService: DestinyCacheService,
+    private iconService: IconService
   ) {
+    this.toggleData = this.buildInitToggles();
+    const a: BehaviorSubject<UberToggleState>[] = [];
+    const thingsToListenTo$ = [this.rows$, this.filterText$];
+    for (const key of Object.keys(this.toggleData)) {
+      a.push(this.toggleData[key]);
+      thingsToListenTo$.push(this.toggleData[key]);
+    }
+    this.toggleDataArray = a;
+
+    combineLatest(thingsToListenTo$).pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(10)).subscribe(() => {
+        this.filterUpdated$.next();
+      });
+
     combineLatest([
       this.signedOnUserService.player$,
       this.signedOnUserService.vendors$,
@@ -117,19 +157,95 @@ export class UberListStateService implements OnDestroy {
           rows.push(rowData[key]);
         }
         this.rows$.next(rows);
+        this.initWithPlayer(rows);
 
-        // TODO convert this into consolidated list of grid items
-        // for both bounties and milestones, perhaps even quests?
+        // TODO sorting
+        // TODO filtering using toggles
+        // TODO click on item for more info (just bounties? also milestones?)
 
-        // Sale bounties: InventoryItem + VendorItemInfo
-        // Held bounties: InventoryItem
-        // Char.milestones: { [key: string]: MilestoneStatus };
-        // player.milestoneList: MileStoneName[] = [];
+
+      });
+
+    this.filterUpdated$.pipe(
+      takeUntil(this.unsubscribe$),
+      debounceTime(20))
+      .subscribe(() => {
+        const dirty = this.isFilterDirty();
+        if (dirty != this.filtersDirty$.getValue()) {
+          this.filtersDirty$.next(dirty);
+        }
+        if (this.toggleDataInit) {
+          // we have no filters, so clear everything in localstorage
+          if (!dirty) {
+            localStorage.removeItem(UBER_FILTER_KEY);
+          } else {
+            const filterSettings: UberFilterSettings = {
+              filterText: this.visibleFilterText,
+              deselectedChoices: {}
+            };
+            for (const key of Object.keys(this.toggleData)) {
+              const t = this.toggleData[key];
+              const deselectedVals: string[] = t.getValue().choices.filter(c => !c.checked).map(c => c.matchValue);
+              if (deselectedVals.length > 0) {
+                filterSettings.deselectedChoices[key] = deselectedVals;
+              }
+            }
+            localStorage.setItem(UBER_FILTER_KEY, JSON.stringify(filterSettings));
+          }
+        }
       });
   }
 
+  private isFilterDirty() {
+    // we have wildcard entries
+    if (this.filterText$.getValue().length > 0) {
+      return true;
+    }
+    // check if toggles are filtering anything
+    for (const toggle$ of this.toggleDataArray) {
+      if (!toggle$.getValue().allSelected) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public initWithPlayer(rows: (MilestoneRow|PursuitRow)[]) {
+    if (!this.toggleDataInit) {
+      this.generateDynamicChoices(rows);
+      const sSettings = localStorage.getItem(UBER_FILTER_KEY);
+      if (sSettings) {
+        const filterSettings: UberFilterSettings = JSON.parse(sSettings);
+        this.visibleFilterText = filterSettings.filterText;
+        this.filterText$.next(this.visibleFilterText);
+        for (const key of Object.keys(this.toggleData)) {
+          let changeMade = false;
+          const t: UberToggleState = this.toggleData[key].getValue();
+          const deselectedVals: string[] = filterSettings.deselectedChoices[key];
+          if (deselectedVals) {
+            const choices = t.choices.slice(0);
+            for (const deselectedVal of deselectedVals) {
+              const choice = t.choices.find(x => x.matchValue === deselectedVal);
+              if (choice) {
+                choice.checked = false;
+                changeMade = true;
+              }
+            }
+            if (changeMade) {
+              this.toggleData[key].next(generateUberState(t.config, choices));
+            }
+          }
+        }
+      }
+      this.toggleDataInit = true;
+    }
+  }
+
+
+
   private buildInitialPursuitRow(i: InventoryItem): PursuitRow {
     return {
+      id: i.hash,
       type: 'pursuit',
       title: i,
       characterEntries: {}
@@ -189,7 +305,6 @@ export class UberListStateService implements OnDestroy {
     }
     // Raids tend to be missing rewards, luckily we already did the work in ParseService to get the string reward value, so we'll just parse out an icon on it
     if (rewards.length == 0 && msn.rewards != null) {
-      console.log(`---- ${msn.rewards}`);
       if ('Pinnacle Gear' == msn.rewards) {
         this.handleRewardItem({ itemHash: 73143230, quantity: 0 }, rewards);
       }
@@ -199,6 +314,7 @@ export class UberListStateService implements OnDestroy {
     }
 
     return {
+      id: msn.key,
       type: 'milestone',
       title: msn,
       rewards,
@@ -218,5 +334,35 @@ export class UberListStateService implements OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
+  }
+
+  private buildInitToggles(): UberToggleData {
+    const activityTypeConfig: UberToggleConfig = {
+      title: 'Activity',
+      debugKey: 'Activity',
+      icon: this.iconService.fasFlag,
+      includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
+        if (state.allSelected) { return true; }
+        if (state.choices == null || state.choices.length == 0) { return true; }
+        const choice = state.choices.find(c => c.matchValue === x.type);
+        if (!choice) { return true; }
+        return choice.checked;
+      }
+    };
+    // Activity Type: Milestone / Bounty / Other (edited)
+    // Cadence: Weekly / Daily / Other (edited)
+    // Reward Tier: Pinnacle / Powerful / Legendary / Other
+    // Rewards: XP / Bright Dust / Etc / Other
+    // Owner: For sale Char 1/2/3  / Held Char 1/2/3
+    return {
+      activityType$: new BehaviorSubject(generateUberState(activityTypeConfig, [
+        new UberChoice('pursuit', 'Pursuit'),
+        new UberChoice('milestone', 'Milestone')
+      ]))
+    };
+  }
+
+  private generateDynamicChoices(rows: (MilestoneRow|PursuitRow)[]) {
+    // TODO do something here
   }
 }

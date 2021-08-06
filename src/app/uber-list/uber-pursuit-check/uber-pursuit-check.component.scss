@@ -11,11 +11,12 @@
     font-size: smaller;
     font-weight: lighter;
   }
-  
-  .check {
-    margin-right: 0.15em;
-    display: block;
+    
+  .flex-column {
+    display: flex;
+    flex-direction: column;
   }
+
   
   .faint { 
     opacity: 0.5;

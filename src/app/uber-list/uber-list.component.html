@@ -1,5 +1,3 @@
-<p>uber-list works!</p>
-
 <div>
   <d2c-signed-on-loading-icon></d2c-signed-on-loading-icon>
   <button mat-icon-button class="pad-left-more" (click)="state.refresh()">
@@ -8,8 +6,10 @@
 </div>
 
 <ng-container *ngIf="signedOnUserService.player$|async as player">
-
-  <ng-container *ngIf="state.rows$|async as rows">
+  <div class="flex-column" *ngIf="state.rows$|async as rows">
+    <div class="filter-buttons" *ngIf="state.toggleData as toggleData"> 
+      <d2c-uber-list-toggle [state$]="state.toggleData.activityType$" > </d2c-uber-list-toggle>
+    </div>
     <table class="responsive-table">
       <thead>
         <tr>
@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of rows">
+        <tr *ngFor="let row of rows; trackBy: trackUberRow">
           <ng-container *ngIf="row.type=='pursuit'">
             <td>
               <ng-container *ngIf="row?.title?.icon as icon">
@@ -80,7 +80,5 @@
         </tr>
       </tbody>
     </table>
-
-  </ng-container>
-
+  </div>
 </ng-container>

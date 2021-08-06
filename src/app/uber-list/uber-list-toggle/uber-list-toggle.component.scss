@@ -1,0 +1,22 @@
+@media screen and (max-width: 700px) {
+    .toggle-button {
+        min-width: 40px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+
+.hide-mobile-inline {
+    display: none;
+    visibility: hidden;
+}
+
+
+@media screen and (min-width: 1019px) {
+
+    .hide-mobile-inline {
+        display: inline;
+        visibility: visible;
+    }
+}

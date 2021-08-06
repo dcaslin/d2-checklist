@@ -64,3 +64,25 @@ table.list-table {
     vertical-align: top;
   }
 }
+
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-column>* {
+  margin: 5px;
+}
+
+
+.filter-buttons {
+  display: block;
+}
+
+
+@media screen and (min-width: 1019px) {
+  .filter-buttons {
+    display: inline;
+  }
+}

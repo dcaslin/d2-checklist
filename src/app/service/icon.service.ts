@@ -26,7 +26,8 @@ import {
   faSwords as falSwords,
   faScrollOld as falScrollOld,
   faBan as falBan, faList as farList,
-  faTools as farTools
+  faTools as farTools,
+  faSign as farSign
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -78,6 +79,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly farSign = farSign;
   public readonly farTools = farTools;
   public readonly fasStickyNote = fasStickyNote;
   public readonly fasSkull = fasSkull;
