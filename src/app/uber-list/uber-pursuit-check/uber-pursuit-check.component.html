@@ -1,7 +1,7 @@
 <div class="flex-column">
     <ng-container *ngIf="pursuit else isNull">
         <div *ngIf="pursuit.vendorItem">
-            <fa-icon [icon]="iconService.farSign"></fa-icon>
+            <fa-icon class="secondary-text" [icon]="iconService.farSign"></fa-icon>
         </div>
         <div *ngIf="pursuit.characterItem">
             <fa-icon [icon]="iconService.fasUser"></fa-icon>
