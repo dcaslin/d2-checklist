@@ -746,60 +746,60 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public loadActivityPseudoMilestones(playerSubject: BehaviorSubject<Player>) {
-        const p = playerSubject.getValue();
-        if (!p) {
-            return;
-        }
+    // public loadActivityPseudoMilestones(playerSubject: BehaviorSubject<Player>) {
+    //     const p = playerSubject.getValue();
+    //     if (!p) {
+    //         return;
+    //     }
 
-        // privacy will hide this
-        if (!p.characters[0].endWeek) {
-            return;
-        }
-        const ms1: MileStoneName = {
-            key: Const.PSUEDO_HERESY_KEY,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Masterwork Armor',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_LEGENDARY],
-            name: 'Pit of Heresy',
-            desc: 'Complete the Pit of Heresy Dungeon',
-            hasPartial: true,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(ms1);
-        const ms2: MileStoneName = {
-            key: Const.PSUEDO_PRESAGE,
-            resets: p.characters[0].endWeek.toISOString(),
-            rewards: 'Pinnacle Gear',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-            name: 'Presage Weekly',
-            desc: 'Complete Presage',
-            hasPartial: true,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        p.milestoneList.push(ms2);
-        p.milestoneList.sort((a, b) => {
-            if (a.boost.sortVal < b.boost.sortVal) { return 1; }
-            if (a.boost.sortVal > b.boost.sortVal) { return -1; }
-            if (a.rewards < b.rewards) { return 1; }
-            if (a.rewards > b.rewards) { return -1; }
-            if (a.name > b.name) { return 1; }
-            if (a.name < b.name) { return -1; }
-            return 0;
-        });
-        const empty1: MilestoneStatus = new MilestoneStatus(Const.PSUEDO_HERESY_KEY, false, 0, null, ['Loading...'], null, false, false);
-        // load empty while we wait, so it doesn't show checked
-        for (const c of p.characters) {
-            c.milestones[Const.PSUEDO_HERESY_KEY] = empty1;
-        }
-        playerSubject.next(p);
-        for (const c of p.characters) {
-            this.loadActivityPseudoMilestonesOnChar(playerSubject, c);
-        }
-        return playerSubject;
-    }
+    //     // privacy will hide this
+    //     if (!p.characters[0].endWeek) {
+    //         return;
+    //     }
+    //     // const ms1: MileStoneName = {
+    //     //     key: Const.PSUEDO_HERESY_KEY,
+    //     //     resets: p.characters[0].endWeek.toISOString(),
+    //     //     rewards: 'Masterwork Armor',
+    //     //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_LEGENDARY],
+    //     //     name: 'Pit of Heresy',
+    //     //     desc: 'Complete the Pit of Heresy Dungeon',
+    //     //     hasPartial: true,
+    //     //     neverDisappears: true,
+    //     //     dependsOn: []
+    //     // };
+    //     // p.milestoneList.push(ms1);
+    //     // const ms2: MileStoneName = {
+    //     //     key: Const.PSUEDO_PRESAGE,
+    //     //     resets: p.characters[0].endWeek.toISOString(),
+    //     //     rewards: 'Pinnacle Gear',
+    //     //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+    //     //     name: 'Presage Weekly',
+    //     //     desc: 'Complete Presage',
+    //     //     hasPartial: true,
+    //     //     neverDisappears: true,
+    //     //     dependsOn: []
+    //     // };
+    //     // p.milestoneList.push(ms2);
+    //     p.milestoneList.sort((a, b) => {
+    //         if (a.boost.sortVal < b.boost.sortVal) { return 1; }
+    //         if (a.boost.sortVal > b.boost.sortVal) { return -1; }
+    //         if (a.rewards < b.rewards) { return 1; }
+    //         if (a.rewards > b.rewards) { return -1; }
+    //         if (a.name > b.name) { return 1; }
+    //         if (a.name < b.name) { return -1; }
+    //         return 0;
+    //     });
+    //     // const empty1: MilestoneStatus = new MilestoneStatus(Const.PSUEDO_HERESY_KEY, false, 0, null, ['Loading...'], null, false, false);
+    //     // // load empty while we wait, so it doesn't show checked
+    //     // for (const c of p.characters) {
+    //     //     c.milestones[Const.PSUEDO_HERESY_KEY] = empty1;
+    //     // }
+    //     playerSubject.next(p);
+    //     // for (const c of p.characters) {
+    //     //     this.loadActivityPseudoMilestonesOnChar(playerSubject, c);
+    //     // }
+    //     return playerSubject;
+    // }
 
 
     private static setPseudoMilestoneFromActivities(c: Character, msKey: string, activities: Activity[], filterName: string) {
@@ -819,18 +819,18 @@ export class BungieService implements OnDestroy {
         c.milestones[msKey] = new MilestoneStatus(msKey, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, null, mightHaveCheckpoint ? ['May hold checkpoint'] : null, null, false, false);
     }
 
-    private async loadActivityPseudoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
-        // let d = new Date();
-        // d.setDate(d.getDate() - 40)
-        const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 7, c.startWeek);
-        // extra filter just in case
-        const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
-        // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
-        BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_HERESY_KEY, dungeonActivities, 'Heresy');
-        const storyActivities = activities.filter(a => a.mode == 'Story');
-        BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_PRESAGE, storyActivities, 'Presage');
-        console.dir(storyActivities);
-        p.next(p.getValue());
-    }
+    // private async loadActivityPseudoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
+    //     // let d = new Date();
+    //     // d.setDate(d.getDate() - 40)
+    //     const activities = await this.getActivityHistoryUntilDate(c.membershipType, c.membershipId, c.characterId, 7, c.startWeek);
+    //     // extra filter just in case
+    //     const dungeonActivities = activities.filter(a => a.mode == 'Dungeon');
+    //     // BungieService.setPseudoMilestoneFromActivities(c, Const.PROPHECY_KEY, dungeonActivities, "Prophecy");
+    //     BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_HERESY_KEY, dungeonActivities, 'Heresy');
+    //     // const storyActivities = activities.filter(a => a.mode == 'Story');
+    //     // BungieService.setPseudoMilestoneFromActivities(c, Const.PSUEDO_PRESAGE, storyActivities, 'Presage');
+    //     // console.dir(storyActivities);
+    //     p.next(p.getValue());
+    // }
 
 }
