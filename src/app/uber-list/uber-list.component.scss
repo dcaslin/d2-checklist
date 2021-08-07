@@ -75,14 +75,36 @@ table.list-table {
   margin: 5px;
 }
 
+.filter-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
 
-.filter-buttons {
-  display: block;
+@media screen and (min-width: 1200px) {
+  .filter-container {
+    min-width: 1100px;
+  }
+}
+
+.wildcard-filter {
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 700px;
+  flex-grow: 1;
 }
 
 
-@media screen and (min-width: 1019px) {
-  .filter-buttons {
-    display: inline;
-  }
+.filter-row {
+  display: flex;
+  flex-direction: row; 
+  align-items: center;
+}
+
+.loading-indicator {
+  margin-left: 5px;
+  font-size: 14px;
+  line-height: 0px;
 }
