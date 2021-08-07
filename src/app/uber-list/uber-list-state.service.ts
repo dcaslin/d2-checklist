@@ -203,10 +203,35 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
+  private toggleFilter(rows: (MilestoneRow|PursuitRow)[]): (MilestoneRow|PursuitRow)[] {
+    return rows.filter(x => this.toggleFilterSingle(x));
+  }
+
+  private toggleFilterSingle(i: (MilestoneRow|PursuitRow)): boolean {
+
+    for (const t$ of this.toggleDataArray) {
+      const t: UberToggleState = t$.getValue();
+      // toggle is hidden or not filtering anything
+      if (t.allSelected) {
+        continue;
+      }
+      // toggle is empty for some reason
+      if (t.choices == null || t.choices.length == 0) {
+        continue;
+      }
+      // the toggled filtered this item
+      if (!t.config.includeValue(i, t)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private filterAndSortRows() {
     console.log(`Filtering and sorting rows...`);
     let filterMe = this.rows$.getValue().slice(0);
     filterMe = this.wildcardFilter(filterMe);
+    filterMe = this.toggleFilter(filterMe);
     this.filteredRows$.next(filterMe);
   }
 
@@ -285,18 +310,24 @@ export class UberListStateService implements OnDestroy {
   }
 
   private buildInitialMilestoneRow(msn: MileStoneName): MilestoneRow {
-    const desc = this.destinyCacheService.cache.Milestone[msn.key];
+    let desc = this.destinyCacheService.cache.Milestone[msn.key];
     if (
-      desc?.displayProperties != null &&
       desc?.displayProperties?.icon == null
     ) {
       const vendorHash = ICON_FIXES[msn.key];
+      if (desc == null) {
+        desc = {
+          displayProperties: {}
+        };
+      }
       if (vendorHash) {
         desc.displayProperties.icon =
           this.destinyCacheService.cache.Vendor[
             vendorHash
           ].displayProperties?.smallTransparentIcon;
       }
+    } else if (!desc?.displayProperties) {
+      console.dir(msn);
     }
     const rewards: NameQuantity[] = [];
     // try quest rewards approach, this works for things like Shady Schemes 3802603984
@@ -401,12 +432,7 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Activity',
       icon: this.iconService.fasFlag,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        if (state.allSelected) {
-          return true;
-        }
-        if (state.choices == null || state.choices.length == 0) {
-          return true;
-        }
+        // assuming we have choices that are unchecked, filter on them
         const choice = state.choices.find((c) => c.matchValue === x.type);
         if (!choice) {
           return true;
@@ -563,6 +589,7 @@ const ICON_FIXES = {
   '3899487295': '672118013', // GUNSMITH_WEEKLY_BOUNTIES
   '2709491520': '69482069', // VANGUARD_WEEKLY_BOUNTIES
   '3802603984': '248695599', // GAMBIT_WEEKLY_BOUNTIES
+  'PSUEDO_MASTER_EMPIRE': '2531198101', // MASTER_EMPIRE_HUNTS
 };
 
 interface UberFilterSettings {
