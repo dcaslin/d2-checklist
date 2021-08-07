@@ -5,6 +5,7 @@ import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { Subject } from 'rxjs';
 import { MilestoneRow, PursuitRow, UberListStateService } from './uber-list-state.service';
 
 @Component({
@@ -13,6 +14,7 @@ import { MilestoneRow, PursuitRow, UberListStateService } from './uber-list-stat
   styleUrls: ['./uber-list.component.scss']
 })
 export class UberListComponent extends ChildComponent implements OnInit {
+
   constructor(
     public state: UberListStateService,
     public signedOnUserService: SignedOnUserService,
