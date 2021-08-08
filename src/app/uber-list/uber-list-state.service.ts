@@ -180,7 +180,7 @@ export class UberListStateService implements OnDestroy {
 
 
 
-  private shouldKeepRow(i: MilestoneRow|PursuitRow): boolean {
+  private shouldKeepRow(i: MilestoneRow | PursuitRow): boolean {
     for (const f of this.filterTags$.getValue()) {
       const match = processFilterTag(f, i);
       if (!this.orMode && !match) {
@@ -197,7 +197,7 @@ export class UberListStateService implements OnDestroy {
   }
 
 
-  private wildcardFilter(rows: (MilestoneRow|PursuitRow)[]): (MilestoneRow|PursuitRow)[] {
+  private wildcardFilter(rows: (MilestoneRow | PursuitRow)[]): (MilestoneRow | PursuitRow)[] {
     if (this.filterTags$.getValue().length > 0) {
       return rows.filter(this.shouldKeepRow, this);
     } else {
@@ -205,11 +205,11 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  private toggleFilter(rows: (MilestoneRow|PursuitRow)[]): (MilestoneRow|PursuitRow)[] {
+  private toggleFilter(rows: (MilestoneRow | PursuitRow)[]): (MilestoneRow | PursuitRow)[] {
     return rows.filter(x => this.toggleFilterSingle(x));
   }
 
-  private toggleFilterSingle(i: (MilestoneRow|PursuitRow)): boolean {
+  private toggleFilterSingle(i: (MilestoneRow | PursuitRow)): boolean {
 
     for (const t$ of this.toggleDataArray) {
       const t: UberToggleState = t$.getValue();
@@ -459,11 +459,39 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Reward Tier',
       iconClass: 'icon-engram',
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        const choice = state.choices.find((c) => c.matchValue === x.type);
-        if (!choice) {
-          return true;
+        let rewards: NameQuantity[] = [];
+
+        if (x.type == 'pursuit') {
+          const p = x as PursuitRow;
+          rewards = p.title.values;
+        } else if (x.type == 'milestone') {
+          const m = x as MilestoneRow;
+          rewards = m.rewards;
         }
-        return choice.checked;
+        const rewardText = rewards.map( r => r.name.toLowerCase());
+        const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
+        for (const val of selectedVals) {
+          if (val == 'other') {
+            const hasOther = rewardText.filter(x => {
+              if (x.indexOf('pinnacle') >= 0) {
+                return false;
+              } else if (x.indexOf('powerful') >= 0) {
+                return false;
+              } else if (x.indexOf('legendary') >= 0) {
+                return false;
+              }
+              return true;
+            }).length > 0;
+            if (hasOther) {
+              return true;
+            }
+          }
+          // is the reward in the list of selected values?
+          if (rewardText.filter(r => r.indexOf(val) >= 0).length > 0) {
+            return true;
+          }
+        }
+        return false;
       },
     };
     const rewardConfig: UberToggleConfig = {
@@ -483,23 +511,42 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Owner',
       icon: this.iconService.fasUsers,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
+        const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
         if (x.type == 'pursuit') {
           const p = x as PursuitRow;
+          // is this item avail from a vendor?
           const hasVendor = Object.values(p.characterEntries).some(tuple => tuple.vendorItem != null);
-          const hasVendorChoice = state.choices.find((c) => c.matchValue === 'vendor' && c.checked) != null;
-          if (hasVendor && hasVendorChoice) {
+          // if the item is from a vendor and Vendor is chosen, we're good
+          if (hasVendor && selectedVals.find(v => v === 'vendor')) {
             return true;
+          }
+          for (const key of Object.keys(p.characterEntries)) {
+            const val = p.characterEntries[key];
+            // if it's not held, skip it
+            if (val.characterItem == null) {
+              continue;
+            }
+            // if the character id is selected, include it
+            if (selectedVals.find(v => v === key) != null) {
+              return true;
+            }
           }
           return false;
         } else if (x.type == 'milestone') {
-          const m  = x as MilestoneRow;
+          const m = x as MilestoneRow;
 
+          for (const key of Object.keys(m.characterEntries)) {
+            const val = m.characterEntries[key];
+            if (val == null) {
+              continue;
+            }
+            // if a character is selected and the milestone entry is present and not fully complete, include it
+            if (selectedVals.find(v => v === key) != null && !val.complete) {
+              return true;
+            }
+          }
         }
-        const choice = state.choices.find((c) => c.matchValue === x.type);
-        if (!choice) {
-          return true;
-        }
-        return choice.checked;
+        return false;
       },
     };
     // x Activity Type: Milestone / Bounty / Other (edited)
@@ -516,8 +563,10 @@ export class UberListStateService implements OnDestroy {
       ),
       rewardTier$: new BehaviorSubject(
         generateUberState(rewardTierConfig, [
-          new UberChoice('a', 'A'),
-          new UberChoice('b', 'B'),
+          new UberChoice('pinnacle', 'Pinnacle'),
+          new UberChoice('powerful', 'Powerful'),
+          new UberChoice('legendary', 'Legendary'),
+          new UberChoice('other', 'Other'),
         ])
       ),
       cadence$: new BehaviorSubject(
@@ -598,7 +647,7 @@ interface UberToggleData {
 }
 
 
-function processFilterTag(f: string, i: (MilestoneRow|PursuitRow)): boolean {
+function processFilterTag(f: string, i: (MilestoneRow | PursuitRow)): boolean {
   if (f.startsWith('!')) {
     const actual = f.substr(1);
     return !_processFilterTag(actual, i);
@@ -607,7 +656,7 @@ function processFilterTag(f: string, i: (MilestoneRow|PursuitRow)): boolean {
   }
 }
 
-function _processFilterTag(actual: string, i: (MilestoneRow|PursuitRow)): boolean {
+function _processFilterTag(actual: string, i: (MilestoneRow | PursuitRow)): boolean {
   if (i.searchText.indexOf(actual) >= 0) {
     return true;
   }
