@@ -63,6 +63,8 @@
                   <div *ngFor="let r of rewards">
                     <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
                       [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+                      
+                    <span *ngIf="debugmode|async">  {{r.hash}}</span>
                   </div>
                 </div>
 
@@ -80,7 +82,8 @@
                   <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
                     [class.brighten]="icon.endsWith('jpg')"
                     [style.background-image]="'url(//www.bungie.net' + icon + ')'">
-                  </div>
+                  </div>                  
+                  
                 </ng-container>
               </td>
               <td>
@@ -91,6 +94,7 @@
                   <div *ngFor="let r of rewards">
                     <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
                       [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+                      <span *ngIf="debugmode|async">  {{r.hash}}</span>
                   </div>
                 </div>
               </td>
