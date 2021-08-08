@@ -3,11 +3,17 @@
         <div *ngIf="pursuit.vendorItem">
             <fa-icon class="secondary-text" [icon]="iconService.farSign"></fa-icon>
         </div>
-        <div *ngIf="pursuit.characterItem">
-            <fa-icon [icon]="iconService.fasUser"></fa-icon>
+        <div *ngIf="pursuit.characterItem as g">
+            <!-- <fa-icon [icon]="iconService.fasUser"></fa-icon> -->
+            <div class="total-progress">
+                <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
+                </mat-progress-bar>
+                <div class="progress-pct">{{g.aggProgress|number : '1.0-0'}}%</div>
+            </div>
         </div>
     </ng-container>
     <ng-template #isNull>
-        <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Pursuit missing, probably not available"></fa-icon>
+        <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Pursuit missing, probably not available">
+        </fa-icon>
     </ng-template>
 </div>

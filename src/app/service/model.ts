@@ -1619,3 +1619,8 @@ interface Champion {
     name: string;
     count: number;
 }
+
+export interface PursuitTuple {
+    vendorItem: InventoryItem;
+    characterItem: InventoryItem;
+}

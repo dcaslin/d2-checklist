@@ -7,6 +7,8 @@ import {
   MileStoneName,
   MilestoneStatus,
   NameQuantity,
+  Player,
+  PursuitTuple,
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
@@ -127,7 +129,7 @@ export class UberListStateService implements OnDestroy {
           rows.push(rowData[key]);
         }
         this.rows$.next(rows);
-        this.initWithPlayer(rows);
+        this.initWithPlayer(player, rows);
 
         // TODO sorting
         // TODO filtering using toggles
@@ -249,9 +251,9 @@ export class UberListStateService implements OnDestroy {
     return false;
   }
 
-  public initWithPlayer(rows: (MilestoneRow | PursuitRow)[]) {
+  public initWithPlayer(player: Player, rows: (MilestoneRow | PursuitRow)[]) {
     if (!this.toggleDataInit) {
-      this.generateDynamicChoices(rows);
+      this.generateDynamicChoices(player, rows);
       const sSettings = localStorage.getItem(UBER_FILTER_KEY);
       if (sSettings) {
         const filterSettings: UberFilterSettings = JSON.parse(sSettings);
@@ -445,12 +447,6 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Cadence',
       icon: this.iconService.fasCalendarAlt,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        if (state.allSelected) {
-          return true;
-        }
-        if (state.choices == null || state.choices.length == 0) {
-          return true;
-        }
         const choice = state.choices.find((c) => c.matchValue === x.type);
         if (!choice) {
           return true;
@@ -463,12 +459,6 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Reward Tier',
       iconClass: 'icon-engram',
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        if (state.allSelected) {
-          return true;
-        }
-        if (state.choices == null || state.choices.length == 0) {
-          return true;
-        }
         const choice = state.choices.find((c) => c.matchValue === x.type);
         if (!choice) {
           return true;
@@ -481,12 +471,6 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Rewards',
       icon: this.iconService.fasGift,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        if (state.allSelected) {
-          return true;
-        }
-        if (state.choices == null || state.choices.length == 0) {
-          return true;
-        }
         const choice = state.choices.find((c) => c.matchValue === x.type);
         if (!choice) {
           return true;
@@ -499,11 +483,17 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Owner',
       icon: this.iconService.fasUsers,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        if (state.allSelected) {
-          return true;
-        }
-        if (state.choices == null || state.choices.length == 0) {
-          return true;
+        if (x.type == 'pursuit') {
+          const p = x as PursuitRow;
+          const hasVendor = Object.values(p.characterEntries).some(tuple => tuple.vendorItem != null);
+          const hasVendorChoice = state.choices.find((c) => c.matchValue === 'vendor' && c.checked) != null;
+          if (hasVendor && hasVendorChoice) {
+            return true;
+          }
+          return false;
+        } else if (x.type == 'milestone') {
+          const m  = x as MilestoneRow;
+
         }
         const choice = state.choices.find((c) => c.matchValue === x.type);
         if (!choice) {
@@ -543,16 +533,22 @@ export class UberListStateService implements OnDestroy {
         ])
       ),
       owner$: new BehaviorSubject(
-        generateUberState(ownerConfig, [
-          new UberChoice('a', 'A'),
-          new UberChoice('b', 'B'),
-        ])
+        generateUberState(ownerConfig, [])
       ),
     };
   }
 
-  private generateDynamicChoices(rows: (MilestoneRow | PursuitRow)[]) {
-    // TODO do something here
+  private generateDynamicChoices(player: Player, rows: (MilestoneRow | PursuitRow)[]) {
+    // do something here
+    const tempOwners: UberChoice[] = [];
+    for (const char of player.characters) {
+      tempOwners.push(new UberChoice(char.id, char.label));
+    }
+    tempOwners.push(new UberChoice('vendor', 'Vendor'));
+    this.toggleData.owner$.next({
+      ...this.toggleData.owner$.getValue(),
+      choices: tempOwners
+    });
   }
 }
 
@@ -579,10 +575,6 @@ export interface PursuitRow {
   characterEntries: { [key: string]: PursuitTuple };
 }
 
-export interface PursuitTuple {
-  vendorItem: InventoryItem;
-  characterItem: InventoryItem;
-}
 
 const ICON_FIXES = {
   '2594202463': '3603221665', // CRUCIBLE_WEEKLY_BOUNTIES
