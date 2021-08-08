@@ -57,7 +57,7 @@ export class UberListToggleComponent implements OnInit {
       return;
     }
     const state = this.state$?.getValue();
-    choice.value = !choice.value;
+    choice.checked = !choice.checked;
     const choices = this.state$.getValue().choices.slice(0);
     const newState = generateUberState(state.config, choices);
     this.state$.next(newState);

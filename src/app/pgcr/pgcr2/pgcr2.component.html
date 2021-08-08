@@ -67,7 +67,7 @@
 
         
         <ng-template #entryRow let-e='e'>
-            <tr class="pgcr-hover-row" (click)="show(e)">
+            <tr class="hover-row" (click)="show(e)">
                 <ng-container *ngIf="e.fireTeamStatus=='first'">
                     <td [attr.rowspan]="e.fireTeamSize" class="fireteam-group-cell">
                         <div class="accent-bg-text fireteam-group">&nbsp;</div>

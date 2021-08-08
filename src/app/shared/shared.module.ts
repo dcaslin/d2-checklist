@@ -54,6 +54,8 @@ import { HorizontalSortComponent } from '@app/gear/gear/gear-compare-dialog/hori
 import { LegendaryLostSectorComponent } from './legendary-lost-sector/legendary-lost-sector.component';
 import { LostSectorNextDaysComponent } from './lost-sector-next-days/lost-sector-next-days.component';
 import { GodRollPlugComponent } from '../gear/god-roll-plug/god-roll-plug.component';
+import { ForSalePursuitDialogComponent } from './for-sale-pursuit-dialog/for-sale-pursuit-dialog.component';
+import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/character-pursuit-dialog.component';
 
 @NgModule({
   imports: [
@@ -111,7 +113,9 @@ import { GodRollPlugComponent } from '../gear/god-roll-plug/god-roll-plug.compon
     SignedOnLoadingIconComponent,
     ManifestItemIconComponent,
     LegendaryLostSectorComponent,
-    LostSectorNextDaysComponent],
+    LostSectorNextDaysComponent,
+    ForSalePursuitDialogComponent,
+    CharacterPursuitDialogComponent],
   exports: [
     SortIndicatorComponent,
     HorizontalSortComponent,

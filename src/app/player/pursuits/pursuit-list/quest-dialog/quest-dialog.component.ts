@@ -14,7 +14,7 @@ export class QuestDialogComponent extends ChildComponent implements OnInit {
   constructor(
     storageService: StorageService,
     public dialogRef: MatDialogRef<QuestDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
+    @Inject(MAT_DIALOG_DATA) public data: any) {
       super(storageService);
     }
 
