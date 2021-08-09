@@ -98,6 +98,10 @@
     box-shadow: 0 0 10px mat-color($accent, 700);
   }
 
+  .pinnacle {    
+    box-shadow: 0 0 5px 0px mat-color($accent, 700);
+  }
+
   .warn-text {
     color: mat-color($warn) !important;
   }

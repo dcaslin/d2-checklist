@@ -41,6 +41,7 @@ export class UberListStateService implements OnDestroy {
   private toggleDataInit = false;
   public orMode = false;
   public filterTags$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public hideTrials = false;
 
   constructor(
     private signedOnUserService: SignedOnUserService,
@@ -132,8 +133,12 @@ export class UberListStateService implements OnDestroy {
         this.initWithPlayer(player, rows);
 
         // TODO sorting
-        // TODO filtering using toggles
-        // TODO click on item for more info (just bounties? also milestones?)
+        // sort/group by vendor/activity
+        // sort by activity name
+        // sort by rewards
+        // sort by completion status (complete and not turned in, completion %, held, for sale)
+        // TODO finish click on item modal
+        // TODO improve reward icons, esp around engrams, differentiate between powerful and pinnacle somehow
       });
 
     this.filterUpdated$
@@ -151,13 +156,15 @@ export class UberListStateService implements OnDestroy {
           this.filtersDirty$.next(dirty);
         }
         if (this.toggleDataInit) {
+          const saveMe = dirty || this.hideTrials;
           // we have no filters, so clear everything in localstorage
-          if (!dirty) {
+          if (!saveMe) {
             localStorage.removeItem(UBER_FILTER_KEY);
           } else {
             const filterSettings: UberFilterSettings = {
               filterText: this.visibleFilterText,
               deselectedChoices: {},
+              hideTrials: this.hideTrials,
             };
             for (const key of Object.keys(this.toggleData)) {
               const t = this.toggleData[key];
@@ -232,6 +239,9 @@ export class UberListStateService implements OnDestroy {
   private filterAndSortRows() {
     console.log(`Filtering and sorting rows...`);
     let filterMe = this.rows$.getValue().slice(0);
+    if (this.hideTrials) {
+      filterMe = filterMe.filter(x => x.searchText.indexOf('trials') == -1);
+    }
     filterMe = this.wildcardFilter(filterMe);
     filterMe = this.toggleFilter(filterMe);
     this.filteredRows$.next(filterMe);
@@ -251,37 +261,44 @@ export class UberListStateService implements OnDestroy {
     return false;
   }
 
-  public initWithPlayer(player: Player, rows: (MilestoneRow | PursuitRow)[]) {
-    if (!this.toggleDataInit) {
-      this.generateDynamicChoices(player, rows);
-      const sSettings = localStorage.getItem(UBER_FILTER_KEY);
-      if (sSettings) {
-        const filterSettings: UberFilterSettings = JSON.parse(sSettings);
-        this.visibleFilterText = filterSettings.filterText;
-        this.parseWildcardFilter();
-        for (const key of Object.keys(this.toggleData)) {
-          let changeMade = false;
-          const t: UberToggleState = this.toggleData[key].getValue();
-          const deselectedVals: string[] =
-            filterSettings.deselectedChoices[key];
-          if (deselectedVals) {
-            const choices = t.choices.slice(0);
-            for (const deselectedVal of deselectedVals) {
-              const choice = t.choices.find(
-                (x) => x.matchValue === deselectedVal
-              );
-              if (choice) {
-                choice.checked = false;
-                changeMade = true;
-              }
+  private loadSettings() {
+    const sSettings = localStorage.getItem(UBER_FILTER_KEY);
+    if (sSettings) {
+      const filterSettings: UberFilterSettings = JSON.parse(sSettings);
+      this.visibleFilterText = filterSettings.filterText;
+      this.hideTrials = filterSettings.hideTrials == true;
+      this.parseWildcardFilter();
+      for (const key of Object.keys(this.toggleData)) {
+        let changeMade = false;
+        const t: UberToggleState = this.toggleData[key].getValue();
+        const deselectedVals: string[] =
+          filterSettings.deselectedChoices[key];
+        if (deselectedVals) {
+          const choices = t.choices.slice(0);
+          for (const deselectedVal of deselectedVals) {
+            const choice = t.choices.find(
+              (x) => x.matchValue === deselectedVal
+            );
+            if (choice) {
+              choice.checked = false;
+              changeMade = true;
             }
-            if (changeMade) {
-              this.toggleData[key].next(generateUberState(t.config, choices));
-            }
+          }
+          if (changeMade) {
+            this.toggleData[key].next(generateUberState(t.config, choices));
           }
         }
       }
+    }
+  }
+
+  public initWithPlayer(player: Player, rows: (MilestoneRow | PursuitRow)[]) {
+    if (!this.toggleDataInit && !this.signedOnUserService.playerLoading$.getValue() && !this.signedOnUserService.vendorsLoading$.getValue()) {
+      this.generateDynamicChoices(player, rows);
+      this.loadSettings();
       this.toggleDataInit = true;
+    } else {
+      this.loadSettings();
     }
   }
 
@@ -396,7 +413,6 @@ export class UberListStateService implements OnDestroy {
     this.visibleFilterText = null;
     this.orMode = false;
     this.filterTags$.next([]);
-    // todo reset actuall wildcard filter
     for (const toggle$ of this.toggleDataArray) {
       const val = toggle$.getValue();
       const choices = val.choices.slice(0);
@@ -594,7 +610,6 @@ export class UberListStateService implements OnDestroy {
       choices: tempOwners
     });
     const rewards: Set<string> = new Set();
-    // TODO why are enhancement cores missing from the list?
     for (const x of rows) {
       if (x.type == 'milestone') {
         const m  = x as MilestoneRow;
@@ -604,7 +619,6 @@ export class UberListStateService implements OnDestroy {
         p.title.values.map(mr => mr.name).forEach(r => rewards.add(r));
       }
     }
-    console.dir(rewards);
     const aRewards: string[] = [];
     rewards.forEach(r => aRewards.push(r));
     aRewards.sort();
@@ -658,6 +672,7 @@ const ICON_FIXES = {
 interface UberFilterSettings {
   filterText: string;
   deselectedChoices: { [key: string]: string[] }; // toggle key, and matched values that are deslected
+  hideTrials: boolean;
 }
 
 interface UberToggleData {
