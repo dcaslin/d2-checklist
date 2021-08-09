@@ -138,7 +138,6 @@ export class UberListStateService implements OnDestroy {
         // sort by rewards
         // sort by completion status (complete and not turned in, completion %, held, for sale)
         // TODO finish click on item modal
-        // TODO improve reward icons, esp around engrams, differentiate between powerful and pinnacle somehow
       });
 
     this.filterUpdated$
