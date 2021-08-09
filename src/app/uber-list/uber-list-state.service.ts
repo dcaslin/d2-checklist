@@ -468,16 +468,7 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Reward Tier',
       iconClass: 'icon-engram',
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        let rewards: NameQuantity[] = [];
-
-        if (x.type == 'pursuit') {
-          const p = x as PursuitRow;
-          rewards = p.title.values;
-        } else if (x.type == 'milestone') {
-          const m = x as MilestoneRow;
-          rewards = m.rewards;
-        }
-        const rewardText = rewards.map( r => r.name.toLowerCase());
+        const rewardText = getRewardText(x);
         const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
         for (const val of selectedVals) {
           if (val == 'other') {
@@ -508,11 +499,9 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Rewards',
       icon: this.iconService.fasGift,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        const choice = state.choices.find((c) => c.matchValue === x.type);
-        if (!choice) {
-          return true;
-        }
-        return choice.checked;
+        const rewardText = getRewardText(x);
+        const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
+        return rewardText.filter(reward => selectedVals.includes(reward)).length > 0;
       },
     };
     const ownerConfig: UberToggleConfig = {
@@ -585,10 +574,7 @@ export class UberListStateService implements OnDestroy {
         ])
       ),
       reward$: new BehaviorSubject(
-        generateUberState(rewardConfig, [
-          new UberChoice('a', 'A'),
-          new UberChoice('b', 'B'),
-        ])
+        generateUberState(rewardConfig, [])
       ),
       owner$: new BehaviorSubject(
         generateUberState(ownerConfig, [])
@@ -606,6 +592,33 @@ export class UberListStateService implements OnDestroy {
     this.toggleData.owner$.next({
       ...this.toggleData.owner$.getValue(),
       choices: tempOwners
+    });
+    const rewards: Set<string> = new Set();
+    // TODO why are enhancement cores missing from the list?
+    for (const x of rows) {
+      if (x.type == 'milestone') {
+        const m  = x as MilestoneRow;
+        m.rewards.map(mr => mr.name).forEach(r => rewards.add(r));
+      } else if (x.type == 'pursuit') {
+        const p = x as PursuitRow;
+        p.title.values.map(mr => mr.name).forEach(r => rewards.add(r));
+      }
+    }
+    console.dir(rewards);
+    const aRewards: string[] = [];
+    rewards.forEach(r => aRewards.push(r));
+    aRewards.sort();
+    const customRewards: UberChoice[] = [];
+    for (const reward of aRewards) {
+      const lowerCase = reward.toLowerCase();
+      if (lowerCase.indexOf('pinnacle') < 0 && lowerCase.indexOf('legendary') < 0 && lowerCase.indexOf('powerful') < 0) {
+        customRewards.push(new UberChoice(lowerCase, reward));
+      }
+    }
+
+    this.toggleData.reward$.next({
+      ...this.toggleData.reward$.getValue(),
+      choices: customRewards
     });
   }
 }
@@ -669,4 +682,17 @@ function _processFilterTag(actual: string, i: (MilestoneRow | PursuitRow)): bool
   if (i.searchText.indexOf(actual) >= 0) {
     return true;
   }
+}
+
+function getRewardText(x: (MilestoneRow | PursuitRow)): string[] {
+  let rewards: NameQuantity[] = [];
+  if (x.type == 'pursuit') {
+    const p = x as PursuitRow;
+    rewards = p.title.values;
+  } else if (x.type == 'milestone') {
+    const m = x as MilestoneRow;
+    rewards = m.rewards;
+  }
+  const rewardText = rewards.map( r => r.name.toLowerCase());
+  return rewardText;
 }
