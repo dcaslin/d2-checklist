@@ -447,11 +447,20 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Cadence',
       icon: this.iconService.fasCalendarAlt,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        const choice = state.choices.find((c) => c.matchValue === x.type);
-        if (!choice) {
-          return true;
+        const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
+        const hasWeekly = selectedVals.includes('weekly');
+        // milestones are always weekly
+        if (x.type == 'milestone') {
+          return hasWeekly;
         }
-        return choice.checked;
+        const desc = this.destinyCacheService.cache.InventoryItem[x.title.hash];
+        const label = desc.inventory.stackUniqueLabel as string;
+        if (label.includes('.weekly') // most vendor's weekly bounties have this keyword
+          || label.includes('.outlaws')) { // spider's weeklies have the outlaws keyword
+            return hasWeekly;
+        }
+        // it's a daily bounty
+        return selectedVals.includes('daily');
       },
     };
     const rewardTierConfig: UberToggleConfig = {
@@ -571,8 +580,8 @@ export class UberListStateService implements OnDestroy {
       ),
       cadence$: new BehaviorSubject(
         generateUberState(cadenceConfig, [
-          new UberChoice('a', 'A'),
-          new UberChoice('b', 'B'),
+          new UberChoice('daily', 'Daily'),
+          new UberChoice('weekly', 'Weekly'),
         ])
       ),
       reward$: new BehaviorSubject(
