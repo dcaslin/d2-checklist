@@ -23,7 +23,8 @@
             <button mat-button>
               <fa-icon [icon]="iconService.fasSyncAlt" (click)="state.refresh()"></fa-icon>
             </button>
-            <mat-checkbox ngDefaultControl (change)="state.filterUpdated$.next()" [(ngModel)]="state.hideTrials">Hide Trials</mat-checkbox>
+            <mat-checkbox ngDefaultControl (change)="state.filterUpdated$.next()" [(ngModel)]="state.hideTrials">Hide
+              Trials</mat-checkbox>
             <button mat-button *ngIf="(state.filtersDirty$|async)" (click)="state.resetFilters()">
               <fa-stack>
                 <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
@@ -34,30 +35,34 @@
             <span class="pad-left pad-right simple-caption-no-margin">{{rows.length}} / {{allRows.length}}</span>
           </div>
         </div>
-        <table class="responsive-table">
+        <table class="list-table">
           <thead>
             <tr>
-              <th class="sticky">&nbsp;</th>
-              <th class="sticky">Activity</th>
+              <th class="check-col sticky">&nbsp;</th>
+              <th class="icon-col sticky">&nbsp;</th>
+              <th class="activity-col sticky">Activity</th>
               <th class="sticky">Rewards</th>
-
-              <th class="sticky" *ngFor="let char of player.characters">
+              <th class="sticky hide-mobile-table-cell" *ngFor="let char of player.characters">
                 {{char.className}} - {{char.light}}
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr class="hover-row" (click)="show(row)" *ngFor="let row of rows; trackBy: trackUberRow">
-              <ng-container *ngIf="row.type=='pursuit'">
-                <td>
+            <tr class="hover-row" *ngFor="let row of rows; trackBy: trackUberRow">
+              <ng-container *ngIf="row.type=='bounty' || row.type=='quest'">
+
+                <td class="check-col">
+                  <mat-checkbox ngDefaultControl></mat-checkbox>
+                </td>
+                <td class="icon-col">
                   <ng-container *ngIf="row?.title?.icon as icon">
                     <div class="list-icon divider-border"
                       [style.background-image]="'url(//www.bungie.net' + icon + ')'">
                     </div>
                   </ng-container>
                 </td>
-                <td>
-                  {{row.title.name}}
+                <td class="activity-col">
+                  <div class="fake-link" (click)="show($event, row)">{{row.title.name}}</div>
                 </td>
                 <td>
                   <div class="flex-row" *ngIf="row.title.values as rewards">
@@ -70,39 +75,42 @@
                   </div>
 
                 </td>
-                <td *ngFor="let char of player.characters">
-                  <ng-container *ngIf="row.characterEntries[char.id] as data">
+                <td class="hide-mobile-table-cell" *ngFor="let char of player.characters">
+                  <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
                     <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
-                  </ng-container>
+                  </span>
 
                 </td>
               </ng-container>
               <ng-container *ngIf="row.type=='milestone'">
-                <td>
+                <td class="check-col">
+                  <mat-checkbox ngDefaultControl></mat-checkbox>
+                </td>
+                <td class="icon-col">
                   <ng-container *ngIf="row.desc?.displayProperties?.icon as icon">
                     <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
                       [class.brighten]="icon.endsWith('jpg')"
                       [style.background-image]="'url(//www.bungie.net' + icon + ')'">
                     </div>
-
                   </ng-container>
                 </td>
-                <td>
-                  {{row.title.name}}
+                <td class="activity-col">
+                  <div class="fake-link" (click)="show($event, row)">{{row.title.name}}</div>
                 </td>
                 <td>
                   <div class="flex-row" *ngIf="row.rewards as rewards">
                     <div *ngFor="let r of rewards">
-                      <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
+                      <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0"
+                        [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
                         [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
                       <span *ngIf="debugmode|async"> {{r.hash}}</span>
                     </div>
                   </div>
                 </td>
-                <td *ngFor="let char of player.characters">
-                  <ng-container *ngIf="row.characterEntries[char.id] as data">
+                <td class="hide-mobile-table-cell" *ngFor="let char of player.characters">
+                  <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
                     <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
-                  </ng-container>
+                  </span>
 
                 </td>
               </ng-container>

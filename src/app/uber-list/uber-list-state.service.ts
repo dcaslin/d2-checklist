@@ -85,7 +85,7 @@ export class UberListStateService implements OnDestroy {
               if (vi.type == ItemType.Bounty) {
                 // create empty pursuit row
                 if (!rowData[vi.hash]) {
-                  rowData[vi.hash] = this.buildInitialPursuitRow(vi);
+                  rowData[vi.hash] = this.buildInitialPursuitRow(vi, 'bounty');
                 }
                 const target = rowData[vi.hash] as PursuitRow;
                 if (!target.characterEntries[char.id]) {
@@ -103,7 +103,23 @@ export class UberListStateService implements OnDestroy {
           );
           for (const b of bounties) {
             if (!rowData[b.hash]) {
-              rowData[b.hash] = this.buildInitialPursuitRow(b);
+              rowData[b.hash] = this.buildInitialPursuitRow(b, 'bounty');
+            }
+            const target = rowData[b.hash] as PursuitRow;
+            if (!target.characterEntries[char.id]) {
+              target.characterEntries[char.id] = {
+                characterItem: null,
+                vendorItem: null,
+              };
+            }
+            target.characterEntries[char.id].characterItem = b;
+          }
+          const quests = player.quests.filter(
+            (x) => x.owner.getValue().id == char.id
+          );
+          for (const b of quests) {
+            if (!rowData[b.hash]) {
+              rowData[b.hash] = this.buildInitialPursuitRow(b, 'quest');
             }
             const target = rowData[b.hash] as PursuitRow;
             if (!target.characterEntries[char.id]) {
@@ -138,6 +154,14 @@ export class UberListStateService implements OnDestroy {
         // sort by rewards
         // sort by completion status (complete and not turned in, completion %, held, for sale)
         // TODO finish click on item modal
+
+        // TODO missing expires
+        // TODO add quests
+        // mobile table view, hide the right side of the screen
+
+        // TODO Builder vs list
+        // - add checkboxes to builder
+        // - List select one and only one char, default to most recent
       });
 
     this.filterUpdated$
@@ -301,10 +325,10 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  private buildInitialPursuitRow(i: InventoryItem): PursuitRow {
+  private buildInitialPursuitRow(i: InventoryItem, type: 'bounty'|'quest'): PursuitRow {
     return {
       id: i.hash,
-      type: 'pursuit',
+      type,
       title: i,
       searchText: i.searchText,
       characterEntries: {},
@@ -449,12 +473,7 @@ export class UberListStateService implements OnDestroy {
       debugKey: 'Activity',
       icon: this.iconService.fasFlag,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
-        // assuming we have choices that are unchecked, filter on them
-        const choice = state.choices.find((c) => c.matchValue === x.type);
-        if (!choice) {
-          return true;
-        }
-        return choice.checked;
+        return state.choices.filter(c => c.checked).map(c => c.matchValue).filter(c => c == x.type).length > 0;
       },
     };
     const cadenceConfig: UberToggleConfig = {
@@ -525,7 +544,8 @@ export class UberListStateService implements OnDestroy {
       icon: this.iconService.fasUsers,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
         const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
-        if (x.type == 'pursuit') {
+        // only bounties have vendors
+        if (x.type == 'bounty') {
           const p = x as PursuitRow;
           // is this item avail from a vendor?
           const hasVendor = Object.values(p.characterEntries).some(tuple => tuple.vendorItem != null);
@@ -562,16 +582,12 @@ export class UberListStateService implements OnDestroy {
         return false;
       },
     };
-    // x Activity Type: Milestone / Bounty / Other (edited)
-    // x Cadence: Weekly / Daily / Other (edited)
-    // x Reward Tier: Pinnacle / Powerful / Legendary / Other
-    // Rewards: XP / Bright Dust / Etc / Other
-    // Owner: For sale Char 1/2/3  / Held Char 1/2/3
     return {
       activityType$: new BehaviorSubject(
         generateUberState(activityTypeConfig, [
-          new UberChoice('pursuit', 'Pursuit'),
+          new UberChoice('bounty', 'Bounty'),
           new UberChoice('milestone', 'Milestone'),
+          new UberChoice('quest', 'Quest'),
         ])
       ),
       rewardTier$: new BehaviorSubject(
@@ -613,7 +629,7 @@ export class UberListStateService implements OnDestroy {
       if (x.type == 'milestone') {
         const m  = x as MilestoneRow;
         m.rewards.map(mr => mr.name).forEach(r => rewards.add(r));
-      } else if (x.type == 'pursuit') {
+      } else if (x.type == 'bounty' || x.type == 'quest') {
         const p = x as PursuitRow;
         p.title.values.map(mr => mr.name).forEach(r => rewards.add(r));
       }
@@ -624,9 +640,9 @@ export class UberListStateService implements OnDestroy {
     const customRewards: UberChoice[] = [];
     for (const reward of aRewards) {
       const lowerCase = reward.toLowerCase();
-      if (lowerCase.indexOf('pinnacle') < 0 && lowerCase.indexOf('legendary') < 0 && lowerCase.indexOf('powerful') < 0) {
+      // if (lowerCase.indexOf('pinnacle') < 0 && lowerCase.indexOf('legendary') < 0 && lowerCase.indexOf('powerful') < 0) {
         customRewards.push(new UberChoice(lowerCase, reward));
-      }
+      // }
     }
 
     this.toggleData.reward$.next({
@@ -653,7 +669,7 @@ export interface MilestoneRow {
 
 export interface PursuitRow {
   id: string;
-  type: 'pursuit';
+  type: 'bounty'|'quest';
   title: InventoryItem;
   searchText: string;
   characterEntries: { [key: string]: PursuitTuple };
@@ -700,7 +716,7 @@ function _processFilterTag(actual: string, i: (MilestoneRow | PursuitRow)): bool
 
 function getRewardText(x: (MilestoneRow | PursuitRow)): string[] {
   let rewards: NameQuantity[] = [];
-  if (x.type == 'pursuit') {
+  if (x.type == 'bounty' || x.type == 'quest') {
     const p = x as PursuitRow;
     rewards = p.title.values;
   } else if (x.type == 'milestone') {

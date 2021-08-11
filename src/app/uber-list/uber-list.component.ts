@@ -38,7 +38,8 @@ export class UberListComponent extends ChildComponent implements OnInit {
     this.state.refresh();
   }
 
-  show(row: (MilestoneRow|PursuitRow)): void {
+  show(event, row: (MilestoneRow|PursuitRow)): void {
+    event.preventDefault();
     const dc = new MatDialogConfig();
     dc.data = row.title;
     this.dialog.open(ForSalePursuitDialogComponent, dc);

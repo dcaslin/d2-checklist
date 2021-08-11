@@ -1,15 +1,12 @@
-<div class="flex-column">
+<div class="total-progress">
     <ng-container *ngIf="pursuit else isNull">
         <div *ngIf="pursuit.vendorItem">
             <fa-icon class="secondary-text" [icon]="iconService.farSign"></fa-icon>
         </div>
         <div *ngIf="pursuit.characterItem as g">
-            <!-- <fa-icon [icon]="iconService.fasUser"></fa-icon> -->
-            <div class="total-progress">
-                <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
-                </mat-progress-bar>
-                <div class="progress-pct">{{g.aggProgress|number : '1.0-0'}}%</div>
-            </div>
+            <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
+            </mat-progress-bar>
+            <div class="progress-pct">{{g.aggProgress|number : '1.0-0'}}%</div>
         </div>
     </ng-container>
     <ng-template #isNull>
