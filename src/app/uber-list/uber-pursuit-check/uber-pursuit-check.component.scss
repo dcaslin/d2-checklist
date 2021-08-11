@@ -38,9 +38,8 @@
 .total-progress {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
-  margin: 5px;
 }
 
 .progress-pct {
@@ -50,6 +49,6 @@
 
 .progress-bar {
   flex-grow: 1;
-  margin: 5px;
+  margin-bottom: 5px;
   max-width: 40px;
 }

@@ -17,6 +17,18 @@
   flex-wrap: wrap;
 }
 
+.check-col {
+  width: 100px;
+}
+
+.check-col {
+  width: 32px;
+  vertical-align: middle !important;
+}
+.icon-col {
+  width: 64px;
+}
+
 .flex-row>div {
   margin: 5px;
 }
@@ -83,9 +95,92 @@ table.list-table {
   align-items: center;
 }
 
+.limited-width {
+  max-width: 175px;
+}
+
+.activity-col {
+  max-width: 150px;
+}
+
+.hide-mobile-inline {
+  display: none;
+  visibility: hidden;
+}
+
+.hide-mobile-block {
+  display: none;
+  visibility: hidden;
+}
+
+.mobile-only-inline {
+  display: inline;
+  visibility: visible;
+}
+
+.fake-link {
+  text-decoration: underline;
+}
+
+.hide-mobile-table-cell {
+  display: none;
+  visibility: hidden;
+}
+
+.sorta-hide-mobile-table-cell {
+  display: none;
+  visibility: hidden;
+}
+
+
+.mobile-only-inline {
+  display: inline;
+  visibility: visible;
+}
+
+.mobile-only-block {
+  display: inline;
+  visibility: visible;
+}
+
+.mobile-only-table-cell {
+  display: table-cell;
+  visibility: visible;
+}
+
 @media screen and (min-width: 1200px) {
   .filter-container {
     min-width: 1100px;
+  }
+
+  .hide-mobile-inline {
+    display: inline;
+    visibility: visible;
+  }
+
+  .hide-mobile-block {
+    display: block;
+    visibility: visible;
+  }
+  .mobile-only-inline {
+    display: none;
+    visibility: hidden;
+  }
+  .mobile-only-block {
+    display: none;
+    visibility: hidden;
+  }
+  .sorta-mobile-only-block {
+    display: none;
+    visibility: hidden;
+  }
+  .hide-mobile-table-cell {
+    display: table-cell;
+    visibility: visible;
+  }
+  .mobile-only-table-cell {
+    display: none;
+    visibility: hidden;
   }
 }
 
