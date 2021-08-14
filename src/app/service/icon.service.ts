@@ -63,6 +63,7 @@ import {
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
   faWheat as fasWheat,
+  faHiking as fasHiking,
   faSignOutAlt as fasSignOutAlt,
   faCheckCircle as fasCheckCircle,
   faCircleNotch as fasCircleNotch,
@@ -81,6 +82,7 @@ import {
 export class IconService {
   // NOTE: farSquare is actually falSquare
   public readonly farSign = farSign;
+  public readonly fasHiking = fasHiking;
   public readonly farTools = farTools;
   public readonly fasStickyNote = fasStickyNote;
   public readonly fasSkull = fasSkull;
