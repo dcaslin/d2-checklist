@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ForSalePursuitDialogComponent } from '@app/shared/for-sale-pursuit-dialog/for-sale-pursuit-dialog.component';
-import { Subject } from 'rxjs';
-import { MilestoneRow, PursuitRow, UberListStateService } from './uber-list-state.service';
+import { MilestoneRow, PursuitRow, UberListStateService } from '../uber-list-state.service';
 
 @Component({
-  selector: 'd2c-uber-list',
-  templateUrl: './uber-list.component.html',
-  styleUrls: ['./uber-list.component.scss']
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'd2c-uber-list-builder',
+  templateUrl: './uber-list-builder.component.html',
+  styleUrls: ['./uber-list-builder.component.scss']
 })
-export class UberListComponent extends ChildComponent implements OnInit {
+export class UberListBuilderComponent extends ChildComponent implements OnInit {
 
   constructor(
     public state: UberListStateService,
@@ -31,7 +30,6 @@ export class UberListComponent extends ChildComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.state.init();
   }
 
   refresh(): void {

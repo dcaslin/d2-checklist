@@ -7,7 +7,6 @@ import { BountySet } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { Bounty } from '@app/todo-list/interfaces/vendor.interface';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 

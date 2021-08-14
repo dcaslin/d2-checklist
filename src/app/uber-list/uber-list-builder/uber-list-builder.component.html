@@ -1,0 +1,154 @@
+<ng-container *ngIf="signedOnUserService.signedOnUser$|async as currUser; else notSignedIn">
+  <ng-container *ngIf="signedOnUserService.player$|async as player; else noPlayerYet">
+    <ng-container *ngIf="state.sort$|async as sort">
+      <ng-container *ngIf="state.rows$|async as allRows">
+        <div class="flex-column" *ngIf="state.filteredRows$|async as rows">
+          <div class="filter-container" *ngIf="state.toggleData as toggleData">
+            <d2c-uber-list-toggle [state$]="state.toggleData.activityType$"> </d2c-uber-list-toggle>
+            <d2c-uber-list-toggle [state$]="state.toggleData.rewardTier$"> </d2c-uber-list-toggle>
+            <d2c-uber-list-toggle [state$]="state.toggleData.reward$"> </d2c-uber-list-toggle>
+            <d2c-uber-list-toggle [state$]="state.toggleData.owner$"> </d2c-uber-list-toggle>
+            <d2c-uber-list-toggle [state$]="state.toggleData.cadence$"> </d2c-uber-list-toggle>
+          </div>
+          <div class="filter-container">
+            <mat-form-field class="wildcard-filter">
+              <mat-label>Wildcard filter</mat-label>
+              <input matInput #filter [(ngModel)]="state.visibleFilterText" placeholder="Wildcard filter"
+                (keyup)="state.filterKeyUp$.next()">
+              <button mat-button *ngIf="state.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
+                (click)="state.visibleFilterText=null;state.filterKeyUp$.next()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-form-field>
+            <div class="filter-row">
+              <button mat-button>
+                <fa-icon [icon]="iconService.fasSyncAlt" (click)="state.refresh()"></fa-icon>
+              </button>
+              <mat-checkbox ngDefaultControl (change)="state.filterUpdated$.next()" [(ngModel)]="state.hideTrials">Hide
+                Trials</mat-checkbox>
+              <button mat-button *ngIf="(state.filtersDirty$|async)" (click)="state.resetFilters()">
+                <fa-stack>
+                  <fa-icon [icon]="iconService.fasFilter" stackItemSize="1x"></fa-icon>
+                  <fa-icon [icon]="iconService.fasBan" stackItemSize="2x" class="warn-text"></fa-icon>
+                </fa-stack>
+              </button>
+              <d2c-signed-on-loading-icon class="loading-indicator"></d2c-signed-on-loading-icon>
+              <span class="pad-left pad-right simple-caption-no-margin">{{rows.length}} / {{allRows.length}}</span>
+            </div>
+          </div>
+          <table class="list-table">
+            <thead>
+              <tr>
+                <th class="check-col sticky">&nbsp;</th>
+                <th class="uber-icon-col sticky">
+                  <span class="fake-link gear-sort" (click)="state.sort('icon')">Icon
+                    <d2c-sort-indicator field="icon" [currVal]="sort.by" [descending]="sort.desc"></d2c-sort-indicator>
+                  </span>
+                </th>
+                <th class="activity-col sticky">
+                  <span class="fake-link gear-sort" (click)="state.sort('activity')">Activity
+                    <d2c-sort-indicator field="activity" [currVal]="sort.by" [descending]="sort.desc"></d2c-sort-indicator>
+                  </span>
+                </th>
+                <th class="sticky">
+                  <span class="fake-link gear-sort" (click)="state.sort('rewards')">Rewards
+                    <d2c-sort-indicator field="rewards" [currVal]="sort.by" [descending]="sort.desc"></d2c-sort-indicator>
+                  </span>
+                </th>
+                <th class="sticky hide-mobile-table-cell" *ngFor="let char of player.characters">
+                  <span class="fake-link gear-sort" (click)="state.sort('char-'+char.id)">{{char.className}} - {{char.light}}
+                    <d2c-sort-indicator [field]="'char-'+char.id" [currVal]="sort.by" [descending]="sort.desc"></d2c-sort-indicator>
+                  </span>
+                  
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hover-row" *ngFor="let row of rows; trackBy: trackUberRow">
+                <ng-container *ngIf="row.type=='bounty' || row.type=='quest'">
+
+                  <td class="check-col">
+                    <mat-checkbox ngDefaultControl></mat-checkbox>
+                  </td>
+                  <td class="icon-col">
+                    <ng-container *ngIf="row?.title?.icon as icon">
+                      <div class="list-icon divider-border"
+                        [style.background-image]="'url(//www.bungie.net' + icon + ')'">
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td class="activity-col">
+                    <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}
+                    </div>
+                    <div>{{row.sortInfo}}</div>
+                    <span *ngIf="debugmode|async"> {{row.title.hash}}</span>
+                  </td>
+                  <td>
+                    <div class="flex-row" *ngIf="row.title.values as rewards">
+                      <div *ngFor="let r of rewards">
+                        <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
+                          [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+
+                        <span *ngIf="debugmode|async"> {{r.hash}}</span>
+                      </div>
+                    </div>
+
+                  </td>
+                  <td class="hide-mobile-table-cell" *ngFor="let char of player.characters">
+                    <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
+                      <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
+                    </span>
+
+                  </td>
+                </ng-container>
+                <ng-container *ngIf="row.type=='milestone'">
+                  <td class="check-col">
+                    <mat-checkbox ngDefaultControl></mat-checkbox>
+                  </td>
+                  <td class="icon-col">
+                    <ng-container *ngIf="row.desc?.displayProperties?.icon as icon">
+                      <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
+                        [class.brighten]="icon.endsWith('jpg')"
+                        [style.background-image]="'url(//www.bungie.net' + icon + ')'">
+                      </div>
+                    </ng-container>
+                  </td>
+                  <td class="activity-col">
+                    <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}</div>
+                    <span *ngIf="debugmode|async"> {{row.title.key}}</span>
+                  </td>
+                  <td>
+                    <div class="flex-row" *ngIf="row.rewards as rewards">
+                      <div *ngFor="let r of rewards">
+                        <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0"
+                          [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
+                          [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+                        <span *ngIf="debugmode|async"> {{r.hash}}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="hide-mobile-table-cell" *ngFor="let char of player.characters">
+                    <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
+                      <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
+                    </span>
+
+                  </td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>
+
+<ng-template #notSignedIn>
+  <d2c-sign-in-required></d2c-sign-in-required>
+</ng-template>
+
+<ng-template #noPlayerYet>
+  <div class="center-spinner">
+    <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+  </div>
+</ng-template>

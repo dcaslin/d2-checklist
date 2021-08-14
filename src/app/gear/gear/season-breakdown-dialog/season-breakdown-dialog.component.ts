@@ -6,8 +6,6 @@ import { Character, InventoryPlug, Player, InventoryItem, EnergyType } from '@ap
 import { trigger, transition, style, animate } from '@angular/animations';
 import { BehaviorSubject } from 'rxjs';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
-import { DisplayProperties } from '@app/todo-list/interfaces/api.interface';
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-season-breakdown-dialog',
@@ -152,4 +150,10 @@ class ItemBundle {
 interface Mat {
   displayProperties: DisplayProperties;
   total: number;
+}
+
+interface DisplayProperties {
+  description?: string;
+  icon: string;
+  name: string;
 }

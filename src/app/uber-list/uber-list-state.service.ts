@@ -11,6 +11,7 @@ import {
   PursuitTuple,
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
+import { SIGABRT } from 'constants';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import {
@@ -29,10 +30,12 @@ export class UberListStateService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
 
   public filterKeyUp$: Subject<void> = new Subject();
-  public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> =
-    new BehaviorSubject([]);
-  public filteredRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> =
-    new BehaviorSubject([]);
+  public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public filteredRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public sort$: BehaviorSubject<UberSort> = new BehaviorSubject({
+    by: 'activity',
+    desc: true
+  });
   public toggleData: UberToggleData | null = null;
   public toggleDataArray: BehaviorSubject<UberToggleState>[] = [];
   public visibleFilterText = '';
@@ -50,7 +53,7 @@ export class UberListStateService implements OnDestroy {
   ) {
     this.toggleData = this.buildInitToggles();
     const a: BehaviorSubject<UberToggleState>[] = [];
-    const thingsToListenTo$ = [this.rows$, this.filterTags$];
+    const thingsToListenTo$ = [this.rows$, this.filterTags$, this.sort$];
     for (const key of Object.keys(this.toggleData)) {
       a.push(this.toggleData[key]);
       thingsToListenTo$.push(this.toggleData[key]);
@@ -259,6 +262,18 @@ export class UberListStateService implements OnDestroy {
     return true;
   }
 
+  private sortRows(rows: (MilestoneRow | PursuitRow)[]): void {
+    const sort = this.sort$.getValue();
+    if (sort.by == 'activity') {
+      rows.sort(sortByActivityName);
+    } else if (sort.by == 'icon') {
+      rows.sort(sortByIcon);
+    }
+    if (!sort.desc) {
+      rows.reverse();
+    }
+  }
+
   private filterAndSortRows() {
     console.log(`Filtering and sorting rows...`);
     let filterMe = this.rows$.getValue().slice(0);
@@ -267,6 +282,7 @@ export class UberListStateService implements OnDestroy {
     }
     filterMe = this.wildcardFilter(filterMe);
     filterMe = this.toggleFilter(filterMe);
+    this.sortRows(filterMe);
     this.filteredRows$.next(filterMe);
   }
 
@@ -315,7 +331,7 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  public initWithPlayer(player: Player, rows: (MilestoneRow | PursuitRow)[]) {
+  private initWithPlayer(player: Player, rows: (MilestoneRow | PursuitRow)[]) {
     if (!this.toggleDataInit && !this.signedOnUserService.playerLoading$.getValue() && !this.signedOnUserService.vendorsLoading$.getValue()) {
       this.generateDynamicChoices(player, rows);
       this.loadSettings();
@@ -325,12 +341,30 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  private buildInitialPursuitRow(i: InventoryItem, type: 'bounty'|'quest'): PursuitRow {
+  sort(val: string) {
+    const sort = this.sort$.getValue();
+    const newSort = {
+      ...sort
+    };
+    if (val == sort.by) {
+      newSort.desc = !newSort.desc;
+    } else {
+      newSort.by = val;
+      newSort.desc = true;
+    }
+    this.sort$.next(newSort);
+  }
+
+
+  private buildInitialPursuitRow(i: InventoryItem, type: 'bounty' | 'quest'): PursuitRow {    
+    const desc = this.destinyCacheService.cache.InventoryItem[i.hash];
+    const label = desc.inventory.stackUniqueLabel as string;
     return {
       id: i.hash,
       type,
       title: i,
       searchText: i.searchText,
+      sortInfo: label,
       characterEntries: {},
     };
   }
@@ -418,6 +452,7 @@ export class UberListStateService implements OnDestroy {
       type: 'milestone',
       title: msn,
       rewards,
+      sortInfo: 'milestone',
       desc: desc,
       searchText,
       characterEntries: {},
@@ -491,7 +526,7 @@ export class UberListStateService implements OnDestroy {
         const label = desc.inventory.stackUniqueLabel as string;
         if (label.includes('.weekly') // most vendor's weekly bounties have this keyword
           || label.includes('.outlaws')) { // spider's weeklies have the outlaws keyword
-            return hasWeekly;
+          return hasWeekly;
         }
         // it's a daily bounty
         return selectedVals.includes('daily');
@@ -627,7 +662,7 @@ export class UberListStateService implements OnDestroy {
     const rewards: Set<string> = new Set();
     for (const x of rows) {
       if (x.type == 'milestone') {
-        const m  = x as MilestoneRow;
+        const m = x as MilestoneRow;
         m.rewards.map(mr => mr.name).forEach(r => rewards.add(r));
       } else if (x.type == 'bounty' || x.type == 'quest') {
         const p = x as PursuitRow;
@@ -641,7 +676,7 @@ export class UberListStateService implements OnDestroy {
     for (const reward of aRewards) {
       const lowerCase = reward.toLowerCase();
       // if (lowerCase.indexOf('pinnacle') < 0 && lowerCase.indexOf('legendary') < 0 && lowerCase.indexOf('powerful') < 0) {
-        customRewards.push(new UberChoice(lowerCase, reward));
+      customRewards.push(new UberChoice(lowerCase, reward));
       // }
     }
 
@@ -652,10 +687,18 @@ export class UberListStateService implements OnDestroy {
   }
 }
 
+export interface UberSort {
+  by: string;
+  desc: boolean;
+}
+
 interface PrivRewardDesc {
   itemHash: number;
   quantity: number;
 }
+
+
+
 
 export interface MilestoneRow {
   id: string;
@@ -663,15 +706,17 @@ export interface MilestoneRow {
   title: MileStoneName;
   desc: any;
   searchText: string;
+  sortInfo: string;
   rewards: NameQuantity[];
   characterEntries: { [key: string]: MilestoneStatus };
 }
 
 export interface PursuitRow {
   id: string;
-  type: 'bounty'|'quest';
+  type: 'bounty' | 'quest';
   title: InventoryItem;
   searchText: string;
+  sortInfo: string;
   characterEntries: { [key: string]: PursuitTuple };
 }
 
@@ -723,6 +768,37 @@ function getRewardText(x: (MilestoneRow | PursuitRow)): string[] {
     const m = x as MilestoneRow;
     rewards = m.rewards;
   }
-  const rewardText = rewards.map( r => r.name.toLowerCase());
+  const rewardText = rewards.map(r => r.name.toLowerCase());
   return rewardText;
+}
+
+function sortByActivityName(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
+  try {
+  const xName = x.sortInfo ? x.sortInfo : '';
+  const yName = y.sortInfo ? y.sortInfo : '';
+//  const xName = x.title.name.toLowerCase();
+//  const yName = y.title.name.toLowerCase();
+  if (xName < yName) {
+    return -1;
+  } else if (xName > yName) {
+    return 1;
+  } else {
+    return 0;
+  } }
+  catch (e) {
+    console.log(e);
+    return 0;
+  }
+}
+
+function sortByIcon(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
+  const xName = (x as MilestoneRow).desc?.displayProperties?.icon ? (x as MilestoneRow).desc?.displayProperties?.icon : (x as PursuitRow)?.title?.icon;
+  const yName = (y as MilestoneRow).desc?.displayProperties?.icon ? (y as MilestoneRow).desc?.displayProperties?.icon : (y as PursuitRow)?.title?.icon;
+  if (xName < yName) {
+    return -1;
+  } else if (xName > yName) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
