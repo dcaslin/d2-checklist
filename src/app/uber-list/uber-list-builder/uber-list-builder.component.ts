@@ -19,14 +19,9 @@ export class UberListBuilderComponent extends ChildComponent implements OnInit {
     public state: UberListStateService,
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService,
-    private dialog: MatDialog,
     storageService: StorageService
   ) {
     super(storageService);
-  }
-
-  trackUberRow(index, item: (MilestoneRow|PursuitRow)): string {
-    return item ? item.id : undefined;
   }
 
   ngOnInit(): void {
@@ -36,10 +31,4 @@ export class UberListBuilderComponent extends ChildComponent implements OnInit {
     this.state.refresh();
   }
 
-  show(event, row: (MilestoneRow|PursuitRow)): void {
-    event.preventDefault();
-    const dc = new MatDialogConfig();
-    dc.data = row.title;
-    this.dialog.open(ForSalePursuitDialogComponent, dc);
-  }
 }

@@ -1,7 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import {
+  Character,
   InventoryItem,
   ItemType,
   MileStoneName,
@@ -11,6 +13,7 @@ import {
   PursuitTuple,
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
+import { ForSalePursuitDialogComponent } from '@app/shared/for-sale-pursuit-dialog/for-sale-pursuit-dialog.component';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import {
@@ -21,6 +24,8 @@ import {
 } from './uber-list-toggle/uber-list-toggle.component';
 
 const UBER_FILTER_KEY = 'D2C-UBER-FILTER';
+const DEFAULT_SORT_BY = 'name';
+const DEFAULT_SORT_DESC = true;
 
 @Injectable({
   providedIn: 'root',
@@ -30,10 +35,15 @@ export class UberListStateService implements OnDestroy {
 
   public filterKeyUp$: Subject<void> = new Subject();
   public rows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public currChar$: BehaviorSubject<Character | null> = new BehaviorSubject(null);
   public filteredRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public allVisibleChecked$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public someVisibleChecked$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public checkedRows$: BehaviorSubject<(MilestoneRow | PursuitRow)[]> = new BehaviorSubject([]);
+  public checked$: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public sort$: BehaviorSubject<UberSort> = new BehaviorSubject({
-    by: 'activity',
-    desc: true
+    by: DEFAULT_SORT_BY,
+    desc: DEFAULT_SORT_DESC
   });
   public toggleData: UberToggleData | null = null;
   public toggleDataArray: BehaviorSubject<UberToggleState>[] = [];
@@ -44,15 +54,18 @@ export class UberListStateService implements OnDestroy {
   public orMode = false;
   public filterTags$: BehaviorSubject<string[]> = new BehaviorSubject([]);
   public hideTrials = false;
+  public hideComplete = false;
+  public hideUnheld = false;
 
   constructor(
     private signedOnUserService: SignedOnUserService,
     private destinyCacheService: DestinyCacheService,
+    private dialog: MatDialog,
     private iconService: IconService
   ) {
     this.toggleData = this.buildInitToggles();
     const a: BehaviorSubject<UberToggleState>[] = [];
-    const thingsToListenTo$ = [this.rows$, this.filterTags$, this.sort$];
+    const thingsToListenTo$ = [this.rows$, this.filterTags$, this.sort$, this.checked$];
     for (const key of Object.keys(this.toggleData)) {
       a.push(this.toggleData[key]);
       thingsToListenTo$.push(this.toggleData[key]);
@@ -79,9 +92,10 @@ export class UberListStateService implements OnDestroy {
         filter(([player, vendors]) => player != null && vendors != null)
       )
       .subscribe(([player, charVendors]) => {
+        this.currChar$.next(player.characters[0]);
         const rowData: { [key: string]: MilestoneRow | PursuitRow } = {};
         for (const char of player.characters) {
-          const vendors = charVendors.find((x) => x.char.id == char.id);
+          const vendors = charVendors.find((x) => x?.char?.id == char.id);
           if (vendors) {
             for (const vi of vendors.data) {
               if (vi.type == ItemType.Bounty) {
@@ -146,25 +160,14 @@ export class UberListStateService implements OnDestroy {
         const rows: (MilestoneRow | PursuitRow)[] = [];
         for (const key of Object.keys(rowData)) {
           classify(rowData[key]);
+          setRewardTier(rowData[key]);
           rows.push(rowData[key]);
         }
         this.rows$.next(rows);
         this.initWithPlayer(player, rows);
 
-        // TODO sorting
-        // sort/group by vendor/activity
-        // sort by activity name
-        // sort by rewards
-        // sort by completion status (complete and not turned in, completion %, held, for sale)
         // TODO finish click on item modal
-
-        // TODO missing expires
-        // TODO add quests
-        // mobile table view, hide the right side of the screen
-
-        // TODO Builder vs list
-        // - add checkboxes to builder
-        // - List select one and only one char, default to most recent
+        // fix deadly venatics
       });
 
     this.filterUpdated$
@@ -182,7 +185,8 @@ export class UberListStateService implements OnDestroy {
           this.filtersDirty$.next(dirty);
         }
         if (this.toggleDataInit) {
-          const saveMe = dirty || this.hideTrials;
+          const sort = this.sort$.getValue();
+          const saveMe = dirty || this.hideTrials || this.hideComplete || this.hideUnheld || sort.by != DEFAULT_SORT_BY || sort.desc != DEFAULT_SORT_DESC || this.checked$.getValue().length > 0;
           // we have no filters, so clear everything in localstorage
           if (!saveMe) {
             localStorage.removeItem(UBER_FILTER_KEY);
@@ -191,6 +195,10 @@ export class UberListStateService implements OnDestroy {
               filterText: this.visibleFilterText,
               deselectedChoices: {},
               hideTrials: this.hideTrials,
+              hideComplete: this.hideComplete,
+              hideUnheld: this.hideUnheld,
+              sort: this.sort$.getValue(),
+              checked: this.checked$.getValue()
             };
             for (const key of Object.keys(this.toggleData)) {
               const t = this.toggleData[key];
@@ -264,10 +272,17 @@ export class UberListStateService implements OnDestroy {
 
   private sortRows(rows: (MilestoneRow | PursuitRow)[]): void {
     const sort = this.sort$.getValue();
-    if (sort.by == 'activity') {
+    if (sort.by == 'name') {
       rows.sort(sortByActivityName);
     } else if (sort.by == 'icon') {
       rows.sort(sortByIcon);
+    } else if (sort.by == 'classification') {
+      rows.sort(sortByClassification);
+    } else if (sort.by == 'rewards') {
+      rows.sort(sortByRewards);
+    } else if (sort.by.startsWith('char-')) {
+      const characterId = sort.by.substring(5);
+      rows.sort(charProgressCompGenerator(characterId));
     }
     if (!sort.desc) {
       rows.reverse();
@@ -284,6 +299,60 @@ export class UberListStateService implements OnDestroy {
     filterMe = this.toggleFilter(filterMe);
     this.sortRows(filterMe);
     this.filteredRows$.next(filterMe);
+    const checked = this.checked$.getValue();
+
+    const allVisibleChecked = filterMe.every(x => checked.indexOf(x.id) >= 0);
+    const someVisibleChecked = filterMe.some(x => checked.indexOf(x.id) >= 0);
+    this.allVisibleChecked$.next(allVisibleChecked);
+    this.someVisibleChecked$.next(someVisibleChecked && !allVisibleChecked);
+
+
+
+    let checkMe = this.rows$.getValue().slice(0);
+    checkMe = checkMe.filter(x => checked.indexOf(x.id) >= 0);
+    if (this.hideComplete) {
+      const currChar = this.currChar$.getValue();
+      checkMe = checkMe.filter(x => getProgress(x, currChar.characterId) !== -.2);
+    }
+    if (this.hideUnheld) {
+      const currChar = this.currChar$.getValue();
+      // remove missing entries
+      checkMe = checkMe.filter(x => x.characterEntries[currChar.characterId] != null);
+      // remove vendor only bounties
+      checkMe = checkMe.filter(x => !(x.type == 'bounty' && !(x as PursuitRow).characterEntries[currChar.characterId]?.characterItem));
+      // remove locked milestones
+      checkMe = checkMe.filter(x => !((x.type == 'milestone') && (x as MilestoneRow).characterEntries[currChar.characterId]?.locked));
+    }
+    this.sortRows(checkMe);
+    this.checkedRows$.next(checkMe);
+  }
+
+  public bulkCheck(input: boolean) {
+    const checked = this.checked$.getValue().slice(0);
+    for (const r of this.filteredRows$.getValue()) {
+      const present = checked.indexOf(r.id) >= 0;
+      if (!input) {
+        if (present) {
+          checked.splice(checked.indexOf(r.id), 1);
+        }
+      } else {
+        if (!present) {
+          checked.push(r.id);
+        }
+      }
+    }
+    this.checked$.next(checked);
+  }
+
+  public trackUberRow(index, item: (MilestoneRow | PursuitRow)): string {
+    return item ? item.id : undefined;
+  }
+
+  public show(event, row: (MilestoneRow | PursuitRow)): void {
+    event.preventDefault();
+    const dc = new MatDialogConfig();
+    dc.data = row.title;
+    this.dialog.open(ForSalePursuitDialogComponent, dc);
   }
 
   private isFilterDirty() {
@@ -306,6 +375,14 @@ export class UberListStateService implements OnDestroy {
       const filterSettings: UberFilterSettings = JSON.parse(sSettings);
       this.visibleFilterText = filterSettings.filterText;
       this.hideTrials = filterSettings.hideTrials == true;
+      this.hideComplete = filterSettings.hideComplete == true;
+      this.hideUnheld = filterSettings.hideUnheld == true;
+      if (filterSettings.sort != null && filterSettings.sort.by != null && filterSettings.sort.desc != null) {
+        this.sort$.next(filterSettings.sort);
+      }
+      if (filterSettings.checked != null) {
+        this.checked$.next(filterSettings.checked);
+      }
       this.parseWildcardFilter();
       for (const key of Object.keys(this.toggleData)) {
         let changeMade = false;
@@ -367,6 +444,7 @@ export class UberListStateService implements OnDestroy {
       label: label,
       classification: null,
       vendor: null,
+      rewardTier: 0,
       characterEntries: {},
     };
   }
@@ -459,6 +537,7 @@ export class UberListStateService implements OnDestroy {
       vendor: null,
       desc: desc,
       searchText,
+      rewardTier: 0,
       characterEntries: {},
     };
   }
@@ -483,7 +562,18 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  public parseWildcardFilter() {
+  public checkChange(id: string) {
+    const checked = this.checked$.getValue().slice(0);
+    if (checked.indexOf(id) >= 0) {
+      // remove checked from array
+      checked.splice(checked.indexOf(id), 1);
+    } else {
+      checked.push(id);
+    }
+    this.checked$.next(checked);
+  }
+
+  private parseWildcardFilter() {
     console.log('Parsing filter');
     const val: string = this.visibleFilterText;
     if (val == null || val.trim().length === 0) {
@@ -513,6 +603,26 @@ export class UberListStateService implements OnDestroy {
       icon: this.iconService.fasFlag,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
         return state.choices.filter(c => c.checked).map(c => c.matchValue).filter(c => c == x.type).length > 0;
+      },
+    };
+    const checkedConfig: UberToggleConfig = {
+      title: 'Checked',
+      debugKey: 'Checked',
+      icon: this.iconService.fasCheckSquare,
+      includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
+        const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
+        const isChecked = this.checked$.getValue().indexOf(x.id) >= 0;
+        if (selectedVals.indexOf('checked') < 0) {
+          if (isChecked) {
+            return false;
+          }
+        }
+        if (selectedVals.indexOf('unchecked') < 0) {
+          if (!isChecked) {
+            return false;
+          }
+        }
+        return true;
       },
     };
     const activityConfig: UberToggleConfig = {
@@ -666,6 +776,12 @@ export class UberListStateService implements OnDestroy {
       owner$: new BehaviorSubject(
         generateUberState(ownerConfig, [])
       ),
+      checked$: new BehaviorSubject(
+        generateUberState(checkedConfig, [
+          new UberChoice('checked', 'Checked'),
+          new UberChoice('unchecked', 'Unchecked')
+        ])
+      ),
     };
   }
 
@@ -727,10 +843,11 @@ export interface MilestoneRow {
   title: MileStoneName;
   desc: any;
   searchText: string;
-  label: string|null;
-  vendor: string|null;
-  classification: string|null;
+  label: string | null;
+  vendor: string | null;
+  classification: string | null;
   rewards: NameQuantity[];
+  rewardTier: number;
   characterEntries: { [key: string]: MilestoneStatus };
 }
 
@@ -739,9 +856,10 @@ export interface PursuitRow {
   type: 'bounty' | 'quest';
   title: InventoryItem;
   searchText: string;
-  label: string|null;
-  vendor: string|null;
-  classification: string|null;
+  label: string | null;
+  vendor: string | null;
+  classification: string | null;
+  rewardTier: number;
   characterEntries: { [key: string]: PursuitTuple };
 }
 
@@ -758,6 +876,10 @@ interface UberFilterSettings {
   filterText: string;
   deselectedChoices: { [key: string]: string[] }; // toggle key, and matched values that are deslected
   hideTrials: boolean;
+  hideUnheld: boolean;
+  hideComplete: boolean;
+  sort: UberSort;
+  checked: string[];
 }
 
 interface UberToggleData {
@@ -767,6 +889,7 @@ interface UberToggleData {
   cadence$: BehaviorSubject<UberToggleState>;
   reward$: BehaviorSubject<UberToggleState>;
   owner$: BehaviorSubject<UberToggleState>;
+  checked$: BehaviorSubject<UberToggleState>;
 }
 
 
@@ -799,19 +922,13 @@ function getRewardText(x: (MilestoneRow | PursuitRow)): string[] {
 }
 
 function sortByActivityName(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
-  try {
-  const xName = x.label ? x.label : '';
-  const yName = y.label ? y.label : '';
-//  const xName = x.title.name.toLowerCase();
-//  const yName = y.title.name.toLowerCase();
+  const xName = x.title.name.toLowerCase();
+  const yName = y.title.name.toLowerCase();
   if (xName < yName) {
     return -1;
   } else if (xName > yName) {
     return 1;
   } else {
-    return 0;
-  } } catch (e) {
-    console.log(e);
     return 0;
   }
 }
@@ -828,12 +945,112 @@ function sortByIcon(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRo
   }
 }
 
+function sortByClassification(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
+  const xName = x.classification ? x.classification : '';
+  const yName = y.classification ? y.classification : '';
+  if (xName < yName) {
+    return -1;
+  } else if (xName > yName) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+function getRewards(x: (MilestoneRow | PursuitRow)): NameQuantity[] {
+  let rewards: NameQuantity[] = [];
+  if (x.type == 'bounty' || x.type == 'quest') {
+    const p = x as PursuitRow;
+    rewards = p.title.values;
+  } else if (x.type == 'milestone') {
+    const m = x as MilestoneRow;
+    rewards = m.rewards;
+  }
+  return rewards;
+}
+
+function getRewardTier(x: (MilestoneRow | PursuitRow)): number {
+  const rewards = getRewards(x);
+  const rewardNames = rewards.map(y => y.name.toLowerCase());
+  if (rewardNames.filter(y => y.indexOf('pinnacle') >= 0).length > 0) {
+    return -100;
+  }
+  if (rewardNames.filter(y => y.indexOf('powerful') >= 0).length > 0) {
+    return -50;
+  }
+  if (rewardNames.filter(y => y.indexOf('legendary') >= 0).length > 0) {
+    return -10;
+  }
+  if (rewardNames.length > 0) {
+    return -1;
+  }
+  return 0;
+}
+
+function getProgress(x: (MilestoneRow | PursuitRow), characterId: string): number {
+  if (x.type == 'bounty' || x.type == 'quest') {
+    const p = x as PursuitRow;
+    const charEntry = p.characterEntries[characterId];
+    if (!charEntry || !charEntry.characterItem) {
+      if (charEntry?.vendorItem) {
+        return -0.1;
+      }
+      return -200;
+    }
+    return charEntry.characterItem.aggProgress;
+  } else if (x.type == 'milestone') {
+    const m = x as MilestoneRow;
+    const charEntry = m.characterEntries[characterId];
+    if (!charEntry) {
+      return -200;
+    }
+    if (charEntry.readyToCollect) {
+      return 101;
+    }
+    if (charEntry.locked) {
+      return -1000;
+    }
+    if (charEntry.complete && !charEntry.readyToCollect) {
+      return -.2;
+    }
+    return charEntry.pct * 100;
+  }
+  return 0;
+}
+
+function charProgressCompGenerator(characterId: string) {
+  return function (x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
+    const xP = getProgress(x, characterId);
+    const yP = getProgress(y, characterId);
+    if (xP < yP) {
+      return 1;
+    } else if (xP > yP) {
+      return -1;
+    } else {
+      return 0;
+    }
+  };
+}
+
+function sortByRewards(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
+  const xR = x.rewardTier;
+  const yR = y.rewardTier;
+  if (xR < yR) {
+    return -1;
+  } else if (xR > yR) {
+    return 1;
+  } else {
+    return sortByActivityName(x, y);
+  }
+}
+
 
 interface Classification {
-    name: string;
-    vendor: string|null;
-    milestoneNames: string[];
-    bountyLabels: string[];
+  name: string;
+  vendor: string | null;
+  milestoneNames: string[];
+  bountyLabels: string[];
 }
 
 const CLASSIFICATIONS: Classification[] = [
@@ -887,6 +1104,9 @@ const CLASSIFICATIONS: Classification[] = [
   }
 ];
 
+function setRewardTier(x: (MilestoneRow | PursuitRow)): void {
+  x.rewardTier = getRewardTier(x);
+}
 
 function classify(x: (MilestoneRow | PursuitRow)): void {
   let classified = false;
@@ -915,7 +1135,7 @@ function classify(x: (MilestoneRow | PursuitRow)): void {
     const p = x as PursuitRow;
   } else if (x.type == 'milestone') {
     const m = x as MilestoneRow;
-    const t =   m.title.name.toLowerCase();
+    const t = m.title.name.toLowerCase();
     for (const c of CLASSIFICATIONS) {
       for (const mn of c.milestoneNames) {
         if (t.indexOf(mn) >= 0) {
