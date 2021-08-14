@@ -11,7 +11,6 @@ import {
   PursuitTuple,
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
-import { SIGABRT } from 'constants';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import {
@@ -146,6 +145,7 @@ export class UberListStateService implements OnDestroy {
         }
         const rows: (MilestoneRow | PursuitRow)[] = [];
         for (const key of Object.keys(rowData)) {
+          classify(rowData[key]);
           rows.push(rowData[key]);
         }
         this.rows$.next(rows);
@@ -356,7 +356,7 @@ export class UberListStateService implements OnDestroy {
   }
 
 
-  private buildInitialPursuitRow(i: InventoryItem, type: 'bounty' | 'quest'): PursuitRow {    
+  private buildInitialPursuitRow(i: InventoryItem, type: 'bounty' | 'quest'): PursuitRow {
     const desc = this.destinyCacheService.cache.InventoryItem[i.hash];
     const label = desc.inventory.stackUniqueLabel as string;
     return {
@@ -364,7 +364,9 @@ export class UberListStateService implements OnDestroy {
       type,
       title: i,
       searchText: i.searchText,
-      sortInfo: label,
+      label: label,
+      classification: null,
+      vendor: null,
       characterEntries: {},
     };
   }
@@ -452,7 +454,9 @@ export class UberListStateService implements OnDestroy {
       type: 'milestone',
       title: msn,
       rewards,
-      sortInfo: 'milestone',
+      label: 'milestone',
+      classification: null,
+      vendor: null,
       desc: desc,
       searchText,
       characterEntries: {},
@@ -503,12 +507,25 @@ export class UberListStateService implements OnDestroy {
   }
 
   private buildInitToggles(): UberToggleData {
-    const activityTypeConfig: UberToggleConfig = {
-      title: 'Activity',
-      debugKey: 'Activity',
+    const typeConfig: UberToggleConfig = {
+      title: 'Type',
+      debugKey: 'Type',
       icon: this.iconService.fasFlag,
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
         return state.choices.filter(c => c.checked).map(c => c.matchValue).filter(c => c == x.type).length > 0;
+      },
+    };
+    const activityConfig: UberToggleConfig = {
+      title: 'Activity',
+      debugKey: 'Activity',
+      icon: this.iconService.fasHiking,
+      includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
+        const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
+        if (selectedVals.filter(c => c == x.classification).length > 0) {
+          return true;
+        }
+        return selectedVals.filter(c => x.searchText.indexOf(c.toLowerCase()) >= 0).length > 0;
+
       },
     };
     const cadenceConfig: UberToggleConfig = {
@@ -617,13 +634,17 @@ export class UberListStateService implements OnDestroy {
         return false;
       },
     };
+    const activityChoices = CLASSIFICATIONS.map(x => new UberChoice(x.name, x.name));
     return {
-      activityType$: new BehaviorSubject(
-        generateUberState(activityTypeConfig, [
+      type$: new BehaviorSubject(
+        generateUberState(typeConfig, [
           new UberChoice('bounty', 'Bounty'),
           new UberChoice('milestone', 'Milestone'),
           new UberChoice('quest', 'Quest'),
         ])
+      ),
+      activity$: new BehaviorSubject(
+        generateUberState(activityConfig, activityChoices)
       ),
       rewardTier$: new BehaviorSubject(
         generateUberState(rewardTierConfig, [
@@ -706,7 +727,9 @@ export interface MilestoneRow {
   title: MileStoneName;
   desc: any;
   searchText: string;
-  sortInfo: string;
+  label: string|null;
+  vendor: string|null;
+  classification: string|null;
   rewards: NameQuantity[];
   characterEntries: { [key: string]: MilestoneStatus };
 }
@@ -716,7 +739,9 @@ export interface PursuitRow {
   type: 'bounty' | 'quest';
   title: InventoryItem;
   searchText: string;
-  sortInfo: string;
+  label: string|null;
+  vendor: string|null;
+  classification: string|null;
   characterEntries: { [key: string]: PursuitTuple };
 }
 
@@ -736,7 +761,8 @@ interface UberFilterSettings {
 }
 
 interface UberToggleData {
-  activityType$: BehaviorSubject<UberToggleState>;
+  type$: BehaviorSubject<UberToggleState>;
+  activity$: BehaviorSubject<UberToggleState>;
   rewardTier$: BehaviorSubject<UberToggleState>;
   cadence$: BehaviorSubject<UberToggleState>;
   reward$: BehaviorSubject<UberToggleState>;
@@ -774,8 +800,8 @@ function getRewardText(x: (MilestoneRow | PursuitRow)): string[] {
 
 function sortByActivityName(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRow)): number {
   try {
-  const xName = x.sortInfo ? x.sortInfo : '';
-  const yName = y.sortInfo ? y.sortInfo : '';
+  const xName = x.label ? x.label : '';
+  const yName = y.label ? y.label : '';
 //  const xName = x.title.name.toLowerCase();
 //  const yName = y.title.name.toLowerCase();
   if (xName < yName) {
@@ -784,8 +810,7 @@ function sortByActivityName(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | P
     return 1;
   } else {
     return 0;
-  } }
-  catch (e) {
+  } } catch (e) {
     console.log(e);
     return 0;
   }
@@ -801,4 +826,119 @@ function sortByIcon(x: (MilestoneRow | PursuitRow), y: (MilestoneRow | PursuitRo
   } else {
     return 0;
   }
+}
+
+
+interface Classification {
+    name: string;
+    vendor: string|null;
+    milestoneNames: string[];
+    bountyLabels: string[];
+}
+
+const CLASSIFICATIONS: Classification[] = [
+  {
+    name: 'Crucible',
+    vendor: 'Shaxx',
+    milestoneNames: ['crucible', 'live-fire'],
+    bountyLabels: ['bounties.crucible']
+  },
+  {
+    name: 'Strikes',
+    vendor: 'Zavala',
+    milestoneNames: ['vanguard', 'nightfall'],
+    bountyLabels: ['bounties.strikes']
+  },
+  {
+    name: 'Gambit',
+    vendor: 'Drifter',
+    milestoneNames: ['gambit', 'shady schemes'],
+    bountyLabels: ['bounties.gambit']
+  },
+  {
+    name: 'Gunsmith',
+    vendor: 'Banshee',
+    milestoneNames: ['spare parts'],
+    bountyLabels: ['bounties.gunsmith']
+  },
+  {
+    name: 'Europa',
+    vendor: 'Variks',
+    milestoneNames: ['europa'],
+    bountyLabels: ['europa.bounties']
+  },
+  {
+    name: 'Splicer',
+    vendor: 'Splicer Servitor',
+    milestoneNames: ['rewiring', 'digital', 'net crasher'],
+    bountyLabels: ['seasons.season14.ritual.bounties']
+  },
+  {
+    name: 'Trials',
+    vendor: 'Saint',
+    milestoneNames: ['trials'],
+    bountyLabels: ['trials.bounties']
+  },
+  {
+    name: 'Unclassified',
+    vendor: null,
+    milestoneNames: [],
+    bountyLabels: []
+  }
+];
+
+
+function classify(x: (MilestoneRow | PursuitRow)): void {
+  let classified = false;
+  x.classification = 'Unclassified';
+  x.vendor = null;
+  if (x.type == 'bounty') {
+    const p = x as PursuitRow;
+    if (!p.label) {
+      p.classification = null;
+      p.vendor = null;
+    }
+    for (const c of CLASSIFICATIONS) {
+      for (const bl of c.bountyLabels) {
+        if (p.label.indexOf(bl) >= 0) {
+          x.classification = c.name;
+          x.vendor = c.vendor;
+          classified = true;
+          break;
+        }
+      }
+      if (classified) {
+        break;
+      }
+    }
+  } else if (x.type == 'quest') {
+    const p = x as PursuitRow;
+  } else if (x.type == 'milestone') {
+    const m = x as MilestoneRow;
+    const t =   m.title.name.toLowerCase();
+    for (const c of CLASSIFICATIONS) {
+      for (const mn of c.milestoneNames) {
+        if (t.indexOf(mn) >= 0) {
+          x.classification = c.name;
+          x.vendor = c.vendor;
+          classified = true;
+          break;
+        }
+      }
+      if (classified) {
+        break;
+      }
+    }
+  }
+  if (!classified) {
+    for (const c of CLASSIFICATIONS) {
+      if (x.searchText.indexOf(c.name.toLowerCase()) >= 0) {
+        x.classification = c.name;
+        x.vendor = c.vendor;
+        classified = true;
+        break;
+      }
+    }
+  }
+  x.searchText += ' ' + x.classification?.toLowerCase() + ' ' + x.vendor?.toLowerCase();
 }

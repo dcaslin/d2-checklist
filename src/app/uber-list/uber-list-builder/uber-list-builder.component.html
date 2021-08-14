@@ -4,7 +4,8 @@
       <ng-container *ngIf="state.rows$|async as allRows">
         <div class="flex-column" *ngIf="state.filteredRows$|async as rows">
           <div class="filter-container" *ngIf="state.toggleData as toggleData">
-            <d2c-uber-list-toggle [state$]="state.toggleData.activityType$"> </d2c-uber-list-toggle>
+            <d2c-uber-list-toggle [state$]="state.toggleData.type$"> </d2c-uber-list-toggle>
+            <d2c-uber-list-toggle [state$]="state.toggleData.activity$"> </d2c-uber-list-toggle>
             <d2c-uber-list-toggle [state$]="state.toggleData.rewardTier$"> </d2c-uber-list-toggle>
             <d2c-uber-list-toggle [state$]="state.toggleData.reward$"> </d2c-uber-list-toggle>
             <d2c-uber-list-toggle [state$]="state.toggleData.owner$"> </d2c-uber-list-toggle>
@@ -46,6 +47,11 @@
                   </span>
                 </th>
                 <th class="activity-col sticky">
+                  <span class="fake-link gear-sort" (click)="state.sort('activity')">Name
+                    <d2c-sort-indicator field="activity" [currVal]="sort.by" [descending]="sort.desc"></d2c-sort-indicator>
+                  </span>
+                </th>
+                <th class="activity-col sticky">
                   <span class="fake-link gear-sort" (click)="state.sort('activity')">Activity
                     <d2c-sort-indicator field="activity" [currVal]="sort.by" [descending]="sort.desc"></d2c-sort-indicator>
                   </span>
@@ -78,10 +84,12 @@
                     </ng-container>
                   </td>
                   <td class="activity-col">
-                    <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}
-                    </div>
-                    <div>{{row.sortInfo}}</div>
-                    <span *ngIf="debugmode|async"> {{row.title.hash}}</span>
+                    <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}</div>
+                    <div *ngIf="debugmode|async"> {{row.title.hash}}</div>
+                  </td>
+                  <td>
+                    <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
+                    <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>                    
                   </td>
                   <td>
                     <div class="flex-row" *ngIf="row.title.values as rewards">
@@ -116,6 +124,10 @@
                   <td class="activity-col">
                     <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}</div>
                     <span *ngIf="debugmode|async"> {{row.title.key}}</span>
+                  </td>
+                  <td>
+                    <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
+                    <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>                    
                   </td>
                   <td>
                     <div class="flex-row" *ngIf="row.rewards as rewards">
