@@ -1,5 +1,4 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import {
@@ -10,17 +9,16 @@ import {
   MilestoneStatus,
   NameQuantity,
   Player,
-  PursuitTuple,
+  PursuitTuple
 } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
-import { ForSalePursuitDialogComponent } from '@app/shared/for-sale-pursuit-dialog/for-sale-pursuit-dialog.component';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
 import {
   generateUberState,
   UberChoice,
   UberToggleConfig,
-  UberToggleState,
+  UberToggleState
 } from './uber-list-toggle/uber-list-toggle.component';
 
 const UBER_FILTER_KEY = 'D2C-UBER-FILTER';
@@ -60,7 +58,7 @@ export class UberListStateService implements OnDestroy {
   constructor(
     private signedOnUserService: SignedOnUserService,
     private destinyCacheService: DestinyCacheService,
-    private dialog: MatDialog,
+
     private iconService: IconService
   ) {
     this.toggleData = this.buildInitToggles();
@@ -348,12 +346,6 @@ export class UberListStateService implements OnDestroy {
     return item ? item.id : undefined;
   }
 
-  public show(event, row: (MilestoneRow | PursuitRow)): void {
-    event.preventDefault();
-    const dc = new MatDialogConfig();
-    dc.data = row.title;
-    this.dialog.open(ForSalePursuitDialogComponent, dc);
-  }
 
   private isFilterDirty() {
     // we have wildcard entries

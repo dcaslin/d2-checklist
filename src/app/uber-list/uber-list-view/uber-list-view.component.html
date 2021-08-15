@@ -1,155 +1,146 @@
 <ng-container *ngIf="state.sort$|async as sort">
-    <ng-container *ngIf="signedOnUserService.player$|async as player">
-        <ng-container *ngIf="state.currChar$|async as currChar">
-            <div class="margin-10 filter-container">
-                <div class="filter-row">
-                    <button mat-button>
-                        <fa-icon [icon]="iconService.fasSyncAlt" (click)="state.refresh()"></fa-icon>
-                    </button>
-                    <mat-checkbox class="margin-5" (change)="state.filterUpdated$.next()"
-                        [(ngModel)]="state.hideComplete">Hide Complete</mat-checkbox>
-                    <mat-checkbox class="margin-5" (change)="state.filterUpdated$.next()"
-                        [(ngModel)]="state.hideUnheld">Hide Unheld</mat-checkbox>
+  <ng-container *ngIf="signedOnUserService.player$|async as player">
+    <ng-container *ngIf="state.currChar$|async as currChar">
+      <div class="margin-10 filter-container">
+        <div class="filter-row">
+          <button mat-button>
+            <fa-icon [icon]="iconService.fasSyncAlt" (click)="state.refresh()"></fa-icon>
+          </button>
+          <mat-checkbox class="margin-5" (change)="state.filterUpdated$.next()" [(ngModel)]="state.hideComplete">Hide
+            Complete</mat-checkbox>
+          <mat-checkbox class="margin-5" (change)="state.filterUpdated$.next()" [(ngModel)]="state.hideUnheld">Hide
+            Unheld</mat-checkbox>
 
-                    <d2c-signed-on-loading-icon class="loading-indicator"></d2c-signed-on-loading-icon>
-                </div>
-            </div>
-            <mat-tab-group [selectedIndex]="player.characters.indexOf(currChar)"
-                (selectedTabChange)="state.currChar$.next(player.characters[$event.index])">
-                <mat-tab *ngFor="let char of player.characters" [label]="char.className + ' - ' + char.light">
-                    <div class="margin-5 flex-column" *ngIf="state.checkedRows$|async as rows">
+          <d2c-signed-on-loading-icon class="loading-indicator"></d2c-signed-on-loading-icon>
+        </div>
+      </div>
+      <mat-tab-group [selectedIndex]="player.characters.indexOf(currChar)"
+        (selectedTabChange)="state.currChar$.next(player.characters[$event.index])">
+        <mat-tab *ngFor="let char of player.characters" [label]="char.className + ' - ' + char.light">
+          <div class="margin-5 flex-column" *ngIf="state.checkedRows$|async as rows">
 
-                        <p class="margin-25" *ngIf="rows.length==0">No activities checked. Click back to the "Builder"
-                            and check some rows.</p>
-                        <ng-container *ngIf="rows.length>0">
+            <p class="margin-25" *ngIf="rows.length==0">No activities checked. Click back to the "Builder"
+              and check some rows.</p>
+            <ng-container *ngIf="rows.length>0">
+              <table class="list-table">
+                <thead>
+                  <tr>
+                    <th class="uber-icon-col sticky">
+                      <span class="fake-link gear-sort" (click)="state.sort('icon')">Icon
+                        <d2c-sort-indicator field="icon" [currVal]="sort.by" [descending]="sort.desc">
+                        </d2c-sort-indicator>
+                      </span>
+                    </th>
+                    <th class="activity-col sticky">
+                      <span class="fake-link gear-sort" (click)="state.sort('name')">Name
+                        <d2c-sort-indicator field="name" [currVal]="sort.by" [descending]="sort.desc">
+                        </d2c-sort-indicator>
+                      </span>
+                    </th>
+                    <th class="activity-col hide-mobile-table-cell sticky">
+                      <span class="fake-link gear-sort" (click)="state.sort('classification')">Activity
+                        <d2c-sort-indicator field="classification" [currVal]="sort.by" [descending]="sort.desc">
+                        </d2c-sort-indicator>
+                      </span>
+                    </th>
+                    <th class="sticky hide-mobile-table-cell">
+                      <span class="fake-link gear-sort" (click)="state.sort('rewards')">Rewards
+                        <d2c-sort-indicator field="rewards" [currVal]="sort.by" [descending]="sort.desc">
+                        </d2c-sort-indicator>
+                      </span>
+                    </th>
+                    <th class="sticky char-cell">
+                      <span class="fake-link gear-sort" (click)="state.sort('char-'+char.id)">{{char.className}} -
+                        {{char.light}}
+                        <d2c-sort-indicator [field]="'char-'+char.id" [currVal]="sort.by" [descending]="sort.desc">
+                        </d2c-sort-indicator>
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let row of rows; trackBy: state.trackUberRow">
+                    <tr class="hover-row" (click)="show($event, row)">
+                      <ng-container *ngIf="row.type=='bounty' || row.type=='quest'">
+                        <td class="icon-col">
+                          <ng-container *ngIf="row?.title?.icon as icon">
+                            <div class="list-icon divider-border"
+                              [style.background-image]="'url(//www.bungie.net' + icon + ')'">
+                            </div>
+                          </ng-container>
+                        </td>
+                        <td class="activity-col">
+                          <div class="fake-link">{{row.title.name}}</div>
+                          <div *ngIf="debugmode|async"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
+                        </td>
+                        <td class="hide-mobile-table-cell">
+                          <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
+                          <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>
+                        </td>
+                        <td class="hide-mobile-table-cell">
+                          <div class="flex-row" *ngIf="row.title.values as rewards">
+                            <div *ngFor="let r of rewards">
+                              <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
+                                [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
 
+                              <span *ngIf="debugmode|async"> {{r.hash}}</span>
+                            </div>
+                          </div>
 
-                            <table class="list-table">
-                                <thead>
-                                    <tr>
-                                        <th class="uber-icon-col sticky">
-                                            <span class="fake-link gear-sort" (click)="state.sort('icon')">Icon
-                                                <d2c-sort-indicator field="icon" [currVal]="sort.by"
-                                                    [descending]="sort.desc">
-                                                </d2c-sort-indicator>
-                                            </span>
-                                        </th>
-                                        <th class="activity-col sticky">
-                                            <span class="fake-link gear-sort" (click)="state.sort('name')">Name
-                                                <d2c-sort-indicator field="name" [currVal]="sort.by"
-                                                    [descending]="sort.desc">
-                                                </d2c-sort-indicator>
-                                            </span>
-                                        </th>
-                                        <th class="activity-col hide-mobile-table-cell sticky">
-                                            <span class="fake-link gear-sort"
-                                                (click)="state.sort('classification')">Activity
-                                                <d2c-sort-indicator field="classification" [currVal]="sort.by"
-                                                    [descending]="sort.desc">
-                                                </d2c-sort-indicator>
-                                            </span>
-                                        </th>
-                                        <th class="sticky hide-mobile-table-cell">
-                                            <span class="fake-link gear-sort" (click)="state.sort('rewards')">Rewards
-                                                <d2c-sort-indicator field="rewards" [currVal]="sort.by"
-                                                    [descending]="sort.desc">
-                                                </d2c-sort-indicator>
-                                            </span>
-                                        </th>
-                                        <th class="sticky char-cell">
-                                            <span class="fake-link gear-sort"
-                                                (click)="state.sort('char-'+char.id)">{{char.className}} -
-                                                {{char.light}}
-                                                <d2c-sort-indicator [field]="'char-'+char.id" [currVal]="sort.by"
-                                                    [descending]="sort.desc">
-                                                </d2c-sort-indicator>
-                                            </span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <ng-container *ngFor="let row of rows; trackBy: state.trackUberRow">
-                                        <tr>
-                                            <ng-container *ngIf="row.type=='bounty' || row.type=='quest'">                                                
-                                                <td class="icon-col">
-                                                  <ng-container *ngIf="row?.title?.icon as icon">
-                                                    <div class="list-icon divider-border"
-                                                      [style.background-image]="'url(//www.bungie.net' + icon + ')'">
-                                                    </div>
-                                                  </ng-container>
-                                                </td>
-                                                <td class="activity-col">
-                                                  <div class="fake-link underline" (click)="state.show($event, row)">{{row.title.name}}</div>
-                                                  <div *ngIf="debugmode|async"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
-                                                </td>
-                                                <td class="hide-mobile-table-cell">
-                                                  <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
-                                                  <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>
-                                                </td>
-                                                <td class="hide-mobile-table-cell">
-                                                  <div class="flex-row" *ngIf="row.title.values as rewards">
-                                                    <div *ngFor="let r of rewards">
-                                                      <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
-                                                        [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
-                            
-                                                      <span *ngIf="debugmode|async"> {{r.hash}}</span>
-                                                    </div>
-                                                  </div>
-                            
-                                                </td>
-                                                <td class="char-cell">
-                                                  <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
-                                                    <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
-                                                  </span>
-                            
-                                                </td>
-                                              </ng-container>
-                                              <ng-container *ngIf="row.type=='milestone'">                                                
-                                                <td class="icon-col">
-                                                  <ng-container *ngIf="row.desc?.displayProperties?.icon as icon">
-                                                    <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
-                                                      [class.brighten]="icon.endsWith('jpg')"
-                                                      [style.background-image]="'url(//www.bungie.net' + icon + ')'">
-                                                    </div>
-                                                  </ng-container>
-                                                </td>
-                                                <td class="activity-col ">
-                                                  <div class="fake-link underline" (click)="state.show($event, row)">{{row.title.name}}</div>
-                                                  <span *ngIf="debugmode|async"> {{row.title.key}} - reward tier {{row.rewardTier}}</span>
-                                                </td>
-                                                <td class="hide-mobile-table-cell">
-                                                  <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
-                                                  <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>
-                                                </td>
-                                                <td class="hide-mobile-table-cell">
-                                                  <div class="flex-row" *ngIf="row.rewards as rewards">
-                                                    <div *ngFor="let r of rewards">
-                                                      <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0"
-                                                        [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
-                                                        [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
-                                                      <span *ngIf="debugmode|async"> {{r.hash}}</span>
-                                                    </div>
-                                                  </div>
-                                                </td>
-                                                <td class="char-cell">
-                                                  <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
-                                                    <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
-                                                  </span>
-                                                </td>
-                                              </ng-container>
-                                        </tr>
-                                    </ng-container>
+                        </td>
+                        <td class="char-cell">
+                          <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
+                            <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
+                          </span>
 
-                                </tbody>
-                            </table>
-                        </ng-container>
+                        </td>
+                      </ng-container>
+                      <ng-container *ngIf="row.type=='milestone'">
+                        <td class="icon-col">
+                          <ng-container *ngIf="row.desc?.displayProperties?.icon as icon">
+                            <div class="list-icon divider-border" [class.invert]="icon.endsWith('png')"
+                              [class.brighten]="icon.endsWith('jpg')"
+                              [style.background-image]="'url(//www.bungie.net' + icon + ')'">
+                            </div>
+                          </ng-container>
+                        </td>
+                        <td class="activity-col ">
+                          <div class="fake-link underline" (click)="show($event, row)">{{row.title.name}}</div>
+                          <span *ngIf="debugmode|async"> {{row.title.key}} - reward tier {{row.rewardTier}}</span>
+                        </td>
+                        <td class="hide-mobile-table-cell">
+                          <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
+                          <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>
+                        </td>
+                        <td class="hide-mobile-table-cell">
+                          <div class="flex-row" *ngIf="row.rewards as rewards">
+                            <div *ngFor="let r of rewards">
+                              <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0"
+                                [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
+                                [matTooltip]="(r.quantity > 0 ? r.quantity:'') + ' ' + r.name">
+                              <span *ngIf="debugmode|async"> {{r.hash}}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="char-cell">
+                          <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
+                            <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
+                          </span>
+                        </td>
+                      </ng-container>
+                    </tr>
+                  </ng-container>
+
+                </tbody>
+              </table>
+            </ng-container>
 
 
 
-                    </div>
-                </mat-tab>
-            </mat-tab-group>
-        </ng-container>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
     </ng-container>
+  </ng-container>
 
 </ng-container>

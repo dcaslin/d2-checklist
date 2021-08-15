@@ -1,7 +1,7 @@
 <div class="total-progress">
     <ng-container *ngIf="pursuit else isNull">
         <div *ngIf="pursuit.vendorItem && !pursuit.characterItem">
-            <fa-icon class="secondary-text" [icon]="iconService.farSign"></fa-icon>
+            <mat-icon class="secondary-text">store</mat-icon>
         </div>
         <div *ngIf="pursuit.characterItem as g">
             <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
