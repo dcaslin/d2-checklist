@@ -98,15 +98,15 @@
                         </div>
                       </ng-container>
                     </td>
-                    <td class="activity-col">
-                      <div class="fake-link underline" (click)="state.show($event, row)">{{row.title.name}}</div>
+                    <td class="activity-col" (click)="show($event, row)">
+                      <div class="fake-link">{{row.title.name}}</div>
                       <div *ngIf="debugmode|async"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
                     </td>
-                    <td>
+                    <td (click)="show($event, row)">
                       <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
                       <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>
                     </td>
-                    <td>
+                    <td (click)="show($event, row)">
                       <div class="flex-row" *ngIf="row.title.values as rewards">
                         <div *ngFor="let r of rewards">
                           <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon" loading="lazy"
@@ -117,7 +117,7 @@
                       </div>
 
                     </td>
-                    <td class="char-cell hide-mobile-table-cell" *ngFor="let char of player.characters">
+                    <td class="char-cell hide-mobile-table-cell" *ngFor="let char of player.characters" (click)="show($event, row)">
                       <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
                         <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
                       </span>
@@ -137,15 +137,15 @@
                         </div>
                       </ng-container>
                     </td>
-                    <td class="activity-col">
-                      <div class="fake-link underline" (click)="state.show($event, row)">{{row.title.name}}</div>
+                    <td class="activity-col" (click)="show($event, row)">
+                      <div class="fake-link">{{row.title.name}}</div>
                       <span *ngIf="debugmode|async"> {{row.title.key}} - reward tier {{row.rewardTier}}</span>
                     </td>
-                    <td>
+                    <td (click)="show($event, row)">
                       <div *ngIf="row.classification!=='Unclassified'">{{row.classification}}</div>
                       <div class="simple-caption-darker-no-margin" *ngIf="row.vendor">{{row.vendor}}</div>
                     </td>
-                    <td>
+                    <td (click)="show($event, row)">
                       <div class="flex-row" *ngIf="row.rewards as rewards">
                         <div *ngFor="let r of rewards">
                           <img *ngIf="r.icon" [class.pinnacle]="r.name.indexOf('Pinnacle')>=0"
@@ -155,7 +155,7 @@
                         </div>
                       </div>
                     </td>
-                    <td class="char-cell hide-mobile-table-cell" *ngFor="let char of player.characters">
+                    <td class="char-cell hide-mobile-table-cell" *ngFor="let char of player.characters" (click)="show($event, row)">
                       <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
                         <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
                       </span>

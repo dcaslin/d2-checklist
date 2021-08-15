@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { combineLatest } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { UberListStateService } from '../uber-list-state.service';
+import { MilestoneRow, PursuitRow, UberListStateService } from '../uber-list-state.service';
+import { UberRowDialogComponent } from '../uber-row-dialog/uber-row-dialog.component';
+
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,13 +21,21 @@ export class UberListViewComponent extends ChildComponent implements OnInit {
   constructor(
     public state: UberListStateService,
     public signedOnUserService: SignedOnUserService,
-    public iconService: IconService,
     private dialog: MatDialog,
+    public iconService: IconService,
     storageService: StorageService) {
     super(storageService);
   }
 
   ngOnInit(): void {
-  };
+  }
+
+  public show(event, row: (MilestoneRow | PursuitRow)): void {
+    event.preventDefault();
+    const dc = new MatDialogConfig();
+    dc.data = row;
+    this.dialog.open(UberRowDialogComponent, dc);
+  }
+
 
 }

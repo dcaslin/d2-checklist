@@ -4,8 +4,8 @@ import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { ForSalePursuitDialogComponent } from '@app/shared/for-sale-pursuit-dialog/for-sale-pursuit-dialog.component';
 import { MilestoneRow, PursuitRow, UberListStateService } from '../uber-list-state.service';
+import { UberRowDialogComponent } from '../uber-row-dialog/uber-row-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,6 +18,7 @@ export class UberListBuilderComponent extends ChildComponent implements OnInit {
   constructor(
     public state: UberListStateService,
     public signedOnUserService: SignedOnUserService,
+    private dialog: MatDialog,
     public iconService: IconService,
     storageService: StorageService
   ) {
@@ -30,5 +31,15 @@ export class UberListBuilderComponent extends ChildComponent implements OnInit {
   refresh(): void {
     this.state.refresh();
   }
+  
+
+  public show(event, row: (MilestoneRow | PursuitRow)): void {
+    event.preventDefault();
+    const dc = new MatDialogConfig();
+    dc.data = row;
+    this.dialog.open(UberRowDialogComponent, dc);
+  }
+
+
 
 }

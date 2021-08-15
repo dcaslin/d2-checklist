@@ -75,6 +75,7 @@ import { UberListToggleComponent } from './uber-list/uber-list-toggle/uber-list-
 import { UberListParentComponent } from './uber-list/uber-list-parent/uber-list-parent.component';
 import { UberListBuilderComponent } from './uber-list/uber-list-builder/uber-list-builder.component';
 import { UberListViewComponent } from './uber-list/uber-list-view/uber-list-view.component';
+import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dialog.component';
 
 
 
@@ -114,7 +115,7 @@ import { UberListViewComponent } from './uber-list/uber-list-view/uber-list-view
     ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
     DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, 
-    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent
+    ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
   ],
   providers: [
     AuthService,
