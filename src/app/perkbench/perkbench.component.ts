@@ -86,7 +86,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   public showWrongOnly = false;
   public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public rolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject([]);
-  public completeRolls$: BehaviorSubject<CompleteGodRolls|null> = new BehaviorSubject(null);
+  public completeRolls$: BehaviorSubject<CompleteGodRolls | null> = new BehaviorSubject(null);
   public customGodRollsApplied$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public filteredRolls$: BehaviorSubject<MappedRoll[]> = new BehaviorSubject(
     []
@@ -167,7 +167,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   changeConsole() {
     localStorage.setItem('perkbench-is-console', '' + this.isController);
@@ -190,8 +190,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
   async fetchGodrolls(): Promise<CompleteGodRolls> {
     return await this.httpClient
-    .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json`)
-    .toPromise();
+      .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json`)
+      .toPromise();
   }
 
   async loadOfficialRolls() {
@@ -252,7 +252,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         throw new Error('Invalid JSON, must be valid D2Checklist god roll format.');
       }
       const gunRolls: GunRolls[] = completeRolls.rolls;
-      const mappedRolls:  MappedRoll[] = PerkbenchComponent.combine(gunRolls, weapons);
+      const mappedRolls: MappedRoll[] = PerkbenchComponent.combine(gunRolls, weapons);
       this.rolls$.next(mappedRolls);
       this.completeRolls$.next(completeRolls);
       this.customGodRollsApplied$.next(custom);
@@ -297,7 +297,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       if (controllerRoll != null && mnkRoll === controllerRoll) {
         mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
       }
-      const addMe =   {
+      const addMe = {
         roll: {
           controller: controllerRoll,
           mnk: mnkRoll,
@@ -325,9 +325,9 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     }
     const checkMe = roll.goodPerks.concat(roll.greatPerks);
     // map reduce concat possiblePlugs
-    const allPlugs = w.sockets.map(x => x.possiblePlugs).reduce( (a, b) => a.concat(b), []);
+    const allPlugs = w.sockets.map(x => x.possiblePlugs).reduce((a, b) => a.concat(b), []);
     const allPlugNames = allPlugs.map(x => x.name.toLowerCase());
-    const currentCanRollPlugName = allPlugs.filter(x => x.currentlyCanRoll).map( x => x.name.toLowerCase());
+    const currentCanRollPlugName = allPlugs.filter(x => x.currentlyCanRoll).map(x => x.name.toLowerCase());
 
     for (const c of checkMe) {
       if (allPlugNames.indexOf(c) < 0) {
@@ -340,178 +340,194 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     }
   }
 
-  private buildRollJson(): CompleteGodRolls {
-    const currentRolls = this.completeRolls$.getValue();
-    const downloadMe: CompleteGodRolls = {
-      title: this.currentTitle,
-      date: new Date().toISOString(),
-      manifestVersion: this.destinyCacheService.cache.version,
-      rolls: currentRolls.rolls
-    };
-    return downloadMe;
+  private static rebuildRolls(mappedRolls: MappedRoll[]): GunRolls[] {
+    const returnMe: GunRolls[] = [];
+    for (const mr of mappedRolls) {
+      if (!mr.roll) {
+        continue;
+      }
+      if (mr.roll.controller) {
+        returnMe.push(mr.roll.controller);
+      }
+      if (mr.roll.mnk) {
+        returnMe.push(mr.roll.mnk);
+      }
+    }
+    return returnMe;
   }
+
+  private buildRollJson(): CompleteGodRolls {  
+  const newRolls = PerkbenchComponent.rebuildRolls(this.rolls$.getValue());
+  const downloadMe: CompleteGodRolls = {
+    title: this.currentTitle,
+    date: new Date().toISOString(),
+    manifestVersion: this.destinyCacheService.cache.version,
+    rolls: newRolls
+  };
+  return downloadMe;
+}
 
 
   private getWeaponDescs(): GunInfo[] {
-    const guns: ManifestInventoryItem[] = [];
-    // const perkCandidates = new Set<string>();
-    // const gunCandidates = new Set<string>();
-    // const mwCandidates = new Set<string>();
-    const db = this.destinyCacheService.cache;
-    for (const key of Object.keys(db.InventoryItem)) {
-      const ii = db.InventoryItem[key];
+  const guns: ManifestInventoryItem[] = [];
+  // const perkCandidates = new Set<string>();
+  // const gunCandidates = new Set<string>();
+  // const mwCandidates = new Set<string>();
+  const db = this.destinyCacheService.cache;
+  for (const key of Object.keys(db.InventoryItem)) {
+    const ii = db.InventoryItem[key];
 
-      // possible perk, bucket type consumable
+    // possible perk, bucket type consumable
+    if (
+      ii.inventory.bucketTypeHash == 1469714392 ||
+      ii.inventory.bucketTypeHash == 3313201758
+    ) {
+      // perkCandidates.add(ii.displayProperties.name.toLowerCase());
+    } else if (
+      ii.inventory.bucketTypeHash == 1498876634 ||
+      ii.inventory.bucketTypeHash == 2465295065 ||
+      ii.inventory.bucketTypeHash == 953998645
+    ) {
+      // gunCandidates.add(ii.displayProperties.name.toLowerCase());
       if (
-        ii.inventory.bucketTypeHash == 1469714392 ||
-        ii.inventory.bucketTypeHash == 3313201758
+        ii.displayProperties?.name &&
+        ii.sockets?.socketCategories?.length > 0
       ) {
-        // perkCandidates.add(ii.displayProperties.name.toLowerCase());
-      } else if (
-        ii.inventory.bucketTypeHash == 1498876634 ||
-        ii.inventory.bucketTypeHash == 2465295065 ||
-        ii.inventory.bucketTypeHash == 953998645
-      ) {
-        // gunCandidates.add(ii.displayProperties.name.toLowerCase());
-        if (
-          ii.displayProperties?.name &&
-          ii.sockets?.socketCategories?.length > 0
-        ) {
-          if (ii.itemType != ItemType.Dummy) {
-            if (!ii.displayProperties.name.endsWith('(Adept)')) {
-              guns.push(ii);
-            }
+        if (ii.itemType != ItemType.Dummy) {
+          if (!ii.displayProperties.name.endsWith('(Adept)')) {
+            guns.push(ii);
           }
         }
       }
     }
-    const gunsWithSockets: GunInfo[] = [];
-    for (const desc of guns) {
-      let hasRandomRoll = false;
-      for (const jCat of desc.sockets.socketCategories) {
-        // we only care about weapon perks
-        if (jCat.socketCategoryHash != '4241085061') {
-          continue;
-        }
-        const sockets: InventorySocket[] = [];
-        for (const index of jCat.socketIndexes) {
-          const socketDesc = desc.sockets.socketEntries[index];
-          const possiblePlugs: InventoryPlug[] = [];
-          if (socketDesc.randomizedPlugSetHash) {
-            hasRandomRoll = true;
-            const randomRollsDesc: any =
-              this.destinyCacheService.cache.PlugSet[
-                socketDesc.randomizedPlugSetHash
-              ];
-            if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
-              for (const option of randomRollsDesc.reusablePlugItems) {
-                const plugDesc: any =
-                  this.destinyCacheService.cache.InventoryItem[
-                    option.plugItemHash
-                  ];
-                const plugName = plugDesc?.displayProperties?.name;
-                if (plugName == null) {
-                  continue;
-                }
-                const oPlug = new InventoryPlug(
-                  plugDesc.hash,
-                  plugName,
-                  plugDesc.displayProperties.description,
-                  plugDesc.displayProperties.icon,
-                  false
-                );
-                oPlug.currentlyCanRoll = option.currentlyCanRoll;
-                possiblePlugs.push(oPlug);
+  }
+  const gunsWithSockets: GunInfo[] = [];
+  for (const desc of guns) {
+    let hasRandomRoll = false;
+    for (const jCat of desc.sockets.socketCategories) {
+      // we only care about weapon perks
+      if (jCat.socketCategoryHash != '4241085061') {
+        continue;
+      }
+      const sockets: InventorySocket[] = [];
+      for (const index of jCat.socketIndexes) {
+        const socketDesc = desc.sockets.socketEntries[index];
+        const possiblePlugs: InventoryPlug[] = [];
+        if (socketDesc.randomizedPlugSetHash) {
+          hasRandomRoll = true;
+          const randomRollsDesc: any =
+            this.destinyCacheService.cache.PlugSet[
+            socketDesc.randomizedPlugSetHash
+            ];
+          if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
+            for (const option of randomRollsDesc.reusablePlugItems) {
+              const plugDesc: any =
+                this.destinyCacheService.cache.InventoryItem[
+                option.plugItemHash
+                ];
+              const plugName = plugDesc?.displayProperties?.name;
+              if (plugName == null) {
+                continue;
               }
+              const oPlug = new InventoryPlug(
+                plugDesc.hash,
+                plugName,
+                plugDesc.displayProperties.description,
+                plugDesc.displayProperties.icon,
+                false
+              );
+              oPlug.currentlyCanRoll = option.currentlyCanRoll;
+              possiblePlugs.push(oPlug);
             }
-          } else if (socketDesc.singleInitialItemHash && !(socketDesc.socketTypeHash == 1282012138) ) {
-            const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
-            const plugName = plugDesc?.displayProperties?.name;
-            if (plugName == null) { continue; }
-            const oPlug = new InventoryPlug(plugDesc.hash,
-                plugName, plugDesc.displayProperties.description,
-                plugDesc.displayProperties.icon, false);
-            oPlug.currentlyCanRoll = true;
-            possiblePlugs.push(oPlug);
+          }
+        } else if (socketDesc.singleInitialItemHash && !(socketDesc.socketTypeHash == 1282012138)) {
+          const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+          const plugName = plugDesc?.displayProperties?.name;
+          if (plugName == null) { continue; }
+          const oPlug = new InventoryPlug(plugDesc.hash,
+            plugName, plugDesc.displayProperties.description,
+            plugDesc.displayProperties.icon, false);
+          oPlug.currentlyCanRoll = true;
+          possiblePlugs.push(oPlug);
 
         }
-          if (possiblePlugs.length > 0) {
-            sockets.push(
-              new InventorySocket(jCat.socketCategoryHash, [], possiblePlugs)
-            );
-          }
-        }
-        let dmgType = DamageType[desc.damageTypes[0]];
-        if (dmgType == 'Thermal') {
-          dmgType = 'Solar';
-        }
-        const gi: GunInfo = {
-          desc,
-          sockets,
-          type: desc.itemTypeDisplayName,
-          damage: dmgType,
-          season: WATERMARK_TO_SEASON[desc.iconWatermark],
-        };
-        if (gi.season == null) {
-          gi.season = -1;
-        }
-        if (hasRandomRoll) {
-          gunsWithSockets.push(gi);
+        if (possiblePlugs.length > 0) {
+          sockets.push(
+            new InventorySocket(jCat.socketCategoryHash, [], possiblePlugs)
+          );
         }
       }
+      let dmgType = DamageType[desc.damageTypes[0]];
+      if (dmgType == 'Thermal') {
+        dmgType = 'Solar';
+      }
+      const gi: GunInfo = {
+        desc,
+        sockets,
+        type: desc.itemTypeDisplayName,
+        damage: dmgType,
+        season: WATERMARK_TO_SEASON[desc.iconWatermark],
+      };
+      if (gi.season == null) {
+        gi.season = -1;
+      }
+      if (hasRandomRoll) {
+        gunsWithSockets.push(gi);
+      }
     }
-    return gunsWithSockets;
   }
+  return gunsWithSockets;
+}
 
   public exportToFile() {
-    const anch: HTMLAnchorElement = document.createElement('a');
-    const sMarks = JSON.stringify(this.buildRollJson(), null, 2);
-    anch.setAttribute(
-      'href',
-      'data:text/csv;charset=utf-8,' + encodeURIComponent(sMarks)
-    );
-    anch.setAttribute(
-      'download',
-      `d2checklist-file_${format(new Date(), 'yyyy-MM-dd')}.json`
-    );
-    anch.setAttribute('visibility', 'hidden');
-    document.body.appendChild(anch);
-    anch.click();
-  }
+  const anch: HTMLAnchorElement = document.createElement('a');
+  const sMarks = JSON.stringify(this.buildRollJson(), null, 2);
+  anch.setAttribute(
+    'href',
+    'data:text/csv;charset=utf-8,' + encodeURIComponent(sMarks)
+  );
+  anch.setAttribute(
+    'download',
+    `d2checklist-file_${format(new Date(), 'yyyy-MM-dd')}.json`
+  );
+  anch.setAttribute('visibility', 'hidden');
+  document.body.appendChild(anch);
+  anch.click();
+}
 
   public applyCurrentRolls() {
-    const rolls = this.buildRollJson();
-    set(CUSTOM_GOD_ROLLS, rolls);
-    this.notificationService.success(`Using your custom god rolls on this browser.`);
-    this.load();
-    // refresh rolls
-    this.pandaGodrollsService.reload();
-  }
+  const rolls = this.buildRollJson();
+  set(CUSTOM_GOD_ROLLS, rolls);
+  this.notificationService.success(`Using your custom god rolls on this browser.`);
+  this.load();
+  // refresh rolls
+  this.pandaGodrollsService.reload();
+}
 
   public clearCustomRolls() {
-    del(CUSTOM_GOD_ROLLS);
-    this.load();
-    // refresh rolls
-    this.pandaGodrollsService.reload();
-  }
+  del(CUSTOM_GOD_ROLLS);
+  this.load();
+  // refresh rolls
+  this.pandaGodrollsService.reload();
+}
 
 
-  showRolls(i: MappedRoll) {
-    const dc = new MatDialogConfig();
-    dc.disableClose = false;
-    dc.data = {
-      parent: this,
-      item: i,
-      name: PerkbenchComponent.cookNameForRolls(
-        i.info.desc.displayProperties.name
-      ),
-    };
-    const dialogRef = this.dialog.open(PerkBenchDialogComponent, dc);
+showRolls(i: MappedRoll) {
+  const dc = new MatDialogConfig();
+  dc.disableClose = false;
+  dc.data = {
+    parent: this,
+    item: i,
+    name: PerkbenchComponent.cookNameForRolls(
+      i.info.desc.displayProperties.name
+    ),
+  };
+  const dialogRef = this.dialog.open(PerkBenchDialogComponent, dc);
 
-    dialogRef.afterClosed().subscribe(async (result) => {
-      this.filterChanged$.next(true);
-    });
-  }
+  dialogRef.afterClosed().subscribe(async (result) => {
+    this.filterChanged$.next(true);
+  });
+}
 }
 
 export interface MappedRoll {

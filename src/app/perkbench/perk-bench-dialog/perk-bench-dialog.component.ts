@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
 const NORMAL_MW = ['Handling', 'Range', 'Reload Speed', 'Stability'];
 const FUSION_MW = ['Charge Time', 'Handling', 'Range', 'Reload Speed', 'Stability'];
 const SWORD_MW = ['Impact'];
-const ROCKET_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity']; //'Stability','Range',
+const ROCKET_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity']; // 'Stability','Range',
 
 
 export enum ClickMode {
@@ -25,7 +25,7 @@ function buildEmptyRoll(): GunRoll {
     masterwork: [],
     greatPerks: [],
     goodPerks: []
-  }
+  };
 }
 
 function removeStringFromList(list: string[], target: string) {
@@ -79,7 +79,7 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
       this.r.roll = {
         controller: buildEmptyGunRolls(name, false, true),
         mnk: buildEmptyGunRolls(name, true, false)
-      }
+      };
     }
     if (this.r.roll.controller == null) {
       this.r.roll.controller = buildEmptyGunRolls(name, false, true);
@@ -101,11 +101,9 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
     }
     if (this.r.info.type == 'Sword') {
       this.mwOptions = SWORD_MW;
-    }
-    else if (this.r.info.type == 'Fusion Rifle') {
+    } else if (this.r.info.type == 'Fusion Rifle') {
       this.mwOptions = FUSION_MW;
-    }
-    else if (this.r.info.type == 'Rocket Launcher') {
+    } else if (this.r.info.type == 'Rocket Launcher') {
       this.mwOptions = ROCKET_MW;
     } else {
       this.mwOptions = NORMAL_MW;
@@ -121,7 +119,6 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
   }
 
   updatePlatform() {
-    console.log("update platform");
     if (this.parent.isController) {
       this.pve$.next(this.r.roll.controller.pve);
       this.pvp$.next(this.r.roll.controller.pvp);
@@ -184,7 +181,7 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
     } else {
       this.r.roll.mnk = buildEmptyGunRolls(this.data.name, false, true);
     }
-    this.updatePlatform();    
+    this.updatePlatform();
   }
 
 }
