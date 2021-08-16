@@ -1,0 +1,34 @@
+@import 'styles-variables';
+
+.body {
+    max-width: 2000px !important;
+}
+
+@media (max-width: map-get($grid-breakpoints, xl)) {
+    .body {
+        max-width: 90vw !important;
+    }
+}
+
+@media (max-width: map-get($grid-breakpoints, lg)) {
+    .body {
+        max-width: 90vw !important;
+    }
+}
+
+@media (max-width: map-get($grid-breakpoints, md)) {
+    .body {
+        max-width: 95vw !important;
+    }
+}
+@media (max-width: map-get($grid-breakpoints, sm)) {
+    .body {
+        max-width: 100vw !important;
+    }
+}
+
+@media (max-width: map-get($grid-breakpoints, xs)) {
+    .body {
+        max-width: 360 !important;
+    }
+}

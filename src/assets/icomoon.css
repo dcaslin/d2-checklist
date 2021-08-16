@@ -25,6 +25,26 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-engram:before {
+  content: "\e910";
+}
+.icon-empty-engram .path1:before {
+  content: "\e911";
+  color: rgb(255, 255, 255);
+  opacity: 0.1;
+}
+.icon-empty-engram .path2:before {
+  content: "\e912";
+  margin-left: -1em;
+  color: rgb(0, 0, 0);
+  opacity: 0.2;
+}
+.icon-empty-engram .path3:before {
+  content: "\e913";
+  margin-left: -1em;
+  color: rgb(255, 255, 255);
+  opacity: 0.2;
+}
 .icon-raid:before {
   content: "\e90f";
 }

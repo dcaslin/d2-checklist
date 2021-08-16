@@ -1,7 +1,7 @@
 {
   "name": "d2-checklist",
-  "version": "14.3.5",
-  "manifest": "95862.21.07.14.2100-2-bnet.38758",
+  "version": "14.5.0",
+  "manifest": "96124.21.07.21.2100-1-bnet.38858",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -26,8 +26,6 @@
   },
   "private": true,
   "dependencies": {
-    "@ag-grid-community/angular": "^24.1.0",
-    "@ag-grid-community/client-side-row-model": "^24.1.0",
     "@angular/animations": "^11.2.6",
     "@angular/cdk": "^11.2.5",
     "@angular/common": "^11.2.6",

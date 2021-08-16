@@ -57,6 +57,9 @@ import { DestinyCacheService } from './service/destiny-cache.service';
 import { SettingsComponent } from './settings';
 import { isSearchBot } from './shared/utilities';
 import { TestbedComponent } from './testbed/testbed.component';
+import { UberListBuilderComponent } from './uber-list/uber-list-builder/uber-list-builder.component';
+import { UberListParentComponent } from './uber-list/uber-list-parent/uber-list-parent.component';
+import { UberListViewComponent } from './uber-list/uber-list-view/uber-list-view.component';
 import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
 
 
@@ -104,13 +107,13 @@ export class ManifestLoadedGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [ManifestLoadedGuard],
       component: SettingsComponent
-    }, 
+    },
     {
       path: 'perkbench',
       pathMatch: 'full',
       canActivate: [ManifestLoadedGuard],
       component: PerkbenchComponent
-    }, 
+    },
     {
       path: 'about',
       pathMatch: 'full',
@@ -151,6 +154,26 @@ export class ManifestLoadedGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [ManifestLoadedGuard],
       component: BungieSearchComponent
+    }, {
+      path: 'todo',
+      pathMatch: 'prefix',
+      canActivate: [ManifestLoadedGuard],
+      component: UberListParentComponent,
+      children: [
+        {
+          path: '',
+          redirectTo: 'builder',
+          pathMatch: 'full'
+        },
+        {
+          path: 'builder',
+          component: UberListBuilderComponent,
+        },
+        {
+          path: 'list',
+          component: UberListViewComponent,
+        }
+      ]
     }, {
       path: 'clan/:id',
       pathMatch: 'prefix',
@@ -487,13 +510,7 @@ export class ManifestLoadedGuard implements CanActivate {
           ]
         }
       ]
-    },
-    {
-      path: 'todo-list',
-      pathMatch: 'full',
-      canActivate: [ManifestLoadedGuard],
-      loadChildren: () => import('./todo-list/todo-list.module').then(m => m.TodoListModule)
-    },
+    },   
     {
       path: '**',
       redirectTo: 'home'

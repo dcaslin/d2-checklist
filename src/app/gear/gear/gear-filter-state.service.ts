@@ -366,11 +366,7 @@ export class GearFilterStateService implements OnDestroy {
     return returnMe;
   }
 
-  public resetFilters(noEmit?: boolean): void {
-    // TODO is this necessary?
-    // if (this.filter) {
-    //   this.filter.nativeElement.value = '';
-    // }
+  public resetFilters(): void {
     this.visibleFilterText = null;
     this.filterTags$.next([]);
     this.orMode = false;
@@ -485,7 +481,7 @@ export class GearFilterStateService implements OnDestroy {
     if (!this.isToggleDataInit()) {
       return;
     }
-    this.resetFilters(true);
+    this.resetFilters();
     if (shortcutInfo.owner) {
       const val = this.toggleData.owners$.getValue();
       const choices = val.choices.slice(0);
@@ -860,11 +856,6 @@ export interface ToggleState {
   visibleItemType: ItemType;
   hidden: boolean;
   allSelected: boolean;
-  choices: Choice[];
-}
-
-export interface ToggleStateUpdate {
-  state: BehaviorSubject<ToggleState>;
   choices: Choice[];
 }
 

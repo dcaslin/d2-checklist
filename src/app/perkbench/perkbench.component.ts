@@ -195,7 +195,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   async loadOfficialRolls() {
-    let gunRolls = await this.fetchGodrolls();
+    const gunRolls = await this.fetchGodrolls();
     this.loadPandaJson(
       JSON.stringify(gunRolls),
       this.weapons,
@@ -347,7 +347,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       date: new Date().toISOString(),
       manifestVersion: this.destinyCacheService.cache.version,
       rolls: currentRolls.rolls
-    }
+    };
     return downloadMe;
   }
 

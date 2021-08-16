@@ -1,51 +1,57 @@
-.spaced>* {
-    margin: 5px;
+.spaced > * {
+  margin: 5px;
 }
 
 .underline {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .flex-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
 .flex-column {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
-.flex-row>* {
-    margin: 5px;
+.flex-row > * {
+  margin: 5px;
 }
 
-.flex-column>* {
-    margin: 5px;
+.flex-column > * {
+  margin: 5px;
 }
 
 .justify-center {
-    justify-content: center;
+  justify-content: center;
 }
 
 .align-left {
-    text-align: left;
+  text-align: left;
 }
 
 .align-center {
-    text-align: center;
+  text-align: center;
 }
 
 .float-right {
-    float: right;
+  float: right;
 }
 
 .underline {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .info-text {
-    max-width: 250px;
+  max-width: 250px;
+}
+
+@media screen and (max-width: 13100px) {
+  .guns {
+    max-width: 850px;
+  }
 }

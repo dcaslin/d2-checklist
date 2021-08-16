@@ -3,7 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { IconService } from '@app/service/icon.service';
-import { InventoryItem, Sort } from '@app/service/model';
+import { InventoryItem, Questline, Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -110,7 +110,7 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
   }
 
 
-  public openQuestDialog(quest: any): void {
+  public openQuestDialog(quest: Questline): void {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
     dc.autoFocus = true;

@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { ItemType } from '@app/service/model';
 import { BehaviorSubject } from 'rxjs';
-import { Choice, generateState, ToggleConfig, ToggleState, ToggleStateUpdate } from '../gear-filter-state.service';
+import { generateState, ToggleState } from '../gear-filter-state.service';
 
 
 @Component({
