@@ -3,126 +3,157 @@
 
         <h3 mat-dialog-title>{{data.title.name}}</h3>
         <div mat-dialog-content>
-            <p>TODO: fix layout and alignment, show questline popup for quests</p>
+            <p class="simple-caption-darker">{{data.title.desc}}</p>
             <ng-container *ngIf="data.type=='milestone'">
                 <ng-container *ngIf="data.title as msn">
-                    <div>Name: {{msn.name}}</div>
-                    <div>Desc: {{msn.desc}}</div>
-                    <div *ngIf="msn.resets">Resets in {{msn.resets | d2cAgoHumanized}}</div>
-                    <div>Rewards: {{msn.rewards}}</div>
+                    <div class="flex-column">
+                        <ng-container *ngIf="msn.resets">
+                            <h5>Resets</h5>
+                            <div class="type-caption">In {{msn.resets | d2cAgoHumanized}}</div>
+                        </ng-container>
+                        <h5>Rewards</h5>
+                        <div class="type-caption">{{msn.rewards}}</div>
+                    </div>
                 </ng-container>
             </ng-container>
-            <ng-container *ngIf="data.type=='milestone'">
-
-            </ng-container>
-
-            <ng-container *ngIf="data.type=='bounty'">
-                <p>bounty</p>
-                <ng-container *ngIf="data.title as i">
-                    <div>Name: {{i.name}}</div>
-                    <div>Desc: {{i.desc}}</div>
-                    <div>Objectives:
-                        <div *ngFor="let o of i.objectives">
-                            {{o.completionValue}} {{o.progressDescription}}
-                        </div>
+            <ng-container *ngIf="data.type=='bounty'|| data.type=='quest'">
+                <div class="flex-row">
+                    <div>
+                        <h5>Objectives</h5>
+                        <ul class="no-margin" *ngIf="data.title as i">
+                            <li *ngFor="let o of i.objectives">{{o.completionValue}} {{o.progressDescription}}</li>
+                        </ul>
                     </div>
-
-                    <div>Rewards:
-
-                        <div class="flex-row" *ngIf="i.values as rewards">
-                            <div *ngFor="let r of rewards">
+                    <div *ngIf="data?.title?.values?.length>0">
+                        <h5>Rewards</h5>
+                        <div class="flex-column" *ngIf="data.title as i">
+                            <div *ngFor="let r of i.values">
                                 <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon"
                                     loading="lazy">
-                                <span> {{r.quantity}} {{r.name}}</span>
+                                <span class="pad-left">
+                                    <ng-container *ngIf="r.quantity>0">{{r.quantity}} </ng-container>{{r.name}}
+                                </span>
                             </div>
                         </div>
-
                     </div>
-                </ng-container>
+                </div>
             </ng-container>
-            <ng-container *ngIf="data.type=='quest'">
-                <ng-container *ngIf="data.title as i">
-                    <div>Name: {{i.name}}</div>
-                    <div>Desc: {{i.desc}}</div>
-                    <div>Objectives:
-                        <div *ngFor="let o of i.objectives">
-                            {{o.completionValue}} {{o.progressDescription}}
-                        </div>
-                    </div>
-
-                    <div>Rewards:
-
-                        <div class="flex-row" *ngIf="i.values as rewards">
-                            <div *ngFor="let r of rewards">
-                                <img *ngIf="r.icon" [src]="'//www.bungie.net' + r.icon" class="reward-icon"
-                                    loading="lazy">
-                                <span> {{r.quantity}} {{r.name}}</span>
-                            </div>
-                        </div>
-
-                    </div>
-                </ng-container>
-            </ng-container>
-
 
             <mat-tab-group [selectedIndex]="player.characters.indexOf(currChar)"
                 (selectedTabChange)="state.currChar$.next(player.characters[$event.index])">
-                <mat-tab *ngFor="let char of player.characters" [label]="char.className + ' - ' + char.light">
-                    <div class="flex-column">
-
-
+                <mat-tab *ngFor="let char of player.characters" [label]="char.className">
+                    <div class="margin-5 flex-column">
                         <ng-container *ngIf="data.type=='milestone'">
-                            <div *ngIf="data.characterEntries[char.id] as entry">
-                                <d2c-milestone-check [milestoneStatus]="entry" [detailed]="true"></d2c-milestone-check>
-                                {{entry|json}}
+
+                            <div class="flex-row" *ngIf="data.characterEntries[char.id] as milestone">
+                                <div class="flex-column">
+                                    <h5>Progress: <d2c-milestone-check class="pad-left" [milestoneStatus]="milestone"></d2c-milestone-check></h5>
+                                    <ng-container *ngIf="!milestone.locked && !milestone.tooLowPower && !milestone.readyToCollect">
+                                        <div>
+                                            <mat-progress-bar mode="determinate" [value]="100 * milestone.pct"></mat-progress-bar>
+                                            {{(100 * milestone.pct)|number : '1.0-0'}}%
+                                        </div>
+                                    </ng-container>
+                                    
+                                    <div class="type-caption" *ngIf="milestone.suppInfo">
+                                        {{milestone.suppInfo}}
+                                    </div>
+                                    <div class="type-caption warn-text" *ngIf="milestone.locked">
+                                        Not available to this character
+                                    </div>
+                                    <div class="type-caption warn-text" *ngIf="milestone.tooLowPower && !milestone.locked">
+                                        Character PL may be too low
+                                    </div>
+                                    <div class="type-caption" *ngIf="milestone.readyToCollect">
+                                        Complete, ready to collect!
+                                    </div>
+                                    <div *ngIf="milestone.phases">
+                                        <ng-container *ngFor="let phase of milestone.phases">                
+                                            <fa-icon [icon]="iconService.fasCheckSquare" class="accent-text mat-option.mat-selected" *ngIf="phase===true" style="margin-left: 5px"></fa-icon>
+                                            <fa-icon [icon]="iconService.farSquare" *ngIf="phase===false" style="margin-left: 5px"></fa-icon>                
+                                        </ng-container>
+                                    </div>
+                                </div>
                             </div>
                         </ng-container>
                         <ng-container *ngIf="data.type=='bounty' || data.type=='quest'">
                             <div *ngIf="data.characterEntries[char.id] as pursuit else noEntry">
                                 <div *ngIf="pursuit.vendorItem && !pursuit.characterItem">
-                                    For sale at
                                     <ng-container *ngIf="pursuit.vendorItem.vendorItemInfo as vi">
-                                        {{vi.vendor.name}}
-                                        <span class="type-caption">Resets {{ vi.vendor.nextRefreshDate |
-                                            d2cAgoHumanized}}</span>
-                                        <div *ngFor="let c of vi.costs">
-                                            <small>{{c.desc.displayProperties.name}} {{c.count}}</small>
-                                        </div>
-                                        <div *ngIf="vi.status!=null" class="warn-text">
-                                            <small>{{vi.status}}</small>
+                                        <div class="flex-row">
+                                            <div>
+                                                <h5>
+                                                    <fa-icon [icon]="iconService.fasStoreAlt" class="pad-right">
+                                                    </fa-icon> {{vi.vendor.name}}
+                                                </h5>
+                                                <div *ngIf="vi.status!=null" class="warn-text">
+                                                    <small>{{vi.status}}</small>
+                                                </div>
+                                                <div class="type-caption">Resets
+                                                    {{ vi.vendor.nextRefreshDate |
+                                                    d2cAgoHumanized}}</div>
+                                            </div>
+                                            <div *ngIf="vi.costs?.length>0">
+                                                <h5>Cost</h5>
+                                                <div class="type-caption" *ngFor="let c of vi.costs">
+                                                    <img *ngIf="c.desc.displayProperties.icon"
+                                                        [src]="'//www.bungie.net' + c.desc.displayProperties.icon"
+                                                        class="reward-icon" loading="lazy">
+                                                    <span class="pad-left">
+                                                        <ng-container *ngIf="c.count>0">{{c.count|number: '0.0-0'}}
+                                                        </ng-container>{{c.desc.displayProperties.name}}
+                                                    </span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </ng-container>
                                 </div>
                                 <div *ngIf="pursuit.characterItem as g">
+                                    <div class="flex-row">
+                                        <div *ngIf="g.questline">
+                                            <a mat-stroked-button (click)="openQuestDialog(g.questline)">
+                                                <fa-icon [icon]="iconService.farProjectDiagram"></fa-icon> Questline
+                                                {{g.questline.progress}}
+                                            </a>
+                                        </div>
+                                        <div class="flex-column">
+                                            <h5>Progress</h5>
+                                            <div>
+                                                <mat-progress-bar mode="determinate" [value]="g.aggProgress">
+                                                </mat-progress-bar>
+                                                {{g.aggProgress|number : '1.0-0'}}%
+                                            </div>
+                                            <div class="type-caption">
+                                                <span *ngIf="g.expired else notExpired" class="warn-text">
+                                                    Expired {{ g.expirationDate | d2cAgoHumanized }}
+                                                </span>
+                                                <ng-template #notExpired>
+                                                    <span *ngIf="g.expirationDate!=null else noExp">
+                                                        Expires in {{ g.expirationDate | d2cAgoHumanized:true }}
+                                                    </span>
+                                                    <ng-template #noExp>
+                                                        Never Expires
+                                                    </ng-template>
+                                                </ng-template>
+                                            </div>
+                                        </div>
+                                        <div class="flex-column">
+                                            <h5>Objectives</h5>
+                                            <div *ngFor="let obj of g.objectives">
+                                                <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
+                                                    class="accent-text mat-option.mat-selected"></fa-icon>
+                                                <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
+                                                <span class="pad-left type-caption">
+                                                    {{obj.progressDescription}}
+                                                    <span *ngIf="obj.progress!=null">{{obj.progress|number:
+                                                        '0.0-0'}}/{{obj.completionValue|number: '0.0-0'}}</span>
+                                                </span>
+                                            </div>
+                                        </div>
 
-                                    <div class="total-progress">
-                                        <div class="progress-pct">{{g.aggProgress|number : '1.0-0'}}%</div>
-                                        <mat-progress-bar class="progress-bar" mode="determinate"
-                                            [value]="g.aggProgress">
-                                        </mat-progress-bar>
-                                    </div>
-                                    <div class="obj-desc" *ngFor="let obj of g.objectives">
-                                        <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
-                                            class="accent-text mat-option.mat-selected"></fa-icon>
-                                        <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
-                                        {{obj.progressDescription}}
-                                        <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
+
                                     </div>
 
-                                    <span *ngIf="g.expired else notExpired" class="expire-caption warn-text">
-                                        Expired {{ g.expirationDate | d2cAgoHumanized }}
-                                    </span>
-                                    <ng-template #notExpired>
-                                        <span *ngIf="g.expirationDate!=null else noExp" class="expire-caption">
-                                            <fa-icon [icon]="iconService.fasClock"></fa-icon>
-                                            {{ g.expirationDate | d2cAgoHumanized:true }}
-                                        </span>
-                                        <ng-template #noExp>
-                                            <span class="expire-caption">
-                                                <fa-icon [icon]="iconService.fasClock"></fa-icon> Never
-                                            </span>
-                                        </ng-template>
-                                    </ng-template>
 
 
                                 </div>

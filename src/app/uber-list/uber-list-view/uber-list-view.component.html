@@ -71,6 +71,7 @@
                         </td>
                         <td class="activity-col">
                           <div class="fake-link">{{row.title.name}}</div>
+                          <div class="simple-caption-darker-no-margin" *ngIf="row.title.questline as q">Questline: {{q.progress}}</div>
                           <div *ngIf="debugmode|async"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
                         </td>
                         <td class="hide-mobile-table-cell">
