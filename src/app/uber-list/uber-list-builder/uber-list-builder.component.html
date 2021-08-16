@@ -100,6 +100,7 @@
                     </td>
                     <td class="activity-col" (click)="show($event, row)">
                       <div class="fake-link">{{row.title.name}}</div>
+                      <div class="simple-caption-darker-no-margin" *ngIf="row.title.questline as q">Questline: {{q.progress}}</div>
                       <div *ngIf="debugmode|async"> {{row.title.hash}} - reward tier{{row.rewardTier}}</div>
                     </td>
                     <td (click)="show($event, row)">
