@@ -47,12 +47,7 @@
                 "input": "src/assets/icomoon.css",
                 "bundleName": "icons",
                 "inject": true
-              },
-              {
-                "input": "src/ag-grid-styles.scss",
-                "bundleName": "ag-grid",
-                "inject": true
-              }
+              }              
             ],
             "scripts": [
             ]
@@ -118,11 +113,6 @@
               {
                 "input": "src/styles.scss",
                 "bundleName": "app",
-                "inject": true
-              },
-              {
-                "input": "src/ag-grid-styles.scss",
-                "bundleName": "ag-grid",
                 "inject": true
               }
             ],
