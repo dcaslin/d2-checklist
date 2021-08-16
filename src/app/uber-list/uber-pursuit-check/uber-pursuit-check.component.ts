@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { PursuitTuple } from '../uber-list-state.service';
+import { PursuitTuple } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -57,12 +57,19 @@
 .fireteam-group-cell { 
   height: 100%;
   width: 27px;
+  position: relative;
 }
 
 .fireteam-group { 
-  height: 100%;
   border-top-left-radius: 150px;
   border-bottom-left-radius: 150px;
+  // border-top-right-radius: 25px;
+  // border-bottom-right-radius: 25px;
+  position: absolute;
+  height: 95%;
+  width: 80%;
+  top: 2.5%;
+  left: 10%;
 }
 
 div.detail-list {

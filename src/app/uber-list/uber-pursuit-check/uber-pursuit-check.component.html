@@ -1,8 +1,19 @@
-<div class="check">
+<div class="total-progress">
     <ng-container *ngIf="pursuit else isNull">
-        xxx
+        <div *ngIf="pursuit.vendorItem && !pursuit.characterItem">
+            <mat-icon class="secondary-text">store</mat-icon>
+        </div>
+        <div *ngIf="pursuit.characterItem as g">
+            <mat-progress-bar class="progress-bar" mode="determinate" [value]="g.aggProgress">
+            </mat-progress-bar>
+            <div class="progress-pct">{{g.aggProgress|number : '1.0-0'}}%</div>
+            
+            <div *ngIf="g.expired" class="simple-caption-darker-no-margin warn-text"><fa-icon [icon]="iconService.fasClock"></fa-icon> Expired</div>
+            <div *ngIf="g.expirationDate!=null"  class="simple-caption-darker-no-margin"><fa-icon [icon]="iconService.fasClock"></fa-icon> {{g.expirationDate | d2cAgoHumanized:true}}</div>
+        </div>
     </ng-container>
     <ng-template #isNull>
-        <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Pursuit missing, probably not available"></fa-icon>
+        <fa-icon [icon]="iconService.farTimesSquare" class="faint" matTooltip="Pursuit missing, probably not available">
+        </fa-icon>
     </ng-template>
 </div>

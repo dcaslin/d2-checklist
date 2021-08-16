@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/cor
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChildComponent } from '@app/shared/child.component';
 import { StorageService } from '@app/service/storage.service';
+import { Questline } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +15,7 @@ export class QuestDialogComponent extends ChildComponent implements OnInit {
   constructor(
     storageService: StorageService,
     public dialogRef: MatDialogRef<QuestDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) { 
+    @Inject(MAT_DIALOG_DATA) public data: Questline) {
       super(storageService);
     }
 
