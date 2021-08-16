@@ -1,37 +1,22 @@
-.lifetime {
-    font-size: small;
-    font-weight: lighter;
-    text-align: left;
-    display: inline-block;
-    max-width: 125px;
-  }
-  
-  
-  .percent {
-    font-size: smaller;
-    font-weight: lighter;
-  }
-  
-  .check {
-    margin-right: 0.15em;
-    display: block;
-  }
-  
-  .faint { 
-    opacity: 0.5;
-  }
-  
-  .check-progress-bar {
-    height: 1em;
-    max-width: 30px;
-  }
-  
-  .supp-info-container{
-    margin-top: 3px;
-    display: inline-block;
-    text-align: left;
-  }
-  
-  .supp-info {
-    padding-bottom: 5px;
-  }
+
+.faint {
+  opacity: 0.5;
+}
+
+.total-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-pct {
+  flex-grow: 0;
+  margin: 5px;
+}
+
+.progress-bar {
+  flex-grow: 1;
+  margin-bottom: 5px;
+  max-width: 40px;
+}

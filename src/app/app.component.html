@@ -31,7 +31,7 @@
       <!-- <a mat-list-item (click)="sidenav.close()" routerLink="content-vault" routerLinkActive="active">
           <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>&ensp;Content Vault
         </a> -->
-      <a mat-list-item (click)="sidenav.close()" routerLink="todo-list" routerLinkActive="active">
+      <a mat-list-item (click)="sidenav.close()" routerLink="todo" routerLinkActive="active">
         <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>&ensp;Todo
       </a>
       <a mat-list-item (click)="sidenav.close()" routerLink="friends" routerLinkActive="active">
@@ -56,11 +56,11 @@
       <a mat-list-item (click)="sidenav.close()" routerLink="about" routerLinkActive="active">
         <mat-icon>info</mat-icon>&ensp;About
       </a>
-      <a mat-list-item (click)="sidenav.close()" routerLink="settings" routerLinkActive="active">
-        <mat-icon>settings</mat-icon>&ensp;Settings
-      </a>
       <a mat-list-item (click)="sidenav.close()" routerLink="perkbench" routerLinkActive="active">
         <mat-icon>construction</mat-icon>&ensp;PerkBench
+      </a>      
+      <a mat-list-item (click)="sidenav.close()" routerLink="settings" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>&ensp;Settings
       </a>
     </mat-nav-list>
   </mat-sidenav>
@@ -95,7 +95,7 @@
                 <fa-icon [icon]="iconService.fadHourGlassHalf"></fa-icon>
                 <span class="d-none d-xl-inline"> Content Vault</span>
               </a> -->
-            <a mat-button class="nav-button" routerLink="todo-list" routerLinkActive="active">
+            <a mat-button class="nav-button" routerLink="todo" routerLinkActive="active">
               <fa-icon [icon]="iconService.farClipboardCheck"></fa-icon>
               <span class="d-none d-xl-inline"> Todo</span>
             </a>
@@ -133,11 +133,11 @@
             <button mat-menu-item class="nav-button" *ngIf="(showInstallButton|async)" (click)="install()">
               <mat-icon>arrow_downward</mat-icon> Install
             </button>
-            <a mat-menu-item class="nav-button" routerLink="settings">
-              <mat-icon>settings</mat-icon> Settings
-            </a>
             <a mat-menu-item class="nav-button" routerLink="perkbench">
               <mat-icon>construction</mat-icon> PerkBench
+            </a>
+            <a mat-menu-item class="nav-button" routerLink="settings">
+              <mat-icon>settings</mat-icon> Settings
             </a>
           </mat-menu>
 

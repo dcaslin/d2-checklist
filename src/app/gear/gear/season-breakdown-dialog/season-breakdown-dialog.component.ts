@@ -6,8 +6,6 @@ import { Character, InventoryPlug, Player, InventoryItem, EnergyType } from '@ap
 import { trigger, transition, style, animate } from '@angular/animations';
 import { BehaviorSubject } from 'rxjs';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
-import { DisplayProperties } from '@app/todo-list/interfaces/api.interface';
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-season-breakdown-dialog',
@@ -25,7 +23,7 @@ export class SeasonBreakdownDialogComponent {
     public dialogRef: MatDialogRef<SeasonBreakdownDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
-    const player = this.parent._player.getValue();
+    const player = this.parent.player$.getValue();
     this.chars = SeasonBreakdownDialogComponent.generateTable(player);
     this.mats = this.generateMats(player);
   }
@@ -36,7 +34,7 @@ export class SeasonBreakdownDialogComponent {
     }
     const dialogRef = this.parent.openGearDialog(items.items[0], items.items, true);
     dialogRef.afterClosed().subscribe(result => {
-      SeasonBreakdownDialogComponent.fillinTable(this.parent._player.getValue(), this.chars);
+      SeasonBreakdownDialogComponent.fillinTable(this.parent.player$.getValue(), this.chars);
     });
   }
 
@@ -152,4 +150,10 @@ class ItemBundle {
 interface Mat {
   displayProperties: DisplayProperties;
   total: number;
+}
+
+interface DisplayProperties {
+  description?: string;
+  icon: string;
+  name: string;
 }

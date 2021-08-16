@@ -26,7 +26,8 @@ import {
   faSwords as falSwords,
   faScrollOld as falScrollOld,
   faBan as falBan, faList as farList,
-  faTools as farTools
+  faTools as farTools,
+  faSign as farSign
 } from '@fortawesome/pro-regular-svg-icons';
 
 import {
@@ -47,6 +48,7 @@ import {
   faBalanceScale as fasBalanceScale, faBan as fasBan, faBed as fasBed,
   faBookSpells as fasBookSpells, faBowArrow as fasBowArrow, faBullseyePointer as fasBullseyePointer,
   faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
+  faCalendarAlt as fasCalendarAlt,
   faCheckSquare as fasCheckSquare, faClock as fasClock, faCog as fasCog, faCogs as fasCogs,
   faCopy as fasCopy, faEllipsisH as fasEllipsisH, faEllipsisV as fasEllipsisV, faExclamationSquare as fasExclamationSquare,
   faEye as fasEye, faEyeSlash as fasEyeSlash, faFilter as fasFilter, faFlag as fasFlag,
@@ -61,11 +63,12 @@ import {
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
   faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
   faWheat as fasWheat,
+  faHiking as fasHiking,
   faSignOutAlt as fasSignOutAlt,
   faCheckCircle as fasCheckCircle,
   faCircleNotch as fasCircleNotch,
   faSkullCrossbones as fasSkullCrossbones,
-  faSkull as fasSkull,
+  faSkull as fasSkull, faStoreAlt as fasStoreAlt,
   faStore as fasStore, faUser as fasUser, faChessKnight as fasChessKnight, faTicketAlt as fasTicketAlt,
   faCabinetFiling as fasCabinetFiling, faStickyNote as fasStickyNote
 } from '@fortawesome/pro-solid-svg-icons';
@@ -78,6 +81,9 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly farSign = farSign;
+  public readonly fasStoreAlt = fasStoreAlt;
+  public readonly fasHiking = fasHiking;
   public readonly farTools = farTools;
   public readonly fasStickyNote = fasStickyNote;
   public readonly fasSkull = fasSkull;
@@ -155,6 +161,7 @@ export class IconService {
   public readonly farTrophy = farTrophy;
 
   public readonly fasCalendarStar = fasCalendarStar;
+  public readonly fasCalendarAlt = fasCalendarAlt;
   public readonly fasTimes = fasTimes;
   public readonly fasBullseyePointer = fasBullseyePointer;
   public readonly fasCheck = fasCheck;
