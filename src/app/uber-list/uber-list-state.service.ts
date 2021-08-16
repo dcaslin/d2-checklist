@@ -699,7 +699,7 @@ export class UberListStateService implements OnDestroy {
       includeValue: (x: MilestoneRow | PursuitRow, state: UberToggleState) => {
         const selectedVals = state.choices.filter(c => c.checked).map(c => c.matchValue);
         // only bounties have vendors
-        if (x.type == 'bounty') {
+        if (x.type == 'bounty' || x.type == 'quest') {
           const p = x as PursuitRow;
           // is this item avail from a vendor?
           const hasVendor = Object.values(p.characterEntries).some(tuple => tuple.vendorItem != null);
