@@ -3,6 +3,13 @@
     <ng-container *ngIf="state.currChar$|async as currChar">
       <div class="margin-10 filter-container">
         <div class="filter-row">
+          <mat-button-toggle-group name="Current Char" aria-label="Current Character">
+            <mat-button-toggle  *ngFor="let char of player.characters" 
+              [checked]="currChar.characterId==char.characterId"
+              (click)="state.currChar$.next(char)">
+              {{char.className}}
+            </mat-button-toggle>
+          </mat-button-toggle-group>
           <button mat-button>
             <fa-icon [icon]="iconService.fasSyncAlt" (click)="state.refresh()"></fa-icon>
           </button>
@@ -13,10 +20,9 @@
 
           <d2c-signed-on-loading-icon class="loading-indicator"></d2c-signed-on-loading-icon>
         </div>
+        
       </div>
-      <mat-tab-group [selectedIndex]="player.characters.indexOf(currChar)"
-        (selectedTabChange)="state.currChar$.next(player.characters[$event.index])">
-        <mat-tab *ngFor="let char of player.characters" [label]="char.className + ' - ' + char.light">
+      
           <div class="margin-5 flex-column" *ngIf="state.checkedRows$|async as rows">
 
             <p class="margin-25" *ngIf="rows.length==0">No activities checked. Click back to the "Builder"
@@ -50,9 +56,9 @@
                       </span>
                     </th>
                     <th class="sticky char-cell">
-                      <span class="fake-link gear-sort" (click)="state.sort('char-'+char.id)">{{char.className}} -
-                        {{char.light}}
-                        <d2c-sort-indicator [field]="'char-'+char.id" [currVal]="sort.by" [descending]="sort.desc">
+                      <span class="fake-link gear-sort" (click)="state.sort('char-'+currChar.id)">{{currChar.className}} -
+                        {{currChar.light}}
+                        <d2c-sort-indicator [field]="'char-'+currChar.id" [currVal]="sort.by" [descending]="sort.desc">
                         </d2c-sort-indicator>
                       </span>
                     </th>
@@ -90,7 +96,7 @@
 
                         </td>
                         <td class="char-cell">
-                          <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
+                          <span class="margin-5" *ngIf="row.characterEntries[currChar.id] as data">
                             <d2c-uber-pursuit-check [pursuit]="data"></d2c-uber-pursuit-check>
                           </span>
 
@@ -124,7 +130,7 @@
                           </div>
                         </td>
                         <td class="char-cell">
-                          <span class="margin-5" *ngIf="row.characterEntries[char.id] as data">
+                          <span class="margin-5" *ngIf="row.characterEntries[currChar.id] as data">
                             <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
                           </span>
                         </td>
@@ -136,11 +142,7 @@
               </table>
             </ng-container>
 
-
-
           </div>
-        </mat-tab>
-      </mat-tab-group>
     </ng-container>
   </ng-container>
 

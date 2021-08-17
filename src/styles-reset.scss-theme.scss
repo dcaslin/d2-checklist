@@ -615,7 +615,8 @@
 
   tr.hover-row:hover {
     background: mat-color($background, app-bar);
-    border-width: 2px;
+    border-bottom-width: 2px;
+    border-top-width: 2px;
     cursor: pointer;
   }
 
