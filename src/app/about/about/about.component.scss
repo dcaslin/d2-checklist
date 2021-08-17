@@ -10,7 +10,6 @@
 
 h1 {
     text-align: center;
-    font-size: 3em;
     text-transform: uppercase;
   }
 
@@ -34,8 +33,6 @@ h1 {
   width: 700px;
   margin: 25px auto 0 auto;
   padding-bottom: 50px;
-  font-size: 0.9em;
-  letter-spacing: .01px;
   text-align: left;
   overflow-wrap: break-word;
   z-index: 1;
@@ -56,10 +53,7 @@ h1 {
 }
 
 @media (max-width: map-get($grid-breakpoints, sm)) {
-  h1 {
-    line-height: 1em;
-  }
-
+  
   .actions {
     margin: 40px 0 0 0;
 

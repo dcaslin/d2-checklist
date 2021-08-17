@@ -17,7 +17,7 @@
 
 .tag-button {
   margin: 2px;
-  font-size: 1em;
+  font-size: 14px;
 }
 
 
@@ -46,8 +46,8 @@
 }
 
 .plug-icon {
-  width: 1em;
-  height: 1em;
+  width: 14px;
+  height: 14px;
   background-size: cover;
   display: inline-block;
   margin-top: 2px;
@@ -60,15 +60,6 @@
   padding-right: 7px;
   line-height: 30px;
   font-size: small;
-}
-
-.mod-icon {
-  width: 3em;
-  height: 3em;
-  background-size: cover;
-  display: inline-block;
-  margin-top: 2px;
-  margin-left: 2px;
 }
 
 .mw-progress {
@@ -87,7 +78,7 @@
   font-weight: lighter;
 }
 
-$gear-table-padding: 0.3em;
+$gear-table-padding: 4px;
 table.gear-table {
   border-collapse: collapse;
   margin: 0 auto 0 auto;
@@ -96,11 +87,11 @@ table.gear-table {
   max-width: 1250px;
   table-layout: auto;
   & caption {
-    font-size: 1.5em;
-    margin: 0.5em 0 0.75em;
+    font-size: 21px;
+    margin: 7px 0 10px;
   }
   & tr {
-    padding: 0.35em;
+    padding: 5px;
   }
   & td {
     font-size: 14px;
@@ -125,8 +116,7 @@ table.gear-table {
   & th {
     padding: $gear-table-padding;
     text-align: left;
-    font-size: 0.85em;
-    letter-spacing: 0.1em;
+    font-size: 12px;
     vertical-align: top;
   }
 }
@@ -141,7 +131,7 @@ table.gear-table {
 
 table.stat-table {
   border: 0px !important;
-  padding: 0.2em !important;
+  padding: 3px !important;
 
   & tr {
     border: 0px !important;
@@ -416,4 +406,8 @@ table.stat-table {
 
 .toggle-menu-button {
   padding-left: 5px !important;
+}
+
+.gear-body {
+  font-size: 13px;
 }

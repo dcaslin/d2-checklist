@@ -14,7 +14,7 @@
           </ng-container>
 
           <ng-container *ngIf="player!=null && !player.superprivate">
-            <h1>
+            <h2>
               <fa-icon [icon]="PLATFORMS_DICT[player.profile.userInfo.membershipType+''].icon"
                 style="font-weight: normal !important"></fa-icon>
               {{player.profile.userInfo.displayName}}
@@ -23,7 +23,7 @@
               <button mat-icon-button (click)="state.requestRefresh()">
                 <fa-icon [icon]="iconService.farSync"></fa-icon>
               </button>
-            </h1>
+            </h2>
 
             <h4>
               <ng-container *ngIf="player.title?.trim().length>0"> {{player.title}} |</ng-container>
