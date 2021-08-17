@@ -7,7 +7,7 @@
 <ng-container *ngIf="(loading|async)===false && selectedUser==null">
   <d2c-sign-in-required></d2c-sign-in-required>
 </ng-container>
-<ng-container *ngIf="player$|async as player">
+<div class="gear-body" *ngIf="player$|async as player">
   <ng-container *ngIf="pageInfo$|async as pageInfo">
 
     <div>
@@ -643,7 +643,7 @@
     </table>
 
   </ng-container>
-</ng-container>
+</div>
 
 <ng-template #highCap>
   <span class="simple-darker-caption-no-margin">None</span>
