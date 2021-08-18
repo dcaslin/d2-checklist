@@ -1,7 +1,7 @@
 {
   "title": "Official D2Checklist Rolls",
-  "date": "2021-07-29T19:08:07.333Z",
-  "manifestVersion": "95862.21.07.14.2100-2-bnet.38758",
+  "date": "2021-08-18T19:54:00.150Z",
+  "manifestVersion": "96124.21.07.21.2100-1-bnet.38858",
   "rolls": [
     {
       "name": "better devils",
@@ -14120,7 +14120,6 @@
           "polygonal rifling",
           "smallbore",
           "appended mag",
-          "tactical mag",
           "triple tap",
           "rapid hit",
           "demolitionist",
@@ -14715,13 +14714,12 @@
         "greatPerks": [
           "jagged edge",
           "swordmaster's guard",
-          "energy transfer",
+          "tireless blade",
           "assassin's blade"
         ],
         "goodPerks": [
           "honed edge",
-          "tempered edge",
-          "tireless blade"
+          "tempered edge"
         ]
       },
       "mnk": true,
@@ -17067,7 +17065,6 @@
           "linear compensator",
           "volatile launch",
           "implosion rounds",
-          "grave robber",
           "field prep",
           "rangefinder"
         ]
@@ -17141,8 +17138,7 @@
           "appended mag",
           "extended mag",
           "quickdraw",
-          "one for all",
-          "dragonfly"
+          "one for all"
         ]
       },
       "pvp": {
@@ -17608,7 +17604,6 @@
           "linear compensator",
           "volatile launch",
           "implosion rounds",
-          "grave robber",
           "field prep",
           "rangefinder"
         ]
@@ -17682,8 +17677,7 @@
           "appended mag",
           "flared magwell",
           "quickdraw",
-          "one for all",
-          "dragonfly"
+          "one for all"
         ]
       },
       "pvp": {
@@ -20965,8 +20959,7 @@
           "light mag",
           "accurized rounds",
           "surplus",
-          "demolitionist",
-          "slideshot"
+          "demolitionist"
         ]
       },
       "mnk": true,
@@ -22444,8 +22437,7 @@
           "light mag",
           "accurized rounds",
           "surplus",
-          "demolitionist",
-          "slideways"
+          "demolitionist"
         ]
       },
       "mnk": false,
@@ -23404,7 +23396,7 @@
           "appended mag",
           "extended mag",
           "feeding frenzy",
-          "recombination",
+          "reconstruction",
           "fourth time's the charm",
           "demolitionist",
           "one for all"
@@ -26366,7 +26358,7 @@
           "fluted barrel",
           "tactical mag",
           "rapid hit",
-          "one for all"
+          "explosive payload"
         ],
         "goodPerks": [
           "corkscrew rifling",
@@ -26375,7 +26367,7 @@
           "extended mag",
           "subsistence",
           "surplus",
-          "explosive payload",
+          "one for all",
           "firefly",
           "wellspring"
         ]
@@ -27162,7 +27154,7 @@
           "smallbore",
           "rifled barrel",
           "accurized rounds",
-          "dual loader",
+          "surplus",
           "field prep",
           "vorpal weapon"
         ]
@@ -27456,7 +27448,7 @@
           "fluted barrel",
           "tactical mag",
           "rapid hit",
-          "one for all"
+          "explosive payload"
         ],
         "goodPerks": [
           "corkscrew rifling",
@@ -27465,7 +27457,7 @@
           "extended mag",
           "subsistence",
           "surplus",
-          "explosive payload",
+          "one for all",
           "firefly",
           "wellspring"
         ]
@@ -29143,7 +29135,7 @@
           "smallbore",
           "rifled barrel",
           "accurized rounds",
-          "dual loader",
+          "surplus",
           "field prep",
           "vorpal weapon"
         ]
