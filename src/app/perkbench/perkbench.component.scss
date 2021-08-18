@@ -50,8 +50,21 @@
   max-width: 250px;
 }
 
-@media screen and (max-width: 13100px) {
+@media screen and (max-width: 1910px) {
+  .guns {
+    max-width: 50vw;
+    // background-color: blue;
+  }
+}
+
+
+@media screen and (max-width: 1310px) {
   .guns {
     max-width: 850px;
+    // background-color: green;
   }
+}
+
+.perkbench-body {
+  font-size: 13px;
 }
