@@ -8,9 +8,10 @@ import { MappedRoll, GunInfo, PerkbenchComponent } from '../perkbench.component'
 import { BehaviorSubject } from 'rxjs';
 
 const NORMAL_MW = ['Handling', 'Range', 'Reload Speed', 'Stability'];
+const BOW_MW = ['Handling', 'Reload Speed', 'Stability', 'Accuracy', 'Draw Time'];
 const FUSION_MW = ['Charge Time', 'Handling', 'Range', 'Reload Speed', 'Stability'];
 const SWORD_MW = ['Impact'];
-const GL_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity']; 
+const GL_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity'];
 const ROCKET_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity']; // 'Stability','Range',
 
 
@@ -108,7 +109,9 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
       this.mwOptions = ROCKET_MW;
     } else if (this.r.info.type == 'Grenade Launcher') {
       this.mwOptions = GL_MW;
-    }  else {
+    } else if (this.r.info.type == 'Combat Bow') {
+      this.mwOptions = BOW_MW  ;
+    } else {
       this.mwOptions = NORMAL_MW;
     }
 
