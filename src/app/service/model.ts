@@ -1262,10 +1262,10 @@ export class Const {
     // public static readonly PSUEDO_PRESAGE = 'PSUEDO-PRESAGE';
     public static readonly PSUEDO_MASTER_EMPIRE_HUNT = 'PSUEDO_MASTER_EMPIRE';
 
-    public static readonly LIGHT_TOO_LOW = 1259; // update me
-    private static readonly SEASON_SOFT_CAP = 1260; // update me
-    public static readonly SEASON_HARD_CAP = 1310; // update me
-    public static readonly SEASON_PINNACLE_CAP = 1320; // update me
+    public static readonly LIGHT_TOO_LOW = 1269; // #UPDATEME
+    private static readonly SEASON_SOFT_CAP = 1270; // #UPDATEME
+    public static readonly SEASON_HARD_CAP = 1320; // #UPDATEME
+    public static readonly SEASON_PINNACLE_CAP = 1330; // #UPDATEME
 
 
     public static readonly BOOST_UNKNOWN = 'BOOST_UNKNOWN';

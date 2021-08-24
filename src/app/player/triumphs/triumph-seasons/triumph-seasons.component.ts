@@ -23,7 +23,7 @@ export class TriumphSeasonsComponent extends ChildComponent implements OnInit {
     super(storageService);
     const maxEntries = this.state.currPlayer()?.seasonChallengeEntries.length;
     if (maxEntries) {
-      const week = WeekService.getSplicerWeek();
+      const week = WeekService.getSeasonWeek();
       if (week < maxEntries) {
         this.seasonIndex = week;
       } else {
