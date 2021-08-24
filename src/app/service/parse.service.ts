@@ -84,8 +84,8 @@ import {
 export class ParseService {
     MAX_LEVEL = 50;
 
-    ARTIFACT_UNLOCK_PERK_PROG_HASH = '2557524386'; // update me for splicer was 3094108685
-    ARTIFACT_POWER_BONUS_PROG_HASH = '1793560787'; // update me for splicer 978389300
+    ARTIFACT_UNLOCK_PERK_PROG_HASH = '3915124631'; // #UPDATEME old 2557524386 oldest 3094108685
+    ARTIFACT_POWER_BONUS_PROG_HASH = '243419342'; // u#UPDATEME old 1793560787 oldest 978389300
 
     HIDE_PROGRESSIONS = [
         '3468066401', // The Nine
@@ -99,7 +99,7 @@ export class ParseService {
     ];
 
     ACCOUNT_LEVEL = [
-        '1983115403', // House of light UPDATE ME
+        '1983115403', // House of light #UPDATEME
         // '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
         // '2468902004', // Obelisk: Nessus

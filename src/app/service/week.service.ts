@@ -485,8 +485,8 @@ export class WeekService {
   }
 
   // the week of the chosen season, so far
-  public static getSplicerWeek(): number {
-    const seasonEpoch = parseISO('2021-05-11T17:00:00Z'); // update me
+  public static getSeasonWeek(): number {
+    const seasonEpoch = parseISO('2021-08-24T17:00:00Z'); // #UPDATEME
     const numWeeks = differenceInWeeks(new Date(), seasonEpoch);
     return numWeeks + 1;
   }
