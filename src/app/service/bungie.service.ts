@@ -591,23 +591,16 @@ export class BungieService implements OnDestroy {
 
     public async searchPlayer(platform: number, gt: string): Promise<SearchResult> {
         try {
-            const resp = await this.makeReq('Destiny2/SearchDestinyPlayer/' + platform + '/' + encodeURIComponent(gt) + '/');
-            if (resp.length === 0) {
-                return null;
-            }
-            if (resp.length > 1) {
-                for (const item of resp) {
-                    if (item.displayName === gt) {
-                        return item;
+            const resp = await this.makeReq(`User/Search/Prefix/${gt}/0/`);
+            const results = resp.searchResults;
+            for (const r of results) {
+                for (const m of r.destinyMemberships) {
+                    if (m.applicableMembershipTypes?.indexOf(platform) >= 0) {
+                        return m;
                     }
                 }
-                return resp[0];
             }
-            // hack for 2/informer  broken account
-            if (resp.length === 1 && resp[0].membershipId === '4611686018465893351') {
-                resp[0].membershipId = '4611686018428560404';
-            }
-            return resp[0];
+            return null;
         } catch (err) {
             this.handleError(err);
             return null;
