@@ -486,8 +486,13 @@ export class UberListStateService implements OnDestroy {
           const qDesc =
             this.destinyCacheService.cache.InventoryItem[q.questItemHash];
           if (qDesc.value != null && qDesc.value.itemValue != null) {
+            let rewCntr = 0;
             for (const val of qDesc.value.itemValue) {
+              if (msn.key == '2406589846' && rewCntr > 0) {
+                break;
+              }
               this.handleRewardItem(val, rewards);
+              rewCntr++;
             }
           }
         }

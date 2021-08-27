@@ -3797,7 +3797,7 @@ export class ParseService {
                                             plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
                                         plugs.push(oPlug);
                                     }
-                                } else if (socketVal.plugHash != null) {  // only show plughash if there is no reusable, otherwise we'll dupe perks
+                                } else if (socketVal?.plugHash != null) {  // only show plughash if there is no reusable, otherwise we'll dupe perks
                                     const plug = socketVal;
                                     const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
                                     if (plugDesc == null) { continue; }
