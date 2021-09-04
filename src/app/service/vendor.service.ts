@@ -407,7 +407,7 @@ export class VendorService {
     const buckets = this.destinyCacheService.cache['InventoryBucket'];
     const returnMe: ClassInventoryBucket[] = [];
     const classTypes = [ClassAllowed.Titan, ClassAllowed.Warlock, ClassAllowed.Hunter];
-    const energyTypes = [EnergyType.Arc, EnergyType.Thermal, EnergyType.Void];
+    const energyTypes = [EnergyType.Arc, EnergyType.Thermal, EnergyType.Void, EnergyType.Stasis];
     for (const key of Object.keys(buckets)) {
       const val: ApiInventoryBucket = buckets[key];
       if (val.index >= 3 && val.index <= 7) {

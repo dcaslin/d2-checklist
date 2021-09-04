@@ -3257,6 +3257,8 @@ export class ParseService {
             return 'Solar';
         } else if (damageType == DamageType.Void) {
             return 'Void';
+        } else if (damageType == DamageType.Stasis) {
+            return 'Stasis';
         } else {
             return '';
         }
@@ -3268,6 +3270,8 @@ export class ParseService {
         } else if (damageType == DamageType.Thermal) {
             return true;
         } else if (damageType == DamageType.Void) {
+            return true;
+        } else if (damageType == DamageType.Stasis) {
             return true;
         } else {
             return false;
@@ -3284,6 +3288,8 @@ export class ParseService {
             return 'Solar';
         } else if (energyType == EnergyType.Void) {
             return 'Void';
+        } else if (energyType == EnergyType.Stasis) {
+            return 'Stasis';
         } else {
             return '';
         }

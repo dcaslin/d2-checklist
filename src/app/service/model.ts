@@ -168,14 +168,16 @@ export enum DamageType {
     Arc = 2,
     Thermal = 3,
     Void = 4,
-    Raid = 5
+    Raid = 5,
+    Stasis = 6,
 }
 
 export enum EnergyType {
     Any = 0,
     Arc = 1,
     Thermal = 2,
-    Void = 3
+    Void = 3,
+    Stasis = 6,
 }
 
 export interface MasterworkInfo {

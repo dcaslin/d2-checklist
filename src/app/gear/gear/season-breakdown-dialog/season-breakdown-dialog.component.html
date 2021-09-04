@@ -56,6 +56,14 @@
                                                     class="void-text fake-link">{{bucket.void.keep}} /
                                                     {{bucket.void.items.length}}</span>
                                             </div>
+                                            <div class="bucket-energy">
+                                                <!-- <fa-icon [icon]="iconService.fasBolt" class="void-text"
+                                                    [fixedWidth]="true">
+                                                </fa-icon> -->
+                                                <span (click)="showBundle(bucket.stasis)"
+                                                    class="stasis-text fake-link">{{bucket.stasis.keep}} /
+                                                    {{bucket.stasis.items.length}}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>

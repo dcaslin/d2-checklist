@@ -486,7 +486,6 @@
               <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
                 [value]="i.energyCapacity*10">
               </mat-progress-bar>
-
               <div *ngFor="let socket of i.sockets" class="bottom-divider">
                 <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
                 <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
