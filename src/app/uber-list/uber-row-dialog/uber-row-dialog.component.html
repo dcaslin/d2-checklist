@@ -8,8 +8,8 @@
                 <ng-container *ngIf="data.title as msn">
                     <div class="flex-column">
                         <ng-container *ngIf="msn.resets">
-                            <h5>Resets</h5>
-                            <div class="type-caption">In {{msn.resets | d2cAgoHumanized}}</div>
+                            <h5>Resets <span class="type-caption">{{msn.resets | d2cAgoHumanized}}</span></h5>
+                            
                         </ng-container>
                         <h5>Rewards</h5>
                         <div class="type-caption">{{msn.rewards}}</div>

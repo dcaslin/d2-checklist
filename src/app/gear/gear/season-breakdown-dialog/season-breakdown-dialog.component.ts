@@ -127,6 +127,7 @@ class SeasonBucket {
   arc: ItemBundle;
   solar: ItemBundle;
   void: ItemBundle;
+  stasis: ItemBundle;
 
   constructor(name: string, items: InventoryItem[]) {
     this.name = name;
@@ -134,6 +135,7 @@ class SeasonBucket {
     this.arc = new ItemBundle(items.filter(i => i.energyType == EnergyType.Arc));
     this.solar = new ItemBundle(items.filter(i => i.energyType == EnergyType.Thermal));
     this.void = new ItemBundle(items.filter(i => i.energyType == EnergyType.Void));
+    this.stasis = new ItemBundle(items.filter(i => i.energyType == EnergyType.Stasis));
   }
 }
 
