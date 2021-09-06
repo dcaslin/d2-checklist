@@ -1249,14 +1249,13 @@ export class ParseService {
                 pushMe.name = 'Trials Seven Wins';
                 pushMe.dependsOn = ['3628293757', '3628293755'];
             } else if (pushMe.hash == '3632712541') {
-                pushMe.name = 'Battlegrounds Playlist 3';
-            } else if (pushMe.hash == '2953722265') {
-                pushMe.name = 'Battlegrounds Playlist 6';
-                pushMe.dependsOn = ['3632712541'];
-            } else if (pushMe.hash == '3031052508') {
-                pushMe.name = 'Battlegrounds Playlist 9';
-                pushMe.dependsOn = ['3632712541', '2953722265'];
+                pushMe.name = 'Battlegrounds Playlist';
+            } else if (pushMe.hash == '3568317242') {
+                pushMe.dependsOn = ['1639406072'];
+            } else if (pushMe.hash == '1322124257') {
+                pushMe.dependsOn = ['1639406072', '3568317242'];
             }
+
             returnMe.push(pushMe);
         }
 
@@ -2478,16 +2477,17 @@ export class ParseService {
         if (milestonesByKey['3603098564'] == null) {
             return;
         }
+        // S14, gone
         // Digital Trove - 1684722553
-        this.addPseudoMilestone('1684722553', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('1684722553', milestonesByKey, milestoneList);
+        // Corrupted Cache
+        // this.addPseudoMilestone('2065253185', milestonesByKey, milestoneList);
 
         // Harbinger
         this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
         // Weekly Empire Hunt
         this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
 
-        // Corrupted Cache
-        this.addPseudoMilestone('2065253185', milestonesByKey, milestoneList);
 
         // Weekly Exo Challenge
         this.addPseudoMilestone('1713200903', milestonesByKey, milestoneList);
@@ -2499,6 +2499,14 @@ export class ParseService {
         this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
         // VoG
         this.addPseudoMilestone('2279677721', milestonesByKey, milestoneList);
+
+        // S15 milestones
+        // Shattered Champions
+        this.addPseudoMilestone('3789620084', milestonesByKey, milestoneList);
+        // astral alignment
+        // this.addPseudoMilestone('1639406072', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('3568317242', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('1322124257', milestonesByKey, milestoneList);
 
         const mseh: MileStoneName = {
             key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
@@ -2540,16 +2548,42 @@ export class ParseService {
         if (nfCompletions) {
             nfCompletions.name = 'Nightfall - Completions';
         }
-        const digitalTrove = milestoneList.find(x => x.key == '1684722553');
-        if (digitalTrove && digitalTrove.rewards == 'Pinnacle Gear') {
-            digitalTrove.rewards = 'Pinnacle Gear (Weak)';
-            digitalTrove.boost = this.parseMilestonePl(digitalTrove.rewards);
+        // 1639406072, 3568317242, 1322124257
+        // | s 3789620084
+
+        const netcrasher = milestoneList.find(x => x.key == '966446952');
+        if (netcrasher && netcrasher.rewards == 'Unknown') {
+            netcrasher.rewards = 'Powerful Legacy Gear';
+            netcrasher.boost = this.parseMilestonePl(netcrasher.rewards);
         }
-        const rewiringTheLight = milestoneList.find(x => x.key == '3341030123');
-        if (rewiringTheLight && rewiringTheLight.rewards == 'Pinnacle Gear') {
-            rewiringTheLight.rewards = 'Powerful Gear (Tier 3)';
-            rewiringTheLight.boost = this.parseMilestonePl(rewiringTheLight.rewards);
+        const shatteredChampions = milestoneList.find(x => x.key == '3789620084');
+        if (shatteredChampions && shatteredChampions.rewards == 'Unknown') {
+            shatteredChampions.rewards = 'Pinnacle Gear';
+            shatteredChampions.boost = this.parseMilestonePl(shatteredChampions.rewards);
         }
+        // astral alignment 1
+        // let aa = milestoneList.find(x => x.key == '1639406072');
+        // if (aa && aa.rewards == '???') {
+        //     aa.rewards = 'Powerful Gear (Tier 3)';
+        //     aa.boost = this.parseMilestonePl(aa.rewards);
+        // }
+        // astral alignment 2
+        let aa = milestoneList.find(x => x.key == '3568317242');
+        if (aa && aa.rewards == '???') {
+            aa.rewards = 'Powerful Gear (Tier 2)';
+            aa.boost = this.parseMilestonePl(aa.rewards);
+        }
+        // astral alignment 3
+        aa = milestoneList.find(x => x.key == '1322124257');
+        if (aa && aa.rewards == '???') {
+            aa.rewards = 'Powerful Gear (Tier 3)';
+            aa.boost = this.parseMilestonePl(aa.rewards);
+        }
+        // const rewiringTheLight = milestoneList.find(x => x.key == '3341030123');
+        // if (rewiringTheLight && rewiringTheLight.rewards == 'Pinnacle Gear') {
+        //     rewiringTheLight.rewards = 'Powerful Gear (Tier 3)';
+        //     rewiringTheLight.boost = this.parseMilestonePl(rewiringTheLight.rewards);
+        // }
     }
 
     private handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): GearMetaData {

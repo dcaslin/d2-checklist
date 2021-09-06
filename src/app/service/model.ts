@@ -1249,6 +1249,7 @@ export class Const {
 
     public static readonly HIDE_MILESTONES: string[] = [
         '534869653', // xur
+        '3341030123', // rewiring the light
         // '3031052508','2953722265','3632712541' // battlegrounds
     ];
 
