@@ -1081,11 +1081,17 @@ const CLASSIFICATIONS: Classification[] = [
     milestoneNames: ['europa'],
     bountyLabels: ['europa.bounties']
   },
+  // {
+  //   name: 'Splicer',
+  //   vendor: 'Splicer Servitor',
+  //   milestoneNames: ['rewiring', 'digital', 'net crasher'],
+  //   bountyLabels: ['seasons.season14.ritual.bounties']
+  // },
   {
-    name: 'Splicer',
-    vendor: 'Splicer Servitor',
-    milestoneNames: ['rewiring', 'digital', 'net crasher'],
-    bountyLabels: ['seasons.season14.ritual.bounties']
+    name: 'Wayfinder',
+    vendor: 'Wayfinder\'s Compass',
+    milestoneNames: ['astral', 'wayfinder', 'shattered'],
+    bountyLabels: ['seasons.season15.ritual.bounties']
   },
   {
     name: 'Trials',
