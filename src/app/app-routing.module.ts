@@ -1,7 +1,7 @@
 import { Injectable, NgModule } from '@angular/core';
-import { CanActivate, RouterModule } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { CanActivate, Router, RouterModule } from '@angular/router';
+import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { AboutComponent } from './about';
 import { AuthComponent } from './auth';
 import { BungieSearchComponent } from './bungie-search';
@@ -54,7 +54,9 @@ import { TriumphsComponent } from './player/triumphs/triumphs.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { RecentPlayersComponent } from './recent-players';
 import { DestinyCacheService } from './service/destiny-cache.service';
+import { SignedOnUserService } from './service/signed-on-user.service';
 import { SettingsComponent } from './settings';
+import { SignInRequiredComponent } from './shared/sign-in-required/sign-in-required.component';
 import { isSearchBot } from './shared/utilities';
 import { TestbedComponent } from './testbed/testbed.component';
 import { UberListBuilderComponent } from './uber-list/uber-list-builder/uber-list-builder.component';
@@ -77,6 +79,29 @@ export class ManifestLoadedGuard implements CanActivate {
   }
 }
 
+@Injectable()
+export class MyInfoGuard implements CanActivate {
+  public loader$ = new Subject<boolean>();
+
+  constructor(private router: Router, private signedOnUserService: SignedOnUserService) {
+  }
+
+  canActivate(): Observable<boolean> {
+    return combineLatest([this.signedOnUserService.authorizing$, this.signedOnUserService.playerLoading$,
+      this.signedOnUserService.signedOnUser$]).pipe(
+      filter(([auth, loading, user]) => !auth && !loading),
+      map(([auth, loading, user]) => {
+        if (!user) {
+          return true;
+        } else {
+          this.router.navigate([user.userInfo.membershipType, user.userInfo.membershipId]);
+          return false;
+        }
+      })
+      );
+  }
+}
+
 @NgModule({
   imports: [RouterModule.forRoot(
     [{
@@ -95,6 +120,12 @@ export class ManifestLoadedGuard implements CanActivate {
       pathMatch: 'full',
       canActivate: [ManifestLoadedGuard],
       component: AuthComponent
+    },
+    {
+      path: 'my-info',
+      pathMatch: 'full',
+      canActivate: [ManifestLoadedGuard, MyInfoGuard],
+      component: SignInRequiredComponent
     },
     {
       path: 'test',
@@ -510,13 +541,13 @@ export class ManifestLoadedGuard implements CanActivate {
           ]
         }
       ]
-    },   
+    },
     {
       path: '**',
       redirectTo: 'home'
     }
     ], { useHash: false, relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
-  providers: [ManifestLoadedGuard]
+  providers: [ManifestLoadedGuard, MyInfoGuard]
 })
 export class AppRoutingModule { }
