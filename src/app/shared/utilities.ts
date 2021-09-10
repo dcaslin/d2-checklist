@@ -1,3 +1,15 @@
+
+
+
+export function getDefaultTheme(): string {
+  if (!window.matchMedia) {
+    return 'default-theme';
+  }
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  return mediaQuery.matches ? 'black-theme' : 'default-theme';
+};
+
+
 const getCircularReplacer = () => {
   const seen = new WeakSet();
   return (key, value) => {

@@ -15,6 +15,7 @@ import { NotificationService } from './service/notification.service';
 import { PwaService } from './service/pwa.service';
 import { SignedOnUserService } from './service/signed-on-user.service';
 import { StorageService } from './service/storage.service';
+import { getDefaultTheme } from './shared/utilities';
 
 
 @Component({
@@ -58,8 +59,9 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private ref: ChangeDetectorRef) {
 
 
-    this.componentCssClass = 'default-theme';
-    this.overlayContainer.getContainerElement().classList.add('default-theme');
+    const defaultTheme = getDefaultTheme();
+    this.componentCssClass = defaultTheme;
+    this.overlayContainer.getContainerElement().classList.add(defaultTheme);
 
     this.logon(false);
 

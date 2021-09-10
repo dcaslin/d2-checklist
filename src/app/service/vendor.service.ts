@@ -111,7 +111,7 @@ export class VendorService {
     }
     const vendorItems = VendorService.getUniqueVendorItems(vendors);
     const interestingVendorArmor = vendorItems.filter(val => val.type === ItemType.Armor && (val.tier == 'Legendary' || val.tier == 'Exotic') && val.powerCap >= 1310);
-    const interestingVendorWeapons = vendorItems.filter(val => val.type === ItemType.Weapon && (val.tier == 'Legendary') && val?.vendorItemInfo?.vendor?.name == 'Banshee-44' && (val.pandaPve > 0 || val.pandaPvp > 0));
+    const interestingVendorWeapons = vendorItems.filter(val => val.type === ItemType.Weapon && (val.tier == 'Legendary') && (val?.vendorItemInfo?.vendor?.name == 'Xûr' || val?.vendorItemInfo?.vendor?.name == 'Banshee-44') && (val.pandaPve > 0 || val.pandaPvp > 0));
     const bansheeWeapons = this.findBansheeDeals(player, interestingVendorWeapons);
     // look just at legendary armor grouped by class and bucket
     const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
