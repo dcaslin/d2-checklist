@@ -1,5 +1,5 @@
 <h3>
-    <span matTooltip="Random rolled Banshee weapons that have good or god rolls">Banshee Weapon Deals</span>
+    <span matTooltip="Random rolled Banshee weapons that have good or god rolls">Vendor God/Good Rolls</span>
 </h3>
 <div class="flex-row" *ngIf="vendorDeals.bansheeWeapons.length>0 else noWeaponDeals">
     <div *ngFor="let ii of vendorDeals.bansheeWeapons" class="fake-link" (click)="showLegendaryDialog(ii)">
