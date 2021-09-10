@@ -5,6 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
+import { getDefaultTheme } from '@app/shared/utilities';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,11 +15,11 @@ import { IconService } from '@app/service/icon.service';
 })
 export class SettingsComponent extends ChildComponent implements OnInit, OnDestroy {
 
-  theme = 'default-theme';
+  theme;
   disableads = false;
 
   themes = [
-    { value: 'default-theme', label: 'Default' },
+    { value: 'default-theme', label: 'Light' },
     { value: 'light-theme', label: 'Pink' },
     { value: 'black-theme', label: 'Black' },
   ];
@@ -38,7 +39,7 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
     private notificationService: NotificationService
     ) {
     super(storageService);
-    this.theme = this.storageService.getItem('theme', 'default-theme');
+    this.theme = this.storageService.getItem('theme', getDefaultTheme());
 
     this.storageService.settingFeed.pipe(
       takeUntil(this.unsubscribe$))
