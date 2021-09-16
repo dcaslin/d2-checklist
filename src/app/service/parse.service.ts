@@ -3021,6 +3021,7 @@ export class ParseService {
 
         const rewardValues: NameQuantity[] = [];
         if (rDesc.rewardItems) {
+            let hasReward = false;
             for (const ri of rDesc.rewardItems) {
                 if (ri.itemHash === 0) { continue; }
                 const valDesc: any = this.destinyCacheService.cache.InventoryItem[ri.itemHash];
@@ -3035,7 +3036,14 @@ export class ParseService {
                         icon: valDesc.displayProperties.icon,
                         itemTypeDisplayName: valDesc.itemTypeDisplayName?.trim().length > 0 ? valDesc.itemTypeDisplayName : null
                     });
+                    if (valDesc.itemTypeDisplayName?.trim().length > 0) {
+                        searchText += ' has:' + valDesc.itemTypeDisplayName.toLowerCase();
+                    }
+                    hasReward = true;
                 }
+            }
+            if (hasReward) {
+                searchText += ' has:reward';
             }
         }
 

@@ -8,6 +8,7 @@ import { PlayerStateService } from '../../player-state.service';
 import { IconService } from '@app/service/icon.service';
 import { Router, ActivatedRoute } from '@angular/router';
 
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-triumph-search',
@@ -15,9 +16,11 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./triumph-search.component.scss']
 })
 export class TriumphSearchComponent extends ChildComponent implements OnInit {
+  public MAX_RESULTS = 30;
   private triumphSearchSubject: Subject<void> = new Subject<void>();
   public triumphFilterText: string = null;
   public filteredTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public hasMore$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(storageService: StorageService,
     private router: Router,
@@ -51,6 +54,7 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
   }
 
   private filterTriumphs() {
+    this.hasMore$.next(false);
     const player = this.state.currPlayer();
     if (this.triumphFilterText == null || this.triumphFilterText.trim().length == 0) {
       this.filteredTriumphs.next([]);
@@ -63,7 +67,10 @@ export class TriumphSearchComponent extends ChildComponent implements OnInit {
     const temp = [];
     const filterText = this.triumphFilterText.toLowerCase();
     for (const t of player.searchableTriumphs) {
-      if (temp.length > 20) { break; }
+      if (temp.length > this.MAX_RESULTS) {
+        this.hasMore$.next(true);
+        break;
+      }
       if (t.searchText.indexOf(filterText) >= 0) {
         if (!this.state.hideCompleteTriumphs || !t.complete || !t.redeemed) {
           temp.push(t);

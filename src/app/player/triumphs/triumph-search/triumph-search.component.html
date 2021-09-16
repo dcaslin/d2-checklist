@@ -11,6 +11,7 @@
             >
                 Hide Completed
             </mat-checkbox>
+            <span *ngIf="hasMore$|async" class="margin-left-10 warn-text">Too many results, truncating list at {{MAX_RESULTS}}</span>
         </div>
 
         <div *ngIf="(filteredTriumphs|async).length==0" class="left" style="margin: 10px">
