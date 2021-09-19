@@ -2746,13 +2746,12 @@ export class ParseService {
             for (const ap of accountProgressions) {
                 const iHash = parseInt(ap.hash, 10);
                 const isSpecialRankProgression = currentRankProgressionHashes.indexOf(iHash) >= 0;
-                if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Valor') >= 0) {
+                if (isSpecialRankProgression && ap.hash == '2083746873') {
                     returnMe.valor = ap;
-
-                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Infamy') >= 0) {
+                } else if (isSpecialRankProgression && ap.hash == '3008065600') {
                     returnMe.infamy = ap;
 
-                } else if (isSpecialRankProgression && this.destinyCacheService.cache.Progression[ap.hash]?.displayProperties.name.indexOf('Glory') >= 0) {
+                } else if (isSpecialRankProgression && ap.hash == '1647151960') {
                     returnMe.glory = ap;
 
                 } else if (ap.hash == sp.rewardProgressionHash) {
@@ -4056,12 +4055,15 @@ export class ParseService {
                 }
             }
             let powerCap = null;
-            // often null in vendor gear
-            if (itm.versionNumber == null) {
-                itm.versionNumber = 0;
+            // often null in vendor gear, so try to use latest
+            let version = 999;
+            if (itm.versionNumber != null) {
+               version = itm.versionNumber;
             }
-            if (desc.quality?.versions?.length > itm.versionNumber && desc.quality.versions[itm.versionNumber]) {
-                const pCapHash = desc.quality.versions[itm.versionNumber].powerCapHash;
+            if (desc.quality?.versions?.length > 0) {
+                const maxVersion = desc.quality?.versions?.length - 1;
+                const useVersion = Math.min(maxVersion, version);
+                const pCapHash = desc.quality.versions[useVersion]?.powerCapHash;
                 if (pCapHash) {
                     const pCapDesc = this.destinyCacheService.cache.PowerCap[pCapHash];
                     if (pCapDesc) {
