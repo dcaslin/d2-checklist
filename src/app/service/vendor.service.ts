@@ -4,6 +4,7 @@ import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 import { concat, from, Observable, of } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
+import { currentXur } from '@d2api/date';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
@@ -469,6 +470,13 @@ export class VendorService {
     let returnMe = [];
     for (const key of Object.keys(resp.sales.data)) {
       const vendor = resp.sales.data[key];
+      // skip xur if he's not here
+      if (key == '2190858386') {
+        if (!currentXur()) {
+          continue;
+        }
+      }
+
       const items = this.parseIndividualVendor(resp, char, key, vendor);
       returnMe = returnMe.concat(items);
     }
