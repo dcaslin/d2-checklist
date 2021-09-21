@@ -79,6 +79,7 @@ import {
     StatHashes
 } from './model';
 
+const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 
 @Injectable()
 export class ParseService {
@@ -3464,6 +3465,11 @@ export class ParseService {
             name, desc,
             plugDesc.displayProperties.icon, true);
 
+        this.applyPlugInventoryStats(returnMe, plugDesc);
+        return returnMe;
+    }
+
+    private applyPlugInventoryStats(target: InventoryPlug, plugDesc: any) {
         if (plugDesc.investmentStats && plugDesc.investmentStats.length > 0) {
             for (const invStat of plugDesc.investmentStats) {
 
@@ -3474,10 +3480,9 @@ export class ParseService {
                 }
                 const stat = new InventoryStat(statHash, statDesc.displayProperties.name,
                     statDesc.displayProperties.description, invStat.value, null, statDesc.index);
-                returnMe.inventoryStats.push(stat);
+                    target.inventoryStats.push(stat);
             }
         }
-        return returnMe;
     }
 
     private getPlugName(plugDesc: any): string {
@@ -3548,6 +3553,8 @@ export class ParseService {
             // anything with no type goes away too
 
             let type: ItemType = desc.itemType;
+            // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
+            const ignoreWeaponPerkStats: InventoryPlug[] = []; 
             let redacted = false;
             if (desc.itemTypeDisplayName == null) {
                 // handle hidden stuff, like early raid gear
@@ -3741,7 +3748,6 @@ export class ParseService {
                     const instanceData = itemComp.stats.data[itm.itemInstanceId];
                     stats = this.parseItemStats(instanceData, desc, type);
                 }
-
                 if (itemComp?.sockets?.data != null && desc?.sockets?.socketCategories != null) {
                     const itemSockets = itemComp.sockets.data[itm.itemInstanceId];
                     if (itemSockets != null) {
@@ -3778,7 +3784,6 @@ export class ParseService {
                                 }
                                 const socketArray = itemSockets.sockets;
                                 for (const index of jCat.socketIndexes) {
-                                    const socketDesc = desc.sockets.socketEntries[index];
                                     const socketVal = socketArray[index];
                                     if (socketVal.plugHash != null && socketVal.isEnabled) {
                                         const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
@@ -3842,6 +3847,27 @@ export class ParseService {
                                         const oPlug = new InventoryPlug(plugDesc.hash,
                                             name, plugDesc.displayProperties.description,
                                             plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
+                                        // elemental capacitor
+                                        if (oPlug.active && IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {                                            
+                                            ignoreWeaponPerkStats.push(oPlug);
+                                        }
+                                        this.applyPlugInventoryStats(oPlug, plugDesc);
+                                        if (oPlug.active && type === ItemType.Weapon) {
+                                            // if (ignoreWeaponPerkStats.length > 0 && type === ItemType.Weapon) {
+                                            for (const s of stats) {
+                                                const modStat = oPlug.inventoryStats.find(x => (x.hash == s.hash));
+                                                if (modStat) {
+                                                    if (IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {
+                                                        s.value -= modStat.value;
+                                                    } else {
+                                                        if (s.enhancement == null) {
+                                                            s.enhancement = 0;
+                                                        }
+                                                        s.enhancement += modStat.value;
+                                                    }
+                                                }
+                                            }
+                                        }
                                         plugs.push(oPlug);
                                     }
                                 } else if (socketVal?.plugHash != null) {  // only show plughash if there is no reusable, otherwise we'll dupe perks
@@ -4003,7 +4029,6 @@ export class ParseService {
             if (desc.itemTypeDisplayName) {
                 searchText += desc.itemTypeDisplayName;
             }
-
             if (type === ItemType.Armor) {
                 for (const s of stats) {
                     for (const m of mods) {
