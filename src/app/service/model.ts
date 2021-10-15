@@ -235,6 +235,10 @@ export interface Seal {
     percent: number;
     progress: number;
     completionValue: number;
+
+    gildProgress: number;
+    gildTotal: number;
+    
     complete: boolean;
 }
 
@@ -604,8 +608,9 @@ export interface CharChecklist {
 export interface SpecialAccountProgressions {
     glory: Progression;
     seasonRank: Progression;
-    valor: Progression;
-    infamy: Progression;
+    crucibleRank: Progression;
+    gambitRank: Progression;
+    vanguardRank: Progression;
 }
 
 export class Player {
@@ -640,8 +645,9 @@ export class Player {
     readonly accountProgressions: Progression[];
     readonly glory: Progression;
     readonly seasonRank: Progression;
-    readonly valor: Progression;
-    readonly infamy: Progression;
+    readonly crucibleRank: Progression;
+    readonly vanguardRank: Progression;
+    readonly gambitRank: Progression;
     readonly artifactPowerBonus: number;
     readonly transitoryData: ProfileTransitoryData;
     readonly minsPlayed: number;
@@ -706,8 +712,9 @@ export class Player {
         this.transitoryData = transitoryData;
         if (specialAccountProgressions) {
             this.glory = specialAccountProgressions.glory;
-            this.infamy = specialAccountProgressions.infamy;
-            this.valor = specialAccountProgressions.valor;
+            this.gambitRank = specialAccountProgressions.gambitRank;
+            this.vanguardRank = specialAccountProgressions.vanguardRank;
+            this.crucibleRank = specialAccountProgressions.crucibleRank;
             this.seasonRank = specialAccountProgressions.seasonRank;
         }
         this.gearMetaData = gearMeta; 

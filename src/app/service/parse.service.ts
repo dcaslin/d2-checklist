@@ -254,7 +254,7 @@ export class ParseService {
         }
     }
 
-    // Valor and glory have progressions working together
+    // Crucible and glory have progressions working together
     private parseProgression(p: PrivProgression, desc: any, suppProg?: PrivProgression): Progression {
         if (desc != null) {
             const prog: Progression = new Progression();
@@ -568,13 +568,13 @@ export class ParseService {
         }
         c.maxLevel = this.MAX_LEVEL;
 
-        // only progression we care about right now are Legend, Glory, Valor, and Season Pass
+        // only progression we care about right now are Legend, Glory, Crucible, and Season Pass
         if (_prog.progressions) {
             const sp = this.getSeasonProgression();
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cache.destiny2CoreSettings.currentRankProgressionHashes;
             Object.keys(_prog.progressions).forEach((key) => {
                 const iKey: number = parseInt(key, 10);
-                if ((currentRankProgressionHashes.indexOf(iKey) >= 0) // valor/infamy/glory
+                if ((currentRankProgressionHashes.indexOf(iKey) >= 0) // crucible/gambit/glory
                     || key == sp.rewardProgressionHash
                     || key == sp.prestigeProgressionHash) {
                     const p: PrivProgression = _prog.progressions[key];
@@ -1715,9 +1715,17 @@ export class ParseService {
             title = cDesc.titleInfo.titlesByGenderHash[2204441813];
         }
         let progress = 0;
+        let gildTotal = 0;
+        let gildProgress = 0;
         for (const c of node.children) {
             if (c.complete) {
                 progress++;
+            }
+            if ((c as TriumphRecordNode).forTitleGilding) {
+                gildTotal++;
+                if (c.complete) {
+                    gildProgress++;
+                }
             }
             const trn = c as TriumphRecordNode;
             if (trn.pointsToBadge === true) {
@@ -1740,6 +1748,7 @@ export class ParseService {
                 }
             }
         }
+        
         const percent = Math.floor((100 * progress) / completeValue);
         return {
             hash: node.hash,
@@ -1752,6 +1761,8 @@ export class ParseService {
             percent: percent,
             progress: progress,
             complete: progress >= completeValue,
+            gildTotal,
+            gildProgress,
             completionValue: completeValue
         };
     }
@@ -2734,11 +2745,12 @@ export class ParseService {
     // }
 
     private cookSpecialAccountProgression(accountProgressions: Progression[]): SpecialAccountProgressions {
-        const returnMe = {
+        const returnMe: SpecialAccountProgressions = {
             glory: null,
             seasonRank: null,
-            valor: null,
-            infamy: null
+            crucibleRank: null,
+            gambitRank: null,
+            vanguardRank: null
         };
         if (accountProgressions != null) {
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cache.destiny2CoreSettings.currentRankProgressionHashes;
@@ -2748,14 +2760,17 @@ export class ParseService {
                 const iHash = parseInt(ap.hash, 10);
                 const isSpecialRankProgression = currentRankProgressionHashes.indexOf(iHash) >= 0;
                 if (isSpecialRankProgression && ap.hash == '2083746873') {
-                    returnMe.valor = ap;
+                    returnMe.crucibleRank = ap;
                 } else if (isSpecialRankProgression && ap.hash == '3008065600') {
-                    returnMe.infamy = ap;
+                    returnMe.gambitRank = ap;
 
                 } else if (isSpecialRankProgression && ap.hash == '1647151960') {
                     returnMe.glory = ap;
 
-                } else if (ap.hash == sp.rewardProgressionHash) {
+                } else if (isSpecialRankProgression && ap.hash == '457612306') {
+                    returnMe.vanguardRank = ap;
+                }
+                else if (ap.hash == sp.rewardProgressionHash) {
                     returnMe.seasonRank = ap;
                 } else if (ap.hash == sp.prestigeProgressionHash) {
                     prestige = ap;

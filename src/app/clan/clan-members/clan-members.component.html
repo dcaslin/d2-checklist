@@ -80,23 +80,30 @@
 
                         </ng-container>
                     </td>
-                    <td data-label="Infamy">
-                        <ng-container *ngIf="!player.superprivate && player.infamy">
-                            {{player.infamy.currentProgress|number}}
-                            <div class="simple-caption" *ngIf="player.infamy.currentResetCount">
-                                {{player.infamy.currentResetCount}} resets
+                    <td data-label="Gambit">
+                        <ng-container *ngIf="!player.superprivate && player.gambitRank">
+                            {{player.gambitRank.currentProgress|number}}
+                            <div class="simple-caption" *ngIf="player.gambitRank.currentResetCount">
+                                {{player.gambitRank.currentResetCount}} resets
                             </div>
 
                         </ng-container>
                     </td>
-                    <td data-label="Valor">
-                        <ng-container *ngIf="!player.superprivate && player.valor">
-                            {{player.valor.currentProgress|number}}
+                    <td data-label="Crucible">
+                        <ng-container *ngIf="!player.superprivate && player.crucibleRank">
+                            {{player.crucibleRank.currentProgress|number}}
 
-                            <div class="simple-caption" *ngIf="player.valor.currentResetCount">
-                                {{player.valor.currentResetCount}} resets                                
+                            <div class="simple-caption" *ngIf="player.crucibleRank.currentResetCount">
+                                {{player.crucibleRank.currentResetCount}} resets                                
                             </div>
-
+                        </ng-container>
+                    </td>
+                    <td data-label="Vanguard">
+                        <ng-container *ngIf="!player.superprivate && player.vanguardRank">
+                            {{player.vanguardRank.currentProgress|number}}
+                            <div class="simple-caption" *ngIf="player.vanguardRank.currentResetCount">
+                                {{player.vanguardRank.currentResetCount}} resets                                
+                            </div>
                         </ng-container>
                     </td>
                     <td>
@@ -194,16 +201,24 @@
         </span>
     </th>
     <th>
-        <span class="fake-link" (click)="state.toggleSort('infamy')">Infamy
-            <ng-container *ngIf="state.sort && state.sort.name=='infamy'">
+        <span class="fake-link" (click)="state.toggleSort('gambitRank')">Gambit
+            <ng-container *ngIf="state.sort && state.sort.name=='gambitRank'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
         </span>
     </th>
     <th>
-        <span class="fake-link" (click)="state.toggleSort('valor')">Valor
-            <ng-container *ngIf="state.sort && state.sort.name=='valor'">
+        <span class="fake-link" (click)="state.toggleSort('crucibleRank')">Crucible
+            <ng-container *ngIf="state.sort && state.sort.name=='crucibleRank'">
+                <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
+                <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
+            </ng-container>
+        </span>
+    </th>
+    <th>
+        <span class="fake-link" (click)="state.toggleSort('vanguardRank')">Vanguard
+            <ng-container *ngIf="state.sort && state.sort.name=='vanguardRank'">
                 <fa-icon [icon]="iconService.fasSortUp" *ngIf="state.sort.ascending"></fa-icon>
                 <fa-icon [icon]="iconService.fasSortDown" *ngIf="!state.sort.ascending"></fa-icon>
             </ng-container>
