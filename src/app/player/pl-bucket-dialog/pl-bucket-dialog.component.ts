@@ -47,7 +47,7 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
     if (bonus == null) {
       return Const.SEASON_HARD_CAP;
     }
-    const dropValue = basePl + bonus.bonus;
+    let dropValue = basePl + bonus.bonus;
 
     // if we're at 1298 and the reported bonus +5 that will take us to 1303
     // but it should really be 1300
@@ -55,6 +55,9 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
     if (basePl < Const.SEASON_HARD_CAP && dropValue > Const.SEASON_HARD_CAP) {
       const specialBonus = PlBucketDialogComponent.getBonus(Const.SEASON_HARD_CAP, boost);
       return Const.SEASON_HARD_CAP + specialBonus.bonus;
+    }
+    if (dropValue>Const.SEASON_PINNACLE_CAP) {
+      dropValue = Const.SEASON_PINNACLE_CAP;
     }
     return dropValue;
 

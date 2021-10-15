@@ -289,13 +289,29 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       const name = PerkbenchComponent.cookNameForRolls(
         w.desc.displayProperties.name
       );
-      const controllerRoll = gunRolls.find(
-        (x) => x.name == name && x.controller
-      );
-      let mnkRoll = gunRolls.find((x) => x.name == name && x.mnk);
-      // we're using one roll for both, split it, using a simple deep copy
-      if (controllerRoll != null && mnkRoll === controllerRoll) {
-        mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
+      let controllerRoll: GunRolls = null;
+      let mnkRoll: GunRolls = null;
+      // get all the rolls, if something for mnk vs controller use the other
+      // always clone rolls serving double duty
+      const doubleRoll = gunRolls.find((x) => x.name == name && x.controller && x.mnk);
+      if (doubleRoll) {
+        controllerRoll = JSON.parse(JSON.stringify(doubleRoll));
+        controllerRoll.mnk = false;
+        mnkRoll = JSON.parse(JSON.stringify(doubleRoll));
+        mnkRoll.controller = false;
+      } else {
+        controllerRoll = gunRolls.find((x) => x.name == name && x.controller);
+        mnkRoll = gunRolls.find((x) => x.name == name && x.mnk);
+        if (controllerRoll == null && mnkRoll !=null) {
+          controllerRoll = JSON.parse(JSON.stringify(mnkRoll));
+          controllerRoll.mnk = false;
+          controllerRoll.controller = true;
+        }
+        if (mnkRoll == null && controllerRoll !=null) {
+          mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
+          mnkRoll.mnk = true;
+          mnkRoll.controller = false;
+        }
       }
       const addMe = {
         roll: {

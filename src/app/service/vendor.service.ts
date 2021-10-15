@@ -192,27 +192,21 @@ export class VendorService {
         data: xurArmor
       });
     }
-    const bansheeMods = this.checkCollectionForVendor(player, vendorItems, '672118013', ItemType.GearMod);
-    if (bansheeMods.length > 0) {
-      returnMe.push({
-        vendor: bansheeMods[0].vendorItemInfo.vendor,
-        data: bansheeMods
-      });
-    }
-    const adaMods = this.checkCollectionForVendor(player, vendorItems, '350061650', ItemType.GearMod);
-    if (adaMods.length > 0) {
-      returnMe.push({
-        vendor: adaMods[0].vendorItemInfo.vendor,
-        data: adaMods
-      });
-    }
-    const seasonVendorMods = this.checkCollectionForVendor(player, vendorItems, '1712236153', ItemType.GearMod);
-    if (seasonVendorMods.length > 0) {
-      returnMe.push({
-        vendor: seasonVendorMods[0].vendorItemInfo.vendor,
-        data: seasonVendorMods
-      });
-    }
+    const modVendors = [
+      '672118013', //banshee
+      '350061650', //ada
+      '1712236153', //splicer
+      '2414821461', //wayfinder
+    ];
+    for (const v of modVendors) {
+      const mods = this.checkCollectionForVendor(player, vendorItems, v, ItemType.GearMod);
+      if (mods.length > 0) {
+        returnMe.push({
+          vendor: mods[0].vendorItemInfo.vendor,
+          data: mods
+        });
+      }
+    }   
     const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
     if (tessShaders.length > 0) {
       returnMe.push({

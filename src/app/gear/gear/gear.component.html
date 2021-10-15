@@ -7,7 +7,7 @@
 <ng-container *ngIf="(loading|async)===false && selectedUser==null">
   <d2c-sign-in-required></d2c-sign-in-required>
 </ng-container>
-<div class="gear-body" *ngIf="player$|async as player">
+<div class="gear-body" *ngIf="player$|async as player" (keydown.control.r)="load(); $event.preventDefault(true)">
   <ng-container *ngIf="pageInfo$|async as pageInfo">
 
     <div>
@@ -235,7 +235,7 @@
       </button>
     </mat-menu>
 
-    <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft()" (keydown.ArrowRight)="onRight()">
+    <table tabindex="0" class="gear-table mark-table" (keydown.control.ArrowLeft)="onLeft()" (keydown.control.ArrowRight)="onRight()">
       <thead>
         <tr>
           <th class="limited-gear-width">

@@ -768,7 +768,7 @@ export class ClanStateService {
 
   public downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
-    let sCsv = 'member,platform,chars,lastPlayed days ago,Artifact,Season Rank,Triumph Score,Glory,Infamy,Valor,Weekly XP,max LL,';
+    let sCsv = 'member,platform,chars,lastPlayed days ago,Artifact,Season Rank,Triumph Score,Glory,Gambit,Crucible,Vanguard,Weekly XP,max LL,';
     this.modelPlayer.getValue().milestoneList.forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
@@ -805,13 +805,18 @@ export class ClanStateService {
       } else {
         sCsv += '-,';
       }
-      if (member.currentPlayer().infamy) {
-        sCsv += member.currentPlayer().infamy.currentProgress + ',';
+      if (member.currentPlayer().gambitRank) {
+        sCsv += member.currentPlayer().gambitRank.currentProgress + ',';
       } else {
         sCsv += '-,';
       }
-      if (member.currentPlayer().valor) {
-        sCsv += member.currentPlayer().valor.currentProgress + ',';
+      if (member.currentPlayer().crucibleRank) {
+        sCsv += member.currentPlayer().crucibleRank.currentProgress + ',';
+      } else {
+        sCsv += '-,';
+      }
+      if (member.currentPlayer().vanguardRank) {
+        sCsv += member.currentPlayer().vanguardRank.currentProgress + ',';
       } else {
         sCsv += '-,';
       }
@@ -858,7 +863,7 @@ export class ClanStateService {
     this.downloadCsv('clan-progress-' + sDate + '.csv', sCsv);
   }
 
-  // member, date, xp, triumph, valor, infamy, glory, ll
+  // member, date, xp, triumph, crucible, gambit, glory, ll
   public toggleSort(name: string) {
     if (this.sort != null && name == this.sort.name) {
       this.sort.ascending = !this.sort.ascending;
@@ -916,10 +921,12 @@ export class ClanStateService {
         return ClanStateService.compareSeasonRank(a, b, sort.ascending);
       } else if (sort.name === 'glory') {
         return ClanStateService.compareGlory(a, b, sort.ascending);
-      } else if (sort.name === 'valor') {
-        return ClanStateService.compareValor(a, b, sort.ascending);
-      } else if (sort.name === 'infamy') {
-        return ClanStateService.compareInfamy(a, b, sort.ascending);
+      } else if (sort.name === 'crucibleRank') {
+        return ClanStateService.compareCrucibleRank(a, b, sort.ascending);
+      } else if (sort.name === 'vanguardRank') {
+        return ClanStateService.compareVanguardRank(a, b, sort.ascending);
+      } else if (sort.name === 'gambitRank') {
+        return ClanStateService.compareGambitRank(a, b, sort.ascending);
       } else if (sort.name === 'll') {
         return ClanStateService.compareLLs(a, b, sort.ascending);
       } else if (sort.name === 'minsPlayed') {
@@ -1008,19 +1015,27 @@ export class ClanStateService {
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 
-  private static compareValor(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+  private static compareCrucibleRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.currentPlayer() != null && a.currentPlayer().valor != null) { aX = a.currentPlayer().valor.completeProgress; }
-    if (b.currentPlayer() != null && b.currentPlayer().valor != null) { bX = b.currentPlayer().valor.completeProgress; }
+    if (a.currentPlayer() != null && a.currentPlayer().crucibleRank != null) { aX = a.currentPlayer().crucibleRank.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().crucibleRank != null) { bX = b.currentPlayer().crucibleRank.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
-
-  private static compareInfamy(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+  
+  private static compareVanguardRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
     let bX = 0;
-    if (a.currentPlayer() != null && a.currentPlayer().infamy != null) { aX = a.currentPlayer().infamy.completeProgress; }
-    if (b.currentPlayer() != null && b.currentPlayer().infamy != null) { bX = b.currentPlayer().infamy.completeProgress; }
+    if (a.currentPlayer() != null && a.currentPlayer().vanguardRank != null) { aX = a.currentPlayer().vanguardRank.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().vanguardRank != null) { bX = b.currentPlayer().vanguardRank.completeProgress; }
+    return ClanStateService.simpleCompare(aX, bX, reverse);
+  }
+  
+  private static compareGambitRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.currentPlayer() != null && a.currentPlayer().gambitRank != null) { aX = a.currentPlayer().gambitRank.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().gambitRank != null) { bX = b.currentPlayer().gambitRank.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
 

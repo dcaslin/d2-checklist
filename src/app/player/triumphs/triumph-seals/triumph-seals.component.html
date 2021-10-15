@@ -6,12 +6,12 @@
   </h4>
   <mat-accordion>
     <ng-container *ngFor="let s of player.seals">
-      <mat-expansion-panel *ngIf="!state.hideCompleteTriumphs || !s.complete" (opened)="opened(s.hash)">
+      <mat-expansion-panel *ngIf="!state.hideCompleteTriumphs || (s.gildTotal > 0 && s.gildProgress < s.gildTotal) || !s.complete" (opened)="opened(s.hash)">
         <mat-expansion-panel-header>
           <mat-panel-title [class.accent-text]="s.complete">
             <div *ngIf="s.icon!=null" class="seal-icon"
               [style.background-image]="'url(//www.bungie.net' + s.icon + ')'"></div>
-            {{s.title}}
+              <fa-icon class="pad-right" *ngIf="s.gildTotal>0 && s.gildProgress>=s.gildTotal" [icon]="iconService.fadShieldAlt" matTooltip="Gilded!"></fa-icon> {{s.title}}
             <ng-container *ngIf="s.contentVault">
               <span class="pad-left" *ngIf="!s.complete"
                 matTooltip="This Seal will be vaulted next season, complete it now or never!">
