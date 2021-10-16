@@ -500,7 +500,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   const sMarks = JSON.stringify(this.buildRollJson(), null, 2);
   anch.setAttribute(
     'href',
-    'data:text/csv;charset=utf-8,' + encodeURIComponent(sMarks)
+    'data:application/json;charset=utf-8,' + encodeURIComponent(sMarks)
   );
   anch.setAttribute(
     'download',

@@ -376,7 +376,7 @@ export class ClanStateService {
     });
     pushMe.done = [];
     pushMe.notDone = [];
-    for (const x of pushMe.all) {
+    for (const x of pushMe.all) {      
       if (x.data.complete) {
         pushMe.done.push(x);
       } else {
