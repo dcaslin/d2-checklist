@@ -281,6 +281,7 @@ export interface TriumphRecordNode extends TriumphNode {
     earned: number;
     score: number;
     lowLinks?: LowLinks;
+    percentToNextInterval: number;
     percent: number;
     searchText: string;
     invisible: boolean;

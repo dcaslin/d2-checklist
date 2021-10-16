@@ -2384,8 +2384,8 @@ export class ParseService {
                     lowHangingTriumphs = lowHangingTriumphs.filter((l) => { return !l.invisible; });
                 }
                 lowHangingTriumphs.sort((a, b) => {
-                    if (a.percent > b.percent) { return -1; }
-                    if (a.percent < b.percent) { return 1; }
+                    if (a.percentToNextInterval > b.percentToNextInterval) { return -1; }
+                    if (a.percentToNextInterval < b.percentToNextInterval) { return 1; }
                     return 0;
                 });
 
@@ -2965,6 +2965,7 @@ export class ParseService {
 
         let objIndex = -1;
         let incompIntPercent = null;
+        let percentToNextInterval = null;
         for (const o of iterateMe) {
             objIndex++;
             const oDesc = this.destinyCacheService.cache.Objective[o.objectiveHash];
@@ -2995,8 +2996,9 @@ export class ParseService {
 
             totalProgress += oDesc.completionValue;
             objs.push(iObj);
-            if (incompIntPercent == null && !o.complete) {
-                incompIntPercent = iObj.percent;
+            incompIntPercent = iObj.percent;
+            if (percentToNextInterval == null && !o.complete) {
+                percentToNextInterval = iObj.percent;
             }
         }
         if (totalProgress < 2) { objs = []; }
@@ -3061,7 +3063,10 @@ export class ParseService {
                 searchText += ' has:reward';
             }
         }
-
+        // it has other incomplete intervals, it's not really done
+        if (incompIntPercent!=null && incompIntPercent<100) {
+            complete = false;
+        }
         return {
             type: 'record',
             hash: key,
@@ -3082,6 +3087,7 @@ export class ParseService {
             interval: isInterval,
             earned: earnedPts,
             score: totalPts,
+            percentToNextInterval: complete ? 100 : percentToNextInterval ? percentToNextInterval : percent,
             percent: complete ? 100 : incompIntPercent ? incompIntPercent : percent,
             searchText: searchText.toLowerCase(),
             invisible: invisible,
