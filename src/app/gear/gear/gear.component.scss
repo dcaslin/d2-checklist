@@ -241,6 +241,19 @@ table.stat-table {
   flex-grow: 1;
 }
 
+.current-char-pl-icon {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  height: 30px;
+  width: 30px;
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
 .current-char-icon {
   display: inline-block;
   vertical-align: top;
@@ -254,6 +267,7 @@ table.stat-table {
   border-radius: 3px;
   cursor: pointer;
 }
+
 
 @media screen and (max-width: 1019px) {
   // .current-char {
@@ -410,4 +424,18 @@ table.stat-table {
 
 .gear-body {
   font-size: 13px;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+.flex-shrink {
+  flex-shrink: 1;
 }

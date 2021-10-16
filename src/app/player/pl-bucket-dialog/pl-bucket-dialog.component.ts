@@ -82,6 +82,7 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
     }
     boosts.sort(sortByField('sortVal', true, parseInt));
     this.boosts = boosts;
+
     this.playerStateService.player.pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(player => {

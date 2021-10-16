@@ -4136,7 +4136,8 @@ export class ParseService {
                 if (itm.versionNumber && watermarkIcons.length > itm.versionNumber) {
                     iconWatermark = watermarkIcons[itm.versionNumber];
                 } else {
-                    iconWatermark = watermarkIcons[0];
+                    // use last version if nothing specified
+                    iconWatermark = watermarkIcons[watermarkIcons.length - 1];
                 }
 
             }

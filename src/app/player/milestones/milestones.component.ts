@@ -37,10 +37,6 @@ export class MilestonesComponent extends ChildComponent implements OnInit {
   public showPlBuckets(char: Character) {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
-    // dc.height = '95vh';
-    // dc.width = '95vw';
-    // dc.maxWidth = '95vw';
-    // dc.maxHeight = '95vh';
     dc.data = {
       characterId: char.characterId
     };

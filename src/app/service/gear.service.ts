@@ -340,6 +340,27 @@ export class GearService {
         }
     }
 
+    public findSimilarWeaponsNotByFrame(i: InventoryItem, player: Player, bySlot: boolean, byEnergy: boolean): InventoryItem[] {
+        const copies = [i];
+        for (const g of player.gear) {
+            if (g.id == i.id) {
+                continue;
+            }
+            if (i.type == ItemType.Weapon) {
+                if (i.typeName != g.typeName) {
+                    continue;
+                }
+                if (!bySlot || (g.inventoryBucket.displayProperties.name == i.inventoryBucket.displayProperties.name)) {
+                    if (!byEnergy || (g.damageType == i.damageType)) {
+                        copies.push(g);
+                    }
+                }
+            }
+        }
+        return copies;
+    }
+
+
     public findSimilarWeaponsByFrame(i: InventoryItem, player: Player, bySlot: boolean, byEnergy: boolean): InventoryItem[] {
         const copies = [i];
         for (const g of player.gear) {
@@ -378,9 +399,9 @@ export class GearService {
 
     public findSimilarArmor(i: InventoryItem, player: Player, season?: boolean, burn?: boolean): InventoryItem[] {
         const copies = [i];
-        if (i.tier!='Legendary') {
-            return [];
-        }
+        // if (i.tier != 'Legendary') {
+        //     return [];
+        // }
         for (const g of player.gear) {
             if (g.id == i.id) {
                 continue;
@@ -399,18 +420,11 @@ export class GearService {
                     continue;
                 }
                 if (burn) {
-                    // if (i.seasonalModSlot != g.seasonalModSlot) {
-                    //     continue;
-                    // }
                     if (i.energyType != g.energyType) {
                         continue;
                     }
                 } else if (season) {
                     if (i.seasonalModSlot != g.seasonalModSlot) {
-                        continue;
-                    }
-                } else {
-                    if (i.energyType != g.energyType) {
                         continue;
                     }
                 }

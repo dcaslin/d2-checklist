@@ -29,6 +29,18 @@
         </ng-container>
       </ng-container>
 
+      <mat-button-toggle-group style="margin-right:5px">
+        <mat-button-toggle [matMenuTriggerFor]="menuCharPl">
+          <fa-icon [icon]="iconService.fasBolt"></fa-icon> <span class="hide-mobile-inline">&ensp;Char PL's</span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+      
+      <mat-menu #menuCharPl="matMenu">
+        <a mat-menu-item *ngFor="let char of player.characters" (click)="showPlBuckets(char)">
+          <span *ngIf="char.emblemPath!=null" class="current-char-pl-icon" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></span>
+          {{char.className}}</a>
+      </mat-menu>
+
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
         (change)="tabChanged()">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
@@ -287,7 +299,11 @@
           </th>
           <th class="hide-mobile-table-cell show-tablet-table-cell"
             *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-            Sockets
+            <span class="fake-link" (click)="sort('plug.0.0')">Sockets
+              <d2c-sort-indicator  field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc">
+              </d2c-sort-indicator>
+            </span>
+            
           </th>
           <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
             *ngIf="option.type==ItemType.Armor">
@@ -324,10 +340,14 @@
 
 
           </th>
-          <th class="tag-cell"
+          <th class="tag-cell" 
             *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <div class="tag-page-container">
-              <div class="tag-page-container-tag"> Tag </div>
+              <div class="tag-page-container-tag">
+                <span class="fake-link" (click)="sort('mark')">Tag
+                  <d2c-sort-indicator field="mark" [currVal]="sortBy" [descending]="sortDesc">
+                  </d2c-sort-indicator>
+                </span></div>
               <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
             </div>
           </th>
@@ -465,7 +485,7 @@
                 <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}
               </button>
               <div class="vertical-pad" *ngIf="i.dupesByEnergyAndSeason">
-                <button mat-button (click)="showSimilarArmorBySeasonAndBurn(i)">
+                <button mat-button (click)="showSimilarArmorBySlotAndEnergy(i)">
                   <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
                   {{i.dupesTaggedToKeep}} / {{i.dupesByEnergyAndSeason}}
                 </button>
@@ -612,22 +632,29 @@
             </td>
           </tr>
           <mat-menu #compareMenu="matMenu">
+            <button mat-menu-item (click)="showCurrentPage()">
+              Current Page
+            </button>
             <button mat-menu-item (click)="showCopies(i)">
-              <fa-icon [icon]="iconService.falClone"></fa-icon> Copies
+              Copies
             </button>
             <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrame(i)">
-              <fa-icon [icon]="iconService.falCrosshairs"></fa-icon> By frame
+              By frame
             </button>
-            <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmor(i)">
-              <fa-icon [icon]="iconService.falBolt"></fa-icon> By energy
+            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlot(i)">
+              By slot
             </button>
-            <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot != null" mat-menu-item
-              (click)="showSimilarArmorBySeason(i)">
-              <fa-icon [icon]="iconService.falWheat"></fa-icon> By season
+            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlotAndEnergy(i)">
+              By slot &amp; Energy
             </button>
-            <button *ngIf="option.type==ItemType.Armor && i.seasonalModSlot != null" mat-menu-item
-              (click)="showSimilarArmorBySeasonAndBurn(i)">
-              <fa-icon [icon]="iconService.falPlusSquare"></fa-icon> By season & energy
+            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
+              By frame, slot &amp; Energy
+            </button>
+            <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
+              By slot
+            </button>
+            <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlotAndEnergy(i)">
+              By slot &amp; energy
             </button>
           </mat-menu>
         </ng-container>
