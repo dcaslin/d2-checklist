@@ -3,14 +3,15 @@
 
     <div mat-dialog-title style="margin-bottom: 0px" *ngIf="!showAllNames">
         {{model.name}}
-        <d2c-season-indicator *ngIf="model.type == ItemType.Armor" [season]="model.seasonalModSlot"></d2c-season-indicator>
+        <d2c-season-indicator *ngIf="model.type == ItemType.Armor" [season]="model.seasonalModSlot">
+        </d2c-season-indicator>
         <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{model.typeName}}</span><br><span
             class="simple-caption-no-margin hide-mobile-inline">{{model.desc}}</span>
     </div>
     <div *ngIf="showAllNames">
         <span style="margin-right: 25px; vertical-align: middle">{{model.typeName}}</span>
         <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk</mat-checkbox>
-
+        <span class="fake-link-underlined simple-darker-caption-no-margin pad-left-more" *ngIf="hideMe.length>0" title="Restore Hidden" (click)="hideMe=[]">Restore Hidden</span>
     </div>
     <mat-dialog-content *ngIf="parent.player$|async as player">
         <table class="gear-table mark-table">
@@ -22,15 +23,16 @@
                         </d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <th class="sticky" *ngIf="!hideJunk || i.mark!='junk'">
+                        <th class="sticky" *ngIf="shouldNotHide(i)">
 
-                            <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc"
-                                [matMenuTriggerFor]="itemMenu" matTooltipClass="preserve-white-space">
+                            <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc" [matMenuTriggerFor]="itemMenu"
+                                matTooltipClass="preserve-white-space">
                                 <div class="item-name">
                                     {{i.name}}
                                     <!-- <span class="accent-text" *ngIf="i===source">*</span> -->
                                 </div>
-                                <d2c-season-indicator *ngIf="i.type == ItemType.Armor" [season]="i.seasonalModSlot"></d2c-season-indicator>
+                                <d2c-season-indicator *ngIf="i.type == ItemType.Armor" [season]="i.seasonalModSlot">
+                                </d2c-season-indicator>
                             </button>
                             <mat-menu #itemMenu="matMenu">
                                 <button mat-menu-item *ngIf="i.postmaster"
@@ -52,12 +54,19 @@
                                     </button>
                                 </ng-container>
                             </mat-menu>
-                            <div class="simple-caption-no-margin">
-                                {{(i.owner|async)?.label}}
+                            <div class="flex-row">
+                                <div class="flex-grow">
+                                    {{(i.owner|async)?.label}}
 
-                                <span *ngIf="i.postmaster" class="margin-left warn-text">
-                                    <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
-                                </span>
+                                    <span *ngIf="i.postmaster" class="margin-left warn-text">
+                                        <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
+                                    </span>
+                                </div>
+                                <div class="flex-shrink">
+                                    <a class="fake-link" title="Hide" (click)="hideMe.push(i)">
+                                        <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
+                                    </a>
+                                </div>
                             </div>
                         </th>
                     </ng-container>
@@ -80,7 +89,7 @@
                         </div>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             <div class="compare-icon-cell">
                                 <d2c-god-roll-item vertical="true" [item]="i" [debugmode]="debugmode|async">
                                 </d2c-god-roll-item>
@@ -100,8 +109,9 @@
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
 
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
-                            <fa-icon *ngIf="i.notes" [matTooltip]="i.notes" class="accent-text pad-right" [icon]="iconService.fasStickyNote"></fa-icon>
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                            <fa-icon *ngIf="i.notes" [matTooltip]="i.notes" class="accent-text pad-right"
+                                [icon]="iconService.fasStickyNote"></fa-icon>
                             <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
                                 [matMenuTriggerFor]="menu">
                                 <ng-container *ngIf="i.mark==null">
@@ -124,7 +134,7 @@
                                 <button *ngIf="i.mark!=null" mat-menu-item (click)="parent.mark(null,i)">
                                     Remove Mark
                                 </button>
-                            </mat-menu>                            
+                            </mat-menu>
                         </td>
                     </ng-container>
                 </tr>
@@ -134,31 +144,31 @@
                             (sort)="sort($event)">Capacity</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             {{i.energyCapacity}}
                         </td>
                     </ng-container>
                 </tr>
-                
-                
+
+
                 <tr *ngIf="model.type==ItemType.Armor">
                     <th>
                         <d2c-horizontal-sort field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc"
-                            (sort)="sort($event)">Pref Pts</d2c-horizontal-sort>                        
+                            (sort)="sort($event)">Pref Pts</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             {{i.preferredStatPoints}}
                         </td>
                     </ng-container>
                 </tr>
                 <tr *ngIf="model.type==ItemType.Armor">
                     <th>
-                       <d2c-horizontal-sort field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc"
+                        <d2c-horizontal-sort field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc"
                             (sort)="sort($event)">Total Pts</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">                            
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             {{i.totalStatPoints}}
                         </td>
                     </ng-container>
@@ -175,7 +185,7 @@
                         </div>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
                         </td>
                     </ng-container>
@@ -186,7 +196,7 @@
                             (sort)="sort($event)">Cap</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             <ng-container *ngIf="i.powerCap<10000; else highCap">
                                 <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
                             </ng-container>
@@ -202,7 +212,7 @@
                             (sort)="sort($event)">Mod</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                             <ng-container *ngFor="let mod of i.mods">
                                 <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
                                     {{mod.name}}
@@ -215,18 +225,17 @@
                     *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
                     <tr *ngFor="let mp of maxPlugs; index as i1">
                         <th *ngIf="i1==0">
-                            Sockets
+                            <d2c-horizontal-sort field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Sockets</d2c-horizontal-sort>
                         </th>
                         <th *ngIf="i1>0">
-                            <div *ngFor="let item of [].constructor(mp); index as plugIndex" >
-                                <d2c-horizontal-sort
-                                [field]="'plug.'+i1+'.'+plugIndex" [currVal]="sortBy" [descending]="sortDesc"
-                                (sort)="sort($event)"></d2c-horizontal-sort>
+                            <div *ngFor="let item of [].constructor(mp); index as plugIndex">
+                                <d2c-horizontal-sort [field]="'plug.'+i1+'.'+plugIndex" [currVal]="sortBy"
+                                    [descending]="sortDesc" (sort)="sort($event)"></d2c-horizontal-sort>
                             </div>
-                            
+
                         </th>
                         <ng-container *ngFor="let i of sortedItems|async">
-                            <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
                                         <span *ngFor="let plug of socket.plugs; last as isLastPlug"
@@ -251,16 +260,18 @@
                         </th>
                         <ng-container *ngFor="let i of sortedItems|async">
 
-                            <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                            <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
                                 <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                                     <span [class.baseonly]="targetStat.value==null">
                                         <span [ngClass]="getColor(targetStat)">
                                             {{targetStat.getValue()}}
                                         </span>
                                     </span>
-                                    <span *ngIf="targetStat.enhancement>0" class="accent-text pad-left">+{{targetStat.enhancement}}</span>
-                                    <span *ngIf="targetStat.enhancement<0" class="warn-text pad-left">{{targetStat.enhancement}}</span>
-        
+                                    <span *ngIf="targetStat.enhancement>0"
+                                        class="accent-text pad-left">+{{targetStat.enhancement}}</span>
+                                    <span *ngIf="targetStat.enhancement<0"
+                                        class="warn-text pad-left">{{targetStat.enhancement}}</span>
+
                                 </ng-container>
                                 <ng-template #noState>0</ng-template>
                             </td>

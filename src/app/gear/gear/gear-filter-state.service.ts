@@ -708,10 +708,10 @@ export class GearFilterStateService implements OnDestroy {
         new Choice(null, 'Unmarked')
       ], currentTab.type)),
       energyType$: new BehaviorSubject(generateState(energyConfig, [
+        new Choice(`${EnergyType.Stasis}`, 'Stasis'),
         new Choice(`${EnergyType.Arc}`, 'Arc'),
         new Choice(`${EnergyType.Thermal}`, 'Solar'),
         new Choice(`${EnergyType.Void}`, 'Void'),
-        new Choice(`${EnergyType.Stasis}`, 'Stasis'),
         new Choice(`${EnergyType.Any}`, 'Any')
       ], currentTab.type)),
       seasons$: new BehaviorSubject(generateState(seasonConfig, [
@@ -725,10 +725,10 @@ export class GearFilterStateService implements OnDestroy {
       damageType$: new BehaviorSubject(generateState(damageConfig,
         [
           new Choice(`${DamageType.Kinetic}`, 'Kinetic'),
+          new Choice(`${DamageType.Stasis}`, 'Stasis'),
           new Choice(`${DamageType.Arc}`, 'Arc'),
           new Choice(`${DamageType.Thermal}`, 'Solar'),
           new Choice(`${DamageType.Void}`, 'Void'),
-          new Choice(`${DamageType.Stasis}`, 'Stasis'),
         ], currentTab.type)),
       ammoTypes$: new BehaviorSubject(generateState(ammoTypesConfig, [
         new Choice(DestinyAmmunitionType.Primary + '', 'Primary'),

@@ -3,14 +3,17 @@ import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PlBucketDialogComponent } from '@app/player/pl-bucket-dialog/pl-bucket-dialog.component';
+import { PlayerStateService } from '@app/player/player-state.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ClassAllowed, DamageType, EnergyType, InventoryItem, ItemType, Player, SelectedUser, Target } from '@app/service/model';
+import { Character, ClassAllowed, Const, DamageType, EnergyType, InventoryItem, ItemType, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { PreferredStatService } from '@app/service/preferred-stat.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
+import { faLoveseat } from '@fortawesome/pro-regular-svg-icons';
 import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
@@ -163,6 +166,7 @@ export class GearComponent extends ChildComponent {
     private notificationService: NotificationService,
     public dialog: MatDialog,
     public preferredStatService: PreferredStatService,
+    private playerStateService: PlayerStateService,
     private route: ActivatedRoute,
     public router: Router) {
     super(storageService);
@@ -230,7 +234,7 @@ export class GearComponent extends ChildComponent {
           this.load();
         }
       });
-    
+
     this.gearFilterStateService.filterUpdated$.pipe(
       takeUntil(this.unsubscribe$),
       tap(x => this.filtering.next(true)),
@@ -327,18 +331,13 @@ export class GearComponent extends ChildComponent {
     this.openGearDialog(i, copies, false);
   }
 
-  showSimilarArmorBySeason(i: InventoryItem) {
-    const copies = this.gearService.findSimilarArmor(i, this.player$.getValue(), true);
-    this.openGearDialog(i, copies, true);
-  }
-
-  showSimilarArmorBySeasonAndBurn(i: InventoryItem) {
-    const copies = this.gearService.findSimilarArmor(i, this.player$.getValue(), true, true);
-    this.openGearDialog(i, copies, true);
-  }
-
-  showSimilarArmor(i: InventoryItem) {
+  showSimilarArmorBySlot(i: InventoryItem) {
     const copies = this.gearService.findSimilarArmor(i, this.player$.getValue());
+    this.openGearDialog(i, copies, true);
+  }
+
+  showSimilarArmorBySlotAndEnergy(i: InventoryItem) {
+    const copies = this.gearService.findSimilarArmor(i, this.player$.getValue(), false, true);
     this.openGearDialog(i, copies, true);
   }
 
@@ -347,9 +346,36 @@ export class GearComponent extends ChildComponent {
     this.openGearDialog(i, copies, true);
   }
 
+  showSimilarWeaponsBySlot(i: InventoryItem) {
+    const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue(), true, false);
+    this.openGearDialog(i, copies, true);
+  }
+
+  showSimilarWeaponsBySlotAndEnergy(i: InventoryItem) {
+    const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue(), true, true);
+    this.openGearDialog(i, copies, true);
+  }
+
   showSimilarWeaponsByFrameSlotAndEnergy(i: InventoryItem) {
     const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue(), true, true);
     this.openGearDialog(i, copies, true);
+  }
+
+  public showPlBuckets(char: Character) {
+    const platform = Const.PLATFORMS_DICT[char.membershipType];
+    this.playerStateService.loadPlayer(platform, char.membershipId, false);
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      characterId: char.characterId
+    };
+    this.dialog.open(PlBucketDialogComponent, dc);
+  }
+
+
+  showCurrentPage() {
+    const copies = this.gearToShow$.getValue();
+    this.openGearDialog(copies[0], copies, true);
   }
 
 

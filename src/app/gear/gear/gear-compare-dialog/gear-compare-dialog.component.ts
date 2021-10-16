@@ -30,6 +30,7 @@ export class GearCompareDialogComponent extends ChildComponent {
   parent: GearComponent;
   showAllNames: boolean;
   maxPlugs: number[] = [];
+  hideMe: InventoryItem[] = [];
 
   constructor(
     storageService: StorageService,
@@ -70,6 +71,10 @@ export class GearCompareDialogComponent extends ChildComponent {
     this.sortBy = event.field;
     this.sortDesc = event.descending;
     this._sort();
+  }
+
+  public shouldNotHide(i: InventoryItem): boolean {
+    return this.hideMe.indexOf(i) < 0 && (!this.hideJunk || i.mark != 'junk');
   }
 
   private _sort() {

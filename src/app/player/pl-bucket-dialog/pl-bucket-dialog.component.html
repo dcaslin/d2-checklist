@@ -1,4 +1,4 @@
-<ng-container *ngIf="character$|async as char">
+<ng-container *ngIf="character$|async as char; else initLoad">
     <ng-container *ngIf="char.basePLString; else notPublic">
         <div mat-dialog-title>
             <h4>
@@ -77,3 +77,10 @@
         </mat-dialog-content>
     </ng-template>
 </ng-container>
+<ng-template #initLoad>
+    <mat-dialog-content>
+        <div class="fixed-spinner">
+            <mat-spinner class="loading" class="center-spinner"></mat-spinner>
+        </div>
+    </mat-dialog-content>
+</ng-template>
