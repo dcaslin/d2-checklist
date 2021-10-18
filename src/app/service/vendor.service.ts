@@ -371,7 +371,7 @@ export class VendorService {
   private findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
     this.preferredStatService.processGear(player);
     const bucketMap: { [key: string]: ClassInventoryBucket; } = {};
-    const shouldIgnoreEnergy = this.preferredStatService.stats.getValue()?.ignoreEnergyOnVendorArmorDeals;
+    const shouldIgnoreEnergy = this.preferredStatService.stats$.getValue()?.ignoreEnergyOnVendorArmorDeals;
     const buckets = this.getBuckets(shouldIgnoreEnergy);
     for (const bucket of buckets) {
       bucketMap[bucket.bucket.hash.toString() + bucket.energyType.toString() + bucket.classType.toString()] = bucket;

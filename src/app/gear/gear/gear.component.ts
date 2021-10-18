@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -11,7 +11,7 @@ import { MarkService } from '@app/service/mark.service';
 import { Character, ClassAllowed, Const, DamageType, EnergyType, InventoryItem, ItemType, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
-import { PreferredStatService } from '@app/service/preferred-stat.service';
+import { OLD_PREF_STATS_KEY, PreferredStatService } from '@app/service/preferred-stat.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { faLoveseat } from '@fortawesome/pro-regular-svg-icons';
 import { ClipboardService } from 'ngx-clipboard';
@@ -35,7 +35,7 @@ import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season
   templateUrl: './gear.component.html',
   styleUrls: ['./gear.component.scss']
 })
-export class GearComponent extends ChildComponent {
+export class GearComponent extends ChildComponent implements OnInit {
 
 
   // show thinking while gear filtering is occurring
@@ -226,7 +226,7 @@ export class GearComponent extends ChildComponent {
         }
       }
     });
-    this.preferredStatService.stats.pipe(
+    this.preferredStatService.stats$.pipe(
       takeUntil(this.unsubscribe$))
       .subscribe(x => {
         if (this.player$.getValue() != null) {
@@ -345,6 +345,12 @@ export class GearComponent extends ChildComponent {
     const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue(), false, false);
     this.openGearDialog(i, copies, true);
   }
+
+  showSimilarWeaponsByFrameAndSlot(i: InventoryItem) {
+    const copies = this.gearService.findSimilarWeaponsByFrame(i, this.player$.getValue(), true, false);
+    this.openGearDialog(i, copies, true);
+  }
+
 
   showSimilarWeaponsBySlot(i: InventoryItem) {
     const copies = this.gearService.findSimilarWeaponsNotByFrame(i, this.player$.getValue(), true, false);
@@ -588,6 +594,15 @@ export class GearComponent extends ChildComponent {
 
   onRight() {
     this.paginator.nextPage();
+  }
+
+
+  ngOnInit(): void {
+    const oldSettings = localStorage.getItem(OLD_PREF_STATS_KEY);
+    if (oldSettings != null) {
+      this.dialog.open(TargetArmorStatsDialogComponent);
+      localStorage.removeItem(OLD_PREF_STATS_KEY);
+    }
   }
 
 }

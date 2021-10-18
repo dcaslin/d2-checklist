@@ -126,7 +126,7 @@
                                             </tr>
                                             <ng-container *ngFor="let stat of i.stats">
                                                 <tr
-                                                    *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
+                                                    *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)!=0">
                                                     <td>{{stat.name}}</td>
                                                     <td>{{stat.value}}</td>
                                                 </tr>
