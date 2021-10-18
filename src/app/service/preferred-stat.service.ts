@@ -2,15 +2,18 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ClassAllowed, InventoryItem, InventoryStat, ItemType, Player } from './model';
 
-const PREF_STATS_KEY = 'preferred-armor-stats';
+export const OLD_PREF_STATS_KEY = 'preferred-armor-stats';
+const PREF_STATS_KEY = 'd2c-preferred-armor-stats';
+
 @Injectable({
   providedIn: 'root'
 })
 export class PreferredStatService {
-  public readonly stats: BehaviorSubject<PreferredStats>;
+  public readonly stats$: BehaviorSubject<DetailedPreferredStats>;
   public readonly choices: string[];
 
-  constructor() {
+  constructor(
+  ) {
     const choices = [];
     choices.push('Mobility');
     choices.push('Resilience');
@@ -29,67 +32,80 @@ export class PreferredStatService {
     } catch (exc) {
       localStorage.removeItem(PREF_STATS_KEY);
     }
-    this.stats = new BehaviorSubject<PreferredStats>(pref);
+    this.stats$ = new BehaviorSubject<DetailedPreferredStats>(pref);
   }
 
-  private buildDefault(empty?: boolean): PreferredStats {
-    const stats: { [key: string]: { [key: string]: boolean } } = {};
-    stats.Hunter = {
-      Mobility: true,
-      Resilience: false,
-      Recovery: true,
-      Discipline: false,
-      Intellect: true,
-      Strength: false
-    };
-    stats.Titan = {
-      Mobility: false,
-      Resilience: true,
-      Recovery: true,
-      Discipline: false,
-      Intellect: true,
-      Strength: false
-    };
-    stats.Warlock = {
-      Mobility: false,
-      Resilience: false,
-      Recovery: true,
-      Discipline: true,
-      Intellect: true,
-      Strength: false
+  private buildDefault(empty?: boolean): DetailedPreferredStats {
+    const defaultStats: ClassStatPrefs = {
+      Hunter: {
+        Mobility: 100,
+        Resilience: 50,
+        Recovery: 100,
+        Discipline: 0,
+        Intellect: 0,
+        Strength: 0
+      },
+      Titan: {
+        Mobility: 0,
+        Resilience: 50,
+        Recovery: 100,
+        Discipline: 50,
+        Intellect: 50,
+        Strength: 0
+      },
+      Warlock: {
+        Mobility: 0,
+        Resilience: 25,
+        Recovery: 100,
+        Discipline: 50,
+        Intellect: 50,
+        Strength: 0
+      },
     };
     return {
-      stats: stats,
+      stats: defaultStats,
       showAllStats: false,
       ignoreEnergyOnVendorArmorDeals: false
     };
   }
 
-  public update(pref: PreferredStats) {
+  public update(pref: DetailedPreferredStats) {
     const s = JSON.stringify(pref);
     localStorage.setItem(PREF_STATS_KEY, s);
-    this.stats.next(pref);
+    this.stats$.next(pref);
   }
 
   public reset() {
     localStorage.removeItem(PREF_STATS_KEY);
-    this.stats.next(this.buildDefault());
+    this.stats$.next(this.buildDefault());
   }
 
-  public isPreferred(destinyClass: string, stat: InventoryStat, showAllOverride: boolean): boolean {
+  public getMultiplierForDisplay(stats: DetailedPreferredStats, destinyClass: string, stat: InventoryStat): number {
     if (!destinyClass) {
-      return false;
+      return 0;
     }
-    const cur = this.stats.getValue();
-    if (!cur) { return false; }
+    if (!stats) {
+      return 0;
+    }
+    if (stats.stats[destinyClass][stat.name] > 0) {
+      return stats.stats[destinyClass][stat.name];
+    }
+    return -1;
+  }
 
-    if (showAllOverride && cur.showAllStats) {
-      return true;
+  public isPreferred(destinyClass: string, stat: InventoryStat, showAllOverride: boolean): number {
+    if (!destinyClass) {
+      return 0;
     }
-    if (cur.stats[destinyClass][stat.name]) {
+    const cur = this.stats$.getValue();
+    if (!cur) { return 0; }
+    if (cur.stats[destinyClass][stat.name] > 0) {
       return cur.stats[destinyClass][stat.name];
     }
-    return false;
+    if (showAllOverride && cur.showAllStats) {
+      return -1;
+    }
+    return 0;
   }
 
   public processItems(items: InventoryItem[]) {
@@ -99,11 +115,12 @@ export class PreferredStatService {
       }
       let prefPts = 0;
       for (const stat of i.stats) {
-        if (this.isPreferred(ClassAllowed[i.classAllowed], stat, false)) {
-          prefPts += stat.value;
+        const prefMult = this.isPreferred(ClassAllowed[i.classAllowed], stat, false);
+        if (prefMult > 0) {
+          prefPts += (stat.value * prefMult);
         }
       }
-      i.preferredStatPoints = prefPts;
+      i.preferredStatPoints = prefPts / 100;
     }
   }
 
@@ -113,12 +130,25 @@ export class PreferredStatService {
   }
 }
 
-export interface PreferredStats {
+export interface DetailedPreferredStats {
   // class, stat name, true/false
-  stats: { [key: string]: { [key: string]: boolean } };
+  stats: ClassStatPrefs;
   showAllStats: boolean;
   ignoreEnergyOnVendorArmorDeals: boolean;
 }
 
+interface ClassStatPrefs {
+  Hunter: ClassStatPref;
+  Warlock: ClassStatPref;
+  Titan: ClassStatPref;
+}
 
+interface ClassStatPref {
+  Mobility: number;
+      Resilience: number;
+      Recovery: number;
+      Discipline: number;
+      Intellect: number;
+      Strength: number;
+}
 

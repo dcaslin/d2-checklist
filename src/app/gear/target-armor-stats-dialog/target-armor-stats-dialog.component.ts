@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { PreferredStats, PreferredStatService } from '@app/service/preferred-stat.service';
+import { DetailedPreferredStats, PreferredStatService } from '@app/service/preferred-stat.service';
 import { GearComponent } from '../gear/gear.component';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { DestinyClasses } from '@app/service/model';
@@ -12,7 +12,7 @@ import { DestinyClasses } from '@app/service/model';
   styleUrls: ['./target-armor-stats-dialog.component.scss']
 })
 export class TargetArmorStatsDialogComponent implements OnInit {
-  preferred: PreferredStats;
+  preferred: DetailedPreferredStats;
   targetChoices: string[];
   destinyClasses = DestinyClasses;
 
@@ -20,7 +20,7 @@ export class TargetArmorStatsDialogComponent implements OnInit {
     public preferredStatService: PreferredStatService,
     public dialogRef: MatDialogRef<TargetArmorStatsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
-    this.preferred = this.preferredStatService.stats.value;
+    this.preferred = this.preferredStatService.stats$.value;
     dialogRef.afterClosed().subscribe(result => {
       if (!result) {
         return;
@@ -49,7 +49,7 @@ export class TargetArmorStatsDialogComponent implements OnInit {
   ngOnInit() { }
 
   toggle(evt: MatSlideToggleChange, destinyClass: string, statName: string) {
-    this.preferred.stats[destinyClass][statName] = evt.checked;
+    this.preferred.stats[destinyClass][statName] = evt.checked ? 100 : 0;
   }
 }
 

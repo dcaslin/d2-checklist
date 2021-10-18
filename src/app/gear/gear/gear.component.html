@@ -29,18 +29,6 @@
         </ng-container>
       </ng-container>
 
-      <mat-button-toggle-group style="margin-right:5px">
-        <mat-button-toggle [matMenuTriggerFor]="menuCharPl">
-          <fa-icon [icon]="iconService.fasBolt"></fa-icon> <span class="hide-mobile-inline">&ensp;Char PL's</span>
-        </mat-button-toggle>
-      </mat-button-toggle-group>
-      
-      <mat-menu #menuCharPl="matMenu">
-        <a mat-menu-item *ngFor="let char of player.characters" (click)="showPlBuckets(char)">
-          <span *ngIf="char.emblemPath!=null" class="current-char-pl-icon" [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></span>
-          {{char.className}}</a>
-      </mat-menu>
-
       <mat-button-toggle-group #optionsgroup="matButtonToggleGroup" *ngIf="selectedUser!=null" [value]="option"
         (change)="tabChanged()">
         <mat-button-toggle *ngFor="let o of options" [value]="o">
@@ -55,7 +43,19 @@
         </mat-button-toggle>
       </mat-button-toggle-group>
       <mat-button-toggle-group style="margin-left:5px">
-        <mat-button-toggle [matMenuTriggerFor]="menuGuides">
+        <mat-button-toggle [matMenuTriggerFor]="menuCharPl" matTooltip="Character Power Levels">
+          <fa-icon [icon]="iconService.fasLevelUpAlt"></fa-icon> <span class="hide-mobile-inline"></span>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-menu #menuCharPl="matMenu">
+        <a mat-menu-item *ngFor="let char of player.characters" (click)="showPlBuckets(char)">
+          <span *ngIf="char.emblemPath!=null" class="current-char-pl-icon"
+            [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'"></span>
+          {{char.className}}</a>
+      </mat-menu>
+      <mat-button-toggle-group style="margin-left:5px">
+        <mat-button-toggle [matMenuTriggerFor]="menuGuides" matTooltip="Reference Info">
           <fa-icon [icon]="iconService.farBooks"></fa-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
@@ -77,23 +77,23 @@
       </mat-menu>
     </div>
     <div class="filter-buttons" [hidden]="selectedUser==null">
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.godRolls$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.armorStatPoints$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.tags$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.weaponBuckets$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.armorBuckets$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.damageType$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.energyType$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.weaponTypes$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.ammoTypes$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.vehicleBuckets$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.exchangeType$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.classType$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.seasons$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.owners$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.equipped$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.rarities$" > </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.postmaster$" > </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.godRolls$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.armorStatPoints$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.tags$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.weaponBuckets$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.armorBuckets$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.damageType$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.energyType$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.weaponTypes$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.ammoTypes$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.vehicleBuckets$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.exchangeType$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.classType$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.seasons$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.owners$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.equipped$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.rarities$"> </d2c-gear-toggle>
+      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.postmaster$"> </d2c-gear-toggle>
     </div>
     <div [hidden]="selectedUser==null" class="filter-container">
       <mat-form-field class="wildcard-filter">
@@ -169,7 +169,8 @@
       </button>
     </mat-menu>
     <mat-menu #menuBulkMove="matMenu">
-      <button mat-menu-item *ngFor="let target of player.characters" (click)="moveAllVisible(target, gearFilterStateService.filterUpdated$)">
+      <button mat-menu-item *ngFor="let target of player.characters"
+        (click)="moveAllVisible(target, gearFilterStateService.filterUpdated$)">
         {{target.label}}
       </button>
       <button mat-menu-item (click)="moveAllVisible(player.vault, gearFilterStateService.filterUpdated$)">
@@ -247,7 +248,8 @@
       </button>
     </mat-menu>
 
-    <table tabindex="0" class="gear-table mark-table" (keydown.control.ArrowLeft)="onLeft()" (keydown.control.ArrowRight)="onRight()">
+    <table tabindex="0" class="gear-table mark-table" (keydown.control.ArrowLeft)="onLeft()"
+      (keydown.control.ArrowRight)="onRight()" *ngIf="preferredStatService.stats$|async as prefStats">
       <thead>
         <tr>
           <th class="limited-gear-width">
@@ -300,10 +302,10 @@
           <th class="hide-mobile-table-cell show-tablet-table-cell"
             *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <span class="fake-link" (click)="sort('plug.0.0')">Sockets
-              <d2c-sort-indicator  field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc">
+              <d2c-sort-indicator field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc">
               </d2c-sort-indicator>
             </span>
-            
+
           </th>
           <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
             *ngIf="option.type==ItemType.Armor">
@@ -340,14 +342,15 @@
 
 
           </th>
-          <th class="tag-cell" 
+          <th class="tag-cell"
             *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
             <div class="tag-page-container">
               <div class="tag-page-container-tag">
                 <span class="fake-link" (click)="sort('mark')">Tag
                   <d2c-sort-indicator field="mark" [currVal]="sortBy" [descending]="sortDesc">
                   </d2c-sort-indicator>
-                </span></div>
+                </span>
+              </div>
               <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
             </div>
           </th>
@@ -581,20 +584,26 @@
               <table class="stat-table" *ngIf="i.type==ItemType.Armor">
                 <tbody>
                   <ng-container *ngFor="let stat of i.stats">
-
-                    <tr *ngIf="preferredStatService.isPreferred(ClassAllowed[i.classAllowed], stat, true)">
-                      <td class="gear-sort">
-                        <span class="fake-link" (click)="sort('stat.'+stat.hash)">{{stat.name}}
-                          <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
-                          </d2c-sort-indicator>
-                        </span>
-                      </td>
-                      <td>{{stat.value}}
-                        <span *ngIf="stat.enhancement>0" class="accent-text pad-left">+{{stat.enhancement}}</span>
-                        <span *ngIf="stat.enhancement<0" class="warn-text pad-left">{{stat.enhancement}}</span>
-
-                      </td>
-                    </tr>
+                    <ng-container *ngIf="preferredStatService.getMultiplierForDisplay(prefStats, ClassAllowed[i.classAllowed],stat) as prefStat"> 
+                      <ng-container *ngIf="prefStat > 0 || prefStats.showAllStats">
+                        <tr>
+                          <td class="gear-sort">
+                            <span class="fake-link" 
+                            [matTooltip]="prefStat+'% weight'" 
+                            [matTooltipDisabled]="prefStat <= 0"
+                            [class.italics]="prefStat > 0 && prefStats.showAllStats"
+                            (click)="sort('stat.'+stat.hash)">{{stat.name}} 
+                              <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
+                              </d2c-sort-indicator>
+                            </span>
+                          </td>
+                          <td>{{stat.value}}
+                            <span *ngIf="stat.enhancement>0" class="accent-text pad-left">+{{stat.enhancement}}</span>
+                            <span *ngIf="stat.enhancement<0" class="warn-text pad-left">{{stat.enhancement}}</span>
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </ng-container> 
                   </ng-container>
                 </tbody>
               </table>
@@ -644,10 +653,14 @@
             <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlot(i)">
               By slot
             </button>
+            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrameAndSlot(i)">
+              By frame &amp; Slot
+            </button>
             <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlotAndEnergy(i)">
               By slot &amp; Energy
             </button>
-            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
+            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item
+              (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
               By frame, slot &amp; Energy
             </button>
             <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
@@ -676,7 +689,7 @@
 </ng-template>
 
 <ng-template #upperPaging let-paginator="paginator">
-  
+
   <div *ngIf="paginator" class="tag-page-container-pages hide-mobile-inline">
     <span class="gear-sort" [class.fake-link]="paginator.hasPreviousPage()"
       [class.fake-link-disabled]="!paginator.hasPreviousPage()" (click)="paginator.firstPage()">
