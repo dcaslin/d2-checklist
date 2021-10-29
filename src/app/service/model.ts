@@ -1439,6 +1439,7 @@ export class InventoryStat {
     baseValue: number;
     enhancement: number;
     index: number;
+    displayValue: number;
 
     constructor(hash, name, desc, value, baseValue, index) {
         this.hash = hash;
@@ -1447,13 +1448,10 @@ export class InventoryStat {
         this.value = value;
         this.baseValue = baseValue;
         this.index = index;
-    }
-
-    getValue(): number {
         if (this.value != null) {
-            return this.value;
+            this.displayValue = this.value;
         } else {
-            return this.baseValue;
+            this.displayValue = this.baseValue;
         }
     }
 }

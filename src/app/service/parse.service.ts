@@ -2464,6 +2464,7 @@ export class ParseService {
             return 0;
         });
         if (currencies.length > 0) {
+            this.handleCurrency('2979281381', gear, currencies); // upgrade modules
             this.handleCurrency('4257549985', gear, currencies); // shards
             this.handleCurrency('4257549984', gear, currencies); // prisms
             this.handleCurrency('3853748946', gear, currencies); // cores
@@ -2632,7 +2633,16 @@ export class ParseService {
     }
 
     private handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[]) {
-
+        let curr = currencies.find(x => x.hash === hash);
+        if (!curr) {
+            const desc = this.destinyCacheService.cache.InventoryItem[hash];
+            if (!desc) {
+                console.log('Missing desc for ' + hash);
+                return;
+            }
+            curr = new Currency(hash, desc.displayProperties.name, desc.displayProperties.icon, 0);
+            currencies.push(curr);
+        }
         const ag = gear.filter(x => x.hash == hash);
         if (!ag || ag.length == 0) {
             return;
@@ -2641,14 +2651,7 @@ export class ParseService {
         for (const g of ag) {
             total += g.quantity;
         }
-
-        const g = ag[0];
-        const curr = currencies.find(x => x.hash === g.hash);
-        if (curr) {
-            curr.count += total;
-        } else {
-            currencies.push(new Currency(g.hash, g.name, g.icon, total));
-        }
+        curr.count += total;
     }
 
     // private handleChallengeMilestones(chars: Character[], quests: InventoryItem[], milestoneList: MileStoneName[]) {

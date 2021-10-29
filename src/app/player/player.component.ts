@@ -101,12 +101,21 @@ export class PlayerComponent extends ChildComponent implements OnInit, OnDestroy
     this.route.params.pipe(takeUntil(this.unsubscribe$)).subscribe(params => {
       this.init(params);
     });
-
-
-
   }
 
   ngOnDestroy(): void {
     super.ngOnDestroy();
+  }
+
+  public async onR(event: KeyboardEvent) {
+    if (this.isInputTarget(event)) {
+      return;
+    }
+    this.state.requestRefresh();
+  }
+
+  private isInputTarget(event: KeyboardEvent): boolean {
+    const element = event.target as HTMLElement;
+    return element?.tagName?.toUpperCase() == 'INPUT';
   }
 }
