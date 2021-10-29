@@ -7,7 +7,7 @@
 <ng-container *ngIf="(loading|async)===false && selectedUser==null">
   <d2c-sign-in-required></d2c-sign-in-required>
 </ng-container>
-<div class="gear-body" *ngIf="player$|async as player" (keydown.control.r)="load(); $event.preventDefault(true)">
+<div class="gear-body" *ngIf="player$|async as player" (keydown.r)="onR($event)">
   <ng-container *ngIf="pageInfo$|async as pageInfo">
 
     <div>
@@ -248,8 +248,8 @@
       </button>
     </mat-menu>
 
-    <table tabindex="0" class="gear-table mark-table" (keydown.control.ArrowLeft)="onLeft()"
-      (keydown.control.ArrowRight)="onRight()" *ngIf="preferredStatService.stats$|async as prefStats">
+    <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft($event)"
+      (keydown.ArrowRight)="onRight($event)" *ngIf="preferredStatService.stats$|async as prefStats">
       <thead>
         <tr>
           <th class="limited-gear-width">
@@ -574,7 +574,7 @@
                           </d2c-sort-indicator>
                         </span>
                       </td>
-                      <td>{{stat.getValue()}}</td>
+                      <td>{{stat.displayValue}}</td>
                     </tr>
                   </ng-container>
                 </tbody>

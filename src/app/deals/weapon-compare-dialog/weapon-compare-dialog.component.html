@@ -186,7 +186,7 @@
                   <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                     <span [class.baseonly]="targetStat.value==null">
                       <span [ngClass]="getColor(targetStat)">
-                        {{targetStat.getValue()}}
+                        {{targetStat.displayValue}}
                       </span>
                     </span>
                     <span *ngIf="targetStat.enhancement>0" class="accent-text pad-left">+{{targetStat.enhancement}}</span>

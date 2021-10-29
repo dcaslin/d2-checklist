@@ -587,15 +587,31 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.dialog.open(BulkOperationsHelpDialogComponent, dc);
   }
 
+  private isInputTarget(event: KeyboardEvent): boolean {
+    const element = event.target as HTMLElement;
+    return element?.tagName?.toUpperCase()=='INPUT';
+  }
 
-  onLeft() {
+  onLeft(event: any) {
+    if (this.isInputTarget(event)) {
+      return;
+    }
     this.paginator.previousPage();
   }
 
-  onRight() {
+  onRight(event: any) {
+    if (this.isInputTarget(event)) {
+      return;
+    }
     this.paginator.nextPage();
   }
 
+  public async onR(event: KeyboardEvent) {
+    if (this.isInputTarget(event)) {
+      return;
+    }
+    this.load();
+  }
 
   ngOnInit(): void {
     const oldSettings = localStorage.getItem(OLD_PREF_STATS_KEY);
