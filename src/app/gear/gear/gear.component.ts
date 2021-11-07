@@ -13,7 +13,6 @@ import { NotificationService } from '@app/service/notification.service';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { OLD_PREF_STATS_KEY, PreferredStatService } from '@app/service/preferred-stat.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
-import { faLoveseat } from '@fortawesome/pro-regular-svg-icons';
 import { ClipboardService } from 'ngx-clipboard';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
@@ -589,7 +588,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   private isInputTarget(event: KeyboardEvent): boolean {
     const element = event.target as HTMLElement;
-    return element?.tagName?.toUpperCase()=='INPUT';
+    return element?.tagName?.toUpperCase() == 'INPUT';
   }
 
   onLeft(event: any) {

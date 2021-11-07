@@ -358,9 +358,9 @@
       </thead>
       <tbody *ngIf="gearToShow$|async as gearToShow">
         <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
-          <tr [ngClass]="i.mark">
+          <tr [ngClass]="i.mark?i.mark:'none'">
             <td class="limited-gear-width">
-              <d2c-item-icon [i]="i" [option]="option.type" (toggleLock)="setLock(player, i, $event)"
+              <d2c-item-icon [i]="i" [mark]="i.mark" [option]="option.type" (toggleLock)="setLock(player, i, $event)"
                 (pullPostmaster)="pullFromPostmaster(player, i)" (equip)="equip(player, i)"
                 (transfer)="transfer(player, i, $event)">
               </d2c-item-icon>

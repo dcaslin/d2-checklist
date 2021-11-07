@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
-import { ItemType, DamageType, EnergyType, InventoryItem, Player, Target } from '@app/service/model';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { GearComponent } from '@app/gear';
+import { MarkService } from '@app/service/mark.service';
+import { DamageType, EnergyType, InventoryItem, ItemType, Target } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +15,7 @@ export class ItemIconComponent  {
   DamageType = DamageType;
 
   @Input() i: InventoryItem;
+  @Input() mark: string|null;
   @Input() option: ItemType;
   @Input() hideMenu = false;
 
@@ -23,5 +24,7 @@ export class ItemIconComponent  {
   @Output() equip = new EventEmitter<boolean>();
   @Output() transfer = new EventEmitter<Target>();
 
-  constructor(public iconService: IconService) { }
+  constructor(public iconService: IconService, public markService: MarkService) { }
+
+
 }

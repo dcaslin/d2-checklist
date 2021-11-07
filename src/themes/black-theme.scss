@@ -20,28 +20,14 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         color: #ffb300 !important;
     }
 
-    .upgrade-color {
-        color: hsl(200, 65%, 45%);
-        font-weight: bold;
-    }
-
-    .keep-color {
-        color: hsl(103, 44%, 43%);
-        font-weight: bold;
-    }
-
-    .infuse-color {
-        color: hsla(40, 81%, 48%, 1);
-        font-weight: bold;
-    }
 
     .junk-color {
-        color: #d60505;
+        color: hsl(0, 95%, 43%, 1);
         font-weight: bold;
     }
 
     .archive-color {
-        color: #868686;
+        color: 	rgb(134, 134, 134);
         font-weight: bold;
     }
 
@@ -50,13 +36,19 @@ $d2c-black-theme: mat-dark-theme($d2c-black-primary, $d2c-black-accent, $d2c-bla
         background-color: #303d4d;
     }
 
+    
+    .mark-table>tbody>tr.none>td,
+    .mark-table>tbody>tr>td.none {
+        background-color: #212121;
+    }
+
+
     .mark-table>tbody>tr.keep>td,
     .mark-table>tbody>tr>td.keep {
         background-color: #344235;
     }
 
-    .mark-table>tbody>tr.infuse>td,
-    ,
+    .mark-table>tbody>tr.infuse>td,    
     .mark-table>tbody>tr>td.infuse {
         background-color: #604532;
     }
