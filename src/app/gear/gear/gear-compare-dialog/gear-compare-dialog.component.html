@@ -89,11 +89,11 @@
                         </div>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             <div class="compare-icon-cell">
                                 <d2c-god-roll-item vertical="true" [item]="i" [debugmode]="debugmode|async">
                                 </d2c-god-roll-item>
-                                <d2c-item-icon [i]="i" [option]="i.type"
+                                <d2c-item-icon [i]="i"  [mark]="i.mark" [option]="i.type"
                                     (toggleLock)="parent.setLock(player, i, $event)"
                                     (pullPostmaster)="parent.pullFromPostmaster(player, i)"
                                     (equip)="parent.equip(player, i)" (transfer)="parent.transfer(player, i, $event)">
@@ -109,7 +109,7 @@
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
 
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             <fa-icon *ngIf="i.notes" [matTooltip]="i.notes" class="accent-text pad-right"
                                 [icon]="iconService.fasStickyNote"></fa-icon>
                             <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
@@ -144,7 +144,7 @@
                             (sort)="sort($event)">Capacity</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             {{i.energyCapacity}}
                         </td>
                     </ng-container>
@@ -157,7 +157,7 @@
                             (sort)="sort($event)">Pref Pts</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             {{i.preferredStatPoints}}
                         </td>
                     </ng-container>
@@ -168,7 +168,7 @@
                             (sort)="sort($event)">Total Pts</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             {{i.totalStatPoints}}
                         </td>
                     </ng-container>
@@ -185,7 +185,7 @@
                         </div>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
                         </td>
                     </ng-container>
@@ -196,7 +196,7 @@
                             (sort)="sort($event)">Cap</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             <ng-container *ngIf="i.powerCap<10000; else highCap">
                                 <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
                             </ng-container>
@@ -212,7 +212,7 @@
                             (sort)="sort($event)">Mod</d2c-horizontal-sort>
                     </th>
                     <ng-container *ngFor="let i of sortedItems|async">
-                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                             <ng-container *ngFor="let mod of i.mods">
                                 <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
                                     {{mod.name}}
@@ -235,7 +235,7 @@
 
                         </th>
                         <ng-container *ngFor="let i of sortedItems|async">
-                            <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                            <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
                                         <span *ngFor="let plug of socket.plugs; last as isLastPlug"
@@ -260,7 +260,7 @@
                         </th>
                         <ng-container *ngFor="let i of sortedItems|async">
 
-                            <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark">
+                            <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                                 <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                                     <span [class.baseonly]="targetStat.value==null">
                                         <span [ngClass]="getColor(targetStat)">

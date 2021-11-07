@@ -13,10 +13,29 @@
   font-weight: 700;
 }
 
-.gear-equipped {
+.bottom-left {
+  display: flex;
+  flex-direction: row;
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+.bottom-left>div {
+  margin-right: 2px;
+}
+
+.tag-status {
+  width: auto;
+  padding: 0 2px !important;
+  //background: rgba(255, 255, 255, 0.9);
+  line-height: 13px;
+  color: rgb(0, 0, 0);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.gear-equipped {
   width: auto;
   padding: 0 2px !important;
   background: rgba(255, 255, 255, 0.9);

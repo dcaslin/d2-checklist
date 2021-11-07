@@ -21,13 +21,18 @@
             >
             {{i.power}}
         </div>
+        
         <div class="gear-lock" *ngIf="!hideMenu">
             <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked|async"></fa-icon>
             <fa-icon [icon]="iconService.fasLockOpenAlt" *ngIf="!(i.locked|async)"></fa-icon>
         </div>
-        <div class="gear-equipped">
-            <fa-icon [icon]="iconService.fasShieldCheck" *ngIf="i.equipped|async" title="Equipped"></fa-icon>
+        <div class="bottom-left">
+            <div class="gear-equipped" *ngIf="i.equipped|async">
+                <fa-icon [icon]="iconService.fasShieldCheck" title="Equipped"></fa-icon>
+            </div>
+            <div *ngIf="mark" class="tag-status" [ngClass]="mark+'-icon-bg'"><fa-icon [icon]="markService.markDict[mark].icon"></fa-icon></div>
         </div>
+        
     </ng-template>
 
     <mat-menu #itemMenu="matMenu">

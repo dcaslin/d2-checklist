@@ -10,6 +10,47 @@
 
 @include mat-core();
 
+
+.upgrade-color {
+  color: hsl(200, 65%, 45%);
+  font-weight: bold;
+}
+.keep-color {
+  color: hsl(103, 44%, 43%);
+  font-weight: bold;
+}
+.infuse-color {
+  color: hsla(40, 81%, 48%, 1);
+  font-weight: bold;
+}
+.junk-color {
+  color: hsla(0, 76%, 36%, 1);
+  font-weight: bold;
+}
+.archive-color {
+  color: rgb(156, 156, 156);
+  font-weight: bold;
+}
+
+
+.upgrade-icon-bg {
+  background-color: hsl(200, 65%, 71%);
+}
+.keep-icon-bg {
+  background-color: hsl(103, 44%, 69%);
+}
+
+.infuse-icon-bg {
+  background-color: hsl(50, 81%, 74%);
+}
+
+.junk-icon-bg {
+  background-color: hsl(0, 43%, 71%);
+}
+.archive-icon-bg {
+  background-color: hsl(0, 0%, 79%);
+}
+
 @import 'default-theme.scss';
 @import 'light-theme.scss';
 @import 'black-theme.scss';

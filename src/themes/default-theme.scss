@@ -7,27 +7,7 @@ $d2c-theme: mat-light-theme($d2c-primary, $d2c-accent);
     $primary: map-get($theme, primary);
     $accent: map-get($theme, accent);
 
-    .upgrade-color {
-        color: hsl(200, 65%, 45%);
-        font-weight: bold;
-    }
-    .keep-color {
-        color: hsl(103, 44%, 43%);
-        font-weight: bold;
-    }
-    .infuse-color {
-        color: hsla(40, 81%, 48%, 1);
-        font-weight: bold;
-    }
-    .junk-color {
-        color: hsla(0, 76%, 36%, 1);
-        font-weight: bold;
-    }
-    .archive-color {
-        color: rgb(156, 156, 156);
-        font-weight: bold;
-    }
-
+   
     .fake-link {
         color: rgba(0, 0, 0, 0.87);
     }

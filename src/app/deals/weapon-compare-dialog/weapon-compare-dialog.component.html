@@ -107,7 +107,7 @@
                 </div>
             </th>
             <ng-container *ngFor="let i of sortedItems|async">
-                <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark">
+                <td *ngIf="!hideJunk || i.mark!='junk'" [ngClass]="i.mark?i.mark:'none'">
                     <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
                 </td>
             </ng-container>
