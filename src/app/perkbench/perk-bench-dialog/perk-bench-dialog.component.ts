@@ -103,7 +103,7 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
     }
     if (this.r.info.type == 'Sword') {
       this.mwOptions = SWORD_MW;
-    } else if (this.r.info.type == 'Fusion Rifle') {
+    } else if (this.r.info.type == 'Fusion Rifle' || this.r.info.type == 'Linear Fusion Rifle') {
       this.mwOptions = FUSION_MW;
     } else if (this.r.info.type == 'Rocket Launcher') {
       this.mwOptions = ROCKET_MW;
