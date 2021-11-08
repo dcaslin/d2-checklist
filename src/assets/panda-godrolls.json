@@ -1,7 +1,7 @@
 {
   "title": "Official D2Checklist Rolls",
-  "date": "2021-08-28T03:02:04.731Z",
-  "manifestVersion": "96750.21.08.09.1845-3-bnet.39541",
+  "date": "2021-11-08T17:12:36.548Z",
+  "manifestVersion": "98987.21.10.23.2200-2-bnet.40976",
   "rolls": [
     {
       "name": "better devils",
@@ -27727,7 +27727,7 @@
         ],
         "goodPerks": [
           "corkscrew rifling",
-          "smallbore",
+          "arrowhead brake",
           "enhanced battery",
           "bottomless grief",
           "cornered",
@@ -27746,7 +27746,7 @@
           "kickstart"
         ],
         "goodPerks": [
-          "corkscrew rifling",
+          "arrowhead brake",
           "smallbore",
           "projection fuse",
           "liquid coils",
@@ -27784,8 +27784,7 @@
       },
       "pvp": {
         "masterwork": [
-          "handling",
-          "range"
+          "handling"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -30214,6 +30213,56 @@
       "controller": true
     },
     {
+      "name": "jurassic green",
+      "sheet": "lost - controller",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "subsistence",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "corkscrew rifling",
+          "alloy magazine",
+          "flared magwell",
+          "extended mag",
+          "threat detector",
+          "multikill clip",
+          "dragonfly",
+          "wellspring"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability",
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "high-caliber rounds",
+          "heating up",
+          "multikill clip"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "extended barrel",
+          "ricochet rounds",
+          "tunnel vision",
+          "killing wind",
+          "rangefinder",
+          "unrelenting",
+          "wellspring"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "the comedian",
       "sheet": "lost - mnk",
       "pve": {
@@ -30251,7 +30300,6 @@
           "rifled barrel",
           "accurized rounds",
           "hip-fire grip",
-          "genesis",
           "thresh"
         ]
       },
@@ -30544,7 +30592,8 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "range",
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -30583,7 +30632,6 @@
           "smart drift control",
           "hard launch",
           "alloy casing",
-          "impulse amplifier",
           "clown cartridge",
           "impulse amplifier",
           "chain reaction",
@@ -31211,6 +31259,7 @@
       },
       "pvp": {
         "masterwork": [
+          "range",
           "handling"
         ],
         "greatPerks": [
@@ -31444,7 +31493,8 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "range",
+          "handling"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -31460,6 +31510,56 @@
           "killing wind",
           "celerity",
           "harmony"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "jurassic green",
+      "sheet": "lost - mnk",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "subsistence",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "corkscrew rifling",
+          "alloy magazine",
+          "flared magwell",
+          "extended mag",
+          "threat detector",
+          "multikill clip",
+          "dragonfly",
+          "wellspring"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range",
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "high-caliber rounds",
+          "tunnel vision",
+          "multikill clip"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "ricochet rounds",
+          "killing wind",
+          "heating up",
+          "rangefinder",
+          "unrelenting",
+          "wellspring"
         ]
       },
       "mnk": true,

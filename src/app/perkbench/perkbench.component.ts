@@ -66,6 +66,15 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/e197b731c11556b17664b90a87dd0c11.png': 13,
   '/common/destiny2_content/icons/b07d89064a1fc9a8e061f59b7c747fa5.png': 14,
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
+  '/common/destiny2_content/icons/4368a3e344977c5551407845ede830c2.png': 15,
+
+  // events
+  '/common/destiny2_content/icons/d91c738e8179465a165e35f7a249701b.png': 101,
+  '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102,
+  '/common/destiny2_content/icons/0a93338035464bade265763e190b9f12.png': 105,
+  '/common/destiny2_content/icons/97c65a76255ef764a9a98f24e50b859d.png': 106,
+  '/common/destiny2_content/icons/215100c99216b9c0bd83b9daa50ace45.png': 104,
+  '/common/destiny2_content/icons/5f5bed34dcd062be8302ce27b542dce9.png': 103
 };
 
 
@@ -302,12 +311,12 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       } else {
         controllerRoll = gunRolls.find((x) => x.name == name && x.controller);
         mnkRoll = gunRolls.find((x) => x.name == name && x.mnk);
-        if (controllerRoll == null && mnkRoll !=null) {
+        if (controllerRoll == null && mnkRoll != null) {
           controllerRoll = JSON.parse(JSON.stringify(mnkRoll));
           controllerRoll.mnk = false;
           controllerRoll.controller = true;
         }
-        if (mnkRoll == null && controllerRoll !=null) {
+        if (mnkRoll == null && controllerRoll != null) {
           mnkRoll = JSON.parse(JSON.stringify(controllerRoll));
           mnkRoll.mnk = true;
           mnkRoll.controller = false;
@@ -372,7 +381,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
     return returnMe;
   }
 
-  private buildRollJson(): CompleteGodRolls {  
+  private buildRollJson(): CompleteGodRolls {
   const newRolls = PerkbenchComponent.rebuildRolls(this.rolls$.getValue());
   const downloadMe: CompleteGodRolls = {
     title: this.currentTitle,
@@ -486,6 +495,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       };
       if (gi.season == null) {
         gi.season = -1;
+        console.log(`xxx ${desc.displayProperties.name} ${desc.iconWatermark}`);
       }
       if (hasRandomRoll) {
         gunsWithSockets.push(gi);
