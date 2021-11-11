@@ -495,7 +495,9 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
       };
       if (gi.season == null) {
         gi.season = -1;
-        console.log(`xxx ${desc.displayProperties.name} ${desc.iconWatermark}`);
+        if (desc.iconWatermark){
+          console.log(`Unmapped watermark: ${desc.displayProperties.name} ${desc.iconWatermark}`);
+        }
       }
       if (hasRandomRoll) {
         gunsWithSockets.push(gi);
