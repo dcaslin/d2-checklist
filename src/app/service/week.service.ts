@@ -653,15 +653,15 @@ export class WeekService {
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(17);
-    const lsEpoch = parseISO('2021-08-24T17:00:00.000Z'); // Dec 15 2020
+    const lsEpoch = parseISO('2021-08-23T17:00:00.000Z'); // Dec 15 2020
     const lsDays = differenceInDays(referenceDate, lsEpoch);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
     const lsLootIndex = lsDays % this.LS_LEGEND_LOOT.length;
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
     const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
     // TODO update this when PL's change
-    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1310);
-    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1340);
+    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1320);
+    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1350);
 
     const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
     return {
