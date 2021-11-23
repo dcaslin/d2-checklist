@@ -1748,7 +1748,7 @@ export class ParseService {
                 }
             }
         }
-        
+
         const percent = Math.floor((100 * progress) / completeValue);
         return {
             hash: node.hash,
@@ -2009,6 +2009,7 @@ export class ParseService {
                             c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
                         }
                         for (const missingKey of Object.keys(milestonesByKey)) {
+
                             if (c.milestones[missingKey] == null) {
                                 const mDesc = this.destinyCacheService.cache.Milestone[missingKey];
                                 if (mDesc) {
@@ -2027,6 +2028,10 @@ export class ParseService {
                                         activityAvailable = true;
                                     }
 
+                                    // hack for Trials rounds where the activity is sometimes missing anyway
+                                    if (missingKey == '3007559996' && !activityAvailable) {
+                                        activityAvailable = true;
+                                    }
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
                                     if (!activityAvailable || c.notReady) {
                                         // console.dir(c.milestones[missingKey]);
@@ -2772,8 +2777,7 @@ export class ParseService {
 
                 } else if (isSpecialRankProgression && ap.hash == '457612306') {
                     returnMe.vanguardRank = ap;
-                }
-                else if (ap.hash == sp.rewardProgressionHash) {
+                } else if (ap.hash == sp.rewardProgressionHash) {
                     returnMe.seasonRank = ap;
                 } else if (ap.hash == sp.prestigeProgressionHash) {
                     prestige = ap;
@@ -3067,7 +3071,7 @@ export class ParseService {
             }
         }
         // it has other incomplete intervals, it's not really done
-        if (incompIntPercent!=null && incompIntPercent<100) {
+        if (incompIntPercent != null && incompIntPercent < 100) {
             complete = false;
         }
         return {
@@ -3578,7 +3582,7 @@ export class ParseService {
 
             let type: ItemType = desc.itemType;
             // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
-            const ignoreWeaponPerkStats: InventoryPlug[] = []; 
+            const ignoreWeaponPerkStats: InventoryPlug[] = [];
             let redacted = false;
             if (desc.itemTypeDisplayName == null) {
                 // handle hidden stuff, like early raid gear
@@ -3872,7 +3876,7 @@ export class ParseService {
                                             name, plugDesc.displayProperties.description,
                                             plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
                                         // elemental capacitor
-                                        if (oPlug.active && IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {                                            
+                                        if (oPlug.active && IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {
                                             ignoreWeaponPerkStats.push(oPlug);
                                         }
                                         this.applyPlugInventoryStats(oPlug, plugDesc);
