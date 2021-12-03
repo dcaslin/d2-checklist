@@ -15,8 +15,8 @@
             </div>
             <div class="filter-container">
               <mat-form-field class="wildcard-filter">
-                <mat-label>Wildcard filter</mat-label>
-                <input matInput #filter [(ngModel)]="state.visibleFilterText" placeholder="Wildcard filter"
+                <mat-label>Search</mat-label>
+                <input matInput #filter [(ngModel)]="state.visibleFilterText" placeholder="Search"
                   (keyup)="state.filterKeyUp$.next()">
                 <button mat-button *ngIf="state.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"
                   (click)="state.visibleFilterText=null;state.filterKeyUp$.next()">

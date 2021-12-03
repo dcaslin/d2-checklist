@@ -97,7 +97,7 @@
     </div>
     <div [hidden]="selectedUser==null" class="filter-container">
       <mat-form-field class="wildcard-filter">
-        <mat-label>Wildcard filter</mat-label>
+        <mat-label>Search</mat-label>
         <input matInput #filter [matAutocomplete]="auto" [(ngModel)]="gearFilterStateService.visibleFilterText"
           placeholder="Name, perk or is:goodroll" (keyup)="filterKeyUp$.next()">
         <button mat-button *ngIf="gearFilterStateService.visibleFilterText" matSuffix mat-icon-button aria-label="Clear"

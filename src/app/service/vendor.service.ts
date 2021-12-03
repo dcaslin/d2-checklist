@@ -192,6 +192,13 @@ export class VendorService {
         data: xurArmor
       });
     }
+    const adaArmor = this.checkCollectionForVendor(player, vendorItems, '350061650', ItemType.Armor);
+    if (adaArmor.length > 0) {
+      returnMe.push({
+        vendor: adaArmor[0].vendorItemInfo.vendor,
+        data: adaArmor
+      });
+    }
     const modVendors = [
       '672118013', //banshee
       '350061650', //ada

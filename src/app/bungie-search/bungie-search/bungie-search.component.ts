@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
-import { BungieMember, BungieMemberPlatform } from '../../service/model';
+import { BungieMemberPlatform, BungieGlobalSearchResult, Const } from '../../service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
@@ -17,47 +17,23 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./bungie-search.component.scss']
 })
 export class BungieSearchComponent extends ChildComponent implements OnInit, OnDestroy {
+  Const = Const;
   routedName: string;
   name: string;
-  public accounts: BehaviorSubject<BungieMember[]> = new BehaviorSubject(null);
+  public rows$: BehaviorSubject<BungieGlobalSearchResult[]> = new BehaviorSubject(null);
 
   constructor(storageService: StorageService, private bungieService: BungieService,
     public iconService: IconService,
-    private route: ActivatedRoute, private router: Router,
+    private route: ActivatedRoute, public router: Router,
     private ref: ChangeDetectorRef) {
     super(storageService);
   }
 
-  public async loadPlayer(a: BungieMemberPlatform) {
+  public async loadClan(member: BungieGlobalSearchResult) {
     this.loading.next(true);
     try {
-      const p = await this.bungieService.searchPlayer(a.platform.type, a.name);
-      if (p != null) {
-        const x = await this.bungieService.getChars(p.membershipType, p.membershipId, ['Profiles', 'Characters']);
-        if (x != null) {
-          this.router.navigate([a.platform.type, a.name]);
-        } else {
-          a.defunct = true;
-        }
-      } else {
-        a.defunct = true;
-      }
-    }
-    finally {
-      this.loading.next(false);
-    }
-    this.ref.markForCheck();
-  }
-
-  public async loadClan(member: BungieMember) {
-    this.loading.next(true);
-    try {
-      const x = await this.bungieService.getClans(member.id);
-      if (x.length === 0) {
-        member.noClan = true;
-      } else {
-        member.clans = x;
-      }
+      const x = await this.bungieService.getClans(member.bungieNetMembershipId);
+      member.clans = x;
     }
     finally {
       this.loading.next(false);
@@ -81,8 +57,8 @@ export class BungieSearchComponent extends ChildComponent implements OnInit, OnD
     console.log('loading');
     this.loading.next(true);
     try {
-      const x: BungieMember[] = await this.bungieService.searchBungieUsers(this.name);
-      this.accounts.next(x);
+      const x: BungieGlobalSearchResult[] = await this.bungieService.searchBungieUsers(this.name);
+      this.rows$.next(x);
     }
     finally {
       this.loading.next(false);

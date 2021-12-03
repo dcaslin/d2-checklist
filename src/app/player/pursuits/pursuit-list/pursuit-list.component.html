@@ -11,7 +11,7 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field class="searchField">
-      <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText" placeholder="Wildcard filter">
+      <input matInput (keyup)="searchSubject.next()" [(ngModel)]="displayFilterText" placeholder="Search">
       <button mat-button *ngIf="(realFilterText|async)!=null && (realFilterText|async).length>0" matSuffix
         mat-icon-button aria-label="Clear" (click)="displayFilterText=null;searchSubject.next()">
         <mat-icon>close</mat-icon>

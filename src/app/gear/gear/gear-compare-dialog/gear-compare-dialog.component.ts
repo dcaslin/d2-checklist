@@ -111,7 +111,11 @@ export class GearCompareDialogComponent extends ChildComponent {
   }
 
   public static getColorStatic(items: InventoryItem[], targetStat: InventoryStat): string {
-    const percentile = GearCompareDialogComponent.getPercentile(items, targetStat);
+    let percentile = GearCompareDialogComponent.getPercentile(items, targetStat);
+    // handle lesser is better stats
+    if (targetStat.name.toLowerCase().indexOf('time') >= 0) {
+      percentile = 100 - percentile;
+    }
     if (percentile <= 20) {
       return 'junk-color';
     } else if (percentile <= 40) {
