@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { add, differenceInDays, differenceInWeeks, parseISO, subHours } from 'date-fns';
+import { add, differenceInDays, differenceInHours, differenceInWeeks, parseISO, subHours } from 'date-fns';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
 import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInfo, NameDesc, PublicMilestonesAndActivities } from './model';
@@ -643,18 +643,20 @@ export class WeekService {
     if (delta) {
       referenceDate = add(referenceDate, { days: delta });
     }
-
+    const magicHour = 17;
+    
 
     // let's pretend this is in UTC, so right now it's 1AM Tuesday UTC
     // in game that means it's "Monday" b/c it's < 5PM on that day
-    if (referenceDate.getUTCHours() < 17) {
+    if (referenceDate.getUTCHours() < magicHour) {
       // console.log(`Prior to reset ${referenceDate.getHours()}`);
       referenceDate = subHours(referenceDate, 24);
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
-    referenceDate.setUTCHours(17);
-    const lsEpoch = parseISO('2021-08-23T17:00:00.000Z'); // Dec 15 2020
-    const lsDays = differenceInDays(referenceDate, lsEpoch);
+    referenceDate.setUTCHours(magicHour);
+    const lsEpoch = parseISO('2021-08-24T17:00:00.000Z'); // 2021-08-24 is our current reference date
+    // diff in hours ignores DST
+    const lsDays = Math.floor(differenceInHours(referenceDate, lsEpoch) / 24);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
     const lsLootIndex = lsDays % this.LS_LEGEND_LOOT.length;
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];

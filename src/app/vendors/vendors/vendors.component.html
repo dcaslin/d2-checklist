@@ -20,7 +20,7 @@
     </mat-button-toggle-group>
     <div class="filter-row">
         <mat-form-field>
-            <mat-label>Wildcard filter</mat-label>
+            <mat-label>Search</mat-label>
             <input autocomplete="off" matInput #filter [(ngModel)]="visibleFilterText" placeholder="Name, vendor, stat">
             <button mat-button *ngIf="visibleFilterText?.length>0" matSuffix mat-icon-button aria-label="Clear"
                 (click)="visibleFilterText='';filterText$.next(null)">

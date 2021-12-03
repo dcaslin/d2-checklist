@@ -238,7 +238,7 @@ export interface Seal {
 
     gildProgress: number;
     gildTotal: number;
-    
+
     complete: boolean;
 }
 
@@ -412,16 +412,22 @@ export class ActivityMode {
     }
 }
 
+export interface BungieGlobalSearchResult {
+    searchResult: SearchResult;
+    bungieGlobalDisplayName?: string;
+    bungieGlobalDisplayNameCode?: number;
+    bungieNetMembershipId?: string;
+    clans: ClanRow[]|null;
+}
+
 export interface SearchResult {
     iconPath: string;
-    crossSaveOverride?:  number;
+    crossSaveOverride?: number;
     applicableMembershipTypes?: number[];
     isPublic?: boolean;
-    membershipType:              number;
-    membershipId:                string;
-    displayName:                 string;
-    bungieGlobalDisplayName?:     string;
-    bungieGlobalDisplayNameCode?: number;
+    membershipType: number;
+    membershipId: string;
+    displayName: string;
 }
 
 
@@ -718,7 +724,7 @@ export class Player {
             this.crucibleRank = specialAccountProgressions.crucibleRank;
             this.seasonRank = specialAccountProgressions.seasonRank;
         }
-        this.gearMetaData = gearMeta; 
+        this.gearMetaData = gearMeta;
         this.pursuitGear = this.gear ? this.gear.filter(g => g.objectives?.length > 0 && g.type != ItemType.Subclass) : [];
     }
 

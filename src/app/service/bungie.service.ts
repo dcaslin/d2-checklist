@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, MileStoneName, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, MileStoneName, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -31,7 +31,7 @@ export class BungieService implements OnDestroy {
         private parseService: ParseService) {
     }
 
-    public async searchBungieUsers(name: string): Promise<BungieMember[]> {
+    public async searchBungieUsers2(name: string): Promise<BungieMember[]> {
         try {
             const resp = await this.makeReq('User/SearchUsers/?q=' + encodeURIComponent(name));
             return this.parseService.parseBungieMembers(resp);
@@ -40,6 +40,39 @@ export class BungieService implements OnDestroy {
             return [];
         }
     }
+    
+    
+    public async searchBungieUsers(name: string): Promise<BungieGlobalSearchResult[]> {
+        try {
+            const resp = await this.postReq(`User/Search/GlobalName/0/`, {
+                displayNamePrefix: name
+            });
+            const returnMe: BungieGlobalSearchResult[] = [];
+            if (resp.searchResults) {
+                for (const r of resp.searchResults) {
+                    for (const m of r.destinyMemberships) {
+                        // overridden, skip it
+                        if (m.applicableMembershipTypes.length == 0) {
+                            continue;
+                        }
+                        const row: BungieGlobalSearchResult = {
+                            searchResult: m,
+                            bungieGlobalDisplayName: r.bungieGlobalDisplayName,
+                            bungieGlobalDisplayNameCode: r.bungieGlobalDisplayNameCode,
+                            bungieNetMembershipId: r.bungieNetMembershipId,
+                            clans: null
+                        };
+                        returnMe.push(row);
+                    }
+                }
+            }
+            return returnMe;          
+        } catch (err) {
+            this.handleError(err);
+            return null;
+        }
+    }
+
 
 
     public async searchClans(name: string): Promise<ClanInfo> {
@@ -606,7 +639,7 @@ export class BungieService implements OnDestroy {
             return null;
         }
     }
-
+    
     public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' + membershipId + '/LinkedProfiles/');
