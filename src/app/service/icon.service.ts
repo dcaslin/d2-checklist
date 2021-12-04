@@ -70,7 +70,7 @@ import {
   faSkullCrossbones as fasSkullCrossbones,
   faSkull as fasSkull, faStoreAlt as fasStoreAlt,
   faStore as fasStore, faUser as fasUser, faChessKnight as fasChessKnight, faTicketAlt as fasTicketAlt,
-  faCabinetFiling as fasCabinetFiling, faStickyNote as fasStickyNote
+  faCabinetFiling as fasCabinetFiling, faStickyNote as fasStickyNote, faMagic as fasMagic
 } from '@fortawesome/pro-solid-svg-icons';
 
 
@@ -231,7 +231,8 @@ export class IconService {
   public readonly fasCopy = fasCopy;
   public readonly fasQuestionCircle = fasQuestionCircle;
   public readonly fasTrash = fasTrash;
-  public readonly fasLevelUp = fasLevelUp;  
+  public readonly fasLevelUp = fasLevelUp;
+  public readonly fasMagic = fasMagic;
 
   public readonly falBowArrow = falBowArrow;
 

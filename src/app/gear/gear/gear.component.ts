@@ -26,6 +26,7 @@ import { GearCompareDialogComponent } from './gear-compare-dialog/gear-compare-d
 import { GearFilterStateService, ShortcutInfo, TabOption } from './gear-filter-state.service';
 import { GearHelpDialogComponent } from './gear-help-dialog/gear-help-dialog.component';
 import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utilities-dialog.component';
+import { ModHelperDialogComponent } from './mod-helper-dialog/mod-helper-dialog.component';
 import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
 
 @Component({
@@ -515,6 +516,15 @@ export class GearComponent extends ChildComponent implements OnInit {
       parent: this
     };
     this.dialog.open(SeasonBreakdownDialogComponent, dc);
+  }
+
+  public showModWizard(): void {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this
+    };
+    this.dialog.open(ModHelperDialogComponent, dc);
   }
 
   public showArmorPerks(): void {

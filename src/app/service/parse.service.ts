@@ -3923,7 +3923,7 @@ export class ParseService {
                                     plugs.push(oPlug);
                                 }
                                 if (plugs.length > 0) {
-                                    sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs, possiblePlugs));
+                                    sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs, possiblePlugs, index));
                                 }
                                 if (socketDesc.randomizedPlugSetHash) {
                                     const randomRollsDesc: any = this.destinyCacheService.cache.PlugSet[socketDesc.randomizedPlugSetHash];

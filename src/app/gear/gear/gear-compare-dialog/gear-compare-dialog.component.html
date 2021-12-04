@@ -11,7 +11,8 @@
     <div *ngIf="showAllNames">
         <span style="margin-right: 25px; vertical-align: middle">{{model.typeName}}</span>
         <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk</mat-checkbox>
-        <span class="fake-link-underlined simple-darker-caption-no-margin pad-left-more" *ngIf="hideMe.length>0" title="Restore Hidden" (click)="hideMe=[]">Restore Hidden</span>
+        <span class="fake-link-underlined simple-darker-caption-no-margin pad-left-more" *ngIf="hideMe.length>0"
+            title="Restore Hidden" (click)="hideMe=[]">Restore Hidden</span>
     </div>
     <mat-dialog-content *ngIf="parent.player$|async as player">
         <table class="gear-table mark-table">
@@ -93,7 +94,7 @@
                             <div class="compare-icon-cell">
                                 <d2c-god-roll-item vertical="true" [item]="i" [debugmode]="debugmode|async">
                                 </d2c-god-roll-item>
-                                <d2c-item-icon [i]="i"  [mark]="i.mark" [option]="i.type"
+                                <d2c-item-icon [i]="i" [mark]="i.mark" [option]="i.type"
                                     (toggleLock)="parent.setLock(player, i, $event)"
                                     (pullPostmaster)="parent.pullFromPostmaster(player, i)"
                                     (equip)="parent.equip(player, i)" (transfer)="parent.transfer(player, i, $event)">
@@ -225,7 +226,8 @@
                     *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
                     <tr *ngFor="let mp of maxPlugs; index as i1">
                         <th *ngIf="i1==0">
-                            <d2c-horizontal-sort field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Sockets</d2c-horizontal-sort>
+                            <d2c-horizontal-sort field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc"
+                                (sort)="sort($event)">Sockets</d2c-horizontal-sort>
                         </th>
                         <th *ngIf="i1>0">
                             <div *ngFor="let item of [].constructor(mp); index as plugIndex">
@@ -238,12 +240,10 @@
                             <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
-                                        <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                                            [class.not-selected-plug]="!plug.active">
-                                            <d2c-god-roll-plug style="font-size: smaller" [plug]="plug"
-                                                [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
+                                        <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
+                                            <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async"></d2c-writable-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
-                                        </span>
+                                        </ng-container>
                                     </div>
                                 </ng-container>
                             </td>

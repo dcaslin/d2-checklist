@@ -1,0 +1,43 @@
+<h5 mat-dialog-title class="title-row">Mod Wizard
+    <button mat-icon-button (click)="parent.load()">
+        <fa-icon [icon]="iconService.fasSyncAlt" [spin]="parent.loading|async"></fa-icon>
+        <!--[spin]="vendorsLoading"-->
+    </button>
+</h5>
+<div mat-dialog-content>
+    <div class="nav-toggles char-row" *ngIf="parent.player$|async as player">
+        <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
+            (change)="char$.next($event.value)">
+            <mat-button-toggle *ngFor="let c of player.characters" [value]="c">
+                {{c.className}}
+                <span class="d-none d-md-inline"> - {{c.light}}</span>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+    <div class="flex-column">
+        <div>
+            <mat-button-toggle-group class="chars-toggle" [value]="pve$|async" (change)="pve$.next($event.value)">
+                <mat-button-toggle [value]="true">PvE</mat-button-toggle>
+                <mat-button-toggle [value]="false">PvP</mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <ng-container *ngIf="pve$|async">
+            <div>PvE</div>
+        </ng-container>
+
+        <ng-container *ngIf="!(pve$|async)">
+            <div>PvP</div>
+        </ng-container>
+    </div>
+
+
+    <div *ngFor="let r of equipped$|async">
+        {{r.name}}
+    </div>
+
+</div>
+<div mat-dialog-actions>
+    <button mat-button>Apply</button>
+    <button mat-button>Clear All Mods</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
+  </div>

@@ -3,7 +3,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
 import { MarkService } from './mark.service';
-import { Character, ClassAllowed, InventoryItem, ItemType, Player, SelectedUser, Target } from './model';
+import { Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target } from './model';
 import { NotificationService } from './notification.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
 import { PreferredStatService } from './preferred-stat.service';
@@ -601,6 +601,24 @@ export class GearService {
             }
         }
         this.notificationService.info('Sync complete. Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
+    }
+
+    public async insertFreeSocket(item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
+        try {
+            const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug);
+            if (success) {
+                const old = socket.plugs.find(x => x.active);
+                old.active = false;
+                plug.active = true;
+            }
+            return success;
+        } catch (x) {
+            this.notificationService.fail('Failed to insert socket');
+            const old = socket.plugs.find(x => x.active);
+            old.active = false;
+            plug.active = true;
+            return false;
+        }
     }
 
     public async transfer(player: Player, itm: InventoryItem, target: Target, vaultStatus: VaultStatus, progressTracker$?: Subject<void>): Promise<boolean> {

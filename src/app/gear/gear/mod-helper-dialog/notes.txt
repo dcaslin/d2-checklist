@@ -1,0 +1,23 @@
+ TODO: 
+    1. Show currently equipped weapons to pick priorities
+    2. Select PVP or PVE activity
+    3. if PVE
+        3.1 Champions? Yes or no
+        3.2. Protective light? Yes or no (add PL and TC)
+        3.3 Equip as many finder and scav mods as possible
+        3.4 Equip whatever champion mods we can
+        3.5 Equip seasonal mods?
+    4. if PVP
+        high energy fire? Yes or no (add PL and TC)
+    5. Allow doubling up on mods
+    6. Swap perks on guns for mode?
+
+
+    Button to unequip all mods?
+
+    Show all currently unlocked mods
+    Remove mods for guns you don't have equipped
+
+
+    1. Show current weapons and armor
+    2. 

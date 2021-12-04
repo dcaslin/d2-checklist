@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, MileStoneName, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, InventoryPlug, InventorySocket, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 
@@ -40,8 +40,8 @@ export class BungieService implements OnDestroy {
             return [];
         }
     }
-    
-    
+
+
     public async searchBungieUsers(name: string): Promise<BungieGlobalSearchResult[]> {
         try {
             const resp = await this.postReq(`User/Search/GlobalName/0/`, {
@@ -66,7 +66,7 @@ export class BungieService implements OnDestroy {
                     }
                 }
             }
-            return returnMe;          
+            return returnMe;
         } catch (err) {
             this.handleError(err);
             return null;
@@ -639,7 +639,7 @@ export class BungieService implements OnDestroy {
             return null;
         }
     }
-    
+
     public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' + membershipId + '/LinkedProfiles/');
@@ -648,6 +648,27 @@ export class BungieService implements OnDestroy {
             this.handleError(err);
             return null;
         }
+    }
+
+    public async insertFreeSocket(player: Player, item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
+        // todo, can we insert this?
+        // todo use current char id if item in vault
+        // todo figure out socket index
+        let owner = item.owner.getValue().id;
+        if (owner == 'vault') {
+            owner = player.characters[0].id;
+        }
+        await this.postReq('Destiny2/Actions/Items/InsertSocketPlugFree/', {
+            plug: {
+                socketIndex: socket.index,
+                socketArrayType: 0, // 0 is default, 1 is intrinsic, never need to use intrinsic right now
+                plugItemHash: plug.hash
+            },
+            characterId: item.owner.getValue().id,
+            itemId: item.id,
+            membershipType: player.profile.userInfo.membershipType
+        });
+        return true;
     }
 
     public async transfer(membershipType: number, target: Target, item: InventoryItem, isVault: boolean, vault: Vault, bucketService: BucketService, pullFromPostmaster?: boolean): Promise<boolean> {
