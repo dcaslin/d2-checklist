@@ -1466,11 +1466,13 @@ export class InventorySocket {
     readonly socketCategoryHash: string;
     readonly plugs: InventoryPlug[];
     readonly possiblePlugs: InventoryPlug[];
+    readonly index: number;
 
-    constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[]) {
+    constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[], index: number) {
         this.socketCategoryHash = socketCategoryHash;
         this.plugs = plugs;
         this.possiblePlugs = possiblePlugs;
+        this.index = index;
     }
 
 }
@@ -1480,7 +1482,7 @@ export class InventoryPlug {
 
     readonly name: string;
     readonly icon: string;
-    readonly active: boolean;
+    active: boolean;
     readonly enabled: boolean;
     readonly objectives: ItemObjective[];
     public currentlyCanRoll: boolean;

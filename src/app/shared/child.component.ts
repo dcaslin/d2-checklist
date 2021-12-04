@@ -58,5 +58,8 @@ export class ChildComponent implements OnDestroy {
         this.loading.complete();
     }
 
+    public dump(dumpMe: any): void {
+        console.log(dumpMe);
+    }
 
 }

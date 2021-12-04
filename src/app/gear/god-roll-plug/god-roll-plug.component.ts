@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
 import { InventoryPlug } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';
@@ -11,12 +11,11 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['./god-roll-plug.component.scss']
 })
 export class GodRollPlugComponent implements OnInit {
+  // TODO allow switching perk here
 
-  @Input()
-  plug: InventoryPlug;
+  @Input() plug: InventoryPlug;
 
-  @Input()
-  debugmode: boolean;
+  @Input() debugmode: boolean;
 
   constructor(
     public iconService: IconService,

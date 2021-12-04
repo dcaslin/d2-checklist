@@ -228,6 +228,9 @@
           <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
         </span>
       </button>
+      <button mat-menu-item (click)="showModWizard()">
+        <fa-icon [icon]="iconService.fasMagic"></fa-icon>&ensp;Mod Wizard
+      </button>
       <button mat-menu-item (click)="syncLocks()">
         <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
       </button>
@@ -531,11 +534,11 @@
             <td class="hide-mobile-table-cell show-tablet-table-cell"
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
               <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
-                <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
-                  <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
-                  <ng-container *ngIf="!isLastPlug">|</ng-container>
-                </span>
+                <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} </div>
+                <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
+                  <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async"></d2c-writable-plug>
+                  <ng-container *ngIf="!isLastPlug"> | </ng-container>
+                </ng-container>
               </div>
             </td>
             <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
