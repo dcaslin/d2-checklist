@@ -168,12 +168,8 @@ export class PandaGodrollsService implements OnDestroy {
       i.godRollInfo = i.godRollInfo + ' is:notgoodroll';
     }
     let needsFixing = false;
-    let first = true;
-    for (const s of i.sockets) {
-      if (first) {
-        first = false;
-        continue;
-      }
+    const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
+    for (const s of perkSockets) {
       let bestPerkHad = 0;
       let bestPerkSelected = 0;
       for (const p of s.plugs) {
@@ -234,16 +230,12 @@ export class PandaGodrollsService implements OnDestroy {
       }
     }
 
-    let first = true;
     let cntr = 0;
     // 2021-05-31 if this is a great roll that only missed by one socket, mark it as a good roll
     let greatCount = 0;
-    for (const s of i.sockets) {
+    const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
+    for (const s of perkSockets) {
       cntr++;
-      if (first) {
-        first = false;
-        continue;
-      }
       let goodPerkFound = false;
       let greatPerkFound = false;
       for (const p of s.plugs) {
@@ -273,7 +265,7 @@ export class PandaGodrollsService implements OnDestroy {
         greatCount++;
       }
       // if we're only matching on the last 2 sockets, downgrade roll on last two sockets
-      if (!this.matchLastTwoSockets || cntr >= i.sockets.length - 1) {
+      if (!this.matchLastTwoSockets || cntr >= perkSockets.length - 1) {
         goodRollFound = (goodPerkFound || greatPerkFound) && goodRollFound;
         greatRollFound = greatPerkFound && greatRollFound;
       }
@@ -302,8 +294,8 @@ export class PandaGodrollsService implements OnDestroy {
     // if we're doing normal processing and we don't have a good or great roll, double check to see if we only missed by one on a god roll
     // if so, count it as a good roll
     if (!this.matchLastTwoSockets && !(greatRollFound || goodRollFound)) {
-      // we have one throwaway socket for frame, after that if we're off by only one on great rolls let's call it good
-      if (greatCount >= (i.sockets.length - 2)) {
+      // if we're off by only one on great rolls let's call it good
+      if (greatCount >= (perkSockets.length - 1)) {
         goodRollFound = true;
       }
     }

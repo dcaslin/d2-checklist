@@ -223,7 +223,7 @@
                         </th>
                         <ng-container *ngFor="let i of sortedItems|async">
                             <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
-                                <ng-container *ngFor="let socket of i.visibleSockets; index as i2; last as isLastSocket">
+                                <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
                                         <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
                                             <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async"></d2c-writable-plug>

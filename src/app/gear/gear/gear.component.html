@@ -496,14 +496,7 @@
               <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
                 [value]="i.energyCapacity*10">
               </mat-progress-bar>
-              <div *ngFor="let socket of i.visibleSockets" class="bottom-divider">
-                <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
-                {{socket.stuff|json}}
-                <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
-                  <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
-                  <ng-container *ngIf="!isLastPlug">|</ng-container>
-                </span>
-              </div>
+              <d2c-writable-sockets [item]="i"></d2c-writable-sockets>
             </td>
 
             <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -512,13 +505,7 @@
 
             <td class="hide-mobile-table-cell show-tablet-table-cell"
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <div *ngFor="let socket of i.visibleSockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
-                <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} </div>
-                <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                  <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async"></d2c-writable-plug>
-                  <ng-container *ngIf="!isLastPlug"> | </ng-container>
-                </ng-container>
-              </div>
+              <d2c-writable-sockets [item]="i"></d2c-writable-sockets>              
             </td>
             <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
               *ngIf="option.type==ItemType.Armor">

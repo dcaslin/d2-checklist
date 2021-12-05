@@ -1,12 +1,16 @@
-<fa-icon [icon]="iconService.fasSwords" *ngIf="plug.pandaPvp>0" class="perk" [class.accent-text]="plug.pandaPvp>1"
-  [matTooltip]="plug.pandaPvp>1?'This is the best PVP perk for this weapon':'This is a good PVP perk for this weapon'"
-  ></fa-icon>
-<i *ngIf="plug.pandaPve>0" class="icon-strike perk" [class.accent-text]="plug.pandaPve>1"
-  [matTooltip]="plug.pandaPve>1?'This is the best PVE perk for this weapon':'This is a good PVE perk for this weapon'"
-  ></i>
-<span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">{{plug.name}}</span>
-<ng-container *ngIf="debugmode"> {{plug.hash}}
-  <button mat-icon-button (click)="copyToClipboard()">
-    <fa-icon [icon]="iconService.farCopy"></fa-icon>
-  </button>
+<ng-container *ngIf="plug.empty">  
+    <fa-icon [icon]="iconService.farSquare"></fa-icon>
+</ng-container>
+<ng-container *ngIf="!plug.empty">
+  <fa-icon [icon]="iconService.fasSwords" *ngIf="plug.pandaPvp>0" class="perk" [class.accent-text]="plug.pandaPvp>1"
+    [matTooltip]="plug.pandaPvp>1?'This is the best PVP perk for this weapon':'This is a good PVP perk for this weapon'">
+  </fa-icon>
+  <i *ngIf="plug.pandaPve>0" class="icon-strike perk" [class.accent-text]="plug.pandaPve>1"
+    [matTooltip]="plug.pandaPve>1?'This is the best PVE perk for this weapon':'This is a good PVE perk for this weapon'"></i>
+  <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">{{plug.name}}</span>
+  <ng-container *ngIf="debugmode"> {{plug.hash}}
+    <button mat-icon-button (click)="copyToClipboard()">
+      <fa-icon [icon]="iconService.farCopy"></fa-icon>
+    </button>
+  </ng-container>
 </ng-container>
