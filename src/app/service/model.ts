@@ -752,7 +752,6 @@ export class InventoryItem {
     readonly energyType: EnergyType;
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
-    readonly visibleSockets: InventorySocket[];
     readonly objectives: ItemObjective[];
     readonly desc: string;
     readonly classAllowed: ClassAllowed;
@@ -832,7 +831,7 @@ export class InventoryItem {
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string, versionNumber: number, visibleSockets: InventorySocket[]
+        specialModSockets: string[], collectibleHash: string, versionNumber: number
     ) {
         this.id = id;
         this.hash = hash;
@@ -888,7 +887,6 @@ export class InventoryItem {
         this.specialModSockets = specialModSockets;
         this.collectibleHash = collectibleHash;
         this.versionNumber = versionNumber;
-        this.visibleSockets = visibleSockets;
     }
 }
 
@@ -1468,10 +1466,19 @@ export class InventorySocket {
     readonly possiblePlugs: InventoryPlug[];
     readonly index: number;
     readonly stuff: any[];
+    readonly empty: boolean;
+    readonly isWeaponPerk: boolean;
+    readonly isArmorMod: boolean;
+    readonly isWeaponMod: boolean;
 
     constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[], index: number, stuff?: any[]) {
         this.socketCategoryHash = socketCategoryHash;
         this.plugs = plugs;
+        this.empty = false;
+        this.empty = this.plugs.every(plug => plug.empty);
+        this.isWeaponPerk = socketCategoryHash == '4241085061';
+        this.isArmorMod = socketCategoryHash == '590099826';
+        this.isWeaponMod = socketCategoryHash == '2685412949';
         this.possiblePlugs = possiblePlugs;
         this.index = index;
         this.stuff = stuff;
@@ -1487,6 +1494,7 @@ export class InventoryPlug {
     active: boolean;
     readonly enabled: boolean;
     readonly objectives: ItemObjective[];
+    readonly empty: boolean;
     public currentlyCanRoll: boolean;
     public pandaPve = 0;
     public pandaPvp = 0;
@@ -1507,6 +1515,10 @@ export class InventoryPlug {
             this.objectives = objectives;
         } else {
             this.objectives = [];
+        }
+        this.empty = false;
+        if (name.match(/Empty.+Socket/)) {
+            this.empty = true;
         }
         this.currentlyCanRoll = true;
     }

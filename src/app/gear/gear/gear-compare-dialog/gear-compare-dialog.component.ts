@@ -1,5 +1,5 @@
 import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
@@ -36,7 +36,6 @@ export class GearCompareDialogComponent extends ChildComponent {
     storageService: StorageService,
     public iconService: IconService,
     public gearService: GearService,
-    public dialogRef: MatDialogRef<GearCompareDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
     super(storageService);
@@ -44,16 +43,16 @@ export class GearCompareDialogComponent extends ChildComponent {
     this.items = data.items;
     let maxSockets = 0;
     for (const i of this.items) {
-      if (i.visibleSockets && i.visibleSockets.length > maxSockets) {
-        maxSockets = i.visibleSockets.length;
+      if (i.sockets && i.sockets.length > maxSockets) {
+        maxSockets = i.sockets.length;
       }
     }
 
     this.maxPlugs = new Array(maxSockets).fill(0);
     for (const i of this.items) {
-      for (const index in i.visibleSockets) {
-        if (this.maxPlugs[index] < i.visibleSockets[index].plugs.length) {
-          this.maxPlugs[index] = i.visibleSockets[index].plugs.length;
+      for (const index in i.sockets) {
+        if (this.maxPlugs[index] < i.sockets[index].plugs.length) {
+          this.maxPlugs[index] = i.sockets[index].plugs.length;
         }
       }
     }

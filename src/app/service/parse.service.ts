@@ -3738,19 +3738,17 @@ export class ParseService {
                                     const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
                                     if (emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket' && socketDesc.reusablePlugSetHash) {
                                         const plugSetHash = socketDesc.reusablePlugSetHash;
-                                        let possiblePlugs: PrivPlugSetEntry[] = [];
-                                        const profilePlugs = resp.profilePlugSets?.data?.plugs[plugSetHash] as PrivPlugSetEntry[];
+                                        let pp: PrivPlugSetEntry[] = [];
+                                        const profilePlugs = resp?.profilePlugSets?.data?.plugs[plugSetHash] as PrivPlugSetEntry[];
                                         if (profilePlugs) {
-                                            possiblePlugs = possiblePlugs.concat(profilePlugs);
+                                            pp = pp.concat(profilePlugs);
                                         }
-                                        const charPlugs = resp.characterPlugSets?.data[owner.id]?.plugs[plugSetHash] as PrivPlugSetEntry[];
+                                        const charPlugs = resp?.characterPlugSets?.data[owner.id]?.plugs[plugSetHash] as PrivPlugSetEntry[];
                                         if (charPlugs) {
-                                            possiblePlugs = possiblePlugs.concat(charPlugs);
+                                            pp = pp.concat(charPlugs);
                                         }
-                                        possiblePlugs = possiblePlugs.filter(x => x.enabled && x.canInsert);
-                                        // resp.profilePlugSets.data.plugs[2888702569] has 31 entries
-                                        // resp.characterPlugSets.data["2305843009264730899"].plugs[2888702569] as 2 entries for the current character
-                                        let plugDefs = possiblePlugs.map(x => x.plugItemHash).map(x => this.destinyCacheService.cache.InventoryItem[x]);
+                                        pp = pp.filter(x => x.enabled && x.canInsert);
+                                        let plugDefs = pp.map(x => x.plugItemHash).map(x => this.destinyCacheService.cache.InventoryItem[x]);
                                         plugDefs = plugDefs.filter(x => x != null).filter(x => {
                                             const et = x.plug?.energyCost?.energyType;
                                             // if (!et) {
@@ -4073,17 +4071,6 @@ export class ParseService {
                 coveredSeasons.push(-1);
             }
             specialModSockets.sort();
-            const visibleSockets = sockets.filter(s => {
-                const p = s.plugs.find(p => p.active);
-                if (!p) {
-                    return false;
-                }
-                if (p.name.match(/Empty.+Socket/)) {
-                    return false;
-                }
-                return true;
-
-            });
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
                 equipped, canEquip, owner, icon, iconWatermark, type, desc.itemTypeDisplayName,
                 itm.quantity,
@@ -4092,7 +4079,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, visibleSockets
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber
             );
         } catch (exc) {
             console.dir(itemComp);

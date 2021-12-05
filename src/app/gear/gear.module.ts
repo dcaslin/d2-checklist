@@ -13,12 +13,14 @@ import { GearToggleComponent } from './gear/gear-toggle/gear-toggle.component';
 import { SeasonBreakdownDialogComponent } from './gear/season-breakdown-dialog/season-breakdown-dialog.component';
 import { WritablePlugComponent } from './writable-plug/writable-plug.component';
 import { ModHelperDialogComponent } from './gear/mod-helper-dialog/mod-helper-dialog.component';
+import { WritableSocketsComponent } from './writable-sockets/writable-sockets.component';
+import { SelectModDialogComponent } from './gear/select-mod-dialog/select-mod-dialog.component';
 
 @NgModule({
   imports: [
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent, WritablePlugComponent, ModHelperDialogComponent]
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent, WritablePlugComponent, ModHelperDialogComponent, WritableSocketsComponent, SelectModDialogComponent]
 })
 export class GearModule  { }

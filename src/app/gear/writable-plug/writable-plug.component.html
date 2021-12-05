@@ -1,10 +1,10 @@
 <ng-container *ngIf="plug.active; else notSelected">
-    <d2c-god-roll-plug class="smaller" [plug]="plug" [debugmode]="debugmode"></d2c-god-roll-plug>
+    <d2c-god-roll-plug class="smaller" [plug]="plug" [debugmode]="debugmode"></d2c-god-roll-plug>    
 </ng-container>
 
 <ng-template #notSelected>
     <span class="not-selected-plug">
-        <span class="fake-link" (click)="selectPlug()" *ngIf="socket?.socketCategoryHash==EDITABLE_WEAPON_SOCKET_HASH; else notSelectable">
+        <span class="fake-link" (click)="selectPlug()" *ngIf="socket.isWeaponPerk">
             <d2c-god-roll-plug class="smaller" [plug]="plug" [debugmode]="debugmode"></d2c-god-roll-plug>
         </span>
     </span>

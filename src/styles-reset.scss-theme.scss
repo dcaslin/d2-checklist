@@ -46,6 +46,10 @@
   div.bottom-divider {
     border-bottom: 1px solid mat-color($foreground, divider);
   }
+  
+  div.top-divider {
+    border-top: 1px solid mat-color($foreground, divider);
+  }
 
   code {
     color: mat-color($accent, lighter-contrast);
