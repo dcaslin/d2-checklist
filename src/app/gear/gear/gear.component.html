@@ -436,22 +436,6 @@
                     [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
                   </mat-progress-bar>
                 </div>
-                <div *ngFor="let mod of i.mods" [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
-                  {{mod.name}}
-                  <div *ngIf="mod && mod.objectives && mod.objectives.length" class="mod-obj">
-                    <div class="left" *ngFor="let obj of mod.objectives">
-                      <fa-icon [icon]="iconService.farCheckSquare" *ngIf="obj.complete"
-                        class="accent-text mat-option.mat-selected"></fa-icon>
-                      <fa-icon [icon]="iconService.farSquare" *ngIf="!obj.complete"></fa-icon>
-                      {{obj.progressDescription}}
-                      <span *ngIf="obj.progress!=null">{{obj.progress}}/{{obj.completionValue}}</span>
-                      <mat-progress-bar class="bounty-progress"
-                        *ngIf="obj.completionValue!=null && obj.completionValue>0" mode="determinate"
-                        [value]="100*obj.progress/obj.completionValue">
-                      </mat-progress-bar>
-                    </div>
-                  </div>
-                </div>
               </div>
             </td>
             <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -512,19 +496,14 @@
               <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
                 [value]="i.energyCapacity*10">
               </mat-progress-bar>
-              <div *ngFor="let socket of i.sockets" class="bottom-divider">
+              <div *ngFor="let socket of i.visibleSockets" class="bottom-divider">
                 <div *ngIf="debugmode|async">Socket Cat: {{socket.socketCategoryHash}} </div>
+                {{socket.stuff|json}}
                 <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
                   <d2c-god-roll-plug [plug]="plug" [debugmode]="debugmode|async"></d2c-god-roll-plug>
                   <ng-container *ngIf="!isLastPlug">|</ng-container>
                 </span>
               </div>
-
-              <ng-container *ngFor="let mod of i.mods; last as isLastMod">
-                <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space" [class.bottom-divider]="!isLastMod">
-                  {{mod.name}} <ng-container *ngIf="debugmode|async">[{{mod.hash}}]</ng-container>
-                </div>
-              </ng-container>
             </td>
 
             <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -533,7 +512,7 @@
 
             <td class="hide-mobile-table-cell show-tablet-table-cell"
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <div *ngFor="let socket of i.sockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
+              <div *ngFor="let socket of i.visibleSockets; last as isLastSocket" [class.bottom-divider]="!isLastSocket">
                 <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} </div>
                 <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
                   <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async"></d2c-writable-plug>

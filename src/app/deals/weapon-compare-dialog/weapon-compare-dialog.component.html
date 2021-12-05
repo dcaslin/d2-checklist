@@ -128,21 +128,6 @@
               </td>
             </ng-container>
           </tr>
-          <tr *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor ">
-            <th>
-              <d2c-horizontal-sort field="mods" [currVal]="sortBy" [descending]="sortDesc" (sort)="sort($event)">Mod
-              </d2c-horizontal-sort>
-            </th>
-            <ng-container *ngFor="let i of sortedItems|async">
-              <td [class.owned]="i.vendorItemInfo==null">
-                <ng-container *ngFor="let mod of i.mods">
-                  <div [matTooltip]="mod.desc" matTooltipClass="preserve-white-space">
-                    {{mod.name}}
-                  </div>
-                </ng-container>
-              </td>
-            </ng-container>
-          </tr>
           <ng-container
             *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
             <tr *ngFor="let mp of maxPlugs; index as i1">

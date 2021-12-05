@@ -270,6 +270,7 @@ export interface ManifestInventoryItem {
   blacklisted: boolean;
   quality: Quality;
   sockets: any;
+  plug: any;
 }
 
 interface Quality {

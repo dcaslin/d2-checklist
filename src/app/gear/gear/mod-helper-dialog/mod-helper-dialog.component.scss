@@ -1,9 +1,3 @@
-.radio-group {
-    display: flex;
-    flex-direction: column;
-    margin: 15px 0;
-}
-
 .title-row {
     display: flex;
     flex-direction: row;
@@ -11,19 +5,26 @@
     // justify-content: space-between;
 }
 
-.radio-button {
-    margin: 5px;
+.mat-radio-group {
+    display: flex;
+    flex-direction: column;
 }
 
+@media(min-width:768px) {
+    .mat-radio-group {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .mat-radio-button ~ .mat-radio-button {
+        margin-left: 10px;
+    }
+}
 
 .char-row {
     display: flex;
     flex-direction: row;
     align-items: center;
-}
-
-.chars-toggle {
-    flex-grow: 1;
 }
 
 

@@ -44,16 +44,16 @@ export class GearCompareDialogComponent extends ChildComponent {
     this.items = data.items;
     let maxSockets = 0;
     for (const i of this.items) {
-      if (i.sockets && i.sockets.length > maxSockets) {
-        maxSockets = i.sockets.length;
+      if (i.visibleSockets && i.visibleSockets.length > maxSockets) {
+        maxSockets = i.visibleSockets.length;
       }
     }
 
     this.maxPlugs = new Array(maxSockets).fill(0);
     for (const i of this.items) {
-      for (const index in i.sockets) {
-        if (this.maxPlugs[index] < i.sockets[index].plugs.length) {
-          this.maxPlugs[index] = i.sockets[index].plugs.length;
+      for (const index in i.visibleSockets) {
+        if (this.maxPlugs[index] < i.visibleSockets[index].plugs.length) {
+          this.maxPlugs[index] = i.visibleSockets[index].plugs.length;
         }
       }
     }

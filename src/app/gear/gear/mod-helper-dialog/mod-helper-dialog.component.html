@@ -14,24 +14,62 @@
             </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
-    <div class="flex-column">
-        <div>
-            <mat-button-toggle-group class="chars-toggle" [value]="pve$|async" (change)="pve$.next($event.value)">
-                <mat-button-toggle [value]="true">PvE</mat-button-toggle>
-                <mat-button-toggle [value]="false">PvP</mat-button-toggle>
-            </mat-button-toggle-group>
-        </div>
-        <ng-container *ngIf="pve$|async">
-            <div>PvE</div>
-        </ng-container>
+    <table class="simple-table margin-10">
+        <tr>
+            <td>Mode</td>
+            <td>
+                <mat-radio-group [(ngModel)]="modChoices.pve" aria-label="Select an option">
+                    <mat-radio-button [value]="true">PvE</mat-radio-button>
+                    <mat-radio-button [value]="false">PvP</mat-radio-button>
+                </mat-radio-group>
+            </td>
+        </tr>
+        <tr>
+            <td>Priority Weapon</td>
+            <td>
+                <mat-radio-group [(ngModel)]="modChoices.priorityWeapon" aria-label="Select an option">
+                    <mat-radio-button *ngFor="let w of weapons$|async" [value]="w">{{w.name}}</mat-radio-button>
+                </mat-radio-group>
+            </td>
+        </tr>
+        <tr>
+            <td>Secondary Weapon</td>
+            <td>
+                <mat-radio-group [(ngModel)]="modChoices.secondaryWeapon" aria-label="Select an option">
+                    <mat-radio-button *ngFor="let w of weapons$|async" [value]="w">{{w.name}}</mat-radio-button>
+                    <mat-radio-button [value]="null">None</mat-radio-button>
 
-        <ng-container *ngIf="!(pve$|async)">
-            <div>PvP</div>
-        </ng-container>
+                </mat-radio-group>
+            </td>
+        </tr>
+        <tr *ngIf="modChoices.pve">
+            <td>Champions?</td>
+            <td>
+                <mat-checkbox [(ngModel)]="modChoices.champions"></mat-checkbox>
+            </td>
+        </tr>
+        <tr *ngIf="modChoices.pve">
+            <td>Protective Light?</td>
+            <td>
+                <mat-checkbox [(ngModel)]="modChoices.protectiveLight"></mat-checkbox>
+            </td>
+        </tr>
+        <tr *ngIf="!modChoices.pve">
+            <td>High Energy Fire?</td>
+            <td>
+                <mat-checkbox [(ngModel)]="modChoices.highEnergyFire"></mat-checkbox>
+            </td>
+        </tr>
+       
+    </table>
+
+    <div>
+        <!-- {{modChoices | json}} -->
     </div>
 
 
-    <div *ngFor="let r of equipped$|async">
+
+    <div *ngFor="let r of armor$|async">
         {{r.name}}
     </div>
 
@@ -40,4 +78,4 @@
     <button mat-button>Apply</button>
     <button mat-button>Clear All Mods</button>
     <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
-  </div>
+</div>
