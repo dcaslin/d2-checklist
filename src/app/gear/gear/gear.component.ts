@@ -149,9 +149,6 @@ export class GearComponent extends ChildComponent implements OnInit {
     if (i.masterwork != null) {
       markdown += '\n\n* *Masterwork: ' + i.masterwork.name + ' ' + i.masterwork.tier + '*';
     }
-    for (const mod of i.mods) {
-      markdown += '\n\n* *Mod: ' + mod.name + '*';
-    }
     return markdown;
   }
 

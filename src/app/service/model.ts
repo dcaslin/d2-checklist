@@ -417,7 +417,7 @@ export interface BungieGlobalSearchResult {
     bungieGlobalDisplayName?: string;
     bungieGlobalDisplayNameCode?: number;
     bungieNetMembershipId?: string;
-    clans: ClanRow[]|null;
+    clans: ClanRow[] | null;
 }
 
 export interface SearchResult {
@@ -752,6 +752,7 @@ export class InventoryItem {
     readonly energyType: EnergyType;
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
+    readonly visibleSockets: InventorySocket[];
     readonly objectives: ItemObjective[];
     readonly desc: string;
     readonly classAllowed: ClassAllowed;
@@ -763,7 +764,6 @@ export class InventoryItem {
     public locked: BehaviorSubject<boolean>;
     readonly masterworked: boolean;
     readonly masterwork: MasterworkInfo;
-    readonly mods: InventoryPlug[];
     public tracked: boolean;
     readonly questline: Questline;
     readonly energyCapacity: number;
@@ -828,11 +828,11 @@ export class InventoryItem {
         power: number, damageType: DamageType, energyType: EnergyType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: NameQuantity[], expirationDate: string,
-        locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, mods: InventoryPlug[], tracked: boolean,
+        locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string, versionNumber: number
+        specialModSockets: string[], collectibleHash: string, versionNumber: number, visibleSockets: InventorySocket[]
     ) {
         this.id = id;
         this.hash = hash;
@@ -867,7 +867,6 @@ export class InventoryItem {
         this.locked = new BehaviorSubject(locked);
         this.masterworked = masterworked;
         this.masterwork = masterwork;
-        this.mods = mods;
         this.tracked = tracked;
         this.questline = questline;
         this.searchText = searchText;
@@ -889,6 +888,7 @@ export class InventoryItem {
         this.specialModSockets = specialModSockets;
         this.collectibleHash = collectibleHash;
         this.versionNumber = versionNumber;
+        this.visibleSockets = visibleSockets;
     }
 }
 
@@ -1467,12 +1467,14 @@ export class InventorySocket {
     readonly plugs: InventoryPlug[];
     readonly possiblePlugs: InventoryPlug[];
     readonly index: number;
+    readonly stuff: any[];
 
-    constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[], index: number) {
+    constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[], index: number, stuff?: any[]) {
         this.socketCategoryHash = socketCategoryHash;
         this.plugs = plugs;
         this.possiblePlugs = possiblePlugs;
         this.index = index;
+        this.stuff = stuff;
     }
 
 }
@@ -1646,4 +1648,10 @@ interface Champion {
 export interface PursuitTuple {
     vendorItem: InventoryItem;
     characterItem: InventoryItem;
+}
+
+export interface PrivPlugSetEntry {
+    canInsert: boolean;
+    enabled: boolean;
+    plugItemHash: number;
 }

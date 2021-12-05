@@ -21,11 +21,11 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
   parent: GearComponent;
 
   equipped$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  weapons$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+  armor$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
-  public pve$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+  public modChoices: ModChoices = this.defaultChoices();
 
-  firstFormGroup: FormGroup;
-  secondFormGroup: FormGroup;
 
   constructor(
     private _formBuilder: FormBuilder,
@@ -50,21 +50,39 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
     ).subscribe(char => {
       if (!char) {
         this.equipped$.next([]);
+        this.weapons$.next([]);
+        this.armor$.next([]);
         return;
       }
       const player = this.parent.player$.getValue();
       const equipped = player.gear.filter(i => (i.equipped.getValue())).filter(i => i.type == ItemType.Armor || i.type == ItemType.Weapon).filter(i => i.owner.getValue().id == char.id);
+      const weapons = equipped.filter(i => i.type == ItemType.Weapon);
+      const armor = equipped.filter(i => i.type == ItemType.Armor);
       this.equipped$.next(equipped);
+      this.weapons$.next(weapons);
+      this.armor$.next(armor);
 
     });
   }
   ngOnInit(): void {
-    this.firstFormGroup = this._formBuilder.group({
-      firstCtrl: ['', Validators.required]
-    });
-    this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required]
-    });
-
   }
+
+  private defaultChoices(): ModChoices {
+    return {
+      pve: true,
+      priorityWeapon: null,
+      secondaryWeapon: null,
+      champions: false,
+      protectiveLight: true,
+      highEnergyFire: true
+    }
+  }
+}
+export interface ModChoices {
+  pve: boolean;
+  priorityWeapon: InventoryItem;
+  secondaryWeapon: InventoryItem;
+  champions: boolean;
+  protectiveLight: boolean;
+  highEnergyFire: boolean;
 }
