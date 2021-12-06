@@ -15,12 +15,13 @@ import { WritablePlugComponent } from './writable-plug/writable-plug.component';
 import { ModHelperDialogComponent } from './gear/mod-helper-dialog/mod-helper-dialog.component';
 import { WritableSocketsComponent } from './writable-sockets/writable-sockets.component';
 import { SelectModDialogComponent } from './gear/select-mod-dialog/select-mod-dialog.component';
+import { OptimizeGunPerksDialogComponent } from './gear/optimize-gun-perks-dialog/optimize-gun-perks-dialog.component';
 
 @NgModule({
   imports: [
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent, WritablePlugComponent, ModHelperDialogComponent, WritableSocketsComponent, SelectModDialogComponent]
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent, WritablePlugComponent, ModHelperDialogComponent, WritableSocketsComponent, SelectModDialogComponent, OptimizeGunPerksDialogComponent]
 })
 export class GearModule  { }
