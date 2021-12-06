@@ -1,5 +1,28 @@
 <h5 mat-dialog-title class="title-row">{{item.name}}</h5>
 
 <div mat-dialog-content>
-    {{socket.stuff|json}}
+    <table class="simple-table">
+        <tr *ngFor="let p of socket.sourcePlugs" class="fake-link" (click)="select(p)"
+            [class.accent-bg-text]="socket.active.hash == p.hash">
+            <td>
+                <d2c-manifest-item-icon [desc]="p" [small]="true"></d2c-manifest-item-icon>
+            </td>
+
+            <td>
+                <span [class.void-text]="p.plug?.energyCost?.energyType===EnergyType.Void"
+                    [class.arc-text]="p.plug?.energyCost?.energyType===EnergyType.Arc"
+                    [class.solar-text]="p.plug?.energyCost?.energyType===EnergyType.Thermal"
+                    [class.stasis-text]="p.plug?.energyCost?.energyType===EnergyType.Stasis">
+                    {{p.displayProperties.name}}</span>
+            </td>
+            <td>
+                <span [class.void-text]="p.plug?.energyCost?.energyType===EnergyType.Void"
+                    [class.arc-text]="p.plug?.energyCost?.energyType===EnergyType.Arc"
+                    [class.solar-text]="p.plug?.energyCost?.energyType===EnergyType.Thermal"
+                    [class.stasis-text]="p.plug?.energyCost?.energyType===EnergyType.Stasis">
+                    {{p.plug?.energyCost?.energyCost}}
+                </span>
+            </td>
+        </tr>
+    </table>
 </div>

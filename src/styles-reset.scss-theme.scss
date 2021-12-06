@@ -81,8 +81,8 @@
   }
 
   .accent-bg-text {
-    color: mat-color($accent, default-contrast);
-    background-color: mat-color($accent);
+    color: mat-color($accent, default-contrast) !important;
+    background-color: mat-color($accent) !important;
   }
 
   .warn-bg-text {

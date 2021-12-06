@@ -38,7 +38,10 @@ export class ArmorPerksDialogComponent {
     const equippedArmor = player.gear.filter(g => g.equipped.getValue() && g.owner.getValue().id == char.id && g.type == 2);
     for (const g of equippedArmor) {
       for (const s of g.sockets) {
-        const mod = s.plugs.find(p => p.active);
+        if (s.empty) {
+          continue;
+        }
+        const mod = s.active;
         if (mod) {
           armorMods.push(mod);
         }

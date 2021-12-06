@@ -1,7 +1,7 @@
 import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Injectable } from '@angular/core';
 import { fromUnixTime, parseISO } from 'date-fns';
-import { DestinyCacheService, Season, SeasonPass } from './destiny-cache.service';
+import { DestinyCacheService, ManifestInventoryItem, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
     Activity,
@@ -3733,7 +3733,7 @@ export class ParseService {
                             if (jCat.socketIndexes == null) { continue; }
                             for (const index of jCat.socketIndexes) {
                                 const socketDesc = desc.sockets.socketEntries[index];
-                                let stuff = null;
+                                let sourcePlugs: ManifestInventoryItem[]|null = null;
                                 if (socketDesc.singleInitialItemHash) {
                                     const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
                                     if (emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket' && socketDesc.reusablePlugSetHash) {
@@ -3751,15 +3751,15 @@ export class ParseService {
                                         let plugDefs = pp.map(x => x.plugItemHash).map(x => this.destinyCacheService.cache.InventoryItem[x]);
                                         plugDefs = plugDefs.filter(x => x != null).filter(x => {
                                             const et = x.plug?.energyCost?.energyType;
-                                            // if (!et) {
-                                            //     return false;
-                                            // }
+                                            if (!et) {
+                                                return true;
+                                            }
                                             if (et == EnergyType.Any) {
                                                 return true;
                                             }
                                             return et == energyType;
                                         });
-                                        stuff = plugDefs.map(x => x.displayProperties.name);
+                                        sourcePlugs = plugDefs;
                                     }
                                     const modSocketType = emptyModSocketDesc?.itemTypeDisplayName;
                                     if ('Combat Style Armor Mod' == modSocketType) {
@@ -3843,7 +3843,7 @@ export class ParseService {
                                         plugDesc.displayProperties.icon, true, plug.isEnabled);
                                     plugs.push(oPlug);
                                 }
-                                sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs, possiblePlugs, index, stuff));
+                                sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs, possiblePlugs, index, sourcePlugs));
                                 if (socketDesc.randomizedPlugSetHash) {
                                     const randomRollsDesc: any = this.destinyCacheService.cache.PlugSet[socketDesc.randomizedPlugSetHash];
                                     if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
