@@ -651,9 +651,6 @@ export class BungieService implements OnDestroy {
     }
 
     public async insertFreeSocket(player: Player, item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
-        // todo, can we insert this?
-        // todo use current char id if item in vault
-        // todo figure out socket index
         let owner = item.owner.getValue().id;
         if (owner == 'vault') {
             owner = player.characters[0].id;

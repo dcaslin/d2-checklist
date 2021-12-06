@@ -607,16 +607,17 @@ export class GearService {
         try {
             const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug);
             if (success) {
-                const old = socket.plugs.find(x => x.active);
-                old.active = false;
+                socket.active.active = false;
                 plug.active = true;
+                socket.active = plug;
             }
             return success;
         } catch (x) {
             this.notificationService.fail('Failed to insert socket');
-            const old = socket.plugs.find(x => x.active);
-            old.active = false;
+            // todo remove this
+            socket.active.active = false;
             plug.active = true;
+            socket.active = plug;
             return false;
         }
     }

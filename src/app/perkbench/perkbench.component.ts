@@ -478,7 +478,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         }
         if (possiblePlugs.length > 0) {
           sockets.push(
-            new InventorySocket(jCat.socketCategoryHash, [], possiblePlugs, index)
+            new InventorySocket(jCat.socketCategoryHash, [], possiblePlugs, index, null)
           );
         }
       }

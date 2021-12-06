@@ -1,7 +1,7 @@
 <ng-container *ngFor="let socket of item.sockets; first as isFirstSocket">
     <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} </div>
     <ng-container *ngIf="!socket.isWeaponMod || !socket.empty">
-        <ng-container *ngIf="socket.isArmorMod">
+        <ng-container *ngIf="socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length>0">
             <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
                 [class.margin-5]="socket.empty" (click)="selectMod(socket)" class="fake-link">
                 <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
