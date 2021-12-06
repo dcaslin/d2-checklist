@@ -1,5 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
+import { GearService } from '@app/service/gear.service';
 import { EnergyType, InventoryItem, InventorySocket } from '@app/service/model';
 
 @Component({
@@ -13,6 +15,7 @@ export class SelectModDialogComponent implements OnInit {
   public EnergyType = EnergyType;
 
   constructor(
+    private gearService: GearService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.item = data.item;
       this.socket = data.socket;
@@ -31,8 +34,8 @@ export class SelectModDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  select(plug: InventoryItem) {
-    console.log("Select");
+  select(plug: ManifestInventoryItem) {
+    this.gearService.insertFreeSocketForArmorMod(this.item, this.socket, plug);
   }
 
 }

@@ -4,7 +4,7 @@
 
 <ng-template #notSelected>
     <span class="not-selected-plug">
-        <span class="fake-link" (click)="selectPlug()" *ngIf="socket.isWeaponPerk">
+        <span class="fake-link" (click)="selectWeaponPerkPlug()" *ngIf="socket.isWeaponPerk">
             <d2c-god-roll-plug class="smaller" [plug]="plug" [debugmode]="debugmode"></d2c-god-roll-plug>
         </span>
     </span>

@@ -650,7 +650,7 @@ export class BungieService implements OnDestroy {
         }
     }
 
-    public async insertFreeSocket(player: Player, item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
+    public async insertFreeSocket(player: Player, item: InventoryItem, socket: InventorySocket, plugItemHash: string): Promise<boolean> {
         let owner = item.owner.getValue().id;
         if (owner == 'vault') {
             owner = player.characters[0].id;
@@ -659,7 +659,7 @@ export class BungieService implements OnDestroy {
             plug: {
                 socketIndex: socket.index,
                 socketArrayType: 0, // 0 is default, 1 is intrinsic, never need to use intrinsic right now
-                plugItemHash: plug.hash
+                plugItemHash: plugItemHash
             },
             characterId: item.owner.getValue().id,
             itemId: item.id,

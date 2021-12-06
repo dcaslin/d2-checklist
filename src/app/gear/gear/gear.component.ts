@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -155,6 +155,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   constructor(storageService: StorageService,
     private signedOnUserService: SignedOnUserService,
     public gearFilterStateService: GearFilterStateService,
+    public changeDetection: ChangeDetectorRef,
     public iconService: IconService,
     public markService: MarkService,
     public gearService: GearService,

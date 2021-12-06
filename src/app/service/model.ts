@@ -1462,11 +1462,11 @@ export class InventoryStat {
 
 export class InventorySocket {
     readonly socketCategoryHash: string;
-    readonly plugs: InventoryPlug[];
+    plugs: InventoryPlug[];
     readonly possiblePlugs: InventoryPlug[];
     readonly index: number;
     readonly sourcePlugs: ManifestInventoryItem[];
-    readonly empty: boolean;
+    empty: boolean;
     readonly isWeaponPerk: boolean;
     readonly isArmorMod: boolean;
     readonly isWeaponMod: boolean;
