@@ -1,0 +1,17 @@
+<h1>COMING SOON</h1>
+<p class="warn-text">This is a work in progress that doesn't actually do anything yet!</p>
+<h5 mat-dialog-title class="title-row">Optimize Gun Perks
+    <button mat-icon-button (click)="parent.load()">
+        <fa-icon [icon]="iconService.fasSyncAlt" [spin]="parent.loading|async"></fa-icon>
+    </button>
+</h5>
+<div mat-dialog-content>
+    <p>This will modify the selected perks on all of your guns to choose those preferred by your god rolls.</p>    
+    <div *ngIf="fixMe$|async as f">
+        Items to fix = {{f.length}}
+    </div>
+</div>
+<div mat-dialog-actions>
+    <button mat-button>Apply</button>
+    <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
+</div>

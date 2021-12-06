@@ -228,8 +228,11 @@
           <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>&ensp;Help
         </span>
       </button>
+      <button mat-menu-item (click)="optimizeGunPerks()">
+        <fa-icon [icon]="iconService.fasMagic"></fa-icon>&ensp;Optimize Gun Perks
+      </button>
       <button mat-menu-item (click)="showModWizard()">
-        <fa-icon [icon]="iconService.fasMagic"></fa-icon>&ensp;Mod Wizard
+        <fa-icon [icon]="iconService.fasMagic"></fa-icon>&ensp;Armor Mod Wizard
       </button>
       <button mat-menu-item (click)="syncLocks()">
         <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
