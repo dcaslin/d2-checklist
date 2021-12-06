@@ -496,7 +496,7 @@
               <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
                 [value]="i.energyCapacity*10">
               </mat-progress-bar>
-              <d2c-writable-sockets [item]="i"></d2c-writable-sockets>
+              <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>
             </td>
 
             <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -505,7 +505,7 @@
 
             <td class="hide-mobile-table-cell show-tablet-table-cell"
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <d2c-writable-sockets [item]="i"></d2c-writable-sockets>              
+              <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>              
             </td>
             <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
               *ngIf="option.type==ItemType.Armor">

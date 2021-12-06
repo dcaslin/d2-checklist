@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
+import { ManifestInventoryItem } from './destiny-cache.service';
 import { MarkService } from './mark.service';
 import { Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target } from './model';
 import { NotificationService } from './notification.service';
@@ -603,9 +604,9 @@ export class GearService {
         this.notificationService.info('Sync complete. Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
     }
 
-    public async insertFreeSocket(item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
+    public async insertFreeSocketForWeaponPerk(item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
         try {
-            const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug);
+            const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash);
             if (success) {
                 socket.active.active = false;
                 plug.active = true;
@@ -618,6 +619,27 @@ export class GearService {
             socket.active.active = false;
             plug.active = true;
             socket.active = plug;
+            return false;
+        }
+    }
+
+    public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem): Promise<boolean> {
+
+        const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, true, []);
+        try {
+            const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
+            if (success) {
+                socket.plugs = [newPlug];
+                socket.active = newPlug;
+            }
+            return success;
+        } catch (x) {
+            this.notificationService.fail('Failed to insert socket');
+            // todo remove this
+            socket.plugs = [newPlug];
+            socket.active = newPlug;
+            socket.empty = newPlug.empty;
+
             return false;
         }
     }

@@ -22,7 +22,7 @@ export class WritablePlugComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  selectPlug() {
-    this.gearService.insertFreeSocket(this.item, this.socket, this.plug);
+  selectWeaponPerkPlug() {
+    this.gearService.insertFreeSocketForWeaponPerk(this.item, this.socket, this.plug);
   }
 }

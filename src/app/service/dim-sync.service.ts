@@ -119,8 +119,7 @@ export class DimSyncService {
       const url = `https://api.destinyitemmanager.com/profile`;
       console.log('%cSetting DIM tags', LOG_CSS);
       this.logUpdates(updates);
-      console.dir(body);
-      const hResp = await this.httpClient
+      await this.httpClient
         .post<ProfileUpdateResponse>(url, body, { headers })
         .toPromise();
       return true;

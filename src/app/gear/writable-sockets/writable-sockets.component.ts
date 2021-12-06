@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { InventoryItem, InventorySocket } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
@@ -12,6 +12,8 @@ import { SelectModDialogComponent } from '../gear/select-mod-dialog/select-mod-d
 })
 export class WritableSocketsComponent extends ChildComponent implements OnInit {
   @Input() item: InventoryItem;
+
+  @Output() socketsChanged = new EventEmitter<boolean>();
 
   constructor(
     public dialog: MatDialog,
@@ -29,7 +31,10 @@ export class WritableSocketsComponent extends ChildComponent implements OnInit {
       item: this.item,
       socket: socket
     };
-    this.dialog.open(SelectModDialogComponent, dc);
+    const dialogRef = this.dialog.open(SelectModDialogComponent, dc);
+    dialogRef.afterClosed().subscribe(async (result) => {
+      this.socketsChanged.emit(true);
+    });
   }
 
 }
