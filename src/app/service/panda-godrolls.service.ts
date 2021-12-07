@@ -3,7 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { Const, InventoryItem, ItemType, SelectedUser } from './model';
+import { Const, InventoryItem, InventorySocket, ItemType, SelectedUser } from './model';
 import { NotificationService } from './notification.service';
 
 const LOG_CSS = `color: mediumpurple`;
@@ -16,7 +16,7 @@ export const RYKER_GOD_ROLLS_URL = 'https://docs.google.com/spreadsheets/d/1bHsA
 export class PandaGodrollsService implements OnDestroy {
   private unsubscribe$: Subject<void> = new Subject<void>();
   public loaded$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public meta$: BehaviorSubject<RollMeta|null> = new BehaviorSubject(null);
+  public meta$: BehaviorSubject<RollMeta | null> = new BehaviorSubject(null);
 
   private data: { [name: string]: GunInfo };
   public isController = true;
@@ -145,6 +145,29 @@ export class PandaGodrollsService implements OnDestroy {
     }
   }
 
+  public static isFixNeeded(s: InventorySocket): boolean {
+    let bestPerkHad = 0;
+    let bestPerkSelected = 0;
+    for (const p of s.plugs) {
+      if (p.pandaPve > bestPerkHad) {
+        bestPerkHad = p.pandaPve;
+      }
+      if (p.pandaPvp > bestPerkHad) {
+        bestPerkHad = p.pandaPvp;
+      }
+      if (
+        p.active &&
+        (p.pandaPve > bestPerkSelected || p.pandaPvp > bestPerkSelected)
+      ) {
+        bestPerkSelected = Math.max(p.pandaPve, p.pandaPvp);
+      }
+    }
+    if (bestPerkSelected == 0 && bestPerkHad > 0) {
+      return true;
+    }
+    return false;
+  }
+
   private processGunRolls(i: InventoryItem, rolls: GunRolls) {
     i.pandaPve = this.processGunRoll(i, rolls.pve, true);
     i.pandaPvp = this.processGunRoll(i, rolls.pvp, false);
@@ -170,25 +193,8 @@ export class PandaGodrollsService implements OnDestroy {
     let needsFixing = false;
     const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
     for (const s of perkSockets) {
-      let bestPerkHad = 0;
-      let bestPerkSelected = 0;
-      for (const p of s.plugs) {
-        if (p.pandaPve > bestPerkHad) {
-          bestPerkHad = p.pandaPve;
-        }
-        if (p.pandaPvp > bestPerkHad) {
-          bestPerkHad = p.pandaPvp;
-        }
-        if (
-          p.active &&
-          (p.pandaPve > bestPerkSelected || p.pandaPvp > bestPerkSelected)
-        ) {
-          bestPerkSelected = Math.max(p.pandaPve, p.pandaPvp);
-        }
-      }
-      if (bestPerkSelected == 0 && bestPerkHad > 0) {
-        needsFixing = true;
-      }
+      const socketNeedsFixing = PandaGodrollsService.isFixNeeded(s);
+      needsFixing = needsFixing || socketNeedsFixing;
     }
     if (needsFixing) {
       i.searchText = i.searchText + ' is:fixme';
@@ -313,7 +319,7 @@ export class PandaGodrollsService implements OnDestroy {
     return true;
   }
 
-  public static async  getCustomGodRolls(): Promise<CompleteGodRolls|null> {
+  public static async getCustomGodRolls(): Promise<CompleteGodRolls | null> {
     const custom: CompleteGodRolls = await get(CUSTOM_GOD_ROLLS);
     if (PandaGodrollsService.isValid(custom)) {
       return custom;
@@ -369,7 +375,7 @@ export class PandaGodrollsService implements OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();
-}
+  }
 }
 
 interface GunInfo {

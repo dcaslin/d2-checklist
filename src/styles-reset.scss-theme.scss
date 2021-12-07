@@ -17,6 +17,14 @@
     }
   }
 
+
+  .solid-border {
+    border-color: mat-color($foreground, divider);
+    border-style: solid;
+    padding: 5px;
+    margin: 2px;
+  }
+
   .dashed-border {
     border-color: mat-color($foreground, divider);
     border-style: dashed;

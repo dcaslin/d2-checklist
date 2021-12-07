@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { sleep } from '@app/shared/utilities';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
@@ -606,7 +607,7 @@ export class GearService {
 
     public async insertFreeSocketForWeaponPerk(item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
         try {
-            const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash);
+            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash);
             if (success) {
                 socket.active.active = false;
                 plug.active = true;
@@ -616,10 +617,40 @@ export class GearService {
         } catch (x) {
             this.notificationService.fail('Failed to insert socket');
             // todo remove this
-            socket.active.active = false;
-            plug.active = true;
-            socket.active = plug;
+            // socket.active.active = false;
+            // plug.active = true;
+            // socket.active = plug;
             return false;
+        }
+    }
+
+    public async fixPerks(fixMe: InventoryItem[], log$: BehaviorSubject<string[]>): Promise<void> {
+        const log = [];
+        log$.next(log);
+        for (const i of fixMe) {
+            console.log(i.name);
+            this.notificationService.info('Fixing ' + i.name);
+            const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
+            for (const s of perkSockets) {
+                const socketNeedsFixing = PandaGodrollsService.isFixNeeded(s);
+                if (!socketNeedsFixing) {
+                    continue;
+                }
+                let bestPlug = s.plugs[0];
+                for (const p of s.plugs) {
+                    if (p.getPandaRating() > bestPlug.getPandaRating()) {
+                        bestPlug = p;
+                    }
+                }
+                const logMsg = `Inserting ${bestPlug.name} into ${i.name}`;
+                log.push(logMsg);
+                log$.next(log);
+                console.log(`Best plug for ${i.name} is ${bestPlug.name}`);
+                await this.insertFreeSocketForWeaponPerk(i, s, bestPlug);
+                await sleep(500);
+            }
+            // remove 'is:fixme' from search
+            i.searchText = i.searchText.replace('is:fixme', '');
         }
     }
 
@@ -627,7 +658,7 @@ export class GearService {
 
         const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, true, []);
         try {
-            const success =  await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
+            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
             if (success) {
                 socket.plugs = [newPlug];
                 socket.active = newPlug;
@@ -636,10 +667,9 @@ export class GearService {
         } catch (x) {
             this.notificationService.fail('Failed to insert socket');
             // todo remove this
-            socket.plugs = [newPlug];
-            socket.active = newPlug;
-            socket.empty = newPlug.empty;
-
+            // socket.plugs = [newPlug];
+            // socket.active = newPlug;
+            // socket.empty = newPlug.empty;
             return false;
         }
     }
