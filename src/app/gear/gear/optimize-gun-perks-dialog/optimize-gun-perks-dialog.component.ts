@@ -24,7 +24,7 @@ export class OptimizeGunPerksDialogComponent extends ChildComponent implements O
 
 
   constructor(public iconService: IconService,
-    private gearService: GearService,
+    public gearService: GearService,
     private notificationService: NotificationService,
     public storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: any) {

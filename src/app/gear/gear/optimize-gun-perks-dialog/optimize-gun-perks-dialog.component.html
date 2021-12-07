@@ -4,6 +4,10 @@
     </button>
 </h5>
 <div mat-dialog-content class="body">
+    <div class="fixed-spinner">
+        <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner"
+          [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>        
+      </div>
     <p class="simple-caption-darker-no-margin">This will modify the selected perks on all of your guns to choose those preferred by your god rolls.</p>    
     <div *ngIf="fixMe$|async as f">
         You have {{f.length}} items with suboptimal perks. Click below to update them. Search <code>is:fixme</code> to see those items.

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { sleep } from '@app/shared/utilities';
+import { getHttpErrorMsg, sleep } from '@app/shared/utilities';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
@@ -606,6 +606,8 @@ export class GearService {
     }
 
     public async insertFreeSocketForWeaponPerk(item: InventoryItem, socket: InventorySocket, plug: InventoryPlug): Promise<boolean> {
+        this.loading.next(true);
+
         try {
             const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash);
             if (success) {
@@ -615,14 +617,47 @@ export class GearService {
             }
             return success;
         } catch (x) {
-            this.notificationService.fail('Failed to insert socket');
-            // todo remove this
+            console.dir(x);
+            const msg = getHttpErrorMsg(x);
+            this.notificationService.fail(`Failed to insert socket: ${msg}`);
+            // for testing
             // socket.active.active = false;
             // plug.active = true;
             // socket.active = plug;
             return false;
         }
+        finally {
+            this.loading.next(false);
+        }
     }
+
+    public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem): Promise<boolean> {
+
+        const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, true, []);
+
+        this.loading.next(true);
+        try {
+            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
+            if (success) {
+                socket.plugs = [newPlug];
+                socket.active = newPlug;
+            }
+            return success;
+        } catch (x) {
+            console.dir(x);
+            const msg = getHttpErrorMsg(x);
+            this.notificationService.fail(`Failed to insert socket: ${msg}`);
+            // todo remove this
+            // socket.plugs = [newPlug];
+            // socket.active = newPlug;
+            // socket.empty = newPlug.empty;
+            return false;
+        }
+        finally {
+            this.loading.next(false);
+        }
+    }
+
 
     public async fixPerks(fixMe: InventoryItem[], log$: BehaviorSubject<string[]>): Promise<void> {
         const log = [];
@@ -651,26 +686,6 @@ export class GearService {
             }
             // remove 'is:fixme' from search
             i.searchText = i.searchText.replace('is:fixme', '');
-        }
-    }
-
-    public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem): Promise<boolean> {
-
-        const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, true, []);
-        try {
-            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
-            if (success) {
-                socket.plugs = [newPlug];
-                socket.active = newPlug;
-            }
-            return success;
-        } catch (x) {
-            this.notificationService.fail('Failed to insert socket');
-            // todo remove this
-            // socket.plugs = [newPlug];
-            // socket.active = newPlug;
-            // socket.empty = newPlug.empty;
-            return false;
         }
     }
 
