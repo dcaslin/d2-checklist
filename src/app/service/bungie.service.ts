@@ -661,7 +661,7 @@ export class BungieService implements OnDestroy {
                 socketArrayType: 0, // 0 is default, 1 is intrinsic, never need to use intrinsic right now
                 plugItemHash: plugItemHash
             },
-            characterId: item.owner.getValue().id,
+            characterId: owner,
             itemId: item.id,
             membershipType: player.profile.userInfo.membershipType
         });
