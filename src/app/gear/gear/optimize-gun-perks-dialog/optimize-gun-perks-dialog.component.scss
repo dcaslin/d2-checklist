@@ -4,3 +4,14 @@
     align-items: center;
     // justify-content: space-between;
 }
+
+.body {
+    max-width: 600px;
+}
+
+.log {
+    overflow-y: scroll;
+    max-height: 100px;
+    font-family: monospace, monospace;
+    font-size: 0.8em;  
+}

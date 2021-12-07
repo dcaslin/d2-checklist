@@ -1506,6 +1506,10 @@ export class InventoryPlug {
     public selectedPossible = false; // used for possible roll screen only
     public inventoryStats: InventoryStat[] = [];
 
+    public getPandaRating() {
+        return Math.max(this.pandaPve, this.pandaPvp);
+    }
+
     constructor(hash: string, name: string, desc: string, icon: string, active: boolean, enabled?: boolean, objectives?: ItemObjective[]) {
         this.hash = hash;
         this.name = name;
