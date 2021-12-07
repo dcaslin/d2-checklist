@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
+import { IconService } from '@app/service/icon.service';
 import { EnergyType, InventoryItem, InventorySocket } from '@app/service/model';
 
 @Component({
@@ -15,7 +16,8 @@ export class SelectModDialogComponent implements OnInit {
   public EnergyType = EnergyType;
 
   constructor(
-    private gearService: GearService,
+    public gearService: GearService,
+    public iconService: IconService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
       this.item = data.item;
       this.socket = data.socket;

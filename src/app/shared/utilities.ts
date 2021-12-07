@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from "@angular/common/http";
 
 
 export function sleep(ms) {
@@ -50,6 +51,19 @@ const getCircularErrorReplacer = () => {
   };
 };
 
+
+export function getHttpErrorMsg(x): string {
+  if (!x) {
+    return '';
+  }
+  if (x instanceof HttpErrorResponse) {
+    const he = x as HttpErrorResponse;
+    if (he.error.Message) {
+      return he.error.Message;
+    }
+  }
+  return '';
+}
 
 export function cookError(error): string {
   let errorMessage = '';
