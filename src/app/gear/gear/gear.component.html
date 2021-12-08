@@ -13,8 +13,8 @@
     <div>
       <ng-container *ngIf="player.characters && player.characters.length>0">
         <ng-container *ngIf="player.characters[0] as char">
-          <span [matMenuTriggerFor]="menuBulk" [matTooltip]="char.className+' - '+char.race+' '+char.gender">
-            <span *ngIf="char.emblemPath!=null; else noEmblem" class="current-char-icon"
+          <span [matMenuTriggerFor]="menuBulk" matTooltipClass="multi-line-tooltip" [matTooltip]="char.className+' - '+char.race+' '+char.gender + '&#13;CLICK to see menu'">
+            <span *ngIf="char.emblemPath!=null; else noEmblem" class="current-char-icon hover-like-button"
               [style.background-image]="'url(//www.bungie.net' + char.emblemPath + ')'">
             </span>
             <ng-template #noEmblem>
