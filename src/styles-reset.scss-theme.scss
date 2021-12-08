@@ -16,6 +16,18 @@
       color: mat-color($accent);
     }
   }
+  
+  .hover-like-button {
+    //border: solid 2px  mat-color($background, unselected-chip);;
+    border: solid 2px   mat-color($accent);
+    border-radius: 3px;    
+
+    &:hover {
+      transform: scale(1.2, 1.2);
+      transition: 0.2s ease-in-out;
+      filter: saturate(1.5);
+    }
+  }
 
 
   .solid-border {
