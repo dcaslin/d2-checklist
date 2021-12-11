@@ -15,6 +15,7 @@
     <div>
         <ng-container *ngIf="log$|async as log">
             <div  #scrollMe class="log solid-border" [scrollTop]="log.length === 0 ? 0 : scrollMe.scrollHeight">
+                <div *ngIf="log.length==0">Operations will be logged here</div>
                 <div *ngFor="let l of log">{{l}}</div>
             </div>
         </ng-container>

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearComponent } from '@app/gear';
@@ -8,13 +8,16 @@ import { Character, InventoryItem, ItemType } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { safeStringify } from '@app/shared/utilities';
 import { BehaviorSubject, iif } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { applyMods, clearMods, ModChoices } from './mod-wizard-logic';
 
 @Component({
   selector: 'd2c-mod-helper-dialog',
   templateUrl: './mod-helper-dialog.component.html',
-  styleUrls: ['./mod-helper-dialog.component.scss']
+  styleUrls: ['./mod-helper-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModHelperDialogComponent extends ChildComponent implements OnInit {
 
@@ -25,12 +28,19 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
   armor$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   public char$: BehaviorSubject<Character> = new BehaviorSubject(null);
   public modChoices: ModChoices = this.defaultChoices();
+  log$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
+
+  public applyMods(): void {
+    applyMods(this.gearService, this.modChoices, this.armor$.getValue(), this.log$);
+  }
+
+  public clearMods(): void {
+    clearMods(this.gearService, this.armor$.getValue(), this.log$);
+  }
 
   constructor(
-    private _formBuilder: FormBuilder,
-    private gearService: GearService,
-    private signedOnUserService: SignedOnUserService,
+    public gearService: GearService,
     public iconService: IconService,
     public storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -75,14 +85,6 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
       champions: false,
       protectiveLight: true,
       highEnergyFire: true
-    }
+    };
   }
-}
-export interface ModChoices {
-  pve: boolean;
-  priorityWeapon: InventoryItem;
-  secondaryWeapon: InventoryItem;
-  champions: boolean;
-  protectiveLight: boolean;
-  highEnergyFire: boolean;
 }

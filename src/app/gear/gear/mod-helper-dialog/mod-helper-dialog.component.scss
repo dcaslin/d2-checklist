@@ -36,3 +36,10 @@
 .flex-column>* {
     margin: 5px;
 }
+
+.log {
+    overflow-y: scroll;
+    max-height: 100px;
+    font-family: monospace, monospace;
+    font-size: 0.8em;  
+}

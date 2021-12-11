@@ -7,6 +7,10 @@
     </button>
 </h5>
 <div mat-dialog-content>
+    <div class="fixed-spinner">
+        <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner" [spin]="true" size="3x"
+            [fixedWidth]="true"></fa-icon>
+    </div>
     <div class="nav-toggles char-row" *ngIf="parent.player$|async as player">
         <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
             (change)="char$.next($event.value)">
@@ -62,22 +66,34 @@
                 <mat-checkbox [(ngModel)]="modChoices.highEnergyFire"></mat-checkbox>
             </td>
         </tr>
-       
     </table>
 
     <div>
-        <!-- {{modChoices | json}} -->
+        <ng-container *ngIf="log$|async as log">
+            <div  #scrollMe class="log solid-border" [scrollTop]="log.length === 0 ? 0 : scrollMe.scrollHeight">
+                <div *ngIf="log.length==0">Operations will be logged here</div>
+                <div *ngFor="let l of log">{{l}}</div>
+            </div>
+            
+        </ng-container>
     </div>
 
+    <div>
+        <div>PVE {{modChoices.pve}}</div>
+        <div>P1 {{modChoices.priorityWeapon?.name}}</div>
+        <div>P1 {{modChoices.secondaryWeapon?.name}}</div>
+        <div>Champions {{modChoices.champions}}</div>
+        <div>Protective Light {{modChoices.protectiveLight}}</div>
+        <div>High Energy Fire {{modChoices.highEnergyFire}}</div>
 
-
+    </div>
     <div *ngFor="let r of armor$|async">
         {{r.name}}
     </div>
 
 </div>
 <div mat-dialog-actions>
-    <button mat-button>Apply</button>
-    <button mat-button>Clear All Mods</button>
+    <button mat-button (click)="applyMods()">Apply</button>
+    <button mat-button (click)="clearMods()">Clear All Mods</button>
     <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Close</button>
 </div>

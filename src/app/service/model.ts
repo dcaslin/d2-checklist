@@ -1470,11 +1470,13 @@ export class InventorySocket {
     readonly isWeaponPerk: boolean;
     readonly isArmorMod: boolean;
     readonly isWeaponMod: boolean;
+    readonly plugWhitelist: string[];
     active: InventoryPlug;
 
-    constructor(socketCategoryHash: string, plugs: InventoryPlug[], possiblePlugs: InventoryPlug[], index: number, sourcePlugs: ManifestInventoryItem[]) {
+    constructor(socketCategoryHash: string, plugWhitelist: string[], plugs: InventoryPlug[], possiblePlugs: InventoryPlug[], index: number, sourcePlugs: ManifestInventoryItem[]) {
         this.socketCategoryHash = socketCategoryHash;
         this.plugs = plugs;
+        this.plugWhitelist = plugWhitelist;
         this.empty = false;
         this.empty = this.plugs.every(plug => plug.empty);
         this.active = this.plugs.find(plug => plug.active);
