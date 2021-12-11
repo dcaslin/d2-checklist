@@ -2,9 +2,9 @@
 
 <div mat-dialog-content>
     <div class="fixed-spinner">
-        <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner"
-          [spin]="true" size="3x" [fixedWidth]="true"></fa-icon>        
-      </div>
+        <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner" [spin]="true" size="3x"
+            [fixedWidth]="true"></fa-icon>
+    </div>
     <table class="simple-table">
         <tr *ngFor="let p of socket.sourcePlugs" class="fake-link" (click)="select(p)"
             [class.accent-bg-text]="socket.active.hash == p.hash">

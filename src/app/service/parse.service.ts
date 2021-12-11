@@ -3734,6 +3734,7 @@ export class ParseService {
                             for (const index of jCat.socketIndexes) {
                                 const socketDesc = desc.sockets.socketEntries[index];
                                 let sourcePlugs: ManifestInventoryItem[]|null = null;
+                                let plugWhitelist: string[] = [];
                                 if (socketDesc.singleInitialItemHash) {
                                     const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
                                     if (emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket' && socketDesc.reusablePlugSetHash) {
@@ -3760,6 +3761,10 @@ export class ParseService {
                                             return et == energyType;
                                         });
                                         sourcePlugs = plugDefs;
+                                        const socketTypeDesc = this.destinyCacheService.cache.SocketType[socketDesc.socketTypeHash];
+                                        if (socketTypeDesc?.plugWhitelist) {
+                                            plugWhitelist = socketTypeDesc.plugWhitelist.map(x => x.categoryIdentifier);
+                                        }
                                     }
                                     const modSocketType = emptyModSocketDesc?.itemTypeDisplayName;
                                     if ('Combat Style Armor Mod' == modSocketType) {
@@ -3843,7 +3848,7 @@ export class ParseService {
                                         plugDesc.displayProperties.icon, true, plug.isEnabled);
                                     plugs.push(oPlug);
                                 }
-                                sockets.push(new InventorySocket(jCat.socketCategoryHash, plugs, possiblePlugs, index, sourcePlugs));
+                                sockets.push(new InventorySocket(jCat.socketCategoryHash, plugWhitelist, plugs, possiblePlugs, index, sourcePlugs));
                                 if (socketDesc.randomizedPlugSetHash) {
                                     const randomRollsDesc: any = this.destinyCacheService.cache.PlugSet[socketDesc.randomizedPlugSetHash];
                                     if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
