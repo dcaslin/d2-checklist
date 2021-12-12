@@ -66,6 +66,14 @@
                 <mat-checkbox [(ngModel)]="modChoices.highEnergyFire"></mat-checkbox>
             </td>
         </tr>
+        <tr>
+            <td>Preferred Stat</td>
+            <td>
+                <mat-radio-group [(ngModel)]="modChoices.preferredStat" aria-label="Select an option">
+                    <mat-radio-button *ngFor="let s of PreferredStats" [value]="s">{{s}}</mat-radio-button>
+                </mat-radio-group>
+            </td>
+        </tr>
     </table>
 
     <div>
@@ -77,20 +85,6 @@
             
         </ng-container>
     </div>
-
-    <div>
-        <div>PVE {{modChoices.pve}}</div>
-        <div>P1 {{modChoices.priorityWeapon?.name}}</div>
-        <div>P1 {{modChoices.secondaryWeapon?.name}}</div>
-        <div>Champions {{modChoices.champions}}</div>
-        <div>Protective Light {{modChoices.protectiveLight}}</div>
-        <div>High Energy Fire {{modChoices.highEnergyFire}}</div>
-
-    </div>
-    <div *ngFor="let r of armor$|async">
-        {{r.name}}
-    </div>
-
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="applyMods()">Apply</button>

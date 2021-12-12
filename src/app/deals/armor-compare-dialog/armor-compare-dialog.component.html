@@ -111,34 +111,7 @@
             </td>
           </ng-container>
         </tr>
-        <ng-container
-          *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor || model.type==ItemType.Ghost || model.type==ItemType.Vehicle">
-          <tr *ngFor="let mp of maxPlugs; index as i1">
-            <th *ngIf="i1==0">
-              Sockets
-            </th>
-            <th *ngIf="i1>0">
-              <div *ngFor="let item of [].constructor(mp); index as plugIndex">
-                <d2c-horizontal-sort [field]="'plug.'+i1+'.'+plugIndex" [currVal]="sortBy" [descending]="sortDesc"
-                  (sort)="sort($event)"></d2c-horizontal-sort>
-              </div>
-
-            </th>
-            <ng-container *ngFor="let i of sortedItems|async">
-              <td [class.owned]="i.vendorItemInfo==null">
-                <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
-                  <div *ngIf="i2 == i1">
-                    <span *ngFor="let plug of socket.plugs; last as isLastPlug"
-                      [class.not-selected-plug]="!plug.active">                      
-                      <ng-container *ngIf="!isLastPlug"><br></ng-container>
-                    </span>
-                  </div>
-                </ng-container>
-              </td>
-            </ng-container>
-          </tr>
-
-        </ng-container>
+       
 
         <ng-container *ngIf="model.type==ItemType.Weapon || model.type==ItemType.Armor">
           <tr *ngFor="let stat of getAllStats(); let cntr = index">

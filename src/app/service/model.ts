@@ -1,6 +1,7 @@
 import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
+import { DestinyEnergyType } from 'bungie-api-ts/destiny2';
 import { BehaviorSubject } from 'rxjs';
 import { ManifestInventoryItem } from './destiny-cache.service';
 
@@ -766,7 +767,7 @@ export class InventoryItem {
     public tracked: boolean;
     readonly questline: Questline;
     readonly energyCapacity: number;
-    readonly energyUsed: number;
+    energyUsed: number;
     readonly totalStatPoints: number;
     public searchText: string;
     public isHighest = false;
@@ -797,6 +798,13 @@ export class InventoryItem {
     readonly collectibleHash: string;
     public lowLinks: LowLinks;
     readonly versionNumber: number;
+
+    canFit(socket: InventorySocket, plug: ManifestInventoryItem): boolean {
+        const current = socket.active.energyCost;
+        const newCost = plug.plug?.energyCost?.energyCost || 0;
+        const change = newCost - current;
+        return (change + this.energyUsed) <= this.energyCapacity;
+      }
 
     statPointTier(): number {
         if (!this.totalStatPoints || this.totalStatPoints < 50) {
@@ -1499,6 +1507,7 @@ export class InventoryPlug {
     readonly enabled: boolean;
     readonly objectives: ItemObjective[];
     readonly empty: boolean;
+    readonly energyCost: number;
     public currentlyCanRoll: boolean;
     public pandaPve = 0;
     public pandaPvp = 0;
@@ -1512,7 +1521,7 @@ export class InventoryPlug {
         return Math.max(this.pandaPve, this.pandaPvp);
     }
 
-    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, enabled?: boolean, objectives?: ItemObjective[]) {
+    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, energyCostStruct: PrivPlugEnergyCost|null, enabled?: boolean, objectives?: ItemObjective[]) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
@@ -1528,6 +1537,11 @@ export class InventoryPlug {
         if (name.match(/Empty.+Socket/)) {
             this.empty = true;
         }
+        let c = energyCostStruct?.energyCost;
+        if (!c) {
+            c = 0;
+        }
+        this.energyCost = c;
         this.currentlyCanRoll = true;
     }
 }
@@ -1674,4 +1688,10 @@ export interface PrivPlugSetEntry {
     canInsert: boolean;
     enabled: boolean;
     plugItemHash: number;
+}
+
+export interface PrivPlugEnergyCost {
+    energyCost: number;
+    energyTypeHash: string;
+    energyType: DestinyEnergyType;
 }

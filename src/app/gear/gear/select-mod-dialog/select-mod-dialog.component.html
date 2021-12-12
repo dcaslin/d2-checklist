@@ -6,7 +6,7 @@
             [fixedWidth]="true"></fa-icon>
     </div>
     <table class="simple-table">
-        <tr *ngFor="let p of socket.sourcePlugs" class="fake-link" (click)="select(p)"
+        <tr *ngFor="let p of socket.sourcePlugs" [class.fake-link]="item.canFit(socket, p)" [class.disabled]="!item.canFit(socket, p)" (click)="select(p)"
             [class.accent-bg-text]="socket.active.hash == p.hash">
             <td>
                 <d2c-manifest-item-icon [desc]="p" [small]="true"></d2c-manifest-item-icon>
@@ -26,6 +26,9 @@
                     [class.stasis-text]="p.plug?.energyCost?.energyType===EnergyType.Stasis">
                     {{p.plug?.energyCost?.energyCost}}
                 </span>
+            </td>
+            <td>
+                {{canFit(p)}}
             </td>
         </tr>
     </table>
