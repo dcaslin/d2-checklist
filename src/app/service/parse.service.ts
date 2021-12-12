@@ -3806,7 +3806,7 @@ export class ParseService {
                                         if (name == null) { continue; }
                                         const oPlug = new InventoryPlug(plugDesc.hash,
                                             name, plugDesc.displayProperties.description,
-                                            plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash);
+                                            plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash, plugDesc.plug.energyCost);
                                         // elemental capacitor
                                         if (oPlug.active && IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {
                                             ignoreWeaponPerkStats.push(oPlug);
@@ -3845,7 +3845,7 @@ export class ParseService {
                                     if (name == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         name, plugDesc.displayProperties.description,
-                                        plugDesc.displayProperties.icon, true, plug.isEnabled);
+                                        plugDesc.displayProperties.icon, true, plugDesc.plug.energyCost, plug.isEnabled);
                                     plugs.push(oPlug);
                                 }
                                 sockets.push(new InventorySocket(jCat.socketCategoryHash, plugWhitelist, plugs, possiblePlugs, index, sourcePlugs));
@@ -3858,7 +3858,7 @@ export class ParseService {
                                             if (plugName == null) { continue; }
                                             const oPlug = new InventoryPlug(plugDesc.hash,
                                                 plugName, plugDesc.displayProperties.description,
-                                                plugDesc.displayProperties.icon, false);
+                                                plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
                                             oPlug.currentlyCanRoll = option.currentlyCanRoll;
                                             possiblePlugs.push(oPlug);
                                         }
@@ -3869,7 +3869,7 @@ export class ParseService {
                                     if (plugName == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         plugName, plugDesc.displayProperties.description,
-                                        plugDesc.displayProperties.icon, false);
+                                        plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
                                     oPlug.currentlyCanRoll = true;
                                     possiblePlugs.push(oPlug);
                                 }

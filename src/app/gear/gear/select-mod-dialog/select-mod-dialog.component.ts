@@ -36,7 +36,17 @@ export class SelectModDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  canFit(plug: ManifestInventoryItem): boolean {
+    const current = this.socket.active.energyCost;
+    const newCost = plug.plug?.energyCost?.energyCost || 0;
+    const change = newCost - current;
+    return (change + this.item.energyUsed) <= this.item.energyCapacity;
+  }
+
   select(plug: ManifestInventoryItem) {
+    if (!this.item.canFit(this.socket, plug)) {
+      return;
+    }
     this.gearService.insertFreeSocketForArmorMod(this.item, this.socket, plug);
   }
 

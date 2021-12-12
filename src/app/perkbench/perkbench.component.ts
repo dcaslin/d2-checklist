@@ -459,7 +459,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
                 plugName,
                 plugDesc.displayProperties.description,
                 plugDesc.displayProperties.icon,
-                false
+                false, plugDesc.plug.energyCost
               );
               oPlug.currentlyCanRoll = option.currentlyCanRoll;
               possiblePlugs.push(oPlug);
@@ -471,7 +471,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
           if (plugName == null) { continue; }
           const oPlug = new InventoryPlug(plugDesc.hash,
             plugName, plugDesc.displayProperties.description,
-            plugDesc.displayProperties.icon, false);
+            plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
           oPlug.currentlyCanRoll = true;
           possiblePlugs.push(oPlug);
 

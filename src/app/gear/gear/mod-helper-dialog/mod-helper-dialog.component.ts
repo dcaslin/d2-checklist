@@ -5,13 +5,14 @@ import { GearComponent } from '@app/gear';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { Character, InventoryItem, ItemType } from '@app/service/model';
+import { NotificationService } from '@app/service/notification.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { safeStringify } from '@app/shared/utilities';
 import { BehaviorSubject, iif } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { applyMods, clearMods, ModChoices } from './mod-wizard-logic';
+import { applyMods, clearMods, ModChoices, PreferredStats } from './mod-wizard-logic';
 
 @Component({
   selector: 'd2c-mod-helper-dialog',
@@ -22,6 +23,7 @@ import { applyMods, clearMods, ModChoices } from './mod-wizard-logic';
 export class ModHelperDialogComponent extends ChildComponent implements OnInit {
 
   parent: GearComponent;
+  PreferredStats = PreferredStats;
 
   equipped$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   weapons$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
@@ -32,7 +34,7 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
 
 
   public applyMods(): void {
-    applyMods(this.gearService, this.modChoices, this.armor$.getValue(), this.log$);
+    applyMods(this.gearService, this.notificationService, this.modChoices, this.armor$.getValue(), this.weapons$.getValue(), this.log$);
   }
 
   public clearMods(): void {
@@ -41,6 +43,7 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
 
   constructor(
     public gearService: GearService,
+    private notificationService: NotificationService,
     public iconService: IconService,
     public storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: any) {
@@ -84,7 +87,8 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
       secondaryWeapon: null,
       champions: false,
       protectiveLight: true,
-      highEnergyFire: true
+      highEnergyFire: true,
+      preferredStat: 'Recovery'
     };
   }
 }
