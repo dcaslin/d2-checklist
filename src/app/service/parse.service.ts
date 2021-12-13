@@ -2993,6 +2993,9 @@ export class ParseService {
                 score: score,
                 percent: 0
             };
+            if (iObj.complete && iObj.progress < 1) {
+                iObj.progress = 1;
+            }
 
             let max = iObj.completionValue;
             if (iObj.completionValue == null || iObj.completionValue <= 0) {
