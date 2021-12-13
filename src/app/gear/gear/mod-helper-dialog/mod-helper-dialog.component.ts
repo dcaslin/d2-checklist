@@ -1,18 +1,15 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearComponent } from '@app/gear';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
-import { Character, InventoryItem, ItemType, DestinyAmmunitionType } from '@app/service/model';
+import { Character, DestinyAmmunitionType, InventoryItem, ItemType } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { safeStringify } from '@app/shared/utilities';
-import { BehaviorSubject, iif } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { applyMods, clearMods, ModChoices, PreferredStats } from './mod-wizard-logic';
+import { applyMods, clearMods, ModChoices, PreferredStat, PreferredStats, SeasonalApproach } from './mod-wizard-logic';
 
 @Component({
   selector: 'd2c-mod-helper-dialog',
@@ -24,6 +21,7 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
 
   parent: GearComponent;
   PreferredStats = PreferredStats;
+  SeasonalApproach = SeasonalApproach;
 
   equipped$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
   weapons$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
@@ -129,9 +127,8 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
       priorityWeapon: null,
       secondaryWeapon: null,
       champions: false,
-      protectiveLight: true,
-      highEnergyFire: true,
-      preferredStat: 'Recovery'
+      seasonApproach: SeasonalApproach.LeaveAlone,
+      preferredStat: PreferredStat.LeaveAlone
     };
   }
 }

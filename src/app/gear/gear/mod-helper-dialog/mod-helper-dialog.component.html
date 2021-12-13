@@ -1,5 +1,5 @@
-<h1>COMING SOON</h1>
-<p class="warn-text">This kinda sorta works, but don't yell at me for pulling all your mods off! =)</p>
+<h1>ALPHA</h1>
+<p class="warn-text">This works, but is still a work in progress!</p>
 <h5 mat-dialog-title class="title-row">Mod Wizard
     <button mat-icon-button (click)="parent.load()">
         <fa-icon [icon]="iconService.fasSyncAlt" [spin]="parent.loading|async"></fa-icon>
@@ -53,24 +53,24 @@
             <td>
                 <mat-checkbox [(ngModel)]="modChoices.champions"></mat-checkbox>
             </td>
-        </tr>
-        <tr *ngIf="modChoices.pve">
-            <td>Protective Light?</td>
+        </tr>       
+        <tr>
+            <td>Seasonal Mods</td>
             <td>
-                <mat-checkbox [(ngModel)]="modChoices.protectiveLight"></mat-checkbox>
-            </td>
-        </tr>
-        <tr *ngIf="!modChoices.pve">
-            <td>High Energy Fire?</td>
-            <td>
-                <mat-checkbox [(ngModel)]="modChoices.highEnergyFire"></mat-checkbox>
+                <mat-radio-group [(ngModel)]="modChoices.seasonApproach" aria-label="Select an option">
+                    <mat-radio-button [value]="SeasonalApproach.LeaveAlone">Leave Alone</mat-radio-button>
+                    <mat-radio-button [value]="SeasonalApproach.Simple">
+                        <ng-container *ngIf="modChoices.pve">Protective Light</ng-container>
+                        <ng-container *ngIf="!modChoices.pve">High Energy Fire</ng-container>
+                    </mat-radio-button>
+                </mat-radio-group>
             </td>
         </tr>
         <tr>
             <td>Preferred Stat</td>
             <td>
                 <mat-radio-group [(ngModel)]="modChoices.preferredStat" aria-label="Select an option">
-                    <mat-radio-button *ngFor="let s of PreferredStats" [value]="s">{{s}}</mat-radio-button>
+                    <mat-radio-button *ngFor="let s of PreferredStats" [value]="s.value">{{s.name}}</mat-radio-button>
                 </mat-radio-group>
             </td>
         </tr>
