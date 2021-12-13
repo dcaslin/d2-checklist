@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearComponent } from '@app/gear';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
-import { Character, InventoryItem, ItemType } from '@app/service/model';
+import { Character, InventoryItem, ItemType, DestinyAmmunitionType } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
@@ -73,6 +73,49 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
       const armor = equipped.filter(i => i.type == ItemType.Armor);
       this.equipped$.next(equipped);
       this.weapons$.next(weapons);
+
+      if (this.modChoices.priorityWeapon) {
+        // if the weapons reloaded we need to re-attach to the new object
+        if (!weapons.find(x => x === this.modChoices.priorityWeapon)) {
+          this.modChoices.priorityWeapon = weapons.find(x => x.id == this.modChoices.priorityWeapon.id);
+        }
+      }
+      if (this.modChoices.secondaryWeapon) {
+        // if the weapons reloaded we need to re-attach to the new object
+        if (!weapons.find(x => x === this.modChoices.secondaryWeapon)) {
+          this.modChoices.secondaryWeapon = weapons.find(x => x.id == this.modChoices.secondaryWeapon.id);
+        }
+      }
+      // auto select new weapons if we don't have any selected or if the list changed
+
+      if (weapons.length > 0 && (this.modChoices.priorityWeapon == null ||
+        !weapons.find(x => x.id == this.modChoices.priorityWeapon.id))) {
+          const special = weapons.filter(x => x.ammoType == DestinyAmmunitionType.Special);
+          const heavy = weapons.find(x => x.ammoType == DestinyAmmunitionType.Heavy);
+          const primary = weapons.filter(x => x.ammoType == DestinyAmmunitionType.Primary);
+          if (this.modChoices.pve) {
+            if (special.length > 0) {
+              this.modChoices.priorityWeapon = special[0];
+              this.modChoices.secondaryWeapon = heavy;
+            } else { // double primary
+              this.modChoices.priorityWeapon = heavy;
+              this.modChoices.secondaryWeapon = primary[0];
+            }
+          } else {
+            if (special.length > 0) {
+              this.modChoices.priorityWeapon = special[0];
+              if (primary.length > 0) {
+                this.modChoices.secondaryWeapon = primary[0];
+              }
+              if (special.length > 1) {
+                this.modChoices.secondaryWeapon = special[1];
+              }
+            } else if (primary.length > 1) {
+              this.modChoices.priorityWeapon = primary[0];
+              this.modChoices.secondaryWeapon = primary[1];
+            }
+          }
+      }
       this.armor$.next(armor);
 
     });

@@ -258,6 +258,13 @@ function isSocketInteresting(socket: InventorySocket): boolean {
 
 async function tryToInsertMod(gearService: GearService, item: InventoryItem, socket: InventorySocket, target: ManifestInventoryItem, choices: ManifestInventoryItem[], log: string[], log$: BehaviorSubject<string[]>): Promise<boolean> {
     if (target) {
+        if ((target.hash + '') == socket.active.hash)  {
+            // already loaded
+            const msg = `${target.displayProperties.name} already loaded on ${item.name}`;
+            log.push(msg);
+            log$.next(log);
+            return true;
+        }
         if (item.canFit(socket, target)) {
             choices.push(target);
             console.dir(target);
@@ -293,7 +300,7 @@ export async function applyMods(gearService: GearService, notificationService: N
     log.push('Removing mods from armor');
     log$.next(log);
     for (const item of armor) {
-        await clearModsOnItem(gearService, item, log$);
+        await clearModsOnItem(gearService, item, log$, SocketSlotType.Mod);
     }
     // 2 apply middle mods, if possible
     log.push('Applying weapon mods for armor');
@@ -340,7 +347,7 @@ export async function applyMods(gearService: GearService, notificationService: N
     notificationService.success('Mods applied!');
 }
 
-async function clearModsOnItem(gearService: GearService, item: InventoryItem, log$: BehaviorSubject<string[]>): Promise<void> {
+async function clearModsOnItem(gearService: GearService, item: InventoryItem, log$: BehaviorSubject<string[]>, slot?: SocketSlotType): Promise<void> {
     for (const socket of item.sockets) {
         // is this an armor mod we can work on
         if (!(socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length > 0)) {
@@ -348,6 +355,9 @@ async function clearModsOnItem(gearService: GearService, item: InventoryItem, lo
         }
         // is it already empty?
         if (socket.active.empty) {
+            continue;
+        }
+        if (slot && !(getSocketSlotType(socket) == slot)) {
             continue;
         }
         // can we empty it?
