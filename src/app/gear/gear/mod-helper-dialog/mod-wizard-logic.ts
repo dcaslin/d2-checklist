@@ -201,7 +201,22 @@ function chooseGeneralTarget(item: InventoryItem, socket: InventorySocket, choic
     return null;
 }
 
-function chooseSeasonTarget(item: InventoryItem, socket: InventorySocket, choices: ModChoices, previousChoices: ManifestInventoryItem[]): ManifestInventoryItem {
+function tryForSeasonMod(modName: string, item: InventoryItem, socket: InventorySocket, previousChoices: ManifestInventoryItem[], log$: BehaviorSubject<string[]>) {
+    const hasProtectiveLight = previousChoices.find(x => x.displayProperties.name.includes(modName));
+    if (!hasProtectiveLight) {
+        const target = socket.sourcePlugs.find(x => x.displayProperties.name == modName);
+        if (target && item.canFit(socket, target)) {
+            return target;
+        } else if (target) {
+            const msg = `  [Tried to insert ${modName} but not enough room]`;
+            log$.getValue().push(msg);
+            log$.next(log$.getValue());
+        }
+    }
+    return null;
+}
+
+function chooseSeasonTarget(item: InventoryItem, socket: InventorySocket, choices: ModChoices, previousChoices: ManifestInventoryItem[], log$: BehaviorSubject<string[]>): ManifestInventoryItem {
     if (!(isSocketInteresting(socket))) {
         return null;
     }
@@ -211,33 +226,19 @@ function chooseSeasonTarget(item: InventoryItem, socket: InventorySocket, choice
     }
     if (choices.pve) {
         // try protective light first
-        const hasProtectiveLight = previousChoices.find(x => x.displayProperties.name.includes('Protective Light'));
-        if (!hasProtectiveLight) {
-            const target = socket.sourcePlugs.find(x => x.displayProperties.name == 'Protective Light');
-            if (target && item.canFit(socket, target)) {
-                return target;
-            }
+        const prot = tryForSeasonMod('Protective Light', item, socket, previousChoices, log$);
+        if (prot) {
+            return prot;
         }
     } else {
-        // try protective light first
-        const hasHighEnergyFire = previousChoices.find(x => x.displayProperties.name.includes('High-Energy Fire'));
-        if (!hasHighEnergyFire) {
-            const target = socket.sourcePlugs.find(x => x.displayProperties.name == 'High-Energy Fire');
-            if (target && item.canFit(socket, target)) {
-                return target;
-            }
+        // try high energy firefirst
+        const hef = tryForSeasonMod('High-Energy Fire', item, socket, previousChoices, log$);
+        if (hef) {
+            return hef;
         }
     }
-    const hasTakingCharge = previousChoices.find(x => x.displayProperties.name.includes('Taking Charge'));
-    if (hasTakingCharge) {
-        return null;
-    }
-     // try to find Taking Charge and see if it hits
-     const target = socket.sourcePlugs.find(x => x.displayProperties.name == 'Taking Charge');
-     if (target && item.canFit(socket, target)) {
-         return target;
-     }
-    return null;
+     const tc = tryForSeasonMod('Taking Charge', item, socket, previousChoices, log$);
+     return tc;
 }
 
 function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: InventorySocket, choices: ModChoices, previousChoices: ManifestInventoryItem[]): ManifestInventoryItem {
@@ -331,57 +332,73 @@ function isSocketInteresting(socket: InventorySocket): boolean {
     return socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length > 0;
 }
 
-async function tryToInsertMod(gearService: GearService, item: InventoryItem, socket: InventorySocket, target: ManifestInventoryItem, choices: ManifestInventoryItem[], log: string[], log$: BehaviorSubject<string[]>): Promise<boolean> {
+async function tryToInsertMod(gearService: GearService, item: InventoryItem, socket: InventorySocket, target: ManifestInventoryItem,
+    choices: ManifestInventoryItem[], log$: BehaviorSubject<string[]>, previewOnly: boolean): Promise<boolean> {
     if (target) {
         if ((target.hash + '') == socket.active.hash) {
             // already loaded
-            const msg = `${target.displayProperties.name} already loaded on ${item.name}`;
-            log.push(msg);
-            log$.next(log);
+            const msg = `  [${target.displayProperties.name} already loaded on ${item.name}]`;
+            log$.getValue().push(msg);
+            log$.next(log$.getValue());
             return true;
         }
         if (item.canFit(socket, target)) {
             choices.push(target);
             console.dir(target);
-            log.push(target.displayProperties.name);
-            log$.next(log);
-            const success = await gearService.insertFreeSocketForArmorMod(item, socket, target);
+            const success = await gearService.insertFreeSocketForArmorMod(item, socket, target, previewOnly);
             if (!success) {
-                const msg = `Failed to insert ${target.displayProperties.name} on ${item.name}`;
-                log.push(msg);
-                log$.next(log);
+                const msg = `  [Failed to insert ${target.displayProperties.name} on ${item.name}]`;
+                log$.getValue().push(msg);
+                log$.next(log$.getValue());
+            } else {
+                const msg = `  + ${target.displayProperties.name} on ${item.name}`;
+                log$.getValue().push(msg);
+                log$.next(log$.getValue());
             }
             return success;
         } else {
-            const msg = `No room for ${target.displayProperties.name} on ${item.name}`;
-            log.push(msg);
-            log$.next(log);
+            const msg = `  [No room for ${target.displayProperties.name} on ${item.name}]`;
+            log$.getValue().push(msg);
+            log$.next(log$.getValue());
         }
     }
     return false;
 }
 
-export async function applyMods(gearService: GearService, notificationService: NotificationService, modChoices: ModChoices, armor: InventoryItem[], weapons: InventoryItem[], log$: BehaviorSubject<string[]>): Promise<void> {
+export async function applyMods(gearService: GearService, notificationService: NotificationService,
+    modChoices: ModChoices, armor: InventoryItem[], weapons: InventoryItem[], log$: BehaviorSubject<string[]>, previewOnly: boolean): Promise<void> {
+
+    if (previewOnly) {
+        // clone armor deeply enough to avoid mucking up our live items
+        armor = armor.slice();
+        for (let i = 0; i < armor.length; i++) {
+            armor[i] = armor[i].cloneForDryRun();
+        }
+    }
     const log = [];
     log$.next(log);
     if (modChoices.priorityWeapon == null) {
         alert('Please select a primary weapon.');
         return;
     }
-    log.push('Starting...');
+    if (previewOnly) {
+        log.push('* Starting dry run (no mods will be applied)...');
+    } else {
+        log.push('* Starting...');
+    }
     log$.next(log);
     // cycle through armor
     // 1 remove all mods
-    log.push('Removing mods from armor');
+    log.push('* Removing mods from armor');
     log$.next(log);
     for (const item of armor) {
         if (item.inventoryBucket.displayProperties.name == 'Class Armor') {
             continue;
         }
-        await clearModsOnItem(gearService, item, log$, modChoices.preferredStat == PreferredStat.LeaveAlone, modChoices.seasonApproach == SeasonalApproach.LeaveAlone);
+        await clearModsOnItem(gearService, item, log$, modChoices.preferredStat == PreferredStat.LeaveAlone, modChoices.seasonApproach == SeasonalApproach.LeaveAlone, previewOnly);
     }
     // 2 apply middle mods, if possible
-    log.push('Applying weapon mods for armor');
+    log.push('* Applying weapon mods for armor');
     log$.next(log);
     for (const item of armor) {
         if (item.inventoryBucket.displayProperties.name == 'Class Armor') {
@@ -390,49 +407,47 @@ export async function applyMods(gearService: GearService, notificationService: N
         const choices = [];
         for (const socket of item.sockets) {
             const target = chooseModTarget(item, weapons, socket, modChoices, choices);
-            await tryToInsertMod(gearService, item, socket, target, choices, log, log$);
+            await tryToInsertMod(gearService, item, socket, target, choices, log$, previewOnly);
         }
     }
 
     // 3 apply seasonal mods if possible
     if (modChoices.seasonApproach != SeasonalApproach.LeaveAlone) {
-        log.push('Applying seasonal mods for armor');
+        log.push('* Applying seasonal mods for armor');
         log$.next(log);
 
         const seasonalChoices = [];
         for (const item of armor) {
             for (const socket of item.sockets) {
-                const target = chooseSeasonTarget(item, socket, modChoices, seasonalChoices);
-                await tryToInsertMod(gearService, item, socket, target, seasonalChoices, log, log$);
+                const target = chooseSeasonTarget(item, socket, modChoices, seasonalChoices, log$);
+                await tryToInsertMod(gearService, item, socket, target, seasonalChoices, log$, previewOnly);
             }
         }
     }
 
     // 4 apply general mods if possible
     if (modChoices.preferredStat != PreferredStat.LeaveAlone) {
-        log.push('Applying general mods for armor');
+        log.push('* Applying general mods for armor');
         log$.next(log);
         for (const item of armor) {
             const choices = [];
             for (const socket of item.sockets) {
                 const target = chooseGeneralTarget(item, socket, modChoices);
-                await tryToInsertMod(gearService, item, socket, target, [], log, log$);
-                if (target) {
-                    choices.push(target);
-                    console.dir(target);
-                    log.push(target.displayProperties.name);
-                    log$.next(log);
-                }
+                await tryToInsertMod(gearService, item, socket, target, [], log$, previewOnly);
             }
         }
     }
     log.push('Complete!');
     log$.next(log);
-    notificationService.success('Mods applied!');
+    if (previewOnly) {
+        notificationService.success('Dry run complete, view log above to see what would have happened');
+    } else {
+        notificationService.success('Mods applied!');
+    }
 }
 
 
-async function clearModsOnItem(gearService: GearService, item: InventoryItem, log$: BehaviorSubject<string[]>, ignoreGeneral?: boolean, ignoreSeasonal?: boolean): Promise<void> {
+async function clearModsOnItem(gearService: GearService, item: InventoryItem, log$: BehaviorSubject<string[]>, ignoreGeneral: boolean, ignoreSeasonal: boolean, previewOnly: boolean): Promise<void> {
     for (const socket of item.sockets) {
         // is this an armor mod we can work on
         if (!(socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length > 0)) {
@@ -454,12 +469,12 @@ async function clearModsOnItem(gearService: GearService, item: InventoryItem, lo
         // can we empty it?
         const target = socket.sourcePlugs.find(p => p.displayProperties.name.includes('Empty'));
         if (target) {
-            const logMe = `Removing ${socket.active.name} from ${item.name}`;
+            const logMe = `- ${socket.active.name} from ${item.name}`;
             const log = log$.getValue();
             log.push(logMe);
             log$.next(log);
-            await gearService.insertFreeSocketForArmorMod(item, socket, target);
-            sleep(500);
+            await gearService.insertFreeSocketForArmorMod(item, socket, target, previewOnly);
+            // do we need to sleep here?
         }
     }
 }
@@ -468,7 +483,7 @@ export async function clearMods(gearService: GearService, armor: InventoryItem[]
     const log = ['Starting to clear mods...'];
     log$.next(log);
     for (const item of armor) {
-        await clearModsOnItem(gearService, item, log$);
+        await clearModsOnItem(gearService, item, log$, false, false, false);
     }
     log.push('Done!');
     log$.next(log);

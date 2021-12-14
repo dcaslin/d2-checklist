@@ -776,7 +776,7 @@ export class InventoryItem {
     public notes: string;
     public inventoryBucket: ApiInventoryBucket;
     public tier: string;
-    public readonly options: Target[] = [];
+    public options: Target[] = [];
     public readonly isRandomRoll: boolean;
     public readonly ammoType: DestinyAmmunitionType;
     public postmaster: boolean;
@@ -827,6 +827,12 @@ export class InventoryItem {
 
     typeString(): string {
         return ItemType[this.type];
+    }
+
+    cloneForDryRun() {
+        const clone = Object.assign( Object.create( Object.getPrototypeOf(this)), this);
+        clone.sockets = this.sockets.map(s => Object.assign( Object.create( Object.getPrototypeOf(s)), s));
+        return clone;
     }
 
     constructor(id: string, hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Target,

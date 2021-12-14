@@ -31,8 +31,12 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
   log$: BehaviorSubject<string[]> = new BehaviorSubject([]);
 
 
+  public previewMods(): void {
+    applyMods(this.gearService, this.notificationService, this.modChoices, this.armor$.getValue(), this.weapons$.getValue(), this.log$, true);
+  }
+
   public applyMods(): void {
-    applyMods(this.gearService, this.notificationService, this.modChoices, this.armor$.getValue(), this.weapons$.getValue(), this.log$);
+    applyMods(this.gearService, this.notificationService, this.modChoices, this.armor$.getValue(), this.weapons$.getValue(), this.log$, false);
   }
 
   public clearMods(): void {

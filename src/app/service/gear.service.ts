@@ -631,13 +631,16 @@ export class GearService {
         }
     }
 
-    public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem): Promise<boolean> {
+    public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem, previewOnly?: boolean): Promise<boolean> {
 
         const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, plug.plug?.energyCost, true, []);
 
         this.loading.next(true);
         try {
-            const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
+            let success = true;
+            if (!previewOnly) {
+                success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash + '');
+            }
             if (success) {
                 let newCost = plug.plug?.energyCost?.energyCost;
                 if (!newCost) {
