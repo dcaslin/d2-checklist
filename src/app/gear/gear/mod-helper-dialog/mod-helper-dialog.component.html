@@ -1,16 +1,18 @@
-<h1>ALPHA</h1>
-<p class="warn-text">This works, but is still a work in progress!</p>
 <h5 mat-dialog-title class="title-row">Mod Wizard
     <button mat-icon-button (click)="parent.load()">
         <fa-icon [icon]="iconService.fasSyncAlt" [spin]="parent.loading|async"></fa-icon>
         <!--[spin]="vendorsLoading"-->
     </button>
 </h5>
+
 <div mat-dialog-content>
     <div class="fixed-spinner">
         <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner" [spin]="true" size="3x"
             [fixedWidth]="true"></fa-icon>
     </div>
+    <p class="info-text">This operates based on your currently equipped inventory. Pick your activity and priority weapons, and we'll do the rest.
+        <code>Preview</code> will do a dry run, showing what mods would be removed and equipped. <code>Apply</code> will actually modify your armor.
+    </p>
     <div class="nav-toggles char-row" *ngIf="parent.player$|async as player">
         <mat-button-toggle-group class="chars-toggle" *ngIf="player?.characters" [value]="char$|async"
             (change)="char$.next($event.value)">
@@ -85,6 +87,7 @@
             
         </ng-container>
     </div>
+   
 </div>
 <div mat-dialog-actions>
     <button mat-button (click)="previewMods()">Preview</button>
