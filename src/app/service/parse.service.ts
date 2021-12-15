@@ -2994,7 +2994,7 @@ export class ParseService {
                 percent: 0
             };
             if (iObj.complete && iObj.progress < 1) {
-                iObj.progress = 1;
+                iObj.progress = oDesc.completionValue;
             }
 
             let max = iObj.completionValue;
