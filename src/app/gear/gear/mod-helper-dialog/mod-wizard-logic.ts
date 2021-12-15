@@ -147,27 +147,20 @@ function doesChampionModMatch(plug: ManifestInventoryItem, w: InventoryItem): bo
 
 function chooseWeaponPlug(socket: InventorySocket, primaryTargetType: string, secondaryTargetType: string, previousChoices: ManifestInventoryItem[], prefix: string, suffix: string): ManifestInventoryItem {
     const primaryFilterName = cookTargetPlugName(`${prefix}${primaryTargetType}${suffix}`, socket.sourcePlugs);
-    const secondaryFilterName = cookTargetPlugName(secondaryTargetType ? `${prefix}${secondaryTargetType}${suffix}` : null, socket.sourcePlugs);
+    const secondaryFilterName = secondaryTargetType == null ? null : cookTargetPlugName(secondaryTargetType ? `${prefix}${secondaryTargetType}${suffix}` : null, socket.sourcePlugs);
     // we care about Finder, did we already equip our primary weapon finder?
-    if (previousChoices.find(x => x.displayProperties.name == primaryFilterName)) {
-        // if yes, do we have a secondary weapon?
-        if (secondaryFilterName) {
-            const target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
-            // if yes, then try to equip its finder
-            if (target) {
-                return target;
-            }
-            // if we didn't have it, now what?
-        }
-    } else {
-        // if no, try to equip it
-        const target = socket.sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
-        if (target) {
-            return target;
-        }
-        // if we didn't have it, try secondary
-        if (secondaryFilterName) {
-            const target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
+    let target: ManifestInventoryItem = null;
+    const isAlreadyPickedPrimary = previousChoices.find(x => x.displayProperties.name == primaryFilterName) != null;
+
+    target = socket.sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
+    if (!isAlreadyPickedPrimary && target) {
+        return target;
+    }
+    // we either already had it, or it wasn't available try secondary if we have an option
+    if (secondaryFilterName) {
+        const isAlreadyPickedSecondary = previousChoices.find(x => x.displayProperties.name == secondaryFilterName) != null;
+        if (!isAlreadyPickedSecondary) {
+            target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
             // if yes, then try to equip its finder
             if (target) {
                 return target;
@@ -237,8 +230,8 @@ function chooseSeasonTarget(item: InventoryItem, socket: InventorySocket, choice
             return hef;
         }
     }
-     const tc = tryForSeasonMod('Taking Charge', item, socket, previousChoices, log$);
-     return tc;
+    const tc = tryForSeasonMod('Taking Charge', item, socket, previousChoices, log$);
+    return tc;
 }
 
 function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: InventorySocket, choices: ModChoices, previousChoices: ManifestInventoryItem[]): ManifestInventoryItem {
@@ -260,7 +253,8 @@ function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: 
                 }
                 return null;
             }
-            return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Ammo Finder');
+            const secondaryScavHelpful = choices.secondaryWeapon?.ammoType !== DestinyAmmunitionType.Primary;
+            return chooseWeaponPlug(socket, primaryTargetType, secondaryScavHelpful? secondaryTargetType : null, previousChoices, '', ' Ammo Finder');
         } else {
             return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Targeting');
         }
@@ -306,16 +300,27 @@ function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: 
             return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, 'Unflinching ', ' Aim');
         }
     } else if (item.inventoryBucket.displayProperties.name == 'Leg Armor') {
-        // don't return scav on primary weapons
-        if (choices.priorityWeapon.ammoType == DestinyAmmunitionType.Primary) {
-            if (choices.secondaryWeapon?.ammoType !== DestinyAmmunitionType.Primary) {
-                // TODO holster?
-                return chooseWeaponPlug(socket, secondaryTargetType, secondaryTargetType, previousChoices, '', ' Scavenger');
-            }
-            return null;
-        }
-        return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Scavenger');
+        let target: ManifestInventoryItem = null;
 
+        const primaryScavHelpful = choices.priorityWeapon.ammoType !== DestinyAmmunitionType.Primary;
+        const secondaryScavHelpful = choices.secondaryWeapon?.ammoType !== DestinyAmmunitionType.Primary;
+
+        // any scavs worth getting? note that they don't double stack
+        if (primaryScavHelpful && secondaryScavHelpful) {
+            target = chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Scavenger');
+        } else if (primaryScavHelpful) {
+            target = chooseWeaponPlug(socket, primaryTargetType, null, previousChoices, '', ' Scavenger');
+        } else if (secondaryScavHelpful) {
+            target = chooseWeaponPlug(socket, secondaryTargetType, null, previousChoices, '', ' Scavenger');
+        }
+        if (target) {
+            return target;
+        }
+        target = chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Holster');
+        if (target) {
+            return target;
+        }
+        return null;
     } else if (item.inventoryBucket.displayProperties.name == 'Class Armor') {
         // TODO later
         // if pve and they have a fusion and they have particle deconstruction, use it
