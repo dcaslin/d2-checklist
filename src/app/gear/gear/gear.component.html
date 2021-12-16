@@ -370,12 +370,6 @@
                 (pullPostmaster)="pullFromPostmaster(player, i)" (equip)="equip(player, i)"
                 (transfer)="transfer(player, i, $event)">
               </d2c-item-icon>
-              <br>
-              <div class="sorta-mobile-only-block">
-                <button mat-button [matMenuTriggerFor]="compareMenu">
-                  {{i.copies}} <fa-icon [icon]="iconService.falClone"></fa-icon>
-                </button>
-              </div>
             </td>
             <td class="limited-gear-width">
 
@@ -405,40 +399,11 @@
               <span *ngIf="debugmode|async">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>
 
               <div>
-                <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}
-                  <span *ngIf="i.powerCap">
-                    <span class="mobile-only-inline">
-                      <ng-container *ngIf="i.powerCap<9999; else highCap">
-                        | {{i.powerCap}} cap
-                      </ng-container>
-                    </span>
-                  </span>
-                </span>
+                <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}</span>
                 <span *ngIf="i.postmaster" class="margin-left warn-text">
                   <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
                 </span>
-
                 <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
-                <span class="mobile-only-block" *ngIf="i.type == ItemType.Armor || i.type == ItemType.Ghost">
-
-                  <span class="mod-obj"> {{i.energyUsed}} / {{i.energyCapacity}} <d2c-season-indicator [season]="i.seasonalModSlot">
-                    </d2c-season-indicator> </span>
-                  <mat-progress-bar mode="determinate" class="mw-progress"
-                    [color]="i.energyCapacity>=10?'accent':'primary'" [value]="i.energyCapacity*10">
-                  </mat-progress-bar>
-
-                </span>
-              </div>
-              <div class="mobile-only-block">
-                <div *ngIf="i.masterwork!=null" [matTooltip]="i.masterwork.desc" matTooltipClass="preserve-white-space">
-                  {{i.masterwork.name}} {{i.masterwork.tier}}
-                  <mat-progress-bar *ngIf="i.type == ItemType.Weapon" mode="determinate"
-                    [color]="i.masterwork.tier>=10?'accent':'primary'" [value]="i.masterwork.tier*10">
-                  </mat-progress-bar>
-                  <mat-progress-bar *ngIf="i.type == ItemType.Armor" mode="determinate"
-                    [color]="i.masterwork.tier>=5?'accent':'primary'" [value]="i.masterwork.tier*10*2">
-                  </mat-progress-bar>
-                </div>
               </div>
             </td>
             <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
@@ -492,7 +457,7 @@
 
             </td>
 
-            <td class="limited-gear-width hide-mobile-table-cell"
+            <td class="limited-gear-width"
               *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
               <span class="mod-obj"> {{i.energyUsed}} / {{i.energyCapacity}} <d2c-season-indicator [season]="i.seasonalModSlot">
                 </d2c-season-indicator> </span>
@@ -502,11 +467,11 @@
               <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>
             </td>
 
-            <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
+            <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
               <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
             </td>
 
-            <td class="hide-mobile-table-cell show-tablet-table-cell"
+            <td
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
               <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>              
             </td>
