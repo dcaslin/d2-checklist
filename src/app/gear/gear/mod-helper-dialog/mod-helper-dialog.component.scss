@@ -10,6 +10,18 @@
     flex-direction: column;
 }
 
+table.responsive-table{
+    & td {
+      text-align: left;
+      vertical-align: top;
+    }
+}
+  
+
+.mat-radio-button {
+    margin: 3px;
+}
+
 @media(min-width:768px) {
     .mat-radio-group {
         display: flex;
