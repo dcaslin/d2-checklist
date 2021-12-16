@@ -78,6 +78,11 @@
   font-weight: lighter;
 }
 
+.gear-table-container {
+  max-width: 100vw;
+  overflow-x: scroll;
+}
+
 $gear-table-padding: 4px;
 table.gear-table {
   border-collapse: collapse;
@@ -178,6 +183,11 @@ table.stat-table {
   max-width: 175px;
 }
 
+.min-gear-width {
+  min-width: 100px;
+}
+
+
 .item-menu-button {
   width: 40px;
   margin-left: -5px;
@@ -230,6 +240,7 @@ table.stat-table {
 }
 
 .tag-cell {
+  min-width: 75px;
   max-width: 75px;
 }
 
@@ -427,6 +438,8 @@ table.stat-table {
 }
 
 .gear-body {
+  display: flex;
+  flex-direction: column;
   font-size: 13px;
 }
 

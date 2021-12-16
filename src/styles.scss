@@ -90,6 +90,10 @@
   white-space: unset;
 }
 
+.break-none {
+  white-space: nowrap;
+}
+
 .break-word{
   word-wrap: break-word;
   word-break: normal;

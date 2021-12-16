@@ -145,7 +145,7 @@ function doesChampionModMatch(plug: ManifestInventoryItem, w: InventoryItem): bo
     return false;
 }
 
-function chooseWeaponPlug(socket: InventorySocket, primaryTargetType: string, secondaryTargetType: string, previousChoices: ManifestInventoryItem[], prefix: string, suffix: string): ManifestInventoryItem {
+function chooseWeaponPlug(socket: InventorySocket, primaryTargetType: string, secondaryTargetType: string, previousChoices: ManifestInventoryItem[], prefix: string, suffix: string, nodupes?: boolean): ManifestInventoryItem {
     const primaryFilterName = cookTargetPlugName(`${prefix}${primaryTargetType}${suffix}`, socket.sourcePlugs);
     const secondaryFilterName = secondaryTargetType == null ? null : cookTargetPlugName(secondaryTargetType ? `${prefix}${secondaryTargetType}${suffix}` : null, socket.sourcePlugs);
     // we care about Finder, did we already equip our primary weapon finder?
@@ -165,6 +165,20 @@ function chooseWeaponPlug(socket: InventorySocket, primaryTargetType: string, se
             if (target) {
                 return target;
             }
+        }
+    }
+    if (nodupes) {
+        return null;
+    }
+    // check again, not worrying if we're duping the mod
+    target = socket.sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
+    if (target) {
+        return target;
+    }
+    if (secondaryFilterName) {
+        target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
+        if (target) {
+            return target;
         }
     }
     return null;
@@ -307,11 +321,11 @@ function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: 
 
         // any scavs worth getting? note that they don't double stack
         if (primaryScavHelpful && secondaryScavHelpful) {
-            target = chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Scavenger');
+            target = chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Scavenger', true);
         } else if (primaryScavHelpful) {
-            target = chooseWeaponPlug(socket, primaryTargetType, null, previousChoices, '', ' Scavenger');
+            target = chooseWeaponPlug(socket, primaryTargetType, null, previousChoices, '', ' Scavenger', true);
         } else if (secondaryScavHelpful) {
-            target = chooseWeaponPlug(socket, secondaryTargetType, null, previousChoices, '', ' Scavenger');
+            target = chooseWeaponPlug(socket, secondaryTargetType, null, previousChoices, '', ' Scavenger', true);
         }
         if (target) {
             return target;

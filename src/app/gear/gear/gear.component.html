@@ -254,369 +254,371 @@
       </button>
     </mat-menu>
 
-    <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft($event)"
-      (keydown.ArrowRight)="onRight($event)" *ngIf="preferredStatService.stats$|async as prefStats">
-      <thead>
-        <tr>
-          <th class="limited-gear-width">
-            <span class="fake-link gear-sort" (click)="sort('power')">Light
-              <d2c-sort-indicator field="power" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-            </span>
-          </th>
-          <th class="limited-gear-width">
-            <span class="fake-link gear-sort" (click)="sort('name')">Name
-              <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-            </span>
-            <span class="fake-link gear-sort pad-left-more" (click)="sort('id')">Age
-              <d2c-sort-indicator field="id" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-            </span>
-          </th>
-          <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-            <span class="fake-link gear-sort" (click)="sort('powerCap')">Cap
-              <d2c-sort-indicator field="powerCap" [currVal]="sortBy" [descending]="sortDesc">
-              </d2c-sort-indicator>
-            </span>
-          </th>
-          <th class="limited-gear-width hide-mobile-table-cell">
-            <span class="fake-link gear-sort" (click)="sort('typeName')">Type
-              <d2c-sort-indicator field="typeName" [currVal]="sortBy" [descending]="sortDesc">
-              </d2c-sort-indicator>
-            </span>
+    <div class="gear-table-container">
+      <table tabindex="0" class="gear-table mark-table" (keydown.ArrowLeft)="onLeft($event)"
+        (keydown.ArrowRight)="onRight($event)" *ngIf="preferredStatService.stats$|async as prefStats">
+        <thead>
+          <tr>
+            <th class="limited-gear-width">
+              <span class="fake-link gear-sort" (click)="sort('power')">Light
+                <d2c-sort-indicator field="power" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+              </span>
+            </th>
+            <th class="limited-gear-width">
+              <span class="fake-link gear-sort" (click)="sort('name')">Name
+                <d2c-sort-indicator field="name" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+              </span>
+              <span class="fake-link gear-sort pad-left-more" (click)="sort('id')">Age
+                <d2c-sort-indicator field="id" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+              </span>
+            </th>
+            <th class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
+              <span class="fake-link gear-sort" (click)="sort('powerCap')">Cap
+                <d2c-sort-indicator field="powerCap" [currVal]="sortBy" [descending]="sortDesc">
+                </d2c-sort-indicator>
+              </span>
+            </th>
+            <th class="limited-gear-width">
+              <span class="fake-link gear-sort" (click)="sort('typeName')">Type
+                <d2c-sort-indicator field="typeName" [currVal]="sortBy" [descending]="sortDesc">
+                </d2c-sort-indicator>
+              </span>
 
-          </th>
+            </th>
 
-          <th class="limited-gear-width sorta-hide-mobile-table-cell"
-            *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-            <span class="fake-link gear-sort" (click)="sort('copies')">
-              Copies
-              <d2c-sort-indicator field="copies" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
-            </span>
-          </th>
-          <th class="limited-gear-width"
-            *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
-            <span class="fake-link gear-sort" (click)="sort('energyCapacity')">Energy
-              <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
-              </d2c-sort-indicator>
-            </span>
-          </th>
-          <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
-            <span class="fake-link gear-sort" (click)="sort('masterwork.tier')">MW
-              <d2c-sort-indicator field="mw.tier" [currVal]="sortBy" [descending]="sortDesc">
-              </d2c-sort-indicator>
-            </span>
-          </th>
-          <th
-            *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-            <span class="fake-link" (click)="sort('plug.0.0')">Sockets
-              <d2c-sort-indicator field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc">
-              </d2c-sort-indicator>
-            </span>
-
-          </th>
-          <th class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
-            *ngIf="option.type==ItemType.Armor">
-            <span class="fake-link gear-sort" (click)="sort('preferredStatPoints')">Stat Pts
-              <d2c-sort-indicator field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc">
-              </d2c-sort-indicator>
-            </span>
-          </th>
-          <th class="hide-mobile-table-cell show-tablet-table-cell"
-            *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
-            Stats
-
-            <ng-container *ngIf="option.type==ItemType.Weapon">
-              <fa-icon *ngIf="showAllWeaponStats" [icon]="iconService.falMinusSquare"
-                matTooltip="Show default weapon stats" (click)="showAllWeaponStats=false"></fa-icon>
-              <fa-icon *ngIf="!showAllWeaponStats" [icon]="iconService.falPlusSquare" matTooltip="Show all weapon stats"
-                (click)="showAllWeaponStats=true"></fa-icon>
-            </ng-container>
-          </th>
-
-
-          <th class="limited-gear-width"
-            *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
-
-            <div class="tag-page-container">
-              <div class="tag-page-container-tag">
-                <span class="fake-link" (click)="sort('quantity')">Quantity
-                  <d2c-sort-indicator field="quantity" [currVal]="sortBy" [descending]="sortDesc">
-                  </d2c-sort-indicator>
-                </span>
-              </div>
-              <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
-            </div>
-
-
-          </th>
-          <th class="tag-cell"
-            *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-            <div class="tag-page-container">
-              <div class="tag-page-container-tag">
-                <span class="fake-link" (click)="sort('mark')">Tag
-                  <d2c-sort-indicator field="mark" [currVal]="sortBy" [descending]="sortDesc">
-                  </d2c-sort-indicator>
-                </span>
-              </div>
-              <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody *ngIf="gearToShow$|async as gearToShow">
-        <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
-          <tr [ngClass]="i.mark?i.mark:'none'">
-            <td class="limited-gear-width">
-              <d2c-item-icon [i]="i" [mark]="i.mark" [option]="option.type" (toggleLock)="setLock(player, i, $event)"
-                (pullPostmaster)="pullFromPostmaster(player, i)" (equip)="equip(player, i)"
-                (transfer)="transfer(player, i, $event)">
-              </d2c-item-icon>
-            </td>
-            <td class="limited-gear-width">
-
-              <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc" [matMenuTriggerFor]="itemMenu"
-                matTooltipClass="preserve-white-space">
-                <div class="item-name">{{i.name}}</div>
-              </button>
-
-
-              <mat-menu #itemMenu="matMenu">
-                <button mat-menu-item
-                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
-                  (click)="showItem(i)">
-                  <fa-icon [icon]="iconService.falInfoSquare"></fa-icon> Details
-                </button>
-                <button mat-menu-item
-                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
-                  (click)="copyToClipboard(i)">
-                  <fa-icon [icon]="iconService.falCopy"></fa-icon> Copy for reddit
-                </button>
-                <button mat-menu-item *ngIf="option.type == ItemType.Weapon && i.isRandomRoll"
-                  (click)="showPossibleRolls(i)">
-                  <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show recommended rolls
-                </button>
-
-              </mat-menu>
-              <span *ngIf="debugmode|async">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>
-
-              <div>
-                <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}</span>
-                <span *ngIf="i.postmaster" class="margin-left warn-text">
-                  <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
-                </span>
-                <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
-              </div>
-            </td>
-            <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
-              <ng-container *ngIf="i.powerCap<9999; else highCap">
-                <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
-              </ng-container>
-            </td>
-            <td class="limited-gear-width hide-mobile-table-cell">
-              {{i.typeName}}
-              <ng-container *ngIf="option.type==ItemType.Weapon">
-                <span class="fake-link" class="simple-caption" *ngIf="i.isRandomRoll"
-                  (click)="showPossibleRolls(i)">Random</span>
-                <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
-              </ng-container>
-              <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
-              </div>
-              <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]
-              </ng-container>
-              <div class="vertical-pad">
-                <button mat-stroked-button [matMenuTriggerFor]="compareMenu"
-                  *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-                  Compare
-                </button>
-              </div>
-              <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
-                <div *ngIf="i.noGodRollInfo" class="simple-caption-no-margin vertical-pad">
-                  No godroll info yet
-                </div>
-              </ng-container>
-
-
-            </td>
-
-            <td class="limited-gear-width sorta-hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
-            || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <button mat-button (click)="showCopies(i)">
-                <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}
-              </button>
-              <div class="vertical-pad" *ngIf="i.dupesByEnergyAndSeason">
-                <button mat-button (click)="showSimilarArmorBySlotAndEnergy(i)">
-                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
-                  {{i.dupesTaggedToKeep}} / {{i.dupesByEnergyAndSeason}}
-                </button>
-              </div>
-              <div class="vertical-pad" *ngIf="i.dupesByFrameSlotAndEnergy">
-                <button mat-button (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
-                  <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
-                  {{i.dupesTaggedToKeep}} / {{i.dupesByFrameSlotAndEnergy}}
-                </button>
-              </div>
-
-            </td>
-
-            <td class="limited-gear-width"
-              *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
-              <span class="mod-obj"> {{i.energyUsed}} / {{i.energyCapacity}} <d2c-season-indicator [season]="i.seasonalModSlot">
-                </d2c-season-indicator> </span>
-              <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
-                [value]="i.energyCapacity*10">
-              </mat-progress-bar>
-              <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>
-            </td>
-
-            <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
-              <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
-            </td>
-
-            <td
-              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>              
-            </td>
-            <td class="limited-gear-width hide-mobile-table-cell show-tablet-table-cell"
-              *ngIf="option.type==ItemType.Armor">
-
-              <ng-container *ngIf="i.preferredStatPoints">{{i.preferredStatPoints}}</ng-container>
-
-              <div class="total-pts" *ngIf="i.totalStatPoints">
-                <span class="fake-link gear-sort" (click)="sort('totalStatPoints')">
-                  {{i.totalStatPoints}}
-                  <d2c-sort-indicator field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc">
-                  </d2c-sort-indicator>
-                </span>
-              </div>
-            </td>
-            <td class="hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Weapon">
-              <table class="stat-table" *ngIf="i.type==ItemType.Weapon">
-                <tbody>
-                  <ng-container *ngFor="let stat of i.stats">
-                    <tr *ngIf="showAllWeaponStats || (stat.hash==1345609583
-                      || stat.hash==4043523819 || stat.hash==1240592695
-                      || stat.hash==4284893193)">
-                      <td><span class="fake-link gear-sort" (click)="sort('stat.'+stat.hash)">
-                          <ng-container *ngIf="stat.name=='Rounds Per Minute'; else notRPM">
-                            RPM
-                          </ng-container>
-                          <ng-template #notRPM>
-                            <ng-container *ngIf="stat.name=='Aim Assistance'; else default">
-                              Aim Assist
-                            </ng-container>
-                          </ng-template>
-                          <ng-template #default>
-                            {{stat.name}}
-                          </ng-template>
-                          <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
-                          </d2c-sort-indicator>
-                        </span>
-                      </td>
-                      <td>{{stat.displayValue}}</td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </td>
-            <td class="hide-mobile-table-cell show-tablet-table-cell" *ngIf="option.type==ItemType.Armor">
-              <table class="stat-table" *ngIf="i.type==ItemType.Armor">
-                <tbody>
-                  <ng-container *ngFor="let stat of i.stats">
-                    <ng-container *ngIf="preferredStatService.getMultiplierForDisplay(prefStats, ClassAllowed[i.classAllowed],stat) as prefStat"> 
-                      <ng-container *ngIf="prefStat > 0 || prefStats.showAllStats">
-                        <tr>
-                          <td class="gear-sort">
-                            <span class="fake-link" 
-                            [matTooltip]="prefStat+'% weight'" 
-                            [matTooltipDisabled]="prefStat <= 0"
-                            [class.italics]="prefStat > 0 && prefStats.showAllStats"
-                            (click)="sort('stat.'+stat.hash)">{{stat.name}} 
-                              <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
-                              </d2c-sort-indicator>
-                            </span>
-                          </td>
-                          <td>{{stat.value}}
-                            <span *ngIf="stat.enhancement>0" class="accent-text pad-left">+{{stat.enhancement}}</span>
-                            <span *ngIf="stat.enhancement<0" class="warn-text pad-left">{{stat.enhancement}}</span>
-                          </td>
-                        </tr>
-                      </ng-container>
-                    </ng-container> 
-                  </ng-container>
-                </tbody>
-              </table>
-            </td>
-            <td class="limited-gear-width"
-              *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
-              {{i.quantity}}
-            </td>
-            <td class="tag-cell"
+            <th class="limited-gear-width"
               *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
-              <div class="hide-mobile-block">
-                <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
-                  [ngClass]="['tag-square-button','tag-button',mc.value]" [matTooltip]="mc.label">
-                  <fa-icon [icon]="mc.icon"></fa-icon>
-                </button>
+              <span class="fake-link gear-sort" (click)="sort('copies')">
+                Copies
+                <d2c-sort-indicator field="copies" [currVal]="sortBy" [descending]="sortDesc"></d2c-sort-indicator>
+              </span>
+            </th>
+            <th class="limited-gear-width"
+              *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
+              <span class="fake-link gear-sort" (click)="sort('energyCapacity')">Energy
+                <d2c-sort-indicator field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc">
+                </d2c-sort-indicator>
+              </span>
+            </th>
+            <th class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
+              <span class="fake-link gear-sort" (click)="sort('masterwork.tier')">MW
+                <d2c-sort-indicator field="mw.tier" [currVal]="sortBy" [descending]="sortDesc">
+                </d2c-sort-indicator>
+              </span>
+            </th>
+            <th
+              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Vehicle">
+              <span class="fake-link" (click)="sort('plug.0.0')">Sockets
+                <d2c-sort-indicator field="plug.0.0" [currVal]="sortBy" [descending]="sortDesc">
+                </d2c-sort-indicator>
+              </span>
+
+            </th>
+            <th class="limited-gear-width min-gear-width"
+              *ngIf="option.type==ItemType.Armor">
+              <span class="fake-link gear-sort" (click)="sort('preferredStatPoints')">Stat Pts
+                <d2c-sort-indicator field="preferredStatPoints" [currVal]="sortBy" [descending]="sortDesc">
+                </d2c-sort-indicator>
+              </span>
+            </th>
+            <th class="min-gear-width min-gear-width"
+              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor">
+              Stats
+
+              <ng-container *ngIf="option.type==ItemType.Weapon">
+                <fa-icon *ngIf="showAllWeaponStats" [icon]="iconService.falMinusSquare"
+                  matTooltip="Show default weapon stats" (click)="showAllWeaponStats=false"></fa-icon>
+                <fa-icon *ngIf="!showAllWeaponStats" [icon]="iconService.falPlusSquare" matTooltip="Show all weapon stats"
+                  (click)="showAllWeaponStats=true"></fa-icon>
+              </ng-container>
+            </th>
+
+
+            <th class="limited-gear-width"
+              *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
+
+              <div class="tag-page-container">
+                <div class="tag-page-container-tag">
+                  <span class="fake-link" (click)="sort('quantity')">Quantity
+                    <d2c-sort-indicator field="quantity" [currVal]="sortBy" [descending]="sortDesc">
+                    </d2c-sort-indicator>
+                  </span>
+                </div>
+                <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
               </div>
-              <div class="mobile-only-block">
-                <button mat-icon-button [matMenuTriggerFor]="tagMenu">
-                  <fa-icon [icon]="iconService.fasTags"></fa-icon> Tag
+
+
+            </th>
+            <th class="tag-cell"
+              *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+              <div class="tag-page-container">
+                <div class="tag-page-container-tag">
+                  <span class="fake-link" (click)="sort('mark')">Tag
+                    <d2c-sort-indicator field="mark" [currVal]="sortBy" [descending]="sortDesc">
+                    </d2c-sort-indicator>
+                  </span>
+                </div>
+                <ng-container *ngTemplateOutlet="upperPaging;  context: {paginator: paginator}"></ng-container>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody *ngIf="gearToShow$|async as gearToShow">
+          <ng-container *ngFor="let i of gearToShow; trackBy: trackGearItem">
+            <tr [ngClass]="i.mark?i.mark:'none'">
+              <td class="limited-gear-width">
+                <d2c-item-icon [i]="i" [mark]="i.mark" [option]="option.type" (toggleLock)="setLock(player, i, $event)"
+                  (pullPostmaster)="pullFromPostmaster(player, i)" (equip)="equip(player, i)"
+                  (transfer)="transfer(player, i, $event)">
+                </d2c-item-icon>
+              </td>
+              <td class="limited-gear-width">
+
+                <button mat-stroked-button [matTooltip]="i.name+'\n'+i.desc" [matMenuTriggerFor]="itemMenu"
+                  matTooltipClass="preserve-white-space">
+                  <div class="item-name">{{i.name}}</div>
                 </button>
-                <mat-menu #tagMenu="matMenu">
-                  <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-menu-item
-                    [ngClass]="['tag-button',mc.value]">
-                    <fa-icon [icon]="mc.icon"></fa-icon>
-                    {{mc.value}}
+
+
+                <mat-menu #itemMenu="matMenu">
+                  <button mat-menu-item
+                    *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
+                    (click)="showItem(i)">
+                    <fa-icon [icon]="iconService.falInfoSquare"></fa-icon> Details
                   </button>
+                  <button mat-menu-item
+                    *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle"
+                    (click)="copyToClipboard(i)">
+                    <fa-icon [icon]="iconService.falCopy"></fa-icon> Copy for reddit
+                  </button>
+                  <button mat-menu-item *ngIf="option.type == ItemType.Weapon && i.isRandomRoll"
+                    (click)="showPossibleRolls(i)">
+                    <fa-icon [icon]="iconService.falDiceD20"></fa-icon> Show recommended rolls
+                  </button>
+
                 </mat-menu>
-              </div>
-              <div>
-                <mat-form-field class="full-width">
-                  <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
-                    (ngModelChange)="itemNotesChanged(i)" [matAutocomplete]="hashTagAuto">
-                </mat-form-field>
-              </div>
+                <span *ngIf="debugmode|async">[{{i.id}} {{i.hash}}] - version {{i.versionNumber}}</span>
+
+                <div>
+                  <span class="simple-caption" *ngIf="i.owner|async as owner">{{owner.label}}</span>
+                  <span *ngIf="i.postmaster" class="margin-left warn-text">
+                    <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
+                  </span>
+                  <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
+                </div>
+              </td>
+              <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
+                <ng-container *ngIf="i.powerCap<9999; else highCap">
+                  <span class="simple-darker-caption-no-margin">{{i.powerCap}}</span>
+                </ng-container>
+              </td>
+              <td class="limited-gear-width">
+                {{i.typeName}}
+                <ng-container *ngIf="option.type==ItemType.Weapon">
+                  <span class="fake-link" class="simple-caption" *ngIf="i.isRandomRoll"
+                    (click)="showPossibleRolls(i)">Random</span>
+                  <span class="simple-caption" *ngIf="!i.isRandomRoll">Fixed</span>
+                </ng-container>
+                <div *ngIf="option.type == ItemType.Armor" class="simple-caption">{{ClassAllowed[i.classAllowed]}}
+                </div>
+                <ng-container *ngIf="debugmode|async"><br>[{{i.inventoryBucket.displayProperties.name}}]
+                </ng-container>
+                <div class="vertical-pad">
+                  <button mat-stroked-button [matMenuTriggerFor]="compareMenu"
+                    *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                    Compare
+                  </button>
+                </div>
+                <ng-container *ngIf="option.type == ItemType.Weapon && i.isRandomRoll">
+                  <div *ngIf="i.noGodRollInfo" class="simple-caption-no-margin vertical-pad">
+                    No godroll info yet
+                  </div>
+                </ng-container>
+
+
+              </td>
+
+              <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor 
+              || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                <button mat-button (click)="showCopies(i)">
+                  <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}
+                </button>
+                <div class="vertical-pad" *ngIf="i.dupesByEnergyAndSeason">
+                  <button mat-button (click)="showSimilarArmorBySlotAndEnergy(i)">
+                    <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+                    {{i.dupesTaggedToKeep}} / {{i.dupesByEnergyAndSeason}}
+                  </button>
+                </div>
+                <div class="vertical-pad" *ngIf="i.dupesByFrameSlotAndEnergy">
+                  <button mat-button (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
+                    <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
+                    {{i.dupesTaggedToKeep}} / {{i.dupesByFrameSlotAndEnergy}}
+                  </button>
+                </div>
+
+              </td>
+
+              <td class="limited-gear-width"
+                *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
+                <span class="mod-obj"> {{i.energyUsed}} / {{i.energyCapacity}} <d2c-season-indicator [season]="i.seasonalModSlot">
+                  </d2c-season-indicator> </span>
+                <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
+                  [value]="i.energyCapacity*10">
+                </mat-progress-bar>
+                <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>
+              </td>
+
+              <td class="limited-gear-width" *ngIf="option.type==ItemType.Weapon">
+                <d2c-god-roll-mw [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-mw>
+              </td>
+
+              <td
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Vehicle">
+                <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>              
+              </td>
+              <td class="limited-gear-width"
+                *ngIf="option.type==ItemType.Armor">
+
+                <ng-container *ngIf="i.preferredStatPoints">{{i.preferredStatPoints}}</ng-container>
+
+                <div class="total-pts" *ngIf="i.totalStatPoints">
+                  <span class="fake-link gear-sort" (click)="sort('totalStatPoints')">
+                    {{i.totalStatPoints}}
+                    <d2c-sort-indicator field="totalStatPoints" [currVal]="sortBy" [descending]="sortDesc">
+                    </d2c-sort-indicator>
+                  </span>
+                </div>
+              </td>
+              <td class="min-gear-width" *ngIf="option.type==ItemType.Weapon">
+                <table class="stat-table" *ngIf="i.type==ItemType.Weapon">
+                  <tbody>
+                    <ng-container *ngFor="let stat of i.stats">
+                      <tr *ngIf="showAllWeaponStats || (stat.hash==1345609583
+                        || stat.hash==4043523819 || stat.hash==1240592695
+                        || stat.hash==4284893193)">
+                        <td><span class="fake-link gear-sort" (click)="sort('stat.'+stat.hash)">
+                            <ng-container *ngIf="stat.name=='Rounds Per Minute'; else notRPM">
+                              RPM
+                            </ng-container>
+                            <ng-template #notRPM>
+                              <ng-container *ngIf="stat.name=='Aim Assistance'; else default">
+                                Aim Assist
+                              </ng-container>
+                            </ng-template>
+                            <ng-template #default>
+                              {{stat.name}}
+                            </ng-template>
+                            <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
+                            </d2c-sort-indicator>
+                          </span>
+                        </td>
+                        <td>{{stat.displayValue}}</td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </td>
+              <td class="min-gear-width" *ngIf="option.type==ItemType.Armor">
+                <table class="stat-table" *ngIf="i.type==ItemType.Armor">
+                  <tbody>
+                    <ng-container *ngFor="let stat of i.stats">
+                      <ng-container *ngIf="preferredStatService.getMultiplierForDisplay(prefStats, ClassAllowed[i.classAllowed],stat) as prefStat"> 
+                        <ng-container *ngIf="prefStat > 0 || prefStats.showAllStats">
+                          <tr>
+                            <td class="gear-sort">
+                              <span class="fake-link" 
+                              [matTooltip]="prefStat+'% weight'" 
+                              [matTooltipDisabled]="prefStat <= 0"
+                              [class.italics]="prefStat > 0 && prefStats.showAllStats"
+                              (click)="sort('stat.'+stat.hash)">{{stat.name}} 
+                                <d2c-sort-indicator [field]="'stat.'+stat.hash" [currVal]="sortBy" [descending]="sortDesc">
+                                </d2c-sort-indicator>
+                              </span>
+                            </td>
+                            <td class="break-none">{{stat.value}}
+                              <span *ngIf="stat.enhancement>0" class="accent-text pad-left">+{{stat.enhancement}}</span>
+                              <span *ngIf="stat.enhancement<0" class="warn-text pad-left">{{stat.enhancement}}</span>
+                            </td>
+                          </tr>
+                        </ng-container>
+                      </ng-container> 
+                    </ng-container>
+                  </tbody>
+                </table>
+              </td>
+              <td class="limited-gear-width"
+                *ngIf="option.type!=ItemType.Weapon && option.type!=ItemType.Armor && option.type!=ItemType.Ghost && option.type!=ItemType.Vehicle">
+                {{i.quantity}}
+              </td>
+              <td class="tag-cell"
+                *ngIf="option.type==ItemType.Weapon || option.type==ItemType.Armor || option.type==ItemType.Ghost || option.type==ItemType.Vehicle">
+                <div class="hide-mobile-block">
+                  <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-icon-button
+                    [ngClass]="['tag-square-button','tag-button',mc.value]" [matTooltip]="mc.label">
+                    <fa-icon [icon]="mc.icon"></fa-icon>
+                  </button>
+                </div>
+                <div class="mobile-only-block">
+                  <button mat-icon-button [matMenuTriggerFor]="tagMenu">
+                    <fa-icon [icon]="iconService.fasTags"></fa-icon> Tag
+                  </button>
+                  <mat-menu #tagMenu="matMenu">
+                    <button *ngFor="let mc of markService.markChoices" (click)="mark(mc.value,i)" mat-menu-item
+                      [ngClass]="['tag-button',mc.value]">
+                      <fa-icon [icon]="mc.icon"></fa-icon>
+                      {{mc.value}}
+                    </button>
+                  </mat-menu>
+                </div>
+                <div>
+                  <mat-form-field class="full-width">
+                    <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes" placeholder="Notes"
+                      (ngModelChange)="itemNotesChanged(i)" [matAutocomplete]="hashTagAuto">
+                  </mat-form-field>
+                </div>
+              </td>
+            </tr>
+            <mat-menu #compareMenu="matMenu">
+              <button mat-menu-item (click)="showCurrentPage()">
+                Current Page
+              </button>
+              <button mat-menu-item (click)="showCopies(i)">
+                Copies
+              </button>
+              <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrame(i)">
+                By frame
+              </button>
+              <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlot(i)">
+                By slot
+              </button>
+              <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrameAndSlot(i)">
+                By frame &amp; Slot
+              </button>
+              <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlotAndEnergy(i)">
+                By slot &amp; Energy
+              </button>
+              <button *ngIf="option.type==ItemType.Weapon" mat-menu-item
+                (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
+                By frame, slot &amp; Energy
+              </button>
+              <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
+                By slot
+              </button>
+              <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlotAndEnergy(i)">
+                By slot &amp; energy
+              </button>
+            </mat-menu>
+          </ng-container>
+          <tr>
+            <td colspan="100%">
+              <mat-paginator #paginator showFirstLastButtons="true" [length]="pageInfo.total" [pageIndex]="pageInfo.page"
+                [pageSize]="pageInfo.size" (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
+              </mat-paginator>
             </td>
           </tr>
-          <mat-menu #compareMenu="matMenu">
-            <button mat-menu-item (click)="showCurrentPage()">
-              Current Page
-            </button>
-            <button mat-menu-item (click)="showCopies(i)">
-              Copies
-            </button>
-            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrame(i)">
-              By frame
-            </button>
-            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlot(i)">
-              By slot
-            </button>
-            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsByFrameAndSlot(i)">
-              By frame &amp; Slot
-            </button>
-            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item (click)="showSimilarWeaponsBySlotAndEnergy(i)">
-              By slot &amp; Energy
-            </button>
-            <button *ngIf="option.type==ItemType.Weapon" mat-menu-item
-              (click)="showSimilarWeaponsByFrameSlotAndEnergy(i)">
-              By frame, slot &amp; Energy
-            </button>
-            <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
-              By slot
-            </button>
-            <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlotAndEnergy(i)">
-              By slot &amp; energy
-            </button>
-          </mat-menu>
-        </ng-container>
-        <tr>
-          <td colspan="100%">
-            <mat-paginator #paginator showFirstLastButtons="true" [length]="pageInfo.total" [pageIndex]="pageInfo.page"
-              [pageSize]="pageInfo.size" (page)="handlePage($event)" [pageSizeOptions]="[5, 10, 20, 50, 100, 1000]">
-            </mat-paginator>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
 
   </ng-container>
 </div>
