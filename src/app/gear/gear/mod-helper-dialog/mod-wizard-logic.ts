@@ -151,8 +151,10 @@ function chooseWeaponPlug(socket: InventorySocket, primaryTargetType: string, se
     // we care about Finder, did we already equip our primary weapon finder?
     let target: ManifestInventoryItem = null;
     const isAlreadyPickedPrimary = previousChoices.find(x => x.displayProperties.name == primaryFilterName) != null;
-
-    target = socket.sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
+    const sourcePlugs = socket.sourcePlugs.slice();
+    // sort source plugs by cost ascending
+    sourcePlugs.sort((a, b) => a.plug?.energyCost?.energyCost - b.plug?.energyCost?.energyCost);
+    target = sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
     if (!isAlreadyPickedPrimary && target) {
         return target;
     }
@@ -171,12 +173,12 @@ function chooseWeaponPlug(socket: InventorySocket, primaryTargetType: string, se
         return null;
     }
     // check again, not worrying if we're duping the mod
-    target = socket.sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
+    target = sourcePlugs.find(x => x.displayProperties.name == primaryFilterName);
     if (target) {
         return target;
     }
     if (secondaryFilterName) {
-        target = socket.sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
+        target = sourcePlugs.find(x => x.displayProperties.name == secondaryFilterName);
         if (target) {
             return target;
         }
@@ -215,7 +217,7 @@ function tryForSeasonMod(modName: string, item: InventoryItem, socket: Inventory
         if (target && item.canFit(socket, target)) {
             return target;
         } else if (target) {
-            const msg = `  [Tried to insert ${modName} but not enough room]`;
+            const msg = `  [Tried to insert ${modName}(${target.plug?.energyCost?.energyCost}) but not enough room]`;
             log$.getValue().push(msg);
             log$.next(log$.getValue());
         }
@@ -366,17 +368,17 @@ async function tryToInsertMod(gearService: GearService, item: InventoryItem, soc
             console.dir(target);
             const success = await gearService.insertFreeSocketForArmorMod(item, socket, target, previewOnly);
             if (!success) {
-                const msg = `  [Failed to insert ${target.displayProperties.name} on ${item.name}]`;
+                const msg = `  [Failed to insert ${target.displayProperties.name}(${target.plug?.energyCost?.energyCost}) on ${item.name}]`;
                 log$.getValue().push(msg);
                 log$.next(log$.getValue());
             } else {
-                const msg = `  + ${target.displayProperties.name} on ${item.name}`;
+                const msg = `  + ${target.displayProperties.name}(${target.plug?.energyCost?.energyCost}) on ${item.name}`;
                 log$.getValue().push(msg);
                 log$.next(log$.getValue());
             }
             return success;
         } else {
-            const msg = `  [No room for ${target.displayProperties.name} on ${item.name}]`;
+            const msg = `  [No room for ${target.displayProperties.name}(${target.plug?.energyCost?.energyCost}) on ${item.name}]`;
             log$.getValue().push(msg);
             log$.next(log$.getValue());
         }
