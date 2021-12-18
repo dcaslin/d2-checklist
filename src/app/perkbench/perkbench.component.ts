@@ -7,7 +7,6 @@ import {
 } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { del, get, keys, set } from 'idb-keyval';
 import {
   DamageType,
   InventoryPlug,
@@ -16,14 +15,14 @@ import {
 } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, PandaGodrollsService, RYKER_GOD_ROLLS_URL } from '@app/service/panda-godrolls.service';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { format } from 'date-fns';
+import { del, set } from 'idb-keyval';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.component';
-import { throwToolbarMixedModesError } from '@angular/material/toolbar';
-import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 // TODO show guns with unrollable perks
 // x offer option to apply god rolls to local storage
@@ -73,6 +72,7 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102,
   '/common/destiny2_content/icons/0a93338035464bade265763e190b9f12.png': 105,
   '/common/destiny2_content/icons/97c65a76255ef764a9a98f24e50b859d.png': 106,
+  '/common/destiny2_content/icons/dd4dd93c5606998595d9e5a06d5bfc9c.png': 107,
   '/common/destiny2_content/icons/215100c99216b9c0bd83b9daa50ace45.png': 104,
   '/common/destiny2_content/icons/5f5bed34dcd062be8302ce27b542dce9.png': 103
 };
@@ -383,6 +383,8 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
   private buildRollJson(): CompleteGodRolls {
   const newRolls = PerkbenchComponent.rebuildRolls(this.rolls$.getValue());
+  // sort newRolls by name ascending
+  newRolls.sort((a, b) => a.name.localeCompare(b.name));
   const downloadMe: CompleteGodRolls = {
     title: this.currentTitle,
     date: new Date().toISOString(),

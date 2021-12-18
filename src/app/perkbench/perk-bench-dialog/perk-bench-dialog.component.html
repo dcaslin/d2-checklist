@@ -17,14 +17,14 @@
                 
                 <div>
                     <mat-button-toggle-group class="pad-left" [(ngModel)]="clickMode">
-                        <mat-button-toggle *ngFor="let enum of clickModeEnum | keyvalue" [value]="enum.value">
+                        <mat-button-toggle *ngFor="let enum of clickOptions" [value]="enum">
                             <fa-icon
-                                *ngIf="enum.value==clickModeEnum.GodRollPvP || enum.value==clickModeEnum.GoodRollPvP"
-                                [class.accent-text]="enum.value==clickModeEnum.GodRollPvP"
+                                *ngIf="enum==clickModeEnum.GodRollPvP || enum==clickModeEnum.GoodRollPvP"
+                                [class.accent-text]="enum==clickModeEnum.GodRollPvP"
                                 [icon]="iconService.fasSwords"></fa-icon>
-                            <i *ngIf="enum.value==clickModeEnum.GodRollPvE || enum.value==clickModeEnum.GoodRollPvE"
-                                [class.accent-text]="enum.value==clickModeEnum.GodRollPvE" class="icon-strike"></i>
-                            {{enum.value}}
+                            <i *ngIf="enum==clickModeEnum.GodRollPvE || enum==clickModeEnum.GoodRollPvE"
+                                [class.accent-text]="enum==clickModeEnum.GodRollPvE" class="icon-strike"></i>
+                            {{enum}}
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
@@ -36,30 +36,21 @@
             </div>
 
             <table class="tidy-auto-table">
-
-                <!-- <tr>
-                    <td>
-                        PVE: {{pve|json}}
-                    </td>
-                    <td>
-                        PVP: {{pvp|json}}
-                    </td>
-                </tr> -->
-                <tr>
-                    <th [attr.colspan]="maxPlugs">
-                        PVP Masterwork:
-                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
-                            <mat-checkbox [checked]="pvp.masterwork.includes(mw.toLowerCase())"
-                                (change)="onMwCheckChange($event.checked, mw, pvp.masterwork)">{{mw}}</mat-checkbox>
-                        </span>
-                    </th>
-                </tr>
                 <tr>
                     <th [attr.colspan]="maxPlugs">
                         PVE Masterwork:
                         <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
                             <mat-checkbox [checked]="pve.masterwork.includes(mw.toLowerCase())"
                                 (change)="onMwCheckChange($event.checked,mw, pve.masterwork)">{{mw}}</mat-checkbox>
+                        </span>
+                    </th>
+                </tr>
+                <tr>
+                    <th [attr.colspan]="maxPlugs">
+                        PVP Masterwork:
+                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
+                            <mat-checkbox [checked]="pvp.masterwork.includes(mw.toLowerCase())"
+                                (change)="onMwCheckChange($event.checked, mw, pvp.masterwork)">{{mw}}</mat-checkbox>
                         </span>
                     </th>
                 </tr>

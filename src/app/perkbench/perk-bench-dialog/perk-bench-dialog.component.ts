@@ -1,11 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
-import { StorageService } from '@app/service/storage.service';
 import { GunRoll, GunRolls } from '@app/service/panda-godrolls.service';
+import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { MappedRoll, GunInfo, PerkbenchComponent } from '../perkbench.component';
 import { BehaviorSubject } from 'rxjs';
+import { GunInfo, MappedRoll, PerkbenchComponent } from '../perkbench.component';
 
 const NORMAL_MW = ['Handling', 'Range', 'Reload Speed', 'Stability'];
 const BOW_MW = ['Handling', 'Reload Speed', 'Stability', 'Accuracy', 'Draw Time'];
@@ -55,6 +55,12 @@ function buildEmptyGunRolls(name: string, mnk: boolean, controller: boolean): Gu
   styleUrls: ['./perk-bench-dialog.component.scss']
 })
 export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
+  clickOptions = [
+    ClickMode.GodRollPvE,
+    ClickMode.GoodRollPvE,
+    ClickMode.GodRollPvP,
+    ClickMode.GoodRollPvP,
+  ];
   clickModeEnum = ClickMode;
   clickMode = ClickMode.GodRollPvE;
 
