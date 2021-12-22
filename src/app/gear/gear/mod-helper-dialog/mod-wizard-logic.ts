@@ -250,6 +250,17 @@ function chooseSeasonTarget(item: InventoryItem, socket: InventorySocket, choice
     return tc;
 }
 
+function cookTargetTypename(item: InventoryItem): string | null {
+    if (item==null) {
+        return null;
+    }
+    const typeName = item.typeName;
+    if (typeName == 'Combat Bow') {
+        return 'Bow';
+    }
+    return typeName;
+}
+
 function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: InventorySocket, choices: ModChoices, previousChoices: ManifestInventoryItem[]): ManifestInventoryItem {
     if (!(isSocketInteresting(socket))) {
         return null;
@@ -258,8 +269,8 @@ function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: 
     if (socketSlotType !== SocketSlotType.Mod) {
         return null;
     }
-    const primaryTargetType = choices.priorityWeapon.typeName;
-    const secondaryTargetType = choices.secondaryWeapon?.typeName;
+    const primaryTargetType = cookTargetTypename(choices.priorityWeapon);
+    const secondaryTargetType = cookTargetTypename(choices.secondaryWeapon);
     if (item.inventoryBucket.displayProperties.name == 'Helmet') {
         if (choices.pve) {
             if (choices.priorityWeapon.ammoType == DestinyAmmunitionType.Primary) {
