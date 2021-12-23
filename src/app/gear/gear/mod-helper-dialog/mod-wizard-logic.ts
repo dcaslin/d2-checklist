@@ -122,25 +122,21 @@ function getAvailChampionPlugs(socket: InventorySocket): ManifestInventoryItem[]
 }
 
 function doesChampionModMatch(plug: ManifestInventoryItem, w: InventoryItem): boolean {
-    if (w.typeName.includes('Bow')) {
-        if (plug.displayProperties.name.includes('Bow')) {
-            return true;
-        }
+    // Auto Rifle, Pulse Rifle, Sidearm 
+    if (plug.displayProperties.name.includes(w.typeName)) {
+        return true;
+    }
+    // Bow/Fusion/Sword doesn't quite match
+    if (w.typeName.includes('Bow') && plug.displayProperties.name.includes('Bow')) {
+        return true;
 
-    } else if (w.typeName.includes('Pulse')) {
-        if (plug.displayProperties.name.includes('Pulse')) {
-            return true;
-        }
+    }
+    if (w.typeName.includes('Fusion') && plug.displayProperties.name.includes('Fusion')) {
+        return true;
 
-    } else if (w.typeName.includes('Fusion')) {
-        if (plug.displayProperties.name.includes('Fusion')) {
-            return true;
-        }
-
-    } else if (w.typeName.includes('Sword')) {
-        if (plug.displayProperties.name.includes('Blade')) {
-            return true;
-        }
+    }
+    if (w.typeName.includes('Sword') && plug.displayProperties.name.includes('Blade')) {
+        return true;
     }
     return false;
 }
@@ -251,7 +247,7 @@ function chooseSeasonTarget(item: InventoryItem, socket: InventorySocket, choice
 }
 
 function cookTargetTypename(item: InventoryItem): string | null {
-    if (item==null) {
+    if (item == null) {
         return null;
     }
     const typeName = item.typeName;
@@ -281,7 +277,7 @@ function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: 
                 return null;
             }
             const secondaryScavHelpful = choices.secondaryWeapon?.ammoType !== DestinyAmmunitionType.Primary;
-            return chooseWeaponPlug(socket, primaryTargetType, secondaryScavHelpful? secondaryTargetType : null, previousChoices, '', ' Ammo Finder');
+            return chooseWeaponPlug(socket, primaryTargetType, secondaryScavHelpful ? secondaryTargetType : null, previousChoices, '', ' Ammo Finder');
         } else {
             return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, '', ' Targeting');
         }
@@ -290,13 +286,17 @@ function chooseModTarget(item: InventoryItem, weapons: InventoryItem[], socket: 
         if (choices.pve) {
             if (choices.champions) {
                 const available = getAvailChampionPlugs(socket);
+                console.log('Found champion mods');
+                console.dir(available.map(x => x.displayProperties.name));
                 // champion plugs are available, do they have a weapon that can use it?
                 for (const plug of available) {
                     // plug already loaded
+                    console.log(`xxx ${plug.displayProperties.name}`);
                     if (previousChoices.find(x => x.displayProperties.name == plug.displayProperties.name)) {
                         continue;
                     }
                     for (const w of weapons) {
+                        console.log(`Checking ${w.name} for ${plug.displayProperties.name}`);
                         if (doesChampionModMatch(plug, w)) {
                             return plug;
                         }
@@ -376,7 +376,6 @@ async function tryToInsertMod(gearService: GearService, item: InventoryItem, soc
         }
         if (item.canFit(socket, target)) {
             choices.push(target);
-            console.dir(target);
             const success = await gearService.insertFreeSocketForArmorMod(item, socket, target, previewOnly);
             if (!success) {
                 const msg = `  [Failed to insert ${target.displayProperties.name}(${target.plug?.energyCost?.energyCost}) on ${item.name}]`;
