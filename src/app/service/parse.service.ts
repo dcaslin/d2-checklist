@@ -3741,6 +3741,7 @@ export class ParseService {
                                 if (socketDesc.singleInitialItemHash) {
                                     const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
                                     if (emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket' && socketDesc.reusablePlugSetHash) {
+                                        // TODO handle already equipped plugs which may show as not equippable (for example Anti-Barrier Auto Rifle)
                                         const plugSetHash = socketDesc.reusablePlugSetHash;
                                         let pp: PrivPlugSetEntry[] = [];
                                         const profilePlugs = resp?.profilePlugSets?.data?.plugs[plugSetHash] as PrivPlugSetEntry[];
