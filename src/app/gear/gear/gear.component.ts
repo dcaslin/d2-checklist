@@ -252,7 +252,7 @@ export class GearComponent extends ChildComponent implements OnInit {
       });
 
     this.filterKeyUp$.pipe(takeUntil(this.unsubscribe$), debounceTime(150)).subscribe(() => {
-      this.gearFilterStateService.parseWildcardFilter();
+      this.gearFilterStateService.parseWildcardFilter(this.option);
     });
   }
 
@@ -465,7 +465,7 @@ export class GearComponent extends ChildComponent implements OnInit {
         // browser refresh would fix anyway
         if (p?.gear?.length > 0) {
           // initialize w/ player gear info, if we had a shortcut waiting to apply, do so now
-          this.gearFilterStateService.initWithPlayer(p, this.shortcutInfo$);
+          this.gearFilterStateService.initWithPlayer(p, this.shortcutInfo$, this.option);
         }
       }
       this.gearFilterStateService.filterUpdated$.next();
@@ -490,7 +490,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   public autoCompleteSelected() {
-    this.gearFilterStateService.parseWildcardFilter();
+    this.gearFilterStateService.parseWildcardFilter(this.option);
   }
 
   public handlePage(x: PageEvent) {

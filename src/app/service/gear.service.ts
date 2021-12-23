@@ -26,7 +26,7 @@ export class GearService {
                 let aV: any = '';
                 let bV: any = '';
                 if (sortBy.startsWith('stat.')) {
-                    const hash = +sortBy.substr('stat.'.length);
+                    const hash = +sortBy.substring('stat.'.length);
                     for (const s of a.stats) {
                         if (s.hash == hash) {
                             aV = s.displayValue;
@@ -65,7 +65,7 @@ export class GearService {
                 }
             });
         } else if (sortBy.startsWith('plug.')) {
-            const suffix = sortBy.substr('plug.'.length);
+            const suffix = sortBy.substring('plug.'.length);
             const as = suffix.split('.');
             const socket = +as[0];
             const plug = +as[1];

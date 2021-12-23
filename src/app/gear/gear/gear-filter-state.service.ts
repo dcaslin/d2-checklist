@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, ItemType, NumComparison, Player } from '@app/service/model';
+import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, NumComparison, Player } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -40,26 +40,64 @@ function sortByIndex(a: any, b: any): number {
 
 const NUMBER_REGEX = /^\d+$/;
 
+
+const OPERATORS = [
+  '>=',
+  '>',
+  '<=',
+  '<',
+  '='
+];
+
+// tagVal might be stat:handling>=42
+function _processStats(tagVal: string, stats: InventoryStat[], statChoiceMap: Map<string, number>): boolean {
+  // get the part after > or < or = sign
+  const statName = null;
+  let prefix = null;
+  for (const op of OPERATORS) {
+    const index = tagVal.indexOf(op);
+    if (index > 0) {
+      prefix = tagVal.substring(0, index);
+      break;
+    }
+  }
+  if (!prefix) {
+    return null;
+  }
+  // prefix would be stat:handling
+  // tagVal would be stat:handling>=42
+  const shortName = prefix.substring(`stat:`.length);
+  const statKey = statChoiceMap.get(shortName);
+  if (!statKey) {
+    return null;
+  }
+  const stat = stats.find(x => x.hash == statKey);
+  if (stat == null) {
+    return null;
+  }
+  return _processComparison(prefix, tagVal, stat.value);
+}
+
 function _processComparison(prefix: string, tagVal: string, gearVal: number): boolean {
   if (!tagVal.startsWith(prefix)) {
     return null;
   }
-  let val = tagVal.substr(prefix.length);
+  let val = tagVal.substring(prefix.length);
   let comp: NumComparison = null;
   if (val.startsWith('<=')) {
-    val = val.substr(2);
+    val = val.substring(2);
     comp = NumComparison.lte;
   } else if (val.startsWith('>=')) {
-    val = val.substr(2);
+    val = val.substring(2);
     comp = NumComparison.gte;
   } else if (val.startsWith('<')) {
-    val = val.substr(1);
+    val = val.substring(1);
     comp = NumComparison.lt;
   } else if (val.startsWith('>')) {
-    val = val.substr(1);
+    val = val.substring(1);
     comp = NumComparison.gt;
   } else if (val.startsWith('=')) {
-    val = val.substr(1);
+    val = val.substring(1);
     comp = NumComparison.e;
   } else {
     return null;
@@ -90,7 +128,7 @@ function _processComparison(prefix: string, tagVal: string, gearVal: number): bo
   }
 }
 
-function _processFilterTag(actual: string, i: InventoryItem): boolean {
+function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<string, number>): boolean {
   if (actual == 'is:locked') {
     return i.locked.getValue();
   }
@@ -113,9 +151,19 @@ function _processFilterTag(actual: string, i: InventoryItem): boolean {
   if (compResult != null) {
     return compResult;
   }
+  compResult = _processComparison('is:energy', actual, i.energyCapacity);
+  if (compResult != null) {
+    return compResult;
+  }
   compResult = _processComparison('is:cap', actual, i.powerCap);
   if (compResult != null) {
     return compResult;
+  }
+  if (actual.startsWith('stat:')) {
+    compResult = _processStats(actual, i.stats, statChoiceMap);
+    if (compResult != null) {
+      return compResult;
+    }
   }
   if (i.searchText.indexOf(actual) >= 0) {
     return true;
@@ -124,12 +172,12 @@ function _processFilterTag(actual: string, i: InventoryItem): boolean {
   return false;
 }
 
-function processFilterTag(f: string, i: InventoryItem): boolean {
+function processFilterTag(f: string, i: InventoryItem, statChoiceMap: Map<string, number>): boolean {
   if (f.startsWith('!')) {
-    const actual = f.substr(1);
-    return !_processFilterTag(actual, i);
+    const actual = f.substring(1);
+    return !_processFilterTag(actual, i, statChoiceMap);
   } else {
-    return _processFilterTag(f, i);
+    return _processFilterTag(f, i, statChoiceMap);
   }
 }
 
@@ -139,6 +187,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:godroll', desc: 'A god roll in EVERY slot' },
   { value: 'is:fixme', desc: 'Best perk unselected' },
   { value: 'is:light>=', desc: 'Filter by PL' },
+  { value: 'is:energy>=', desc: 'Filter by energy pts 1-10' },
   { value: 'is:prefpoints>=', desc: 'Total of ALL stat pts' },
   { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },
   { value: 'is:postmaster' },
@@ -198,11 +247,55 @@ export class GearFilterStateService implements OnDestroy {
   public visibleFilterText = null;
   private orMode = false;
 
+  private weaponStatChoices: AutoCompleteOption[] = [];
+  private armorStatChoices: AutoCompleteOption[] = [];
+  private statChoiceMap = new Map<string, number>();
+
+
   constructor(
     private cacheService: DestinyCacheService,
     private iconService: IconService,
     private markService: MarkService,
   ) {
+
+
+    const statKeys = cacheService.cache.Stat;
+    let stats: any[] = [];
+    for (const key of Object.keys(statKeys)) {
+      const stat = statKeys[key];
+      stats.push(stat);
+    }
+    stats = stats.filter(stat => stat.displayProperties?.name?.trim().length > 0);
+    stats = stats.filter(stat => stat.statCategory == 1 || stat.statCategory == 2);
+    stats = stats.filter(stat => !(stat.displayProperties.name == 'Ammo Capacity' ||
+    stat.displayProperties.name == 'Boost' ||
+    stat.displayProperties.name == 'Durability' ||
+    stat.displayProperties.name == 'Heroic Resistance' ||
+    stat.displayProperties.name == 'Move Speed' ||
+    stat.displayProperties.name == 'Precision Damage' ||
+    stat.displayProperties.name == 'Time to Aim Down Sights'));
+    // sort stats by stat.displayProperties.name
+    stats.sort((a, b) => {
+      const aName = a.displayProperties.name.toLowerCase();
+      const bName = b.displayProperties.name.toLowerCase();
+      if (aName < bName) { return -1; }
+      if (aName > bName) { return 1; }
+      return 0;
+    });
+
+    for (const stat of stats) {
+      const name = stat.displayProperties.name;
+      // make name lowercase and remove spaces
+      const simpleName = name.toLowerCase().replace(/\s/g, '');
+      this.statChoiceMap.set(simpleName, stat.hash);
+      if (stat.statCategory == 1) {
+        this.weaponStatChoices.push({ value: `stat:${simpleName}>=` });
+      }
+      if (stat.statCategory == 2) {
+        this.armorStatChoices.push({ value: `stat:${simpleName}>=` });
+      }
+    }
+
     // tap into the filter changes to mark things dirty if necessary
     this.filterUpdated$.pipe(
       takeUntil(this.unsubscribe$),
@@ -282,7 +375,7 @@ export class GearFilterStateService implements OnDestroy {
   private shouldKeepItem(i: InventoryItem): boolean {
 
     for (const f of this.filterTags$.getValue()) {
-      const match = processFilterTag(f, i);
+      const match = processFilterTag(f, i, this.statChoiceMap);
       if (!this.orMode && !match) {
         return false;
       } else if (this.orMode && match) {
@@ -378,7 +471,7 @@ export class GearFilterStateService implements OnDestroy {
     }
   }
 
-  public initWithPlayer(player: Player, shortcutInfo$: BehaviorSubject<ShortcutInfo | null>) {
+  public initWithPlayer(player: Player, shortcutInfo$: BehaviorSubject<ShortcutInfo | null>, visibleItemType: TabOption) {
     if (!this.isToggleDataInit()) {
       this.generateDynamicChoices(player, this.toggleData);
       this.autoCompleteOptions = this.generateDynamicAutocompleteOptions(player.gear);
@@ -387,7 +480,7 @@ export class GearFilterStateService implements OnDestroy {
       if (sSettings) {
         const filterSettings: FilterSettings = JSON.parse(sSettings);
         this.visibleFilterText = filterSettings.filterText;
-        this.parseWildcardFilter();
+        this.parseWildcardFilter(visibleItemType);
         for (const key of Object.keys(this.toggleData)) {
           let changeMade = false;
           const t: ToggleState = this.toggleData[key].getValue();
@@ -411,7 +504,7 @@ export class GearFilterStateService implements OnDestroy {
     this.applyShortcutInfo(shortcutInfo$);
   }
 
-  public parseWildcardFilter() {
+  public parseWildcardFilter(visibleItemType: TabOption) {
     const val: string = this.visibleFilterText;
     if (val == null || val.trim().length === 0) {
       this.filteredAutoCompleteOptions$.next([]);
@@ -427,13 +520,27 @@ export class GearFilterStateService implements OnDestroy {
         this.filterTags$.next(rawFilter.split(' and '));
       }
       const newFilteredOptions = [];
-      if (rawFilter.startsWith('is:') || rawFilter.startsWith('sea') || rawFilter.startsWith('mw') || rawFilter.startsWith('has')) {
+      if (rawFilter.startsWith('is:') || rawFilter.startsWith('has:')) {
         for (const o of this.autoCompleteOptions) {
           if (o.value.startsWith(rawFilter)) {
             newFilteredOptions.push(o);
           }
         }
-      } else if (rawFilter.startsWith('#')) {
+      }  else if (rawFilter.startsWith('sta')) {
+        if (ItemType.Weapon === visibleItemType.type) {
+          for (const o of this.weaponStatChoices) {
+            if (o.value.startsWith(rawFilter)) {
+              newFilteredOptions.push(o);
+            }
+          }
+        } else if (ItemType.Armor === visibleItemType.type) {
+          for (const o of this.armorStatChoices) {
+            if (o.value.startsWith(rawFilter)) {
+              newFilteredOptions.push(o);
+            }
+          }
+        }
+      }  else if (rawFilter.startsWith('#')) {
         const hashTags = this.markService.hashTags$.getValue();
         for (const hashTag of hashTags) {
           if (hashTag.startsWith(rawFilter)) {
