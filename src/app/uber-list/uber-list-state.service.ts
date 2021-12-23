@@ -892,7 +892,7 @@ interface UberToggleData {
 
 function processFilterTag(f: string, i: (MilestoneRow | PursuitRow)): boolean {
   if (f.startsWith('!')) {
-    const actual = f.substr(1);
+    const actual = f.substring(1);
     return !_processFilterTag(actual, i);
   } else {
     return _processFilterTag(f, i);

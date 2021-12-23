@@ -782,7 +782,7 @@ export class ParseService {
                 }
                 const nfPrefix = 'Nightfall: ';
                 if (model.name.startsWith(nfPrefix)) {
-                    model.name = model.name.substr(nfPrefix.length);
+                    model.name = model.name.substring(nfPrefix.length);
                 }
                 if (model.special) {
                     model.name = '* ' + model.name;

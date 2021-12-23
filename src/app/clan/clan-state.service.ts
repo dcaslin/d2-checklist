@@ -1109,7 +1109,7 @@ export class ClanStateService {
     const p1 = ignoreCase ? preFix.toLowerCase() : preFix;
 
     if (s1.startsWith(p1)) {
-      return s.substr(preFix.length);
+      return s.substring(preFix.length);
     }
     return s;
   }
