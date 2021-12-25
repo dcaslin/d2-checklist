@@ -73,7 +73,7 @@ export class GearCompareDialogComponent extends ChildComponent {
   }
 
   public shouldNotHide(i: InventoryItem): boolean {
-    return this.hideMe.indexOf(i) < 0 && (!this.hideJunk || i.mark != 'junk');
+    return this.hideMe.indexOf(i) < 0 && (!this.hideJunk || (i.mark != 'junk' && i.mark != 'infuse'));
   }
 
   private _sort() {

@@ -1,6 +1,6 @@
 {
-  "title": "Official D2Checklist Rolls - M Edition",
-  "date": "2021-12-18T19:17:45.095Z",
+  "title": "Official D2Checklist Rolls - M2 Edition",
+  "date": "2021-12-25T21:17:05.804Z",
   "manifestVersion": "100477.21.12.12.2201-2-bnet.41848",
   "rolls": [
     {
@@ -2007,9 +2007,9 @@
           "high-caliber rounds",
           "extended mag",
           "outlaw",
-          "grave robber",
           "dragonfly",
-          "swashbuckler"
+          "swashbuckler",
+          "subsistence"
         ]
       },
       "pvp": {
@@ -2052,9 +2052,9 @@
           "high-caliber rounds",
           "extended mag",
           "outlaw",
-          "grave robber",
           "dragonfly",
-          "swashbuckler"
+          "swashbuckler",
+          "subsistence"
         ]
       },
       "pvp": {
@@ -11241,18 +11241,18 @@
         "greatPerks": [
           "fluted barrel",
           "ionized battery",
-          "surplus",
-          "swashbuckler"
+          "subsistence",
+          "reservoir burst"
         ],
         "goodPerks": [
           "arrowhead brake",
           "smallbore",
           "enhanced battery",
           "liquid coils",
-          "field prep",
           "demolitionist",
           "high-impact reserves",
-          "auto-loading holster"
+          "surplus",
+          "swashbuckler"
         ]
       },
       "pvp": {
@@ -11289,18 +11289,18 @@
         "greatPerks": [
           "fluted barrel",
           "ionized battery",
-          "surplus",
-          "swashbuckler"
+          "subsistence",
+          "reservoir burst"
         ],
         "goodPerks": [
           "smallbore",
           "enhanced battery",
           "liquid coils",
           "killing wind",
-          "field prep",
           "demolitionist",
           "high-impact reserves",
-          "auto-loading holster"
+          "surplus",
+          "swashbuckler"
         ]
       },
       "pvp": {
@@ -29612,7 +29612,6 @@
           "steadyhand hcs",
           "truesight hcs",
           "appended mag",
-          "drop mag",
           "grave robber",
           "demolitionist",
           "elemental capacitor"
@@ -29662,7 +29661,6 @@
           "steadyhand hcs",
           "truesight hcs",
           "appended mag",
-          "drop mag",
           "grave robber",
           "demolitionist",
           "elemental capacitor"

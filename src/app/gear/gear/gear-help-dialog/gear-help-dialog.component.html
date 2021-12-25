@@ -4,6 +4,8 @@
     <p>The search filter will filter by item name, along with masterwork, mod and perk names. It also has a few
         special commands (some of which match DIM's filters)</p>
     <ul>
+        <li><code>stat:handling&gt;=42</code> Finds weapon or armor by stat. Use auto-complete to see the extensive list of stat options</li>
+        <li><code>is:energy&gt;=8</code> Finds armor by energy investment, same options as for is:light</li>
         <li><code>AND</code> let's you type in multiple filters at once. For example <code>godroll AND rampage</code> or even <code>alloy AND rampage AND zen</code></li>
         <li><code>OR</code> let's you type in multiple filters at once. For example <code>solar OR void</code> (OR causes AND to be ignored, they cannot be combined) </li>
         <li><code>!</code> adds a NOT filter to your query. <code>!pulse monitor</code> 
@@ -23,11 +25,12 @@
         <li><code>is:fixed</code> Is a fixed roll, you can always grab it from collections</li>
         <li><code>is:light&gt;=900</code> Finds gear by Light Level (aka Power Level). Supports <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>, and <code>=</code></li>
         <li><code>is:stattotal&gt;=60</code> Finds armor by total stat points, same options as for is:light above</li>
+        
+        
         <li><code>is:prefpoints&gt;=30</code> Finds armor by total *preferred* stat points, same options as for is:light above</li>
         <li><code>is:locked</code> and <code>is:unlocked</code>Filters by lock state</li>
         <li><code>season:worthy</code> or <code>season:undying/dawn/opulence/drifter/forge/outlaw</code>Filters by specific season on armor</li>
         <li><code>has:arrivals</code> or <code>has:undying/dawn/opulence/drifter/forge/outlaw</code>Shows all armor that can hold that season's mod slot (so Season of Worthy armor would show for any of Arrivals + Worthy + Dawn) </li>
-
         <li><code>is:extratagged</code> This shows cases where you have more than one item marked Upgrade/Keep for a given slot+energy (+frame for guns). Similar to the '+2/2' button under "Copies"</li>
     </ul>
 </mat-dialog-content>

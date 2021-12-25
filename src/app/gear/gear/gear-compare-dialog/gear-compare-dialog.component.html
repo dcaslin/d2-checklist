@@ -10,7 +10,7 @@
     </div>
     <div *ngIf="showAllNames">
         <span style="margin-right: 25px; vertical-align: middle">{{model.typeName}}</span>
-        <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk</mat-checkbox>
+        <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk/Infuse</mat-checkbox>
         <span class="fake-link-underlined simple-darker-caption-no-margin pad-left-more" *ngIf="hideMe.length>0"
             title="Restore Hidden" (click)="hideMe=[]">Restore Hidden</span>
     </div>
