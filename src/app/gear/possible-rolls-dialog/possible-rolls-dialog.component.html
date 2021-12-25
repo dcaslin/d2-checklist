@@ -3,7 +3,7 @@
     <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{item.typeName}}</span>
 
 </div>
-<mat-dialog-content>
+<mat-dialog-content style="font-size: smaller;">
 
     <table class="tidy-auto-table">
         <tr *ngIf="item.masterwork">
@@ -24,7 +24,7 @@
         </tr>
 
         <ng-container *ngFor="let socket of item.sockets">
-            <tr *ngIf="socket.possiblePlugs.length>0">
+            <tr *ngIf="!socket.isWeaponMod && socket.possiblePlugs.length>0">
                 <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [class.half-opacity]="!plug.currentlyCanRoll">
                     <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
                     <ng-container *ngIf="!plug.currentlyCanRoll">*</ng-container>
