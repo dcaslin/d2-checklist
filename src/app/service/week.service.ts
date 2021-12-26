@@ -592,7 +592,7 @@ export class WeekService {
   private getCurrWeek(publicMilestones: PublicMilestonesAndActivities): Week {
     let currWeek: Week;
     if (publicMilestones && publicMilestones.weekStart) {
-      const weekEpoch = parseISO('2019-04-02T17:00:00.000Z'); // 4/2/2019
+      const weekEpoch = parseISO('2021-11-23T17:00:00.000Z'); // 4/2/2019
       const thisWeek = publicMilestones.weekStart;
       const numWeeks = differenceInWeeks(thisWeek, weekEpoch);
       const ascInfo = WeekService.getRotation(numWeeks, this.ASCENDENT_INFO) as DreamingCityRow;
