@@ -227,7 +227,9 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'has:modvog', desc: 'Armor includes Vault of Glass mod slot' },
   { value: 'has:modgos', desc: 'Armor includes Garden of Salvation Crypt mod slot' },
   { value: 'has:modlw', desc: 'Armor includes Last Wish raid mod slot' },
-  { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' }
+  { value: 'has:modartifice', desc: 'Armor includes Artifice mod slot' },
+  { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' },
+  { value: 'has:modspecial', desc: 'Armor has an extra Raid/Artifice/etc slot' }
 ];
 
 const GEAR_FILTER_KEY = 'D2C-GEAR-FILTER';
@@ -822,6 +824,8 @@ export class GearFilterStateService implements OnDestroy {
         new Choice(`${EnergyType.Any}`, 'Any')
       ], currentTab.type)),
       seasons$: new BehaviorSubject(generateState(seasonConfig, [
+        new Choice('special', 'Any Special'),
+        new Choice('artifice', 'Artifice'),
         new Choice('vog', 'Vault of Glass Raid'),
         new Choice('deepstone', 'Deepstone Crypt'),
         new Choice('gos', 'Garden of Salvation'),

@@ -576,6 +576,8 @@ export class GearComponent extends ChildComponent implements OnInit {
   public openGearDialog(source: InventoryItem, items: InventoryItem[], showNames: boolean): MatDialogRef<GearCompareDialogComponent> {
     const dc = new MatDialogConfig();
     dc.disableClose = false;
+    dc.maxWidth = '98vw';
+    dc.maxHeight = '98vh';
     dc.data = {
       parent: this,
       source,
