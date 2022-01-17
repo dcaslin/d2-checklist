@@ -3738,9 +3738,9 @@ export class ParseService {
                                 const socketDesc = desc.sockets.socketEntries[index];
                                 let sourcePlugs: ManifestInventoryItem[]|null = null;
                                 let plugWhitelist: string[] = [];
-                                if (socketDesc.singleInitialItemHash) {
+                                if (socketDesc.singleInitialItemHash != null) {
                                     const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
-                                    if (emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket' && socketDesc.reusablePlugSetHash) {
+                                    if ((socketDesc.singleInitialItemHash == 0 || emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket') && socketDesc.reusablePlugSetHash) {
                                         // TODO handle already equipped plugs which may show as not equippable (for example Anti-Barrier Auto Rifle)
                                         const plugSetHash = socketDesc.reusablePlugSetHash;
                                         let pp: PrivPlugSetEntry[] = [];
@@ -3845,7 +3845,13 @@ export class ParseService {
                                             continue;
                                         }
                                     }
+
+                                    // this is where the Artifice Armor perk shows up, but not the slot
                                     const name = this.getPlugName(plugDesc);
+                                    if (plug.plugHash==3727270518) {
+                                        specialModSockets.push('artifice');
+                                        searchText += 'has:modartifice';
+                                    }
                                     if (name == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         name, plugDesc.displayProperties.description,
@@ -4078,6 +4084,9 @@ export class ParseService {
                 searchText += 'has:modnone';
                 seasonalModSlot = -1;
                 coveredSeasons.push(-1);
+            } else if (specialModSockets.length > 1) {
+                specialModSockets.push('special');
+                searchText += 'has:modspecial';
             }
             specialModSockets.sort();
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,

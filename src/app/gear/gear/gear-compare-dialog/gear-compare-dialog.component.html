@@ -1,18 +1,26 @@
 <ng-container *ngIf="items[0] as model">
 
 
-    <div mat-dialog-title style="margin-bottom: 0px" *ngIf="!showAllNames">
+    <div mat-dialog-title class="dialog-title" *ngIf="!showAllNames">
         {{model.name}}
         <d2c-season-indicator *ngIf="model.type == ItemType.Armor" [season]="model.seasonalModSlot">
         </d2c-season-indicator>
         <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{model.typeName}}</span><br><span
             class="simple-caption-no-margin hide-mobile-inline">{{model.desc}}</span>
+        
+        <button mat-icon-button tabindex="-1" aria-label="close dialog" mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
-    <div *ngIf="showAllNames">
+    <div  mat-dialog-title class="dialog-title" *ngIf="showAllNames">
         <span style="margin-right: 25px; vertical-align: middle">{{model.typeName}}</span>
         <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk/Infuse</mat-checkbox>
         <span class="fake-link-underlined simple-darker-caption-no-margin pad-left-more" *ngIf="hideMe.length>0"
             title="Restore Hidden" (click)="hideMe=[]">Restore Hidden</span>
+            
+        <button mat-icon-button [autofocus]="false" aria-label="close dialog" mat-dialog-close>
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
     <mat-dialog-content *ngIf="parent.player$|async as player">
         <table class="gear-table mark-table">
