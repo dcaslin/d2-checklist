@@ -56,7 +56,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   selectedUser: SelectedUser = null;
   public player$: BehaviorSubject<Player> = new BehaviorSubject(null);
-  public filterKeyUp$: Subject<void> = new Subject();
+  public filterKeyUp$: Subject<string> = new Subject();
 
   @ViewChild('filter')
   filter: ElementRef;
@@ -251,7 +251,7 @@ export class GearComponent extends ChildComponent implements OnInit {
         this.markService.updateItem(itm);
       });
 
-    this.filterKeyUp$.pipe(takeUntil(this.unsubscribe$), debounceTime(150)).subscribe(() => {
+    this.filterKeyUp$.pipe(takeUntil(this.unsubscribe$), debounceTime(400)).subscribe((val: string) => {
       this.gearFilterStateService.parseWildcardFilter(this.option);
     });
   }
