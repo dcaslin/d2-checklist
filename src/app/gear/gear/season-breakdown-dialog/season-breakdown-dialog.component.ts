@@ -1,11 +1,10 @@
-import { Component, Inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { IconService } from '@app/service/icon.service';
-import { GearComponent } from '../gear.component';
-import { Character, InventoryPlug, Player, InventoryItem, EnergyType } from '@app/service/model';
-import { trigger, transition, style, animate } from '@angular/animations';
-import { BehaviorSubject } from 'rxjs';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { IconService } from '@app/service/icon.service';
+import { Character, EnergyType, InventoryItem, Player } from '@app/service/model';
+import { BehaviorSubject } from 'rxjs';
+import { GearComponent } from '../gear.component';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-season-breakdown-dialog',
@@ -15,17 +14,14 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 export class SeasonBreakdownDialogComponent {
   parent: GearComponent;
   chars: CharSeasons[];
-  mats: Mat[];
 
   constructor(
     public iconService: IconService,
-    public destinyCacheService: DestinyCacheService,
     public dialogRef: MatDialogRef<SeasonBreakdownDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.parent = data.parent;
     const player = this.parent.player$.getValue();
     this.chars = SeasonBreakdownDialogComponent.generateTable(player);
-    this.mats = this.generateMats(player);
   }
 
   showBundle(items: ItemBundle) {
@@ -82,30 +78,6 @@ export class SeasonBreakdownDialogComponent {
     ];
   }
 
-
-  private generateMats(player: Player): Mat[] {
-    const mats = [];
-    const cores = this.calcMat(player.gear, '3853748946');
-    const prisms = this.calcMat(player.gear, '4257549984');
-    const shards = this.calcMat(player.gear, '4257549985');
-    mats.push(cores);
-    mats.push(prisms);
-    mats.push(shards);
-    return mats;
-  }
-
-  private calcMat(gear: InventoryItem[], hash: string): Mat {
-    const matches = gear.filter(g => g.hash == hash);
-    const sum = matches.reduce((total, prism) => {
-      return total + prism.quantity;
-    }, 0);
-
-    const invItem = this.destinyCacheService.cache.InventoryItem[hash];
-    return {
-      displayProperties: invItem.displayProperties,
-      total: sum
-    };
-  }
 }
 interface CharSeasons {
   char: Character;

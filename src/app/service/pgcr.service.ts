@@ -7,6 +7,7 @@ import { ParseService } from '@app/service/parse.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BungieService } from './bungie.service';
+import { SimpleParseService } from './simple-parse.service';
 import { StreamingService } from './streaming.service';
 
 
@@ -30,93 +31,95 @@ export class PgcrService extends StreamingService {
     private destinyCacheService: DestinyCacheService) {
     super(httpClient, bungieService, notificationService);
   }
-  public loadPGCR(instanceId: string): Observable<Game> {
-    const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/';
-    const remoteReq = this.streamReq('loadVendors', url).pipe(
-      map((resp) => {
-        if (!resp?.activityDetails?.referenceId) {
-          return null;
-        }
-        const desc: any = this.destinyCacheService.cache.Activity[resp.activityDetails.referenceId];
-        if (!desc) {
-          return null;
-        }
-        const mode = ParseService.lookupMode(resp.activityDetails.mode);
-        const modes = resp.activityDetails.modes;
-        const viewMode = modes?.indexOf(63) >= 0 ? ViewMode.GAMBIT : modes?.indexOf(48) >= 0 ? ViewMode.RUMBLE : modes?.indexOf(5) >= 0 ? ViewMode.PVP : ViewMode.PVE;
-        let entries: Entry[] = [];
-        const teams: Team[] = [];
-        for (const entry of resp.entries) {
-          const parsedEntry = this.parsePGCREntry(entry);
-          if (parsedEntry) {
-            entries.push(parsedEntry);
-          }
-        }
-        entries = PgcrService.groupAndSortEntries(entries);
-        if (resp.teams) {
-          let firstTeamNameDone = false;
-          for (const t of resp.teams) {
-            if (t.name !== 'Alpha' && t.name !== 'Bravo') {
-              t.name = firstTeamNameDone ? 'Bravo' : 'Alpha';
-              firstTeamNameDone = true;
-            }
-            const team: Team = {
-              name: t.name,
-              id: t.teamId,
-              standing: ParseService.getBasicValue(t.standing),
-              standingText: ParseService.getBasicDisplayValue(t.standing),
-              score: ParseService.getBasicValue(t.score),
-              entries: entries.filter((entry) => entry.values?.team === ('' + t.teamId))
-            };
-            teams.push(team);
-          }
-        }
-        // sort teams by standing
-        teams.sort( (a, b) => {
-          return a.standing - b.standing;
-        });
-        const maxDuration = entries.map(e => e?.values?.activityDurationSeconds > 0 ? e.values.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
-        const minCompletionValue = entries.map(e => e?.values?.completionReason > 0 ? e.values.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
 
-        let pveTeamScore: number | null = null;
-        let pveTotalTeamScore: number | null = null;
-        let pveSuccess = null;
-        if (viewMode == ViewMode.PVE) {
-          if (minCompletionValue === 0) {
-            pveSuccess = true;
-          } else if (minCompletionValue < 255) {
-            pveSuccess = false;
-          }
-          pveTeamScore = entries.map(e => e?.values?.teamScore > 0 ? e.values.teamScore : 0).reduce((a, b) => Math.max(a, b), 0);
-          pveTotalTeamScore = entries.map(e => e?.info?.score > 0 ? e.info.score : 0).reduce((a, b) => a + b, 0);
+
+  private async mapGame(instanceId: string, resp: any): Promise<Game> {
+    if (!resp?.activityDetails?.referenceId) {
+      return null;
+    }
+    const desc: any = await this.destinyCacheService.getActivity(resp.activityDetails.referenceId);
+    if (!desc) {
+      return null;
+    }
+    const mode = SimpleParseService.lookupMode(resp.activityDetails.mode);
+    const modes = resp.activityDetails.modes;
+    const viewMode = modes?.indexOf(63) >= 0 ? ViewMode.GAMBIT : modes?.indexOf(48) >= 0 ? ViewMode.RUMBLE : modes?.indexOf(5) >= 0 ? ViewMode.PVP : ViewMode.PVE;
+    let entries: Entry[] = [];
+    const teams: Team[] = [];
+    for (const entry of resp.entries) {
+      const parsedEntry = await this.parsePGCREntry(entry);
+      if (parsedEntry) {
+        entries.push(parsedEntry);
+      }
+    }
+    entries = PgcrService.groupAndSortEntries(entries);
+    if (resp.teams) {
+      let firstTeamNameDone = false;
+      for (const t of resp.teams) {
+        if (t.name !== 'Alpha' && t.name !== 'Bravo') {
+          t.name = firstTeamNameDone ? 'Bravo' : 'Alpha';
+          firstTeamNameDone = true;
         }
-        const longestEntry = entries.find(e => e.values?.activityDurationSeconds == maxDuration);
-        return {
-          instanceId,
-          activityHash: resp.activityDetails.referenceId,
-          activityName: desc.displayProperties.name,
-          activityLocation: desc.displayProperties.description,
-          activityDurationSeconds: longestEntry ? longestEntry.values.activityDurationSeconds : 0,
-          activityDurationSecondsText: longestEntry ? longestEntry.values.activityDurationSecondsText : '',
-          pveSuccess,
-          pveTeamScore,
-          pveTotalTeamScore,
-          timeLostPoints: pveTeamScore != null && pveTotalTeamScore != null ? pveTotalTeamScore - pveTeamScore : null,
-          mode,
-          period: resp?.period,
-          pgcrImage: desc?.pgcrImage,
-          isPrivate: resp.activityDetails.isPrivate,
-          viewMode: viewMode,
-          allScoresZero: entries.every(e => !(e.info?.score)),
-          teams,
-          entries: PgcrService.groupAndSortEntries(entries)
+        const team: Team = {
+          name: t.name,
+          id: t.teamId,
+          standing: ParseService.getBasicValue(t.standing),
+          standingText: ParseService.getBasicDisplayValue(t.standing),
+          score: ParseService.getBasicValue(t.score),
+          entries: entries.filter((entry) => entry.values?.team === ('' + t.teamId))
         };
-      })
-    );
-    return remoteReq;
+        teams.push(team);
+      }
+    }
+    // sort teams by standing
+    teams.sort( (a, b) => {
+      return a.standing - b.standing;
+    });
+    const maxDuration = entries.map(e => e?.values?.activityDurationSeconds > 0 ? e.values.activityDurationSeconds : 0).reduce((a, b) => Math.max(a, b), 0);
+    const minCompletionValue = entries.map(e => e?.values?.completionReason > 0 ? e.values.completionReason : 0).reduce((a, b) => Math.min(a, b), 1000);
+
+    let pveTeamScore: number | null = null;
+    let pveTotalTeamScore: number | null = null;
+    let pveSuccess = null;
+    if (viewMode == ViewMode.PVE) {
+      if (minCompletionValue === 0) {
+        pveSuccess = true;
+      } else if (minCompletionValue < 255) {
+        pveSuccess = false;
+      }
+      pveTeamScore = entries.map(e => e?.values?.teamScore > 0 ? e.values.teamScore : 0).reduce((a, b) => Math.max(a, b), 0);
+      pveTotalTeamScore = entries.map(e => e?.info?.score > 0 ? e.info.score : 0).reduce((a, b) => a + b, 0);
+    }
+    const longestEntry = entries.find(e => e.values?.activityDurationSeconds == maxDuration);
+    return {
+      instanceId,
+      activityHash: resp.activityDetails.referenceId,
+      activityName: desc.displayProperties.name,
+      activityLocation: desc.displayProperties.description,
+      activityDurationSeconds: longestEntry ? longestEntry.values.activityDurationSeconds : 0,
+      activityDurationSecondsText: longestEntry ? longestEntry.values.activityDurationSecondsText : '',
+      pveSuccess,
+      pveTeamScore,
+      pveTotalTeamScore,
+      timeLostPoints: pveTeamScore != null && pveTotalTeamScore != null ? pveTotalTeamScore - pveTeamScore : null,
+      mode,
+      period: resp?.period,
+      pgcrImage: desc?.pgcrImage,
+      isPrivate: resp.activityDetails.isPrivate,
+      viewMode: viewMode,
+      allScoresZero: entries.every(e => !(e.info?.score)),
+      teams,
+      entries: PgcrService.groupAndSortEntries(entries)
+    };
   }
 
-  private parsePGCREntry(e: any): Entry {
+  public async loadPGCR(instanceId: string): Promise<Game> {
+    const url = 'https://stats.bungie.net/Platform/Destiny2/Stats/PostGameCarnageReport/' + instanceId + '/';
+    const resp = await this.streamReq('loadVendors', url).toPromise();
+    return await this.mapGame(instanceId, resp);
+  }
+
+  private async parsePGCREntry(e: any): Promise<Entry> {
     const info: EntryInfo = {
       player: e.player,
       characterId: e.characterId,
@@ -158,7 +161,7 @@ export class PgcrService extends StreamingService {
     if (e.extended != null) {
       if (e.extended.values != null) {
         for (const key of Object.keys(e.extended.values)) {
-          const desc: any = this.destinyCacheService.cache.HistoricalStats[key];
+          const desc: any = await this.destinyCacheService.getHistoricalStats(key);
           if (!desc) {
             continue;
           }

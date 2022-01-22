@@ -75,7 +75,7 @@ export class RecentPlayersComponent extends ChildComponent implements OnInit, On
     }
     const row = this.rows[this.rowCntr];
     try {
-      const data: Game = await this.pgcrService.loadPGCR(row.instanceId).toPromise();
+      const data: Game = await this.pgcrService.loadPGCR(row.instanceId);
       this.processPGCR(data);
       this.ref.markForCheck();
     }

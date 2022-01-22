@@ -37,7 +37,7 @@ import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog
 })
 export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy {
   public instanceId$: BehaviorSubject<string | null> = new BehaviorSubject(null);
-  public game$: Observable<Game | null>;
+  public game$: BehaviorSubject<Game | null> = new BehaviorSubject(null);
   public ViewMode = ViewMode;
   public Object = Object;
 
@@ -48,7 +48,6 @@ export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy 
     public dialog: MatDialog,
     private route: ActivatedRoute) {
     super(storageService);
-    this.game$ = of(null);
   }
 
   public findGeneralStat(entry: Entry, stat: string): number {
@@ -68,7 +67,9 @@ export class Pgcr2Component extends ChildComponent implements OnInit, OnDestroy 
 
   private async load(instanceId: string): Promise<void> {
     this.instanceId$.next(instanceId);
-    this.game$ = this.pgcrService.loadPGCR(instanceId);
+    const game = await this.pgcrService.loadPGCR(instanceId);
+    this.game$.next(game);
+
   }
 
   ngOnInit() {

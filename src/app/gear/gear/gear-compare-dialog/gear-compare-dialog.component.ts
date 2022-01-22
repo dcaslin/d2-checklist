@@ -1,14 +1,13 @@
-import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
-import { GearComponent } from '../gear.component';
-import { GearService } from '@app/service/gear.service';
-import { SortEvent } from './horizontal-sort/horizontal-sort.component';
-import { BehaviorSubject } from 'rxjs';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { BehaviorSubject } from 'rxjs';
+import { GearComponent } from '../gear.component';
+import { SortEvent } from './horizontal-sort/horizontal-sort.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

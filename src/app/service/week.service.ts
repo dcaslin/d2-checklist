@@ -304,7 +304,7 @@ export class WeekService {
         {
           name: 'Unstoppable',
           count: 3
-        }, 
+        },
         {
           name: 'Overload',
           count: 1
@@ -609,14 +609,14 @@ export class WeekService {
     return currWeek;
   }
 
-  private buildLostSectorActivity(info: LostSectorInfo, ll: number): LegendLostSectorActivity {
-    const desc: any = this.destinyCacheService.cache.Activity[info.hash];
+  private async buildLostSectorActivity(info: LostSectorInfo, ll: number): Promise<LegendLostSectorActivity> {
+    const desc: any = await this.destinyCacheService.getActivity(info.hash);
     if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
       return null;
     }
     const modifiers: NameDesc[] = [];
     for (const mod of desc.modifiers) {
-      const pushMe: NameDesc = this.parseService.parseModifier(mod.activityModifierHash);
+      const pushMe: NameDesc = await this.parseService.parseModifier(mod.activityModifierHash);
       modifiers.push(pushMe);
     }
     let name = desc.displayProperties.name;
@@ -638,13 +638,13 @@ export class WeekService {
     };
   }
 
-  public getLostSectors(delta?: number): LostSectors {
+  public async getLostSectors(delta?: number): Promise<LostSectors> {
     let referenceDate = new Date();
     if (delta) {
       referenceDate = add(referenceDate, { days: delta });
     }
     const magicHour = 17;
-    
+
 
     // let's pretend this is in UTC, so right now it's 1AM Tuesday UTC
     // in game that means it's "Monday" b/c it's < 5PM on that day
@@ -662,10 +662,10 @@ export class WeekService {
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
     const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
     // TODO update this when PL's change
-    const legendActivity = this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1320);
-    const masterActivity = this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1350);
+    const legendActivity = await this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1320);
+    const masterActivity = await this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1350);
 
-    const recordDescForIcon: any = this.destinyCacheService.cache.Record[3838089785];
+    const recordDescForIcon: any = await this.destinyCacheService.getRecord(3838089785);
     return {
       day: referenceDate.toISOString(),
       legendaryLostSector: {
@@ -695,7 +695,7 @@ export class WeekService {
                 return {
                   ...challenge,
                   name: mod.name
-                }
+                };
               }
             }
           }
@@ -722,7 +722,7 @@ export class WeekService {
     }
     const publicMilestones = await this.bungieService.getPublicMilestones();
     const currWeek = await this.getCurrWeek(publicMilestones);
-    const lostSectors = this.getLostSectors();
+    const lostSectors = await this.getLostSectors();
     const raidChallenge = this.getRaidChallenge(publicMilestones);
     return {
       week: currWeek,

@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { currentXur } from '@d2api/date';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { concat, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, concat, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
-import { currentXur } from '@d2api/date';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
@@ -25,6 +25,7 @@ import { PreferredStatService } from './preferred-stat.service';
   providedIn: 'root'
 })
 export class VendorService {
+  private charVendorMap: { [key: string]: ReplaySubject<CharacterVendorData> } = {};
 
   constructor(
     private httpClient: HttpClient,
@@ -35,45 +36,47 @@ export class VendorService {
     private preferredStatService: PreferredStatService,
     private pandaGodRollsService: PandaGodrollsService,
     private parseService: ParseService) {
-
   }
 
-  // this will quickly emit the cached vendor data and then later emit the current data
-  // if refresh is true then we won't bother to load from cache
-  public loadVendors(c: Character, skipCache: boolean): Observable<CharacterVendorData> {
+  public load(c: Character, skipCache: boolean): Observable<CharacterVendorData> {
+    if (this.charVendorMap[c.characterId] == null) {
+      this.charVendorMap[c.characterId] = new ReplaySubject<CharacterVendorData>(1);
+    }
+    const target = this.charVendorMap[c.characterId];
+    if (!skipCache) {
+      this.applyCacheVendor(target, c);
+    }
+    this.applyRemoteVendor(target, c); // call async function that will insta return
+    return target.asObservable();
+  }
+
+  private async applyRemoteVendor(target: Subject<CharacterVendorData>, c: Character) {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
       c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
-    const remoteReq = this.streamReq('loadVendors', url).pipe(
-      map((resp) => {
-        // parse it
-        const returnMe = {
-          char: c,
-          data: this.parseVendorData(c, resp),
-          cached: false
-        };
-        // if that worked out well, cache it for next time
-        this.setCachedVendor(c, resp);
-        return returnMe;
-      })
-    );
-    if (skipCache) {
-      return remoteReq;
+    const resp = await this.streamReq('loadVendors', url).toPromise();
+    const returnMe: CharacterVendorData = {
+      char: c,
+      data: await this.parseVendorData(c, resp),
+      cached: false
+    };
+    // if that worked out well, cache it for next time
+    this.setCachedVendor(c, resp);
+    target.next(returnMe);
+  }
+
+  private async applyCacheVendor(target: Subject<CharacterVendorData>, c: Character) {
+    const resp = await this.getCachedVendor(c);
+    if (resp == null) {
+      return;
     }
-    const cacheReq = from(this.getCachedVendor(c)).pipe(
-      map((resp) => {
-        if (resp == null) {
-          return null;
-        }
-        return {
-          char: c,
-          data: this.parseVendorData(c, resp),
-          cached: true,
-          ts: resp.ts,
-          loading: true
-        };
-      })
-    );
-    return concat(cacheReq, remoteReq);
+    const returnMe: CharacterVendorData = {
+      char: c,
+      data: await this.parseVendorData(c, resp),
+      cached: true,
+      ts: resp.ts,
+      loading: true
+    };
+    target.next(returnMe);
   }
 
   private static getVendorCacheKey(c: Character) {
@@ -96,7 +99,7 @@ export class VendorService {
     return await idbSet(key, cacheMe);
   }
 
-  public calcDeals(player: Player, vendors: CharacterVendorData[]): VendorDeals {
+  public async calcDeals(player: Player, vendors: CharacterVendorData[]): Promise<VendorDeals> {
     const vendorsLoading = vendors.filter(x => x == null).length;
     if (!player) {
       return {
@@ -115,7 +118,7 @@ export class VendorService {
     const interestingVendorWeapons = vendorItems.filter(val => val.type === ItemType.Weapon && (val.tier == 'Legendary') && (val?.vendorItemInfo?.vendor?.name == 'Xûr' || val?.vendorItemInfo?.vendor?.name == 'Banshee-44') && (val.pandaPve > 0 || val.pandaPvp > 0));
     const bansheeWeapons = this.findBansheeDeals(player, interestingVendorWeapons);
     // look just at legendary armor grouped by class and bucket
-    const legendaryDeals = this.findLegendaryArmorDeals(player, interestingVendorArmor);
+    const legendaryDeals = await this.findLegendaryArmorDeals(player, interestingVendorArmor);
     const goodLegendaryDeals = legendaryDeals.filter(i => i.hasDeal);
     // if any vendor exotic armor (Xur), look exactly by item type
     const exoticDeals = this.findExoticArmorDeals(player, interestingVendorArmor);
@@ -200,10 +203,10 @@ export class VendorService {
       });
     }
     const modVendors = [
-      '672118013', //banshee
-      '350061650', //ada
-      '1712236153', //splicer
-      '2414821461', //wayfinder
+      '672118013', // banshee
+      '350061650', // ada
+      '1712236153', // splicer
+      '2414821461', // wayfinder
     ];
     for (const v of modVendors) {
       const mods = this.checkCollectionForVendor(player, vendorItems, v, ItemType.GearMod);
@@ -213,7 +216,7 @@ export class VendorService {
           data: mods
         });
       }
-    }   
+    }
     const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
     if (tessShaders.length > 0) {
       returnMe.push({
@@ -375,11 +378,11 @@ export class VendorService {
     return returnMe;
   }
 
-  private findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
+  private async findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
     this.preferredStatService.processGear(player);
     const bucketMap: { [key: string]: ClassInventoryBucket; } = {};
     const shouldIgnoreEnergy = this.preferredStatService.stats$.getValue()?.ignoreEnergyOnVendorArmorDeals;
-    const buckets = this.getBuckets(shouldIgnoreEnergy);
+    const buckets = await this.getBuckets(shouldIgnoreEnergy);
     for (const bucket of buckets) {
       bucketMap[bucket.bucket.hash.toString() + bucket.energyType.toString() + bucket.classType.toString()] = bucket;
     }
@@ -404,9 +407,9 @@ export class VendorService {
     return buckets;
   }
 
-  private getBuckets(shouldIgnoreEnergy: boolean): ClassInventoryBucket[] {
+  private async getBuckets(shouldIgnoreEnergy: boolean): Promise<ClassInventoryBucket[]> {
     // one per armor slot, one per class
-    const buckets = this.destinyCacheService.cache['InventoryBucket'];
+    const buckets = await this.destinyCacheService.getInventoryBucketTable();
     const returnMe: ClassInventoryBucket[] = [];
     const classTypes = [ClassAllowed.Titan, ClassAllowed.Warlock, ClassAllowed.Hunter];
     const energyTypes = [EnergyType.Arc, EnergyType.Thermal, EnergyType.Void, EnergyType.Stasis];
@@ -466,7 +469,7 @@ export class VendorService {
   }
 
 
-  private parseVendorData(char: Character, resp: any): InventoryItem[] {
+  private async parseVendorData(char: Character, resp: any): Promise<InventoryItem[]> {
     if (resp == null || resp.sales == null) { return null; }
     let returnMe = [];
     for (const key of Object.keys(resp.sales.data)) {
@@ -477,8 +480,7 @@ export class VendorService {
           continue;
         }
       }
-
-      const items = this.parseIndividualVendor(resp, char, key, vendor);
+      const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, key, vendor);
       returnMe = returnMe.concat(items);
     }
     for (const i of returnMe) {
@@ -491,9 +493,9 @@ export class VendorService {
     return returnMe;
   }
 
-  private parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any): InventoryItem[] {
+  private async parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any): Promise<InventoryItem[]> {
     if (v.saleItems == null) { return []; }
-    const vDesc: any = this.destinyCacheService.cache.Vendor[vendorKey];
+    const vDesc: any = await this.destinyCacheService.getVendor(vendorKey);
     if (vDesc == null) { return []; }
     if (resp.vendors.data[vendorKey] == null) {
       // vendor isn't here right now;
@@ -509,7 +511,7 @@ export class VendorService {
     const items: InventoryItem[] = [];
     for (const key of Object.keys(v.saleItems)) {
       const i = v.saleItems[key];
-      const oItem = this.parseSaleItem(vendor, char, resp, i);
+      const oItem = await this.parseSaleItem(vendor, char, resp, i);
       if (oItem != null) {
         items.push(oItem);
       }
@@ -519,7 +521,7 @@ export class VendorService {
 
 
 
-  private parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): InventoryItem {
+  private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): Promise<InventoryItem> {
     if (i.itemHash == null && i.itemHash === 0) { return null; }
     const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
     if (iDesc == null) { return null; }
@@ -546,7 +548,7 @@ export class VendorService {
     const objectives = [];
     if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
       for (const oHash of iDesc.objectives.objectiveHashes) {
-        const oDesc: any = this.destinyCacheService.cache.Objective[oHash];
+        const oDesc: any = await this.destinyCacheService.getObjective(oHash);
         if (oDesc != null) {
           objectives.push({
             total: oDesc.completionValue,
@@ -596,7 +598,7 @@ export class VendorService {
     // vendorIndex acts as psuedo instance id, so just set it ahead of processing
     i.itemInstanceId = i.vendorItemIndex;
     // last arg is item progressions, which will always be empty from a vendor
-    const data: InventoryItem = this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
+    const data: InventoryItem = await this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
     i.owner = char;
     // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
     if (!data) {
@@ -604,7 +606,7 @@ export class VendorService {
     }
     data.vendorItemInfo = {
       vendor: vendor,
-      status: this.parseSaleItemStatus(vendor.hash, i.failureIndexes),
+      status: await this.parseSaleItemStatus(vendor.hash, i.failureIndexes),
       quantity: i.quantity,
       objectives: objectives,
       values: values,
@@ -682,12 +684,12 @@ export class VendorService {
     return copies;
   }
 
-  private parseSaleItemStatus(vendorHash: string, failureIndexes: number[]): string {
+  private async parseSaleItemStatus(vendorHash: string, failureIndexes: number[]): Promise<string> {
     if (failureIndexes == null || failureIndexes.length == 0) {
       return null;
     }
     const index = failureIndexes[0];
-    const vDesc: any = this.destinyCacheService.cache.Vendor[vendorHash];
+    const vDesc: any = await this.destinyCacheService.getVendor(vendorHash);
     if (!vDesc || !vDesc.failureStrings || vDesc.failureStrings.length <= index) {
       return 'Unknown';
     }

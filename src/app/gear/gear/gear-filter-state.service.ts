@@ -255,13 +255,13 @@ export class GearFilterStateService implements OnDestroy {
 
 
   constructor(
-    private cacheService: DestinyCacheService,
+    private destinyCacheService: DestinyCacheService,
     private iconService: IconService,
     private markService: MarkService,
   ) {
 
 
-    const statKeys = cacheService.cache.Stat;
+    const statKeys = destinyCacheService.cacheLite.Stat;
     let stats: any[] = [];
     for (const key of Object.keys(statKeys)) {
       const stat = statKeys[key];
@@ -896,7 +896,7 @@ export class GearFilterStateService implements OnDestroy {
 
 
   private generateBucketChoices(itemType: ItemType): Choice[] {
-    const buckets = this.cacheService.cache['InventoryBucket'];
+    const buckets = this.destinyCacheService.cacheLite.InventoryBucket;
     const aBuckets: ApiInventoryBucket[] = [];
     for (const key of Object.keys(buckets)) {
       const val: ApiInventoryBucket = buckets[key];
@@ -929,7 +929,7 @@ export class GearFilterStateService implements OnDestroy {
   }
 
   private generateRarityChoices(): Choice[] {
-    const tiers = this.cacheService.cache['ItemTierType'];
+    const tiers = this.destinyCacheService.cacheLite.ItemTierType;
     const aTiers: ApiItemTierType[] = [];
     for (const key of Object.keys(tiers)) {
       const val: ApiItemTierType = tiers[key];

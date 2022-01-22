@@ -3,13 +3,20 @@ import { Injectable } from '@angular/core';
 import { cookError, isSearchBot, safeStringifyError } from '@app/shared/utilities';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
-import { BehaviorSubject, throwError } from 'rxjs';
-import { catchError, last, retry, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, ReplaySubject, throwError } from 'rxjs';
+import { catchError, isEmpty, last, retry, tap } from 'rxjs/operators';
 import { unzipSync, strFromU8 } from 'fflate';
+import { ThisReceiver } from '@angular/compiler';
+import { faFunction } from '@fortawesome/pro-light-svg-icons';
+
+const LOG_CSS = `color: orangered`;
 
 @Injectable()
 export class DestinyCacheService {
   public cache: Cache;
+  public cacheLite: CacheLite;
+  private memCache: { [key: string]: any } = {};
+  private observableMap: { [key: string]: ReplaySubject<any> } = {};
 
   public readonly ready$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonly version$: BehaviorSubject<string> = new BehaviorSubject('');
@@ -22,12 +29,190 @@ export class DestinyCacheService {
 
   constructor(private http: HttpClient) {
     if (!this.searchBot) {
+      this.init2();
       this.init();
     }
   }
 
+  public observableOfInventoryItem(): Observable<{ [key: string]: ManifestInventoryItem }> {
+    return this.observableOf('InventoryItem');
+  }
+
+  public observableOfMilestone(): Observable<{ [key: string]: any }> {
+    return this.observableOf('Milestone');
+  }
+
+  public observableOfVendor(): Observable<{ [key: string]: any }> {
+    return this.observableOf('Vendor');
+  }
+
+  private observableOf(tableName: string): Observable<{ [key: string]: any }> {
+    if (!this.observableMap[tableName]) {
+      this.observableMap[tableName] = new ReplaySubject(1);
+      this.getManifestTable(tableName);
+    }
+    return this.observableMap[tableName];
+  }
+
+
+  public getCacheInventoryItem(key: string): ManifestInventoryItem {
+    return this.cache.InventoryItem[key];
+  }
+
+
+  public getCoreSettings(): Destiny2CoreSettings {
+    return this.cacheLite.destiny2CoreSettings;
+  }
+
+  public async getProgression(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Progression');
+    return table[key + ''];
+  }
+
+  public async getRecord(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Record');
+    return table[key + ''];
+  }
+
+  public async getSocketType(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('SocketType');
+    return table[key + ''];
+  }
+
+  public async getVendor(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Vendor');
+    return table[key + ''];
+  }
+
+  public async getPlugSet(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('PlugSet');
+    return table[key + ''];
+  }
+
+  public async getInventoryBucketTable (): Promise<any> {
+    return await this.getManifestTable('InventoryBucket');
+  }
+
+  public async getInventoryBucket(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('InventoryBucket');
+    return table[key + ''];
+  }
+
+  public async getHistoricalStats(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('HistoricalStats');
+    return table[key + ''];
+  }
+
+  public async getPerk(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Perk');
+    return table[key + ''];
+  }
+
+  public async getFaction(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Faction');
+    return table[key + ''];
+  }
+
+
+  public async getPresentationNode(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('PresentationNode');
+    return table[key + ''];
+  }
+
+
+  public async getActivity(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Activity');
+    return table[key + ''];
+  }
+
+  public async getActivityMode(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('ActivityMode');
+    return table[key + ''];
+  }
+
+  public async getActivityType(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('ActivityType');
+    return table[key + ''];
+  }
+  public async getChecklist(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Checklist');
+    return table[key + ''];
+  }
+
+  public async getCollectible(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Collectible');
+    return table[key + ''];
+  }
+
+  public async getActivityModifier(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('ActivityModifier');
+    return table[key + ''];
+  }
+
+  public async getMilestone(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('Milestone');
+    return table[key + ''];
+  }
+
+  public async getObjective(key: string | number): Promise<Objective> {
+    const table = await this.getManifestTable('Objective');
+    return table[key + ''];
+  }
+
+  public async getSeason(key: string | number): Promise<Season> {
+    const table = await this.getManifestTable('Season');
+    return table[key + ''];
+  }
+
+  public async getSeasonPass(key: string | number): Promise<SeasonPass> {
+    const table = await this.getManifestTable('SeasonPass');
+    return table[key + ''];
+    // return this.cache.SeasonPass[key + ''];
+  }
+
+  private async init2() {
+    this.cacheLite = await this.getManifestTable('cache-lite') as CacheLite;
+    console.log('%cLoaded cache-lite.', LOG_CSS);
+  }
+
+  private async getManifestTable(tableName: string) {
+    if (this.memCache[tableName] != null) {
+      return this.memCache[tableName];
+    }
+    const key = `table-${tableName}-${env.versions.manifest}`;
+    const cached = await get(key);
+    let returnMe = null;
+    if (cached != null) {
+      console.log(`%c${tableName} idb cached`, LOG_CSS);
+      returnMe = cached;
+    } else {
+      // not found
+      // clean up
+      const ks = await keys();
+      for (const k of ks) {
+        if (k.toString().startsWith(`table-${tableName}`)) {
+          del(k);
+        }
+      }
+      const remote = await this.http.get<any>(`/assets/destiny2-${tableName.toLowerCase()}.json?v=${env.versions.manifest}`).toPromise();
+      // cache it, but don't wait on that
+      set(key, remote);
+      console.log(`%c${tableName} remote`, LOG_CSS);
+      returnMe = remote;
+    }
+    this.memCache[tableName] = returnMe;
+    if (!this.observableMap[tableName]) {
+      this.observableMap[tableName] = new ReplaySubject(1);
+    }
+    this.observableMap[tableName].next(returnMe);
+    // emit in observable too
+    return returnMe;
+  }
+
   private async init() {
     this.checkingCache.next(true);
+
+
     const t0 = performance.now();
     const key = 'manifest-' + env.versions.manifest;
     console.log(`Loading cache ${key}`);
@@ -167,43 +352,57 @@ export class DestinyCacheService {
     }
   }
 }
+export interface CacheLite {
+  Class: any;
+  EnergyType: any;
+  Gender: any;
+  InventoryBucket: any;
+  ItemTierType: any;
+  PowerCap: any;
+  PursuitTags: { [key: string]: string[] };
+  Race: any;
+  Stat: any;
+  destiny2CoreSettings: Destiny2CoreSettings;
+  version: string;
+  // TODO index of inventory item?
+}
 
 export interface Cache {
-  version: string;
-  destiny2CoreSettings: Destiny2CoreSettings;
-  Vendor?: any;
-  Race?: any;
-  Gender?: any;
-  EnergyType?: any;
-  Class?: any;
-  Activity?: any;
-  ActivityType?: any;
-  ActivityMode?: any;
-  Milestone?: any;
-  Faction?: any;
-  Progression?: any;
-  PowerCap?: any;
+  // Class?: any;
+  // Stat?: any;
+  // Activity?: any;
+  // ActivityMode?: any;
+  // ActivityModifier?: any;
+  // ActivityType?: any;
+  // Checklist?: any;
+  // Collectible?: any;
+  // EnergyType?: any;
+  // EquipmentSlot?: any;
+  // Faction?: any;
+  // Gender?: any;
+  // HistoricalStats?: any;
+  // InventoryBucket?: any;
   InventoryItem?: { [key: string]: ManifestInventoryItem };
-  Stat?: any;
-  Objective?: { [key: string]: Objective };
-  ActivityModifier?: any;
-  Perk?: any;
-  SocketType?: any;
-  PlugSet?: any;
-  SocketCategory?: any;
-  Checklist?: any;
-  InventoryBucket?: any;
-  EquipmentSlot?: any;
-  PresentationNode?: any;
-  Record?: any;
-  Collectible?: any;
-  ItemTierType?: any;
-  HistoricalStats?: any;
-  RecordSeasons?: any;
-  PursuitTags?: { [key: string]: string[] };
-  Season?: { [key: string]: Season };
-  SeasonPass?: { [key: string]: SeasonPass };
-  TagWeights?: { [key: string]: number };
+  // ItemTierType?: any;
+  // Milestone?: any;
+  // Objective?: { [key: string]: Objective };
+  // Perk?: any;
+  // PlugSet?: any;
+  // PowerCap?: any;
+  // PresentationNode?: any;
+  // Progression?: any;
+  // PursuitTags?: { [key: string]: string[] };
+  // Race?: any;
+  // Record?: any;
+  // RecordSeasons?: any;
+  // Season?: { [key: string]: Season };
+  // SeasonPass?: { [key: string]: SeasonPass };
+  // SocketCategory?: any;
+  // SocketType?: any;
+  // TagWeights?: { [key: string]: number };
+  // Vendor?: any;
+  // destiny2CoreSettings: Destiny2CoreSettings;
+  version: string;
 }
 
 

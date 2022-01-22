@@ -1,5 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
+import { DestinyCacheService, ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import {
   Character,
@@ -55,13 +55,12 @@ export class UberListStateService implements OnDestroy {
   public hideComplete = false;
   public hideUnheld = false;
 
-  constructor(
-    private signedOnUserService: SignedOnUserService,
-    private destinyCacheService: DestinyCacheService,
+  public init() {
+    this.signedOnUserService.loadVendorsIfNotLoaded();
+  }
 
-    private iconService: IconService
-  ) {
-    this.toggleData = this.buildInitToggles();
+  private async buildMe() {
+    this.toggleData = await this.buildInitToggles();
     const a: BehaviorSubject<UberToggleState>[] = [];
     const thingsToListenTo$ = [this.rows$, this.filterTags$, this.sort$, this.checked$];
     for (const key of Object.keys(this.toggleData)) {
@@ -69,27 +68,38 @@ export class UberListStateService implements OnDestroy {
       thingsToListenTo$.push(this.toggleData[key]);
     }
     this.toggleDataArray = a;
+    combineLatest(thingsToListenTo$)
+      .pipe(takeUntil(this.unsubscribe$), debounceTime(10))
+      .subscribe(() => {
+        this.filterUpdated$.next();
+      });
+  }
+
+  constructor(
+    private signedOnUserService: SignedOnUserService,
+    private destinyCacheService: DestinyCacheService,
+
+    private iconService: IconService
+  ) {
 
     this.filterKeyUp$
       .pipe(takeUntil(this.unsubscribe$), debounceTime(150))
       .subscribe(() => {
         this.parseWildcardFilter();
       });
-    combineLatest(thingsToListenTo$)
-      .pipe(takeUntil(this.unsubscribe$), debounceTime(10))
-      .subscribe(() => {
-        this.filterUpdated$.next();
-      });
 
     combineLatest([
       this.signedOnUserService.player$,
       this.signedOnUserService.vendors$,
+      this.destinyCacheService.observableOfInventoryItem(),
+      this.destinyCacheService.observableOfMilestone(),
+      this.destinyCacheService.observableOfVendor(),
     ])
       .pipe(
         takeUntil(this.unsubscribe$),
-        filter(([player, vendors]) => player != null && vendors != null)
+        filter(([player, vendors, dbi, dbm, dbv]) => player != null && vendors != null)
       )
-      .subscribe(([player, charVendors]) => {
+      .subscribe(([player, charVendors, dbi, dbm, dbv]) => {
         this.currChar$.next(player.characters[0]);
         const rowData: { [key: string]: MilestoneRow | PursuitRow } = {};
         for (const char of player.characters) {
@@ -99,7 +109,7 @@ export class UberListStateService implements OnDestroy {
               if (vi.type == ItemType.Bounty) {
                 // create empty pursuit row
                 if (!rowData[vi.hash]) {
-                  rowData[vi.hash] = this.buildInitialPursuitRow(vi, 'bounty');
+                  rowData[vi.hash] = UberListStateService.buildInitialPursuitRow(vi, 'bounty', dbi);
                 }
                 const target = rowData[vi.hash] as PursuitRow;
                 if (!target.characterEntries[char.id]) {
@@ -117,7 +127,7 @@ export class UberListStateService implements OnDestroy {
           );
           for (const b of bounties) {
             if (!rowData[b.hash]) {
-              rowData[b.hash] = this.buildInitialPursuitRow(b, 'bounty');
+              rowData[b.hash] = UberListStateService.buildInitialPursuitRow(b, 'bounty', dbi);
             }
             const target = rowData[b.hash] as PursuitRow;
             if (!target.characterEntries[char.id]) {
@@ -133,7 +143,7 @@ export class UberListStateService implements OnDestroy {
           );
           for (const b of quests) {
             if (!rowData[b.hash]) {
-              rowData[b.hash] = this.buildInitialPursuitRow(b, 'quest');
+              rowData[b.hash] = UberListStateService.buildInitialPursuitRow(b, 'quest', dbi);
             }
             const target = rowData[b.hash] as PursuitRow;
             if (!target.characterEntries[char.id]) {
@@ -148,7 +158,7 @@ export class UberListStateService implements OnDestroy {
             const c = char.milestones[msn.key];
             if (c) {
               if (!rowData[c.hash]) {
-                rowData[c.hash] = this.buildInitialMilestoneRow(msn);
+                rowData[c.hash] = UberListStateService.buildInitialMilestoneRow(msn, dbm, dbv, dbi);
               }
               const target = rowData[c.hash];
               target.characterEntries[char.id] = c;
@@ -215,6 +225,9 @@ export class UberListStateService implements OnDestroy {
           }
         }
       });
+
+
+     this.buildMe();
   }
 
 
@@ -425,8 +438,8 @@ export class UberListStateService implements OnDestroy {
   }
 
 
-  private buildInitialPursuitRow(i: InventoryItem, type: 'bounty' | 'quest'): PursuitRow {
-    const desc = this.destinyCacheService.cache.InventoryItem[i.hash];
+  private static buildInitialPursuitRow(i: InventoryItem, type: 'bounty' | 'quest', dbInvItem: { [key: string]: ManifestInventoryItem }): PursuitRow {
+    const desc = dbInvItem[i.hash];
     const label = desc.inventory.stackUniqueLabel as string;
     return {
       id: i.hash,
@@ -441,12 +454,12 @@ export class UberListStateService implements OnDestroy {
     };
   }
 
-  private handleRewardItem(val: PrivRewardDesc, rewards: NameQuantity[]) {
+  private static handleRewardItem(val: PrivRewardDesc, rewards: NameQuantity[], dbInvItem: { [key: string]: ManifestInventoryItem }) {
     if (val.itemHash === 0) {
       return;
     }
     const valDesc: any =
-      this.destinyCacheService.cache.InventoryItem[val.itemHash];
+      dbInvItem[val.itemHash];
     if (valDesc != null) {
       rewards.push({
         hash: val.itemHash + '',
@@ -457,8 +470,8 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
-  private buildInitialMilestoneRow(msn: MileStoneName): MilestoneRow {
-    let desc = this.destinyCacheService.cache.Milestone[msn.key];
+  private static buildInitialMilestoneRow(msn: MileStoneName, dbMileStone: { [key: string]: any }, dbVendor: { [key: string]: any }, dbInvItem: { [key: string]: ManifestInventoryItem }): MilestoneRow {
+    let desc = dbMileStone[msn.key];
     if (
       desc?.displayProperties?.icon == null
     ) {
@@ -469,10 +482,7 @@ export class UberListStateService implements OnDestroy {
         };
       }
       if (vendorHash) {
-        desc.displayProperties.icon =
-          this.destinyCacheService.cache.Vendor[
-            vendorHash
-          ].displayProperties?.smallTransparentIcon;
+        desc.displayProperties.icon = dbVendor[vendorHash].displayProperties?.smallTransparentIcon;
       }
     } else if (!desc?.displayProperties) {
       console.dir(msn);
@@ -484,14 +494,14 @@ export class UberListStateService implements OnDestroy {
         const q = desc.quests[key];
         if (q.questItemHash) {
           const qDesc =
-            this.destinyCacheService.cache.InventoryItem[q.questItemHash];
+            dbInvItem[q.questItemHash];
           if (qDesc.value != null && qDesc.value.itemValue != null) {
             let rewCntr = 0;
             for (const val of qDesc.value.itemValue) {
               if (msn.key == '2406589846' && rewCntr > 0) {
                 break;
               }
-              this.handleRewardItem(val, rewards);
+              UberListStateService.handleRewardItem(val, rewards, dbInvItem);
               rewCntr++;
             }
           }
@@ -506,7 +516,7 @@ export class UberListStateService implements OnDestroy {
             const rewardEntry = reward.rewardEntries[key2];
             if (rewardEntry.items) {
               for (const val of rewardEntry.items) {
-                this.handleRewardItem(val, rewards);
+                UberListStateService.handleRewardItem(val, rewards, dbInvItem);
               }
             }
           }
@@ -516,10 +526,10 @@ export class UberListStateService implements OnDestroy {
     // Raids tend to be missing rewards, luckily we already did the work in ParseService to get the string reward value, so we'll just parse out an icon on it
     if (rewards.length == 0 && msn.rewards != null) {
       if ('Pinnacle Gear' == msn.rewards) {
-        this.handleRewardItem({ itemHash: 73143230, quantity: 0 }, rewards);
+        UberListStateService.handleRewardItem({ itemHash: 73143230, quantity: 0 }, rewards, dbInvItem);
       }
       if ('Legendary Gear' == msn.rewards) {
-        this.handleRewardItem({ itemHash: 2127149322, quantity: 0 }, rewards);
+        UberListStateService.handleRewardItem({ itemHash: 2127149322, quantity: 0 }, rewards, dbInvItem);
       }
     }
 
@@ -537,10 +547,6 @@ export class UberListStateService implements OnDestroy {
       rewardTier: 0,
       characterEntries: {},
     };
-  }
-
-  public init() {
-    this.signedOnUserService.loadVendorsIfNotLoaded();
   }
 
   public refresh() {
@@ -593,7 +599,7 @@ export class UberListStateService implements OnDestroy {
     this.unsubscribe$.complete();
   }
 
-  private buildInitToggles(): UberToggleData {
+  private async buildInitToggles(): Promise<UberToggleData> {
     const typeConfig: UberToggleConfig = {
       title: 'Type',
       debugKey: 'Type',
