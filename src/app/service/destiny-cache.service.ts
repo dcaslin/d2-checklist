@@ -54,16 +54,18 @@ export class DestinyCacheService {
     return this.observableMap[tableName];
   }
 
-
-  public getCacheInventoryItem(key: string): ManifestInventoryItem {
-    return this.cache.InventoryItem[key];
-  }
-
-
   public getCoreSettings(): Destiny2CoreSettings {
     return this.cacheLite.destiny2CoreSettings;
   }
 
+  public async getInventoryItem(key: string | number): Promise<any> {
+    const table = await this.getManifestTable('InventoryItem');
+    return table[key + ''];
+  }
+
+  public async getInventoryItemTable(): Promise<any> {
+    return await this.getManifestTable('InventoryItem');
+  }
   public async getProgression(key: string | number): Promise<any> {
     const table = await this.getManifestTable('Progression');
     return table[key + ''];

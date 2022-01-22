@@ -600,6 +600,7 @@ export class UberListStateService implements OnDestroy {
   }
 
   private async buildInitToggles(): Promise<UberToggleData> {
+    const invItemTable = await this.destinyCacheService.getInventoryItemTable();
     const typeConfig: UberToggleConfig = {
       title: 'Type',
       debugKey: 'Type',
@@ -652,7 +653,7 @@ export class UberListStateService implements OnDestroy {
         if (x.type == 'milestone') {
           return hasWeekly;
         }
-        const desc = this.destinyCacheService.cache.InventoryItem[x.title.hash];
+        const desc = invItemTable[x.title.hash];
         const label = desc.inventory.stackUniqueLabel as string;
         if (label.includes('.weekly') // most vendor's weekly bounties have this keyword
           || label.includes('.outlaws')) { // spider's weeklies have the outlaws keyword
