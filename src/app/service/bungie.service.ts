@@ -4,16 +4,16 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
  * Created by Dave on 12/21/2016.
  */
 import { Injectable, OnDestroy } from '@angular/core';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, InventoryPlug, InventorySocket, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, InventorySocket, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
+import { SimpleParseService } from './simple-parse.service';
 
 export const API_ROOT = 'https://www.bungie.net/Platform/';
 const MAX_PAGE_SIZE = 250;
@@ -26,7 +26,6 @@ export class BungieService implements OnDestroy {
 
     constructor(private httpClient: HttpClient,
         private notificationService: NotificationService,
-        private destinyCacheService: DestinyCacheService,
         private authService: AuthService,
         private parseService: ParseService) {
     }
@@ -34,7 +33,7 @@ export class BungieService implements OnDestroy {
     public async searchBungieUsers2(name: string): Promise<BungieMember[]> {
         try {
             const resp = await this.makeReq('User/SearchUsers/?q=' + encodeURIComponent(name));
-            return this.parseService.parseBungieMembers(resp);
+            return SimpleParseService.parseBungieMembers(resp);
         } catch (err) {
             this.handleError(err);
             return [];
@@ -78,7 +77,7 @@ export class BungieService implements OnDestroy {
     public async searchClans(name: string): Promise<ClanInfo> {
         try {
             const resp = await this.makeReq('GroupV2/Name/' + encodeURIComponent(name) + '/1/');
-            return this.parseService.parseClanInfo(resp.detail);
+            return await this.parseService.parseClanInfo(resp.detail);
         } catch (err) {
             this.handleError(err);
             return null;
@@ -92,7 +91,7 @@ export class BungieService implements OnDestroy {
                 'Destiny2/' + char.membershipType + '/Account/' +
                 char.membershipId + '/Character/' + char.characterId +
                 '/Stats/AggregateActivityStats/');
-            return this.parseService.parseAggHistory2(char, resp);
+            return await this.parseService.parseAggHistory2(char, resp);
         } catch (err) {
             console.log('Error getting aggregate history for char');
             console.dir(err);
@@ -230,13 +229,13 @@ export class BungieService implements OnDestroy {
 
     public async getClanInfo(clanId: string): Promise<ClanInfo> {
         const resp = await this.makeReq('GroupV2/' + clanId + '/');
-        return this.parseService.parseClanInfo(resp.detail);
+        return await this.parseService.parseClanInfo(resp.detail);
     }
 
     // clans never > 100
     public async getClanMembers(clanId: string): Promise<BungieGroupMember[]> {
         const resp = await this.makeReq('GroupV2/' + clanId + '/Members/?currentPage=1&memberType=0');
-        return this.parseService.parseClanMembers(resp.results);
+        return SimpleParseService.parseClanMembers(resp.results);
     }
 
     public async getClans(bungieId: string): Promise<ClanRow[]> {
@@ -487,7 +486,7 @@ export class BungieService implements OnDestroy {
         try {
             const resp = await this._publicMsHack();
             const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities,CharacterProgressions');
-            const reply = this.parseService.parsePublicMilestones(resp, resp2);
+            const reply = await this.parseService.parsePublicMilestones(resp, resp2);
             this.publicMilestonesAndActivities = reply;
             return reply;
         } catch (err) {
@@ -507,7 +506,7 @@ export class BungieService implements OnDestroy {
                     this.notificationService.info('Player has blocked access to activity history');
                 }
             } else if (resp.activities) {
-                return this.parseService.parseActivities(resp.activities);
+                return await this.parseService.parseActivities(resp.activities);
             }
             return [];
         } catch (err) {
@@ -608,7 +607,7 @@ export class BungieService implements OnDestroy {
                     ms = publicInfo.publicMilestones;
                 }
             }
-            return this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
+            return await this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
         } catch (err) {
             if (err.error != null && err.error.ErrorStatus == 'DestinyAccountNotFound') {
                 return null;
@@ -643,7 +642,7 @@ export class BungieService implements OnDestroy {
     public async getBungieMembershipsById(membershipId: string, membershipType: number): Promise<BungieMembership> {
         try {
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' + membershipId + '/LinkedProfiles/');
-            return this.parseService.parseLinkedProfiles(resp);
+            return SimpleParseService.parseLinkedProfiles(resp);
         } catch (err) {
             this.handleError(err);
             return null;

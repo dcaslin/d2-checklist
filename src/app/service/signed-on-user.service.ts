@@ -180,7 +180,7 @@ export class SignedOnUserService implements OnDestroy {
             if (loadMe) {
               loadMe.loading = true;
             }
-            const req = this.vendorService.loadVendors(char, refresh == LoadType.Refresh); // if we're refreshing, skip reading from cache
+            const req = this.vendorService.load(char, refresh == LoadType.Refresh); // if we're refreshing, skip reading from cache
             requests.push(req);
           }
         }
@@ -205,10 +205,15 @@ export class SignedOnUserService implements OnDestroy {
     combineLatest([this.player$, this.vendors$]).pipe(
       takeUntil(this.unsubscribe$)
     ).subscribe(([player, vendors]) => {
-      // this is just parsing, no network requests
-      const state = this.vendorService.calcDeals(player, vendors);
-      this.vendorDeals$.next(state);
+      // force this to async for lazy loading inv items
+      this.handleVendorDeals(player, vendors);
     });
+  }
+
+  private async handleVendorDeals(player: Player, vendors: CharacterVendorData[]) {
+    const state = await this.vendorService.calcDeals(player, vendors);
+    this.vendorDeals$.next(state);
+
   }
 
   private async applyClans(s: SelectedUser) {

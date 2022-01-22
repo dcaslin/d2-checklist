@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnD
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { BountySet, Character, CharacterVendorData, InventoryItem, Player, SelectedUser, TAG_WEIGHTS } from '@app/service/model';
-import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 
@@ -22,7 +21,6 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
   public readonly vendorBountySets$ = new BehaviorSubject<BountySet[]>([]);
   private readonly vendorData$: BehaviorSubject<CharacterVendorData[]> = new BehaviorSubject([]);
   public readonly shoppingListChanged$: BehaviorSubject<boolean> = new BehaviorSubject(true);
-  private readonly modalBountySet$: BehaviorSubject<BountySet> = new BehaviorSubject(null);
 
   public readonly shoppingList$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
 
@@ -49,8 +47,7 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
 
   constructor(
     public iconService: IconService,
-    private destinyCacheService: DestinyCacheService,
-    private signedOnUserService: SignedOnUserService
+    private destinyCacheService: DestinyCacheService
 
   ) {
     combineLatest([this.char$, this.vendorData$, this.hideCompletePursuits$]).pipe(
@@ -123,7 +120,7 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private groupBounties(type: string, bounties: InventoryItem[]): BountySet[] {
-    const tags = this.destinyCacheService.cache.PursuitTags!;
+    const tags = this.destinyCacheService.cacheLite.PursuitTags!;
     const tagSet: { [key: string]: (InventoryItem)[] } = {};
     const used = {};
     for (const s of bounties) {

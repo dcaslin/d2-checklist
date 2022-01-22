@@ -5,9 +5,7 @@
     </nav>
 </div>
 <mat-dialog-content>
-    <div class="center">
-
-
+    <div *ngIf="days$|async as days" class="center">
         <table class="tidy-auto-table striped">
             <thead>
                 <tr>
@@ -36,7 +34,5 @@
                 </tr>
             </tbody>
         </table>
-
     </div>
-
 </mat-dialog-content>

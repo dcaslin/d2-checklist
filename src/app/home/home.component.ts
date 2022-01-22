@@ -4,10 +4,8 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/service/auth.service';
 import { BungieService } from '@app/service/bungie.service';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { Const, MilestoneActivity, Platform, SelectedUser } from '@app/service/model';
-import { ParseService } from '@app/service/parse.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { Today, WeekService } from '@app/service/week.service';
@@ -56,7 +54,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    public destinyCacheService: DestinyCacheService,
     private signedOnUserService: SignedOnUserService,
     public bungieService: BungieService,
     private authService: AuthService,

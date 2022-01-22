@@ -193,7 +193,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   async init() {
-    this.weapons = this.getWeaponDescs();
+    this.weapons = await this.getWeaponDescs();
     this.load();
   }
 
@@ -382,182 +382,175 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
   }
 
   private buildRollJson(): CompleteGodRolls {
-  const newRolls = PerkbenchComponent.rebuildRolls(this.rolls$.getValue());
-  // sort newRolls by name ascending
-  newRolls.sort((a, b) => a.name.localeCompare(b.name));
-  const downloadMe: CompleteGodRolls = {
-    title: this.currentTitle,
-    date: new Date().toISOString(),
-    manifestVersion: this.destinyCacheService.cache.version,
-    rolls: newRolls
-  };
-  return downloadMe;
-}
-
-
-  private getWeaponDescs(): GunInfo[] {
-  const guns: ManifestInventoryItem[] = [];
-  // const perkCandidates = new Set<string>();
-  // const gunCandidates = new Set<string>();
-  // const mwCandidates = new Set<string>();
-  const db = this.destinyCacheService.cache;
-  for (const key of Object.keys(db.InventoryItem)) {
-    const ii = db.InventoryItem[key];
-
-    // possible perk, bucket type consumable
-    if (
-      ii.inventory.bucketTypeHash == 1469714392 ||
-      ii.inventory.bucketTypeHash == 3313201758
-    ) {
-      // perkCandidates.add(ii.displayProperties.name.toLowerCase());
-    } else if (
-      ii.inventory.bucketTypeHash == 1498876634 ||
-      ii.inventory.bucketTypeHash == 2465295065 ||
-      ii.inventory.bucketTypeHash == 953998645
-    ) {
-      // gunCandidates.add(ii.displayProperties.name.toLowerCase());
-      if (
-        ii.displayProperties?.name &&
-        ii.sockets?.socketCategories?.length > 0
-      ) {
-        if (ii.itemType != ItemType.Dummy) {
-          if (!ii.displayProperties.name.endsWith('(Adept)')) {
-            guns.push(ii);
-          }
-        }
-      }
-    }
+    const newRolls = PerkbenchComponent.rebuildRolls(this.rolls$.getValue());
+    // sort newRolls by name ascending
+    newRolls.sort((a, b) => a.name.localeCompare(b.name));
+    const downloadMe: CompleteGodRolls = {
+      title: this.currentTitle,
+      date: new Date().toISOString(),
+      manifestVersion: this.destinyCacheService.cacheLite.version,
+      rolls: newRolls
+    };
+    return downloadMe;
   }
-  const gunsWithSockets: GunInfo[] = [];
-  for (const desc of guns) {
-    let hasRandomRoll = false;
-    for (const jCat of desc.sockets.socketCategories) {
-      // we only care about weapon perks
-      if (jCat.socketCategoryHash != '4241085061') {
-        continue;
-      }
-      const sockets: InventorySocket[] = [];
-      for (const index of jCat.socketIndexes) {
-        const socketDesc = desc.sockets.socketEntries[index];
-        const possiblePlugs: InventoryPlug[] = [];
-        if (socketDesc.randomizedPlugSetHash) {
-          hasRandomRoll = true;
-          const randomRollsDesc: any =
-            this.destinyCacheService.cache.PlugSet[
-            socketDesc.randomizedPlugSetHash
-            ];
-          if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
-            for (const option of randomRollsDesc.reusablePlugItems) {
-              const plugDesc: any =
-                this.destinyCacheService.cache.InventoryItem[
-                option.plugItemHash
-                ];
-              const plugName = plugDesc?.displayProperties?.name;
-              if (plugName == null) {
-                continue;
-              }
-              const oPlug = new InventoryPlug(
-                plugDesc.hash,
-                plugName,
-                plugDesc.displayProperties.description,
-                plugDesc.displayProperties.icon,
-                false, plugDesc.plug.energyCost
-              );
-              oPlug.currentlyCanRoll = option.currentlyCanRoll;
-              possiblePlugs.push(oPlug);
+
+
+  private async getWeaponDescs(): Promise<GunInfo[]> {
+    const guns: ManifestInventoryItem[] = [];
+    const dbInvItem = this.destinyCacheService.cache.InventoryItem;
+    for (const key of Object.keys(dbInvItem)) {
+      const ii = dbInvItem[key];
+      // possible perk, bucket type consumable
+      if (
+        ii.inventory.bucketTypeHash == 1469714392 ||
+        ii.inventory.bucketTypeHash == 3313201758
+      ) {
+        // perkCandidates.add(ii.displayProperties.name.toLowerCase());
+      } else if (
+        ii.inventory.bucketTypeHash == 1498876634 ||
+        ii.inventory.bucketTypeHash == 2465295065 ||
+        ii.inventory.bucketTypeHash == 953998645
+      ) {
+        // gunCandidates.add(ii.displayProperties.name.toLowerCase());
+        if (
+          ii.displayProperties?.name &&
+          ii.sockets?.socketCategories?.length > 0
+        ) {
+          if (ii.itemType != ItemType.Dummy) {
+            if (!ii.displayProperties.name.endsWith('(Adept)')) {
+              guns.push(ii);
             }
           }
-        } else if (socketDesc.singleInitialItemHash && !(socketDesc.socketTypeHash == 1282012138)) {
-          const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
-          const plugName = plugDesc?.displayProperties?.name;
-          if (plugName == null) { continue; }
-          const oPlug = new InventoryPlug(plugDesc.hash,
-            plugName, plugDesc.displayProperties.description,
-            plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
-          oPlug.currentlyCanRoll = true;
-          possiblePlugs.push(oPlug);
-
         }
-        if (possiblePlugs.length > 0) {
-          sockets.push(
-            new InventorySocket(jCat.socketCategoryHash, [], [], possiblePlugs, index, null)
-          );
-        }
-      }
-      let dmgType = DamageType[desc.damageTypes[0]];
-      if (dmgType == 'Thermal') {
-        dmgType = 'Solar';
-      }
-      const gi: GunInfo = {
-        desc,
-        sockets,
-        type: desc.itemTypeDisplayName,
-        damage: dmgType,
-        season: WATERMARK_TO_SEASON[desc.iconWatermark],
-      };
-      if (gi.season == null) {
-        gi.season = -1;
-        if (desc.iconWatermark){
-          console.log(`Unmapped watermark: ${desc.displayProperties.name} ${desc.iconWatermark}`);
-        }
-      }
-      if (hasRandomRoll) {
-        gunsWithSockets.push(gi);
       }
     }
+    const gunsWithSockets: GunInfo[] = [];
+    for (const desc of guns) {
+      let hasRandomRoll = false;
+      for (const jCat of desc.sockets.socketCategories) {
+        // we only care about weapon perks
+        if (jCat.socketCategoryHash != '4241085061') {
+          continue;
+        }
+        const sockets: InventorySocket[] = [];
+        for (const index of jCat.socketIndexes) {
+          const socketDesc = desc.sockets.socketEntries[index];
+          const possiblePlugs: InventoryPlug[] = [];
+          if (socketDesc.randomizedPlugSetHash) {
+            hasRandomRoll = true;
+            const randomRollsDesc: any = await this.destinyCacheService.getPlugSet(socketDesc.randomizedPlugSetHash);
+            if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
+              for (const option of randomRollsDesc.reusablePlugItems) {
+                const plugDesc: any =
+                  this.destinyCacheService.cache.InventoryItem[
+                  option.plugItemHash
+                  ];
+                const plugName = plugDesc?.displayProperties?.name;
+                if (plugName == null) {
+                  continue;
+                }
+                const oPlug = new InventoryPlug(
+                  plugDesc.hash,
+                  plugName,
+                  plugDesc.displayProperties.description,
+                  plugDesc.displayProperties.icon,
+                  false, plugDesc.plug.energyCost
+                );
+                oPlug.currentlyCanRoll = option.currentlyCanRoll;
+                possiblePlugs.push(oPlug);
+              }
+            }
+          } else if (socketDesc.singleInitialItemHash && !(socketDesc.socketTypeHash == 1282012138)) {
+            const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+            const plugName = plugDesc?.displayProperties?.name;
+            if (plugName == null) { continue; }
+            const oPlug = new InventoryPlug(plugDesc.hash,
+              plugName, plugDesc.displayProperties.description,
+              plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
+            oPlug.currentlyCanRoll = true;
+            possiblePlugs.push(oPlug);
+
+          }
+          if (possiblePlugs.length > 0) {
+            sockets.push(
+              new InventorySocket(jCat.socketCategoryHash, [], [], possiblePlugs, index, null)
+            );
+          }
+        }
+        let dmgType = DamageType[desc.damageTypes[0]];
+        if (dmgType == 'Thermal') {
+          dmgType = 'Solar';
+        }
+        const gi: GunInfo = {
+          desc,
+          sockets,
+          type: desc.itemTypeDisplayName,
+          damage: dmgType,
+          season: WATERMARK_TO_SEASON[desc.iconWatermark],
+        };
+        if (gi.season == null) {
+          gi.season = -1;
+          if (desc.iconWatermark) {
+            console.log(`Unmapped watermark: ${desc.displayProperties.name} ${desc.iconWatermark}`);
+          }
+        }
+        if (hasRandomRoll) {
+          gunsWithSockets.push(gi);
+        }
+      }
+    }
+    return gunsWithSockets;
   }
-  return gunsWithSockets;
-}
 
   public exportToFile() {
-  const anch: HTMLAnchorElement = document.createElement('a');
-  const sMarks = JSON.stringify(this.buildRollJson(), null, 2);
-  anch.setAttribute(
-    'href',
-    'data:application/json;charset=utf-8,' + encodeURIComponent(sMarks)
-  );
-  anch.setAttribute(
-    'download',
-    `d2checklist-file_${format(new Date(), 'yyyy-MM-dd')}.json`
-  );
-  anch.setAttribute('visibility', 'hidden');
-  document.body.appendChild(anch);
-  anch.click();
-}
+    const anch: HTMLAnchorElement = document.createElement('a');
+    const sMarks = JSON.stringify(this.buildRollJson(), null, 2);
+    anch.setAttribute(
+      'href',
+      'data:application/json;charset=utf-8,' + encodeURIComponent(sMarks)
+    );
+    anch.setAttribute(
+      'download',
+      `d2checklist-file_${format(new Date(), 'yyyy-MM-dd')}.json`
+    );
+    anch.setAttribute('visibility', 'hidden');
+    document.body.appendChild(anch);
+    anch.click();
+  }
 
   public applyCurrentRolls() {
-  const rolls = this.buildRollJson();
-  set(CUSTOM_GOD_ROLLS, rolls);
-  this.notificationService.success(`Using your custom god rolls on this browser.`);
-  this.load();
-  // refresh rolls
-  this.pandaGodrollsService.reload();
-}
+    const rolls = this.buildRollJson();
+    set(CUSTOM_GOD_ROLLS, rolls);
+    this.notificationService.success(`Using your custom god rolls on this browser.`);
+    this.load();
+    // refresh rolls
+    this.pandaGodrollsService.reload();
+  }
 
   public clearCustomRolls() {
-  del(CUSTOM_GOD_ROLLS);
-  this.load();
-  // refresh rolls
-  this.pandaGodrollsService.reload();
-}
+    del(CUSTOM_GOD_ROLLS);
+    this.load();
+    // refresh rolls
+    this.pandaGodrollsService.reload();
+  }
 
 
-showRolls(i: MappedRoll) {
-  const dc = new MatDialogConfig();
-  dc.disableClose = false;
-  dc.data = {
-    parent: this,
-    item: i,
-    name: PerkbenchComponent.cookNameForRolls(
-      i.info.desc.displayProperties.name
-    ),
-  };
-  const dialogRef = this.dialog.open(PerkBenchDialogComponent, dc);
+  showRolls(i: MappedRoll) {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+    dc.data = {
+      parent: this,
+      item: i,
+      name: PerkbenchComponent.cookNameForRolls(
+        i.info.desc.displayProperties.name
+      ),
+    };
+    const dialogRef = this.dialog.open(PerkBenchDialogComponent, dc);
 
-  dialogRef.afterClosed().subscribe(async (result) => {
-    this.filterChanged$.next(true);
-  });
-}
+    dialogRef.afterClosed().subscribe(async (result) => {
+      this.filterChanged$.next(true);
+    });
+  }
 }
 
 export interface MappedRoll {
