@@ -123,7 +123,7 @@ export class VendorService {
     // if any vendor exotic armor (Xur), look exactly by item type
     const exoticDeals = this.findExoticArmorDeals(player, interestingVendorArmor);
     const collectionItems = this.checkCollections(player, vendorItems);
-    const exchange = this.getExchangeInfo(player, vendorItems);
+    const exchange = await this.getExchangeInfo(player, vendorItems);
     const returnMe = {
       playerLoading: false,
       vendorsLoading,
@@ -258,7 +258,7 @@ export class VendorService {
     return null;
   }
 
-  private getExchangeInfo(player: Player, vendorItems: InventoryItem[]): VendorCurrencies[] {
+  private async getExchangeInfo(player: Player, vendorItems: InventoryItem[]): Promise<VendorCurrencies[]> {
     // type == 101 is all spider currency exchange "Purchase Enhancement Prisms Spider 863940356"
     // type == 10 and seller is banshee ("Upgrade Module Banshee-44 672118013") is upgrade modules, prisms, and shards
     const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
@@ -288,7 +288,7 @@ export class VendorService {
         continue;
       }
       const targetHash = VendorService.getCostHash(g.name);
-      const targetDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[targetHash];
+      const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(targetHash);
       let targetCount;
       if (targetHash == '1022552290' || targetHash == '3159615086') { // legendary shards or glimmer
         const currency = player.currencies.find(x => x.hash == targetHash);
@@ -315,7 +315,7 @@ export class VendorService {
     const bansheeItems: VendorCurrency[] = [];
     for (const g of bansheeConsumables) {
       const targetCount = player.gear.filter(i => i.hash == g.hash).reduce((result, item) => { return result + item.quantity; }, 0);
-      const targetDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[g.hash];
+      const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(g.hash);
       const v: VendorCurrency = {
         saleItem: g,
         target: targetDesc,
@@ -523,7 +523,7 @@ export class VendorService {
 
   private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): Promise<InventoryItem> {
     if (i.itemHash == null && i.itemHash === 0) { return null; }
-    const iDesc: any = this.destinyCacheService.cache.InventoryItem[i.itemHash];
+    const iDesc: any = await this.destinyCacheService.getInventoryItem(i.itemHash);
     if (iDesc == null) { return null; }
     let vendorSearchText = '';
     // calculate costs
@@ -531,7 +531,7 @@ export class VendorService {
     if (i.costs) {
       for (const cost of i.costs) {
         if (cost.itemHash == null || cost.itemHash === 0) { continue; }
-        const cDesc: ManifestInventoryItem = this.destinyCacheService.cache.InventoryItem[cost.itemHash];
+        const cDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(cost.itemHash);
         if (cDesc == null) { continue; }
         costs.push({
           desc: cDesc,
@@ -565,7 +565,7 @@ export class VendorService {
     if (iDesc.value != null && iDesc.value.itemValue != null) {
       for (const val of iDesc.value.itemValue) {
         if (val.itemHash === 0) { continue; }
-        const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+        const valDesc: any = await this.destinyCacheService.getInventoryItem(val.itemHash);
         if (valDesc != null) {
           values.push({
             hash: val.itemHash,

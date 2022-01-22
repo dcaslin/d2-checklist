@@ -728,7 +728,7 @@ export class WeekService {
       week: currWeek,
       raidChallenge,
       publicMilestones: publicMilestones,
-      altarOfSorrowsWeapon: this.destinyCacheService.cache.InventoryItem[altarWeaponKey],
+      altarOfSorrowsWeapon: await this.destinyCacheService.getInventoryItem(altarWeaponKey),
       lostSectors: lostSectors
     };
   }

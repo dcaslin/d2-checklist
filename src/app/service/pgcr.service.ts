@@ -205,7 +205,7 @@ export class PgcrService extends StreamingService {
       }
       if (e.extended.weapons != null) {
         for (const w of e.extended.weapons) {
-          const desc: any = this.destinyCacheService.cache.InventoryItem[w.referenceId];
+          const desc: any = await this.destinyCacheService.getInventoryItem(w.referenceId);
           const weaponInfo: WeaponInfo = {
             type: desc ? desc.itemTypeAndTierDisplayName : 'Classified',
             displayProperties: desc ? desc.displayProperties : null,

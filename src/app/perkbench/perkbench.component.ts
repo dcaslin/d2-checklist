@@ -397,7 +397,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
 
   private async getWeaponDescs(): Promise<GunInfo[]> {
     const guns: ManifestInventoryItem[] = [];
-    const dbInvItem = this.destinyCacheService.cache.InventoryItem;
+    const dbInvItem = await this.destinyCacheService.getInventoryItemTable();
     for (const key of Object.keys(dbInvItem)) {
       const ii = dbInvItem[key];
       // possible perk, bucket type consumable
@@ -441,10 +441,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
             const randomRollsDesc: any = await this.destinyCacheService.getPlugSet(socketDesc.randomizedPlugSetHash);
             if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
               for (const option of randomRollsDesc.reusablePlugItems) {
-                const plugDesc: any =
-                  this.destinyCacheService.cache.InventoryItem[
-                  option.plugItemHash
-                  ];
+                const plugDesc: any = await this.destinyCacheService.getInventoryItem(option.plugItemHash);
                 const plugName = plugDesc?.displayProperties?.name;
                 if (plugName == null) {
                   continue;
@@ -461,7 +458,7 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
               }
             }
           } else if (socketDesc.singleInitialItemHash && !(socketDesc.socketTypeHash == 1282012138)) {
-            const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+            const plugDesc: any = await this.destinyCacheService.getInventoryItem(socketDesc.singleInitialItemHash);
             const plugName = plugDesc?.displayProperties?.name;
             if (plugName == null) { continue; }
             const oPlug = new InventoryPlug(plugDesc.hash,
