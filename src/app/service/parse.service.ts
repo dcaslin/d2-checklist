@@ -3412,7 +3412,7 @@ export class ParseService {
                     continue;
                 }
                 const stat = new InventoryStat(statHash, statDesc.displayProperties.name,
-                    statDesc.displayProperties.description, invStat.value, null, statDesc.index);
+                    statDesc.displayProperties.description, invStat.value, statDesc.index);
                 target.inventoryStats.push(stat);
             }
         }
@@ -3438,28 +3438,28 @@ export class ParseService {
         if (desc && instanceData) {
             const statDict: { [hash: string]: InventoryStat; } = {};
             if (instanceData != null && instanceData.stats != null) {
+                // grab the stats from the instance data from teh API
                 Object.keys(instanceData.stats).forEach(key => {
                     const val: any = instanceData.stats[key];
                     const jDesc: any = this.destinyCacheService.cacheLite.Stat[key];
                     statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
-                        jDesc.displayProperties.description, val.value, null, jDesc.index);
+                        jDesc.displayProperties.description, val.value, jDesc.index);
                 });
+                // also grab the stats from the API architetype
                 const ostats = desc.stats.stats;
                 Object.keys(ostats).forEach(key => {
                     const val: any = ostats[key];
-                    const baseValue = val.value;
+                    // if we already got the real instance data, ignore the architetype stats
                     if (statDict[key] == null) {
                         const jDesc: any = this.destinyCacheService.cacheLite.Stat[key];
                         statDict[key] = new InventoryStat(key, jDesc.displayProperties.name,
-                            jDesc.displayProperties.description, null, baseValue, jDesc.index);
-                    } else {
-                        statDict[key].baseValue = baseValue;
+                            jDesc.displayProperties.description, val.value, jDesc.index, true);
                     }
                 });
                 Object.keys(statDict).forEach(key => {
                     const val = statDict[key];
                     // armor with a stat penalty can be zero for a meaningful stat
-                    if (val.baseValue > 0 || val.value > 0 || (val.value == 0 && type == ItemType.Armor)) {
+                    if (val.value > 0 || (val.value == 0 && type == ItemType.Armor)) {
                         if (val.name != 'Defense' && val.name != 'Power' && val.name.length > 0) {
                             stats.push(val);
                         }
@@ -3702,6 +3702,8 @@ export class ParseService {
                                 continue;
                             }
                             // armor stats are socket plugs, sum them up
+                            // these are NOT enhancements, these are the intrinsic stats of the armor
+                            // mods that further enhance stats are handled elsewhere
                             if (3154740035 == jCat.socketCategoryHash && jCat.socketIndexes) {
                                 // reset all our stats to zero
                                 for (const stat of stats) {
@@ -3824,6 +3826,10 @@ export class ParseService {
                                             for (const s of stats) {
                                                 const modStat = oPlug.inventoryStats.find(x => (x.hash == s.hash));
                                                 if (modStat) {
+                                                    // for weapons we'd like to keep the modified values that we get, but for armor we want to normalize for their base value
+                                                    // that's b/c armor can swap mods for virtualyl free but weapons cannot change their perks
+
+                                                    // elemental capacitor should have its effects removed to avoid confusing things
                                                     if (IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {
                                                         s.value -= modStat.value;
                                                     } else {
@@ -3859,6 +3865,10 @@ export class ParseService {
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         plugName, plugDesc.displayProperties.description,
                                         plugDesc.displayProperties.icon, true, plugDesc.plug.energyCost, plug.isEnabled);
+                                    if (isMod)  {
+                                        this.applyPlugInventoryStats(oPlug, plugDesc);
+                                        // we'll handle these later for armor
+                                    }
                                     plugs.push(oPlug);
                                 }
                                 sockets.push(new InventorySocket(jCat.socketCategoryHash, plugWhitelist, plugs, possiblePlugs, index, sourcePlugs));

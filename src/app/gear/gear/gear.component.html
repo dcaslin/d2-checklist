@@ -513,7 +513,10 @@
                             </d2c-sort-indicator>
                           </span>
                         </td>
-                        <td>{{stat.displayValue}}</td>
+                        <td>{{stat.value}}
+                          <span *ngIf="stat.enhancement>0" class="accent-text pad-left">+{{stat.enhancement}}</span>
+                          <span *ngIf="stat.enhancement<0" class="warn-text pad-left">{{stat.enhancement}}</span>
+                        </td>
                       </tr>
                     </ng-container>
                   </tbody>

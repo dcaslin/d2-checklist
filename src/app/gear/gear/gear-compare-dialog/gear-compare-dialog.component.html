@@ -257,14 +257,13 @@
                                 <ng-container *ngIf="getStat(stat, i) as targetStat; else noState">
                                     <span [class.baseonly]="targetStat.value==null">
                                         <span [ngClass]="getColor(targetStat)">
-                                            {{targetStat.displayValue}}
+                                            {{targetStat.value}}
                                         </span>
                                     </span>
                                     <span *ngIf="targetStat.enhancement>0"
                                         class="accent-text pad-left">+{{targetStat.enhancement}}</span>
                                     <span *ngIf="targetStat.enhancement<0"
                                         class="warn-text pad-left">{{targetStat.enhancement}}</span>
-
                                 </ng-container>
                                 <ng-template #noState>0</ng-template>
                             </td>

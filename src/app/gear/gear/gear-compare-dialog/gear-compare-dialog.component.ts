@@ -133,14 +133,14 @@ export class GearCompareDialogComponent extends ChildComponent {
 
   private static getPercentile(items: InventoryItem[], i: InventoryStat): number {
     const population = GearCompareDialogComponent.getComparableStats(items, i);
-    const target = i.displayValue;
+    const target = i.value;
     let x = 0;
     let y = 0;
     for (const a of population) {
-      if (a.displayValue < target) {
+      if (a.value < target) {
         x++;
       }
-      if (a.displayValue == target) {
+      if (a.value == target) {
         y++;
       }
     }
