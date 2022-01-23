@@ -29,12 +29,12 @@ export class GearService {
                     const hash = +sortBy.substring('stat.'.length);
                     for (const s of a.stats) {
                         if (s.hash == hash) {
-                            aV = s.displayValue;
+                            aV = s.value;
                         }
                     }
                     for (const s of b.stats) {
                         if (s.hash == hash) {
-                            bV = s.displayValue;
+                            bV = s.value;
                         }
                     }
                 } else if (sortBy == 'masterwork.tier') {

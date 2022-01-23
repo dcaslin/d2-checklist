@@ -1454,23 +1454,17 @@ export class InventoryStat {
     readonly name: string;
     readonly desc: string;
     value: number;
-    baseValue: number;
     enhancement: number;
     index: number;
-    displayValue: number;
+    fromArchetype: boolean;
 
-    constructor(hash, name, desc, value, baseValue, index) {
+    constructor(hash, name, desc, value, index, fromArchetype?: boolean) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.value = value;
-        this.baseValue = baseValue;
         this.index = index;
-        if (this.value != null) {
-            this.displayValue = this.value;
-        } else {
-            this.displayValue = this.baseValue;
-        }
+        this.fromArchetype = fromArchetype;
     }
 }
 
