@@ -292,7 +292,12 @@ export class VendorService {
       let targetCount;
       if (targetHash == '1022552290' || targetHash == '3159615086') { // legendary shards or glimmer
         const currency = player.currencies.find(x => x.hash == targetHash);
-        targetCount = currency.count;
+        if (currency == null) {
+          console.log(`Aggh`);
+        }
+        if (currency  != null) {
+          targetCount = currency.count;
+        }
       } else {
         targetCount = player.gear.filter(i => i.hash == targetHash).reduce((result, item) => { return result + item.quantity; }, 0);
       }
