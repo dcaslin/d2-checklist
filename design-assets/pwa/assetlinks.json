@@ -1,0 +1,8 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.d2checklist.www.twa",
+      "sha256_cert_fingerprints": ["FC:48:41:C6:DB:BA:71:99:9C:74:82:B7:BE:72:CB:18:57:1F:8B:D5:DE:59:3A:4B:0C:10:4E:57:50:D1:B4:0A"]
+    }
+  }]
