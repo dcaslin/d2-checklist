@@ -364,7 +364,7 @@ export class ParseService {
         if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = await this.destinyCacheService.getMilestone(key);
             if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
-                let descRewards = this.parseMilestoneRewards(skipDesc);
+                let descRewards = await this.parseMilestoneRewards(skipDesc);
                 if (descRewards == null || descRewards.trim().length == 0) {
                     descRewards = 'Unknown';
                 }
@@ -459,7 +459,7 @@ export class ParseService {
                         if (key === '466653501') {
                             if (q.status.stepHash != null && q.status.stepHash > 0) {
 
-                                const sDesc = this.destinyCacheService.cache.InventoryItem[q.status.stepHash];
+                                const sDesc = await this.destinyCacheService.getInventoryItem(q.status.stepHash);
                                 if (sDesc != null) {
                                     suppInfo = sDesc.displayProperties.description;
                                 }
@@ -988,7 +988,7 @@ export class ParseService {
         }
     }
 
-    private parseMilestoneRewards(desc: any): string {
+    private async parseMilestoneRewards(desc: any): Promise<string> {
         if (desc == null) { return ''; }
         let rewards = '';
         let rewCnt = 0;
@@ -1001,7 +1001,7 @@ export class ParseService {
                         if (rewEnt.items != null) {
                             for (const reI of rewEnt.items) {
                                 rewCnt++;
-                                const iDesc: any = this.destinyCacheService.cache.InventoryItem[reI.itemHash];
+                                const iDesc: any = await this.destinyCacheService.getInventoryItem(reI.itemHash);
                                 if (iDesc != null) {
                                     rewCnt++;
                                     rewards += iDesc.displayProperties.name;
@@ -1089,7 +1089,7 @@ export class ParseService {
     //         lootHash = '1311389413'; // Worm God Incarnation
     //     }
     //     if (lootHash) {
-    //         msa.specialLoot = this.destinyCacheService.cache.InventoryItem[lootHash];
+    //         msa.specialLoot = await this.destinyCacheService.getInventoryItem(lootHash];
     //     }
     // }
 
@@ -1123,7 +1123,7 @@ export class ParseService {
                         }
                     }
                     if (activityRewards == null && aDesc.rewards != null && aDesc.rewards.length > 0 && aDesc.rewards[0].rewardItems.length > 0) {
-                        const rewDesc: any = this.destinyCacheService.cache.InventoryItem[aDesc.rewards[0].rewardItems[0].itemHash];
+                        const rewDesc: any = await this.destinyCacheService.getInventoryItem(aDesc.rewards[0].rewardItems[0].itemHash);
                         if (rewDesc != null) {
                             activityRewards = rewDesc.displayProperties.name;
                         }
@@ -1148,14 +1148,14 @@ export class ParseService {
                 }
             } else if (ms.availableQuests) {
                 for (const q of ms.availableQuests) {
-                    const iDesc: any = this.destinyCacheService.cache.InventoryItem[q.questItemHash];
+                    const iDesc: any = await this.destinyCacheService.getInventoryItem(q.questItemHash);
                     if (iDesc != null) {
                         if (iDesc.value != null && iDesc.value.itemValue != null && iDesc.value.itemValue.length > 0) {
                             // use the first listed reward, even if there are more
                             // deadly venatiks lists pinnacle as reward 2 b/c it's weird
                             const v = iDesc.value.itemValue[0];
                             if (v.itemHash != null && v.itemHash > 0) {
-                                const rewDesc: any = this.destinyCacheService.cache.InventoryItem[v.itemHash];
+                                const rewDesc: any = await this.destinyCacheService.getInventoryItem(v.itemHash);
                                 if (rewDesc != null) {
                                     activityRewards += rewDesc.displayProperties.name;
                                 }
@@ -1189,7 +1189,7 @@ export class ParseService {
                     dAct[key].lls.push(a.ll);
                 }
             }
-            const descRewards = this.parseMilestoneRewards(desc);
+            const descRewards = await this.parseMilestoneRewards(desc);
             let rewards = '';
             if (descRewards && descRewards.trim().length > 0) {
                 rewards = descRewards;
@@ -1415,7 +1415,7 @@ export class ParseService {
                     let cDesc = entry.displayProperties.description;
                     cntr++;
                     if (entry.itemHash) {
-                        const iDesc: any = this.destinyCacheService.cache.InventoryItem[entry.itemHash];
+                        const iDesc: any = await this.destinyCacheService.getInventoryItem(entry.itemHash);
                         cDesc = iDesc.displayProperties.description;
                     }
                     if (entry.activityHash) {
@@ -1917,7 +1917,7 @@ export class ParseService {
                     continue;
                 }
                 const msDesc = await this.destinyCacheService.getMilestone(m);
-                const rewards = this.parseMilestoneRewards(msDesc);
+                const rewards = await this.parseMilestoneRewards(msDesc);
                 const ms: MileStoneName = {
                     key: msDesc.hash + '',
                     resets: weekEnd,
@@ -2138,12 +2138,12 @@ export class ParseService {
             artifactPowerBonus = await this.parseArtifactProgressions(resp, chars, accountProgressions);
             // hit with a hammer
             if (resp.profileCurrencies?.data?.items != null && this.destinyCacheService.cache != null) {
-                resp.profileCurrencies.data.items.forEach(x => {
-                    const desc: any = this.destinyCacheService.cache.InventoryItem[x.itemHash];
+                for (const x of resp.profileCurrencies.data.items) {
+                    const desc: any = await this.destinyCacheService.getInventoryItem(x.itemHash);
                     if (desc != null) {
                         currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
                     }
-                });
+                }
             }
             vault = new Vault();
             shared = new Shared();
@@ -2468,11 +2468,11 @@ export class ParseService {
             return 0;
         });
         if (currencies.length > 0) {
-            this.handleCurrency('2979281381', gear, currencies); // upgrade modules
-            this.handleCurrency('4257549985', gear, currencies); // shards
-            this.handleCurrency('4257549984', gear, currencies); // prisms
-            this.handleCurrency('3853748946', gear, currencies); // cores
-            this.handleCurrency('3702027555', gear, currencies); // spoils
+            await this.handleCurrency('2979281381', gear, currencies); // upgrade modules
+            await this.handleCurrency('4257549985', gear, currencies); // shards
+            await this.handleCurrency('4257549984', gear, currencies); // prisms
+            await this.handleCurrency('3853748946', gear, currencies); // cores
+            await this.handleCurrency('3702027555', gear, currencies); // spoils
         }
         if (resp.profileInventory?.data) {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
@@ -2638,10 +2638,10 @@ export class ParseService {
         return returnMe;
     }
 
-    private handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[]) {
+    private async handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[]) {
         let curr = currencies.find(x => x.hash === hash);
         if (!curr) {
-            const desc = this.destinyCacheService.cache.InventoryItem[hash];
+            const desc = await this.destinyCacheService.getInventoryItem(hash);
             if (!desc) {
                 console.log('Missing desc for ' + hash);
                 return;
@@ -2710,17 +2710,17 @@ export class ParseService {
     //     }
     //     for (const f of foundMilestones) {
 
-    //         const fDesc = this.destinyCacheService.cache.InventoryItem[f];
+    //         const fDesc = await this.destinyCacheService.getInventoryItem(f];
     //         if (fDesc==null) {
     //             continue;
     //         }
     //         const qHash = fDesc.objectives.questlineItemHash;
-    //         const qDesc = this.destinyCacheService.cache.InventoryItem[qHash];
+    //         const qDesc = await this.destinyCacheService.getInventoryItem(qHash];
     //         let rewardName = null;
     //         if (qDesc.value != null && qDesc.value.itemValue != null) {
     //             for (const val of qDesc.value.itemValue) {
     //                 if (val.itemHash === 0) { continue; }
-    //                 const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+    //                 const valDesc: any = await this.destinyCacheService.getInventoryItem(val.itemHash];
     //                 if (valDesc != null) {
     //                     rewardName = valDesc.displayProperties.name;
     //                     break;
@@ -3052,7 +3052,7 @@ export class ParseService {
             let hasReward = false;
             for (const ri of rDesc.rewardItems) {
                 if (ri.itemHash === 0) { continue; }
-                const valDesc: any = this.destinyCacheService.cache.InventoryItem[ri.itemHash];
+                const valDesc: any = await this.destinyCacheService.getInventoryItem(ri.itemHash);
                 if (valDesc != null) {
 
                     searchText += ' ' + valDesc.displayProperties.name;
@@ -3229,13 +3229,13 @@ export class ParseService {
     }
 
     private async parseQuestStep(stepHash: number, currentStepHash: number): Promise<QuestlineStep> {
-        const desc: any = this.destinyCacheService.cache.InventoryItem[stepHash];
+        const desc: any = await this.destinyCacheService.getInventoryItem(stepHash);
         if (desc == null) { return null; }
         const values = [];
         if (desc.value != null && desc.value.itemValue != null) {
             for (const val of desc.value.itemValue) {
                 if (val.itemHash === 0) { continue; }
-                const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+                const valDesc: any = await this.destinyCacheService.getInventoryItem(val.itemHash);
                 if (valDesc != null) {
                     values.push({
                         hash: valDesc.hash,
@@ -3272,7 +3272,7 @@ export class ParseService {
     }
 
     private async parseQuestLine(qli: number, stepHash: number): Promise<Questline> {
-        const qdesc: any = this.destinyCacheService.cache.InventoryItem[qli];
+        const qdesc: any = await this.destinyCacheService.getInventoryItem(qli);
         if (qdesc == null) { return null; }
         if (qdesc.setData != null) { }
         if (qdesc.setData == null) { return null; }
@@ -3477,7 +3477,7 @@ export class ParseService {
 
     public async parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any, resp?: any): Promise<InventoryItem> {
         try {
-            const desc: any = this.destinyCacheService.cache.InventoryItem[itm.itemHash];
+            const desc: any = await this.destinyCacheService.getInventoryItem(itm.itemHash);
             if (desc == null) {
                 console.log('Skipping - no desc: ' + itm.itemHash);
                 return null;
@@ -3718,7 +3718,7 @@ export class ParseService {
                                 for (const index of jCat.socketIndexes) {
                                     const socketVal = itemSocketArray[index];
                                     if (socketVal.plugHash != null && socketVal.isEnabled) {
-                                        const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketVal.plugHash];
+                                        const plugDesc: any = await this.destinyCacheService.getInventoryItem(socketVal.plugHash);
                                         if (plugDesc?.investmentStats) {
                                             for (const investmentStat of plugDesc.investmentStats) {
                                                 const stat = stats.find(x => x.hash == investmentStat.statTypeHash);
@@ -3738,7 +3738,7 @@ export class ParseService {
                                 let sourcePlugs: ManifestInventoryItem[] | null = null;
                                 let plugWhitelist: string[] = [];
                                 if (socketDesc.singleInitialItemHash != null) {
-                                    const emptyModSocketDesc = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+                                    const emptyModSocketDesc = await this.destinyCacheService.getInventoryItem(socketDesc.singleInitialItemHash);
                                     if ((socketDesc.singleInitialItemHash == 0 || emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket') && socketDesc.reusablePlugSetHash) {
                                         // TODO handle already equipped plugs which may show as not equippable (for example Anti-Barrier Auto Rifle)
                                         const plugSetHash = socketDesc.reusablePlugSetHash;
@@ -3752,7 +3752,11 @@ export class ParseService {
                                             pp = pp.concat(charPlugs);
                                         }
                                         pp = pp.filter(x => x.enabled && x.canInsert);
-                                        let plugDefs = pp.map(x => x.plugItemHash).map(x => this.destinyCacheService.cache.InventoryItem[x]);
+                                        let plugDefs = [];
+                                        for (const x of pp) {
+                                            const plugDef = await this.destinyCacheService.getInventoryItem(x.plugItemHash);
+                                            plugDefs.push(plugDef);
+                                        }
                                         plugDefs = plugDefs.filter(x => x != null).filter(x => {
                                             const et = x.plug?.energyCost?.energyType;
                                             if (!et) {
@@ -3803,7 +3807,7 @@ export class ParseService {
                                 isRandomRoll = isRandomRoll || socketDesc.randomizedPlugSetHash != null;
                                 if (!isMod && reusablePlugs && reusablePlugs[index]) {
                                     for (const plug of reusablePlugs[index]) {
-                                        const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugItemHash];
+                                        const plugDesc: any = await this.destinyCacheService.getInventoryItem(plug.plugItemHash);
                                         if (plugDesc == null) { continue; }
                                         const plugName = ParseService.getPlugName(plugDesc);
                                         if (plugName == null) { continue; }
@@ -3835,7 +3839,7 @@ export class ParseService {
                                     }
                                 } else if (socketVal?.plugHash != null) {  // only show plughash if there is no reusable, otherwise we'll dupe perks
                                     const plug = socketVal;
-                                    const plugDesc: any = this.destinyCacheService.cache.InventoryItem[plug.plugHash];
+                                    const plugDesc: any = await this.destinyCacheService.getInventoryItem(plug.plugHash);
                                     if (plugDesc == null) { continue; }
                                     if (isMod) {
                                         const mwInfo = this.parseMasterwork(plugDesc);
@@ -3862,7 +3866,7 @@ export class ParseService {
                                     const randomRollsDesc: any = await this.destinyCacheService.getPlugSet(socketDesc.randomizedPlugSetHash);
                                     if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
                                         for (const option of randomRollsDesc.reusablePlugItems) {
-                                            const plugDesc: any = this.destinyCacheService.cache.InventoryItem[option.plugItemHash];
+                                            const plugDesc: any = await this.destinyCacheService.getInventoryItem(option.plugItemHash);
                                             const plugName = ParseService.getPlugName(plugDesc);
                                             if (plugName == null) { continue; }
                                             const oPlug = new InventoryPlug(plugDesc.hash,
@@ -3873,7 +3877,7 @@ export class ParseService {
                                         }
                                     }
                                 } else if (socketDesc.singleInitialItemHash) {
-                                    const plugDesc: any = this.destinyCacheService.cache.InventoryItem[socketDesc.singleInitialItemHash];
+                                    const plugDesc: any = await this.destinyCacheService.getInventoryItem(socketDesc.singleInitialItemHash);
                                     const plugName = ParseService.getPlugName(plugDesc);
                                     if (plugName == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,
@@ -3893,7 +3897,7 @@ export class ParseService {
             if (desc.value != null && desc.value.itemValue != null) {
                 for (const val of desc.value.itemValue) {
                     if (val.itemHash === 0) { continue; }
-                    const valDesc: any = this.destinyCacheService.cache.InventoryItem[val.itemHash];
+                    const valDesc: any = await this.destinyCacheService.getInventoryItem(val.itemHash);
                     if (valDesc != null) {
                         values.push({
                             hash: val.itemHash,
@@ -4031,7 +4035,7 @@ export class ParseService {
                 if (!(itm.overrideStyleItemHash == 2931483505
                     || itm.overrideStyleItemHash == 702981643
                     || itm.overrideStyleItemHash == 1959648454)) {
-                    const overrideDesc: any = this.destinyCacheService.cache.InventoryItem[itm.overrideStyleItemHash];
+                    const overrideDesc: any = await this.destinyCacheService.getInventoryItem(itm.overrideStyleItemHash);
                     if (overrideDesc != null) {
                         icon = overrideDesc.displayProperties.icon;
                     }
