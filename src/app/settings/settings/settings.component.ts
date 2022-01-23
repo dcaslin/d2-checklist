@@ -6,6 +6,7 @@ import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { IconService } from '@app/service/icon.service';
 import { getDefaultTheme } from '@app/shared/utilities';
+import { clear } from 'idb-keyval';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,5 +88,21 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
     ' at duo. At magna essent volumus ius. Ea rebum lucilius his.');
   }
 
+  async onClearEverything() {
+    await localStorage.clear();
+    await clear();
+    this.notificationService.info('All data has been cleared');
+  }
+
+
+  async onCleanIDB() {
+    await clear();
+    this.notificationService.info('Site IDB has been cleared');
+  }
+
+  async onClearLocalStorage() {
+    await localStorage.clear();
+    this.notificationService.info('Site localstorage has been cleared');
+  }
 
 }

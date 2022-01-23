@@ -14,12 +14,9 @@ export interface Notification {
 export class NotificationService {
   private notifySub = new Subject();
   public notifyFeed: Observable<Notification>;
-  private thinkingSub = new Subject();
-  public thinkingFeed: Observable<boolean>;
 
   constructor() {
     this.notifyFeed = this.notifySub.asObservable() as Observable<Notification>;
-    this.thinkingFeed = this.thinkingSub.asObservable() as Observable<boolean>;
   }
 
   private notify(note: Notification) {
@@ -32,10 +29,6 @@ export class NotificationService {
       message: msg
     });
     return;
-  }
-
-  public thinking(show: boolean): void {
-    this.thinkingSub.next(show);
   }
 
   public success(msg: string): void {

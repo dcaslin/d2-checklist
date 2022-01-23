@@ -1,13 +1,10 @@
-import { HttpClient, HttpEvent, HttpEventType, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { cookError, isSearchBot, safeStringifyError } from '@app/shared/utilities';
+import { isSearchBot, safeStringifyError } from '@app/shared/utilities';
+import { NotificationService } from './notification.service';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
-import { BehaviorSubject, Observable, of, ReplaySubject, throwError } from 'rxjs';
-import { catchError, isEmpty, last, retry, tap } from 'rxjs/operators';
-import { unzipSync, strFromU8 } from 'fflate';
-import { ThisReceiver } from '@angular/compiler';
-import { faFunction } from '@fortawesome/pro-light-svg-icons';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
 const LOG_CSS = `color: orangered`;
 
@@ -27,9 +24,9 @@ export class DestinyCacheService {
   public readonly errorDetails: BehaviorSubject<any> = new BehaviorSubject(null);
   public readonly searchBot: boolean = isSearchBot();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+    private notificationService: NotificationService) {
     if (!this.searchBot) {
-      this.init2();
       this.init();
     }
   }
@@ -169,37 +166,38 @@ export class DestinyCacheService {
   public async getSeasonPass(key: string | number): Promise<SeasonPass> {
     const table = await this.getManifestTable('SeasonPass');
     return table[key + ''];
-    // return this.cache.SeasonPass[key + ''];
-  }
-
-  private async init2() {
-    this.cacheLite = await this.getManifestTable('cache-lite') as CacheLite;
-    console.log('%cLoaded cache-lite.', LOG_CSS);
   }
 
   private async getManifestTable(tableName: string) {
     if (this.memCache[tableName] != null) {
       return this.memCache[tableName];
     }
+    let t0: number = null;
     const key = `table-${tableName}-${env.versions.manifest}`;
     const cached = await get(key);
     let returnMe = null;
+    let method = null;
     if (cached != null) {
-      console.log(`%c${tableName} idb cached`, LOG_CSS);
+      t0 = performance.now();
+      method = 'idb';
       returnMe = cached;
     } else {
-      // not found
-      // clean up
+      // not found, clean up
       const ks = await keys();
       for (const k of ks) {
         if (k.toString().startsWith(`table-${tableName}`)) {
           del(k);
         }
       }
+      t0 = performance.now();
+      method = 'remote';
+      // special case for missing cache lite, warn that manifest updated
+      if ('cache-lite' == tableName) {
+        this.notificationService.info(`New Manifest found!`);
+      }
       const remote = await this.http.get<any>(`/assets/destiny2-${tableName.toLowerCase()}.json?v=${env.versions.manifest}`).toPromise();
       // cache it, but don't wait on that
       set(key, remote);
-      console.log(`%c${tableName} remote`, LOG_CSS);
       returnMe = remote;
     }
     this.memCache[tableName] = returnMe;
@@ -208,51 +206,28 @@ export class DestinyCacheService {
     }
     this.observableMap[tableName].next(returnMe);
     // emit in observable too
+    if (t0 != null) {
+      const t1 = performance.now();
+      console.log(`%c${tableName} ${method} loaded in ${(t1 - t0).toFixed(2)}ms`, LOG_CSS);
+    }
     return returnMe;
   }
 
   private async init() {
     this.checkingCache.next(true);
-
-
     const t0 = performance.now();
-    const key = 'manifest-' + env.versions.manifest;
-    console.log(`Loading cache ${key}`);
+    console.log(`%cLoading cache ${env.versions.manifest}`, LOG_CSS);
     try {
-      const manifest = await get(key);
-      this.checkingCache.next(false);
-      // if nothing found, perhaps version has changed, clear old values
-      if (manifest == null) {
-        console.log('No cached value found');
-        const ks = await keys();
-        for (const k of ks) {
-          if (k.toString().startsWith('manifest')) {
-            del(k);
-          }
-        }
-        await this.load(key);
-      } else {
-        this.cache = manifest as Cache;
-      }
-      if (this.cache?.version) {
-        this.version$.next(this.cache.version);
-      }
+      this.cacheLite = await this.getManifestTable('cache-lite') as CacheLite;
+      const t1 = performance.now();
+      console.log(`%c${t1 - t0} ms elapsed loading manifest lite`, LOG_CSS);
       this.percent.next(100);
       this.ready$.next(true);
-      const t1 = performance.now();
-      console.log((t1 - t0) + ' ms to load manifest');
     } catch (exc) {
-      console.log(`Error loading Bungie Manifest DB ${key}`);
+      console.log('%Error loading cache-lite  ${env.versions.manifest}.', LOG_CSS);
       const s = safeStringifyError(exc);
       console.log(s);
       this.errorDetails.next(s);
-      try {
-        console.log('Deleting any existing cache entry');
-        await del(key);
-      } catch (exc2) {
-        console.log('Secondary error deleting cache entry');
-        console.dir(exc2);
-      }
       this.error.next('There was an error loading the Bungie Manifest DB, please refresh the page and try again.');
     }
     finally {
@@ -261,98 +236,6 @@ export class DestinyCacheService {
     }
   }
 
-  async unzip(blob: Blob): Promise<void> {
-    let ab: ArrayBuffer;
-    // if blob.arraybuffer is not suppported, copy to a new request
-    if (!blob.arrayBuffer) {
-      ab = await new Response(blob).arrayBuffer();
-    } else {
-      ab = await blob.arrayBuffer();
-    }
-    const unzipMe = new Uint8Array(ab);
-    const decompressed = unzipSync(unzipMe);
-    const binaryData = decompressed['destiny2.json'];
-    const data2 = strFromU8(binaryData);
-    this.cache = JSON.parse(data2);
-    this.ready$.next(true);
-  }
-
-  private showProgress(evt: HttpEvent<any>) {
-    switch (evt.type) {
-      case HttpEventType.Sent:
-        this.percent.next(5);
-        break;
-      case HttpEventType.ResponseHeader:
-        this.percent.next(10);
-        break;
-      case HttpEventType.DownloadProgress:
-        const kbLoaded = Math.round(evt.loaded / 1024);
-        console.log(`Download in progress! ${kbLoaded}Kb loaded`);
-        this.percent.next(15 + 80 * evt.loaded / evt.total);
-        break;
-      case HttpEventType.Response: {
-        this.percent.next(95);
-      }
-    }
-  }
-  private async download(cacheBuster?: string): Promise<Blob> {
-    console.log(`--- load remote cache ${env.versions.manifest} ---`);
-
-    let uri = `/assets/destiny2.zip?ngsw-bypass=true&v=${env.versions.manifest}`;
-    if (cacheBuster && cacheBuster.trim().length > 0) {
-      uri = `/assets/destiny2.zip?ngsw-bypass=true&v=${env.versions.manifest}-${cacheBuster}`;
-    }
-    console.log(`Downloading zip from URI: ${uri}`);
-    const req = new HttpRequest<Blob>('GET', uri, {
-      reportProgress: true,
-      responseType: 'blob'
-    });
-
-    const finalHttpEvt = await this.http.request(req).pipe(
-      tap((evt: HttpEvent<any>) => this.showProgress(evt)),
-      retry(1),
-      last(),
-      catchError(err => throwError(cookError(err)))
-    ).toPromise();
-
-    if (finalHttpEvt.type !== HttpEventType.Response) {
-      throw new Error(`Unexpected final http event type ${finalHttpEvt.type}`);
-    }
-    const dl = finalHttpEvt as HttpResponse<Blob>;
-    this.percent.next(100);
-    return dl.body;
-  }
-
-
-  async load(key: string, isRetry?: boolean): Promise<void> {
-    let blob = await this.download();
-    // retry if size zero to try to get to the bottom of weird problem
-    if (blob.size == 0) {
-      console.log(`   Retrieved zero length blob, adding cache buster and retrying.`);
-      blob = await this.download('' + new Date().getTime());
-    }
-    console.log(`   Retrieved Blob size ${blob.size}. Beginning unzip...`);
-    this.unzipping.next(true);
-    try {
-      try {
-        await this.unzip(blob);
-      } catch (unzipExc) {
-        console.dir(unzipExc);
-        if (!isRetry) {
-          console.log('Initial error unzipping blob. Retrying...');
-          await this.load(key, true);
-        } else {
-          console.log('Secondary error unzipping blob. Fail');
-          throw unzipExc;
-        }
-      }
-      set(key, this.cache);
-      return;
-    }
-    finally {
-      this.unzipping.next(false);
-    }
-  }
 }
 export interface CacheLite {
   Class: any;
@@ -368,45 +251,6 @@ export interface CacheLite {
   version: string;
   // TODO index of inventory item?
 }
-
-export interface Cache {
-  // Class?: any;
-  // Stat?: any;
-  // Activity?: any;
-  // ActivityMode?: any;
-  // ActivityModifier?: any;
-  // ActivityType?: any;
-  // Checklist?: any;
-  // Collectible?: any;
-  // EnergyType?: any;
-  // EquipmentSlot?: any;
-  // Faction?: any;
-  // Gender?: any;
-  // HistoricalStats?: any;
-  // InventoryBucket?: any;
-  InventoryItem?: { [key: string]: ManifestInventoryItem };
-  // ItemTierType?: any;
-  // Milestone?: any;
-  // Objective?: { [key: string]: Objective };
-  // Perk?: any;
-  // PlugSet?: any;
-  // PowerCap?: any;
-  // PresentationNode?: any;
-  // Progression?: any;
-  // PursuitTags?: { [key: string]: string[] };
-  // Race?: any;
-  // Record?: any;
-  // RecordSeasons?: any;
-  // Season?: { [key: string]: Season };
-  // SeasonPass?: { [key: string]: SeasonPass };
-  // SocketCategory?: any;
-  // SocketType?: any;
-  // TagWeights?: { [key: string]: number };
-  // Vendor?: any;
-  // destiny2CoreSettings: Destiny2CoreSettings;
-  version: string;
-}
-
 
 export interface Destiny2CoreSettings {
   collectionRootNode: number;
