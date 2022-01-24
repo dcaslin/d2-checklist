@@ -131,7 +131,7 @@ export class SignedOnUserService implements OnDestroy {
           'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
           'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
           'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles',
-          'CharacterProgressions', 'CharacterActivities', 'ProfileProgression', 'Records' // added for uberlist
+          'CharacterProgressions', 'CharacterActivities', 'ProfileProgression', 'Records', 'StringVariables' // added for uberlist
         ], false, true))
       ),
       concatAll(),

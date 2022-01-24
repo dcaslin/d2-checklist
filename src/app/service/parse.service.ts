@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { fromUnixTime, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import { DestinyCacheService, ManifestInventoryItem, Season, SeasonPass } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
@@ -12,12 +12,7 @@ import {
 
     BUCKETS_ALL_POWER,
     BUCKETS_ARMOR,
-    BUCKETS_WEAPON,
-    BungieGroupMember,
-    BungieMember,
-    BungieMemberPlatform,
-    BungieMembership,
-    Character,
+    BUCKETS_WEAPON, Character,
     CharacterStat,
     CharChecklist,
     CharChecklistItem,
@@ -32,6 +27,7 @@ import {
     CurrentPartyActivity,
     DamageType,
     DestinyAmmunitionType,
+    DynamicStrings,
     EnergyType,
     Fraction,
     GearMetaData,
@@ -69,9 +65,7 @@ import {
     TriumphCollectibleNode,
     TriumphNode,
     TriumphPresentationNode,
-    TriumphRecordNode,
-    UserInfo,
-    Vault
+    TriumphRecordNode, Vault
 } from './model';
 import { SimpleParseService } from './simple-parse.service';
 
@@ -79,6 +73,9 @@ const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 
 const ARTIFACT_UNLOCK_PERK_PROG_HASH = '3915124631'; // #UPDATEME old 2557524386 oldest 3094108685
 const ARTIFACT_POWER_BONUS_PROG_HASH = '243419342'; // #UPDATEME old 1793560787 oldest 978389300
+
+
+const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
 
 @Injectable()
 export class ParseService {
@@ -2478,7 +2475,19 @@ export class ParseService {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
         }
         // this.handleChallengeMilestones(chars, quests, milestoneList);
-        this.cookMileStones(milestoneList);
+
+        // handle string interpolation aka dynamic strings
+        const dynamicStrings = ParseService.buildDynamicStrings(resp);
+        this.cookMileStones(milestoneList, dynamicStrings);
+        for (const t of searchableTriumphs) {
+            t.desc = ParseService.dynamicStringReplace(t.desc, null, dynamicStrings);
+        }
+        for (const b of bounties) {
+            b.desc = ParseService.dynamicStringReplace(b.desc, b.owner.getValue().id, dynamicStrings);
+            for (const r of b.values) {
+                r.name = ParseService.dynamicStringReplace(r.name, b.owner.getValue().id, dynamicStrings);
+            }
+        }
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -2544,7 +2553,7 @@ export class ParseService {
 
     // do this all in one place at the last minute
     // since we gather up milestones from all sorts of places
-    private cookMileStones(milestoneList: MileStoneName[]) {
+    private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings) {
         const presage = milestoneList.find(x => x.key == '3927548661');
         if (presage) {
             presage.name = 'Presage Weekly';
@@ -2601,6 +2610,9 @@ export class ParseService {
         //     rewiringTheLight.rewards = 'Powerful Gear (Tier 3)';
         //     rewiringTheLight.boost = this.parseMilestonePl(rewiringTheLight.rewards);
         // }
+        for (const m of milestoneList) {
+            m.desc = ParseService.dynamicStringReplace(m.desc, null, dynamicStrings);
+        }
     }
 
     private async handleGearMeta(chars: Character[], charInvs: any, profileInventory: any): Promise<GearMetaData> {
@@ -4156,8 +4168,31 @@ export class ParseService {
         return s.charAt(0).toUpperCase() + s.slice(1);
     }
 
+    private static buildDynamicStrings(resp: any): DynamicStrings {
+        const returnMe: DynamicStrings = {
+            character: {},
+            profile: {}
+        };
+        if (resp.profileStringVariables?.data?.integerValuesByHash) {
+            returnMe.profile = resp.profileStringVariables.data.integerValuesByHash;
+        }
+        if (resp.characterStringVariables?.data) {
+            for (const key of Object.keys(resp.characterStringVariables.data)) {
+                returnMe.character[key] = resp.characterStringVariables.data[key].integerValuesByHash;
+            }
+        }
+        return returnMe;
 
-
+    }
+    private static dynamicStringReplace(text: string, characterId: string, dynamicStrings: DynamicStrings): string {
+        // Thanks DIM!
+        return text.replace(INTERPOLATION_PATTERN, (segment) => {
+            const hash = segment.match(/\d+/)![0];
+            const dynamicValue =
+              dynamicStrings?.character[characterId]?.[hash] ?? dynamicStrings?.profile[hash];
+            return dynamicValue?.toString() ?? segment;
+          });
+    }
 }
 
 

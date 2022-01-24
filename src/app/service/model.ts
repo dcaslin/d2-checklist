@@ -754,7 +754,7 @@ export class InventoryItem {
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
     readonly objectives: ItemObjective[];
-    readonly desc: string;
+    desc: string;
     readonly classAllowed: ClassAllowed;
     readonly bucketOrder: number;
     readonly aggProgress: number;
@@ -1694,4 +1694,9 @@ export interface PrivPlugEnergyCost {
     energyCost: number;
     energyTypeHash: string;
     energyType: DestinyEnergyType;
+}
+
+export interface DynamicStrings {
+    character: { [key: string]: {[key: string]: number} };
+    profile: {[key: string]: number};
 }
