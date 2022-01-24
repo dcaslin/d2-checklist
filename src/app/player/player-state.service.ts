@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
-import { Player, SearchResult, SelectedUser, TriumphRecordNode, Platform, Const, InventoryItem, Character } from '@app/service/model';
+import { Character, Const, InventoryItem, Platform, Player, SelectedUser, TriumphRecordNode } from '@app/service/model';
+import { SignedOnUserService } from '@app/service/signed-on-user.service';
+import { StorageService } from '@app/service/storage.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { StorageService } from '@app/service/storage.service';
-import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,34 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
 export class PlayerStateService {
 
   public filterChar: Character|string = null;
+
+  private _sort = 'rewardsDesc';
+
+  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public trackedPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
+
+  private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
+  public player: Observable<Player>;
+
+  private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public loading: Observable<boolean> = this._loading.asObservable();
+
+
+  public _signedOnUserIsCurrent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public signedOnUserIsCurrent: Observable<boolean> = this._signedOnUserIsCurrent.asObservable();
+
+  public _isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isSignedOn: Observable<boolean> = this._isSignedOn.asObservable();
+
+  private _showZeroPtTriumphs = false;
+  private _showInvisTriumphs = false;
+  private _hideCompleteTriumphs = false;
+  private _hideCompletePursuits = false;
+  private _hideCompleteCollectibles = false;
+
+
+  public dTrackedTriumphIds = {};
+  public dTrackedPursuits = {};
 
   public get sort() {
     return this._sort;
@@ -70,34 +98,6 @@ export class PlayerStateService {
     this._hideCompletePursuits = b;
     localStorage.setItem('hide-completed-pursuits', '' + this._hideCompletePursuits);
   }
-
-  private _sort = 'rewardsDesc';
-
-  public trackedTriumphs: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
-  public trackedPursuits: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
-
-  private _player: BehaviorSubject<Player> = new BehaviorSubject<Player>(null);
-  public player: Observable<Player>;
-
-  private _loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public loading: Observable<boolean> = this._loading.asObservable();
-
-
-  public _signedOnUserIsCurrent: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public signedOnUserIsCurrent: Observable<boolean> = this._signedOnUserIsCurrent.asObservable();
-
-  public _isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  public isSignedOn: Observable<boolean> = this._isSignedOn.asObservable();
-
-  private _showZeroPtTriumphs = false;
-  private _showInvisTriumphs = false;
-  private _hideCompleteTriumphs = false;
-  private _hideCompletePursuits = false;
-  private _hideCompleteCollectibles = false;
-
-
-  public dTrackedTriumphIds = {};
-  public dTrackedPursuits = {};
 
   public currPlayer(): Player {
     return this._player.getValue();
@@ -183,7 +183,8 @@ export class PlayerStateService {
       const x = await this.bungieService.getChars(platform.type, memberId,
         ['Profiles', 'Characters', 'CharacterProgressions', 'CharacterActivities',
           'CharacterEquipment', 'ItemInstances', 'CharacterInventories', 'ProfileInventories',
-          'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 'ItemSockets', 'ItemPlugObjectives'
+          'ProfileProgression', 'ItemObjectives', 'PresentationNodes', 'Records', 'Collectibles', 
+          'ItemSockets', 'ItemPlugObjectives', 'StringVariables'
           // , '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
           // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
