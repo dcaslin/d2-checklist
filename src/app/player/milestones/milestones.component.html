@@ -83,7 +83,7 @@
                 (sortClick)="sortByRewards()"></d2c-reward-desc>
               <div class="caption milestone-resets" *ngIf="mileStoneName.resets!=null && mileStoneName!=''">
                 <span class="fake-link" style="opacity: 0.75" (click)="sortByReset()">
-                  Resets in {{mileStoneName.resets | d2cAgoHumanized}}
+                  Resets {{mileStoneName.resets | d2cAgoHumanized}}
                   <fa-icon *ngIf="state.sort=='resetDesc'" [icon]="iconService.falSortDown"></fa-icon>
                   <fa-icon *ngIf="state.sort=='resetAsc'" [icon]="iconService.falSortUp"></fa-icon>
                 </span>
