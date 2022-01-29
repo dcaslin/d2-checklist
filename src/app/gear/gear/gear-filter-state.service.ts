@@ -244,7 +244,12 @@ export class GearFilterStateService implements OnDestroy {
   public autoCompleteOptions: AutoCompleteOption[];
   public filteredAutoCompleteOptions$: BehaviorSubject<AutoCompleteOption[]> = new BehaviorSubject([]);
   private filterTags$: BehaviorSubject<string[]> = new BehaviorSubject([]);
+  public sortBy$: BehaviorSubject<string> = new BehaviorSubject('power');
+  public hideDupes$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public sortDesc$: BehaviorSubject<boolean> = new BehaviorSubject(true);
+
   public filtersDirty$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   public filterUpdated$: Subject<void> = new Subject<void>();
   public visibleFilterText = null;
   private orMode = false;
@@ -308,11 +313,15 @@ export class GearFilterStateService implements OnDestroy {
           this.filtersDirty$.next(dirty);
         }
         if (this.isToggleDataInit()) {
+          const worthSaving = dirty || this.sortBy$.getValue() != 'power' || this.sortDesc$.getValue() != true || this.hideDupes$.getValue() != false;
           // we have no filters, so clear everything in localstorage
-          if (!dirty) {
+          if (!worthSaving) {
             localStorage.removeItem(GEAR_FILTER_KEY);
           } else {
             const filterSettings: FilterSettings = {
+              hideDupes: this.hideDupes$.getValue(),
+              sortBy: this.sortBy$.getValue(),
+              sortDesc: this.sortDesc$.getValue(),
               filterText: this.visibleFilterText,
               deselectedChoices: {}
             };
@@ -481,6 +490,15 @@ export class GearFilterStateService implements OnDestroy {
       const sSettings = localStorage.getItem(GEAR_FILTER_KEY);
       if (sSettings) {
         const filterSettings: FilterSettings = JSON.parse(sSettings);
+        if (filterSettings.sortBy) {
+          this.sortBy$.next(filterSettings.sortBy);
+        }
+        if (filterSettings.sortDesc != null) {
+          this.sortDesc$.next(filterSettings.sortDesc);
+        }
+        if (filterSettings.hideDupes!=null) {
+          this.hideDupes$.next(filterSettings.hideDupes);
+        }
         this.visibleFilterText = filterSettings.filterText;
         this.parseWildcardFilter(visibleItemType);
         for (const key of Object.keys(this.toggleData)) {
@@ -1024,6 +1042,9 @@ export interface AutoCompleteOption {
 }
 
 interface FilterSettings {
+  sortBy: string;
+  sortDesc: boolean;
+  hideDupes: boolean;
   filterText: string;
   deselectedChoices: { [key: string]: string[] }; // toggle key, and matched values that are deslected
 }

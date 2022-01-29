@@ -64,9 +64,6 @@ export class GearComponent extends ChildComponent implements OnInit {
   options: TabOption[];
   option: TabOption;
 
-  sortBy = 'power';
-  hideDupes = false;
-  sortDesc = true;
   public gearToShow$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
 
   pageInfo$: BehaviorSubject<PageInfo> = new BehaviorSubject<PageInfo>({
@@ -257,7 +254,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   public toggleDupes(hideDupes: boolean) {
-    this.hideDupes = hideDupes;
+    this.gearFilterStateService.hideDupes$.next(hideDupes);
     this.gearFilterStateService.filterUpdated$.next();
   }
 
@@ -276,7 +273,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   public async pullFromPostmaster(player: Player, itm: InventoryItem) {
     try {
       const owner = itm.owner.getValue();
-      const success = await this.gearService.transfer(player, itm, owner, { isFull: false }, this.gearFilterStateService.filterUpdated$);
+      const success = await this.gearService.transfer(player, itm, owner, { isFull: false }, this.gearFilterStateService.filterUpdated$, true);
       if (success) {
         this.notificationService.success('Pulled ' + itm.name + ' from postmaster to ' + owner.label);
       } else {
@@ -289,7 +286,7 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   public async transfer(player: Player, itm: InventoryItem, target: Target) {
     try {
-      const success = await this.gearService.transfer(player, itm, target, { isFull: false }, this.gearFilterStateService.filterUpdated$);
+      const success = await this.gearService.transfer(player, itm, target, { isFull: false }, this.gearFilterStateService.filterUpdated$, true);
       if (success) {
         this.notificationService.success('Transferred ' + itm.name + ' to ' + target.label);
       } else {
@@ -390,11 +387,14 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   sort(val: string) {
-    if (val == this.sortBy) {
-      this.sortDesc = !this.sortDesc;
+    const currVal = this.gearFilterStateService.sortBy$.getValue();
+
+    if (val == currVal) {
+      const currSort = this.gearFilterStateService.sortDesc$.getValue();
+      this.gearFilterStateService.sortDesc$.next(!currSort);
     } else {
-      this.sortBy = val;
-      this.sortDesc = true;
+      this.gearFilterStateService.sortBy$.next(val);
+      this.gearFilterStateService.sortDesc$.next(true);
     }
     this.gearFilterStateService.filterUpdated$.next();
   }
@@ -409,8 +409,8 @@ export class GearComponent extends ChildComponent implements OnInit {
     console.log(`Filtering gear...`);
     let tempGear = this.player$.getValue().gear.filter(i => i.type == this.option.type);
     tempGear = this.gearFilterStateService.filterGear(tempGear);
-    GearService.sortGear(this.sortBy, this.sortDesc, tempGear);
-    if (this.hideDupes) {
+    GearService.sortGear(this.gearFilterStateService.sortBy$.getValue(), this.gearFilterStateService.sortDesc$.getValue(), tempGear);
+    if (this.gearFilterStateService.hideDupes$.getValue()) {
       tempGear = GearService.filterDupes(tempGear);
     }
     const pageInfo = {...this.pageInfo$.getValue()};
