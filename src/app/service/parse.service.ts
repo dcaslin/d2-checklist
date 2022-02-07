@@ -3872,6 +3872,8 @@ export class ParseService {
                                     if (plug.plugHash == 3727270518) {
                                         specialModSockets.push('artifice');
                                         searchText += 'has:modartifice';
+                                        seasonalModSlot = 10;
+                                        coveredSeasons.push(10);
                                     }
                                     if (plugName == null) { continue; }
                                     const oPlug = new InventoryPlug(plugDesc.hash,

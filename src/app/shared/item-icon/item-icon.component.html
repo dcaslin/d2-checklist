@@ -17,11 +17,10 @@
             [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
             [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"
             [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal"
-            [class.stasis]="i.damageType===DamageType.Stasis || i.energyType===EnergyType.Stasis"
-            >
+            [class.stasis]="i.damageType===DamageType.Stasis || i.energyType===EnergyType.Stasis">
             {{i.power}}
         </div>
-        
+
         <div class="gear-lock" *ngIf="!hideMenu">
             <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked|async"></fa-icon>
             <fa-icon [icon]="iconService.fasLockOpenAlt" *ngIf="!(i.locked|async)"></fa-icon>
@@ -30,9 +29,11 @@
             <div class="gear-equipped" *ngIf="i.equipped|async">
                 <fa-icon [icon]="iconService.fasShieldCheck" title="Equipped"></fa-icon>
             </div>
-            <div *ngIf="mark" class="tag-status" [ngClass]="mark+'-icon-bg'"><fa-icon [icon]="markService.markDict[mark].icon"></fa-icon></div>
+            <div *ngIf="mark" class="tag-status" [ngClass]="mark+'-icon-bg'">
+                <fa-icon [icon]="markService.markDict[mark].icon"></fa-icon>
+            </div>
         </div>
-        
+
     </ng-template>
 
     <mat-menu #itemMenu="matMenu">
@@ -50,16 +51,16 @@
                 <fa-icon [icon]="iconService.falExchange"></fa-icon> Transfer to
                 {{target.label}}
             </button>
-            <button mat-menu-item
-                *ngIf="!(i.locked|async) && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option==ItemType.Ghost || option==ItemType.Vehicle)"
-                (click)="toggleLock.emit(true)">
-                <fa-icon [icon]="iconService.fasLockAlt"></fa-icon> Lock
-            </button>
-            <button mat-menu-item *ngIf="i.locked|async" (click)="toggleLock.emit(false)">
-                <fa-icon [icon]="iconService.fasLockOpenAlt"></fa-icon> Unlock
-            </button>
 
         </ng-container>
+        <button mat-menu-item
+            *ngIf="!(i.locked|async) && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option==ItemType.Ghost || option==ItemType.Vehicle)"
+            (click)="toggleLock.emit(true)">
+            <fa-icon [icon]="iconService.fasLockAlt"></fa-icon> Lock
+        </button>
+        <button mat-menu-item *ngIf="i.locked|async" (click)="toggleLock.emit(false)">
+            <fa-icon [icon]="iconService.fasLockOpenAlt"></fa-icon> Unlock
+        </button>
     </mat-menu>
 
 </ng-container>

@@ -5,7 +5,7 @@
                 <table class="responsive-table">
                     <thead>
                         <tr>
-                            <th>
+                            <th class="lead">
                                 <a href="https://www.reddit.com/r/destinychecklistnet/comments/ihku2a/d2checklist_new_feature_armor_season_mod_breakdown/"
                                     matTooltip="User guide" target="_blank" rel="noopener">
                                     <fa-icon [icon]="iconService.fasQuestionCircle"></fa-icon>
@@ -21,7 +21,7 @@
                     <tbody>
                         <ng-container *ngIf="char._seasons|async as seasons">
                             <tr *ngFor="let season of seasons">
-                                <td>
+                                <td  class="lead">
                                     <d2c-season-indicator [season]="season.season"></d2c-season-indicator> {{season.name}}
                                     <div *ngIf="season.note" class="simple-caption">{{season.note}}</div>
                                 </td>

@@ -70,7 +70,8 @@ import {
   faSkullCrossbones as fasSkullCrossbones,
   faSkull as fasSkull, faStoreAlt as fasStoreAlt,
   faStore as fasStore, faUser as fasUser, faChessKnight as fasChessKnight, faTicketAlt as fasTicketAlt,
-  faCabinetFiling as fasCabinetFiling, faStickyNote as fasStickyNote, faMagic as fasMagic
+  faCabinetFiling as fasCabinetFiling, faStickyNote as fasStickyNote, faMagic as fasMagic,
+  faStarOfLife as fasStarOfLife
 } from '@fortawesome/pro-solid-svg-icons';
 
 
@@ -81,6 +82,7 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fasStarOfLife = fasStarOfLife;
   public readonly farSign = farSign;
   public readonly fasStoreAlt = fasStoreAlt;
   public readonly fasHiking = fasHiking;
