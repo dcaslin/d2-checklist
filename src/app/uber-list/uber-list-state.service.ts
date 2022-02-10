@@ -655,9 +655,11 @@ export class UberListStateService implements OnDestroy {
         }
         const desc = invItemTable[x.title.hash];
         const label = desc.inventory.stackUniqueLabel as string;
-        if (label.includes('.weekly') // most vendor's weekly bounties have this keyword
-          || label.includes('.outlaws')) { // spider's weeklies have the outlaws keyword
-          return hasWeekly;
+        if (label) {
+          if (label.includes('.weekly') // most vendor's weekly bounties have this keyword
+            || label.includes('.outlaws')) { // spider's weeklies have the outlaws keyword
+            return hasWeekly;
+          }
         }
         // it's a daily bounty
         return selectedVals.includes('daily');
