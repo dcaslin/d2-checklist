@@ -755,27 +755,25 @@ export class GearService {
                 }
                 const success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     tempTarget, itm, false, player.vault, this.bucketService, itm.postmaster);
-                if (!success) {
+                if (!success && tryHard) {
                     // if our bucket was full and we're trying hard, try to move an item to the vault
-                    if (tryHard) {
-                        const bucket = this.bucketService.getBucket(tempTarget, itm.inventoryBucket);
-                        const toVault: InventoryItem = bucket.otherItem(bucket.equipped);
-                        console.log(`Moving ${toVault.name} to the vault to make space for initial transfer of ${itm.name}`);
-                        const makeSpaceSuccess = await this.transfer(player, toVault, player.vault, vaultStatus);
-                        // if we fail, we're done
-                        if (!makeSpaceSuccess) {
-                            return false;
-                        } else {
-                            // if we succeed, try the original item again
-                            const tryAgainSuccess = await this.bungieService.transfer(player.profile.userInfo.membershipType,
-                                tempTarget, itm, false, player.vault, this.bucketService, itm.postmaster);
-                            if (!tryAgainSuccess) {
-                                return false;
-                            }
-                        }
-                    } else {
+                    const bucket = this.bucketService.getBucket(tempTarget, itm.inventoryBucket);
+                    const toVault: InventoryItem = bucket.otherItem(bucket.equipped);
+                    console.log(`Moving ${toVault.name} to the vault to make space for initial transfer of ${itm.name}`);
+                    const makeSpaceSuccess = await this.transfer(player, toVault, player.vault, vaultStatus);
+                    // if we fail, we're done
+                    if (!makeSpaceSuccess) {
                         return false;
+                    } else {
+                        // if we succeed, try the original item again
+                        const tryAgainSuccess = await this.bungieService.transfer(player.profile.userInfo.membershipType,
+                            tempTarget, itm, false, player.vault, this.bucketService, itm.postmaster);
+                        if (!tryAgainSuccess) {
+                            return false;
+                        }
                     }
+                } else if (!success) {
+                    return false;
                 }
                 if (itm.postmaster === true) {
                     itm.postmaster = false;
@@ -802,7 +800,7 @@ export class GearService {
                 success = await this.bungieService.transfer(player.profile.userInfo.membershipType,
                     target, itm, false, player.vault, this.bucketService);
                 // if our bucket was full and we're trying hard, try to move an item to the vault
-                if (tryHard) {
+                if (!success && tryHard) {
                     const bucket = this.bucketService.getBucket(target, itm.inventoryBucket);
                     const toVault: InventoryItem = bucket.otherItem(bucket.equipped);
                     console.log(`Moving ${toVault.name} to the vault to make space for initial transfer of ${itm.name}`);
@@ -818,7 +816,7 @@ export class GearService {
                             return false;
                         }
                     }
-                } else {
+                } else if (!success) {
                     return false;
                 }
                 itm.options.push(itm.owner.getValue());
