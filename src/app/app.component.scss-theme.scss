@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import '~@angular/material/theming';
 
 @mixin d2c-app-component-theme($theme) {
@@ -9,26 +10,26 @@
     mat-toolbar {
       button, a {
         &.active {
-          color: mat-color($accent, default-contrast);
-          background-color: mat-color($accent);
+          color: mat.get-color-from-palette($accent, default-contrast);
+          background-color: mat.get-color-from-palette($accent);
         }
       }
 
       .sign-in-button {
-        color: mat-color($accent);
-        border: 1px solid mat-color($accent);
+        color: mat.get-color-from-palette($accent);
+        border: 1px solid mat.get-color-from-palette($accent);
       }
 
       .link {
-        color: mat-color($primary, default-contrast);
+        color: mat.get-color-from-palette($primary, default-contrast);
       }
     }
 
     mat-sidenav {
       a {
         &.active {
-          color: mat-color($accent, default-contrast);
-          background-color: mat-color($accent);
+          color: mat.get-color-from-palette($accent, default-contrast);
+          background-color: mat.get-color-from-palette($accent);
         }
       }
     }

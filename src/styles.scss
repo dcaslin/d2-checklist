@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 
 
 @import 'styles-variables';
@@ -8,7 +9,7 @@
 
 @import '~@angular/material/theming';
 
-@include mat-core();
+@include mat.core();
 
 
 .upgrade-color {
@@ -65,20 +66,20 @@
 }
 
 .default-theme {
-  @include angular-material-theme($d2c-theme);
+  @include mat.all-component-themes($d2c-theme);
   @include custom-components-theme($d2c-theme);
   @include default-gear-tags($d2c-theme);
  
 }
 
 .light-theme {
-  @include angular-material-theme($d2c-light-theme);
+  @include mat.all-component-themes($d2c-light-theme);
   @include custom-components-theme($d2c-light-theme);
   @include default-gear-tags($d2c-light-theme);
 }
 
 .black-theme {
-  @include angular-material-theme($d2c-black-theme);
+  @include mat.all-component-themes($d2c-black-theme);
   @include custom-components-theme($d2c-black-theme);
   @include black-gear-tags($d2c-black-theme);
 }
