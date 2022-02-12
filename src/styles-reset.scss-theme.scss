@@ -1,3 +1,4 @@
+@use '~@angular/material' as mat;
 @import "~@angular/material/theming";
 
 @mixin d2c-styles-reset-theme($theme) {
@@ -10,16 +11,16 @@
   
 
   a {
-    color: mat-color($foreground, text);
+    color: mat.get-color-from-palette($foreground, text);
 
     &:hover {
-      color: mat-color($accent);
+      color: mat.get-color-from-palette($accent);
     }
   }
   
   .hover-like-button {
     //border: solid 2px  mat-color($background, unselected-chip);;
-    border: solid 2px   mat-color($accent);
+    border: solid 2px   mat.get-color-from-palette($accent);
     border-radius: 3px;    
 
     &:hover {
@@ -31,25 +32,25 @@
 
 
   .solid-border {
-    border-color: mat-color($foreground, divider);
+    border-color: mat.get-color-from-palette($foreground, divider);
     border-style: solid;
     padding: 5px;
     margin: 2px;
   }
 
   .dashed-border {
-    border-color: mat-color($foreground, divider);
+    border-color: mat.get-color-from-palette($foreground, divider);
     border-style: dashed;
     padding: 5px;
     margin: 2px;
   }
 
   .selected-dashed-border {
-    border-color: mat-color($accent, 700) !important;
+    border-color: mat.get-color-from-palette($accent, 700) !important;
   }
 
   .inactive-text {
-    color: mat-color($foreground, divider);
+    color: mat.get-color-from-palette($foreground, divider);
   }
 
   .divider-border {
@@ -57,28 +58,28 @@
   }
 
   .divider {
-    border-color: mat-color($foreground, divider);
+    border-color: mat.get-color-from-palette($foreground, divider);
     border-top-style: solid;
     border-bottom-style: none;
   }
 
 
   div.bottom-divider {
-    border-bottom: 1px solid mat-color($foreground, divider);
+    border-bottom: 1px solid mat.get-color-from-palette($foreground, divider);
   }
   
   div.top-divider {
-    border-top: 1px solid mat-color($foreground, divider);
+    border-top: 1px solid mat.get-color-from-palette($foreground, divider);
   }
 
   code {
-    color: mat-color($accent, lighter-contrast);
-    background-color: mat-color($accent, lighter);
+    color: mat.get-color-from-palette($accent, lighter-contrast);
+    background-color: mat.get-color-from-palette($accent, lighter);
   }
 
   .bounty-chip {    
-    background-color: mat-color($background, unselected-chip);
-    color: mat-color($foreground, unselected-chip);
+    background-color: mat.get-color-from-palette($background, unselected-chip);
+    color: mat.get-color-from-palette($foreground, unselected-chip);
     // background-color: #e0e0e0;
     // color: rgba(0,0,0,.87);
     padding: 4px 12px;
@@ -90,52 +91,52 @@
   }
 
   .primary-bg-text {
-    color: mat-color($primary, default-contrast);
-    background-color: mat-color($primary);
+    color: mat.get-color-from-palette($primary, default-contrast);
+    background-color: mat.get-color-from-palette($primary);
   }
 
   .transparent-icon {
     background-size: cover;
-    background-color: mat-color($primary);
+    background-color: mat.get-color-from-palette($primary);
     opacity: 0.9;
   }
 
   .accent-bg-text {
-    color: mat-color($accent, default-contrast) !important;
-    background-color: mat-color($accent) !important;
+    color: mat.get-color-from-palette($accent, default-contrast) !important;
+    background-color: mat.get-color-from-palette($accent) !important;
   }
 
   .warn-bg-text {
-    color: mat-color($warn, default-contrast);
-    background-color: mat-color($warn);
+    color: mat.get-color-from-palette($warn, default-contrast);
+    background-color: mat.get-color-from-palette($warn);
   }
 
   .accent-text {
-    color: mat-color($accent, 700);
+    color: mat.get-color-from-palette($accent, 700);
   }
 
   .disabled-text {
-    color: mat-color($foreground, disabled);
+    color: mat.get-color-from-palette($foreground, disabled);
   }
 
   .masterworked {
-    box-shadow: 0 0 10px mat-color($accent, 700);
+    box-shadow: 0 0 10px mat.get-color-from-palette($accent, 700);
   }
 
   .pinnacle {    
-    box-shadow: 0 0 5px 0px mat-color($accent, 700);
+    box-shadow: 0 0 5px 0px mat.get-color-from-palette($accent, 700);
   }
 
   .warn-text {
-    color: mat-color($warn) !important;
+    color: mat.get-color-from-palette($warn) !important;
   }
 
   .primary-text {
-    color: mat-color($primary);
+    color: mat.get-color-from-palette($primary);
   }
 
   .secondary-text {
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .bold {
@@ -152,41 +153,41 @@
     margin: 5px 0 7px;
     font-size: smaller;
     font-weight: lighter;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .simple-caption-darker {
     margin: 5px 0 7px;
     font-size: smaller;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
 
   .simple-darker-larger-caption {
     margin: 5px 0 7px;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .simple-caption-darker-no-margin {
     font-size: smaller;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .simple-darker-caption-no-margin {
     font-size: smaller;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
 
   .simple-caption-no-margin {
     font-size: smaller;
     font-weight: lighter;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .simple-caption-darker-no-margin {
     font-size: smaller;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .right-margin {
@@ -198,12 +199,12 @@
     font-size: smaller;
     font-weight: lighter;
     opacity: 0.8;
-    color: mat-color($warn);
+    color: mat.get-color-from-palette($warn);
   }
 
   .type-caption {
     font-size: smaller;
-    color: mat-color($foreground, secondary-text);
+    color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
   .check-progress-bar {
@@ -213,11 +214,11 @@
   }
 
   .light-border {
-    border: 1px solid mat-color($background, unselected-chip);
+    border: 1px solid mat.get-color-from-palette($background, unselected-chip);
   }
 
   table.responsive-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
     margin: 0;
     padding: 0;
@@ -231,8 +232,8 @@
     }
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
 
       padding: 5px;
     }
@@ -253,7 +254,7 @@
         float: right;
         font-size: smaller;
         font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
       }
     }
 
@@ -261,7 +262,7 @@
       padding: 8px;
       text-align: center;
       font-size: 12px;
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
       //text-transform: uppercase;
     }
   }
@@ -344,13 +345,13 @@
       }
 
       & tr {
-        border-bottom: 3px solid mat-color($background, status-bar);
+        border-bottom: 3px solid mat.get-color-from-palette($background, status-bar);
         display: block;
         margin-bottom: 8px;
       }
 
       & td {
-        border-bottom: 1px solid mat-color($background, status-bar);
+        border-bottom: 1px solid mat.get-color-from-palette($background, status-bar);
         display: block;
         font-size: 10px;
         text-align: right;
@@ -358,7 +359,7 @@
 
       & td.lead {
         font-weight: bold;
-        border-bottom: 1px solid mat-color($background, status-bar);
+        border-bottom: 1px solid mat.get-color-from-palette($background, status-bar);
         display: block;
         font-size: 10px;
         text-align: left;
@@ -376,7 +377,7 @@
   }
 
   .tidy-cell {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
   }
 
@@ -386,28 +387,28 @@
     position: sticky;
     top: 0;
     z-index: 2;
-    background-color: mat-color($background, card);
+    background-color: mat.get-color-from-palette($background, card);
   }
 
   table.striped {
     & tbody {
       & tr:nth-child(even) {
-        background: mat-color($background, card);
+        background: mat.get-color-from-palette($background, card);
       }
 
       & tr:nth-child(odd) {
-        background: mat-color($background, status-bar)
+        background: mat.get-color-from-palette($background, status-bar)
       }
     }
   }
 
   table.simple-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
       padding: 5px;
     }
 
@@ -420,13 +421,13 @@
       padding: 8px;
       text-align: left;
       font-size: 12px;
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
     }
   }
 
 
   table.tidy-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
     margin: 0;
     padding: 0;
@@ -440,8 +441,8 @@
     }
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
 
       padding: 5px;
     }
@@ -462,7 +463,7 @@
         float: right;
         font-size: smaller;
         font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
       }
     }
 
@@ -470,12 +471,12 @@
       padding: 8px;
       text-align: left;
       font-size: 12px;
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
     }
   }
 
   table.tidy-auto-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
     margin: 0;
     padding: 0;
@@ -488,8 +489,8 @@
     }
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
 
       padding: 5px;
     }
@@ -509,7 +510,7 @@
         float: right;
         font-size: smaller;
         font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
       }
     }
 
@@ -517,32 +518,32 @@
       padding: 8px;
       text-align: left;
       font-size: 12px;
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
     }
   }
 
 
   table.gear-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
     }
 
     & td.lead {
       & .caption {
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
       }
     }
 
     & th {
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
     }
   }
 
   table.recent-players-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
     margin: 0;
     padding: 0;
@@ -557,8 +558,8 @@
     }
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
 
       padding: 5px;
     }
@@ -578,7 +579,7 @@
         float: right;
         font-size: smaller;
         font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
       }
     }
 
@@ -586,12 +587,12 @@
       padding: 8px;
       text-align: left;
       font-size: 12px;
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
     }
   }
 
   table.checklist-table {
-    border: 1px solid mat-color($background, disabled-list-option);
+    border: 1px solid mat.get-color-from-palette($background, disabled-list-option);
     border-collapse: collapse;
     margin: 0;
     padding: 0;
@@ -605,8 +606,8 @@
     }
 
     & tr {
-      background: mat-color($background, card);
-      border: 1px solid mat-color($background, unselected-chip);
+      background: mat.get-color-from-palette($background, card);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
 
       padding: 5px;
     }
@@ -625,7 +626,7 @@
         float: right;
         font-size: smaller;
         font-weight: lighter;
-        color: mat-color($foreground, secondary-text);
+        color: mat.get-color-from-palette($foreground, secondary-text);
       }
     }
 
@@ -633,12 +634,12 @@
       padding: 8px;
       text-align: left;
       font-size: 12px;
-      color: mat-color($foreground, secondary-text);
+      color: mat.get-color-from-palette($foreground, secondary-text);
     }
   }
 
   tr.hover-row:hover {
-    background: mat-color($background, app-bar);
+    background: mat.get-color-from-palette($background, app-bar);
     border-bottom-width: 2px;
     border-top-width: 2px;
     cursor: pointer;
@@ -665,7 +666,7 @@
     }
     & tr {
       padding: 5px;
-      border: 1px solid mat-color($background, unselected-chip);
+      border: 1px solid mat.get-color-from-palette($background, unselected-chip);
     }
     & td {
       font-size: 14px;
