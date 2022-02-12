@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 $d2c-light-primary: mat.define-palette(mat.$pink-palette, 500);
 $d2c-light-accent: mat.define-palette(mat.$deep-purple-palette, 200);
 $d2c-light-warn: mat.define-palette(mat.$deep-orange-palette, 200);

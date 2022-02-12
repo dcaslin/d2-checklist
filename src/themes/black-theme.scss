@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 $d2c-black-primary: mat.define-palette(mat.$grey-palette, 900);
 $d2c-black-accent: mat.define-palette(mat.$amber-palette, 600);
 $d2c-black-warn: mat.define-palette(mat.$red-palette, A200);
