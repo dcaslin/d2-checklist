@@ -1,4 +1,4 @@
-@use '~@angular/material' as mat;
+@use '@angular/material' as mat;
 
 
 @import 'styles-variables';
@@ -7,7 +7,7 @@
 
 @import 'styles-reset';
 
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 @include mat.core();
 
