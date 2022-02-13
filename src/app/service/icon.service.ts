@@ -32,7 +32,7 @@ import {
 
 import {
   faSort as fadSort, faSortDown as fadSortDown, faSortUp as fadSortUp, faArchive as fadArchive,
-  faHourglassHalf as fadHourGlassHalf, faShieldAlt as fadShieldAlt, faVault as fasVault,
+  faHourglassHalf as fadHourGlassHalf, faShieldAlt as fadShieldAlt, faVault as fadVault,
  } from '@fortawesome/pro-duotone-svg-icons';
 import {
   faPlug as fasPlug, 
@@ -256,7 +256,7 @@ export class IconService {
   public readonly falCopy = falCopy;
   public readonly falDiceD20 = falDiceD20;
 
-  public readonly fasVault = fasVault;
+  public readonly fadVault = fadVault;
   public readonly fasEnvelope = fasEnvelope;
   public readonly fasUniversity = fasUniversity;
   public readonly falSortDown = falSortDown;

@@ -172,7 +172,7 @@
             <div class="gm-section">
               <a class="margin-left-10 fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
                 [queryParams]="{ owner: 'vault'}">
-                <fa-icon [icon]="iconService.fasVault"></fa-icon> {{gm.vault.count}} / {{gm.vault.total}}
+                <fa-icon [icon]="iconService.fadVault"></fa-icon> <span class="margin-left-10 currency-text">{{gm.vault.count}} / {{gm.vault.total}}</span>
               </a>
             </div>
             <div class="gm-section">
@@ -185,10 +185,10 @@
                     [style.background-image]="'url(//www.bungie.net' + p.char.emblemPath + ')'">
                   </span>
                   <ng-container *ngIf="(p.total - p.count)<3; else safePostmaster">
-                    <span class="warn-text">{{p.count}} / {{p.total}}</span>
+                    <span class="warn-text currency-text">{{p.count}} / {{p.total}}</span>
                   </ng-container>
                   <ng-template #safePostmaster>
-                    {{p.count}} / {{p.total}}
+                    <span class="currency-text">{{p.count}} / {{p.total}}</span>
                   </ng-template>
 
                 </a>
