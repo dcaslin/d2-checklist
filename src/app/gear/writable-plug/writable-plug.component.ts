@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { GearService } from '@app/service/gear.service';
-import { InventoryItem, InventoryPlug, InventorySocket, Player } from '@app/service/model';
+import { InventoryItem, InventoryPlug, InventorySocket } from '@app/service/model';
 
 @Component({
   selector: 'd2c-writable-plug',
   templateUrl: './writable-plug.component.html',
   styleUrls: ['./writable-plug.component.scss']
 })
-export class WritablePlugComponent implements OnInit {
+export class WritablePlugComponent {
 
   @Input() item: InventoryItem;
 
@@ -18,9 +18,6 @@ export class WritablePlugComponent implements OnInit {
   @Input() debugmode: boolean;
 
   constructor(private gearService: GearService) { }
-
-  ngOnInit(): void {
-  }
 
   selectWeaponPerkPlug() {
     this.gearService.insertFreeSocketForWeaponPerk(this.item, this.socket, this.plug);

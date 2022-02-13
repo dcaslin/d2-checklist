@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { PursuitTuple } from '@app/service/model';
 
@@ -8,12 +8,10 @@ import { PursuitTuple } from '@app/service/model';
   templateUrl: './uber-pursuit-check.component.html',
   styleUrls: ['./uber-pursuit-check.component.scss']
 })
-export class UberPursuitCheckComponent implements OnInit {
+export class UberPursuitCheckComponent {
   @Input() pursuit: PursuitTuple;
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit(): void {
-  }
 
 }

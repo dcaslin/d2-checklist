@@ -4,8 +4,6 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { ApiDisplayProperties } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { ParseService } from '@app/service/parse.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { BungieService } from './bungie.service';
 import { SimpleParseService } from './simple-parse.service';
 import { StreamingService } from './streaming.service';

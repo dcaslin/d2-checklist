@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Progression } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
@@ -12,7 +12,7 @@ import { ProgressStepDialogComponent } from './progress-step-dialog/progress-ste
   templateUrl: './progress.component.html',
   styleUrls: ['./progress.component.scss']
 })
-export class ProgressComponent extends ChildComponent implements OnInit {
+export class ProgressComponent extends ChildComponent {
   constructor(
     storageService: StorageService,
     public state: PlayerStateService,
@@ -20,8 +20,7 @@ export class ProgressComponent extends ChildComponent implements OnInit {
       super(storageService);
     }
 
-  ngOnInit() {
-  }
+  
 
   public openStepDialog(faction: Progression): void {
     const dc = new MatDialogConfig();

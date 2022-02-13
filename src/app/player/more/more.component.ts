@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
@@ -7,11 +7,10 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './more.component.html',
   styleUrls: ['./more.component.scss']
 })
-export class MoreComponent implements OnInit {
+export class MoreComponent {
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit() {
-  }
+  
 
 }

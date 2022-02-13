@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
@@ -8,13 +8,12 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
   templateUrl: './signed-on-loading-icon.component.html',
   styleUrls: ['./signed-on-loading-icon.component.scss']
 })
-export class SignedOnLoadingIconComponent implements OnInit {
+export class SignedOnLoadingIconComponent {
 
   constructor(
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService) { }
 
-  ngOnInit(): void {
-  }
+  
 
 }

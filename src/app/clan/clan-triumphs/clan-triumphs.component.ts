@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanStateService } from '../clan-state.service';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,13 +10,12 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-triumphs.component.html',
   styleUrls: ['./clan-triumphs.component.scss']
 })
-export class ClanTriumphsComponent extends ChildComponent implements OnInit {
+export class ClanTriumphsComponent extends ChildComponent {
 
   constructor(storageService: StorageService, public state: ClanStateService, public iconService: IconService) {
     super(storageService);
   }
 
-  ngOnInit() {
-  }
+  
 
 }

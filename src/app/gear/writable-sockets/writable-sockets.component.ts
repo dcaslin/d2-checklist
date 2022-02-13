@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { InventoryItem, InventorySocket } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
@@ -10,7 +10,7 @@ import { SelectModDialogComponent } from '../gear/select-mod-dialog/select-mod-d
   templateUrl: './writable-sockets.component.html',
   styleUrls: ['./writable-sockets.component.scss']
 })
-export class WritableSocketsComponent extends ChildComponent implements OnInit {
+export class WritableSocketsComponent extends ChildComponent {
   @Input() item: InventoryItem;
 
   @Output() socketsChanged = new EventEmitter<boolean>();
@@ -19,9 +19,6 @@ export class WritableSocketsComponent extends ChildComponent implements OnInit {
     public dialog: MatDialog,
     public storageService: StorageService) {
     super(storageService);
-  }
-
-  ngOnInit(): void {
   }
 
   selectMod(socket: InventorySocket): void {

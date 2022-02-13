@@ -67,7 +67,7 @@ export class BountyShoppingListContainerComponent extends ChildComponent impleme
     dc.data = d;
     dc.width = '80%';
     const ref = this.dialog.open(BountySetsDialogComponent, dc);
-    ref.afterClosed().subscribe(result => {
+    ref.afterClosed().subscribe(() => {
       this.modalBountySet$.next(null);
     });
   }

@@ -16,7 +16,9 @@
               "replaceDuplicatePlugins": true
             },
             "aot": true,
-            "allowedCommonJsDependencies": ["chart.js"],
+            "allowedCommonJsDependencies": [
+              "chart.js"
+            ],
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -47,10 +49,9 @@
                 "input": "src/assets/icomoon.css",
                 "bundleName": "icons",
                 "inject": true
-              }              
+              }
             ],
-            "scripts": [
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -107,8 +108,7 @@
             "karmaConfig": "./karma.conf.js",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [
-            ],
+            "scripts": [],
             "styles": [
               {
                 "input": "src/styles.scss",
@@ -122,6 +122,16 @@
               "src/robots.txt",
               "src/sitemap.xml",
               "src/manifest.webmanifest"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.js",
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         }
@@ -139,6 +149,7 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }

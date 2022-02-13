@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanTriumphSealDialogComponent } from '../clan-triumph-seal-dialog/clan-triumph-seal-dialog.component';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-seals.component.html',
   styleUrls: ['./clan-seals.component.scss']
 })
-export class ClanSealsComponent extends ChildComponent implements OnInit {
+export class ClanSealsComponent extends ChildComponent {
   openEntryId: string|null = null;
 
   constructor(storageService: StorageService,
@@ -22,8 +22,7 @@ export class ClanSealsComponent extends ChildComponent implements OnInit {
     super(storageService);
   }
 
-  ngOnInit() {
-  }
+  
 
   public opened(hash: string) {
     this.openEntryId = hash;

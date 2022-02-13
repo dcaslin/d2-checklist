@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { BehaviorSubject } from 'rxjs';
@@ -21,13 +21,11 @@ export function generateUberState(config: UberToggleConfig, choices: UberChoice[
   templateUrl: './uber-list-toggle.component.html',
   styleUrls: ['./uber-list-toggle.component.scss']
 })
-export class UberListToggleComponent implements OnInit {
+export class UberListToggleComponent {
   @Input() state$: BehaviorSubject<UberToggleState>;
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit(): void {
-  }
 
   selectAll() {
     if (!this.state$?.getValue()?.choices?.length) {
@@ -82,6 +80,7 @@ export interface UberToggleState {
 
 export class UberChoice {
   // if null, then matches "Other" for list
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   readonly matchValue: any;
   readonly display: string;
   public checked = true;

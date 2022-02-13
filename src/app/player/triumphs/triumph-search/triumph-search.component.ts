@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
 import { TriumphRecordNode } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
-import { IconService } from '@app/service/icon.service';
-import { Router, ActivatedRoute } from '@angular/router';
 
 
 @Component({

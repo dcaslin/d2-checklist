@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
@@ -13,7 +13,7 @@ import { UberRowDialogComponent } from '../uber-row-dialog/uber-row-dialog.compo
   templateUrl: './uber-list-builder.component.html',
   styleUrls: ['./uber-list-builder.component.scss']
 })
-export class UberListBuilderComponent extends ChildComponent implements OnInit {
+export class UberListBuilderComponent extends ChildComponent {
 
   constructor(
     public state: UberListStateService,
@@ -25,8 +25,6 @@ export class UberListBuilderComponent extends ChildComponent implements OnInit {
     super(storageService);
   }
 
-  ngOnInit(): void {
-  }
 
   refresh(): void {
     this.state.refresh();

@@ -1,17 +1,17 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state.service';
+import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { IconService } from '@app/service/icon.service';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-clan-collection-item-dialog',
   templateUrl: './clan-collection-item-dialog.component.html',
   styleUrls: ['./clan-collection-item-dialog.component.scss']
 })
-export class ClanCollectionItemDialogComponent extends ChildComponent implements OnInit {
+export class ClanCollectionItemDialogComponent extends ChildComponent {
   sort: Sort = {
     name: 'name',
     ascending: true
@@ -26,8 +26,7 @@ export class ClanCollectionItemDialogComponent extends ChildComponent implements
     ClanStateService.sortCollectibles(this.item, this.sort);
   }
 
-  ngOnInit() {
-  }
+  
 
   sortData(field: string) {
     if (field === this.sort.name) {

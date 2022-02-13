@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
@@ -7,15 +7,12 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './sort-indicator.component.html',
   styleUrls: ['./sort-indicator.component.scss']
 })
-export class SortIndicatorComponent implements OnInit {
+export class SortIndicatorComponent {
 
   @Input() field: string;
   @Input() currVal: string;
   @Input() descending: boolean;
 
   constructor(public iconService: IconService) { }
-
-  ngOnInit() {
-  }
 
 }

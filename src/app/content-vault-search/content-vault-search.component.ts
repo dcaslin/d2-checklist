@@ -17,7 +17,7 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
   templateUrl: './content-vault-search.component.html',
   styleUrls: ['./content-vault-search.component.scss']
 })
-export class ContentVaultSearchComponent extends ChildComponent implements OnInit {
+export class ContentVaultSearchComponent extends ChildComponent {
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
 
   searchForm: FormGroup;
@@ -55,9 +55,6 @@ export class ContentVaultSearchComponent extends ChildComponent implements OnIni
             this.gt.setValue(x.defaultgt);
           }
         });
-  }
-
-  ngOnInit(): void {
   }
 
   logon() {

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -6,17 +6,12 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, O
   templateUrl: './ad-unit.component.html',
   styleUrls: ['./ad-unit.component.scss']
 })
-export class AdUnitComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AdUnitComponent implements AfterViewInit, OnDestroy {
   @Input() title: string;
   @Input() adStyle: string;
   @Input() adSlot: string;
 
   @ViewChild('ins', { read: ElementRef, static: true }) ins!: ElementRef;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   ngAfterViewInit(): void {
     this.push();
@@ -25,9 +20,7 @@ export class AdUnitComponent implements OnInit, AfterViewInit, OnDestroy {
   push(): void {
     if (window) {
       try {
-        // tslint:disable-next-line:no-any
         ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-        // console.log(`push ${this.title}`)
       } catch (x) {
         console.dir(x);
       }

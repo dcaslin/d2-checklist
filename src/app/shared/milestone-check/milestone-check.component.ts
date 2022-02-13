@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { Const, MilestoneStatus } from '@app/service/model';
 
@@ -10,16 +10,14 @@ import { Const, MilestoneStatus } from '@app/service/model';
   templateUrl: './milestone-check.component.html',
   styleUrls: ['./milestone-check.component.scss']
 })
-export class MilestoneCheckComponent implements OnInit {
+export class MilestoneCheckComponent {
   public Const = Const;
 
-  // tslint:disable-next-line: no-input-rename
   @Input('milestoneStatus') milestone: MilestoneStatus;
   @Input() detailed = false;
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit() {
-  }
+  
 
 }

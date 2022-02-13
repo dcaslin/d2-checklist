@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ClanSeal, ClanStateService, ClanAggHistoryEntry } from '@app/clan/clan-state.service';
+import { ClanAggHistoryEntry, ClanStateService } from '@app/clan/clan-state.service';
+import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-lifetime-dialog.component.html',
   styleUrls: ['./clan-lifetime-dialog.component.scss']
 })
-export class ClanLifetimeDialogComponent extends ChildComponent implements OnInit {
+export class ClanLifetimeDialogComponent extends ChildComponent {
   sort: Sort = {
     name: 'name',
     ascending: true
@@ -41,8 +41,5 @@ export class ClanLifetimeDialogComponent extends ChildComponent implements OnIni
       super(storageService);
       ClanStateService.sortAggHistory(this.entry, this.sort);
     }
-
-  ngOnInit() {
-  }
 
 }

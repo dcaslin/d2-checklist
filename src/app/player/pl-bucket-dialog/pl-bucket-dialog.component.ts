@@ -1,8 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BountySetsDialogComponent } from '@app/home/bounty-sets-dialog/bounty-sets-dialog.component';
 import { IconService } from '@app/service/icon.service';
-import { Character, BUCKETS_ALL_POWER, BoostInfo, Const, Bonus } from '@app/service/model';
+import { Bonus, BoostInfo, BUCKETS_ALL_POWER, Character, Const } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { sortByField } from '@app/shared/utilities';
@@ -15,7 +14,7 @@ import { PlayerStateService } from '../player-state.service';
   templateUrl: './pl-bucket-dialog.component.html',
   styleUrls: ['./pl-bucket-dialog.component.scss']
 })
-export class PlBucketDialogComponent extends ChildComponent implements OnInit {
+export class PlBucketDialogComponent extends ChildComponent {
   public character$: BehaviorSubject<Character> = new BehaviorSubject<Character>(null);
   private characterId: string;
   public BUCKETS_ALL_POWER = BUCKETS_ALL_POWER;
@@ -107,9 +106,6 @@ export class PlBucketDialogComponent extends ChildComponent implements OnInit {
       }
     });
 
-  }
-
-  ngOnInit(): void {
   }
 
 }

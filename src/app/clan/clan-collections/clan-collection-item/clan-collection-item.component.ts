@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ClanSearchableCollection, ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
+import { ClanSearchableCollection, ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanCollectionItemDialogComponent } from '../clan-collection-item-dialog/clan-collection-item-dialog.component';
@@ -12,7 +12,7 @@ import { ClanCollectionItemDialogComponent } from '../clan-collection-item-dialo
   templateUrl: './clan-collection-item.component.html',
   styleUrls: ['./clan-collection-item.component.scss']
 })
-export class ClanCollectionItemComponent extends ChildComponent implements OnInit {
+export class ClanCollectionItemComponent extends ChildComponent {
 
   @Input()
   item: ClanSearchableCollection;
@@ -21,9 +21,6 @@ export class ClanCollectionItemComponent extends ChildComponent implements OnIni
   constructor(storageService: StorageService, public state: ClanStateService,
     public dialog: MatDialog) {
     super(storageService);
-  }
-
-  ngOnInit() {
   }
 
   public openDialog(item: ClanSearchableCollection): void {

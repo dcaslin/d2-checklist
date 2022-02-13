@@ -64,6 +64,7 @@ export class SortFilterDataSource extends DataSource<any> {
         data = data.sort((a, b) => {
           let propertyA: number | string;
           let propertyB: number | string;
+          // eslint-disable-next-line prefer-const
           [propertyA, propertyB] = [a[this._sort.active], b[this._sort.active]];
           // const valueA = propertyA==null||isNaN(+propertyA) ? propertyA : +propertyA;
           // const valueB = propertyB!=null&&isNaN(+propertyB) ? propertyB : +propertyB;
@@ -89,6 +90,6 @@ export class SortFilterDataSource extends DataSource<any> {
     }));
   }
 
-  disconnect() {
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  disconnect() {}
 }

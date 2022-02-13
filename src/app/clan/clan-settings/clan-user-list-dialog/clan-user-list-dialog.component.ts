@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanUserList } from '@app/clan/clan-state.service';
 import { BungieGroupMember } from '@app/service/model';
@@ -11,7 +11,7 @@ import { ChildComponent } from '@app/shared/child.component';
   templateUrl: './clan-user-list-dialog.component.html',
   styleUrls: ['./clan-user-list-dialog.component.scss']
 })
-export class ClanUserListDialogComponent extends ChildComponent implements OnInit {
+export class ClanUserListDialogComponent extends ChildComponent {
   public title: string;
   public desc: string;
   public users: BungieGroupMember[];
@@ -27,7 +27,6 @@ export class ClanUserListDialogComponent extends ChildComponent implements OnIni
 
     }
 
-  ngOnInit() {
-  }
+  
 
 }

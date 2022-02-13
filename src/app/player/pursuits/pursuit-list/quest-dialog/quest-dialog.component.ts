@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
 import { Questline } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,7 +10,7 @@ import { Questline } from '@app/service/model';
   templateUrl: './quest-dialog.component.html',
   styleUrls: ['./quest-dialog.component.scss']
 })
-export class QuestDialogComponent extends ChildComponent implements OnInit {
+export class QuestDialogComponent extends ChildComponent {
 
   constructor(
     storageService: StorageService,
@@ -19,7 +19,6 @@ export class QuestDialogComponent extends ChildComponent implements OnInit {
       super(storageService);
     }
 
-  ngOnInit() {
-  }
+  
 
 }

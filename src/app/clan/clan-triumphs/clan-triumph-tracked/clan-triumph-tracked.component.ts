@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -9,13 +9,12 @@ import { ChildComponent } from '@app/shared/child.component';
   templateUrl: './clan-triumph-tracked.component.html',
   styleUrls: ['./clan-triumph-tracked.component.scss']
 })
-export class ClanTriumphTrackedComponent extends ChildComponent implements OnInit {
+export class ClanTriumphTrackedComponent extends ChildComponent {
 
   constructor(storageService: StorageService, public state: ClanStateService) {
     super(storageService);
   }
 
-  ngOnInit() {
-  }
+  
 
 }

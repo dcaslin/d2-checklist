@@ -1,12 +1,12 @@
 
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 import { NotificationService } from '@app/service/notification.service';
+import { getDefaultTheme } from '@app/shared/utilities';
+import { clear } from 'idb-keyval';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
-import { IconService } from '@app/service/icon.service';
-import { getDefaultTheme } from '@app/shared/utilities';
-import { clear } from 'idb-keyval';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +14,7 @@ import { clear } from 'idb-keyval';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent extends ChildComponent implements OnInit, OnDestroy {
+export class SettingsComponent extends ChildComponent implements OnDestroy {
 
   theme;
   disableads = false;
@@ -53,9 +53,6 @@ export class SettingsComponent extends ChildComponent implements OnInit, OnDestr
           this.disableads = x.disableads;
         }
       });
-  }
-
-  ngOnInit() {
   }
 
   onThemeSelect({ value }) {

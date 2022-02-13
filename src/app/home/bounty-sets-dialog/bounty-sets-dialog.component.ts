@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { BountySet, InventoryItem, TAG_WEIGHTS } from '@app/service/model';
@@ -14,7 +14,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './bounty-sets-dialog.component.html',
   styleUrls: ['./bounty-sets-dialog.component.scss']
 })
-export class BountySetsDialogComponent extends ChildComponent implements OnInit, OnDestroy {
+export class BountySetsDialogComponent extends ChildComponent implements OnDestroy {
   readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});
   readonly bounties$: BehaviorSubject<(InventoryItem)[]> = new BehaviorSubject([]);
   readonly name$: BehaviorSubject<string> = new BehaviorSubject(null);
@@ -88,9 +88,7 @@ export class BountySetsDialogComponent extends ChildComponent implements OnInit,
     }
   }
 
-  ngOnInit() {
-  }
-
+  
 }
 
 

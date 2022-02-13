@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { environment } from '@env/environment';
 
 @Component({
@@ -7,16 +7,11 @@ import { environment } from '@env/environment';
   templateUrl: './nitro-unit.component.html',
   styleUrls: ['./nitro-unit.component.scss']
 })
-export class NitroUnitComponent implements OnInit, AfterViewInit {
+export class NitroUnitComponent implements AfterViewInit {
   @Input() title: string;
   @Input() unitId: string;
   @Input() width: number;
   @Input() height: number;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
   ngAfterViewInit(): void {
     // Do stuff

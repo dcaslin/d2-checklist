@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearComponent } from '@app/gear';
 import { GearService } from '@app/service/gear.service';
@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./optimize-gun-perks-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OptimizeGunPerksDialogComponent extends ChildComponent implements OnInit {
+export class OptimizeGunPerksDialogComponent extends ChildComponent {
   parent: GearComponent;
   totalGuns$: BehaviorSubject<number> = new BehaviorSubject(0);
   fixMe$: BehaviorSubject<InventoryItem[]> = new BehaviorSubject([]);
@@ -39,8 +39,6 @@ export class OptimizeGunPerksDialogComponent extends ChildComponent implements O
     });
   }
 
-  ngOnInit(): void {
-  }
 
   async fixPerks(): Promise<void> {
     console.log('Fixing perks');

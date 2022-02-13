@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,7 +10,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './collection-badges.component.html',
   styleUrls: ['./collection-badges.component.scss']
 })
-export class CollectionBadgesComponent extends ChildComponent implements OnInit {
+export class CollectionBadgesComponent extends ChildComponent {
 
   constructor(storageService: StorageService,
     public iconService: IconService,
@@ -18,7 +18,6 @@ export class CollectionBadgesComponent extends ChildComponent implements OnInit 
     super(storageService);
   }
 
-  ngOnInit() {
-  }
+  
 
 }

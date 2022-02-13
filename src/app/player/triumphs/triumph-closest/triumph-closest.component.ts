@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
-import { IconService } from '@app/service/icon.service';
-import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,7 +11,7 @@ import { Router, ActivatedRoute } from '@angular/router';
   templateUrl: './triumph-closest.component.html',
   styleUrls: ['./triumph-closest.component.scss']
 })
-export class TriumphClosestComponent extends ChildComponent implements OnInit {
+export class TriumphClosestComponent extends ChildComponent {
   maxResults: number[] = [10, 25, 50];
   selectedMaxResults = 10;
 
@@ -27,7 +27,6 @@ export class TriumphClosestComponent extends ChildComponent implements OnInit {
     this.router.navigate(['..', 'tree', triumphHash], { relativeTo: this.route});
   }
 
-  ngOnInit() {
-  }
+  
 
 }

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { GunRoll, GunRolls } from '@app/service/panda-godrolls.service';
@@ -54,7 +54,7 @@ function buildEmptyGunRolls(name: string, mnk: boolean, controller: boolean): Gu
   templateUrl: './perk-bench-dialog.component.html',
   styleUrls: ['./perk-bench-dialog.component.scss']
 })
-export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
+export class PerkBenchDialogComponent extends ChildComponent {
   clickOptions = [
     ClickMode.GodRollPvE,
     ClickMode.GoodRollPvE,
@@ -143,11 +143,6 @@ export class PerkBenchDialogComponent extends ChildComponent implements OnInit {
   makeArray(n: number): any[] {
     return Array(n);
   }
-
-
-  ngOnInit() {
-  }
-
 
   onMwCheckChange(checked: boolean, mw: string, mws: string[]) {
     mw = mw.toLowerCase();

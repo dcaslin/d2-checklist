@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BungieService } from '@app/service/bungie.service';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 
@@ -7,13 +7,10 @@ import { DestinyCacheService } from '@app/service/destiny-cache.service';
   templateUrl: './app-status.component.html',
   styleUrls: ['./app-status.component.scss']
 })
-export class AppStatusComponent implements OnInit {
+export class AppStatusComponent {
 
   constructor(
     public bungieService: BungieService,
     public destinyCacheService: DestinyCacheService) { }
-
-  ngOnInit(): void {
-  }
 
 }

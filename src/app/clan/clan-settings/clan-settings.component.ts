@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { ClanStateService } from '../clan-state.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BungieGroupMember } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { ClanStateService } from '../clan-state.service';
 import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-list-dialog.component';
 
 @Component({
@@ -12,7 +12,7 @@ import { ClanUserListDialogComponent } from './clan-user-list-dialog/clan-user-l
   templateUrl: './clan-settings.component.html',
   styleUrls: ['./clan-settings.component.scss']
 })
-export class ClanSettingsComponent extends ChildComponent implements OnInit {
+export class ClanSettingsComponent extends ChildComponent {
 
   constructor(storageService: StorageService,
     public state: ClanStateService,
@@ -20,8 +20,6 @@ export class ClanSettingsComponent extends ChildComponent implements OnInit {
     super(storageService);
   }
 
-  ngOnInit() {
-  }
 
   openUserDialog(title: string, desc: string, users: BungieGroupMember[]) {
     const dc = new MatDialogConfig();

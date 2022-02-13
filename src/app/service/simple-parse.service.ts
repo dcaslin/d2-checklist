@@ -7,8 +7,6 @@ import { BungieGroupMember, BungieMember, BungieMemberPlatform, BungieMembership
 })
 export class SimpleParseService {
 
-  constructor() { }
-
   public static parseClanMembers(members: any[]): BungieGroupMember[] {
     if (members == null) { return []; }
     const returnMe: BungieGroupMember[] = [];

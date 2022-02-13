@@ -1,8 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
-import { ChildComponent } from '../child.component';
-import { StorageService } from '@app/service/storage.service';
-import { IconService } from '@app/service/icon.service';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { PlayerStateService } from '@app/player/player-state.service';
+import { IconService } from '@app/service/icon.service';
 import { TriumphRecordNode } from '@app/service/model';
 
 @Component({
@@ -11,7 +9,7 @@ import { TriumphRecordNode } from '@app/service/model';
   templateUrl: './triumph-name.component.html',
   styleUrls: ['./triumph-name.component.scss']
 })
-export class TriumphNameComponent implements OnInit {
+export class TriumphNameComponent {
   @Input() cntr: number|null;
   @Input() t: TriumphRecordNode;
   @Input() debugmode: boolean;
@@ -25,7 +23,6 @@ export class TriumphNameComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-  }
+  
 
 }

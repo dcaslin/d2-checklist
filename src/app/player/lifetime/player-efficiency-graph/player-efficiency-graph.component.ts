@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { ChartOptions, ChartDataSets, ChartLegendOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
-import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { AggHistoryEntry } from '@app/service/model';
+import { ChartDataSets, ChartLegendOptions, ChartOptions } from 'chart.js';
+import { Label } from 'ng2-charts';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,7 +10,7 @@ import { AggHistoryEntry } from '@app/service/model';
   templateUrl: './player-efficiency-graph.component.html',
   styleUrls: ['./player-efficiency-graph.component.scss']
 })
-export class PlayerEfficiencyGraphComponent implements OnInit {
+export class PlayerEfficiencyGraphComponent {
   public b: ChartLegendOptions;
   public chartOptions: ChartOptions = {
     responsive: true,
@@ -85,9 +84,6 @@ export class PlayerEfficiencyGraphComponent implements OnInit {
         label: 'Activities'
       }
     ];
-  }
-
-  ngOnInit() {
   }
 
 }

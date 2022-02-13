@@ -1,10 +1,10 @@
-import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanSeal, ClanStateService } from '@app/clan/clan-state.service';
+import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-triumph-seal-dialog.component.html',
   styleUrls: ['./clan-triumph-seal-dialog.component.scss']
 })
-export class ClanTriumphSealDialogComponent extends ChildComponent implements OnInit {
+export class ClanTriumphSealDialogComponent extends ChildComponent {
   sort: Sort = {
     name: 'pct',
     ascending: false
@@ -39,7 +39,6 @@ export class ClanTriumphSealDialogComponent extends ChildComponent implements On
 
     }
 
-  ngOnInit() {
-  }
+  
 
 }

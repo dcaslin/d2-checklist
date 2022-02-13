@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { BungieGroupMember, Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
@@ -13,7 +13,7 @@ import { ClanStateService } from '../clan-state.service';
   templateUrl: './clan-info.component.html',
   styleUrls: ['./clan-info.component.scss']
 })
-export class ClanInfoComponent extends ChildComponent implements OnInit {
+export class ClanInfoComponent extends ChildComponent {
   sort: Sort = {
     name: 'name',
     ascending: true
@@ -86,9 +86,6 @@ export class ClanInfoComponent extends ChildComponent implements OnInit {
       .subscribe((rawMembers) => {
         this.applySort(rawMembers.slice(0));
       });
-  }
-
-  ngOnInit() {
   }
 
 }

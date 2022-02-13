@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { InventoryItem, ItemType } from '@app/service/model';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { InventoryItem, ItemType } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,7 +8,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './god-roll-mw.component.html',
   styleUrls: ['./god-roll-mw.component.scss']
 })
-export class GodRollMwComponent implements OnInit {
+export class GodRollMwComponent {
   ItemType = ItemType;
 
   @Input()
@@ -18,8 +18,5 @@ export class GodRollMwComponent implements OnInit {
   debugmode: boolean;
 
   constructor(public iconService: IconService) { }
-
-  ngOnInit(): void {
-  }
 
 }

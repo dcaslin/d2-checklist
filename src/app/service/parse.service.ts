@@ -378,7 +378,7 @@ export class ParseService {
                 milestoneList.push(ms2);
                 milestonesByKey[ms2.key] = ms2;
             } else if (skipDesc != null) {
-
+                // do nothing
             } else {
                 console.log('Skipping unknown milestone: ' + key);
             }
@@ -896,16 +896,9 @@ export class ParseService {
             fastest = Math.min(a.fastestCompletionMsForActivity, b.fastestCompletionMsForActivity);
         } else if (a.fastestCompletionMsForActivity) {
             fastest = a.fastestCompletionMsForActivity;
-        } else if (a.fastestCompletionMsForActivity) {
-            fastest = b.fastestCompletionMsForActivity;
         }
-        const timePlayed = a.activitySecondsPlayed + b.activitySecondsPlayed;
-        const efficiency = 0;
-        if (timePlayed == 0) {
-
-        }
+        const timePlayed = a.activitySecondsPlayed + b.activitySecondsPlayed;        
         const charCompDict = {};
-
         for (const c of a.charCompletions.concat(b.charCompletions)) {
             if (!charCompDict[c.char.id]) {
                 charCompDict[c.char.id] = c;
@@ -3286,7 +3279,7 @@ export class ParseService {
     private async parseQuestLine(qli: number, stepHash: number): Promise<Questline> {
         const qdesc: any = await this.destinyCacheService.getInventoryItem(qli);
         if (qdesc == null) { return null; }
-        if (qdesc.setData != null) { }
+        // if (qdesc.setData != null) { }
         if (qdesc.setData == null) { return null; }
         // wtf was this doing anyway?
         const qType = qdesc.setData.setType;
@@ -3498,6 +3491,9 @@ export class ParseService {
             // anything with no type goes away too
 
             let type: ItemType = desc.itemType;
+            console.log("asdf");
+            console.log('asdf');
+            console.log(`asdf`);
             // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
             const ignoreWeaponPerkStats: InventoryPlug[] = [];
             let redacted = false;

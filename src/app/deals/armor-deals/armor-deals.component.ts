@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { TargetArmorStatsDialogComponent } from '@app/gear/target-armor-stats-dialog/target-armor-stats-dialog.component';
 import { IconService } from '@app/service/icon.service';
@@ -14,16 +14,13 @@ import { ArmorCompareDialogComponent } from '../armor-compare-dialog/armor-compa
   templateUrl: './armor-deals.component.html',
   styleUrls: ['./armor-deals.component.scss']
 })
-export class ArmorDealsComponent implements OnInit {
+export class ArmorDealsComponent {
   @Input() vendorDeals: VendorDeals;
 
   constructor(
     public dialog: MatDialog,
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService) { }
-
-  ngOnInit(): void {
-  }
 
   public showTargetArmorStats(): void {
     const dc = new MatDialogConfig();

@@ -7,12 +7,10 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './season-indicator.component.html',
   styleUrls: ['./season-indicator.component.scss']
 })
-export class SeasonIndicatorComponent implements OnInit {
+export class SeasonIndicatorComponent {
   @Input() season: number|null;
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit() {
-  }
 
 }

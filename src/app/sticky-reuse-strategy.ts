@@ -9,6 +9,7 @@ export class StickyReuseStrategy implements RouteReuseStrategy {
 
   handlers: {[key: string]: DetachedRouteHandle} = {};
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
     return true;
   }

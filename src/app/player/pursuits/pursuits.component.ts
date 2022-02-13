@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -10,7 +10,7 @@ import { PlayerStateService } from '../player-state.service';
   templateUrl: './pursuits.component.html',
   styleUrls: ['./pursuits.component.scss']
 })
-export class PursuitsComponent extends ChildComponent implements OnInit {
+export class PursuitsComponent extends ChildComponent {
 
   constructor(
     storageService: StorageService,
@@ -21,7 +21,6 @@ export class PursuitsComponent extends ChildComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-  }
+  
 
 }

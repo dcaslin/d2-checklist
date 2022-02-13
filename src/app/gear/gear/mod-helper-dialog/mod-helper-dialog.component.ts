@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearComponent } from '@app/gear';
 import { GearService } from '@app/service/gear.service';
@@ -17,7 +17,7 @@ import { applyMods, clearMods, ModChoices, PreferredStat, PreferredStats, Season
   styleUrls: ['./mod-helper-dialog.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ModHelperDialogComponent extends ChildComponent implements OnInit {
+export class ModHelperDialogComponent extends ChildComponent {
 
   parent: GearComponent;
   PreferredStats = PreferredStats;
@@ -121,8 +121,6 @@ export class ModHelperDialogComponent extends ChildComponent implements OnInit {
       this.armor$.next(armor);
 
     });
-  }
-  ngOnInit(): void {
   }
 
   private defaultChoices(): ModChoices {

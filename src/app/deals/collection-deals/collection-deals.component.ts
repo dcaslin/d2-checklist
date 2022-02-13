@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { VendorDeals } from '@app/service/vendor.service';
 
 @Component({
@@ -7,12 +7,7 @@ import { VendorDeals } from '@app/service/vendor.service';
   templateUrl: './collection-deals.component.html',
   styleUrls: ['./collection-deals.component.scss']
 })
-export class CollectionDealsComponent implements OnInit {
+export class CollectionDealsComponent {
   @Input() vendorDeals: VendorDeals;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
+import { WeekService } from '@app/service/week.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../player-state.service';
-import { WeekService } from '@app/service/week.service';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './lifetime.component.html',
   styleUrls: ['./lifetime.component.scss']
 })
-export class LifetimeComponent extends ChildComponent implements OnInit {
+export class LifetimeComponent extends ChildComponent {
 
   constructor(
     public iconService: IconService,
@@ -23,6 +23,4 @@ export class LifetimeComponent extends ChildComponent implements OnInit {
       super(storageService);
     }
 
-  async ngOnInit() {
-  }
 }
