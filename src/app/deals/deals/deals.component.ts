@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { VendorDeals } from '@app/service/vendor.service';
 
 @Component({
@@ -7,7 +7,7 @@ import { VendorDeals } from '@app/service/vendor.service';
   templateUrl: './deals.component.html',
   styleUrls: ['./deals.component.scss']
 })
-export class DealsComponent implements OnInit {
+export class DealsComponent {
 
   // @Input() currUser: SelectedUser;
   // @Input() player: Player;
@@ -19,11 +19,5 @@ export class DealsComponent implements OnInit {
   @Input() vendorDeals: VendorDeals;
 
   @Output() refresh = new EventEmitter<void>();
-  // @Output() showModalBountySet = new EventEmitter<BountySet>();
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

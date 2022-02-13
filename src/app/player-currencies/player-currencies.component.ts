@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
@@ -7,14 +7,11 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
   templateUrl: './player-currencies.component.html',
   styleUrls: ['./player-currencies.component.scss']
 })
-export class PlayerCurrenciesComponent implements OnInit {
+export class PlayerCurrenciesComponent {
 
   constructor(
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService
     ) { }
-
-  ngOnInit(): void {
-  }
 
 }

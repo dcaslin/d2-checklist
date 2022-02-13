@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ClassAllowed, InventoryItem, Target, ApiInventoryBucket, ItemType } from './model';
-import { ArmorPerksDialogComponent } from '@app/gear/gear/armor-perks-dialog/armor-perks-dialog.component';
+import { ApiInventoryBucket, ClassAllowed, InventoryItem, ItemType, Target } from './model';
 
 export class Pile {
     highest: InventoryItem[] = [];
@@ -63,9 +62,6 @@ export class BucketService {
     // these are global groups across bucket type for weapons and armor
     // key is classallowed + bucketHash
     private piles: {[key: string]: Pile};
-
-    constructor() {
-    }
 
     getBucket(target: Target, desc: ApiInventoryBucket): Bucket {
         let returnMe = this.buckets[target.id][desc.hash];

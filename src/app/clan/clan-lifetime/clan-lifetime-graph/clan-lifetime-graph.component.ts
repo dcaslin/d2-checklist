@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { ChartOptions, ChartDataSets, ChartLegendOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
+import { ChartDataSets, ChartLegendOptions, ChartOptions } from 'chart.js';
+import { Label } from 'ng2-charts';
 
 
 @Component({
@@ -10,7 +10,7 @@ import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
   templateUrl: './clan-lifetime-graph.component.html',
   styleUrls: ['./clan-lifetime-graph.component.scss']
 })
-export class ClanLifetimeGraphComponent implements OnInit {
+export class ClanLifetimeGraphComponent {
   public b: ChartLegendOptions;
   public chartOptions: ChartOptions = {
     responsive: true,
@@ -80,13 +80,6 @@ export class ClanLifetimeGraphComponent implements OnInit {
         label: 'Members'
       }
     ];
-  }
-
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
+  }  
 
 }

@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 import { InventoryPlug } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,7 +10,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './god-roll-plug.component.html',
   styleUrls: ['./god-roll-plug.component.scss']
 })
-export class GodRollPlugComponent implements OnInit {
+export class GodRollPlugComponent {
   // TODO allow switching perk here
 
   @Input() plug: InventoryPlug;
@@ -28,7 +28,6 @@ export class GodRollPlugComponent implements OnInit {
     this.notificationService.success('Copied ' + this.plug.name + ' to clipboard');
   }
 
-  ngOnInit() {
-  }
+  
 
 }

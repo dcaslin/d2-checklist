@@ -465,7 +465,6 @@ export class VendorService {
       }
     }
     const allUniqueVendorItems = [];
-    // tslint:disable-next-line: forin
     for (const key of Object.keys(vendorGearMap)) {
       const val = vendorGearMap[key];
       allUniqueVendorItems.push(val);
@@ -641,18 +640,18 @@ export class VendorService {
     if (!(i.tier === 'Exotic' || i.tier === 'Legendary')) {
       return null;
     }
-    const preciseMatch = i.tier === 'Exotic';
+    // const preciseMatch = i.tier === 'Exotic';
     for (const g of gear) {
       if (g.id == i.id) {
         continue;
       }
       // for exotics we only want to compare the same type of gear,
       // like Dragon's shadow to Dragon's shadow
-      if (preciseMatch) {
-        if (i.hash != g.hash) {
+      // if (preciseMatch) {
+      //   if (i.hash != g.hash) {
 
-        }
-      }
+      //   }
+      // }
       if (g.powerCap < minPowerCap) {
         continue;
       }

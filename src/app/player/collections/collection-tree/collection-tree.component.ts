@@ -1,15 +1,15 @@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { Location } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { ActivatedRoute } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
 import { TriumphNode } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { Observable, of as observableOf } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
-import { IconService } from '@app/service/icon.service';
 
 
 export class TriumphFlatNode {
@@ -23,7 +23,7 @@ export class TriumphFlatNode {
   templateUrl: './collection-tree.component.html',
   styleUrls: ['./collection-tree.component.scss']
 })
-export class CollectionTreeComponent extends ChildComponent implements OnInit, AfterViewInit {
+export class CollectionTreeComponent extends ChildComponent implements OnInit {
   selectedTreeNodeHash: string;
   collectionDatasource: MatTreeFlatDataSource<any, TriumphFlatNode>;
   collectionTreeControl: FlatTreeControl<any>;
@@ -49,9 +49,6 @@ export class CollectionTreeComponent extends ChildComponent implements OnInit, A
     });
   }
 
-  ngAfterViewInit() {
-
-  }
 
   public static expandToSelected(selectedTreeNodeHash: string, treeControl: FlatTreeControl<any>) {
     if (selectedTreeNodeHash != null) {

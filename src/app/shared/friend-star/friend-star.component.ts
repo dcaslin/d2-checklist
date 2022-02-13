@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { BungieNetUserInfo, UserInfo } from '@app/service/model';
-import { StorageService } from '@app/service/storage.service';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { UserInfo } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -10,7 +10,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './friend-star.component.html',
   styleUrls: ['./friend-star.component.scss']
 })
-export class FriendStarComponent implements OnInit {
+export class FriendStarComponent {
   public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   @Input() title = false;
@@ -20,8 +20,6 @@ export class FriendStarComponent implements OnInit {
   constructor(public storageService: StorageService,
     public iconService: IconService) { }
 
-  ngOnInit(): void {
-  }
 
   async toggleFav() {
     try {

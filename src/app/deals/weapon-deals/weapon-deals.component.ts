@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { InventoryItem } from '@app/service/model';
@@ -11,7 +11,7 @@ import { WeaponCompareDialogComponent } from '../weapon-compare-dialog/weapon-co
   templateUrl: './weapon-deals.component.html',
   styleUrls: ['./weapon-deals.component.scss']
 })
-export class WeaponDealsComponent implements OnInit {
+export class WeaponDealsComponent {
   @Input() vendorDeals: VendorDeals;
 
   constructor(
@@ -19,8 +19,6 @@ export class WeaponDealsComponent implements OnInit {
     public signedOnUserService: SignedOnUserService,
     public iconService: IconService) { }
 
-  ngOnInit(): void {
-  }
 
   
   showLegendaryDialog(ii: InventoryItem[]) {    

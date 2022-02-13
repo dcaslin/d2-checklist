@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { InventoryItem } from '@app/service/model';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { InventoryItem } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -8,7 +8,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './god-roll-item.component.html',
   styleUrls: ['./god-roll-item.component.scss']
 })
-export class GodRollItemComponent implements OnInit {
+export class GodRollItemComponent {
 
   @Input()
   vertical = false;
@@ -26,7 +26,6 @@ export class GodRollItemComponent implements OnInit {
 
   constructor(public iconService: IconService) { }
 
-  ngOnInit() {
-  }
+  
 
 }

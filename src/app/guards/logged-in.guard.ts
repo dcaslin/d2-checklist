@@ -9,6 +9,7 @@ import { takeUntil } from 'rxjs/operators';
 
 @Injectable()
 export class LoggedInGuard extends Destroyable implements CanActivate, CanActivateChild {
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   public loggedIn: boolean = false;
 
   constructor(

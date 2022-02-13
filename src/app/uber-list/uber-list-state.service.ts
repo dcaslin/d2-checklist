@@ -97,7 +97,7 @@ export class UberListStateService implements OnDestroy {
     ])
       .pipe(
         takeUntil(this.unsubscribe$),
-        filter(([player, vendors, dbi, dbm, dbv]) => player != null && vendors != null)
+        filter(([player, vendors]) => player != null && vendors != null)
       )
       .subscribe(([player, charVendors, dbi, dbm, dbv]) => {
         this.currChar$.next(player.characters[0]);
@@ -458,8 +458,7 @@ export class UberListStateService implements OnDestroy {
     if (val.itemHash === 0) {
       return;
     }
-    const valDesc: any =
-      dbInvItem[val.itemHash];
+    const valDesc = dbInvItem[val.itemHash];
     if (valDesc != null) {
       rewards.push({
         hash: val.itemHash + '',
@@ -470,6 +469,7 @@ export class UberListStateService implements OnDestroy {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private static buildInitialMilestoneRow(msn: MileStoneName, dbMileStone: { [key: string]: any }, dbVendor: { [key: string]: any }, dbInvItem: { [key: string]: ManifestInventoryItem }): MilestoneRow {
     let desc = dbMileStone[msn.key];
     if (
@@ -847,6 +847,7 @@ export interface MilestoneRow {
   id: string;
   type: 'milestone';
   title: MileStoneName;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   desc: any;
   searchText: string;
   label: string | null;
@@ -1144,7 +1145,7 @@ function classify(x: (MilestoneRow | PursuitRow)): void {
       }
     }
   } else if (x.type == 'quest') {
-    const p = x as PursuitRow;
+    // const p = x as PursuitRow;
   } else if (x.type == 'milestone') {
     const m = x as MilestoneRow;
     const t = m.title.name.toLowerCase();

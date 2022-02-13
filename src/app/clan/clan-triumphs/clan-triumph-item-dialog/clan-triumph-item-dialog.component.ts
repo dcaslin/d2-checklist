@@ -1,12 +1,12 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
+import { IconService } from '@app/service/icon.service';
 import { Sort } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Label } from 'ng2-charts';
-import { ChartOptions, ChartType, ChartDataSets } from 'chart.js';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +14,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-triumph-item-dialog.component.html',
   styleUrls: ['./clan-triumph-item-dialog.component.scss']
 })
-export class ClanTriumphItemDialogComponent extends ChildComponent implements OnInit {
+export class ClanTriumphItemDialogComponent extends ChildComponent {
   sort: Sort = {
     name: 'pct',
     ascending: false
@@ -85,7 +85,6 @@ export class ClanTriumphItemDialogComponent extends ChildComponent implements On
   }
 
 
-  ngOnInit() {
-  }
+  
 
 }

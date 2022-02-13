@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
-import { ChartOptions, ChartDataSets, ChartLegendOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayerTriumph } from '@app/clan/clan-state.service';
+import { ChartDataSets, ChartLegendOptions, ChartOptions } from 'chart.js';
+import { Label } from 'ng2-charts';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9,7 +9,7 @@ import { PlayerTriumph } from '@app/clan/clan-state.service';
   templateUrl: './clan-triumph-graph.component.html',
   styleUrls: ['./clan-triumph-graph.component.scss']
 })
-export class ClanTriumphGraphComponent implements OnInit {
+export class ClanTriumphGraphComponent {
   public b: ChartLegendOptions;
   public chartOptions: ChartOptions = {
     responsive: true,
@@ -56,13 +56,6 @@ export class ClanTriumphGraphComponent implements OnInit {
         label: 'Members'
       }
     ];
-  }
-
-
-  constructor() {
-  }
-
-  ngOnInit() {
   }
 
 }

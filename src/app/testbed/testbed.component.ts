@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
-import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 
@@ -10,7 +9,7 @@ import { ChildComponent } from '@app/shared/child.component';
   templateUrl: './testbed.component.html',
   styleUrls: ['./testbed.component.scss']
 })
-export class TestbedComponent extends ChildComponent implements OnInit, OnDestroy {
+export class TestbedComponent extends ChildComponent implements OnDestroy {
 
   constructor(
     storageService: StorageService,    
@@ -19,6 +18,4 @@ export class TestbedComponent extends ChildComponent implements OnInit, OnDestro
 
   }
 
-  ngOnInit(): void {
-  }
 }

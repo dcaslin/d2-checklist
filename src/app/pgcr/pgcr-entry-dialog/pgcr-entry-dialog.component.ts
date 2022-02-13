@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IconService } from '@app/service/icon.service';
 import { Entry } from '@app/service/pgcr.service';
@@ -10,7 +10,7 @@ import { ChildComponent } from '@app/shared/child.component';
   templateUrl: './pgcr-entry-dialog.component.html',
   styleUrls: ['./pgcr-entry-dialog.component.scss']
 })
-export class PgcrEntryDialogComponent extends ChildComponent implements OnInit {
+export class PgcrEntryDialogComponent extends ChildComponent {
   constructor(
     storageService: StorageService,
     public iconService: IconService,
@@ -19,6 +19,5 @@ export class PgcrEntryDialogComponent extends ChildComponent implements OnInit {
       super(storageService);
     }
 
-  ngOnInit() {
-  }
+  
 }

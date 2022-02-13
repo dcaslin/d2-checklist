@@ -281,8 +281,4 @@ export class IconService {
 
   public readonly farBookmark = farBookmark;
   public readonly fasBookmark = fasBookmark;
-
-  constructor() {
-
-  }
 }

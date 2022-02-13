@@ -2,7 +2,6 @@ import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { DestinyAmmunitionType, InventoryItem, InventorySocket } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { sleep } from '@app/shared/utilities';
 import { BehaviorSubject } from 'rxjs';
 
 export interface ModChoices {
@@ -12,15 +11,6 @@ export interface ModChoices {
     champions: boolean;
     seasonApproach: SeasonalApproach;
     preferredStat: PreferredStat;
-}
-
-function cookTargetType(targetType: string): string {
-    if (targetType == null) {
-        return null;
-    }
-    if (targetType.startsWith('Linear ')) {
-
-    }
 }
 
 export enum SeasonalApproach {

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
@@ -10,7 +10,7 @@ import { EnergyType, InventoryItem, InventorySocket } from '@app/service/model';
   templateUrl: './select-mod-dialog.component.html',
   styleUrls: ['./select-mod-dialog.component.scss']
 })
-export class SelectModDialogComponent implements OnInit {
+export class SelectModDialogComponent {
   public item: InventoryItem;
   public socket: InventorySocket;
   public EnergyType = EnergyType;
@@ -31,9 +31,6 @@ export class SelectModDialogComponent implements OnInit {
         }
         return 0;
     });
-  }
-
-  ngOnInit(): void {
   }
 
   canFit(plug: ManifestInventoryItem): boolean {

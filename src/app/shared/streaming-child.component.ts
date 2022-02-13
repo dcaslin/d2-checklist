@@ -1,16 +1,13 @@
 
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
-import { UserInfo } from '@app/service/model';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { BungieService } from '@app/service/bungie.service';
+import { NotificationService } from '@app/service/notification.service';
+import { from, Observable, of } from 'rxjs';
+import { catchError, concatAll, map, tap } from 'rxjs/operators';
 import { StorageService } from '../service/storage.service';
 import { ChildComponent } from './child.component';
 
-import { concat, from, Observable, of } from 'rxjs';
-import { catchError, concatAll, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { BungieService } from '@app/service/bungie.service';
-import { NotificationService } from '@app/service/notification.service';
 
 export const API_ROOT = 'https://www.bungie.net/Platform/';
 

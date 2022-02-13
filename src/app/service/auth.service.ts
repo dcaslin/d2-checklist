@@ -1,10 +1,10 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, ReplaySubject } from 'rxjs';
-
 import { environment } from '../../environments/environment';
 import { NotificationService } from './notification.service';
+
 
 
 @Injectable()
@@ -236,7 +236,9 @@ export class AuthService {
         let jsonMsg = null;
         try {
             jsonMsg = err.json().error_description;
-        } catch (x) { }
+        } catch (x) { 
+            // ignore
+        }
 
         if (jsonMsg != null) {
             return jsonMsg;

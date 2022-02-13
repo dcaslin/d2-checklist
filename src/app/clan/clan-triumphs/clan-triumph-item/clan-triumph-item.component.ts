@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, Input } from '@angular/core';
-import { ClanStateService, ClanSearchableTriumph } from '@app/clan/clan-state.service';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ClanSearchableTriumph, ClanStateService } from '@app/clan/clan-state.service';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { ClanTriumphItemDialogComponent } from '../clan-triumph-item-dialog/clan-triumph-item-dialog.component';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-triumph-item.component.html',
   styleUrls: ['./clan-triumph-item.component.scss']
 })
-export class ClanTriumphItemComponent extends ChildComponent implements OnInit {
+export class ClanTriumphItemComponent extends ChildComponent {
 
   @Input()
   triumph: ClanSearchableTriumph;
@@ -24,8 +24,7 @@ export class ClanTriumphItemComponent extends ChildComponent implements OnInit {
     super(storageService);
   }
 
-  ngOnInit() {
-  }
+  
 
   public openTriumphDialog(triumph: ClanSearchableTriumph): void {
     const dc = new MatDialogConfig();

@@ -12,7 +12,7 @@ export function getDefaultTheme(): string {
   }
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   return mediaQuery.matches ? 'black-theme' : 'default-theme';
-};
+}
 
 
 const getCircularReplacer = () => {

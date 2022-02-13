@@ -64,6 +64,7 @@ export class TriumphTreeComponent extends ChildComponent implements OnInit {
   }
 
   private static replaceAll(src: string, find: string, replace: string): string {
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       const newS = src.replace(find, replace);
       if (newS == src) {

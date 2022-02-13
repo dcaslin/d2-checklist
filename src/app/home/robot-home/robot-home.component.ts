@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { isSearchBot } from '@app/shared/utilities';
 
 @Component({
@@ -6,12 +6,8 @@ import { isSearchBot } from '@app/shared/utilities';
   templateUrl: './robot-home.component.html',
   styleUrls: ['./robot-home.component.scss']
 })
-export class RobotHomeComponent implements OnInit {
+export class RobotHomeComponent {
 
   public searchBot = isSearchBot();
-  constructor() { }
-
-  ngOnInit(): void {
-  }
 
 }

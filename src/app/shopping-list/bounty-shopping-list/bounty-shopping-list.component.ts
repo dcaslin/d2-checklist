@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { BountySet, Character, CharacterVendorData, InventoryItem, Player, SelectedUser, TAG_WEIGHTS } from '@app/service/model';
@@ -11,7 +11,7 @@ import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
   templateUrl: './bounty-shopping-list.component.html',
   styleUrls: ['./bounty-shopping-list.component.scss']
 })
-export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges {
+export class BountyShoppingListComponent implements OnDestroy, OnChanges {
 
   readonly hideCompletePursuits$: BehaviorSubject<boolean> = new BehaviorSubject(localStorage.getItem('hide-completed-pursuits') === 'true');
 
@@ -52,7 +52,7 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
   ) {
     combineLatest([this.char$, this.vendorData$, this.hideCompletePursuits$]).pipe(
       takeUntil(this.unsubscribe$),
-      filter(([char, vendorData, hideCompletePursuits]) => char != null && vendorData != null),
+      filter(([char, vendorData]) => char != null && vendorData != null),
       distinctUntilChanged()
     ).subscribe(([char, vendorData, hideCompletePursuits]) => {
       const selected = vendorData.find(x => x?.char.id == char.id);
@@ -79,8 +79,7 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
     });
   }
 
-  ngOnInit(): void {
-  }
+  
 
   ngOnChanges(changes: SimpleChanges) {
     if ('shoppingListHashes' in changes) {
@@ -120,7 +119,7 @@ export class BountyShoppingListComponent implements OnInit, OnDestroy, OnChanges
   }
 
   private groupBounties(type: string, bounties: InventoryItem[]): BountySet[] {
-    const tags = this.destinyCacheService.cacheLite.PursuitTags!;
+    const tags = this.destinyCacheService.cacheLite.PursuitTags;
     const tagSet: { [key: string]: (InventoryItem)[] } = {};
     const used = {};
     for (const s of bounties) {

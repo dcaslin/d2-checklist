@@ -526,7 +526,8 @@ export class BungieService implements OnDestroy {
         let returnMe = [];
         let page = 0;
         // repeat until we run out of activities or we precede the start date or we hit 10 pages
-        while (true) {
+        
+        while (page<11) {
             const activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, MAX_PAGE_SIZE, true);
             returnMe = returnMe.concat(activities);
             // out of activities
@@ -555,6 +556,7 @@ export class BungieService implements OnDestroy {
         characterId: string, mode: number, max: number, ignoreErrors?: boolean): Promise<Activity[]> {
         let curPage = 0;
         let allMatches: any[] = [];
+        // eslint-disable-next-line no-constant-condition
         while (true) {
             const matches = await this.getActivityHistoryPage(membershipType, membershipId, characterId,
                 mode, curPage, MAX_PAGE_SIZE, ignoreErrors);

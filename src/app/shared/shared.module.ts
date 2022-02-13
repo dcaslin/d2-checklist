@@ -171,7 +171,5 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
     MilestoneCheckModule
   ]
 })
-export class SharedModule {
-  constructor() {
-  }
+export class SharedModule {  
 }

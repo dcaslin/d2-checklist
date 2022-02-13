@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { IconService } from '@app/service/icon.service';
 import { Entry, Game, PgcrService, ViewMode } from '@app/service/pgcr.service';
 import { ChildComponent } from '@app/shared/child.component';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { StorageService } from '../../service/storage.service';
 import { PgcrEntryDialogComponent } from '../pgcr-entry-dialog/pgcr-entry-dialog.component';

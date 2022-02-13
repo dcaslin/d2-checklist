@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearCompareDialogComponent } from '@app/gear/gear/gear-compare-dialog/gear-compare-dialog.component';
 import { SortEvent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
@@ -14,7 +14,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './armor-compare-dialog.component.html',
   styleUrls: ['./armor-compare-dialog.component.scss']
 })
-export class ArmorCompareDialogComponent extends ChildComponent implements OnInit {
+export class ArmorCompareDialogComponent extends ChildComponent {
   sortBy = 'preferredStatPoints';
   sortDesc = true;
   title: string;
@@ -70,9 +70,6 @@ export class ArmorCompareDialogComponent extends ChildComponent implements OnIni
     const items = this.items.slice(0);
     GearService.sortGear(this.sortBy, this.sortDesc, items);
     this.sortedItems.next(items);
-  }
-
-  ngOnInit(): void {
   }
 
   getAllStats(): InventoryStat[] {

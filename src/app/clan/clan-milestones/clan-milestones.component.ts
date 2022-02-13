@@ -1,11 +1,11 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { ClanStateService } from '../clan-state.service';
-import { takeUntil } from 'rxjs/operators';
-import { MileStoneName, BungieGroupMember } from '@app/service/model';
-import { BehaviorSubject } from 'rxjs';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { BungieGroupMember } from '@app/service/model';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { BehaviorSubject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { ClanStateService } from '../clan-state.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,7 +13,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './clan-milestones.component.html',
   styleUrls: ['./clan-milestones.component.scss']
 })
-export class ClanMilestonesComponent extends ChildComponent implements OnInit {  
+export class ClanMilestonesComponent extends ChildComponent {  
   public filteredMembers: BehaviorSubject<BungieGroupMember[]> = new BehaviorSubject([]);
 
   constructor(
@@ -28,8 +28,7 @@ export class ClanMilestonesComponent extends ChildComponent implements OnInit {
         });
   }
 
-  ngOnInit() {
-  }
+  
 
   public showAllClanMilestones(): void {
     this.storageService.showAllClanMilestones();

@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { IconService } from '@app/service/icon.service';
 import { StorageService } from '@app/service/storage.service';
+import { WeekService } from '@app/service/week.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { PlayerStateService } from '../../player-state.service';
-import { IconService } from '@app/service/icon.service';
-import { Router, ActivatedRoute } from '@angular/router';
-import { WeekService } from '@app/service/week.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,7 @@ import { WeekService } from '@app/service/week.service';
   templateUrl: './triumph-seasons.component.html',
   styleUrls: ['./triumph-seasons.component.scss']
 })
-export class TriumphSeasonsComponent extends ChildComponent implements OnInit {
+export class TriumphSeasonsComponent extends ChildComponent {
   public seasonIndex = 0;
 
   constructor(storageService: StorageService,
@@ -32,8 +32,7 @@ export class TriumphSeasonsComponent extends ChildComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
+  
 
   navigate(membershipType: number, membershipId: number, triumphHash: string) {
     this.router.navigate(['/', membershipType, membershipId, 'triumphs', 'tree', triumphHash], { relativeTo: this.route });

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {
   DestinyCacheService,
@@ -83,7 +83,7 @@ const WATERMARK_TO_SEASON = {
   templateUrl: './perkbench.component.html',
   styleUrls: ['./perkbench.component.scss'],
 })
-export class PerkbenchComponent extends ChildComponent implements OnInit {
+export class PerkbenchComponent extends ChildComponent {
   public isController = true;
   public RYKER_GOD_ROLLS_URL = RYKER_GOD_ROLLS_URL;
   public sortBy = 'season';
@@ -175,8 +175,6 @@ export class PerkbenchComponent extends ChildComponent implements OnInit {
         this.filteredRolls$.next(showMe);
       });
   }
-
-  ngOnInit(): void { }
 
   changeConsole() {
     localStorage.setItem('perkbench-is-console', '' + this.isController);

@@ -1,8 +1,8 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { ChildComponent } from '@app/shared/child.component';
-import { StorageService } from '@app/service/storage.service';
-import { PlayerStateService } from '../player-state.service';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
+import { StorageService } from '@app/service/storage.service';
+import { ChildComponent } from '@app/shared/child.component';
+import { PlayerStateService } from '../player-state.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,7 +10,7 @@ import { IconService } from '@app/service/icon.service';
   templateUrl: './checklist.component.html',
   styleUrls: ['./checklist.component.scss']
 })
-export class ChecklistComponent extends ChildComponent implements OnInit {
+export class ChecklistComponent extends ChildComponent {
   hideComplete: boolean;
   openEntryId: string | null = null;
 
@@ -23,8 +23,7 @@ export class ChecklistComponent extends ChildComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-  }
+  
 
   public opened(hash: string) {
     this.openEntryId = hash;

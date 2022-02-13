@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerStateService } from '@app/player/player-state.service';
@@ -17,7 +17,7 @@ import { QuestDialogComponent } from './quest-dialog/quest-dialog.component';
   templateUrl: './pursuit-list.component.html',
   styleUrls: ['./pursuit-list.component.scss']
 })
-export class PursuitListComponent extends ChildComponent implements OnInit {
+export class PursuitListComponent extends ChildComponent {
   public displayFilterText: string = null;
   public realFilterText: BehaviorSubject<string> = new BehaviorSubject<string>(null);
   public searchSubject: Subject<void> = new Subject<void>();
@@ -189,8 +189,7 @@ export class PursuitListComponent extends ChildComponent implements OnInit {
     return false;
   }
 
-  ngOnInit() {
-  }
+  
 
 
 }

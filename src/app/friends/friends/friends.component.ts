@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { BungieService } from '@app/service/bungie.service';
 import { IconService } from '@app/service/icon.service';
@@ -15,7 +15,7 @@ import { ChildComponent } from '../../shared/child.component';
   templateUrl: './friends.component.html',
   styleUrls: ['./friends.component.scss']
 })
-export class FriendsComponent extends ChildComponent implements OnInit {
+export class FriendsComponent extends ChildComponent {
   public members: BehaviorSubject<FriendListEntry[]> = new BehaviorSubject([]);
   modelPlayer: Player;
   playerCntr: 0;
@@ -105,7 +105,5 @@ export class FriendsComponent extends ChildComponent implements OnInit {
       this.loading.next(false);
     }
   }
-
-  ngOnInit() { }
 
 }

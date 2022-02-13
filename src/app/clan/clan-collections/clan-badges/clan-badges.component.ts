@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ClanSeal, ClanStateService, ClanBadge } from '@app/clan/clan-state.service';
+import { ClanBadge, ClanStateService } from '@app/clan/clan-state.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { ClanCollectionBadgeDialogComponent } from '../clan-collection-badge-dialog/clan-collection-badge-dialog.component';
@@ -11,15 +11,12 @@ import { ClanCollectionBadgeDialogComponent } from '../clan-collection-badge-dia
   templateUrl: './clan-badges.component.html',
   styleUrls: ['./clan-badges.component.scss']
 })
-export class ClanBadgesComponent extends ChildComponent implements OnInit {
+export class ClanBadgesComponent extends ChildComponent {
 
   constructor(storageService: StorageService,
     public state: ClanStateService,
     public dialog: MatDialog) {
     super(storageService);
-  }
-
-  ngOnInit() {
   }
 
   public openBadgeDialog(badge: ClanBadge): void {

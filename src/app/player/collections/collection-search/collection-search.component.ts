@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { IconService } from '@app/service/icon.service';
 import { TriumphCollectibleNode } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { PlayerStateService } from '../../player-state.service';
-import { IconService } from '@app/service/icon.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

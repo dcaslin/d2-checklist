@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { LostSectors, WeekService } from '@app/service/week.service';
 import { BehaviorSubject } from 'rxjs';
@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './lost-sector-next-days.component.html',
   styleUrls: ['./lost-sector-next-days.component.scss']
 })
-export class LostSectorNextDaysComponent implements OnInit {
+export class LostSectorNextDaysComponent {
   public days$: BehaviorSubject<LostSectors[]> = new BehaviorSubject([]);
   public links = ['Legendary LS', 'Master LS'];
   public activeLink = this.links[0];
@@ -28,9 +28,6 @@ export class LostSectorNextDaysComponent implements OnInit {
       days.push(ls);
     }
     this.days$.next(days);
-  }
-
-  ngOnInit(): void {
   }
 
 }

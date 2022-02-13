@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BurnDialogComponent } from '@app/home/burn-dialog/burn-dialog.component';
 import { IconService } from '@app/service/icon.service';
@@ -13,7 +13,7 @@ import { ChildComponent } from '@app/shared/child.component';
   styleUrls: ['./legendary-lost-sector.component.scss'],
 
 })
-export class LegendaryLostSectorComponent extends ChildComponent implements OnInit {
+export class LegendaryLostSectorComponent extends ChildComponent {
 
   @Input()
   ls: LostSector;
@@ -26,8 +26,7 @@ export class LegendaryLostSectorComponent extends ChildComponent implements OnIn
     super(storageService);
   }
 
-  ngOnInit(): void {
-  }
+  
 
   showBurns(msa: MilestoneActivity) {
     const dc = new MatDialogConfig();

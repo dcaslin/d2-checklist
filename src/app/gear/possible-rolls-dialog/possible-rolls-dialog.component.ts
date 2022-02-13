@@ -1,11 +1,10 @@
-import { Component, OnInit, ChangeDetectionStrategy, Inject } from '@angular/core';
-import { InventoryItem, InventoryPlug } from '@app/service/model';
-import { MatCheckboxChange } from '@angular/material/checkbox';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { GearComponent } from '../gear/gear.component';
+import { IconService } from '@app/service/icon.service';
+import { InventoryItem } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { ClipboardService } from 'ngx-clipboard';
-import { IconService } from '@app/service/icon.service';
+import { GearComponent } from '../gear/gear.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,7 +13,7 @@ import { IconService } from '@app/service/icon.service';
   styleUrls: ['../gear/gear.component.scss']
 
 })
-export class PossibleRollsDialogComponent implements OnInit {
+export class PossibleRollsDialogComponent {
 
   item: InventoryItem;
   parent: GearComponent;
@@ -40,7 +39,6 @@ export class PossibleRollsDialogComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-  }
+  
 
 }
