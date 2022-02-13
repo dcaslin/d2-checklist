@@ -23,7 +23,7 @@ import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
-  readonly isSignedOn: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  readonly isSignedOn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   readonly version = env.versions.app;
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
@@ -161,7 +161,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
     this.loadMileStones();
     // selected user changed
     this.signedOnUserService.signedOnUser$.pipe(takeUntil(this.unsubscribe$)).subscribe((selectedUser: SelectedUser) => {
-      this.isSignedOn.next(selectedUser != null);
+      this.isSignedOn$.next(selectedUser != null);
     });
 
   }

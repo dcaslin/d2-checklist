@@ -1,10 +1,5 @@
 <ng-container *ngIf="state.player|async as player">
-  <nav mat-tab-nav-bar color="accent">
-    <ng-container *ngIf="!(contentVaultOnly|async)">
-      <a mat-tab-link routerLink="seasons" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-        <fa-icon [icon]="iconService.fasWheat"></fa-icon><span class="d-none d-md-inline">&ensp;Seasonal</span>
-      </a>
-    </ng-container>
+  <nav mat-tab-nav-bar color="accent">    
     <a mat-tab-link routerLink="tree" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
       <fa-icon [icon]="iconService.farTrophy"></fa-icon><span class="d-none d-md-inline">&ensp;Triumphs</span>
     </a>   

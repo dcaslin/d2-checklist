@@ -45,7 +45,7 @@
                 <mat-progress-bar color="primary" mode="query"></mat-progress-bar>
                 Checking cache...
             </div>
-            <div *ngIf="!(destinyCacheService.checkingCache|async)">
+            <div *ngIf="(destinyCacheService.checkingCache|async) === false">
                 <mat-progress-bar color="primary" mode="determinate" [value]="destinyCacheService.percent|async">
                 </mat-progress-bar>
                 Downloading database: {{destinyCacheService.percent|async|number : '0.0-0'}}%

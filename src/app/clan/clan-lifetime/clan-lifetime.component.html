@@ -1,4 +1,4 @@
-<ng-container *ngIf="!(state.aggHistoryAllLoaded|async)">
+<ng-container *ngIf="(state.aggHistoryAllLoaded|async) === false">
     <p>Loading lifetime data for clan members. <ng-container *ngIf="state.sweepMsg|async as msg">{{msg}}</ng-container>
         <span *ngIf="state.aggHistoryLoadCount|async as cnt">{{cnt}} / {{(state.sortedMembers|async).length}}</span>
     </p>

@@ -13,7 +13,7 @@ import { Const, MilestoneStatus } from '@app/service/model';
 export class MilestoneCheckComponent {
   public Const = Const;
 
-  @Input('milestoneStatus') milestone: MilestoneStatus;
+  @Input() milestone: MilestoneStatus;
   @Input() detailed = false;
 
   constructor(public iconService: IconService) { }

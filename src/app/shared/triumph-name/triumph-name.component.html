@@ -21,9 +21,7 @@
         
         <fa-icon class="triumph-icon fake-link" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[t.hash]!=true" (click)="state.trackTriumph(t)"></fa-icon>
         <fa-icon class="triumph-icon accent-text pointer" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[t.hash]==true" (click)="state.untrackTriumph(t)"></fa-icon>        
-        <fa-icon class="triumph-icon" *ngIf="hideOption" (click)="state.hideClosestTriumph(t)" matTooltip="Hide this triumph from list" [icon]="iconService.fasEyeSlash"></fa-icon>        
-        <fa-icon class="triumph-icon warn-text" *ngIf="t.contentVault && !t.complete" matTooltip="This Triumph will be vaulted next season, complete it now or never!" [icon]="iconService.fadHourGlassHalf" ></fa-icon>
-        <fa-icon class="triumph-icon half-opacity" *ngIf="t.contentVault && t.complete" matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!" [icon]="iconService.fasCheckCircle"></fa-icon>
+        <fa-icon class="triumph-icon" *ngIf="hideOption" (click)="state.hideClosestTriumph(t)" matTooltip="Hide this triumph from list" [icon]="iconService.fasEyeSlash"></fa-icon>
         <br>
         <span class="simple-caption">
             <ng-container *ngFor="let p of t.path; index as i; last as isLast">

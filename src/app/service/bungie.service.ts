@@ -597,7 +597,7 @@ export class BungieService implements OnDestroy {
     }
 
 
-    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean, contentVaultOnly?: boolean): Promise<Player> {
+    public async getChars(membershipType: number, membershipId: string, components: string[], ignoreErrors?: boolean, detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
         try {
             const sComp = components.join();
             const resp = await this.makeReq('Destiny2/' + membershipType + '/Profile/' +
@@ -609,7 +609,7 @@ export class BungieService implements OnDestroy {
                     ms = publicInfo.publicMilestones;
                 }
             }
-            return await this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
+            return await this.parseService.parsePlayer(resp, ms, detailedInv, showZeroPtTriumphs, showInvisTriumphs);
         } catch (err) {
             if (err.error != null && err.error.ErrorStatus == 'DestinyAccountNotFound') {
                 return null;

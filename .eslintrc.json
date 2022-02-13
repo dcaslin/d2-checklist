@@ -17,8 +17,14 @@
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
       "rules": {
-        "quotes": ["error", "single"],
-        "@typescript-eslint/no-explicit-any": 0
+        "@typescript-eslint/quotes": [
+          "error",
+          "single",
+          {
+            "allowTemplateLiterals": true
+          }
+        ],
+        "@typescript-eslint/no-explicit-any": "off"
       }
     },
     {
@@ -28,7 +34,9 @@
       "extends": [
         "plugin:@angular-eslint/template/recommended"
       ],
-      "rules": {}
+      "rules": {
+        "@angular-eslint/template/eqeqeq": "off"
+      }
     }
   ]
 }

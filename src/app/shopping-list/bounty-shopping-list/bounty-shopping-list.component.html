@@ -1,5 +1,3 @@
-<!-- <h4>Bounty Shopping List</h4> -->
-
 <div class="subtitle">Currently held and available bounties for the selected character, grouped by shared objectives.
 </div>
 
@@ -54,7 +52,7 @@
             {{b.tag| titlecase}}
           </button>
         </ng-container>
-        <button mat-stroked-button *ngIf="!(showAllPlayerBounties$|async) && bs.length > BOUNTY_CUTOFF"
+        <button mat-stroked-button *ngIf="(showAllPlayerBounties$|async) === false && bs.length > BOUNTY_CUTOFF"
           (click)="showAllPlayerBounties$.next(true)">
           <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
         </button>
@@ -90,7 +88,7 @@
             {{b.tag| titlecase}}
           </button>
         </ng-container>
-        <button mat-stroked-button *ngIf="!(showAllVendorBounties$|async) && bs.length > BOUNTY_CUTOFF"
+        <button mat-stroked-button *ngIf="(showAllVendorBounties$|async) === false && bs.length > BOUNTY_CUTOFF"
           (click)="showAllVendorBounties$.next(true)">
           <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
         </button>

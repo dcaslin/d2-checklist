@@ -6,11 +6,7 @@
                     <mat-panel-title>
                         <div *ngIf="s.data.icon!=null" class="seal-icon"
                             [style.background-image]="'url(//www.bungie.net' + s.data.icon + ')'"></div>
-                        {{s.data.title}}                        
-                        <span class="pad-left" *ngIf="s.data.contentVault"
-                            matTooltip="This Seal will be vaulted next season, complete it now or never!">
-                            <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
-                        </span>
+                        {{s.data.title}}
                         <ng-container *ngIf="debugmode|async">{{s.data.hash}}</ng-container>
                     </mat-panel-title>
                     <mat-panel-description>

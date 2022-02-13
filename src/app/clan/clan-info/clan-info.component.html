@@ -20,7 +20,7 @@
             </div>
             <div class="col-sm-12 col-md-6">
                 <div class="clan-progress-row">
-                    <button mat-stroked-button [disabled]="!(state.allLoaded|async)" (click)="state.downloadCsvReport()">
+                    <button mat-stroked-button [disabled]="(state.allLoaded|async) === false" (click)="state.downloadCsvReport()">
                         <fa-icon [hidden]="state.allLoaded|async" [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon>
                         <fa-icon [icon]="iconService.falDownload"></fa-icon> Download CSV Report</button>
                 </div>

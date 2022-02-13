@@ -1379,7 +1379,7 @@ export class ParseService {
         return msa;
     }
 
-    private async parseProfileChecklists(resp: any, contentVaultOnly: boolean): Promise<Checklist[]> {
+    private async parseProfileChecklists(resp: any): Promise<Checklist[]> {
         const checklists: Checklist[] = [];
 
         if (resp.profileProgression != null && resp.profileProgression.data != null && resp.profileProgression.data.checklists != null) {
@@ -1390,9 +1390,6 @@ export class ParseService {
                 const vals: any = oChecklists[key];
                 const desc: any = await this.destinyCacheService.getChecklist(key);
                 if (desc == null) {
-                    continue;
-                }
-                if (contentVaultOnly && !desc.contentVault) {
                     continue;
                 }
                 let cntr = 0, cntChecked = 0;
@@ -1452,7 +1449,6 @@ export class ParseService {
                     complete: cntChecked,
                     video: desc.video,
                     order: desc.index,
-                    contentVault: desc.contentVault,
                     total: cntr,
                     entries: checkListItems,
                     hasDescs: hasDescs
@@ -1522,7 +1518,7 @@ export class ParseService {
 
     }
 
-    private async parseCharChecklists(resp: any, chars: Character[], contentVaultOnly: boolean): Promise<CharChecklist[]> {
+    private async parseCharChecklists(resp: any, chars: Character[]): Promise<CharChecklist[]> {
         const checklists: CharChecklist[] = [];
         if (resp.characterProgressions && resp.characterProgressions.data) {
             for (const char of chars) {
@@ -1535,10 +1531,6 @@ export class ParseService {
                         if (desc == null) {
                             continue;
                         }
-                        if (contentVaultOnly && !desc.contentVault) {
-                            continue;
-                        }
-
                         let checklist: CharChecklist = null;
                         for (const c of checklists) {
                             if (c.hash === key) {
@@ -1557,7 +1549,6 @@ export class ParseService {
                                 hash: key,
                                 name: checklistName,
                                 maxComplete: 0,
-                                contentVault: desc.contentVault,
                                 totals: [],
                                 entries: []
                             };
@@ -1739,7 +1730,6 @@ export class ParseService {
         const percent = Math.floor((100 * progress) / completeValue);
         return {
             hash: node.hash,
-            contentVault: pDesc.contentVault,
             name: node.name,
             desc: node.desc,
             icon: node.icon,
@@ -1755,93 +1745,7 @@ export class ParseService {
     }
 
 
-    // TODO high celebrant powerful notes: Activity 392314513 will track this, but only if it's on the lure
-    // will need to introspect the Lure to see it's availability perhaps...
-    // not clear this is even rewarding a powerful though
-
-    // private handleMissionArtifact(char: Character, artifact: InventoryItem, milestoneList: MileStoneName[], milestonesByKey: { [id: string]: MileStoneName }, characterPlugSet: any) {
-    //     const charPlugSetData = characterPlugSet?.data;
-    //     if (char && charPlugSetData) {
-    //         const plugObjectives = charPlugSetData[char.characterId]?.plugs['2611374829'];
-    //         if (plugObjectives?.length > 0) {
-    //             let obj = null;
-    //             // the artifact has a random set of plugs and we need to find one that discusses powerful rewards
-    //             for (const o of plugObjectives) {
-    //                 if (o.plugObjectives?.length > 0) {
-    //                     obj = o;
-    //                     break;
-    //                 }
-    //             }
-    //             // const obj = plugObjectives[0];
-    //             if (obj?.plugObjectives?.length > 0) {
-    //                 const powerfulObj = obj.plugObjectives[0];
-    //                 const total = powerfulObj.completionValue;
-    //                 const venatiks = milestonesByKey['2406589846'];
-
-    //                 // they've unlocked crow's pinnacle
-    //                 if (total > 2) {
-    //                     // 2406589846
-    //                     venatiks.pl = Const.HIGH_BOOST;
-    //                     venatiks.rewards = 'Pinnacle Gear';
-    //                 }
-    //                 const powerfulDropsRemaining = powerfulObj.progress;
-    //                 const progress = total - powerfulDropsRemaining;
-    //                 const pct = progress / total;
-    //                 const suppInfo: string[] = [`${powerfulDropsRemaining} powerful left`];
-    //                 if (artifact.objectives?.length > 1) {
-    //                     const venatiksSupp = [];
-    //                     const huntObj = artifact.objectives.find(x => x.hash == '34632179');
-    //                     const storedObj = artifact.objectives.find(x => x.hash == '4186537209');
-    //                     const chargeObj = artifact.objectives.find(x => x.hash == '1514334696');
-    //                     if (huntObj != null) {
-    //                         venatiksSupp.push(`Configured for Hunt`);
-    //                     }
-    //                     if (chargeObj != null) {
-    //                         venatiksSupp.push(`${chargeObj.percent}% charged`);
-    //                     }
-    //                     if (storedObj != null) {
-    //                         venatiksSupp.push(`${storedObj.progress} stored`);
-    //                     }
-    //                     if (char.milestones['2406589846'].suppInfo?.length == 1) {
-    //                         char.milestones['2406589846'].info = char.milestones['2406589846'].suppInfo[0];
-    //                     }
-    //                     char.milestones['2406589846'].suppInfo = venatiksSupp;
-    //                 }
-
-    //                 if (milestonesByKey[Const.MISSION_ARTIFACT_KEY] == null) {
-    //                     const reward = 'Powerful Gear';
-    //                     const ms: MileStoneName = {
-    //                         key: Const.MISSION_ARTIFACT_KEY,
-    //                         resets: char.endWeek.toISOString(),
-    //                         rewards: reward,
-    //                         pl: this.parseMilestonePl(reward),
-    //                         name: 'Wrathborn Hunts',
-    //                         desc: 'Your Cryptolith Lure gives a fixed number of powerful drops per week.',
-    //                         hasPartial: false,
-    //                         dependsOn: []
-    //                     };
-    //                     milestoneList.push(ms);
-    //                     milestonesByKey[Const.MISSION_ARTIFACT_KEY] = ms;
-    //                 }
-    //                 // constructor(hash, complete, pct, info, suppInfo, phases) {
-    //                 const complete = powerfulDropsRemaining === 0;
-    //                 let info = null;
-    //                 if (pct > 0 && pct < 1) {
-    //                     info = Math.floor(100 * pct) + '% complete';
-    //                 }
-
-
-    //                 char.milestones[Const.MISSION_ARTIFACT_KEY] =
-    //                     new MilestoneStatus(Const.MISSION_ARTIFACT_KEY,
-    //                         complete, pct, info,
-    //                         suppInfo,
-    //                         null, false, false);
-    //             }
-    //         }
-    //     }
-    // }
-
-    public async parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean, contentVaultOnly?: boolean): Promise<Player> {
+    public async parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
         if (resp.profile != null && resp.profile.privacy === 2) {
             throw new Error('Privacy settings disable viewing this player\'s profile.');
         }
@@ -2123,8 +2027,8 @@ export class ParseService {
         let gearMeta = null;
 
         if (!superprivate) {
-            checklists = await this.parseProfileChecklists(resp, contentVaultOnly);
-            charChecklists = await this.parseCharChecklists(resp, chars, contentVaultOnly);
+            checklists = await this.parseProfileChecklists(resp);
+            charChecklists = await this.parseCharChecklists(resp, chars);
             artifactPowerBonus = await this.parseArtifactProgressions(resp, chars, accountProgressions);
             // hit with a hammer
             if (resp.profileCurrencies?.data?.items != null) {
@@ -2294,7 +2198,7 @@ export class ParseService {
                 let triumphLeaves: TriumphRecordNode[] = [];
 
                 // Seals 1652422747
-                let parent: TriumphPresentationNode = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                let parent: TriumphPresentationNode = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.activeSealsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
                 const tempSeals = parent?.children ? parent.children : [];
                 for (const ts of tempSeals) {
                     const seal = await this.buildSeal(ts, badges);
@@ -2305,21 +2209,21 @@ export class ParseService {
                 // TODO this is kinda ghetto stringing together active triumphs, exotic catalysts, medals and lore
                 // later on should split out active and legacy triumphs, and put catalysts, medals and lore into their own sections
                 // Tree 1024788583
-                parent = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly, []);
+                parent = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.recordsRootNode + '', nodes, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, []);
                 recordTree = parent?.children ? parent.children : [];
                 // exotic catalysts
-                let oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                let oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.exoticCatalystsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
                 // medals
-                oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.medalsRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.medalsRootNodeHash + '', nodes, records, triumphLeaves, true, true);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
 
                 // season challenges
-                oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.seasonalChallengesPresentationNodeHash + '', nodes, records, triumphLeaves, true, true);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild);
                     let weeklyChild: TriumphNode;
@@ -2354,10 +2258,10 @@ export class ParseService {
                 }
 
                 // metrics
-                // oChild = this.handleRecPresNode([], '1074663644', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                // oChild = this.handleRecPresNode([], '1074663644', nodes, records, triumphLeaves, true, true);
                 // recordTree.push(oChild);
                 // lore
-                oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.loreRootNodeHash + '', nodes, records, triumphLeaves, true, true, contentVaultOnly);
+                oChild = await this.handleRecPresNode([], this.destinyCacheService.cacheLite.destiny2CoreSettings.loreRootNodeHash + '', nodes, records, triumphLeaves, true, true);
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
@@ -2810,7 +2714,7 @@ export class ParseService {
         return bestNode;
     }
 
-    private async handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean, extraRoots?: string[]): Promise<TriumphPresentationNode> {
+    private async handleRecPresNode(path: PathEntry[], key: string, pres: any[], records: any[], triumphLeaves: TriumphRecordNode[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, extraRoots?: string[]): Promise<TriumphPresentationNode> {
         const val = this.getBestPres(pres, key);
         if (!val) {
             return null;
@@ -2846,7 +2750,7 @@ export class ParseService {
 
 
             for (const child of presNodes) {
-                const oChild = await this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
+                const oChild = await this.handleRecPresNode(path.slice(), child.presentationNodeHash, pres, records, triumphLeaves, showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 children.push(oChild);
                 unredeemedCount += oChild.unredeemedCount;
@@ -2857,7 +2761,7 @@ export class ParseService {
                 vaultedIncomplete += oChild.vaultedChildrenIncomplete;
             }
             for (const child of recNodes) {
-                const oChild = await this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs, contentVaultOnly);
+                const oChild = await this.handleRecordNode(path.slice(), child.recordHash, records, showZeroPtTriumphs, showInvisTriumphs);
                 if (oChild == null) { continue; }
                 triumphLeaves.push(oChild);
                 if (oChild.invisible && !showInvisTriumphs) { continue; }
@@ -2866,15 +2770,7 @@ export class ParseService {
                 if (oChild.complete && !oChild.redeemed) {
                     unredeemedCount++;
                 }
-                pts += oChild.earned;
-                if (oChild.contentVault) {
-                    vaulted++;
-                    if (oChild.complete) {
-                        vaultedComplete++;
-                    } else {
-                        vaultedIncomplete++;
-                    }
-                }
+                pts += oChild.earned;                
                 total += oChild.score;
             }
         }
@@ -2912,12 +2808,9 @@ export class ParseService {
         };
     }
 
-    private async handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean, contentVaultOnly: boolean): Promise<TriumphRecordNode> {
+    private async handleRecordNode(path: PathEntry[], key: string, records: any[], showZeroPtTriumphs: boolean, showInvisTriumphs: boolean): Promise<TriumphRecordNode> {
         const rDesc = await this.destinyCacheService.getRecord(key);
-        if (rDesc == null) { return null; }
-        if (contentVaultOnly && !rDesc.contentVault) {
-            return null;
-        }
+        if (rDesc == null) { return null; }        
         let pointsToBadge = false;
         if (rDesc.displayProperties != null && rDesc.displayProperties.description != null) {
             if (rDesc.displayProperties.description.indexOf('Complete the associated badge') == 0) {
@@ -3086,7 +2979,6 @@ export class ParseService {
         return {
             type: 'record',
             hash: key,
-            contentVault: rDesc.contentVault,
             name: rDesc.displayProperties.name,
             desc: rDesc.displayProperties.description,
             icon: rDesc.displayProperties.icon,

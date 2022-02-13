@@ -23,7 +23,7 @@
 
         <div class="gear-lock" *ngIf="!hideMenu">
             <fa-icon [icon]="iconService.fasLockAlt" *ngIf="i.locked|async"></fa-icon>
-            <fa-icon [icon]="iconService.fasLockOpenAlt" *ngIf="!(i.locked|async)"></fa-icon>
+            <fa-icon [icon]="iconService.fasLockOpenAlt" *ngIf="(i.locked|async) === false"></fa-icon>
         </div>
         <div class="bottom-left">
             <div class="gear-equipped" *ngIf="i.equipped|async">
@@ -54,7 +54,7 @@
 
         </ng-container>
         <button mat-menu-item
-            *ngIf="!(i.locked|async) && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option==ItemType.Ghost || option==ItemType.Vehicle)"
+            *ngIf="(i.locked|async) === false && (i.type==ItemType.Weapon || i.type==ItemType.Armor || option==ItemType.Ghost || option==ItemType.Vehicle)"
             (click)="toggleLock.emit(true)">
             <fa-icon [icon]="iconService.fasLockAlt"></fa-icon> Lock
         </button>

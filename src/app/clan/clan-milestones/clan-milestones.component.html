@@ -73,7 +73,7 @@
                             <td *ngIf="(hiddenClanMilestones|async).indexOf(mileStoneName.key)===-1"
                                 class="clan-player-ms-cell" [attr.data-label]="mileStoneName.name">
                                 <ng-container *ngFor="let char of player.characters">
-                                    <d2c-milestone-check [milestoneStatus]="char.milestones[mileStoneName.key]">
+                                    <d2c-milestone-check [milestone]="char.milestones[mileStoneName.key]">
                                     </d2c-milestone-check>
                                 </ng-container>
                             </td>
