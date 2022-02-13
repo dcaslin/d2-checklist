@@ -10,11 +10,7 @@
             <button mat-icon-button *ngIf="state.dTrackedTriumphIds[triumph.data.hash]==true"
                 (click)="state.untrackTriumph(triumph.data)">
                 <fa-icon [icon]="iconService.fasStar" class="accent-text"></fa-icon>
-            </button>
-            <span class="pad-left" *ngIf="triumph.data.contentVault"
-                matTooltip="This Triumph will be vaulted next season, complete it now or never!">
-                <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
-            </span>
+            </button>            
         </div>
         <div class="clan-child-spacer"></div>
         <div class="clan-child-details">

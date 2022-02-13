@@ -11,17 +11,7 @@
           <mat-panel-title [class.accent-text]="s.complete">
             <div *ngIf="s.icon!=null" class="seal-icon"
               [style.background-image]="'url(//www.bungie.net' + s.icon + ')'"></div>
-              <fa-icon class="pad-right" *ngIf="s.gildTotal>0 && s.gildProgress>=s.gildTotal" [icon]="iconService.fadShieldAlt" matTooltip="Gilded!"></fa-icon> {{s.title}}
-            <ng-container *ngIf="s.contentVault">
-              <span class="pad-left" *ngIf="!s.complete"
-                matTooltip="This Seal will be vaulted next season, complete it now or never!">
-                <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
-              </span>
-              <span class="pad-left" *ngIf="s.complete"
-                matTooltip="This Seal will be vaulted next season, but you got it already! Nice!">
-                <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
-              </span>
-            </ng-container>
+              <fa-icon class="pad-right" *ngIf="s.gildTotal>0 && s.gildProgress>=s.gildTotal" [icon]="iconService.fadShieldAlt" matTooltip="Gilded!"></fa-icon> {{s.title}}           
             <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
           </mat-panel-title>
           <mat-panel-description [class.accent-text]="s.complete">
@@ -54,15 +44,7 @@
                     <ng-container *ngIf="debugmode|async">{{c.hash}}</ng-container>
                     <fa-icon class="pad-left" [icon]="iconService.farStar" *ngIf="state.dTrackedTriumphIds[c.hash]!=true"
                       (click)="state.trackTriumph(c)"></fa-icon>
-                    <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph(c)"></fa-icon>
-                    <span class="pad-left" *ngIf="c.contentVault && !c.complete"
-                      matTooltip="This Triumph will be vaulted next season, complete it now or never!">
-                      <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
-                    </span>
-                    <span class="pad-left" *ngIf="c.contentVault && c.complete"
-                      matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
-                      <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
-                    </span>                    
+                    <fa-icon class="pad-left accent-text" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[c.hash]==true" (click)="state.untrackTriumph(c)"></fa-icon>                                         
                     <br>
                     <span class="simple-warn-caption" *ngIf="c.complete && !c.redeemed">
                       Not yet redeemed.<br></span>

@@ -21,8 +21,6 @@ import { BungieSearchModule } from './bungie-search';
 import { ClanModule } from './clan';
 import { ClanSearchModule } from './clan-search';
 import { ClanStateService } from './clan/clan-state.service';
-import { ContentVaultSearchComponent } from './content-vault-search/content-vault-search.component';
-import { ContentVaultComponent } from './content-vault/content-vault.component';
 import { FriendsModule } from './friends';
 import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.component';
 import { GearModule } from './gear';
@@ -111,8 +109,7 @@ import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dia
     AppComponent,
     ChildComponent,
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
-    SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, ContentVaultComponent,
-    ContentVaultSearchComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
+    SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
     BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
     DealsContainerComponent, DealsComponent, CollectionDealsComponent, ExchangeDealsComponent, ArmorDealsComponent, 
     ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent

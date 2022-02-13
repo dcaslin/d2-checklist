@@ -1,12 +1,4 @@
 <div class="top-section">
-  <!-- <div class="announcement light-border" *ngIf="!hideAnnouncement">
-              <div class="announcement-body">
-                Check out the new <a class="no-break" routerLink="/content-vault"> <fa-icon  class="warn-text" [icon]="iconService.fadHourGlassHalf"></fa-icon><span class="link-text">Content Vault page</span></a>! 
-              </div>
-              <div>
-                <button mat-icon-button (click)="onHideAnnouncement()"><fa-icon  [icon]="iconService.fasTimes"></fa-icon></button>
-              </div>
-            </div> -->
   <div *ngIf="debugmode|async">
     <div>Version: {{version}}</div>
   </div>
@@ -75,12 +67,12 @@
 <div class="center-spinner" *ngIf="(loading|async)===true">
   <mat-spinner class="loading" class="center-spinner"></mat-spinner>
 </div>
-<p *ngIf="!(isSignedOn|async)">
+<p *ngIf="(isSignedOn$|async) === false">
   <button mat-stroked-button (click)="logon()">
     <fa-icon [icon]="iconService.fasSignInAlt"></fa-icon> Sign In
   </button> to see bounty availabilities (this requires a private endpoint that doesn't work otherwise)
 </p>
-<mat-card *ngIf="isSignedOn|async">
+<mat-card *ngIf="isSignedOn$|async">
   <mat-expansion-panel class="mat-elevation-z0" [expanded]='dealsExpanded' (opened)="onToggleDeals(true)"
     (closed)="onToggleDeals(false)">
     <mat-expansion-panel-header>
@@ -104,7 +96,7 @@
 </mat-card>
 
 
-<mat-card *ngIf="isSignedOn|async">
+<mat-card *ngIf="isSignedOn$|async">
   <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' (opened)="onToggleBounties(true)"
     (closed)="onToggleBounties(false)">
     <mat-expansion-panel-header>

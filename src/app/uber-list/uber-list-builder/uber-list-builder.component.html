@@ -158,7 +158,7 @@
                     </td>
                     <td class="char-cell hide-mobile-table-cell" *ngFor="let char of player.characters" (click)="show($event, row)">
                       <span *ngIf="row.characterEntries[char.id] as data">
-                        <d2c-milestone-check [milestoneStatus]="data" [detailed]="true"></d2c-milestone-check>
+                        <d2c-milestone-check [milestone]="data" [detailed]="true"></d2c-milestone-check>
                       </span>
 
                     </td>

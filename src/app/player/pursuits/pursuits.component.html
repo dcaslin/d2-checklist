@@ -1,7 +1,7 @@
 <ng-container *ngIf="state.player|async as player">
   <ng-container *ngIf="player.bounties==null || (player.bounties.length==0 && player.quests==0)">
     
-    <div class="privacy-note left" *ngIf="(state.isSignedOn|async) && !(state.signedOnUserIsCurrent|async)">
+    <div class="privacy-note left" *ngIf="(state.isSignedOn|async) && (state.signedOnUserIsCurrent|async) === false">
       <h4>Privacy</h4>
       <p>
         The API is reporting zero bounties and quests for this player. They probably 
@@ -11,7 +11,7 @@
         privacy setting.
       </p>
     </div>
-    <div class="privacy-note left" *ngIf="!(state.isSignedOn|async)">
+    <div class="privacy-note left" *ngIf="(state.isSignedOn|async) === false">
       
         <d2c-sign-in-required></d2c-sign-in-required>
 

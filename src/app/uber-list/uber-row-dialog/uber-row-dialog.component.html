@@ -47,7 +47,7 @@
 
                             <div class="flex-row" *ngIf="data.characterEntries[char.id] as milestone">
                                 <div class="flex-column">
-                                    <h5>Progress: <d2c-milestone-check class="pad-left" [milestoneStatus]="milestone"></d2c-milestone-check></h5>
+                                    <h5>Progress: <d2c-milestone-check class="pad-left" [milestone]="milestone"></d2c-milestone-check></h5>
                                     <ng-container *ngIf="!milestone.locked && !milestone.tooLowPower && !milestone.readyToCollect">
                                         <div>
                                             <mat-progress-bar mode="determinate" [value]="100 * milestone.pct"></mat-progress-bar>

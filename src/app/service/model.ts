@@ -226,7 +226,6 @@ export interface BadgeClass {
 
 export interface Seal {
     hash: string;
-    contentVault: boolean;
     name: string;
     desc: string;
     icon: string;
@@ -273,7 +272,6 @@ export interface TriumphPresentationNode extends TriumphNode {
 
 export interface TriumphRecordNode extends TriumphNode {
     objectives: ItemObjective[];
-    contentVault: boolean;
     intervalsRedeemedCount: number;
     redeemed: boolean;
     forTitleGilding: boolean;
@@ -569,7 +567,6 @@ export interface ChecklistItem {
 export interface Checklist {
     hash: string;
     name: string;
-    contentVault: boolean;
     order: number;
     video?: string;
     complete: number;
@@ -607,7 +604,6 @@ export interface CharTotal {
 export interface CharChecklist {
     hash: string;
     name: string;
-    contentVault: boolean;
     maxComplete: number;
     totals: CharTotal[];
     entries: CharChecklistItem[];

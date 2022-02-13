@@ -60,16 +60,6 @@
             (click)="state.trackTriumph(node.data)"></fa-icon>
           <fa-icon class="pad-left" [icon]="iconService.fasStar" *ngIf="state.dTrackedTriumphIds[node.data.hash]==true"
             class="accent-text" (click)="state.untrackTriumph(node.data)"></fa-icon>
-
-          <span class="pad-left" *ngIf="node.data.contentVault && !node.data.complete"
-            matTooltip="This Triumph will be vaulted next season, complete it now or never!">
-            <fa-icon [icon]="iconService.fadHourGlassHalf" class="warn-text"></fa-icon>
-          </span>
-          <span class="pad-left" *ngIf="node.data.contentVault && node.data.complete"
-            matTooltip="This Triumph will be vaulted next season, but you got it already! Nice!">
-            <fa-icon [icon]="iconService.fasCheckCircle" class="half-opacity"></fa-icon>
-          </span>
-
           <br>
           <span class="simple-warn-caption" *ngIf="node.data.complete && !node.data.redeemed">Not yet
             redeemed.<br></span>

@@ -5,7 +5,7 @@
         <ng-container *ngIf="(state.info|async)!=null">Clan: {{(state.info|async).name}}</ng-container>
         <ng-container *ngIf="(state.info|async)==null"><fa-icon [icon]="iconService.farSpinner" [pulse]="true" [fixedWidth]="true"></fa-icon></ng-container>
       </h3>
-      <ng-container *ngIf="!(state.allLoaded|async)">
+      <ng-container *ngIf="(state.allLoaded|async) === false">
         <ng-container *ngIf="state.profilesLoaded|async as pct">
           <mat-progress-bar mode="determinate" [value]="pct*100"></mat-progress-bar>
         </ng-container>
