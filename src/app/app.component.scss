@@ -50,13 +50,6 @@
   }
 }
 
-.currency-icon {
-  width: 24px;
-  height: 24px;
-
-  background-size: cover;
-  display: inline-block;
-}
 
 .currency-chip {
   margin-left: 10px;
@@ -199,6 +192,7 @@ mat-sidenav {
 .gm-section {
   display: inline-block;
   margin-right: 50px;
+  vertical-align: middle;
 }
 
 .fake-link {
