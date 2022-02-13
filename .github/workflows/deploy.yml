@@ -31,7 +31,7 @@ jobs:
         PROD_API_KEY: ${{ secrets.API_KEY }}
         PROD_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }} 
-    - run: ng build --prod
+    - run: ng build --configuration production
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       env:

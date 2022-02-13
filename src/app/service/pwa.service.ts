@@ -29,7 +29,7 @@ export class PwaService {
                     console.log('current version is', event.current);
                     console.log('available version is', event.available);
                     this.notificationService.success('A new update is available, refreshing');
-                    window.location.reload(true);
+                    window.location.reload();
 
                 });
                 updates.activated.subscribe(event => {

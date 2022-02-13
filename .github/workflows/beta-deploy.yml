@@ -31,7 +31,7 @@ jobs:
         BETA_API_KEY: ${{ secrets.BETA_API_KEY }}
         BETA_CLIENT_SECRET: ${{ secrets.BETA_CLIENT_SECRET }}
         BETA_DIM_API_KEY: ${{ secrets.BETA_DIM_API_KEY }} 
-    - run: ng build --prod
+    - run: ng build --configuration production
     - name: copy file via ssh key
       uses: appleboy/scp-action@master
       env:

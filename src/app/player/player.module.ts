@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ChartsModule } from 'ng2-charts';
+import { NgChartsModule } from 'ng2-charts';
 import { SharedModule } from '../shared';
 import { CharsComponent } from './chars/chars.component';
 import { ChecklistComponent } from './checklist/checklist.component';
@@ -34,7 +34,7 @@ import { PlBucketDialogComponent } from './pl-bucket-dialog/pl-bucket-dialog.com
 @NgModule({
   imports: [
     SharedModule,
-    ChartsModule
+    NgChartsModule
   ],
   declarations: [PlayerComponent, QuestDialogComponent, ProgressStepDialogComponent, CollectionsComponent, TriumphsComponent,
     CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent,

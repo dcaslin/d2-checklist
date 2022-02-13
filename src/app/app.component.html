@@ -179,11 +179,11 @@
             <div class="gm-section">
               <a class="margin-left-10 fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
                 [queryParams]="{ owner: 'vault'}">
-                <mat-icon>account_balance</mat-icon> {{gm.vault.count}} / {{gm.vault.total}}
+                <fa-icon [icon]="iconService.fasVault"></fa-icon> {{gm.vault.count}} / {{gm.vault.total}}
               </a>
             </div>
             <div class="gm-section">
-              <mat-icon>email</mat-icon>
+              <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
 
               <ng-container *ngFor="let p of gm.postmaster">
                 <a class="margin-left-10 fake-link" [matTooltip]="p.char.className + ' postmaster' "

@@ -1,8 +1,8 @@
 <div class="graph">
     <canvas baseChart 
-        [datasets]="chartData" 
-        [labels]="chartLabels" 
+        [legend] = "false"
+        [data]="chartData"
         [options]="chartOptions"
-        chartType="line">
+        [type]="chartType">>
     </canvas>
 </div>
