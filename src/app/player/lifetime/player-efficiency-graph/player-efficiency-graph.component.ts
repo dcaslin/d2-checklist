@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlayerStateService } from '@app/player/player-state.service';
 import { AggHistoryEntry } from '@app/service/model';
-import { ChartDataSets, ChartLegendOptions, ChartOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { ChartConfiguration, ChartData, ChartType, ScatterDataPoint } from 'chart.js';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,51 +10,49 @@ import { Label } from 'ng2-charts';
   styleUrls: ['./player-efficiency-graph.component.scss']
 })
 export class PlayerEfficiencyGraphComponent {
-  public b: ChartLegendOptions;
-  public chartOptions: ChartOptions = {
+  public scatterChartType: ChartType = 'scatter';
+  public scatterChartData: ChartData<'scatter'> = {
+    labels: [],
+    datasets: []
+  }
+  
+
+  public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
-    maintainAspectRatio: true,
-    legend: {
-      display: false
-    },
-    tooltips: {
-      callbacks: {
-        label: function (tooltipItem, data) {
-          const row: any = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-          const point: AggHistoryEntry = row.z as AggHistoryEntry;
-          const sEff = point.efficiency.toFixed(2);
-          return point.name + ': ' + sEff + ' clear/hr';
+    maintainAspectRatio: true,    
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const row: ScatterCube = context.dataset.data[context.dataIndex] as ScatterCube;            
+            const point: AggHistoryEntry = row.z as AggHistoryEntry;
+            const sEff = point.efficiency.toFixed(2);
+            return [point.name, sEff + ' clear/hr'];
+          }
         }
       }
-    },
+    },    
     scales: {
-      xAxes: [{
-        position: 'bottom',
+      x: {
+        title: {
+          display: true,
+          text: 'Hours'
+        },
         ticks: {
           callback: function (tick) {
             return tick.toString() + ' hr';
           }
         },
-        scaleLabel: {
-          labelString: 'Hours',
+      },
+      y: {
+        title: {
           display: true,
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          // callback: function (tick) {
-          //   return tick.toString() + 'dB';
-          // }
+          text: 'Completions'
         },
-        scaleLabel: {
-          labelString: 'Completions',
-          display: true
-        }
-      }]
-    }
+        ticks: {}
+      },
+    }    
   };
-  public chartLabels: Label[] = [];
-  public chartData: ChartDataSets[] = [];
 
 
   constructor(public state: PlayerStateService,
@@ -66,7 +63,7 @@ export class PlayerEfficiencyGraphComponent {
       return;
     }
 
-    const data = [];
+    const data: ScatterCube[] = [];
     for (const a of player.aggHistory) {
       const comp = a.activityCompletions;
       const hours = a.activitySecondsPlayed / (60 * 60);
@@ -76,7 +73,7 @@ export class PlayerEfficiencyGraphComponent {
         z: a
       });
     }
-    this.chartData = [
+    this.scatterChartData.datasets = [
       {
         pointRadius: 7,
         pointHoverRadius: 9,
@@ -86,4 +83,8 @@ export class PlayerEfficiencyGraphComponent {
     ];
   }
 
+}
+
+interface ScatterCube extends ScatterDataPoint {
+  z: AggHistoryEntry;
 }

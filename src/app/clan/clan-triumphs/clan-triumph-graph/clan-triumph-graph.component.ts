@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayerTriumph } from '@app/clan/clan-state.service';
-import { ChartDataSets, ChartLegendOptions, ChartOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,28 +9,34 @@ import { Label } from 'ng2-charts';
   styleUrls: ['./clan-triumph-graph.component.scss']
 })
 export class ClanTriumphGraphComponent {
-  public b: ChartLegendOptions;
-  public chartOptions: ChartOptions = {
+  public chartType: ChartType = 'bar';
+  public chartData: ChartConfiguration['data'] = {
+    datasets: [],
+    labels: []
+  };
+  public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    legend: {
-      display: false
-    },
-    scales: { xAxes: [{}], yAxes: [{}] },
-    plugins: {
-      datalabels: {
-        anchor: 'end',
-        align: 'end',
-      }
-    }
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: 'Percent Complete'
+        }
+      },
+      y: {
+        title: {
+          display: true,
+          text: 'Players'
+        }
+      },
+    }    
   };
-  public chartLabels: Label[] = [];
-  public chartData: ChartDataSets[] = [];
 
 
   @Input()
   set data(all: PlayerTriumph[]) {
-    this.chartLabels = [];
+    this.chartData.labels = [];
     const dataDict = {};
     const data = [];
     for (const pt of all) {
@@ -43,17 +48,17 @@ export class ClanTriumphGraphComponent {
       }
     }
     for (let cntr = 0; cntr <= 100; cntr += 10) {
-      this.chartLabels.push(cntr + '%');
+      this.chartData.labels.push(cntr + '%');
       if (!dataDict[cntr]) {
         data.push(0);
       } else {
         data.push(dataDict[cntr]);
       }
     }
-    this.chartData = [
+    this.chartData.datasets = [
       {
         data: data,
-        label: 'Members'
+        label: 'Players'
       }
     ];
   }

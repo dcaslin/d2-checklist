@@ -3491,9 +3491,6 @@ export class ParseService {
             // anything with no type goes away too
 
             let type: ItemType = desc.itemType;
-            console.log("asdf");
-            console.log('asdf');
-            console.log(`asdf`);
             // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
             const ignoreWeaponPerkStats: InventoryPlug[] = [];
             let redacted = false;

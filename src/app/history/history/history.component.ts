@@ -5,7 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 import { BungieService } from '../../service/bungie.service';
-import { ActivityMode, Const, Player } from '../../service/model';
+import { ActivityMode, Const, Player } from '@app/service/model';
 import { StorageService } from '../../service/storage.service';
 import { ChildComponent } from '../../shared/child.component';
 import { SortFilterDatabase, SortFilterDataSource } from '../../shared/sort-filter-data';

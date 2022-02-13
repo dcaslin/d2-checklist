@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { PlayerAggHistoryEntry } from '@app/clan/clan-state.service';
-import { ChartDataSets, ChartLegendOptions, ChartOptions } from 'chart.js';
-import { Label } from 'ng2-charts';
+import { ChartConfiguration, ChartData, ChartType, ScatterDataPoint } from 'chart.js';
 
 
 @Component({
@@ -11,57 +10,56 @@ import { Label } from 'ng2-charts';
   styleUrls: ['./clan-lifetime-graph.component.scss']
 })
 export class ClanLifetimeGraphComponent {
-  public b: ChartLegendOptions;
-  public chartOptions: ChartOptions = {
+  public scatterChartType: ChartType = 'scatter';
+  public scatterChartData: ChartData<'scatter'> = {
+    labels: [],
+    datasets: []
+  }
+
+  
+  public chartOptions: ChartConfiguration['options'] = {
     responsive: true,
-    maintainAspectRatio: true,
-    legend: {
-      display: false
-    },
-    tooltips: {
-      callbacks: {
-        label: function (tooltipItem, data) {
-          const row: any = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-          const point: PlayerAggHistoryEntry = row.z as PlayerAggHistoryEntry;
-          const hrs = (point.data.activitySecondsPlayed / (60 * 60)).toFixed(2);
-          return point.data.activityCompletions + ' clears / '
-            + hrs + ' hrs: ' + point.member.destinyUserInfo.displayName;
+    maintainAspectRatio: true,    
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const row: ScatterCube = context.dataset.data[context.dataIndex] as ScatterCube;            
+            const point: PlayerAggHistoryEntry = row.z as PlayerAggHistoryEntry;
+            
+          const hrs = (point.data.activitySecondsPlayed / (60 * 60)).toFixed(1);
+          return [point.member.destinyUserInfo.displayName, 
+            point.data.activityCompletions + ' clears',
+            hrs + ' hrs'];
+          }
         }
       }
-    },
+    },    
     scales: {
-      xAxes: [{
-        position: 'bottom',
+      x: {
+        title: {
+          display: true,
+          text: 'Hours'
+        },
         ticks: {
           callback: function (tick) {
             return tick.toString() + ' hr';
           }
         },
-        scaleLabel: {
-          labelString: 'Hours',
+      },
+      y: {
+        title: {
           display: true,
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          // callback: function (tick) {
-          //   return tick.toString() + 'dB';
-          // }
+          text: 'Completions'
         },
-        scaleLabel: {
-          labelString: 'Completions',
-          display: true
-        }
-      }]
-    }
+        ticks: {}
+      },
+    }    
   };
-  public chartLabels: Label[] = [];
-  public chartData: ChartDataSets[] = [];
-
 
   @Input()
   set data(all: PlayerAggHistoryEntry[]) {
-    this.chartLabels = [];
+    this.scatterChartData.labels = [];
     const data = [];
     for (const pt of all) {
       const comp = pt.data.activityCompletions;
@@ -72,7 +70,7 @@ export class ClanLifetimeGraphComponent {
         z: pt
       });
     }
-    this.chartData = [
+    this.scatterChartData.datasets = [
       {
         pointRadius: 7,
         pointHoverRadius: 9,
@@ -82,4 +80,8 @@ export class ClanLifetimeGraphComponent {
     ];
   }  
 
+}
+
+interface ScatterCube extends ScatterDataPoint {
+  z: PlayerAggHistoryEntry;
 }

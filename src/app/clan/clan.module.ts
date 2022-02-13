@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { ChartsModule } from 'ng2-charts';
+import { NgChartsModule  } from 'ng2-charts';
 import { SharedModule } from '../shared';
 import { ClanBadgesComponent } from './clan-collections/clan-badges/clan-badges.component';
 import { ClanCollectionSearchComponent } from './clan-collections/clan-collection-search/clan-collection-search.component';
@@ -28,7 +28,7 @@ import { ClanCollectionItemDialogComponent } from './clan-collections/clan-colle
 @NgModule({
   imports: [
     SharedModule,
-    ChartsModule
+    NgChartsModule
   ],
   declarations: [ClanComponent, ClanMilestonesComponent, ClanInfoComponent,
     ClanLifetimeComponent, ClanTriumphsComponent, ClanMembersComponent, ClanSealsComponent, ClanTriumphSearchComponent, ClanTriumphTrackedComponent, ClanTriumphItemComponent, ClanTriumphItemDialogComponent, ClanTriumphSealDialogComponent, ClanTriumphGraphComponent, ClanSettingsComponent, ClanUserListDialogComponent, ClanLifetimeDialogComponent, ClanLifetimeGraphComponent, ClanCollectionsComponent, ClanBadgesComponent, ClanCollectionSearchComponent, ClanCollectionBadgeDialogComponent, ClanCollectionItemComponent, ClanCollectionItemDialogComponent]

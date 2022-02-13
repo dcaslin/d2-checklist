@@ -1,9 +1,8 @@
 <div class="graph">
-    <canvas 
-        baseChart 
-        [datasets]="chartData" 
-        [labels]="chartLabels" 
+    <canvas baseChart 
+        [legend] = "false"
+        [data]="scatterChartData"
         [options]="chartOptions" 
-        chartType="scatter">
+        [type]="scatterChartType">
     </canvas>
 </div>
