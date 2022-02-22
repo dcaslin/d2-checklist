@@ -584,7 +584,7 @@ export class WeekService {
 
   // the week of the chosen season, so far
   public static getSeasonWeek(): number {
-    const seasonEpoch = parseISO('2021-08-24T17:00:00Z'); // #UPDATEME
+    const seasonEpoch = parseISO('2022-02-22T17:00:00Z'); // #UPDATEME parseISO('2021-08-24T17:00:00Z'); 
     const numWeeks = differenceInWeeks(new Date(), seasonEpoch);
     return numWeeks + 1;
   }
@@ -595,16 +595,14 @@ export class WeekService {
       const weekEpoch = parseISO('2021-11-23T17:00:00.000Z'); // 4/2/2019
       const thisWeek = publicMilestones.weekStart;
       const numWeeks = differenceInWeeks(thisWeek, weekEpoch);
-      const ascInfo = WeekService.getRotation(numWeeks, this.ASCENDENT_INFO) as DreamingCityRow;
-
+      console.log(numWeeks);
+      const ascInfo = WeekService.getRotation(numWeeks, this.ASCENDENT_INFO) as DreamingCityRow;      
       currWeek = {
         ascendantChallenge: ascInfo.challenge,
         ascendantVideo: ascInfo.video,
         location: ascInfo.location,
         curseStrength: ascInfo.curseStrength
       };
-
-
     }
     return currWeek;
   }
