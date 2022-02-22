@@ -236,6 +236,10 @@ export class VendorService {
     } else {
       targetCost = v.saleItem.vendorItemInfo.costs.find(c => c.desc.itemTypeDisplayName == 'Redeemable');
     }
+    if (!targetCost) {
+      console.log('no cost found for ' + v.saleItem.name);
+      return;
+    }
     const count = costs[targetCost.desc.hash];
     v.cost = targetCost;
     v.costCount = count;
@@ -261,8 +265,10 @@ export class VendorService {
   private async getExchangeInfo(player: Player, vendorItems: InventoryItem[]): Promise<VendorCurrencies[]> {
     // type == 101 is all spider currency exchange "Purchase Enhancement Prisms Spider 863940356"
     // type == 10 and seller is banshee ("Upgrade Module Banshee-44 672118013") is upgrade modules, prisms, and shards
-    const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
-    const spiderCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '863940356' && i.type == ItemType.CurrencyExchange);
+    // const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
+    const bansheeConsumables = [];
+    // const spiderCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '1944611339' && i.type == ItemType.CurrencyExchange); // spider 863940356, rahool 1 
+    const spiderCurrency = [];
     const costs: { [key: string]: number; } = {};
     for (const g of spiderCurrency.concat(bansheeConsumables)) {
       for (const c of g.vendorItemInfo.costs) {
