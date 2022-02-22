@@ -1283,7 +1283,7 @@ export class ParseService {
 
         // grab special milestones to have them for the home screen and such
         for (const m of returnMe) {
-            if (m.milestoneType == 3 && weekStart == null) {
+            if (m.milestoneType == 3 && m.start && weekStart == null) {
                 weekStart = parseISO(m.start);
             }
         }
