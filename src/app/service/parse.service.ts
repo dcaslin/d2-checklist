@@ -71,8 +71,8 @@ import { SimpleParseService } from './simple-parse.service';
 
 const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 
-const ARTIFACT_UNLOCK_PERK_PROG_HASH = '3915124631'; // #UPDATEME old 2557524386 oldest 3094108685
-const ARTIFACT_POWER_BONUS_PROG_HASH = '243419342'; // #UPDATEME old 1793560787 oldest 978389300
+const ARTIFACT_UNLOCK_PERK_PROG_HASH = '2779402444'; // #UPDATEME old 2779402444 2557524386 oldest 3094108685
+const ARTIFACT_POWER_BONUS_PROG_HASH = '2214434133'; // #UPDATEME old 243419342 1793560787 oldest 978389300
 
 
 const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
@@ -250,6 +250,7 @@ export class ParseService {
 
     // Crucible and glory have progressions working together
     private static parseProgression(p: PrivProgression, desc: any, suppProg?: PrivProgression): Progression {
+        // TODO use profileInfo.profileProgression?.data?.seasonalArtifact.powerBonusProgression.progressionHash for this
         if (desc != null) {
             const prog: Progression = new Progression();
             prog.icon = desc.displayProperties.icon;

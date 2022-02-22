@@ -26,8 +26,10 @@
                     </td>
                     <td>{{c.targetCount|number}}</td>
                     <td>
-                        <d2c-manifest-item-icon [desc]="c.cost.desc" [small]="true"></d2c-manifest-item-icon>
-                        <div class="deal-label">{{c.cost.count|number}} {{c.cost.desc.displayProperties.name}}</div>
+                        <ng-container *ngIf="c.cost">
+                            <d2c-manifest-item-icon [desc]="c.cost.desc" [small]="true"></d2c-manifest-item-icon>
+                            <div class="deal-label">{{c.cost.count|number}} {{c.cost.desc.displayProperties.name}}</div>
+                        </ng-container>
                     </td>
                     <td>{{c.costCount|number}}</td>
                 </tr>
