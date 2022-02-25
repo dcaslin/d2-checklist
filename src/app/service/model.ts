@@ -160,7 +160,10 @@ export enum ItemState {
     None = 0,
     Locked = 1,
     Tracked = 2,
-    Masterwork = 4
+    Masterwork = 4,
+    Shaped = 8, // Crafted
+    Deepsight = 16, // HighlightedObjective
+
 }
 
 export enum DamageType {
@@ -794,6 +797,8 @@ export class InventoryItem {
     readonly collectibleHash: string;
     public lowLinks: LowLinks;
     readonly versionNumber: number;
+    readonly shaped: boolean;
+    readonly deepsight: boolean;
 
     canFit(socket: InventorySocket, plug: ManifestInventoryItem): boolean {
         const current = socket.active.energyCost;
@@ -841,7 +846,7 @@ export class InventoryItem {
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string, versionNumber: number
+        specialModSockets: string[], collectibleHash: string, versionNumber: number, shaped: boolean, deepsight: boolean
     ) {
         this.id = id;
         this.hash = hash;
@@ -897,6 +902,8 @@ export class InventoryItem {
         this.specialModSockets = specialModSockets;
         this.collectibleHash = collectibleHash;
         this.versionNumber = versionNumber;
+        this.shaped = shaped;
+        this.deepsight = deepsight;
     }
 }
 
@@ -1291,7 +1298,7 @@ export class Const {
     // public static readonly  PSUEDO_HERESY_KEY = 'PSUEDO-HERESY';
     // public static readonly PROPHECY_KEY = '44444444';
     // public static readonly PSUEDO_PRESAGE = 'PSUEDO-PRESAGE';
-    public static readonly PSUEDO_MASTER_EMPIRE_HUNT = 'PSUEDO_MASTER_EMPIRE';
+    // public static readonly PSUEDO_MASTER_EMPIRE_HUNT = 'PSUEDO_MASTER_EMPIRE';
 
     public static readonly LIGHT_TOO_LOW = 1499; // 1269; // #UPDATEME  -61 from pinnacle in the past
     private static readonly SEASON_SOFT_CAP = 1500; // 1270; // #UPDATEME
@@ -1696,4 +1703,8 @@ export interface PrivPlugEnergyCost {
 export interface DynamicStrings {
     character: { [key: string]: {[key: string]: number} };
     profile: {[key: string]: number};
+}
+
+export interface VendorDynamicStrings {
+    data: { [key: string]: {[key: string]: number} };
 }

@@ -11,13 +11,15 @@ import { LowLineService } from './lowline.service';
 import {
   ApiInventoryBucket, Character,
   CharacterVendorData, ClassAllowed,
+  DynamicStrings,
   EnergyType, InventoryItem, ItemType,
   Player, Vendor,
-  VendorCost
+  VendorCost,
+  VendorDynamicStrings
 } from './model';
 import { NotificationService } from './notification.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
-import { ParseService } from './parse.service';
+import { INTERPOLATION_PATTERN, ParseService } from './parse.service';
 import { PreferredStatService } from './preferred-stat.service';
 
 
@@ -50,18 +52,32 @@ export class VendorService {
     return target.asObservable();
   }
 
+
+  private static buildVendorDynamicStrings(resp: any): VendorDynamicStrings {
+    const returnMe: VendorDynamicStrings = {
+      data: {}
+    };
+    if (resp.stringVariables?.data?.integerValuesByHash) {
+      returnMe.data = resp.stringVariables.data.integerValuesByHash;
+    }
+    return returnMe;
+
+  }
+
   private async applyRemoteVendor(target: Subject<CharacterVendorData>, c: Character) {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives';
+      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives, StringVariables';
     const resp = await this.streamReq('loadVendors', url).toPromise();
+    const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
     const returnMe: CharacterVendorData = {
       char: c,
-      data: await this.parseVendorData(c, resp),
+      data: await this.parseVendorData(c, resp, dynamicStrings),
       cached: false
     };
     // if that worked out well, cache it for next time
     this.setCachedVendor(c, resp);
     target.next(returnMe);
+    //ASDF
   }
 
   private async applyCacheVendor(target: Subject<CharacterVendorData>, c: Character) {
@@ -69,9 +85,10 @@ export class VendorService {
     if (resp == null) {
       return;
     }
+    const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
     const returnMe: CharacterVendorData = {
       char: c,
-      data: await this.parseVendorData(c, resp),
+      data: await this.parseVendorData(c, resp, dynamicStrings),
       cached: true,
       ts: resp.ts,
       loading: true
@@ -301,7 +318,7 @@ export class VendorService {
         if (currency == null) {
           console.log(`Aggh`);
         }
-        if (currency  != null) {
+        if (currency != null) {
           targetCount = currency.count;
         }
       } else {
@@ -479,7 +496,7 @@ export class VendorService {
   }
 
 
-  private async parseVendorData(char: Character, resp: any): Promise<InventoryItem[]> {
+  private async parseVendorData(char: Character, resp: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem[]> {
     if (resp == null || resp.sales == null) { return null; }
     let returnMe = [];
     for (const key of Object.keys(resp.sales.data)) {
@@ -490,7 +507,7 @@ export class VendorService {
           continue;
         }
       }
-      const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, key, vendor);
+      const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, key, vendor, dynamicStrings);
       returnMe = returnMe.concat(items);
     }
     for (const i of returnMe) {
@@ -503,7 +520,7 @@ export class VendorService {
     return returnMe;
   }
 
-  private async parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any): Promise<InventoryItem[]> {
+  private async parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem[]> {
     if (v.saleItems == null) { return []; }
     const vDesc: any = await this.destinyCacheService.getVendor(vendorKey);
     if (vDesc == null) { return []; }
@@ -521,7 +538,7 @@ export class VendorService {
     const items: InventoryItem[] = [];
     for (const key of Object.keys(v.saleItems)) {
       const i = v.saleItems[key];
-      const oItem = await this.parseSaleItem(vendor, char, resp, i);
+      const oItem = await this.parseSaleItem(vendor, char, resp, i, dynamicStrings);
       if (oItem != null) {
         items.push(oItem);
       }
@@ -531,7 +548,7 @@ export class VendorService {
 
 
 
-  private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any): Promise<InventoryItem> {
+  private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem> {
     if (i.itemHash == null && i.itemHash === 0) { return null; }
     const iDesc: any = await this.destinyCacheService.getInventoryItem(i.itemHash);
     if (iDesc == null) { return null; }
@@ -559,13 +576,14 @@ export class VendorService {
     if (iDesc.objectives != null && iDesc.objectives.objectiveHashes != null) {
       for (const oHash of iDesc.objectives.objectiveHashes) {
         const oDesc: any = await this.destinyCacheService.getObjective(oHash);
+        let progDescText = VendorService.dynamicVendorStringReplace(oDesc.progressDescription, null, dynamicStrings)
         if (oDesc != null) {
           objectives.push({
             total: oDesc.completionValue,
-            units: oDesc.progressDescription
+            units: progDescText
           });
 
-          vendorSearchText += oDesc.progressDescription + ' ';
+          vendorSearchText += progDescText + ' ';
         }
       }
     }
@@ -628,70 +646,14 @@ export class VendorService {
     return data;
   }
 
-  private static checkDupes(gear: InventoryItem[]) {
-    for (const g of gear) {
-      const matches = gear.filter(x => x !== g && x.hash === g.hash);
-      if (matches.length > 0) {
-        console.log(g.name + ' has dupes');
-        console.dir(g);
-        console.dir(matches);
-      }
-    }
-  }
 
-
-  private static findComparableArmor(i: InventoryItem, gear: InventoryItem[], checkEnergyType: boolean, minPowerCap: number): InventoryItem[] {
-    const copies = [i];
-    // only exotic or legendary
-    if (!(i.tier === 'Exotic' || i.tier === 'Legendary')) {
-      return null;
-    }
-    // const preciseMatch = i.tier === 'Exotic';
-    for (const g of gear) {
-      if (g.id == i.id) {
-        continue;
-      }
-      // for exotics we only want to compare the same type of gear,
-      // like Dragon's shadow to Dragon's shadow
-      // if (preciseMatch) {
-      //   if (i.hash != g.hash) {
-
-      //   }
-      // }
-      if (g.powerCap < minPowerCap) {
-        continue;
-      }
-      if (i.type != g.type) {
-        continue;
-      }
-      if (i.classAllowed != g.classAllowed) {
-        continue;
-      }
-      if (!i.inventoryBucket || !g.inventoryBucket) {
-        continue;
-      }
-      if (i.inventoryBucket.displayProperties.name != g.inventoryBucket.displayProperties.name) {
-        continue;
-      }
-
-      // don't worry about matching by season
-      if (i.tier != g.tier) {
-        continue;
-      }
-      if (checkEnergyType) {
-        if (i.seasonalModSlot != g.seasonalModSlot) {
-          continue;
-        }
-      }
-
-
-      // do we match by burn?
-      if (i.energyType != g.energyType) {
-        continue;
-      }
-      copies.push(g);
-    }
-    return copies;
+  public static dynamicVendorStringReplace(text: string, characterId: string, dynamicStrings: VendorDynamicStrings): string {
+    // Thanks DIM!
+    return text.replace(INTERPOLATION_PATTERN, (segment) => {
+      const hash = segment.match(/\d+/)![0];
+      const dynamicValue = dynamicStrings?.data[hash];
+      return dynamicValue?.toString() ?? segment;
+    });
   }
 
   private async parseSaleItemStatus(vendorHash: string, failureIndexes: number[]): Promise<string> {

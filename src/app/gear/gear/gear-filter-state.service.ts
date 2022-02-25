@@ -195,6 +195,8 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:godrollpvp', desc: 'Only PVP god rolls' },
   { value: 'is:goodrollpve' },
   { value: 'is:goodrollpvp' },
+  { value: 'is:shaped', desc: 'Shaped for Witch Queen' },
+  { value: 'is:deepsight', desc: 'Witch Queen Deepsight Weapon' },
   { value: 'is:masterwork', desc: 'Fully MW\'d' },
   { value: 'is:light<=' },
   { value: 'is:light>' },

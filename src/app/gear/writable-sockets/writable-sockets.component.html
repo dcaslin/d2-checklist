@@ -11,7 +11,7 @@
                 </ng-container>
             </div>
         </ng-container>
-        <ng-container *ngIf="!socket.isArmorMod">
+        <ng-container *ngIf="!socket.isArmorMod && !socket.empty">
             <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
                 [class.margin-5]="socket.empty">
                 <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">

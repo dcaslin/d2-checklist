@@ -75,7 +75,7 @@ const ARTIFACT_UNLOCK_PERK_PROG_HASH = '2779402444'; // #UPDATEME old 2779402444
 const ARTIFACT_POWER_BONUS_PROG_HASH = '2214434133'; // #UPDATEME old 243419342 1793560787 oldest 978389300
 
 
-const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
+export const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
 
 @Injectable()
 export class ParseService {
@@ -1208,8 +1208,8 @@ export class ParseService {
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3632712541 && rewards == '???') { // battlegrounds
                 rewards = 'Powerful Gear (Tier 1)';
-            } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // battlegrounds
-                rewards = 'Pinnacle Gear';
+            } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // VoG
+                rewards = 'Powerful Gear (Tier 3)';
             }
             const boost = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
@@ -1765,6 +1765,9 @@ export class ParseService {
         const chars: Character[] = [];
         let hasWellRested = false;
         let weekEnd: string = null;
+        
+        // handle string interpolation aka dynamic strings
+        const dynamicStrings = ParseService.buildDynamicStrings(resp);
 
         const milestonesByKey: { [id: string]: MileStoneName } = {};
         if (publicMilestones != null) {
@@ -1774,6 +1777,7 @@ export class ParseService {
                     Const.HIDE_MILESTONES.includes(p.hash) ||
                     '534869653' === p.hash ||   // xur
                     '4253138191' === p.hash ||  // weekly clan engrams
+                    '1815404320' === p.hash ||  // Dawning Duty weekly
                     p.milestoneType == 5 || // special
                     p.type != null   // fake milestones
                 ) {
@@ -1866,40 +1870,40 @@ export class ParseService {
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
                         const availableActivities: { [key: string]: boolean } = {};
-                        if (resp.characterActivities
-                            && resp.characterActivities.data
-                            && resp.characterActivities.data[key]
-                            && resp.characterActivities.data[key].availableActivities
-                        ) {
-                            // do some weirdness for Master Empire hunts
-                            let hasAccessTo1280EmpireHunt = false;
-                            let incomplete1280Hunt = false;
-                            for (const aa of resp.characterActivities.data[key].availableActivities) {
-                                availableActivities[aa.activityHash] = true;
-                                if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
-                                    // while we're here check for Empire Hunt pinnacle.
-                                    // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
-                                    const vDesc: any = await this.destinyCacheService.getActivity(aa.activityHash);
-                                    // is this an empire hunt
-                                    if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
-                                        hasAccessTo1280EmpireHunt = true;
-                                        if (aa.challenges?.length > 0) {
-                                            for (const challenge of aa.challenges) {
-                                                if (challenge.objective?.objectiveHash == 1980717736) {
-                                                    // if this is here it shouldn't be complete, these disappear when complete
-                                                    if (!challenge.objective.complete) {
-                                                        incomplete1280Hunt = true;
-                                                        break;
-                                                    }
+                        // if (resp.characterActivities
+                        //     && resp.characterActivities.data
+                        //     && resp.characterActivities.data[key]
+                        //     && resp.characterActivities.data[key].availableActivities
+                        // ) {
+                        //     // do some weirdness for Master Empire hunts
+                        //     let hasAccessTo1280EmpireHunt = false;
+                        //     let incomplete1280Hunt = false;
+                        //     for (const aa of resp.characterActivities.data[key].availableActivities) {
+                        //         availableActivities[aa.activityHash] = true;
+                        //         if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
+                        //             // while we're here check for Empire Hunt pinnacle.
+                        //             // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
+                        //             const vDesc: any = await this.destinyCacheService.getActivity(aa.activityHash);
+                        //             // is this an empire hunt
+                        //             if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
+                        //                 hasAccessTo1280EmpireHunt = true;
+                        //                 if (aa.challenges?.length > 0) {
+                        //                     for (const challenge of aa.challenges) {
+                        //                         if (challenge.objective?.objectiveHash == 1980717736) {
+                        //                             // if this is here it shouldn't be complete, these disappear when complete
+                        //                             if (!challenge.objective.complete) {
+                        //                                 incomplete1280Hunt = true;
+                        //                                 break;
+                        //                             }
 
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
-                        }
+                        //                         }
+                        //                     }
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
+                        //     c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
+                        // }
                         for (const missingKey of Object.keys(milestonesByKey)) {
 
                             if (c.milestones[missingKey] == null) {
@@ -2051,7 +2055,7 @@ export class ParseService {
                     options.push(vault);
                     const items: PrivInventoryItem[] = resp.characterInventories.data[key].items;
                     for (const itm of items) {
-                        const parsed: InventoryItem = await this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions, resp);
+                        const parsed: InventoryItem = await this.parseInvItem(itm, char, resp.itemComponents, detailedInv, options, resp.characterProgressions, resp, dynamicStrings);
                         if (parsed != null) {
                             // don't deal with chalice if there are no milestones
                             // if (parsed.type === ItemType.MissionArtifact && resp.characterProgressions) {
@@ -2374,8 +2378,6 @@ export class ParseService {
         }
         // this.handleChallengeMilestones(chars, quests, milestoneList);
 
-        // handle string interpolation aka dynamic strings
-        const dynamicStrings = ParseService.buildDynamicStrings(resp);
         this.cookMileStones(milestoneList, dynamicStrings);
         for (const t of searchableTriumphs) {
             t.desc = ParseService.dynamicStringReplace(t.desc, null, dynamicStrings);
@@ -2408,43 +2410,46 @@ export class ParseService {
         // this.addPseudoMilestone('2065253185', milestonesByKey, milestoneList);
 
         // Harbinger
-        this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
         // Weekly Empire Hunt
-        this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
 
 
         // Weekly Exo Challenge
-        this.addPseudoMilestone('1713200903', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('1713200903', milestonesByKey, milestoneList);
         // Presage
-        this.addPseudoMilestone('3927548661', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('3927548661', milestonesByKey, milestoneList);
         // Prophecy
-        this.addPseudoMilestone('825965416', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('825965416', milestonesByKey, milestoneList);
         // GoS
         this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
         // VoG
-        this.addPseudoMilestone('2279677721', milestonesByKey, milestoneList);
+        this.addPseudoMilestone('1888320892', milestonesByKey, milestoneList);
+        // GoA
+        this.addPseudoMilestone('973171461', milestonesByKey, milestoneList);
+
 
         // S15 milestones
         // Shattered Champions
-        this.addPseudoMilestone('3789620084', milestonesByKey, milestoneList);
+        // this.addPseudoMilestone('3789620084', milestonesByKey, milestoneList);
         // astral alignment
         // this.addPseudoMilestone('1639406072', milestonesByKey, milestoneList);
         // this.addPseudoMilestone('3568317242', milestonesByKey, milestoneList);
         // this.addPseudoMilestone('1322124257', milestonesByKey, milestoneList);
 
-        const mseh: MileStoneName = {
-            key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
-            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
-            rewards: 'Pinnacle Gear',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-            name: 'Master Empire Hunt',
-            desc: 'Complete a Master Empire Hunt',
-            hasPartial: false,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        milestoneList.push(mseh);
-        milestonesByKey[mseh.key] = mseh;
+        // const mseh: MileStoneName = {
+        //     key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
+        //     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+        //     rewards: 'Pinnacle Gear',
+        //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+        //     name: 'Master Empire Hunt',
+        //     desc: 'Complete a Master Empire Hunt',
+        //     hasPartial: false,
+        //     neverDisappears: true,
+        //     dependsOn: []
+        // };
+        // milestoneList.push(mseh);
+        // milestonesByKey[mseh.key] = mseh;
     }
 
 
@@ -2453,17 +2458,17 @@ export class ParseService {
     // since we gather up milestones from all sorts of places
     private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings) {
         const presage = milestoneList.find(x => x.key == '3927548661');
-        if (presage) {
-            presage.name = 'Presage Weekly';
-        }
-        const prophecy = milestoneList.find(x => x.key == '825965416');
-        if (prophecy) {
-            prophecy.name = 'Prophecy Weekly';
-        }
-        const vog = milestoneList.find(x => x.key == '2279677721');
-        if (vog) {
-            vog.name = 'Vault of Glass';
-        }
+        // if (presage) {
+        //     presage.name = 'Presage Weekly';
+        // }
+        // const prophecy = milestoneList.find(x => x.key == '825965416');
+        // if (prophecy) {
+        //     prophecy.name = 'Prophecy Weekly';
+        // }
+        // const vog = milestoneList.find(x => x.key == '2279677721');
+        // if (vog) {
+        //     vog.name = 'Vault of Glass';
+        // }
         const nfScore = milestoneList.find(x => x.key == '2029743966');
         if (nfScore) {
             nfScore.name = 'Nightfall - 100K';
@@ -2472,19 +2477,23 @@ export class ParseService {
         if (nfCompletions) {
             nfCompletions.name = 'Nightfall - Completions';
         }
+        const graspOfAvarice = milestoneList.find(x => x.key == '973171461');
+        if (graspOfAvarice) {
+            graspOfAvarice.name = 'Grasp Of Avarice Weekly';
+        }
         // 1639406072, 3568317242, 1322124257
         // | s 3789620084
 
-        const netcrasher = milestoneList.find(x => x.key == '966446952');
-        if (netcrasher && netcrasher.rewards == 'Unknown') {
-            netcrasher.rewards = 'Powerful Legacy Gear';
-            netcrasher.boost = this.parseMilestonePl(netcrasher.rewards);
-        }
-        const shatteredChampions = milestoneList.find(x => x.key == '3789620084');
-        if (shatteredChampions && shatteredChampions.rewards == 'Unknown') {
-            shatteredChampions.rewards = 'Pinnacle Gear';
-            shatteredChampions.boost = this.parseMilestonePl(shatteredChampions.rewards);
-        }
+        // const netcrasher = milestoneList.find(x => x.key == '966446952');
+        // if (netcrasher && netcrasher.rewards == 'Unknown') {
+        //     netcrasher.rewards = 'Powerful Legacy Gear';
+        //     netcrasher.boost = this.parseMilestonePl(netcrasher.rewards);
+        // }
+        // const shatteredChampions = milestoneList.find(x => x.key == '3789620084');
+        // if (shatteredChampions && shatteredChampions.rewards == 'Unknown') {
+        //     shatteredChampions.rewards = 'Pinnacle Gear';
+        //     shatteredChampions.boost = this.parseMilestonePl(shatteredChampions.rewards);
+        // }
         // astral alignment 1
         // let aa = milestoneList.find(x => x.key == '1639406072');
         // if (aa && aa.rewards == '???') {
@@ -3373,7 +3382,7 @@ export class ParseService {
     }
 
 
-    public async parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any, resp?: any): Promise<InventoryItem> {
+    public async parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any, resp?: any, dynamicStrings?: DynamicStrings): Promise<InventoryItem> {
         try {
             const desc: any = await this.destinyCacheService.getInventoryItem(itm.itemHash);
             if (desc == null) {
@@ -3500,10 +3509,12 @@ export class ParseService {
                     if (objs != null) {
                         for (const o of objs) {
                             const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
+                            
+                            
                             const iObj: ItemObjective = {
                                 hash: o.objectiveHash,
                                 completionValue: oDesc.completionValue,
-                                progressDescription: oDesc.progressDescription,
+                                progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null, dynamicStrings),
                                 progress: o.progress == null ? 0 : o.progress,
                                 complete: o.complete,
                                 percent: 0
@@ -3592,7 +3603,7 @@ export class ParseService {
                                 continue;
                             }
                             // skip cosmetics
-                            if (jCat.socketCategoryHash == 2048875504 || jCat.socketCategoryHash == 1926152773) {
+                            if (jCat.socketCategoryHash == 2048875504 || jCat.socketCategoryHash == 1926152773 || jCat.socketCategoryHash == 3201856887 ) {
                                 continue;
                             }
                             // read armor tier info from the item instance instead
@@ -3822,6 +3833,8 @@ export class ParseService {
             const locked: boolean = (itm.state & ItemState.Locked) > 0;
             const masterworked = (itm.state & ItemState.Masterwork) > 0;
             const tracked = (itm.state & ItemState.Tracked) > 0;
+            const shaped = (itm.state & ItemState.Shaped) > 0;
+            const deepsight = (itm.state & ItemState.Deepsight) > 0;
 
             const bucketOrder = null;
 
@@ -3841,6 +3854,12 @@ export class ParseService {
             }
             if (masterworked) {
                 searchText += ' is:masterwork';
+            }
+            if (shaped) {
+                searchText += ' is:shaped';
+            }
+            if (deepsight) {
+                searchText += ' is:deepsight';
             }
             if (sockets != null) {
                 for (const s of sockets) {
@@ -4010,7 +4029,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, shaped, deepsight
             );
         } catch (exc) {
             console.dir(itemComp);
