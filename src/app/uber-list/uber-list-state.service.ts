@@ -1086,10 +1086,28 @@ const CLASSIFICATIONS: Classification[] = [
     bountyLabels: ['bounties.gunsmith']
   },
   {
-    name: 'Europa',
-    vendor: 'Variks',
-    milestoneNames: ['europa'],
-    bountyLabels: ['europa.bounties']
+    name: 'Throneworld',
+    vendor: 'Fynch',
+    milestoneNames: ['wellspring', 'fynch'],
+    bountyLabels: ['throneworld.bounties']
+  },
+  {
+    name: 'Dares',
+    vendor: 'Xur',
+    milestoneNames: ['dares of eternity'],
+    bountyLabels: ['eternity.bounties']
+  },
+  {
+    name: 'PsiOps',
+    vendor: 'War Table',
+    milestoneNames: ['runic','for the light'],
+    bountyLabels: ['seasons.season16.ritual.bounties']
+  },
+  {
+    name: 'Trials',
+    vendor: 'Saint',
+    milestoneNames: ['trials'],
+    bountyLabels: ['trials.bounties']
   },
   // {
   //   name: 'Splicer',
@@ -1097,17 +1115,30 @@ const CLASSIFICATIONS: Classification[] = [
   //   milestoneNames: ['rewiring', 'digital', 'net crasher'],
   //   bountyLabels: ['seasons.season14.ritual.bounties']
   // },
+  // {
+  //   name: 'Wayfinder',
+  //   vendor: 'Wayfinder\'s Compass',
+  //   milestoneNames: ['astral', 'wayfinder', 'shattered'],
+  //   bountyLabels: ['seasons.season15.ritual.bounties']
+  // },
+  
   {
-    name: 'Wayfinder',
-    vendor: 'Wayfinder\'s Compass',
-    milestoneNames: ['astral', 'wayfinder', 'shattered'],
-    bountyLabels: ['seasons.season15.ritual.bounties']
+    name: 'Moon',
+    vendor: 'Lectern/Eris',
+    milestoneNames: [],
+    bountyLabels: ['v460.luna']
   },
   {
-    name: 'Trials',
-    vendor: 'Saint',
-    milestoneNames: ['trials'],
-    bountyLabels: ['trials.bounties']
+    name: 'Dreaming City',
+    vendor: 'Petra',
+    milestoneNames: [],
+    bountyLabels: ['open_world.d2.v400.dreaming_city']
+  },
+  {
+    name: 'Europa',
+    vendor: 'Variks',
+    milestoneNames: ['europa'],
+    bountyLabels: ['europa.bounties']
   },
   {
     name: 'Unclassified',
