@@ -847,22 +847,22 @@ export class BungieService implements OnDestroy {
     // }
 
 
-    private static setPseudoMilestoneFromActivities(c: Character, msKey: string, activities: Activity[], filterName: string) {
-        const filteredActivities = activities.filter(a => a.name?.indexOf(filterName) >= 0);
-        let done = false;
-        let mightHaveCheckpoint = false;
-        // iterate in descending order, if they have an unfinished instance, they might have a checkpoint
-        // if they're done, we're done looking
-        for (const a of filteredActivities) {
-            if (a.success && a.completed) {
-                done = true;
-                break;
-            } else {
-                mightHaveCheckpoint = true;
-            }
-        }
-        c.milestones[msKey] = new MilestoneStatus(msKey, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, null, mightHaveCheckpoint ? ['May hold checkpoint'] : null, null, false, false);
-    }
+    // private static setPseudoMilestoneFromActivities(c: Character, msKey: string, activities: Activity[], filterName: string) {
+    //     const filteredActivities = activities.filter(a => a.name?.indexOf(filterName) >= 0);
+    //     let done = false;
+    //     let mightHaveCheckpoint = false;
+    //     // iterate in descending order, if they have an unfinished instance, they might have a checkpoint
+    //     // if they're done, we're done looking
+    //     for (const a of filteredActivities) {
+    //         if (a.success && a.completed) {
+    //             done = true;
+    //             break;
+    //         } else {
+    //             mightHaveCheckpoint = true;
+    //         }
+    //     }
+    //     c.milestones[msKey] = new MilestoneStatus(msKey, done, done ? 1 : mightHaveCheckpoint ? 0.5 : 0, null, mightHaveCheckpoint ? ['May hold checkpoint'] : null, null, false, false);
+    // }
 
     // private async loadActivityPseudoMilestonesOnChar(p: BehaviorSubject<Player>, c: Character): Promise<void> {
     //     // let d = new Date();

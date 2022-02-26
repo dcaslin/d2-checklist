@@ -206,6 +206,8 @@ public static parseBungieMembers(results: PrivBungieMember[]): BungieMember[] {
     if (mode === 82) { return 'Dungeon'; }
     if (mode === 83) { return 'Sundial'; }
     if (mode === 84) { return 'Trials Of Osiris'; }
+    if (mode === 85) { return 'Dares'; }
+    if (mode === 86) { return 'Wellspring'; }
     return 'Unknown ' + mode;
   }
 }

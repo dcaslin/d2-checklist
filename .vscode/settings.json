@@ -1,3 +1,6 @@
 {
-    "cSpell.diagnosticLevel": "Hint"
+    "cSpell.diagnosticLevel": "Hint",
+    "search.exclude": {
+        "**/src/assets/*.json": true
+    }
 }
