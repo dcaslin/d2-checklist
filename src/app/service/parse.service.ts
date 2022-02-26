@@ -1935,7 +1935,10 @@ export class ParseService {
                                     }
 
                                     // hack for Trials rounds where the activity is sometimes missing anyway asdf
-                                    if (!activityAvailable && this.ALWAYS_AVAILABLE_MS.indexOf(missingKey) <= 0) {
+                                    // if (!activityAvailable && this.ALWAYS_AVAILABLE_MS.indexOf(missingKey) <= 0) {
+                                    //     activityAvailable = true;
+                                    // }
+                                    if (!activityAvailable) {
                                         activityAvailable = true;
                                     }
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
