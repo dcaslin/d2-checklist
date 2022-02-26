@@ -93,6 +93,16 @@ export class ParseService {
 
     ];
 
+    // These are milestones that may show unavailable in Activity list upon completion
+    // causing them to incorrectly show as "not unlocked" when they're actually done
+    ALWAYS_AVAILABLE_MS = [
+        '3312774044', // Crucible
+        '3448738070', // Gambit
+        '1437935813', // Vanguard
+        '3831234800', // Wellspring
+        '3007559996' // Trials
+    ]
+
     ACCOUNT_LEVEL = [
         '1983115403', // House of light #UPDATEME
         // '3611983588', // CROW
@@ -692,7 +702,7 @@ export class ParseService {
             act.teamScore = ParseService.getBasicValue(a.values.teamScore);
             act.kd = ParseService.getBasicValue(a.values.killsDeathsRatio);
             act.completionReason = ParseService.getBasicValue(a.values.completionReason);
-            const isGambit = desc.activityModeTypes?.indexOf(63) >= 0;
+            const isGambit = desc?.activityModeTypes?.indexOf(63) >= 0;
             if (desc && (desc.isPvP || isGambit)) {
                 act.success = act.standing === 0;
             } else {
@@ -1924,8 +1934,8 @@ export class ParseService {
                                         activityAvailable = true;
                                     }
 
-                                    // hack for Trials rounds where the activity is sometimes missing anyway
-                                    if (missingKey == '3007559996' && !activityAvailable) {
+                                    // hack for Trials rounds where the activity is sometimes missing anyway asdf
+                                    if (!activityAvailable && this.ALWAYS_AVAILABLE_MS.indexOf(missingKey) <= 0) {
                                         activityAvailable = true;
                                     }
                                     c.milestones[missingKey] = new MilestoneStatus(missingKey, true, 1, null, null, [], !activityAvailable, c.notReady);
@@ -2428,6 +2438,15 @@ export class ParseService {
         // GoA
         this.addPseudoMilestone('973171461', milestonesByKey, milestoneList);
 
+        
+        // // Crucible 
+        // this.addPseudoMilestone('3312774044', milestonesByKey, milestoneList);
+        // // Gambit 
+        // this.addPseudoMilestone('3448738070', milestonesByKey, milestoneList);
+        // // Vanguard 
+        // this.addPseudoMilestone('1437935813', milestonesByKey, milestoneList);
+        // // Wellspring  
+        // this.addPseudoMilestone('3831234800', milestonesByKey, milestoneList);
 
         // S15 milestones
         // Shattered Champions
@@ -2480,6 +2499,11 @@ export class ParseService {
         const graspOfAvarice = milestoneList.find(x => x.key == '973171461');
         if (graspOfAvarice) {
             graspOfAvarice.name = 'Grasp Of Avarice Weekly';
+        }
+        
+        const witchQueenWeekly = milestoneList.find(x => x.key == '363309766');
+        if (witchQueenWeekly) {
+            witchQueenWeekly.name = 'Witch Queen Story Weekly';
         }
         // 1639406072, 3568317242, 1322124257
         // | s 3789620084
