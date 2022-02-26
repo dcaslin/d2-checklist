@@ -95,6 +95,7 @@ export class ParseService {
 
     // These are milestones that may show unavailable in Activity list upon completion
     // causing them to incorrectly show as "not unlocked" when they're actually done
+    // ignoring this for now since it's even more widespread (VoG, NF, and more also affected)
     ALWAYS_AVAILABLE_MS = [
         '3312774044', // Crucible
         '3448738070', // Gambit
@@ -1935,9 +1936,10 @@ export class ParseService {
                                     }
 
                                     // hack for Trials rounds where the activity is sometimes missing anyway asdf
-                                    // if (!activityAvailable && this.ALWAYS_AVAILABLE_MS.indexOf(missingKey) <= 0) {
+                                    // if (!activityAvailable && this.ALWAYS_AVAILABLE_MS.indexOf(missingKey) >= 0) {
                                     //     activityAvailable = true;
                                     // }
+                                    // We're just going to disabled that checking for now, since EVERYTHING seems wrong after Witch Queen
                                     if (!activityAvailable) {
                                         activityAvailable = true;
                                     }
@@ -2504,9 +2506,13 @@ export class ParseService {
             graspOfAvarice.name = 'Grasp Of Avarice Weekly';
         }
         
-        const witchQueenWeekly = milestoneList.find(x => x.key == '363309766');
+        const witchQueenPinnacle = milestoneList.find(x => x.key == '363309766');
+        if (witchQueenPinnacle) {
+            witchQueenPinnacle.name = 'Witch Queen Story - 100K';
+        }
+        const witchQueenWeekly = milestoneList.find(x => x.key == '2595878741');
         if (witchQueenWeekly) {
-            witchQueenWeekly.name = 'Witch Queen Story Weekly';
+            witchQueenWeekly.name = 'Witch Queen Story - Completion';
         }
         // 1639406072, 3568317242, 1322124257
         // | s 3789620084
