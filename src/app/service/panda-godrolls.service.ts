@@ -3,6 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { isUndefined } from 'util';
 import { Const, InventoryItem, InventorySocket, ItemType, SelectedUser } from './model';
 import { NotificationService } from './notification.service';
 
@@ -189,6 +190,9 @@ export class PandaGodrollsService implements OnDestroy {
     if (i.pandaPve < 1 && i.pandaPvp < 1) {
       i.searchText = i.searchText + ' is:notgoodroll';
       i.godRollInfo = i.godRollInfo + ' is:notgoodroll';
+      if (!i.shaped && !i.deepsight) {
+        i.searchText = i.searchText + ' is:notinteresting';
+      }
     }
     let needsFixing = false;
     const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
