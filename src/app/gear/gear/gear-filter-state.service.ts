@@ -195,6 +195,8 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:godrollpvp', desc: 'Only PVP god rolls' },
   { value: 'is:goodrollpve' },
   { value: 'is:goodrollpvp' },
+  { value: 'is:notgoodroll'},
+  { value: 'is:notinteresting', desc: 'Not good/god/deepsight/crafted'},
   { value: 'is:shaped', desc: 'Shaped for Witch Queen' },
   { value: 'is:deepsight', desc: 'Witch Queen Deepsight Weapon' },
   { value: 'is:masterwork', desc: 'Fully MW\'d' },
@@ -713,7 +715,7 @@ export class GearFilterStateService implements OnDestroy {
       icon: iconService.fasStar,
       displayTabs: [ItemType.Weapon],
       wildcard: true,
-      grabValue: (x: InventoryItem) => x.godRollInfo
+      grabValue: (x: InventoryItem) => x.searchText
     };
     const armorStatPointsConfig: ToggleConfig = {
       title: 'Stat Points',
@@ -889,6 +891,9 @@ export class GearFilterStateService implements OnDestroy {
         ], currentTab.type)),
       godRolls$: new BehaviorSubject(generateState(godRollConfig,
         [
+
+          new Choice('is:deepsight', 'Deepsight'),
+          new Choice('is:shaped', 'Shaped'),
           new Choice('is:godroll', 'God Roll'),
           new Choice('is:goodroll', 'Good Roll'),
           new Choice('is:godrollpve', 'God Roll PVE'),
@@ -896,7 +901,7 @@ export class GearFilterStateService implements OnDestroy {
           new Choice('is:goodrollpve', 'Good Roll PVE'),
           new Choice('is:goodrollpvp', 'Good Roll PVP'),
           new Choice('is:fixme', 'Suboptimal perks active'),
-          new Choice('is:notgoodroll', 'Neither good nor god rolls')
+          new Choice('is:notinteresting', 'Not good/god/deepsight/crafted')
         ], currentTab.type)),
       weaponBuckets$: new BehaviorSubject(generateState(weaponBucketsConfig,
         this.generateBucketChoices(ItemType.Weapon), currentTab.type)),
