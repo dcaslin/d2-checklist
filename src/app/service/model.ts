@@ -125,6 +125,16 @@ export enum DestinyAmmunitionType {
     Unknown = 4
 }
 
+export enum DestinyObjectiveUiStyle {
+    None = 0,
+    Highlighted = 1,
+    CraftingWeaponLevel = 2,
+    CraftingWeaponLevelProgress = 3,
+    CraftingWeaponTimestamp = 4,
+    CraftingMementos = 5,
+    CraftingMementoTitle = 6
+}
+
 export enum ItemType {
     None = 0,
     Currency = 1,
@@ -400,6 +410,11 @@ export interface ItemObjective {
     complete: boolean;
     percent: number;
     score?: number;
+}
+
+export interface WeaponShapeLevelObjective extends ItemObjective {
+    level?: number;
+    date?: number;
 }
 
 export class ActivityMode {
@@ -799,6 +814,8 @@ export class InventoryItem {
     readonly versionNumber: number;
     readonly shaped: boolean;
     readonly deepsight: boolean;
+    readonly deepSightProgress: ItemObjective;
+    readonly craftProgress: WeaponShapeLevelObjective;
 
     canFit(socket: InventorySocket, plug: ManifestInventoryItem): boolean {
         const current = socket.active.energyCost;
@@ -846,7 +863,7 @@ export class InventoryItem {
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string, versionNumber: number, shaped: boolean, deepsight: boolean
+        specialModSockets: string[], collectibleHash: string, versionNumber: number, shaped: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective
     ) {
         this.id = id;
         this.hash = hash;
@@ -904,6 +921,8 @@ export class InventoryItem {
         this.versionNumber = versionNumber;
         this.shaped = shaped;
         this.deepsight = deepsight;
+        this.deepSightProgress = deepSightProgress;
+        this.craftProgress = craftProgress;
     }
 }
 

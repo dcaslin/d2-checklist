@@ -27,6 +27,7 @@ import {
     CurrentPartyActivity,
     DamageType,
     DestinyAmmunitionType,
+    DestinyObjectiveUiStyle,
     DynamicStrings,
     EnergyType,
     Fraction,
@@ -65,7 +66,7 @@ import {
     TriumphCollectibleNode,
     TriumphNode,
     TriumphPresentationNode,
-    TriumphRecordNode, Vault
+    TriumphRecordNode, Vault, WeaponShapeLevelObjective
 } from './model';
 import { SimpleParseService } from './simple-parse.service';
 
@@ -3426,6 +3427,10 @@ export class ParseService {
             // anything with no type goes away too
 
             let type: ItemType = desc.itemType;
+            let itemTypeDisplayName = desc.itemTypeDisplayName;
+            let deepSightProgress: ItemObjective = null;
+            let craftProgress: WeaponShapeLevelObjective = null;
+
             // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
             const ignoreWeaponPerkStats: InventoryPlug[] = [];
             let redacted = false;
@@ -3497,6 +3502,12 @@ export class ParseService {
                     type = ItemType.Shader;
                 } else if (type === ItemType.Dummy && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
                     type = ItemType.Shader;
+                } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Element')) {
+                    type = ItemType.ExchangeMaterial;       
+                    itemTypeDisplayName = 'Shaping Material';
+                } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Alloy')) {
+                    type = ItemType.ExchangeMaterial;         
+                    itemTypeDisplayName = 'Shaping Material';
                 } else if (type === ItemType.None && desc.itemTypeDisplayName == 'Mask') {
                     type = ItemType.Armor;
                 } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
@@ -3528,7 +3539,8 @@ export class ParseService {
             const objectives: ItemObjective[] = [];
             let progTotal = 0, progCnt = 0;
             if (itemComp != null) {
-                if (itemComp.objectives != null && itemComp.objectives.data != null) {
+                // these objectives don't work for proper gear, just bounties and quests
+                if (itemComp.objectives?.data && type!=ItemType.Weapon && type!=ItemType.Armor) {
                     const parentObj: any = itemComp.objectives.data[itm.itemInstanceId];
                     let objs: any[] = null;
                     if (parentObj != null) {
@@ -3563,6 +3575,78 @@ export class ParseService {
                         }
                     }
 
+                }
+                
+                if (itemComp.plugObjectives?.data) {
+                    const pObj: any = itemComp.plugObjectives.data[itm.itemInstanceId];
+                    if (pObj?.objectivesPerPlug) {
+                        const deepSightRes = pObj.objectivesPerPlug['213377779'] || pObj.objectivesPerPlug['2400712188'] || pObj.objectivesPerPlug['3632593563'];
+                        if (deepSightRes != null && deepSightRes.length>0) {                            
+                            const o = deepSightRes[0];
+                            const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
+                            
+                            const iObj: ItemObjective = {
+                                hash: o.objectiveHash,
+                                completionValue: oDesc.completionValue,
+                                progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null, dynamicStrings),
+                                progress: o.progress == null ? 0 : o.progress,
+                                complete: o.complete,
+                                percent: 0
+                            };
+
+
+                            if (iObj.completionValue != null && iObj.completionValue > 0) {
+                                progTotal += 100 * iObj.progress / iObj.completionValue;
+                                progCnt++;
+                                iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
+                            }
+                            objectives.push(iObj);
+                            deepSightProgress = iObj;
+                        }
+                        const shapedLevel = pObj.objectivesPerPlug['659359923'] || pObj.objectivesPerPlug['1922808508'] || pObj.objectivesPerPlug['4029346515'];
+                        if (shapedLevel != null && shapedLevel.length>0) {
+                            let dateCrafted: number = null;
+                            let level: number = null;
+                            let objective: WeaponShapeLevelObjective = null;
+                            for (const o of shapedLevel) {
+                                const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
+                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevel ) {
+                                    console.log(`setting level to ${o.progress}`);
+                                    level = o.progress;
+                                    continue;
+                                }
+                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevelProgress ) {
+                                    const iObj: WeaponShapeLevelObjective = {
+                                        hash: o.objectiveHash,
+                                        completionValue: oDesc.completionValue,
+                                        progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null, dynamicStrings),
+                                        progress: o.progress == null ? 0 : o.progress,
+                                        complete: o.complete,
+                                        percent: 0
+                                    };
+                                    if (iObj.completionValue != null && iObj.completionValue > 0) {
+                                        progTotal += 100 * iObj.progress / iObj.completionValue;
+                                        progCnt++;
+                                        iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
+                                    }
+                                    objective = iObj;
+                                    continue;
+                                }
+                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponTimestamp ) {
+                                    dateCrafted = o.progress ? o.progress * 1000 : null;
+                                    continue;
+                                }
+                            }
+                            if (objective) {
+                                console.log(`2 setting level to ${level}`);
+                                objective.level = level;
+                                objective.date = dateCrafted;
+                                objectives.push(objective);
+                                craftProgress = objective;
+                            }
+                        }
+
+                    }
                 }
             }
             let aggProgress = 0;
@@ -4055,14 +4139,14 @@ export class ParseService {
             }
             specialModSockets.sort();
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
-                equipped, canEquip, owner, icon, iconWatermark, type, desc.itemTypeDisplayName,
+                equipped, canEquip, owner, icon, iconWatermark, type, itemTypeDisplayName,
                 itm.quantity,
                 power, damageType, energyType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, shaped, deepsight
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, shaped, deepsight, deepSightProgress, craftProgress
             );
         } catch (exc) {
             console.dir(itemComp);
