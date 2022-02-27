@@ -406,6 +406,18 @@
                     <fa-icon [icon]="iconService.fasEnvelope"></fa-icon>
                   </span>
                   <d2c-god-roll-item [item]="i" [debugmode]="debugmode|async"></d2c-god-roll-item>
+                </div>                
+                <div *ngIf="i.deepSightProgress as obj" class="obj-desc">
+                  <div class="total-progress">
+                    <mat-progress-bar class="progress-bar" color="warn" mode="determinate" [value]="obj.percent"></mat-progress-bar>
+                    <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% Attuned</div>
+                  </div>                  
+                </div>
+                <div *ngIf="i.craftProgress as obj" class="obj-desc">
+                  <div class="total-progress">
+                    <mat-progress-bar class="progress-bar" color="accent" mode="determinate" [value]="obj.percent"></mat-progress-bar>
+                    <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% To Level {{obj.level}}<br>{{obj.date|date:'shortDate'}}</div>
+                  </div>                  
                 </div>
               </td>
               <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">

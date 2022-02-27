@@ -5,6 +5,7 @@ import { NotificationService } from './notification.service';
 import { environment as env } from '@env/environment';
 import { del, get, keys, set } from 'idb-keyval';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { DestinyObjectiveUiStyle } from './model';
 
 const LOG_CSS = `color: orangered`;
 
@@ -377,6 +378,7 @@ export interface Objective {
   index: number;
   redacted: boolean;
   blacklisted: boolean;
+  uiStyle?: DestinyObjectiveUiStyle;
 }
 
 export interface Season {
