@@ -15,6 +15,27 @@ interface VaultStatus {
     isFull: boolean;
 }
 
+interface ClearInvChecker {
+    (item: InventoryItem): boolean;
+}
+
+function isJunk(i: InventoryItem): boolean {
+    return i.mark == 'junk';
+}
+
+
+function isKeepUpgradeUntagged(i: InventoryItem): boolean {
+    return i.mark == 'keep' || i.mark == 'upgrade' || i.mark == null;
+}
+
+function isNeverTrue(i: InventoryItem): boolean {
+    return false;
+}
+
+function isGrind(i: InventoryItem): boolean {
+    return i.deepsight || (i.shaped && i.craftProgress?.level < 20);
+}
+
 @Injectable()
 export class GearService {
 
@@ -150,7 +171,7 @@ export class GearService {
                 'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
                 'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true);
-                // Craftables ?
+            // Craftables ?
             // update gear counts on title bar
             this.signedOnUserService.gearMetadata$.next(player.gearMetaData);
             this.signedOnUserService.currencies$.next(player.currencies);
@@ -211,7 +232,7 @@ export class GearService {
         }
     }
 
-    private async clearInvForMode(target: Target, player: Player, ignoreMark: string[], itemType: ItemType, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<boolean> {
+    private async clearInvForMode(target: Target, player: Player, shouldIgnoreFunc: ClearInvChecker, itemType: ItemType, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<boolean> {
         console.log('Clearing inventory ahead of a mode.');
         this.notificationService.info('Clearing inventory ahead of time...');
         const buckets = this.bucketService.getBuckets(target);
@@ -221,7 +242,7 @@ export class GearService {
         for (const bucket of buckets) {
             const items = bucket.items.slice();
             for (const i of items) {
-                if (i.equipped.getValue() == false && !i.postmaster && (ignoreMark.indexOf(i.mark) === -1)) {
+                if (i.equipped.getValue() == false && !i.postmaster && !shouldIgnoreFunc(i)) {
                     if (itemType == null || i.type == itemType) {
                         if (i.type == ItemType.Weapon
                             || i.type == ItemType.Armor) {
@@ -286,7 +307,7 @@ export class GearService {
             if (tryCount > 1) {
                 console.log(`Shard mode, pass # ${tryCount} - last run moved ${incrementalWork} items`);
             }
-            invClearedSuccessfully = await this.clearInvForMode(target, player, ['junk'], itemType, vaultStatus, progressTracker$);
+            invClearedSuccessfully = await this.clearInvForMode(target, player, isJunk, itemType, vaultStatus, progressTracker$);
             if (!vaultStatus.isFull) {
                 console.log(`Shard mode cleared inv successfully.`);
             } else {
@@ -296,7 +317,7 @@ export class GearService {
                 // might we move it?
                 if (!bluesOnly || i.tier === 'Rare') {
                     // is this worth targeting?
-                    if (i.mark == 'junk' && i.owner.getValue().id != target.id && (itemType == null || i.type == itemType)) {
+                    if (isJunk(i) && i.owner.getValue().id != target.id && (itemType == null || i.type == itemType)) {
                         // if the vault is full and the item needs to move through the vault, forget about it
                         if (vaultStatus.isFull && i.owner.getValue().id != player.vault.id) {
                             continue;
@@ -489,7 +510,7 @@ export class GearService {
     public async clearInv(player: Player, progressTracker$: Subject<void>, itemType?: ItemType) {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
-        const clearSuccess = await this.clearInvForMode(target, player, ['keep', 'upgrade', null], itemType, vaultStatus, progressTracker$);
+        const clearSuccess = await this.clearInvForMode(target, player, isKeepUpgradeUntagged, itemType, vaultStatus, progressTracker$);
         if (!clearSuccess) {
             this.notificationService.info('Inventory could not be fully cleared, your vault ran out of space');
         } else {
@@ -498,11 +519,71 @@ export class GearService {
 
     }
 
+    public async weaponGrindMode(player: Player, progressTracker$: Subject<void>) {
+        const itemType = ItemType.Weapon;
+        const target = player.characters[0];
+        let moved = 0;
+        const vaultStatus = { isFull: false };
+
+        this.clearInvForMode(target, player, isGrind, itemType, vaultStatus, progressTracker$);
+        if (!vaultStatus.isFull) {
+            console.log(`Grind mode cleared inv successfully.`);
+        } else {
+            console.log(`Grind mode encountered errors clearing inv.`);
+        }
+        for (const i of player.gear) {
+            // is this worth targeting?
+            if (isGrind(i)) {
+                console.log(i.name);
+                // is it not already where we need it
+                if (i.owner.getValue().id != target.id && (itemType == null || i.type == itemType)) {
+                    // is the vault full and required? If so, forget about it
+                    if (vaultStatus.isFull && i.owner.getValue().id != player.vault.id) {
+                        continue;
+                    }
+                    const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
+                    if (targetBucket.items.length < i.inventoryBucket.itemCount) {
+                        console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
+                        try {
+                            let success;
+                            if (i.postmaster === true) {
+                                const owner = i.owner.getValue();
+                                success = await this.transfer(player, i, owner, vaultStatus, progressTracker$);
+                                if (success) {
+                                    if (owner.id === target.characterId) {
+                                        moved++;
+                                        continue;
+                                    }
+                                }
+                            }
+                            success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
+                            if (success) {
+                                moved++;
+                            }
+                        } catch (e) {
+                            console.log('Error on move: ' + e);
+                        }
+                    }
+                }
+            }
+        }
+        const msg = 'Moved ' + moved + ' items to ' + target.label;
+        // re sync locks to work around bungie bug where things get locked
+        await this.processGearLocks(player);
+        if (vaultStatus.isFull) {
+            this.notificationService.success('Your vault was too full to finish. Despite all that: ' + msg);
+        } else if (moved == 0) {
+            this.notificationService.success('Nothing left to move!');
+        } else {
+            this.notificationService.success('Done! All set to start grinding! ' + msg);
+        }
+    }
+
 
     public async upgradeMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType) {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
-        const clearSuccess = await this.clearInvForMode(target, player, [], itemType, vaultStatus, progressTracker$);
+        const clearSuccess = await this.clearInvForMode(target, player, isNeverTrue, itemType, vaultStatus, progressTracker$);
         let totalErr = 0;
         let moved = 0;
         for (const i of player.gear) {
@@ -877,3 +958,5 @@ export class GearService {
         }
     }
 }
+
+
