@@ -3611,7 +3611,6 @@ export class ParseService {
                             for (const o of shapedLevel) {
                                 const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
                                 if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevel ) {
-                                    console.log(`setting level to ${o.progress}`);
                                     level = o.progress;
                                     continue;
                                 }
@@ -3638,7 +3637,6 @@ export class ParseService {
                                 }
                             }
                             if (objective) {
-                                console.log(`2 setting level to ${level}`);
                                 objective.level = level;
                                 objective.date = dateCrafted;
                                 objectives.push(objective);

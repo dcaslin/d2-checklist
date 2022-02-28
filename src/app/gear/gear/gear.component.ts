@@ -258,6 +258,14 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.gearFilterStateService.filterUpdated$.next();
   }
 
+
+  public async weaponGrindMode() {    
+    await this.load(true);
+    await this.gearService.weaponGrindMode(this.player$.getValue(), this.gearFilterStateService.filterUpdated$);
+    await this.load(true);
+    await this.syncLocks();
+  }
+
   public async shardBlues() {
     await this.load(true);
     await this.gearService.shardBlues(this.player$.getValue(), this.gearFilterStateService.filterUpdated$);
