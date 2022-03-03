@@ -730,8 +730,16 @@ export class ClanStateService {
       const cutoff = new Date();
       cutoff.setMonth(cutoff.getMonth() - this.inactivityMonthThreshold);
       const sCutoff = cutoff.toISOString();
-      const members = functMembers.filter(x => {
-        if (x.lastOnlineStatusChange > sCutoff) {
+
+      // some characters are reporting 1970-01-01 as their last played date
+      // make an arbitrary cutoff of 20 years ago
+      const hackCutoff = new Date();
+      hackCutoff.setFullYear(2000);
+      const sHackCutoff = hackCutoff.toISOString();
+      
+      const members = functMembers.filter(x => {        
+        // if they're inactive, mark them as such, but consider hack date too
+        if ((x.lastOnlineStatusChange > sCutoff) || (x.lastOnlineStatusChange < sHackCutoff)) {
           return true;
         } else {
           this.inactiveMembers.push(x);

@@ -23,6 +23,7 @@ import {
     ClassAllowed,
     Const,
     Currency,
+    CurrencyType,
     CurrentActivity,
     CurrentPartyActivity,
     DamageType,
@@ -78,6 +79,7 @@ const ARTIFACT_POWER_BONUS_PROG_HASH = '2214434133'; // #UPDATEME old 243419342 
 
 export const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
 
+
 @Injectable()
 export class ParseService {
     MAX_LEVEL = 50;
@@ -106,7 +108,8 @@ export class ParseService {
     ]
 
     ACCOUNT_LEVEL = [
-        '1983115403', // House of light #UPDATEME
+        '4203877294', // Fynch
+        // '1983115403', // House of light #UPDATEME
         // '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
         // '2468902004', // Obelisk: Nessus
@@ -275,18 +278,30 @@ export class ParseService {
             } else if (name === 'Dead Zone Scout') {
                 name = 'Devrim';
                 info = 'EDZ';
+            } else if (name === 'Vanguard Operations') {
+                name = 'War Table';
+                info = 'Vanguard Operations';
             } else if (name === 'Vanguard Tactical') {
                 name = 'Zavala';
-                info = 'Strikes';
-            } else if (name === 'Vanguard Research') {
-                name = 'Ikora';
-                info = 'Research';
+                info = 'Vanguard Tactical';
             } else if (name === 'The Crucible') {
                 name = 'Crucible';
                 info = 'Shaxx';
             } else if (name === 'Gunsmith') {
                 name = 'Gunsmith';
                 info = 'Banshee';
+            } else if (name === 'Conscientious Objector')  {
+                name = 'Fynch';
+                info = 'Conscientious Objector';
+            } else if (name === 'Purveyor of Strange Goods')  {
+                name = 'Xur';
+                info = 'Purveyor of Strange Goods';
+            } else if (name === 'Hero of Six Fronts')  {
+                name = 'Saint-14';
+                info = 'Trials';
+            } else if (name === 'Hero of Six Fronts')  {
+                name = 'The Drifter';
+                info = 'Gambit';
             } else if (name === 'Classified') {
                 return null;
             }
@@ -1392,6 +1407,36 @@ export class ParseService {
         return msa;
     }
 
+    private async parseCraftingMaterials(resp: any, currencies: Currency[]) { 
+        // Name: Inv item Id | object id | profile var id
+        // Neutral: 3491404510 | ?                 | 2747150405
+        await this.parseCraftingMaterial(resp, '3491404510', 2747150405, currencies, 100);
+        // Ruinous Element: 163842160| 2215515944  | 2653558736
+        await this.parseCraftingMaterial(resp, '163842160', 2653558736, currencies, 100);
+        // Adroit Element: 163842161 | 2215515945  | 2829303739
+        await this.parseCraftingMaterial(resp, '163842161', 2829303739, currencies, 101);
+        // Mutable  : 163842162 | 2215515946       | 1178490630
+        await this.parseCraftingMaterial(resp, '163842162', 1178490630, currencies, 102);
+        // Energetic: 163842163 | 2215515947       | 1238436609
+        await this.parseCraftingMaterial(resp, '163842163', 1238436609, currencies, 103);
+    }
+
+
+    private async parseCraftingMaterial(resp: any, itemHash: string, varHash: number, currencies: Currency[], order: number) {
+
+        const desc: any = await this.destinyCacheService.getInventoryItem(itemHash);
+        const quantity: any = resp.profileStringVariables?.data?.integerValuesByHash[varHash];
+        let maxStackSize = 99999;
+        if (desc.inventory?.maxStackSize) {
+            maxStackSize = desc.inventory.maxStackSize;
+        }
+        if (quantity!=null) { 
+            currencies.push(new Currency(itemHash, desc.displayProperties.name, desc.displayProperties.icon, quantity, CurrencyType.Crafting, order, maxStackSize));
+        }
+
+    }
+
+
     private async parseProfileChecklists(resp: any): Promise<Checklist[]> {
         const checklists: Checklist[] = [];
 
@@ -2056,9 +2101,19 @@ export class ParseService {
                 for (const x of resp.profileCurrencies.data.items) {
                     const desc: any = await this.destinyCacheService.getInventoryItem(x.itemHash);
                     if (desc != null) {
-                        currencies.push(new Currency(x.itemHash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity));
+                        let ctype = CurrencyType.Basic;
+                        if (desc.hash=='2817410917' || desc.inventory.stackUniqueLabel && desc.inventory.stackUniqueLabel.toLowerCase().indexOf('transmog')>=0) {
+                            ctype = CurrencyType.Cosmetic;
+                        }
+                        let maxStackSize = 99999;
+                        if (desc.inventory?.maxStackSize) {
+                            maxStackSize = desc.inventory.maxStackSize;
+                        }
+                        currencies.push(new Currency(desc.hash, desc.displayProperties.name, desc.displayProperties.icon, x.quantity, ctype, 0, maxStackSize));
                     }
                 }
+                // hack for crafting materials
+                await this.parseCraftingMaterials(resp, currencies);
             }
             vault = new Vault();
             shared = new Shared();
@@ -2383,11 +2438,14 @@ export class ParseService {
             return 0;
         });
         if (currencies.length > 0) {
-            await this.handleCurrency('2979281381', gear, currencies); // upgrade modules
-            await this.handleCurrency('4257549985', gear, currencies); // shards
-            await this.handleCurrency('4257549984', gear, currencies); // prisms
-            await this.handleCurrency('3853748946', gear, currencies); // cores
-            await this.handleCurrency('3702027555', gear, currencies); // spoils
+            await this.handleCurrency('2979281381', gear, currencies, CurrencyType.Upgrading, 11); // upgrade modules
+            await this.handleCurrency('4257549985', gear, currencies, CurrencyType.Upgrading, 12); // shards
+            await this.handleCurrency('4257549984', gear, currencies, CurrencyType.Upgrading, 13); // prisms
+            await this.handleCurrency('3853748946', gear, currencies, CurrencyType.Upgrading, 14); // cores
+            await this.handleCurrency('3702027555', gear, currencies, CurrencyType.Basic, 20); // spoils
+            await this.handleCurrency('353704689', gear, currencies, CurrencyType.Crafting, 110); // Asc Alloy
+            await this.handleCurrency('2497395625', gear, currencies, CurrencyType.Crafting, 111); // Res Alloy
+            await this.handleCurrency('747321467', gear, currencies, CurrencyType.Basic, 21); // Intel
         }
         if (resp.profileInventory?.data) {
             this.calculateMaxLight(chars, gear, artifactPowerBonus);
@@ -2404,6 +2462,12 @@ export class ParseService {
                 r.name = ParseService.dynamicStringReplace(r.name, b.owner.getValue().id, dynamicStrings);
             }
         }
+        // sort currencies by order
+        currencies.sort((a, b) => {
+            if (a.order > b.order) { return 1; }
+            if (a.order < b.order) { return -1; }
+            return 0;
+        });
         return new Player(profile, chars, currentActivity, milestoneList, currencies, bounties, quests,
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
@@ -2591,7 +2655,7 @@ export class ParseService {
         return returnMe;
     }
 
-    private async handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[]) {
+    private async handleCurrency(hash: string, gear: InventoryItem[], currencies: Currency[], type: CurrencyType, order: number) {
         let curr = currencies.find(x => x.hash === hash);
         if (!curr) {
             const desc = await this.destinyCacheService.getInventoryItem(hash);
@@ -2599,7 +2663,11 @@ export class ParseService {
                 console.log('Missing desc for ' + hash);
                 return;
             }
-            curr = new Currency(hash, desc.displayProperties.name, desc.displayProperties.icon, 0);
+            let maxStackSize = 99999;
+            if (desc.inventory?.maxStackSize) {
+                maxStackSize = desc.inventory.maxStackSize;
+            }
+            curr = new Currency(hash, desc.displayProperties.name, desc.displayProperties.icon, 0, type, order, maxStackSize);
             currencies.push(curr);
         }
         const ag = gear.filter(x => x.hash == hash);
@@ -3503,11 +3571,13 @@ export class ParseService {
                 } else if (type === ItemType.Dummy && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
                     type = ItemType.Shader;
                 } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Element')) {
-                    type = ItemType.ExchangeMaterial;       
-                    itemTypeDisplayName = 'Shaping Material';
+                    // type = ItemType.ExchangeMaterial;       
+                    // itemTypeDisplayName = 'Shaping Material';
+                    return null;
                 } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Alloy')) {
-                    type = ItemType.ExchangeMaterial;         
-                    itemTypeDisplayName = 'Shaping Material';
+                    // type = ItemType.ExchangeMaterial;         
+                    // itemTypeDisplayName = 'Shaping Material';
+                    // return null;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName == 'Mask') {
                     type = ItemType.Armor;
                 } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
@@ -3950,6 +4020,7 @@ export class ParseService {
             const tracked = (itm.state & ItemState.Tracked) > 0;
             const shaped = (itm.state & ItemState.Shaped) > 0;
             const deepsight = (itm.state & ItemState.Deepsight) > 0;
+            let notShaped = desc.inventory.recipeItemHash && !shaped;
 
             const bucketOrder = null;
 
@@ -3975,6 +4046,9 @@ export class ParseService {
             }
             if (deepsight) {
                 searchText += ' is:deepsight';
+            }
+            if (notShaped) {
+                searchText += ' is:notshaped';
             }
             if (sockets != null) {
                 for (const s of sockets) {
@@ -4144,7 +4218,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, shaped, deepsight, deepSightProgress, craftProgress
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, shaped, deepsight, deepSightProgress, craftProgress, notShaped
             );
         } catch (exc) {
             console.dir(itemComp);

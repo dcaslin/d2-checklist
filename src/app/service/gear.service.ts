@@ -170,7 +170,7 @@ export class GearService {
                 selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
                 'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-                'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives'], false, true);
+                'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'StringVariables'], false, true);
             // Craftables ?
             // update gear counts on title bar
             this.signedOnUserService.gearMetadata$.next(player.gearMetaData);

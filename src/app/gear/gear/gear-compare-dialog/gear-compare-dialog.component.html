@@ -7,17 +7,17 @@
         </d2c-season-indicator>
         <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{model.typeName}}</span><br><span
             class="simple-caption-no-margin hide-mobile-inline">{{model.desc}}</span>
-        
+
         <button mat-icon-button tabindex="-1" aria-label="close dialog" mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
     </div>
-    <div  mat-dialog-title class="dialog-title" *ngIf="showAllNames">
+    <div mat-dialog-title class="dialog-title" *ngIf="showAllNames">
         <span style="margin-right: 25px; vertical-align: middle">{{model.typeName}}</span>
         <mat-checkbox [(ngModel)]="hideJunk" class="simple-darker-caption-no-margin">Hide Junk/Infuse</mat-checkbox>
         <span class="fake-link-underlined simple-darker-caption-no-margin pad-left-more" *ngIf="hideMe.length>0"
             title="Restore Hidden" (click)="hideMe=[]">Restore Hidden</span>
-            
+
         <button mat-icon-button [autofocus]="false" aria-label="close dialog" mat-dialog-close>
             <mat-icon>close</mat-icon>
         </button>
@@ -119,8 +119,6 @@
                     <ng-container *ngFor="let i of sortedItems|async">
 
                         <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
-                            <fa-icon *ngIf="i.notes" [matTooltip]="i.notes" class="accent-text pad-right"
-                                [icon]="iconService.fasStickyNote"></fa-icon>
                             <button mat-button [ngClass]="['detail-tag-button',i.mark!=null?i.mark:'']"
                                 [matMenuTriggerFor]="menu">
                                 <ng-container *ngIf="i.mark==null">
@@ -144,6 +142,30 @@
                                     Remove Mark
                                 </button>
                             </mat-menu>
+                        </td>
+                    </ng-container>
+                </tr>
+                <tr>
+                    <th></th>
+                    <ng-container *ngFor="let i of sortedItems|async">
+                        <td *ngIf="shouldNotHide(i)" [ngClass]="i.mark?i.mark:'none'">
+                            <mat-form-field class="full-width">
+                                <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes"
+                                    placeholder="Notes" (ngModelChange)="parent.itemNotesChanged(i)"
+                                    [matAutocomplete]="hashTagAuto">
+                            </mat-form-field>
+                            <div *ngIf="i.deepSightProgress as obj" class="obj-desc">
+                                <div class="total-progress">
+                                  <mat-progress-bar class="progress-bar progress-bar" color="warn" mode="determinate" [value]="obj.percent"></mat-progress-bar>
+                                  <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% Attuned</div>
+                                </div>                  
+                              </div>
+                              <div *ngIf="i.craftProgress as obj" class="obj-desc">
+                                <div class="total-progress">
+                                  <mat-progress-bar class="progress-bar progress-bar" color="accent" mode="determinate" [value]="obj.percent"></mat-progress-bar>
+                                  <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% To Level {{obj.level}}<br>{{obj.date|date:'shortDate'}}</div>
+                                </div>                  
+                              </div>
                         </td>
                     </ng-container>
                 </tr>
@@ -234,7 +256,8 @@
                                 <ng-container *ngFor="let socket of i.sockets; index as i2; last as isLastSocket">
                                     <div *ngIf="i2 == i1">
                                         <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                                            <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async"></d2c-writable-plug>
+                                            <d2c-writable-plug [item]="i" [socket]="socket" [plug]="plug"
+                                                [debugmode]="debugmode|async"></d2c-writable-plug>
                                             <ng-container *ngIf="!isLastPlug"><br></ng-container>
                                         </ng-container>
                                     </div>
@@ -274,3 +297,8 @@
         </table>
     </mat-dialog-content>
 </ng-container>
+<mat-autocomplete #hashTagAuto="matAutocomplete">
+    <mat-option *ngFor="let hashTag of parent.markService.hashTags$|async" [value]="hashTag">
+        {{hashTag}}
+    </mat-option>
+</mat-autocomplete>

@@ -1,11 +1,11 @@
-<div class="d-none d-xxl-inline-block slide-left" *ngFor="let c of signedOnUserService.currencies$|async">
+<!-- <div class="d-none d-xxl-inline-block slide-left" *ngFor="let c of signedOnUserService.currencies$|async">
     <span class="margin-left-10" [matTooltip]="c.count+' '+c.name">
         <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
         <span class="pad-left-5 currency-text">{{c.count|number}}</span>
     </span>
-</div>
-<div class='defer-block d-xxl-none'>
-    <div class="defer-block d-xxl-none slide-left" *ngFor="let c of signedOnUserService.currencies$|async">
+</div> -->
+<div class='defer-block' *ngIf="signedOnUserService.currencies$|async as currencies">
+    <div class="defer-block slide-left" *ngFor="let c of currencies">
         <ng-container *ngIf="c.hash=='3159615086' || c.hash=='2979281381'">
             <span class="margin-left-10" [matTooltip]="c.count+' '+c.name">
                 <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
@@ -18,12 +18,50 @@
         <fa-icon [icon]="iconService.fasEllipsisV"></fa-icon>
     </a>
     <mat-menu #currencyMenu="matMenu">
-        <button mat-menu-item *ngFor="let c of signedOnUserService.currencies$|async">
+        
+        <ng-container *ngTemplateOutlet="subMenu; context: {currencies: currencies, ctype: CurrencyType.Basic}"></ng-container>     
+        <button mat-menu-item [matMenuTriggerFor]="upgradeMenu">
+            <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="craftMenu">
+            <fa-icon [icon]="iconService.fasHammerCrash"></fa-icon>&ensp;Craft
+        </button>
+        <button mat-menu-item [matMenuTriggerFor]="cosmeticMenu">
+            <fa-icon [icon]="iconService.fasShirt"></fa-icon>&ensp;Cosmetic
+        </button>
+        <!-- <button mat-menu-item *ngFor="let c of currencies">
             <div class='flex-row'>
                 <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + c.icon + ')'"></span>
-                <span class="currency-text">{{c.count|number}}</span>
+                <span class="currency-text">{{c.name}} {{c.count|number}}</span>
             </div>
-            
-        </button>
+        </button> -->
     </mat-menu>
+    <mat-menu #craftMenu="matMenu"> 
+        <ng-container *ngTemplateOutlet="subMenu; context: {currencies: currencies, ctype: CurrencyType.Crafting}"></ng-container>       
+    </mat-menu>
+    <mat-menu #cosmeticMenu="matMenu"> 
+        <ng-container *ngTemplateOutlet="subMenu; context: {currencies: currencies, ctype: CurrencyType.Cosmetic}"></ng-container>       
+    </mat-menu>
+    <mat-menu #upgradeMenu="matMenu"> 
+        <ng-container *ngTemplateOutlet="subMenu; context: {currencies: currencies, ctype: CurrencyType.Upgrading}"></ng-container>       
+    </mat-menu>    
 </div>
+
+
+<ng-template #subMenu let-currencies="currencies" let-ctype="ctype">
+    <ng-container *ngFor="let c of currencies">
+        <ng-container *ngIf="c.type==ctype">
+            <ng-container *ngTemplateOutlet="currencyItem; context: {item: c}"></ng-container>
+        </ng-container>
+    </ng-container>
+</ng-template>
+
+<ng-template #currencyItem let-item='item'>
+    <button mat-menu-item>
+        <div class='flex-row' [matTooltip]="item.name">
+            <span class="currency-icon" [style.background-image]="'url(//www.bungie.net' + item.icon + ')'"></span>            
+            <span class="currency-text">{{item.count|number}} <fa-icon *ngIf="item.count>=item.maxStackSize" class="pad-left warn-text" [icon]="iconService.fasTriangleExclamation"></fa-icon></span>
+            
+        </div>
+    </button>
+</ng-template>
