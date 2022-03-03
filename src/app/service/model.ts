@@ -107,6 +107,14 @@ export enum ClassAllowed {
     Any = 3
 }
 
+
+export enum CurrencyType {
+    Basic = 0,
+    Cosmetic = 1,
+    Crafting = 2,
+    Upgrading = 3
+}
+
 export const DestinyClasses = ['Titan', 'Hunter', 'Warlock'];
 
 export enum NumComparison {
@@ -814,6 +822,7 @@ export class InventoryItem {
     readonly versionNumber: number;
     readonly shaped: boolean;
     readonly deepsight: boolean;
+    readonly notShaped: boolean;
     readonly deepSightProgress: ItemObjective;
     readonly craftProgress: WeaponShapeLevelObjective;
 
@@ -863,7 +872,9 @@ export class InventoryItem {
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string, versionNumber: number, shaped: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective
+        specialModSockets: string[], collectibleHash: string, versionNumber: number, 
+        shaped: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective,
+        notShaped: boolean
     ) {
         this.id = id;
         this.hash = hash;
@@ -923,6 +934,7 @@ export class InventoryItem {
         this.deepsight = deepsight;
         this.deepSightProgress = deepSightProgress;
         this.craftProgress = craftProgress;
+        this.notShaped = notShaped;
     }
 }
 
@@ -931,11 +943,17 @@ export class Currency {
     name: string;
     icon: string;
     count: number;
-    constructor(hash: string, name: string, icon: string, count: number) {
+    type: CurrencyType;
+    order: number;
+    maxStackSize: number;
+    constructor(hash: string, name: string, icon: string, count: number, type: CurrencyType, order: number, maxStackSize: number) {
         this.hash = hash;
         this.name = name;
         this.icon = icon;
         this.count = count;
+        this.type = type;
+        this.order = order;
+        this.maxStackSize = maxStackSize;
     }
 }
 

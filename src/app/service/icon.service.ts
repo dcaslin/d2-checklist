@@ -6,7 +6,7 @@ import {
   faCopy as falCopy, faDiceD20 as falDiceD20, faDownload as falDownload, faEnvelope as falEnvelope, faEnvelopeOpen as falEnvelopeOpen,
   faExchange as falExchange, faEye as falEye, faEyeSlash as falEyeSlash, faGamepad as falGamepad, faSigma as falSigma,
   faSort as falSort, faSortDown as falSortDown, faSortUp as falSortUp, faTrophy as falTrophy,
-  faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow, faHammer as falHammer, faGem as falGem, faHatCowboy as falHatCowboy,
+  faSun as falSun, faTshirt as falTshirt, faSkullCow as falSkullCow, faGem as falGem, faHatCowboy as falHatCowboy,
   faInfoSquare as falInfoSquare,
   faCrosshairs as falCrosshairs,
   faBowArrow as falBowArrow,
@@ -50,7 +50,8 @@ import {
   faCalendarStar as fasCalendarStar, faChartLine as fasChartLine, faCheck as fasCheck,
   faCalendarAlt as fasCalendarAlt,
   faCheckSquare as fasCheckSquare, faClock as fasClock, faCog as fasCog, faCogs as fasCogs,
-  faCopy as fasCopy, faEllipsisH as fasEllipsisH, faEllipsisV as fasEllipsisV, faExclamationSquare as fasExclamationSquare,
+  faCopy as fasCopy, faEllipsisH as fasEllipsisH, faEllipsisV as fasEllipsisV,
+  faTriangleExclamation as fasTriangleExclamation,
   faEye as fasEye, faEyeSlash as fasEyeSlash, faFilter as fasFilter, faFlag as fasFlag,
   faFlaskPotion as fasFlaskPotion, faForklift as fasForklift, faGem as fasGem, faGift as fasGift,
   faHelmetBattle as fasHelmetBattle, faHistory as fasHistory, faHoodCloak as fasHoodCloak,
@@ -61,7 +62,7 @@ import {
   faSortUp as fasSortUp, faStar as fasStar, faSwords as fasSwords, faSync as fasSync,
   faSyncAlt as fasSyncAlt, faSyringe as fasSyringe, faTags as fasTags, faTimes as fasTimes,
   faTrash as fasTrash, faTrashAlt as fasTrashAlt, faTrophy as fasTrophy, faTshirt as fasTShirt,
-  faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo,
+  faUserFriends as fasUserFriends, faUsers as fasUsers, faVideo as fasVideo, faShirt as fasShirt,
   faWheat as fasWheat,
   faHiking as fasHiking,
   faSignOutAlt as fasSignOutAlt,
@@ -71,7 +72,8 @@ import {
   faSkull as fasSkull, faStoreAlt as fasStoreAlt,
   faStore as fasStore, faUser as fasUser, faChessKnight as fasChessKnight, faTicketAlt as fasTicketAlt,
   faCabinetFiling as fasCabinetFiling, faStickyNote as fasStickyNote, faMagic as fasMagic,
-  faStarOfLife as fasStarOfLife
+  faStarOfLife as fasStarOfLife,
+  faHammerCrash as fasHammerCrash,
 } from '@fortawesome/pro-solid-svg-icons';
 
 
@@ -82,6 +84,8 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fasShirt = fasShirt;
+  public readonly fasHammerCrash = fasHammerCrash;
   public readonly fasStarOfLife = fasStarOfLife;
   public readonly farSign = farSign;
   public readonly fasStoreAlt = fasStoreAlt;
@@ -123,7 +127,6 @@ export class IconService {
   public readonly falSun = falSun;
   public readonly falHatCowboy = falHatCowboy;
   public readonly falGem = falGem;
-  public readonly falHammer = falHammer;
   public readonly falSkullCow = falSkullCow;
   public readonly fasSort = fasSort;
   public readonly falSort = falSort;
@@ -190,7 +193,7 @@ export class IconService {
   public readonly farSigma = farSigma;
   public readonly fasCog = fasCog;
   public readonly fasSync = fasSync;
-  public readonly fasExclamationSquare = fasExclamationSquare;
+  public readonly fasTriangleExclamation = fasTriangleExclamation;
   public readonly farCopy = farCopy;
   public readonly farTable = farTable;
   public readonly farCheckSquare = farCheckSquare;
