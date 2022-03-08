@@ -48,83 +48,96 @@ export class WeekService {
 
   readonly LS_MASTER_ROTATION: LostSectorInfo[] = [
     {
-      abbrev: 'Perdition',
-      hash: '1070981425',
-      shields: ['Arc Harpies', 'Void Minotaurs'],
+      // sepulcher 480864721
+      abbrev: 'Sepulcher',
+      hash: '480864721',
+      shields: ['Solar(?)','Arc(?)'],
       champions: [
         {
-          name: 'Barrier Hobgoblin',
+          name: 'Barrier',
+          count: -1
+        },
+        {
+          name: 'Unstoppable',
+          count: -1
+        }
+      ]
+    },
+    {
+      // extraction 145221020
+      abbrev: 'Extraction',
+      hash: '145221020',
+      shields: ['Void(?)','Arc(?)'],
+      champions: [
+        {
+          name: 'Overload',
+          count: -1
+        },
+        {
+          name: 'Unstoppable',
+          count: -1
+        }
+      ]
+    }, {
+      abbrev: 'Veles Labyrinth',
+      hash: '3094493727',
+      shields: ['Solar Wizards'],
+      champions: [
+        {
+          name: 'Barrier Knight',
           count: 2
         },
         {
-          name: 'Overload Minotaur',
+          name: 'Unstoppable Ogre',
+          count: 4
+        }
+      ]
+    },
+    {
+      abbrev: 'Exodus Garden',
+      hash: '2936791995',
+      shields: ['Void Servitors'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
           count: 3
         },
+        {
+          name: 'Overload Captain',
+          count: 1
+        }
       ]
     },
     // {
-    //   abbrev: 'The Quarry',
-    //   hash: '3253890600',
-    //   shields: [],
+    //   abbrev: 'Perdition',
+    //   hash: '1070981425',
+    //   shields: ['Arc Harpies', 'Void Minotaurs'],
     //   champions: [
     //     {
-    //       name: '',
-    //       count: 1
-    //     }
-    //   ]
-    // },
-    // {
-    //   abbrev: 'Scavenger\'s Den',
-    //   hash: '1905792146',
-    //   shields: [],
-    //   champions: [
-    //     {
-    //       name: '',
-    //       count: 1
-    //     }
-    //   ]
-    // },
-    // {
-    //   abbrev: 'Excavation Site',
-    //   hash: '548616653',
-    //   shields: [],
-    //   champions: [
-    //     {
-    //       name: '',
-    //       count: 1
-    //     }
-    //   ]
-    // },
-    // {
-    //   abbrev: 'Exodus Garden',
-    //   hash: '2936791995',
-    //   shields: ['Void Servitors'],
-    //   champions: [
-    //     {
-    //       name: 'Barrier Servitor',
-    //       count: 3
-    //     },
-    //     {
-    //       name: 'Overload Captain',
-    //       count: 1
-    //     }
-    //   ]
-    // },
-    // {
-    //   abbrev: 'Veles Labyrinth',
-    //   hash: '3094493727',
-    //   shields: ['Solar Wizards'],
-    //   champions: [
-    //     {
-    //       name: 'Barrier Knight',
+    //       name: 'Barrier Hobgoblin',
     //       count: 2
     //     },
     //     {
-    //       name: 'Unstoppable Ogre',
-    //       count: 4
-    //     }
+    //       name: 'Overload Minotaur',
+    //       count: 3
+    //     },
     //   ]
     // },
+    {
+      abbrev: 'Aphelion\'s Rest',
+      hash: '1898610131',
+      shields: ['Void(9)'],
+      champions: [
+        {
+          name: 'Unstoppable',
+          count: 3
+        },
+        {
+          name: 'Overload',
+          count: 4
+        }
+      ]
+    },
     {
       abbrev: 'Bay of Drowned Wishes',
       hash: '660710120',
@@ -156,62 +169,17 @@ export class WeekService {
       ]
     },
     {
-      abbrev: 'Aphelion\'s Rest',
-      hash: '1898610131',
-      shields: ['Void(9)'],
+      abbrev: 'K1 Revelation',
+      hash: '3911969238',
+      shields: ['Arc Knight'],
       champions: [
         {
-          name: 'Unstoppable',
+          name: 'Barrier Knight',
+          count: 7
+        },
+        {
+          name: 'Unstoppable Ogre',
           count: 3
-        },
-        {
-          name: 'Overload',
-          count: 4
-        }
-      ]
-    },
-    {
-      abbrev: 'The Empty Tank',
-      hash: '2019961993',
-      shields: ['Arc(2)'],
-      champions: [
-        {
-          name: 'Barrier',
-          count: 5
-        },
-        {
-          name: 'Overload',
-          count: 3
-        }
-      ]
-    },
-    {
-      abbrev: 'K1 Log',
-      hash: '567131519',
-      shields: ['Arc Captain', 'Solar Shank'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
-          count: 4
-        },
-        {
-          name: 'Overload Captain',
-          count: 6
-        },
-      ]
-    },
-    {
-      abbrev: 'K1 communion',
-      hash: '2829206720',
-      shields: ['Solar Shanks'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
-          count: 5
-        },
-        {
-          name: 'Overload Captain',
-          count: 6
         },
       ]
     },
@@ -231,56 +199,165 @@ export class WeekService {
       ]
     },
     {
-      abbrev: 'K1 Revelation',
-      hash: '3911969238',
-      shields: ['Arc Knight'],
-      champions: [
-        {
-          name: 'Barrier Knight',
-          count: 7
-        },
-        {
-          name: 'Unstoppable Ogre',
-          count: 3
-        },
-      ]
-    },
-    {
-      abbrev: 'Concealed Void',
-      hash: '912873274',
-      shields: ['Solar Shank', 'Void Servitor'],
+      abbrev: 'K1 Log',
+      hash: '567131519',
+      shields: ['Arc Captain', 'Solar Shank'],
       champions: [
         {
           name: 'Barrier Servitor',
-          count: 3
+          count: 4
         },
         {
           name: 'Overload Captain',
-          count: 5
-        }]
+          count: 6
+        },
+      ]
     },
+    // {
+    //   abbrev: 'K1 communion',
+    //   hash: '2829206720',
+    //   shields: ['Solar Shanks'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Servitor',
+    //       count: 5
+    //     },
+    //     {
+    //       name: 'Overload Captain',
+    //       count: 6
+    //     },
+    //   ]
+    // },
     {
-      abbrev: 'Bunker',
-      hash: '1648125538',
-      shields: ['Void Minotaurs'],
+      // Metamorphosis 3678847134
+      abbrev: 'Metamorphosis',
+      hash: '3678847134',
+      shields: ['Arc(?)', 'Solar(?)'],
       champions: [
         {
-          name: 'Barrier Hobgoblin',
+          name: 'Overload',
+          count: -1
+        },
+        {
+          name: 'Unstoppable',
+          count: -1
+        },
+      ]
+    }
+    
+    // {
+    //   abbrev: 'Concealed Void',
+    //   hash: '912873274',
+    //   shields: ['Solar Shank', 'Void Servitor'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Servitor',
+    //       count: 3
+    //     },
+    //     {
+    //       name: 'Overload Captain',
+    //       count: 5
+    //     }]
+    // },
+    // {
+    //   abbrev: 'Bunker',
+    //   hash: '1648125538',
+    //   shields: ['Void Minotaurs'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Hobgoblin',
+    //       count: 2
+    //     },
+    //     {
+    //       name: 'Overload Captain',
+    //       count: 3
+    //     },
+    //     {
+    //       name: 'Overload Minotaur',
+    //       count: 3
+    //     }
+    //   ]
+    // },
+  ];
+
+  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
+     {
+      // sepulcher 480864726
+        abbrev: 'Sepulcher',
+        hash: '480864726',
+        shields: ['Solar(1)','Arc(2)'],
+        champions: [
+          {
+            name: 'Barrier',
+            count: 3
+          },
+          {
+            name: 'Unstoppable',
+            count: 1
+          }
+        ]
+    },
+    {
+      // extraction 145221019
+      abbrev: 'Extraction',
+      hash: '145221019',
+      shields: ['Void(4)','Arc(6)'],
+      champions: [
+        {
+          name: 'Overload',
+          count: 1
+        },
+        {
+          name: 'Unstoppable',
+          count: 2
+        }
+      ]
+    }, 
+    {
+      abbrev: 'Veles Labyrinth',
+      hash: '3094493720',
+      shields: ['Arc Knights', 'Solar Wizards'],
+      champions: [
+        {
+          name: 'Barrier Knight',
+          count: 3
+        },
+        {
+          name: 'Unstoppable Ogre',
+          count: 1
+        }
+      ]
+    }, {
+       abbrev: 'Exodus Garden',
+      hash: '2936791996',
+      shields: ['Void Servitors'],
+      champions: [
+        {
+          name: 'Barrier Servitor',
           count: 2
         },
         {
           name: 'Overload Captain',
-          count: 3
+          count: 2
+        },
+      ]
+    },
+    {
+      abbrev: 'Aphelion\'s Rest',
+      hash: '1898610132',
+      shields: ['Void(9)'],
+      champions: [
+        {
+          name: 'Unstoppable',
+          count: 2
         },
         {
-          name: 'Overload Minotaur',
-          count: 3
+          name: 'Overload',
+          count: 2
         }
       ]
     },
-  ];
-
-  readonly LS_LEGEND_ROTATION: LostSectorInfo[] = [
+   
     {
       abbrev: 'Bay of Drowned Wishes',
       hash: '660710127',
@@ -312,63 +389,17 @@ export class WeekService {
       ]
     },
     {
-      abbrev: 'Aphelion\'s Rest',
-      hash: '1898610132',
-      shields: ['Void(9)'],
+      abbrev: 'K1 Revelation',
+      hash: '3911969233',
+      shields: ['Arc Knights'],
       champions: [
         {
-          name: 'Unstoppable',
-          count: 2
-        },
-        {
-          name: 'Overload',
-          count: 2
-        }
-      ]
-    },
-    {
-      abbrev: 'The Empty Tank',
-      hash: '2019961998',
-      shields: ['Arc(1)'],
-      champions: [
-        {
-          name: 'Barrier',
-          count: 2
-        },
-        {
-          name: 'Overload',
-          count: 2
-        }
-      ]
-    },
-
-    {
-      abbrev: 'K1 Log',
-      hash: '567131512',
-      shields: ['Arc Captain(3)', 'Solar Shanks(8)'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
+          name: 'Barrier Knight',
           count: 3
         },
         {
-          name: 'Overload Captain',
-          count: 2
-        },
-      ]
-    },
-    {
-      abbrev: 'K1 Communion',
-      hash: '2829206727',
-      shields: ['Void Servitors', 'Solar Shanks'],
-      champions: [
-        {
-          name: 'Barrier Servitor',
+          name: 'Unstoppable Ogre',
           count: 3
-        },
-        {
-          name: 'Overload Captain',
-          count: 2
         },
       ]
     },
@@ -388,69 +419,102 @@ export class WeekService {
       ]
     },
     {
-      abbrev: 'K1 Revelation',
-      hash: '3911969233',
-      shields: ['Arc Knights'],
-      champions: [
-        {
-          name: 'Barrier Knight',
-          count: 3
-        },
-        {
-          name: 'Unstoppable Ogre',
-          count: 3
-        },
-      ]
-    },
-    {
-      abbrev: 'Concealed Void',
-      hash: '912873277',
-      shields: ['Arc Captain', 'Solar Shank', 'Void Servitor'],
+      abbrev: 'K1 Log',
+      hash: '567131512',
+      shields: ['Arc Captain(3)', 'Solar Shanks(8)'],
       champions: [
         {
           name: 'Barrier Servitor',
-          count: 2
+          count: 3
         },
         {
           name: 'Overload Captain',
-          count: 3
+          count: 2
         },
       ]
     },
     {
-      abbrev: 'Bunker',
-      hash: '1648125541',
-      shields: ['Void Minotaur'],
+      // Metamorphosis 3678847129
+      abbrev: 'Metamorphosis',
+      hash: '3678847129',
+      shields: ['Arc(2)', 'Solar(1)'],
       champions: [
         {
-          name: 'Barrier Hobgoblin',
-          count: 1
-        },
-        {
-          name: 'Overload Captain',
-          count: 1
-        },
-        {
-          name: 'Overload Minotaur',
+          name: 'Overload',
           count: 3
         },
-      ]
-    },
-    {
-      abbrev: 'Perdition',
-      hash: '1070981430',
-      shields: ['Arc Harpies', 'Void Minotaurs'],
-      champions: [
         {
-          name: 'Barrier Hobgoblin',
-          count: 1
-        },
-        {
-          name: 'Overload Minotaur',
+          name: 'Unstoppable',
           count: 2
-        }
+        },
       ]
-    },
+    }
+    // {
+    //   abbrev: 'K1 Communion',
+    //   hash: '2829206727',
+    //   shields: ['Void Servitors', 'Solar Shanks'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Servitor',
+    //       count: 3
+    //     },
+    //     {
+    //       name: 'Overload Captain',
+    //       count: 2
+    //     },
+    //   ]
+    // },
+   
+    
+    // {
+    //   abbrev: 'Concealed Void',
+    //   hash: '912873277',
+    //   shields: ['Arc Captain', 'Solar Shank', 'Void Servitor'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Servitor',
+    //       count: 2
+    //     },
+    //     {
+    //       name: 'Overload Captain',
+    //       count: 3
+    //     },
+    //   ]
+    // },
+    // {
+    //   abbrev: 'Bunker',
+    //   hash: '1648125541',
+    //   shields: ['Void Minotaur'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Hobgoblin',
+    //       count: 1
+    //     },
+    //     {
+    //       name: 'Overload Captain',
+    //       count: 1
+    //     },
+    //     {
+    //       name: 'Overload Minotaur',
+    //       count: 3
+    //     },
+    //   ]
+    // },
+    // {
+    //   abbrev: 'Perdition',
+    //   hash: '1070981430',
+    //   shields: ['Arc Harpies', 'Void Minotaurs'],
+    //   champions: [
+    //     {
+    //       name: 'Barrier Hobgoblin',
+    //       count: 1
+    //     },
+    //     {
+    //       name: 'Overload Minotaur',
+    //       count: 2
+    //     }
+    //   ]
+    // },
 
     // {
     //   abbrev: 'The Quarry',
@@ -486,51 +550,23 @@ export class WeekService {
     //   ]
     // },
     // {
-    //   abbrev: 'Exodus Garden',
-    //   hash: '2936791996',
-    //   shields: ['Void Servitors'],
-    //   champions: [
-    //     {
-    //       name: 'Barrier Servitor',
-    //       count: 2
-    //     },
-    //     {
-    //       name: 'Overload Captain',
-    //       count: 2
-    //     },
-    //   ]
-    // },
-    // {
-    //   abbrev: 'Veles Labyrinth',
-    //   hash: '3094493720',
-    //   shields: ['Arc Knights', 'Solar Wizards'],
-    //   champions: [
-    //     {
-    //       name: 'Barrier Knight',
-    //       count: 3
-    //     },
-    //     {
-    //       name: 'Unstoppable Ogre',
-    //       count: 1
-    //     }
-    //   ]
-    // },
+   
   ];
 
   readonly LS_LEGEND_LOOT = [
-    'Chest',
     'Head',
     'Legs',
     'Arms',
+    'Chest',
   ];
 
 
 
   readonly LS_MASTER_LOOT = [
-    'Arms',
-    'Chest',
     'Head',
     'Legs',
+    'Arms',
+    'Chest',
   ];
 
   readonly ASCENDENT_INFO: DreamingCityRow[] = [
@@ -595,7 +631,6 @@ export class WeekService {
       const weekEpoch = parseISO('2021-11-23T17:00:00.000Z'); // 4/2/2019
       const thisWeek = publicMilestones.weekStart;
       const numWeeks = differenceInWeeks(thisWeek, weekEpoch);
-      console.log(numWeeks);
       const ascInfo = WeekService.getRotation(numWeeks, this.ASCENDENT_INFO) as DreamingCityRow;      
       currWeek = {
         ascendantChallenge: ascInfo.challenge,
@@ -608,6 +643,10 @@ export class WeekService {
   }
 
   private async buildLostSectorActivity(info: LostSectorInfo, ll: number): Promise<LegendLostSectorActivity> {
+    if (!info) {
+      console.log(`No Data for index ${ll}`);
+      return null;
+    }
     const desc: any = await this.destinyCacheService.getActivity(info.hash);
     if (!desc || !desc.displayProperties || !desc.displayProperties.name) {
       return null;
@@ -652,7 +691,7 @@ export class WeekService {
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(magicHour);
-    const lsEpoch = parseISO('2021-08-24T17:00:00.000Z'); // 2021-08-24 is our current reference date
+    const lsEpoch = parseISO('2022-03-03T17:00:00.000Z'); // 2021-08-24 is our current reference date
     // diff in hours ignores DST
     const lsDays = Math.floor(differenceInHours(referenceDate, lsEpoch) / 24);
     const lsIndex = lsDays % this.LS_LEGEND_ROTATION.length;
@@ -660,8 +699,8 @@ export class WeekService {
     const legendLoot = this.LS_LEGEND_LOOT[lsLootIndex];
     const masterLoot = this.LS_MASTER_LOOT[lsLootIndex];
     // TODO update this when PL's change
-    const legendActivity = await this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1320);
-    const masterActivity = await this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1350);
+    const legendActivity = await this.buildLostSectorActivity(this.LS_LEGEND_ROTATION[lsIndex], 1550);
+    const masterActivity = await this.buildLostSectorActivity(this.LS_MASTER_ROTATION[lsIndex], 1580);
 
     const recordDescForIcon: any = await this.destinyCacheService.getRecord(3838089785);
     return {
@@ -669,14 +708,12 @@ export class WeekService {
       legendaryLostSector: {
         icon: recordDescForIcon.displayProperties.icon,
         activity: legendActivity,
-        soloReward: legendLoot,
-        special: legendLoot == 'Head' || legendLoot == 'Arms' || legendLoot == 'Chest'
+        soloReward: legendLoot
       },
       masterLostSector: {
         icon: recordDescForIcon.displayProperties.icon,
         activity: masterActivity,
-        soloReward: masterLoot,
-        special: masterLoot == 'Head' || masterLoot == 'Arms' || masterLoot == 'Chest'
+        soloReward: masterLoot
       }
     };
   }
@@ -704,9 +741,29 @@ export class WeekService {
   }
 
   public async getToday(): Promise<Today> {
-
-    const altarEpoch = parseISO('2019-11-09T17:00:00.000Z'); // nov 9 2019
     const today = new Date();
+
+    const wellEpoch = parseISO('2022-03-08T17:00:00.000Z');
+    
+    const wellDays = differenceInDays(today, wellEpoch);
+    const wellIndex = wellDays % 4;
+    let wellWeaponKey = null;
+    let wellMode = '';
+    if (wellIndex == 0) {
+      wellWeaponKey = '927567426'; // Attack AR 927567426
+      wellMode = 'Attack';
+    } else if (wellIndex == 1) {
+      wellWeaponKey = '2721157927'; // Defend, GL
+      wellMode = 'Defend';
+    } else if (wellIndex == 2) {
+      wellWeaponKey = '1399109800'; // Attack Bow
+      wellMode = 'Attack';
+    } else if (wellIndex == 3) {
+      wellWeaponKey = '3865728990'; // Defend SR
+      wellMode = 'Defend';
+    }
+
+    const altarEpoch = parseISO('2019-11-09T17:00:00.000Z'); 
     const altarDays = differenceInDays(today, altarEpoch);
     const alterIndex = altarDays % 3;
 
@@ -727,6 +784,8 @@ export class WeekService {
       raidChallenge,
       publicMilestones: publicMilestones,
       altarOfSorrowsWeapon: await this.destinyCacheService.getInventoryItem(altarWeaponKey),
+      wellMode: `The Wellspring: ${wellMode}`,
+      wellWeapon: await this.destinyCacheService.getInventoryItem(wellWeaponKey),
       lostSectors: lostSectors
     };
   }
@@ -738,6 +797,9 @@ export interface Today {
   publicMilestones: PublicMilestonesAndActivities;
   altarOfSorrowsWeapon: ItemDisplay;
   lostSectors: LostSectors;
+  wellMode: string;
+  wellWeapon: ItemDisplay;
+
 }
 
 export interface LostSectors {

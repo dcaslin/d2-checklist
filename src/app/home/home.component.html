@@ -145,7 +145,7 @@
           <div class="flex-row">
             <div>Lost Sectors </div>
             <div>
-              <button class="pad-left-more" mat-stroked-button disabled (click)="showLostSectorNextDays()">
+              <button class="pad-left-more" mat-stroked-button (click)="showLostSectorNextDays()">
                 <fa-icon class="pad-right" [icon]="iconService.farCalendar"></fa-icon> Next 30 Days
               </button>
             </div>
@@ -155,16 +155,15 @@
       </mat-card-header>
       <mat-card-content>
         <mat-list>
-          <!-- <d2c-legendary-lost-sector [ls]="ls.legendaryLostSector"></d2c-legendary-lost-sector>
-          <d2c-legendary-lost-sector [ls]="ls.masterLostSector"></d2c-legendary-lost-sector> -->
+          <d2c-legendary-lost-sector [ls]="ls.legendaryLostSector"></d2c-legendary-lost-sector>
+          <d2c-legendary-lost-sector [ls]="ls.masterLostSector"></d2c-legendary-lost-sector>
         </mat-list>
-        <div style="display:flex">
+        <!-- <div style="display:flex">
           <div style="text-align:left;">The rotation has changed on the new season.<br>We're collecting data now, will be updated ASAP</div>
-        </div>
-        
+        </div> -->
       </mat-card-content>
       <div class="simple-caption">
-        <i><a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1M9Vd7_4BnB5sOFRlQG_rWNM5Ib-xMxD1omHz5_YqPtQ/edit#gid=0">Source</a></i>
+        <i><a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1kd0juMU-YWtFVc9BLQEnD5r_WETVBDgmWDkAWuq3SxE/edit#gid=751973477">Source</a></i>
       </div>
     </mat-card>
   </div>
@@ -250,6 +249,23 @@
   <div>
     <mat-card>
       <mat-card-header>
+        <mat-card-title>{{today.wellMode}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item>
+            <span class="simple-caption-no-margin right-margin">
+              {{today.wellWeapon.itemTypeDisplayName}}</span>
+            <a href="https://imgur.com/a/TyK5MHx"
+              target="_blank" rel="noopener">
+              {{today.wellWeapon.displayProperties.name}}
+              &nbsp;<fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+    <!-- <mat-card>
+      <mat-card-header>
         <mat-card-title>Altar of Sorrow</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -264,7 +280,7 @@
           </mat-list-item>
         </mat-list>
       </mat-card-content>
-    </mat-card>
+    </mat-card> -->
     <mat-card>
       <mat-card-header>
         <mat-card-title>Dreaming City</mat-card-title>

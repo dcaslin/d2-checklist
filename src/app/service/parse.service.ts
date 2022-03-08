@@ -3582,6 +3582,8 @@ export class ParseService {
                     type = ItemType.Armor;
                 } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Purchase') && desc.tooltipStyle == 'vendor_action') {
                     type = ItemType.CurrencyExchange;
+                } else if (type === ItemType.Dummy && desc.displayProperties.name.startsWith('Redeemable')) {
+                    type = ItemType.ExchangeMaterial;
                 } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Material') >= 0) {
                     type = ItemType.ExchangeMaterial;
                 } else if (type === ItemType.None && desc.displayProperties.name === 'Spoils of Conquest') {
@@ -3907,9 +3909,11 @@ export class ParseService {
                                         if (plugDesc == null) { continue; }
                                         const plugName = ParseService.getPlugName(plugDesc);
                                         if (plugName == null) { continue; }
+                                        // this is where weapon perks are added
                                         const oPlug = new InventoryPlug(plugDesc.hash,
                                             plugName, plugDesc.displayProperties.description,
-                                            plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash, plugDesc.plug.energyCost);
+                                            plugDesc.displayProperties.icon, socketVal.plugHash == plug.plugItemHash, plugDesc.plug.energyCost,
+                                            plugDesc.itemTypeDisplayName);
                                         // elemental capacitor
                                         if (oPlug.active && IGNORE_WEAPON_PERK_STATS.indexOf(plug.plugItemHash) >= 0) {
                                             ignoreWeaponPerkStats.push(oPlug);
@@ -3958,9 +3962,11 @@ export class ParseService {
                                         coveredSeasons.push(10);
                                     }
                                     if (plugName == null) { continue; }
+                                    // this is where weapon frames and armor are added
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         plugName, plugDesc.displayProperties.description,
-                                        plugDesc.displayProperties.icon, true, plugDesc.plug.energyCost, plug.isEnabled);
+                                        plugDesc.displayProperties.icon, true, plugDesc.plug.energyCost,
+                                        plugDesc.itemTypeDisplayName, plug.isEnabled);
                                     if (isMod)  {
                                         this.applyPlugInventoryStats(oPlug, plugDesc);
                                         // we'll handle these later for armor
@@ -3975,9 +3981,11 @@ export class ParseService {
                                             const plugDesc: any = await this.destinyCacheService.getInventoryItem(option.plugItemHash);
                                             const plugName = ParseService.getPlugName(plugDesc);
                                             if (plugName == null) { continue; }
+                                            // this is used to show perks on weapons on "Possible Rolls"
                                             const oPlug = new InventoryPlug(plugDesc.hash,
                                                 plugName, plugDesc.displayProperties.description,
-                                                plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
+                                                plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost,
+                                                plugDesc.itemTypeDisplayName);
                                             oPlug.currentlyCanRoll = option.currentlyCanRoll;
                                             possiblePlugs.push(oPlug);
                                         }
@@ -3986,9 +3994,11 @@ export class ParseService {
                                     const plugDesc: any = await this.destinyCacheService.getInventoryItem(socketDesc.singleInitialItemHash);
                                     const plugName = ParseService.getPlugName(plugDesc);
                                     if (plugName == null) { continue; }
+                                    // this is used to show frames on weapons on "Possible Rolls"
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         plugName, plugDesc.displayProperties.description,
-                                        plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
+                                        plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost,
+                                        plugDesc.itemTypeDisplayName);
                                     oPlug.currentlyCanRoll = true;
                                     possiblePlugs.push(oPlug);
                                 }
@@ -4053,7 +4063,7 @@ export class ParseService {
             if (sockets != null) {
                 for (const s of sockets) {
                     for (const p of s.plugs) {
-                        searchText += ' ' + p.name;
+                        searchText += ` ${p.enhanced?'enhanced:':''}${p.name}`;
                     }
                 }
             }
