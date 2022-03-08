@@ -67,7 +67,7 @@
                                 <i *ngIf="pve.greatPerks.includes(plug.name.toLowerCase())"
                                     class="icon-strike accent-text perk"></i>
                                 <i *ngIf="pve.goodPerks.includes(plug.name.toLowerCase())" class="icon-strike perk"></i>
-                                {{plug.name}}
+                                <span class="pad-right" *ngIf="plug.enhanced"><fa-icon [icon]="iconService.fasUp"></fa-icon></span>{{plug.name}}
                             </div>
                         </td>
                         <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">

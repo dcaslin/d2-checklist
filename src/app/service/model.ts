@@ -1552,6 +1552,7 @@ export class InventoryPlug {
     public currentlyCanRoll: boolean;
     public pandaPve = 0;
     public pandaPvp = 0;
+    public enhanced: boolean = false;
 
     public targetArmorPerk = false;
     public desc: string;
@@ -1562,13 +1563,16 @@ export class InventoryPlug {
         return Math.max(this.pandaPve, this.pandaPvp);
     }
 
-    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, energyCostStruct: PrivPlugEnergyCost|null, enabled?: boolean, objectives?: ItemObjective[]) {
+    constructor(hash: string, name: string, desc: string, icon: string, active: boolean, energyCostStruct: PrivPlugEnergyCost|null, itemTypeDisplayName: string, enabled?: boolean, objectives?: ItemObjective[]) {
         this.hash = hash;
         this.name = name;
         this.desc = desc;
         this.icon = icon;
         this.active = active;
         this.enabled = enabled;
+        if (itemTypeDisplayName == 'Enhanced Trait') {
+            this.enhanced = true;
+        }
         if (objectives) {
             this.objectives = objectives;
         } else {
@@ -1705,7 +1709,6 @@ export interface LostSector {
     activity: LegendLostSectorActivity;
     icon: string;
     soloReward: string;
-    special: boolean;
 }
 
 export interface LostSectorInfo {

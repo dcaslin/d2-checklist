@@ -449,7 +449,8 @@ export class PerkbenchComponent extends ChildComponent {
                   plugName,
                   plugDesc.displayProperties.description,
                   plugDesc.displayProperties.icon,
-                  false, plugDesc.plug.energyCost
+                  false, plugDesc.plug.energyCost,
+                  plugDesc.itemTypeDisplayName
                 );
                 oPlug.currentlyCanRoll = option.currentlyCanRoll;
                 possiblePlugs.push(oPlug);
@@ -461,7 +462,8 @@ export class PerkbenchComponent extends ChildComponent {
             if (plugName == null) { continue; }
             const oPlug = new InventoryPlug(plugDesc.hash,
               plugName, plugDesc.displayProperties.description,
-              plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost);
+              plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost,
+              plugDesc.itemTypeDisplayName);
             oPlug.currentlyCanRoll = true;
             possiblePlugs.push(oPlug);
 

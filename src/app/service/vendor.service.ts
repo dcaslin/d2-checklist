@@ -262,7 +262,7 @@ export class VendorService {
     v.costCount = count;
   }
 
-  private static getCostHash(name: string): string {
+  private static getCostHash(name: string, hash: string): string {
     if (name == 'Purchase Baryon Boughs') { return '592227263'; }
     if (name == 'Purchase Phaseglass') { return '1305274547'; }
     if (name == 'Purchase Simulation Seeds') { return '49145143'; }
@@ -275,19 +275,20 @@ export class VendorService {
     if (name == 'Purchase Glimmer') { return '3159615086'; }
     if (name == 'Purchase Dusklight Shards') { return '950899352'; }
     if (name == 'Purchase Spinmetal Leaves') { return '293622383'; }
-    if (name == 'Purchase Alkane Dust') { return '2014411539'; }
-    return null;
+    if (name == 'Purchase Enhancement Prisms') { return '4257549984'; }
+    if (name == 'Purchase Enhancement Cores') { return '3853748946'; }
+    return hash;
   }
 
   private async getExchangeInfo(player: Player, vendorItems: InventoryItem[]): Promise<VendorCurrencies[]> {
     // type == 101 is all spider currency exchange "Purchase Enhancement Prisms Spider 863940356"
     // type == 10 and seller is banshee ("Upgrade Module Banshee-44 672118013") is upgrade modules, prisms, and shards
-    // const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
-    const bansheeConsumables = [];
-    // const spiderCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '1944611339' && i.type == ItemType.CurrencyExchange); // spider 863940356, rahool 1 
-    const spiderCurrency = [];
+    const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
+    // const adaConsumables  = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '350061650' && i.type == ItemType.ExchangeMaterial);
+    const rahoolCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '2255782930' && (i.type == ItemType.CurrencyExchange || i.type == ItemType.ExchangeMaterial));
+    
     const costs: { [key: string]: number; } = {};
-    for (const g of spiderCurrency.concat(bansheeConsumables)) {
+    for (const g of rahoolCurrency.concat(bansheeConsumables)) {
       for (const c of g.vendorItemInfo.costs) {
         costs[c.desc.hash] = 0;
       }
@@ -304,20 +305,17 @@ export class VendorService {
     }
 
     const returnMe: VendorCurrencies[] = [];
-    const spiderItems: VendorCurrency[] = [];
-    for (const g of spiderCurrency) {
+    const rahoolItems: VendorCurrency[] = [];
+    for (const g of rahoolCurrency) {
       // skip enhancement cores and prisms
-      if (g.name.indexOf('Enhancement') >= 0) {
-        continue;
-      }
-      const targetHash = VendorService.getCostHash(g.name);
+      // if (g.name.indexOf('Enhancement') >= 0) {
+      //   continue;
+      // }
+      const targetHash = VendorService.getCostHash(g.name, g.hash);
       const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(targetHash);
       let targetCount;
       if (targetHash == '1022552290' || targetHash == '3159615086') { // legendary shards or glimmer
-        const currency = player.currencies.find(x => x.hash == targetHash);
-        if (currency == null) {
-          console.log(`Aggh`);
-        }
+        const currency = player.currencies.find(x => x.hash == targetHash);       
         if (currency != null) {
           targetCount = currency.count;
         }
@@ -331,13 +329,14 @@ export class VendorService {
         cost: null,
         costCount: null
       };
+      
       VendorService.setCost(costs, v);
-      spiderItems.push(v);
+      rahoolItems.push(v);
     }
-    if (spiderItems.length > 0) {
+    if (rahoolItems.length > 0) {
       returnMe.push({
-        vendor: spiderItems[0].saleItem.vendorItemInfo.vendor,
-        data: spiderItems
+        vendor: rahoolItems[0].saleItem.vendorItemInfo.vendor,
+        data: rahoolItems
       });
     }
     const bansheeItems: VendorCurrency[] = [];
@@ -352,7 +351,9 @@ export class VendorService {
         costCount: null
       };
       VendorService.setCost(costs, v);
-      bansheeItems.push(v);
+      if (v.cost != null) {
+        bansheeItems.push(v);
+      }
     }
     if (bansheeItems.length > 0) {
       returnMe.push({
@@ -360,6 +361,29 @@ export class VendorService {
         data: bansheeItems
       });
     }
+    // Banshee and Ada sell the same stuff, don't waste our time w/ Ada
+    // const adaItems: VendorCurrency[] = [];
+    // for (const g of adaConsumables) {
+    //   const targetCount = player.gear.filter(i => i.hash == g.hash).reduce((result, item) => { return result + item.quantity; }, 0);
+    //   const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(g.hash);
+    //   const v: VendorCurrency = {
+    //     saleItem: g,
+    //     target: targetDesc,
+    //     targetCount,
+    //     cost: null,
+    //     costCount: null
+    //   };
+    //   VendorService.setCost(costs, v);
+    //   if (v.cost != null) {
+    //     adaItems.push(v);
+    //   }
+    // }
+    // if (adaItems.length > 0) {
+    //   returnMe.push({
+    //     vendor: adaItems[0].saleItem.vendorItemInfo.vendor,
+    //     data: adaItems
+    //   });
+    // }
     return returnMe;
   }
 

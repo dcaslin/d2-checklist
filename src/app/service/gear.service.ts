@@ -715,7 +715,7 @@ export class GearService {
 
     public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem, previewOnly?: boolean): Promise<boolean> {
 
-        const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, plug.plug?.energyCost, true, []);
+        const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, plug.plug?.energyCost, '', true, []);
 
         this.loading.next(true);
         try {
