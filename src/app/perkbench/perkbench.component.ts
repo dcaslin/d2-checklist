@@ -66,7 +66,9 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/b07d89064a1fc9a8e061f59b7c747fa5.png': 14,
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
   '/common/destiny2_content/icons/4368a3e344977c5551407845ede830c2.png': 15,
-
+  '/common/destiny2_content/icons/b0406992c49c84bdc5febad94048dc01.png': 16,
+  
+  
   // events
   '/common/destiny2_content/icons/d91c738e8179465a165e35f7a249701b.png': 101,
   '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102,
@@ -74,7 +76,8 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/97c65a76255ef764a9a98f24e50b859d.png': 106,
   '/common/destiny2_content/icons/dd4dd93c5606998595d9e5a06d5bfc9c.png': 107,
   '/common/destiny2_content/icons/215100c99216b9c0bd83b9daa50ace45.png': 104,
-  '/common/destiny2_content/icons/5f5bed34dcd062be8302ce27b542dce9.png': 103
+  '/common/destiny2_content/icons/5f5bed34dcd062be8302ce27b542dce9.png': 103,
+  '/common/destiny2_content/icons/4fe83598190610f122497d22579a1fd9.png': 200 // Witch Queen
 };
 
 
