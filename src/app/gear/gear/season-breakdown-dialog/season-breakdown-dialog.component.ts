@@ -72,6 +72,7 @@ export class SeasonBreakdownDialogComponent {
     return [
       { name: 'Combat', details: true, season: 0, note: 'Charged w/ Light + Warmind' },
       { name: 'Artifice', details: true, season: 10, note: 'Artfice mod slot' },
+      { name: 'Raid VoD', details: true, season: 5, note: 'Vow of the Disciple dedicated' },
       { name: 'Raid VoG', details: true, season: 4, note: 'Vault of Glass dedicated' },
       { name: 'Raid DSC', details: true, season: 3, note: 'Deepstone Crypt dedicated' },
       { name: 'Raid GoS', details: true, season: 2, note: 'Garden of Salvation dedicated' },
