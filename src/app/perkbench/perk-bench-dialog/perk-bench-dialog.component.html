@@ -10,8 +10,8 @@
                 <div>
                     <mat-button-toggle-group class="pad-left" [(ngModel)]="parent.isController"
                         (change)="parent.changeConsole();parent.filterChanged$.next(true);updatePlatform()">
-                        <mat-button-toggle [value]="false">MnK</mat-button-toggle>
-                        <mat-button-toggle [value]="true">Console</mat-button-toggle>
+                        <mat-button-toggle [value]="false">MnK <fa-icon *ngIf="!parent.isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
+                        <mat-button-toggle [value]="true">Console <fa-icon *ngIf="parent.isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>
                 
@@ -25,6 +25,7 @@
                             <i *ngIf="enum==clickModeEnum.GodRollPvE || enum==clickModeEnum.GoodRollPvE"
                                 [class.accent-text]="enum==clickModeEnum.GodRollPvE" class="icon-strike"></i>
                             {{enum}}
+                            <fa-icon *ngIf="clickMode==enum" class="pad-left" [icon]="iconService.fasCheck"></fa-icon>
                         </mat-button-toggle>
                     </mat-button-toggle-group>
                 </div>

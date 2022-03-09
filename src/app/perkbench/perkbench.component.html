@@ -94,8 +94,8 @@
         <div class="spaced align-left">
             <mat-button-toggle-group [(ngModel)]="isController" (change)="changeConsole();filterChanged$.next(true)"
                 aria-label="Font Style">
-                <mat-button-toggle [value]="false">MnK</mat-button-toggle>
-                <mat-button-toggle [value]="true">Console</mat-button-toggle>
+                <mat-button-toggle [value]="false">MnK <fa-icon *ngIf="!isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
+                <mat-button-toggle [value]="true">Console <fa-icon *ngIf="isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
             </mat-button-toggle-group>
             <mat-form-field>
                 <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText"
