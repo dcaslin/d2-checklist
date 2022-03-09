@@ -228,6 +228,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:unlocked' },
   { value: 'is:extratagged', desc: 'It\'s complicated. See help button' },
   { value: 'has:notes', desc: 'Item has a note on it' },
+  { value: 'has:modvod', desc: 'Armor includes Vow of the Disciple mod slot' },
   { value: 'has:moddeepstone', desc: 'Armor includes Deepstone Crypt mod slot' },
   { value: 'has:modvog', desc: 'Armor includes Vault of Glass mod slot' },
   { value: 'has:modgos', desc: 'Armor includes Garden of Salvation Crypt mod slot' },
@@ -849,6 +850,7 @@ export class GearFilterStateService implements OnDestroy {
       seasons$: new BehaviorSubject(generateState(seasonConfig, [
         new Choice('special', 'Any Special'),
         new Choice('artifice', 'Artifice'),
+        new Choice('vod', 'Vow of the Disciple Raid'),
         new Choice('vog', 'Vault of Glass Raid'),
         new Choice('deepstone', 'Deepstone Crypt'),
         new Choice('gos', 'Garden of Salvation'),

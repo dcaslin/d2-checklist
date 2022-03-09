@@ -3892,6 +3892,16 @@ export class ParseService {
                                         searchText += 'has:modvog';
                                         seasonalModSlot = 4;
                                         coveredSeasons.push(4);
+                                    } else if ('enhancements.raid_v600'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
+                                        specialModSockets.push('vod');
+                                        searchText += 'has:modvod';
+                                        seasonalModSlot = 5;
+                                        coveredSeasons.push(5);
+                                    // } else if ('Vow of the Disciple Armor Mod' == modSocketType) {
+                                    //     specialModSockets.push('vod');
+                                    //     searchText += 'has:modvod';
+                                    //     seasonalModSlot = 5;
+                                    //     coveredSeasons.push(5);
                                     } else if (modSocketType?.indexOf('Last Wish Raid Mod') >= 0) {
                                         specialModSockets.push('lw');
                                         searchText += 'has:modlw';
