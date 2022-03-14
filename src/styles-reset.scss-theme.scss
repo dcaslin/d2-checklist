@@ -268,13 +268,13 @@
   }
 
 
-  @media screen and (max-width: map-get($grid-breakpoints, lg)) {
+  @media screen and (max-width: map-get($grid-breakpoints, mxl)) {
     .mat-tab-label {
-      min-width: 120px;
+      min-width: 100px;
     }
 
     .mat-tab-link {
-      min-width: 120px;
+      min-width: 100px;
     }
   }
 

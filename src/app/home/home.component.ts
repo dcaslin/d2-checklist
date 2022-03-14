@@ -1,9 +1,12 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from '@app/service/auth.service';
 import { BungieService } from '@app/service/bungie.service';
+import { ElasticSearchResult, ElasticSearchService } from '@app/service/elastic-search.service';
 import { IconService } from '@app/service/icon.service';
 import { Const, MilestoneActivity, Platform, SelectedUser } from '@app/service/model';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
@@ -13,7 +16,7 @@ import { ChildComponent } from '@app/shared/child.component';
 import { LostSectorNextDaysComponent } from '@app/shared/lost-sector-next-days/lost-sector-next-days.component';
 import { environment as env } from '@env/environment';
 import { BehaviorSubject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { startWith, takeUntil } from 'rxjs/operators';
 import { BurnDialogComponent } from './burn-dialog/burn-dialog.component';
 
 @Component({
@@ -28,6 +31,9 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly version = env.versions.app;
   readonly platforms: Platform[] = Const.PLATFORMS_ARRAY;
   readonly platformMap = Const.PLATFORMS_DICT;
+
+  
+  gamerTagControl = new FormControl();
 
   hideAnnouncement = true;
   bountiesExpanded = 'true' === localStorage.getItem('expand-bounties');
@@ -56,6 +62,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   constructor(
     private signedOnUserService: SignedOnUserService,
     public bungieService: BungieService,
+    public  elasticSearchService: ElasticSearchService,
     private authService: AuthService,
     public iconService: IconService,
     public dialog: MatDialog,
@@ -164,5 +171,21 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
       this.isSignedOn$.next(selectedUser != null);
     });
 
+    this.gamerTagControl.valueChanges.pipe(takeUntil(this.unsubscribe$), startWith('')).subscribe((value) => {
+      this.elasticSearchService.searchInput$.next(value);
+    } );
+
+  }
+
+  select(event: MatAutocompleteSelectedEvent) {
+    const value: ElasticSearchResult = event.option.value;
+    if (value) {
+      this.router.navigate(['/',value.membershipType, value.membershipId])
+    }
+    
+  }
+
+  displayFn(user: ElasticSearchResult): string {
+    return user? user.displayName : '';
   }
 }

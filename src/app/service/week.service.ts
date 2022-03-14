@@ -743,7 +743,7 @@ export class WeekService {
   public async getToday(): Promise<Today> {
     const today = new Date();
 
-    const wellEpoch = parseISO('2022-03-08T17:00:00.000Z');
+    const wellEpoch = parseISO('2022-03-06T17:00:00.000Z');
     
     const wellDays = differenceInDays(today, wellEpoch);
     const wellIndex = wellDays % 4;

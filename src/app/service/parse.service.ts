@@ -1802,6 +1802,19 @@ export class ParseService {
         };
     }
 
+    private findLeaves(triumphs: TriumphRecordNode[], hashes: number[]): TriumphRecordNode[] {        
+        const returnMe: TriumphRecordNode[] = [];
+        for (const t of triumphs) {            
+            for (const p of t.path) {
+                if (hashes.indexOf(+p.hash)>=0) {
+                    returnMe.push(t);
+                    break;
+                }
+            }
+        }
+        return returnMe;
+    }
+
 
     public async parsePlayer(resp: any, publicMilestones: PublicMilestone[], detailedInv?: boolean, showZeroPtTriumphs?: boolean, showInvisTriumphs?: boolean): Promise<Player> {
         if (resp.profile != null && resp.profile.privacy === 2) {
@@ -2072,6 +2085,8 @@ export class ParseService {
         const badges: Badge[] = [];
         const seasonChallengeEntries: SeasonalChallengeEntry[] = [];
         let lowHangingTriumphs: TriumphRecordNode[] = [];
+        let patternTriumphs: TriumphRecordNode[] = [];
+        let exoticCatalystTriumphs: TriumphRecordNode[] = [];
         let searchableTriumphs: TriumphRecordNode[] = [];
         let searchableCollection: TriumphCollectibleNode[] = [];
         const dictSearchableTriumphs: any = {};
@@ -2341,8 +2356,8 @@ export class ParseService {
                 if (oChild && oChild.children && oChild.children.length > 0) {
                     recordTree.push(oChild.children[0]);
                 }
-
-                const leafSet = {};
+                // dedupe list of leaves
+                const leafSet: {[key: string]: TriumphRecordNode}= {};
                 for (const t of triumphLeaves) {
                     leafSet[t.hash] = t;
                 }
@@ -2366,6 +2381,9 @@ export class ParseService {
                 searchableTriumphs = triumphLeaves.filter(x => {
                     return (x.name != null) && (x.name.trim().length > 0);
                 });
+                
+                exoticCatalystTriumphs = this.findLeaves(searchableTriumphs, [2744330515]);
+                patternTriumphs = this.findLeaves(searchableTriumphs, [127506319, 3289524180, 1464475380]);
 
                 // const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs, false);
                 // searchableTriumphs.push(mmxix);
@@ -2472,7 +2490,7 @@ export class ParseService {
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData, specialProgressions, gearMeta);
+            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs);
     }
 
     // these are items that are not in the public milestones and also disappear on completion
@@ -2507,6 +2525,12 @@ export class ParseService {
         this.addPseudoMilestone('1888320892', milestonesByKey, milestoneList);
         // GoA
         this.addPseudoMilestone('973171461', milestonesByKey, milestoneList);
+        // VoD 1925223180
+        this.addPseudoMilestone('1925223180', milestonesByKey, milestoneList);
+        // Preservation
+        this.addPseudoMilestone('4081841674', milestonesByKey, milestoneList);
+        // Altars 2321298069
+        this.addPseudoMilestone('2321298069', milestonesByKey, milestoneList);
 
         
         // // Crucible 

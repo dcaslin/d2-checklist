@@ -399,7 +399,8 @@ export class PerkbenchComponent extends ChildComponent {
   private async getWeaponDescs(): Promise<GunInfo[]> {
     const guns: ManifestInventoryItem[] = [];
     const dbInvItem = await this.destinyCacheService.getInventoryItemTable();
-    for (const key of Object.keys(dbInvItem)) {
+    
+    for (const key of Object.keys(dbInvItem)) {      
       const ii = dbInvItem[key];
       // possible perk, bucket type consumable
       if (
@@ -426,7 +427,7 @@ export class PerkbenchComponent extends ChildComponent {
       }
     }
     const gunsWithSockets: GunInfo[] = [];
-    for (const desc of guns) {
+    for (const desc of guns) {      
       let hasRandomRoll = false;
       for (const jCat of desc.sockets.socketCategories) {
         // we only care about weapon perks

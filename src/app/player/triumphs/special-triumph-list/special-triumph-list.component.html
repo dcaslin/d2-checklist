@@ -1,0 +1,49 @@
+<ng-container *ngIf="rows$|async as rows">
+
+    <ng-container *ngIf="sort$|async as sort">
+        <h4 class="triumph-score">{{title$|async}}
+            <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
+                Hide Completed
+            </mat-checkbox>
+        </h4>
+        <div>
+            <table class="responsive-table">
+                <thead>
+                    <tr>
+                        <th>
+                            <span class="fake-link gear-sort" (click)="sortRows('name')">Name
+                                <d2c-sort-indicator field="name" [currVal]="sort.name" [descending]="!sort.ascending">
+                                </d2c-sort-indicator>
+                            </span>
+                        </th>
+                        <th>
+                            <span class="fake-link gear-sort" (click)="sortRows('progress')">Progress
+                                <d2c-sort-indicator field="progress" [currVal]="sort.name" [descending]="!sort.ascending">
+                                </d2c-sort-indicator>
+                            </span>
+                        </th>
+                        <th>Desc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let t of rows">
+                        <tr *ngIf="!state.hideCompleteTriumphs || !t.complete || !t.redeemed">
+                            <td class="lead" data-label="">
+                                <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)">
+                                </d2c-triumph-name>
+                            </td>
+                            <td class="left" data-label="">
+                                {{t.percent}}%
+                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
+                                </mat-progress-bar>
+                            </td>
+                            <td class="left" data-label="">
+                                <d2c-triumph-objectives [triumph]="t"></d2c-triumph-objectives>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+    </ng-container>
+</ng-container>
