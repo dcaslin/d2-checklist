@@ -3,64 +3,47 @@
     <div>Version: {{version}}</div>
   </div>
   <div class="searchRow">
-    <mat-form-field class="searchField searchPlatform">
-      <mat-select [(ngModel)]="selectedPlatform" placeholder="Platform" (selectionChange)="onPlatformChange()">
-        <mat-select-trigger>
-          <fa-icon [icon]="selectedPlatform.icon"></fa-icon>
-          <span class="d-none d-md-inline pad-left">{{selectedPlatform.name }}</span>
-        </mat-select-trigger>
-        <mat-option *ngFor="let p of platforms" [value]="p">
-          <fa-icon [icon]="p.icon"></fa-icon>&ensp;{{ p.name }}
-        </mat-option>
-      </mat-select>
+    <mat-form-field appearance="fill">
+      <mat-label>Gamer Tag</mat-label>
+      <mat-icon matSuffix>search</mat-icon>
+      <input matInput placeholder="Bungie Name#1234" [formControl]="gamerTagControl" [matAutocomplete]="elasticAuto">
     </mat-form-field>
-    <mat-form-field class="searchField searchGt" class="gt">
-      <input matInput placeholder="Gamer tag" [(ngModel)]="gamerTag" (keyup.enter)="routeSearch()"
-        (change)="onGtChange()">
-    </mat-form-field>
-    <button mat-mini-fab class="searchField" (click)="routeSearch()" color="primary">
-      <mat-icon>search</mat-icon>
-    </button>
   </div>
   <div class="home-button-row">
-    <div>
-      <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/3E1Mm6s">
-        <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Grimoire Anthology, Vol IV (new!)
-      </a>
-    </div>
-    <div>
-      <a mat-raised-button class="home-button" color="primary" target="_blank" href="https://www.youtube.com/channel/UCbpQ7BKU32m6J9jI2O8z09w">
-        <fa-icon [icon]="iconService.fabYoutube"></fa-icon> Video tutorials
-      </a>
-    </div>
-    <div>
-      <ng-container *ngIf="favoritesList$|async as fl">
-        <ng-container *ngIf="fl.length>0; else noFriends">
-          <button mat-raised-button class="home-button" color="primary" [matMenuTriggerFor]="friendsMenu"
-            [matBadge]="fl.length" matBadgePosition="after" matBadgeColor="warn">
-            <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
-          </button>
 
-          <mat-menu #friendsMenu="matMenu">
-            <a mat-menu-item [routerLink]="['/','friends']" color="primary">
-              <fa-icon [icon]="iconService.farList"></fa-icon> Show all
-            </a>
-            <a *ngFor="let ui of fl" mat-menu-item [routerLink]="['/',ui.membershipType, ui.membershipId]">
-              <fa-icon [icon]="platformMap[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
-            </a>
+    <a mat-raised-button class="home-button" color="accent" target="_blank" href="https://amzn.to/3E1Mm6s">
+      <fa-icon [icon]="iconService.fabAmazon"></fa-icon> Grimoire Anthology, Vol IV (new!)
+    </a>
+    <a mat-raised-button class="home-button" color="primary" target="_blank"
+      href="https://www.youtube.com/channel/UCbpQ7BKU32m6J9jI2O8z09w">
+      <fa-icon [icon]="iconService.fabYoutube"></fa-icon> Video tutorials
+    </a>
+    <ng-container *ngIf="favoritesList$|async as fl">
+      <ng-container *ngIf="fl.length>0; else noFriends">
+        <a mat-raised-button class="home-button" color="primary" [matMenuTriggerFor]="friendsMenu"
+          [matBadge]="fl.length" matBadgePosition="after" matBadgeColor="warn">
+          <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
+        </a>
 
-          </mat-menu>
-        </ng-container>
-        <ng-template #noFriends>
-          <div matTooltip="Click the heart icon on player pages to save friends">
-            <button mat-raised-button disabled class="home-button" color="primary">
-              <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
-            </button>
-          </div>
-        </ng-template>
+        <mat-menu #friendsMenu="matMenu">
+          <a mat-menu-item [routerLink]="['/','friends']" color="primary">
+            <fa-icon [icon]="iconService.farList"></fa-icon> Show all
+          </a>
+          <a *ngFor="let ui of fl" mat-menu-item [routerLink]="['/',ui.membershipType, ui.membershipId]">
+            <fa-icon [icon]="platformMap[ui.membershipType].icon"></fa-icon> {{ui.displayName}}
+          </a>
+
+        </mat-menu>
       </ng-container>
+      <ng-template #noFriends>
 
-    </div>
+        <button mat-raised-button disabled class="home-button" color="primary"
+          matTooltip="Click the heart icon on player pages to save friends">
+          <fa-icon [icon]="iconService.fasHeart"></fa-icon> Friends
+        </button>
+
+      </ng-template>
+    </ng-container>
 
   </div>
 </div>
@@ -163,7 +146,8 @@
         </div> -->
       </mat-card-content>
       <div class="simple-caption">
-        <i><a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1kd0juMU-YWtFVc9BLQEnD5r_WETVBDgmWDkAWuq3SxE/edit#gid=751973477">Source</a></i>
+        <i><a target="_blank" rel="noopener"
+            href="https://docs.google.com/spreadsheets/d/1kd0juMU-YWtFVc9BLQEnD5r_WETVBDgmWDkAWuq3SxE/edit#gid=751973477">Source</a></i>
       </div>
     </mat-card>
   </div>
@@ -201,7 +185,8 @@
           <mat-list>
             <mat-list-item *ngFor="let n of hunts" class="fake-link" (click)="showBurns(n)">
               <div mat-line>
-                <span class="underline">{{removeActivityPrefixes(n.name)}}</span> - {{n.ll}}  <span class="left simple-caption-darker-no-margin">{{n.modifiers.length}} modifiers</span>
+                <span class="underline">{{removeActivityPrefixes(n.name)}}</span> - {{n.ll}} <span
+                  class="left simple-caption-darker-no-margin">{{n.modifiers.length}} modifiers</span>
                 <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
               </div>
             </mat-list-item>
@@ -256,8 +241,7 @@
           <mat-list-item>
             <span class="simple-caption-no-margin right-margin">
               {{today.wellWeapon.itemTypeDisplayName}}</span>
-            <a href="https://imgur.com/a/TyK5MHx"
-              target="_blank" rel="noopener">
+            <a href="https://imgur.com/a/TyK5MHx" target="_blank" rel="noopener">
               {{today.wellWeapon.displayProperties.name}}
               &nbsp;<fa-icon [icon]="iconService.fasInfoCircle" class="accent-text"></fa-icon></a>
           </mat-list-item>
@@ -324,3 +308,11 @@
 </ng-template>
 
 <d2c-robot-home></d2c-robot-home>
+
+<mat-autocomplete #elasticAuto="matAutocomplete" (optionSelected)="select($event)"  [displayWith]="displayFn">
+  <mat-option *ngFor="let v of elasticSearchService.filteredAutoCompleteOptions$|async" [value]="v">
+    
+    <img class="option-img" aria-hidden [src]="'https://www.bungie.net' + v.iconPath " height="36">
+    {{v.displayName}} <fa-icon [icon]="platformMap[v.membershipType].icon"></fa-icon> <span class="pad-left simple-caption-darker-no-margin">{{v.lastPlayed|d2cAgoHumanized}}</span> 
+  </mat-option>
+</mat-autocomplete>

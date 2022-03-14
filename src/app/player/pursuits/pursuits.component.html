@@ -23,19 +23,20 @@
 
     <nav mat-tab-nav-bar color="accent">
       <a mat-tab-link routerLink="bounties" routerLinkActive #rla1="routerLinkActive" [active]="rla1.isActive">
-        Bounties
+        <fa-icon [icon]="iconService.fasUserBountyHunter"></fa-icon><span class="d-none d-md-inline">&ensp;Bounties</span>
+        
       </a>
       <a mat-tab-link routerLink="quests" routerLinkActive #rla2="routerLinkActive" [active]="rla2.isActive">
-        Quests
+        <fa-icon [icon]="iconService.falScrollOld"></fa-icon><span class="d-none d-md-inline">&ensp;Quests</span>
       </a>
       <a mat-tab-link routerLink="gear" routerLinkActive #rla5="routerLinkActive" [active]="rla5.isActive">
-        Gear
+        <fa-icon [icon]="iconService.fasBowArrow"></fa-icon><span class="d-none d-md-inline">&ensp;Gear</span>        
       </a>      
       <a mat-tab-link routerLink="tracked" routerLinkActive #rla3="routerLinkActive" [active]="rla3.isActive">
-        Tracked
+        <fa-icon [icon]="iconService.farThumbtack"></fa-icon><span class="d-none d-md-inline">&ensp;Tracked</span>
       </a>
       <a mat-tab-link routerLink="seasons" routerLinkActive #rla4="routerLinkActive" [active]="rla4.isActive">
-        Season<span class="d-none d-md-inline pad-left">Challenges</span> 
+        <fa-icon [icon]="iconService.fasWheat"></fa-icon><span class="d-none d-md-inline">&ensp;Season Challenges</span>
       </a>
     </nav>
     <router-outlet></router-outlet>

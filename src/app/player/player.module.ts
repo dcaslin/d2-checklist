@@ -28,6 +28,7 @@ import { TriumphTrackedComponent } from './triumphs/triumph-tracked/triumph-trac
 import { TriumphTreeComponent } from './triumphs/triumph-tree/triumph-tree.component';
 import { TriumphsComponent } from './triumphs/triumphs.component';
 import { PlBucketDialogComponent } from './pl-bucket-dialog/pl-bucket-dialog.component';
+import { SpecialTriumphListComponent } from './triumphs/special-triumph-list/special-triumph-list.component';
 
 
 
@@ -40,6 +41,6 @@ import { PlBucketDialogComponent } from './pl-bucket-dialog/pl-bucket-dialog.com
     CharsComponent, ChecklistComponent, ProgressComponent, MilestonesComponent, TriumphTreeComponent, TriumphSeasonsComponent, TriumphSealsComponent,
     TriumphClosestComponent, TriumphSearchComponent, TriumphTrackedComponent, CollectionTreeComponent, CollectionSearchComponent, CollectionBadgesComponent,
     CollectionBadgeComponent, RewardDescComponent, PursuitsComponent, ProgressStepDialogComponent, LifetimeComponent, MoreComponent,
-    PlayerEfficiencyGraphComponent, PursuitListComponent, TriumphObjectivesComponent, PlBucketDialogComponent]
+    PlayerEfficiencyGraphComponent, PursuitListComponent, TriumphObjectivesComponent, PlBucketDialogComponent, SpecialTriumphListComponent]
 })
 export class PlayerModule { }

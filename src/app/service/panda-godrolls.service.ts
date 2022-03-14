@@ -240,10 +240,10 @@ export class PandaGodrollsService implements OnDestroy {
       }
     }
 
-    let cntr = 0;
+    let cntr = 0;    
     // 2021-05-31 if this is a great roll that only missed by one socket, mark it as a good roll
     let greatCount = 0;
-    const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
+    const perkSockets = i.sockets.filter(s => s.isWeaponPerk && !s.isOriginTraitSocket() && s.plugs?.length > 0);
     for (const s of perkSockets) {
       cntr++;
       let goodPerkFound = false;

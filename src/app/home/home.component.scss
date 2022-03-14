@@ -165,11 +165,11 @@ a.underline:link {
 
 .home-button-row {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: center;
 }
-.home-button-row div {
+.home-button-row * {
   margin-bottom: 5px;
 }
 
@@ -253,24 +253,23 @@ dl {
 
 .top-section {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .top-section > div {
-  margin: 7px;
+  margin: 10px;
 }
 
-.searchRow {
-  margin-bottom: 0px !important;
+
+.option-img {
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
-.home-button-row > div {
-  margin: 7px;
-}
-
-.searchField {
-  margin-bottom: 10px;
-  margin-right: 5px;
+mat-form-field {
+  width: 320px;
 }

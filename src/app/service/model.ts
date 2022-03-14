@@ -664,6 +664,8 @@ export class Player {
     readonly seals: Seal[];
     readonly badges: Badge[];
     readonly searchableTriumphs: TriumphRecordNode[];
+    readonly patternTriumphs: TriumphRecordNode[];
+    readonly exoticCatalystTriumphs: TriumphRecordNode[];
     readonly searchableCollection: TriumphCollectibleNode[];
     readonly gear: InventoryItem[];
     readonly vault: Target;
@@ -699,7 +701,7 @@ export class Player {
         seals: Seal[], badges: Badge[],
         title: string, seasonChallengeEntries: SeasonalChallengeEntry[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
-        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData) {
+        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData, patternTriumphs: TriumphRecordNode[], exoticCatalystTriumphs: TriumphRecordNode[],) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -748,6 +750,8 @@ export class Player {
             this.seasonRank = specialAccountProgressions.seasonRank;
         }
         this.gearMetaData = gearMeta;
+        this.patternTriumphs = patternTriumphs;
+        this.exoticCatalystTriumphs = exoticCatalystTriumphs;
         this.pursuitGear = this.gear ? this.gear.filter(g => g.objectives?.length > 0 && g.type != ItemType.Subclass) : [];
     }
 
@@ -1537,6 +1541,13 @@ export class InventorySocket {
         this.sourcePlugs = sourcePlugs;
     }
 
+    isOriginTraitSocket() {
+        if (this.plugs==null) {
+            return false;
+        }
+        return this.plugs?.some(p => p.originTrait);
+    }
+
 }
 
 export class InventoryPlug {
@@ -1553,6 +1564,7 @@ export class InventoryPlug {
     public pandaPve = 0;
     public pandaPvp = 0;
     public enhanced: boolean = false;
+    public originTrait = false;
 
     public targetArmorPerk = false;
     public desc: string;
@@ -1572,6 +1584,13 @@ export class InventoryPlug {
         this.enabled = enabled;
         if (itemTypeDisplayName == 'Enhanced Trait') {
             this.enhanced = true;
+            // remove " Enhanced" suffix
+            if (this.name.endsWith(' Enhanced')) {
+                this.name = this.name.substring(0, this.name.length - ' Enhanced'.length);
+            }
+        }
+        if (itemTypeDisplayName == 'Origin Trait') {
+            this.originTrait = true;
         }
         if (objectives) {
             this.objectives = objectives;

@@ -44,6 +44,7 @@ import { MoreComponent } from './player/more/more.component';
 import { ProgressComponent } from './player/progress/progress.component';
 import { PursuitListComponent } from './player/pursuits/pursuit-list/pursuit-list.component';
 import { PursuitsComponent } from './player/pursuits/pursuits.component';
+import { SpecialTriumphListComponent } from './player/triumphs/special-triumph-list/special-triumph-list.component';
 import { TriumphClosestComponent } from './player/triumphs/triumph-closest/triumph-closest.component';
 import { TriumphSealsComponent } from './player/triumphs/triumph-seals/triumph-seals.component';
 import { TriumphSearchComponent } from './player/triumphs/triumph-search/triumph-search.component';
@@ -403,6 +404,20 @@ export class MyInfoGuard implements CanActivate {
             {
               path: 'seasons',
               component: TriumphSeasonsComponent,
+            },
+            {
+              path: 'patterns',
+              component: SpecialTriumphListComponent,
+              data: {
+                flavor: 'patterns'
+              }
+            },
+            {
+              path: 'catalysts',
+              component: SpecialTriumphListComponent,
+              data: {
+                flavor: 'catalysts'
+              }
             },
             {
               path: 'seals',

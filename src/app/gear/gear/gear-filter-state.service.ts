@@ -5,6 +5,7 @@ import { MarkService } from '@app/service/mark.service';
 import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, NumComparison, Player } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { Action } from 'rxjs/internal/scheduler/Action';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 
@@ -129,6 +130,7 @@ function _processComparison(prefix: string, tagVal: string, gearVal: number): bo
 }
 
 function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<string, number>): boolean {
+  actual = actual.trim();
   if (actual == 'is:locked') {
     return i.locked.getValue();
   }
@@ -140,6 +142,10 @@ function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<
     return compResult;
   }
   compResult = _processComparison('is:copies', actual, i.copies);
+  if (compResult != null) {
+    return compResult;
+  }
+  compResult = _processComparison('is:similar', actual, i.dupesTaggedToKeep);
   if (compResult != null) {
     return compResult;
   }
@@ -164,6 +170,10 @@ function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<
     if (compResult != null) {
       return compResult;
     }
+  }
+  if (actual.startsWith(`id:'`) && actual.endsWith(`'`)) {
+    const id = actual.substring(`id:'`.length, actual.length - 1);
+    return i.id == id;
   }
   if (i.searchText.indexOf(actual) >= 0) {
     return true;
@@ -209,6 +219,11 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:copies>=' },
   { value: 'is:copies<' },
   { value: 'is:copies<=' },
+  
+  { value: 'is:similar>', desc: 'Multiple similar items tagged to keep (by slot, frame, energy)' },
+  { value: 'is:similar>=' },
+  { value: 'is:similar<' },
+  { value: 'is:similar<=' },
   { value: 'is:cap<=', desc: 'PL cap' },
   { value: 'is:cap>=' },
   { value: 'is:cap<' },
