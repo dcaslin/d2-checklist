@@ -31,7 +31,7 @@
               *ngIf="(hiddenMilestones|async).indexOf(mileStoneName.key)===-1">
               {{mileStoneName.name}}
               <span *ngIf="debugmode|async">{{mileStoneName.key}}</span>
-              <span matTooltip="Hide this milestone, click Show All to restore it later"
+              <span matTooltip="Hide this milestone, click Restore Hidden to restore it later"
                 class="fake-link milestoneVisibilityButton" (click)="hideMilestone(mileStoneName.key)">
                 <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
               </span>
@@ -86,7 +86,7 @@
                 [attr.data-label]="mileStoneName.name">
 
                   <span class="fake-link" style="float: left"
-                    matTooltip="Hide this milestone, click Show All to restore it later"
+                    matTooltip="Hide this milestone, click Restore Hidden to restore it later"
                     class="mobileVisibilityButton responsive-table-inline-mobile-only"
                     (click)="hideMilestone(mileStoneName.key)">
                     <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
