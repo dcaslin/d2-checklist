@@ -1,6 +1,6 @@
 {
   "title": "DrGodroll Godrolls",
-  "date": "2022-03-16T14:53:41.225Z",
+  "date": "2022-03-16T15:09:39.588Z",
   "manifestVersion": "102501.22.03.05.2000-4-bnet.43247",
   "rolls": [
     {
@@ -28985,14 +28985,41 @@
       "name": "the enigma",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "frenzy",
+          "impulse amplifier"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "alloy magazine",
+          "subsistence",
+          "feeding frenzy",
+          "rampage",
+          "unrelenting"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "ballistic tuning",
+          "swap mag",
+          "impulse amplifier",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag",
+          "threat detector",
+          "unstoppable force"
+        ]
       },
       "mnk": false,
       "controller": true
@@ -29001,14 +29028,41 @@
       "name": "the enigma",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "impulse amplifier",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "alloy magazine",
+          "subsistence",
+          "feeding frenzy",
+          "unrelenting",
+          "rampage"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "ballistic tuning",
+          "swap mag",
+          "impulse amplifier",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag",
+          "threat detector",
+          "unstoppable force"
+        ]
       },
       "mnk": true,
       "controller": false
