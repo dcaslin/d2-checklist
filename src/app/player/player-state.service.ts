@@ -187,7 +187,7 @@ export class PlayerStateService {
           'ItemSockets', 'ItemPlugObjectives', 'StringVariables'
           // , '1000'
           // 'ItemSockets', 'ItemPlugStates','ItemInstances','ItemPerks','ItemStats'
-          // 'ItemTalentGrids','ItemCommonData','ProfileInventories'
+          // 'ItemCommonData','ProfileInventories'
         ], false, true, this.showZeroPtTriumphs, this.showInvisTriumphs);
       if (x == null || x.characters == null) {
         throw new Error('No valid destiny player found for ' + memberId + ' on ' + platform.name);

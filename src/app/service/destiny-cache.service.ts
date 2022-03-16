@@ -205,12 +205,15 @@ export class DestinyCacheService {
     if (!this.observableMap[tableName]) {
       this.observableMap[tableName] = new ReplaySubject(1);
     }
-    this.observableMap[tableName].next(returnMe);
     // emit in observable too
-    if (t0 != null) {
-      const t1 = performance.now();
-      console.log(`%c${tableName} ${method} loaded in ${(t1 - t0).toFixed(2)}ms`, LOG_CSS);
-    }
+    this.observableMap[tableName].next(returnMe);
+
+    // // for perf debugguning
+    // if (t0 != null) {
+    //   const t1 = performance.now();
+    
+    //   console.log(`%c${tableName} ${method} loaded in ${(t1 - t0).toFixed(2)}ms`, LOG_CSS);
+    // }
     return returnMe;
   }
 

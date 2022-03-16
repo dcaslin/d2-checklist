@@ -170,7 +170,7 @@ export class GearService {
                 selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
                 'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-                'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'StringVariables'], false, true);
+                'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'StringVariables', 'PresentationNodes', 'Records'], false, true);
             // Craftables ?
             // update gear counts on title bar
             this.signedOnUserService.gearMetadata$.next(player.gearMetaData);
@@ -182,6 +182,22 @@ export class GearService {
                     gearById[g.hash] = [];
                 }
                 gearById[g.hash].push(g);
+                // handle exotic catalysts and deepsight patterns
+                if (g.deepsight) {
+                    const patternTriumph = player.patternTriumphs.find(x => x.name == g.name);
+                    if (patternTriumph) {
+                        console.log(`Found pattern triumph for ${g.name} -> ${patternTriumph.name}`);
+                        g.patternTriumph = patternTriumph;
+                    }
+                }
+                if (g.tier == 'Exotic') {
+                    const exoticWeaponTriumph = player.exoticCatalystTriumphs.find(x => x.name.startsWith(g.name));
+                    if (exoticWeaponTriumph) {
+                        console.log(`Found catalyst triumph for ${g.name} -> ${exoticWeaponTriumph.name}`);
+                        g.exoticCatalystTriumph = exoticWeaponTriumph;
+                    }
+
+                }
             }
             this.bucketService.init(player.characters, player.vault, player.shared, player.gear);
             this.markService.processItems(player.gear);

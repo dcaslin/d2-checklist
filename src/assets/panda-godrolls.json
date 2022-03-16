@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition",
-  "date": "2022-03-14T11:54:47.312Z",
-  "manifestVersion": "102174.22.02.26.1048-5-bnet.43202",
+  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v2",
+  "date": "2022-03-16T20:52:40.576Z",
+  "manifestVersion": "102501.22.03.05.2000-4-bnet.43247",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -8555,6 +8555,38 @@
           "steady hands",
           "vorpal weapon"
         ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "edge of intent",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "edge of intent",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
       },
       "mnk": true,
       "controller": false
@@ -18116,6 +18148,64 @@
       "controller": false
     },
     {
+      "name": "lubrae's ruin",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "grave robber",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "alloy magazine",
+          "sleight of hand",
+          "surrounded",
+          "unrelenting"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "ballistic tuning",
+          "swap mag",
+          "killing wind",
+          "swashbuckler"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag",
+          "steady hands",
+          "unstoppable force"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "lubrae's ruin",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "main ingredient",
       "sheet": "forsaken",
       "pve": {
@@ -20073,6 +20163,57 @@
           "linear compensator",
           "demolitionist"
         ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "osteo striga",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "toxic overload",
+          "hand-laid stock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "tactical mag",
+          "flared magwell",
+          "composite stock",
+          "short-action stock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "toxic overload",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "composite stock"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "osteo striga",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
       },
       "mnk": true,
       "controller": false
@@ -28821,14 +28962,42 @@
       "name": "the enigma",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "impulse amplifier",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "alloy magazine",
+          "subsistence",
+          "feeding frenzy",
+          "unrelenting",
+          "rampage"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "swap mag",
+          "impulse amplifier",
+          "kill clip",
+          "ballistic tuning"
+        ],
+        "goodPerks": [
+          "unstoppable force",
+          "threat detector",
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag"
+        ]
       },
       "mnk": false,
       "controller": true

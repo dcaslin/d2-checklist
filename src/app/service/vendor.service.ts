@@ -66,7 +66,7 @@ export class VendorService {
 
   private async applyRemoteVendor(target: Subject<CharacterVendorData>, c: Character) {
     const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemTalentGrids, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives, StringVariables';
+      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives, StringVariables';
     const resp = await this.streamReq('loadVendors', url).toPromise();
     const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
     const returnMe: CharacterVendorData = {
@@ -254,7 +254,7 @@ export class VendorService {
       targetCost = v.saleItem.vendorItemInfo.costs.find(c => c.desc.itemTypeDisplayName == 'Redeemable');
     }
     if (!targetCost) {
-      console.log('no cost found for ' + v.saleItem.name);
+      // these are items that unlock via progression, ignore them
       return;
     }
     const count = costs[targetCost.desc.hash];
