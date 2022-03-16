@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition",
-  "date": "2022-03-14T11:54:47.312Z",
-  "manifestVersion": "102174.22.02.26.1048-5-bnet.43202",
+  "title": "DrGodroll Godrolls",
+  "date": "2022-03-16T14:53:41.225Z",
+  "manifestVersion": "102501.22.03.05.2000-4-bnet.43247",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -18116,6 +18116,92 @@
       "controller": false
     },
     {
+      "name": "lubrae's ruin",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "grave robber",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "alloy magazine",
+          "sleight of hand",
+          "unrelenting",
+          "surrounded"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "ballistic tuning",
+          "killing wind",
+          "swashbuckler",
+          "swap mag"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag",
+          "steady hands",
+          "unstoppable force"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "lubrae's ruin",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "grave robber",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "alloy magazine",
+          "sleight of hand",
+          "surrounded",
+          "unrelenting",
+          "auxiliary reserves"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "ballistic tuning",
+          "swap mag",
+          "killing wind",
+          "swashbuckler"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag",
+          "steady hands",
+          "unstoppable force"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "main ingredient",
       "sheet": "forsaken",
       "pve": {
@@ -20072,6 +20158,84 @@
           "confined launch",
           "linear compensator",
           "demolitionist"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "osteo striga",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [
+          "appended mag",
+          "hand-laid stock",
+          "empty catalyst socket",
+          "osteo striga catalyst",
+          "fluted barrel",
+          "toxic overload"
+        ],
+        "goodPerks": [
+          "tactical mag",
+          "flared magwell",
+          "composite stock",
+          "short-action stock",
+          "smallbore"
+        ]
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [
+          "osteo striga catalyst",
+          "empty catalyst socket",
+          "fluted barrel",
+          "accurized rounds",
+          "toxic overload",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "composite stock"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "osteo striga",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "hand-laid stock",
+          "osteo striga catalyst",
+          "empty catalyst socket",
+          "toxic overload"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "tactical mag",
+          "flared magwell",
+          "composite stock",
+          "short-action stock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "short-action stock",
+          "empty catalyst socket",
+          "osteo striga catalyst",
+          "toxic overload"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "composite stock"
         ]
       },
       "mnk": true,
