@@ -130,7 +130,7 @@ export class SignedOnUserService implements OnDestroy {
           selectedUser.userInfo.membershipId, ['Profiles', 'Characters', 'ProfileCurrencies',
           'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
           'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
-          'ItemTalentGrids', 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles',
+          'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'PresentationNodes', 'Collectibles',
           'CharacterProgressions', 'CharacterActivities', 'ProfileProgression', 'Records', 'StringVariables' // added for uberlist
         ], false, true))
       ),

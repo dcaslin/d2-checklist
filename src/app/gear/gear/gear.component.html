@@ -422,6 +422,27 @@
                     <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% To Level {{obj.level}}<br>{{obj.date|date:'shortDate'}}</div>
                   </div>                  
                 </div>
+                
+                <ng-container *ngIf="i.patternTriumph as t">
+                  <div *ngIf="t.percent<100" class="fake-link" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId, 'triumphs','tree',t.hash]">
+                    <div class="total-progress">
+                      <mat-progress-bar class="progress-bar" color="accent" mode="determinate" [value]="t.percent"></mat-progress-bar>
+                      <div class="simple-caption fake-link">{{t.percent|number : '1.0-0'}}% Recipe</div>
+                    </div>                  
+                  </div>
+                  <div *ngIf="t.percent==100" class="margin-top-10 fake-link simple-caption" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId, 'triumphs','tree',t.hash]">Recipe <fa-icon class="pad-left" [icon]="iconService.fasCheck"></fa-icon></div>
+                </ng-container>
+                
+                <ng-container *ngIf="i.exoticCatalystTriumph as t">
+                  <div *ngIf="t.percent < 100" class="fake-link" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId, 'triumphs','tree',t.hash]">
+                    <div class="total-progress">
+                      <mat-progress-bar class="progress-bar" color="accent" mode="determinate" [value]="t.percent"></mat-progress-bar>
+                      <div class="simple-caption fake-link">{{t.percent|number : '1.0-0'}}% Catalyst</div>
+                    </div>                  
+                  </div>
+                  <div *ngIf="t.percent==100" class="margin-top-10 fake-link simple-caption" [routerLink]="['/',player.profile.userInfo.membershipType, player.profile.userInfo.membershipId, 'triumphs','tree',t.hash]">Catalyst <fa-icon class="pad-left" [icon]="iconService.fasCheck"></fa-icon></div>
+                </ng-container>
+                
               </td>
               <td class="limited-gear-width hide-mobile-table-cell" *ngIf="option.type==ItemType.Weapon">
                 <ng-container *ngIf="i.powerCap<9999; else highCap">

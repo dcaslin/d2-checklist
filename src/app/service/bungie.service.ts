@@ -526,8 +526,8 @@ export class BungieService implements OnDestroy {
         let returnMe = [];
         let page = 0;
         // repeat until we run out of activities or we precede the start date or we hit 10 pages
-        
-        while (page<11) {
+
+        while (page < 11) {
             const activities = await this.getActivityHistoryPage(membershipType, membershipId, characterId, mode, 0, MAX_PAGE_SIZE, true);
             returnMe = returnMe.concat(activities);
             // out of activities
