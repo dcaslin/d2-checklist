@@ -829,6 +829,8 @@ export class InventoryItem {
     readonly notShaped: boolean;
     readonly deepSightProgress: ItemObjective;
     readonly craftProgress: WeaponShapeLevelObjective;
+    public patternTriumph: TriumphRecordNode;
+    public exoticCatalystTriumph: TriumphRecordNode;
 
     canFit(socket: InventorySocket, plug: ManifestInventoryItem): boolean {
         const current = socket.active.energyCost;
