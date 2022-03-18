@@ -67,8 +67,8 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
   '/common/destiny2_content/icons/4368a3e344977c5551407845ede830c2.png': 15,
   '/common/destiny2_content/icons/b0406992c49c84bdc5febad94048dc01.png': 16,
-  
-  
+
+
   // events
   '/common/destiny2_content/icons/d91c738e8179465a165e35f7a249701b.png': 101,
   '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102,
@@ -79,6 +79,37 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/5f5bed34dcd062be8302ce27b542dce9.png': 103,
   '/common/destiny2_content/icons/4fe83598190610f122497d22579a1fd9.png': 200 // Witch Queen
 };
+
+
+function isSpecificRollIncomplete(g: GunRoll) {
+  const hasGoodPerks = g.goodPerks?.length >= 1;
+  const hasGreatPerks = g.greatPerks?.length >= 1;
+  const hasMw = g.masterwork?.length >= 1;
+  return !hasGoodPerks || !hasGreatPerks || !hasMw;
+}
+
+function isPlatformIncomplete(gs: GunRolls): boolean {
+  if (gs == null) {
+    return true;
+  }
+  if (!isSpecificRollIncomplete(gs.pve)) {
+    return true;
+  }
+  if (!isSpecificRollIncomplete(gs.pvp)) {
+    return true;
+  }
+  return false;
+}
+
+function isIncomplete(isController: boolean, roll: MappedRoll): boolean {
+  if (isController && isPlatformIncomplete(roll?.roll?.controller)) {
+    return true;
+  }
+  if (!isController && isPlatformIncomplete(roll?.roll?.mnk)) {
+    return true;
+  }
+  return false;
+}
 
 
 @Component({
@@ -94,6 +125,7 @@ export class PerkbenchComponent extends ChildComponent {
   public filterText = '';
   public currentTitle = 'asdf';
   public showMissingOnly = false;
+  public showIncompleteOnly = false;
   public showOutOfDateOnly = false;
   public showWrongOnly = false;
   public filterChanged$: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -133,6 +165,9 @@ export class PerkbenchComponent extends ChildComponent {
                 ? x.roll.controller == null
                 : x.roll.mnk == null)
           );
+        }
+        if (this.showIncompleteOnly) {
+          showMe = showMe.filter((x) => !isIncomplete(this.isController, x));
         }
         if (this.showOutOfDateOnly) {
           showMe = showMe.filter(x => x.defunctPerks.length > 0);
@@ -399,8 +434,8 @@ export class PerkbenchComponent extends ChildComponent {
   private async getWeaponDescs(): Promise<GunInfo[]> {
     const guns: ManifestInventoryItem[] = [];
     const dbInvItem = await this.destinyCacheService.getInventoryItemTable();
-    
-    for (const key of Object.keys(dbInvItem)) {      
+
+    for (const key of Object.keys(dbInvItem)) {
       const ii = dbInvItem[key];
       // possible perk, bucket type consumable
       if (
@@ -427,7 +462,7 @@ export class PerkbenchComponent extends ChildComponent {
       }
     }
     const gunsWithSockets: GunInfo[] = [];
-    for (const desc of guns) {      
+    for (const desc of guns) {
       let hasRandomRoll = false;
       for (const jCat of desc.sockets.socketCategories) {
         // we only care about weapon perks

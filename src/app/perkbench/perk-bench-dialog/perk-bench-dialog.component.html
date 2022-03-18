@@ -30,6 +30,10 @@
                     </mat-button-toggle-group>
                 </div>
                 <div>
+                    <button mat-stroked-button (click)="cloneRoll()" [matTooltip]="'Clone from alternative platform roll'">
+                        <fa-icon [icon]="iconService.falCopy"></fa-icon> {{parent.isController?'Mnk':'Console'}}
+                    </button>
+                    &nbsp;
                     <button mat-stroked-button color="warn" (click)="clearRoll()">
                         <fa-icon [icon]="iconService.fasTrashAlt"></fa-icon> Clear
                     </button>
