@@ -181,6 +181,16 @@ export class PerkBenchDialogComponent extends ChildComponent {
       addToMe.push(perk);
     }
   }
+  
+  cloneRoll() {
+    if (this.parent.isController) {
+      this.r.roll.controller = JSON.parse(JSON.stringify(this.r.roll.mnk));
+    } else {
+      this.r.roll.mnk = JSON.parse(JSON.stringify(this.r.roll.controller));
+    }
+    this.updatePlatform();
+  }
+
 
   clearRoll() {
     if (this.parent.isController) {

@@ -110,6 +110,9 @@
             <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showWrongOnly">
                 Only rolls with incorrect perks
             </mat-checkbox>
+            <mat-checkbox (change)="filterChanged$.next(true)" [(ngModel)]="showIncompleteOnly">
+                Only incomplete rolls
+            </mat-checkbox>
         </div>
 
         <table class="tidy-table">

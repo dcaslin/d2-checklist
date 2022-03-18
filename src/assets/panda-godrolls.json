@@ -1,6 +1,6 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v2",
-  "date": "2022-03-16T20:52:40.576Z",
+  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v3",
+  "date": "2022-03-18T20:42:18.365Z",
   "manifestVersion": "102501.22.03.05.2000-4-bnet.43247",
   "rolls": [
     {
@@ -7130,7 +7130,9 @@
       "name": "dead man's tale",
       "sheet": "random exotic - controller",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "reload speed"
+        ],
         "greatPerks": [
           "fluted barrel",
           "armor-piercing rounds",
@@ -7149,7 +7151,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "range"
+        ],
         "greatPerks": [
           "smallbore",
           "ricochet rounds",
@@ -7173,7 +7177,9 @@
       "name": "dead man's tale",
       "sheet": "random exotic - mnk",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "reload speed"
+        ],
         "greatPerks": [
           "fluted barrel",
           "armor-piercing rounds",
@@ -7192,7 +7198,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "range"
+        ],
         "greatPerks": [
           "fluted barrel",
           "high-caliber rounds",
@@ -8560,17 +8568,201 @@
       "controller": false
     },
     {
+      "name": "edge of action",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "remote shield",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "appended mag",
+          "alloy magazine",
+          "composite stock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "remote shield",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "appended mag",
+          "alloy magazine",
+          "composite stock"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "edge of action",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "remote shield",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "appended mag",
+          "alloy magazine",
+          "composite stock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "remote shield",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "appended mag",
+          "alloy magazine",
+          "composite stock"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "edge of concurrence",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "lightning seeker",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "appended mag",
+          "alloy magazine",
+          "composite stock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "lightning seeker",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "alloy magazine",
+          "lightweight emitter",
+          "composite stock"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "edge of concurrence",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "lightning seeker",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "appended mag",
+          "alloy magazine",
+          "composite stock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "lightning seeker",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "alloy magazine",
+          "lightweight emitter",
+          "composite stock"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "edge of intent",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "restorative turret",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "alloy magazine",
+          "lightweight emitter",
+          "composite stock"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "restorative turret",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "alloy magazine",
+          "lightweight emitter",
+          "composite stock"
+        ]
       },
       "mnk": false,
       "controller": true
@@ -8579,14 +8771,38 @@
       "name": "edge of intent",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "restorative turret",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "alloy magazine",
+          "lightweight emitter",
+          "composite stock"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "restorative turret",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "alloy magazine",
+          "lightweight emitter",
+          "composite stock"
+        ]
       },
       "mnk": true,
       "controller": false
@@ -13870,7 +14086,9 @@
       "name": "hawkmoon",
       "sheet": "random exotic - controller",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "reload speed"
+        ],
         "greatPerks": [
           "smallbore",
           "alloy magazine",
@@ -13885,7 +14103,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "range"
+        ],
         "greatPerks": [
           "smallbore",
           "alloy magazine",
@@ -13908,7 +14128,9 @@
       "name": "hawkmoon",
       "sheet": "random exotic - mnk",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "reload speed"
+        ],
         "greatPerks": [
           "hammer-forged rifling",
           "alloy magazine",
@@ -13923,7 +14145,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "range"
+        ],
         "greatPerks": [
           "hammer-forged rifling",
           "alloy magazine",
@@ -18193,14 +18417,40 @@
       "name": "lubrae's ruin",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "grave robber",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "alloy magazine",
+          "sleight of hand",
+          "surrounded",
+          "unrelenting"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "ballistic tuning",
+          "swap mag",
+          "killing wind",
+          "swashbuckler"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag",
+          "steady hands",
+          "unstoppable force"
+        ]
       },
       "mnk": true,
       "controller": false
@@ -20171,7 +20421,9 @@
       "name": "osteo striga",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "reload speed"
+        ],
         "greatPerks": [
           "fluted barrel",
           "appended mag",
@@ -20187,7 +20439,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "range"
+        ],
         "greatPerks": [
           "fluted barrel",
           "accurized rounds",
@@ -20206,14 +20460,37 @@
       "name": "osteo striga",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "toxic overload",
+          "hand-laid stock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "tactical mag",
+          "flared magwell",
+          "composite stock",
+          "short-action stock"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "toxic overload",
+          "short-action stock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "composite stock"
+        ]
       },
       "mnk": true,
       "controller": false
@@ -29006,14 +29283,42 @@
       "name": "the enigma",
       "sheet": "perkbench",
       "pve": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "impulse amplifier",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "lightweight emitter",
+          "auxiliary reserves",
+          "alloy magazine",
+          "subsistence",
+          "feeding frenzy",
+          "unrelenting",
+          "rampage"
+        ]
       },
       "pvp": {
-        "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "swap mag",
+          "impulse amplifier",
+          "kill clip",
+          "ballistic tuning"
+        ],
+        "goodPerks": [
+          "unstoppable force",
+          "threat detector",
+          "lightweight emitter",
+          "auxiliary reserves",
+          "light mag"
+        ]
       },
       "mnk": true,
       "controller": false
@@ -35491,7 +35796,9 @@
       "name": "zephyr",
       "sheet": "world",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "impact"
+        ],
         "greatPerks": [
           "jagged edge",
           "balanced guard",
@@ -35503,7 +35810,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "impact"
+        ],
         "greatPerks": [
           "jagged edge",
           "balanced guard",
@@ -35521,7 +35830,9 @@
       "name": "zephyr",
       "sheet": "world",
       "pve": {
-        "masterwork": [],
+        "masterwork": [
+          "impact"
+        ],
         "greatPerks": [
           "jagged edge",
           "balanced guard",
@@ -35533,7 +35844,9 @@
         ]
       },
       "pvp": {
-        "masterwork": [],
+        "masterwork": [
+          "impact"
+        ],
         "greatPerks": [
           "jagged edge",
           "balanced guard",
