@@ -156,6 +156,7 @@
       <mat-card-header>
         <mat-card-title>Nightfall
           <ng-container *ngIf="nightfall.activities.length>0">: {{nightfall.activities[0].desc}}</ng-container>
+          <span *ngIf="nightfall.doubled" class="warn-text pad-left">Double Drops!</span>
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -198,7 +199,7 @@
   <div>
     <mat-card *ngIf="today.publicMilestones.strikes as strikes">
       <mat-card-header>
-        <mat-card-title>Strike Playlist</mat-card-title>
+        <mat-card-title>Strike Playlist <span *ngIf="strikes.doubled" class="warn-text pad-left">Double ranks!</span></mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <mat-list *ngIf="strikes.activities[0] as strike">
@@ -215,7 +216,7 @@
     </mat-card>
     <mat-card *ngIf="today.publicMilestones.crucible as crucible">
       <mat-card-header>
-        <mat-card-title>Crucible</mat-card-title>
+        <mat-card-title>Crucible <span *ngIf="crucible.doubled" class="warn-text pad-left">Double ranks!</span></mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <mat-list>

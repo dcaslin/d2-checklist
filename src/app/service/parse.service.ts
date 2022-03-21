@@ -1111,6 +1111,24 @@ export class ParseService {
     //     }
     // }
 
+    private isDoubled(activities: MilestoneActivity[]): boolean {
+        if (activities==null){ 
+            return false;
+        }
+        for (const a of activities) {
+            if (!a.modifiers) {
+                continue;
+            }
+            for (const m of a.modifiers) {
+                if (m.name.toLowerCase().startsWith('double')) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public async parsePublicMilestones(resp: any, sampleProfile: any): Promise<PublicMilestonesAndActivities> {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
@@ -1240,7 +1258,7 @@ export class ParseService {
             }
             const boost = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
-            const pushMe = {
+            const pushMe: PublicMilestone = {
                 hash: ms.milestoneHash + '',
                 name: desc.displayProperties.name,
                 desc: sDesc,
@@ -1252,7 +1270,8 @@ export class ParseService {
                 rewards: rewards,
                 boost,
                 milestoneType: desc.milestoneType,
-                dependsOn: []
+                dependsOn: [],
+                doubled: this.isDoubled(activities)
             };
             if (pushMe.hash == '3628293757') {
                 pushMe.name = 'Trials Three Wins';
