@@ -361,6 +361,7 @@ export interface PublicMilestone {
     milestoneType: number;
     type?: string;
     dependsOn: string[];
+    doubled: boolean;
 
 }
 
