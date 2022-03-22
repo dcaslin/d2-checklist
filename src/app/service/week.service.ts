@@ -46,6 +46,33 @@ export class WeekService {
     }
   };
 
+  readonly VOD_CHALLENGES: { [key: string]: RaidChallengeData } = {
+    3374971632: {
+      hash: 3374971632,
+      topic: 'Acqusition',
+      desc: 'Kill all 3 Unstoppables at the same time.',
+      video: 'https://www.youtube.com/watch?v=q1cFONMU9yY'
+    },
+    2009562460: {
+      hash: 2009562460,
+      topic: 'Caretaker',
+      desc: 'TBD',
+      video: null
+    },
+    3434393250: {
+      hash: 3434393250,
+      topic: 'Exhibition',
+      desc: 'TBD',
+      video: null
+    },
+    1988156672: {
+      hash: 1988156672,
+      topic: 'Rhulk, Disciple of the Witness',
+      desc: 'TBD',
+      video: null
+    }
+  };
+
   readonly LS_MASTER_ROTATION: LostSectorInfo[] = [
     {
       // sepulcher 480864721
@@ -720,12 +747,28 @@ export class WeekService {
 
   private getRaidChallenge(publicMilestones: PublicMilestonesAndActivities): RaidChallenge | null {
     if (publicMilestones?.publicMilestones) {
-      const vogMs = publicMilestones.publicMilestones.find(x => x.hash == '2279677721');
-      if (vogMs?.activities) {
-        for (const a of vogMs.activities) {
+      // const vogMs = publicMilestones.publicMilestones.find(x => x.hash == '2279677721');
+      // if (vogMs?.activities) {
+      //   for (const a of vogMs.activities) {
+      //     if (a.modifiers) {
+      //       for (const mod of a.modifiers) {
+      //         const challenge  = this.VOG_CHALLENGES[mod.hash];
+      //         if (challenge) {
+      //           return {
+      //             ...challenge,
+      //             name: mod.name
+      //           };
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+      const vodMs = publicMilestones.publicMilestones.find(x => x.hash == '1925223180');
+      if (vodMs?.activities) {
+        for (const a of vodMs.activities) {
           if (a.modifiers) {
             for (const mod of a.modifiers) {
-              const challenge  = this.VOG_CHALLENGES[mod.hash];
+              const challenge  = this.VOD_CHALLENGES[mod.hash];
               if (challenge) {
                 return {
                   ...challenge,
