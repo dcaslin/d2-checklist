@@ -51,7 +51,7 @@ export class WeekService {
       hash: 3374971632,
       topic: 'Acqusition',
       desc: 'Kill all 3 Unstoppables at the same time.',
-      video: 'https://www.youtube.com/watch?v=q1cFONMU9yY'
+      video: 'https://www.youtube.com/watch?v=hSAbRouUnE0'
     },
     2009562460: {
       hash: 2009562460,
