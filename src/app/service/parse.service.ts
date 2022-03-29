@@ -385,7 +385,7 @@ export class ParseService {
     }
 
 
-    private async addPseudoMilestone(key: string, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[]) {
+    private async addPseudoMilestone(key: string, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[], dependsOn?: string[]) {
         if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = await this.destinyCacheService.getMilestone(key);
             if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
@@ -401,7 +401,7 @@ export class ParseService {
                     name: skipDesc.displayProperties.name,
                     desc: skipDesc.displayProperties.description,
                     hasPartial: false,
-                    dependsOn: []
+                    dependsOn: dependsOn==null ? []: dependsOn
                 };
                 milestoneList.push(ms2);
                 milestonesByKey[ms2.key] = ms2;
@@ -2520,24 +2520,7 @@ export class ParseService {
         if (milestonesByKey['3603098564'] == null) {
             return;
         }
-        // S14, gone
-        // Digital Trove - 1684722553
-        // this.addPseudoMilestone('1684722553', milestonesByKey, milestoneList);
-        // Corrupted Cache
-        // this.addPseudoMilestone('2065253185', milestonesByKey, milestoneList);
-
-        // Harbinger
-        // this.addPseudoMilestone('1086730368', milestonesByKey, milestoneList);
-        // Weekly Empire Hunt
-        // this.addPseudoMilestone('291895718', milestonesByKey, milestoneList);
-
-
-        // Weekly Exo Challenge
-        // this.addPseudoMilestone('1713200903', milestonesByKey, milestoneList);
-        // Presage
-        // this.addPseudoMilestone('3927548661', milestonesByKey, milestoneList);
-        // Prophecy
-        // this.addPseudoMilestone('825965416', milestonesByKey, milestoneList);
+       
         // GoS
         this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
         // VoG
@@ -2550,6 +2533,20 @@ export class ParseService {
         this.addPseudoMilestone('4081841674', milestonesByKey, milestoneList);
         // Altars 2321298069
         this.addPseudoMilestone('2321298069', milestonesByKey, milestoneList);
+        // Tank Buster 209031920
+        this.addPseudoMilestone('209031920', milestonesByKey, milestoneList);
+        // Dares of Eternity Pinnacle Challenge 475790763
+        this.addPseudoMilestone('475790763', milestonesByKey, milestoneList);
+        // Dares of Eternity Powerful Challenge 295129163
+        this.addPseudoMilestone('295129163', milestonesByKey, milestoneList);
+
+
+        // Runic Decoder 1 400869111
+        this.addPseudoMilestone('400869111', milestonesByKey, milestoneList);
+        // Runic Decoder 2 
+        this.addPseudoMilestone('400869108', milestonesByKey, milestoneList, ['400869111']);
+        // Runic Decoder 3 
+        this.addPseudoMilestone('400869109', milestonesByKey, milestoneList, ['400869108']);
 
         
         // // Crucible 
