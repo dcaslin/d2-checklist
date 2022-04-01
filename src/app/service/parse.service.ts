@@ -2539,8 +2539,8 @@ export class ParseService {
         this.addPseudoMilestone('475790763', milestonesByKey, milestoneList);
         // Dares of Eternity Powerful Challenge 295129163
         this.addPseudoMilestone('295129163', milestonesByKey, milestoneList);
-
-
+        
+        
         // Runic Decoder 1 400869111
         this.addPseudoMilestone('400869111', milestonesByKey, milestoneList);
         // Runic Decoder 2 
@@ -2548,6 +2548,10 @@ export class ParseService {
         // Runic Decoder 3 
         this.addPseudoMilestone('400869109', milestonesByKey, milestoneList, ['400869108']);
 
+        // Witch Queen 100K
+        this.addPseudoMilestone('363309766', milestonesByKey, milestoneList, ['400869111']);
+        // Witch Queen completion
+        this.addPseudoMilestone('2595878741', milestonesByKey, milestoneList, ['400869108']);
         
         // // Crucible 
         // this.addPseudoMilestone('3312774044', milestonesByKey, milestoneList);
