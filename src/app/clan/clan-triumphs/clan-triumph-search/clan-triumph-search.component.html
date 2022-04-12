@@ -1,8 +1,9 @@
 <div *ngIf="filteredTriumphs|async as t" class="clan-triumph-search">
     <div class="left" class="medium-margin">
         <mat-form-field class="searchField">
+            <mat-label>Wildcard Search Triumphs</mat-label>
             <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText"
-                placeholder="Wildcard Search triumphs">
+                placeholder="Wildcard Search Triumphs">
         </mat-form-field>
     </div>
     <div *ngIf="t.length==0" class="left" class="medium-margin">

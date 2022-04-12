@@ -2,10 +2,11 @@
     <div>
         <div class="left" style="margin: 10px">
             <mat-form-field class="searchField">
+                <mat-label>Wildcard Search Triumphs</mat-label>
                 <input matInput (keyup)="triumphSearchChange()" [(ngModel)]="triumphFilterText"
-                    placeholder="Wildcard Search triumphs">
+                    placeholder="Wildcard Search Triumphs">
             </mat-form-field>
-            <mat-checkbox class="hide-complete-triumphs" 
+            <mat-checkbox class="hide-complete-triumphs"
             [(ngModel)]="state.hideCompleteTriumphs"
             (change)="triumphSearchChange()"
             >
