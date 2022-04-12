@@ -13,6 +13,10 @@ $d2c-black-theme: mat.define-dark-theme($d2c-black-primary, $d2c-black-accent, $
         caret-color: white;
     }
 
+    mat-label {
+        color: white;
+    }
+
     .fake-link {
         color: #fff;
     }
@@ -37,7 +41,7 @@ $d2c-black-theme: mat.define-dark-theme($d2c-black-primary, $d2c-black-accent, $
         background-color: #303d4d;
     }
 
-    
+
     .mark-table>tbody>tr.none>td,
     .mark-table>tbody>tr>td.none {
         background-color: #212121;
@@ -49,7 +53,7 @@ $d2c-black-theme: mat.define-dark-theme($d2c-black-primary, $d2c-black-accent, $
         background-color: #344235;
     }
 
-    .mark-table>tbody>tr.infuse>td,    
+    .mark-table>tbody>tr.infuse>td,
     .mark-table>tbody>tr>td.infuse {
         background-color: #604532;
     }
