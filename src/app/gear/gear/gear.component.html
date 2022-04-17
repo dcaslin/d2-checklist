@@ -210,6 +210,9 @@
       <button mat-menu-item (click)="shardMode(ItemType.Armor)">
         Armor Only
       </button>
+      <button mat-menu-item (click)="shardBlues()">
+        Shard Blues
+      </button>
     </mat-menu>
     <mat-menu #menuBulkUpgrade="matMenu">
       <button mat-menu-item (click)="upgradeMode()">
@@ -240,9 +243,6 @@
       </button>
       <button mat-menu-item (click)="syncLocks()">
         <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
-      </button>
-      <button mat-menu-item (click)="shardBlues()">
-        <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Blues
       </button>
       <button mat-menu-item [matMenuTriggerFor]="menuBulkShard">
         <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode
