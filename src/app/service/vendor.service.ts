@@ -419,7 +419,7 @@ export class VendorService {
 
   private findBansheeDeals(player: Player, vendorWeapons: InventoryItem[]): InventoryItem[][] {
 
-    const playerWeapons = player.gear.filter(i => i.type == ItemType.Weapon).filter(i => i.tier == 'Legendary');
+    const playerWeapons = player.gear.filter(i => i.type == ItemType.Weapon).filter(i => (i.tier == 'Legendary' || i.tier == 'Exotic'));
     this.pandaGodRollsService.processItems(playerWeapons);
     const returnMe: InventoryItem[][] = [];
     for (const vi of vendorWeapons) {

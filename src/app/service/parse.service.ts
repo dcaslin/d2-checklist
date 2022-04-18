@@ -3040,7 +3040,7 @@ export class ParseService {
 
             const iObj: ItemObjective = {
                 hash: o.objectiveHash,
-                completionValue: oDesc.completionValue,
+                completionValue: o.completionValue ? o.completionValue : oDesc.completionValue,
                 progressDescription: oDesc.progressDescription,
                 progress: o.progress == null ? 0 : o.progress,
                 complete: o.complete,
