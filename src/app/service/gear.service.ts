@@ -193,7 +193,7 @@ export class GearService {
                 if (g.tier == 'Exotic') {
                     const exoticWeaponTriumph = player.exoticCatalystTriumphs.find(x => x.name.startsWith(g.name));
                     if (exoticWeaponTriumph) {
-                        console.log(`Found catalyst triumph for ${g.name} -> ${exoticWeaponTriumph.name}`);
+                        // console.log(`Found catalyst triumph for ${g.name} -> ${exoticWeaponTriumph.name}`);
                         g.exoticCatalystTriumph = exoticWeaponTriumph;
                     }
 
