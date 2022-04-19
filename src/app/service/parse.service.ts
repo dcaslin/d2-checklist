@@ -4083,7 +4083,7 @@ export class ParseService {
             const masterworked = (itm.state & ItemState.Masterwork) > 0;
             const tracked = (itm.state & ItemState.Tracked) > 0;
             const shaped = (itm.state & ItemState.Shaped) > 0;
-            const deepsight = (itm.state & ItemState.Deepsight) > 0;
+            const deepsight = deepSightProgress != null || (itm.state & ItemState.Deepsight) > 0;
             let notShaped = desc.inventory.recipeItemHash && !shaped;
 
             const bucketOrder = null;
