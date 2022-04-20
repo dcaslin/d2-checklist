@@ -6,8 +6,9 @@
     <div>
       <div class="left" style="margin: 10px">
         <mat-form-field class="collection-search-field">
+          <mat-label>Wildcard Search Collections</mat-label>
           <input matInput (keyup)="searchSubject.next()" [(ngModel)]="filterText"
-            placeholder="Wildcard Search collections">
+            placeholder="Wildcard Search Collections">
         </mat-form-field>
       </div>
       <div *ngIf="fc.length==0" class="left" style="margin: 10px">
@@ -35,8 +36,8 @@
                 <div *ngIf="t.icon!=null" class="transparent-icon transparent-leaf-icon"
                   [style.background-image]="'url(//www.bungie.net' + t.icon + ')'"></div>
                 {{t.name}}
-                
-                <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="t.acquired" class="accent-text mat-option.mat-selected"></fa-icon>                
+
+                <fa-icon [icon]="iconService.fasCheckSquare" *ngIf="t.acquired" class="accent-text mat-option.mat-selected"></fa-icon>
                 <fa-icon [icon]="iconService.farSquare" *ngIf="!t.acquired"></fa-icon>
                 <ng-container *ngIf="debugmode|async">{{t.hash}}</ng-container>
                 <br>
