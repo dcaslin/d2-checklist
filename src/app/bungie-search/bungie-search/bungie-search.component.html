@@ -8,6 +8,7 @@
 
 <div>
   <mat-form-field class="searchField">
+    <mat-label>Bungie Name</mat-label>
     <input matInput placeholder="Bungie name" [(ngModel)]="name" (keyup.enter)="search()">
   </mat-form-field>
   &emsp;
@@ -27,7 +28,7 @@
       </tr>
     </thead>
     <tr *ngFor="let row of rows">
-      <td class="lead" data-label="Name">        
+      <td class="lead" data-label="Name">
         <a [routerLink]="['/', row.searchResult.membershipType, row.searchResult.membershipId]">
         <fa-icon [icon]="Const.PLATFORMS_DICT[row.searchResult.membershipType+''].icon"></fa-icon>
         {{row.bungieGlobalDisplayName}}
