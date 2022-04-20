@@ -4,6 +4,7 @@
             <mat-card-header class="align-left">
                 <mat-card-title>
                     <mat-form-field>
+                        <mat-label>Working Title</mat-label>
                         <input matInput [(ngModel)]="currentTitle" placeholder="Working Title">
                     </mat-form-field>
                 </mat-card-title>
@@ -98,6 +99,7 @@
                 <mat-button-toggle [value]="true">Console <fa-icon *ngIf="isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
             </mat-button-toggle-group>
             <mat-form-field>
+                <mat-label>Wildcard Search</mat-label>
                 <input matInput (keyup)="filterChanged$.next(true)" [(ngModel)]="filterText"
                     placeholder="Wildcard Search">
             </mat-form-field>

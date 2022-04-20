@@ -1,8 +1,9 @@
 <div *ngIf="filteredCollection|async as c" class="clan-collection-search">
         <div class="left" class="medium-margin">
             <mat-form-field class="searchField">
+                <mat-label>Wildcard Search Collections</mat-label>
                 <input matInput (keyup)="collectionSearchChange()" [(ngModel)]="collectionFilterText"
-                    placeholder="Wildcard Search collections">
+                    placeholder="Wildcard Search Collections">
             </mat-form-field>
         </div>
         <div *ngIf="c.length==0" class="left" class="medium-margin">
