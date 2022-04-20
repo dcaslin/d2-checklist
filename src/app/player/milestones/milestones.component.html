@@ -70,7 +70,7 @@
                 </span>
                 <span *ngIf="debugmode|async" class="simple-caption-no-margin"> {{mileStoneName.key}}</span>
               </div>
-              <div class="fake-link" matTooltip="Hide this milestone, click Show All to restore it later"
+              <div class="fake-link" matTooltip="Hide this milestone, click Restore Hidden to restore it later"
                 class="hideMilestoneButton" (click)="hideMilestone(mileStoneName.key)">
                 <fa-icon [icon]="iconService.farTimes"></fa-icon>
               </div>
