@@ -33,7 +33,7 @@
                             matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
                         <span *ngIf="debugmode|async">  {{mileStoneName.key}}</span>
                         <span class="fake-link"
-                            matTooltip="Hide this milestone, click Show All to restore it later"
+                            matTooltip="Hide this milestone, click Restore Hidden to restore it later"
                             class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
                             <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                     </span>
@@ -104,7 +104,7 @@
                                 matTooltipClass="preserve-white-space">{{mileStoneName.name}}</span>
                             <span *ngIf="debugmode|async">  {{mileStoneName.key}}</span>
                             <span class="fake-link"
-                                matTooltip="Hide this milestone, click Show All to restore it later"
+                                matTooltip="Hide this milestone, click Restore Hidden to restore it later"
                                 class="milestoneVisibilityButton" (click)="hideClanMilestone(mileStoneName.key)">
                                 <fa-icon [icon]="iconService.falEyeSlash"></fa-icon>
                             </span>
