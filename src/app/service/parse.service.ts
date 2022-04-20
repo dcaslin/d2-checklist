@@ -3726,11 +3726,11 @@ export class ParseService {
                             let objective: WeaponShapeLevelObjective = null;
                             for (const o of shapedLevel) {
                                 const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
-                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevel ) {
+                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevel || oDesc.progressDescription == 'Weapon Level' ) {
                                     level = o.progress;
                                     continue;
                                 }
-                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevelProgress ) {
+                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevelProgress || oDesc.progressDescription=='Level Progress' ) {
                                     const iObj: WeaponShapeLevelObjective = {
                                         hash: o.objectiveHash,
                                         completionValue: oDesc.completionValue,
@@ -3747,7 +3747,7 @@ export class ParseService {
                                     objective = iObj;
                                     continue;
                                 }
-                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponTimestamp ) {
+                                if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponTimestamp || oDesc.progressDescription == 'Shaping Date' ) {
                                     dateCrafted = o.progress ? o.progress * 1000 : null;
                                     continue;
                                 }
