@@ -3421,6 +3421,40 @@ export class ParseService {
         }
     }
 
+    private parseShapedMasterwork(plugDesc: any): MasterworkInfo {
+        let invStat = null;
+
+        // find max invstat 
+        for (const i of plugDesc.investmentStats) {
+            if (invStat == null || i.value > invStat.value) {
+                invStat = i;
+            }
+        }
+        if (invStat==null){
+             return null;
+        }
+        const tier = invStat.value;
+        const statHash = invStat.statTypeHash;
+        const statDesc: any = this.destinyCacheService.cacheLite.Stat[statHash];        
+        if (statDesc == null) {
+            return null;
+        }
+        const name = statDesc.displayProperties.name;
+        const desc = statDesc.displayProperties.description;
+
+        
+        return {
+            hash: plugDesc.hash,
+            name: name,
+            desc: desc,
+            icon: plugDesc.displayProperties.icon,
+            tier: tier,
+            godTierPve: false,
+            godTierPvp: false,
+            recommendedPvpMws: [],
+            recommendedPveMws: []
+        };
+    }
 
     private parseMasterwork(plugDesc: any): MasterworkInfo {
         if (plugDesc.plug == null) { return null; }
@@ -4005,6 +4039,11 @@ export class ParseService {
                                             mw = mwInfo;
                                             continue;
                                         }
+                                    } else  if (plugDesc.itemTypeAndTierDisplayName.indexOf('Enhanced Intrinsic')>0 && plugDesc.investmentStats?.length > 0) {
+                                        const mwInfo = this.parseShapedMasterwork(plugDesc);
+                                        if (mwInfo != null) {
+                                            mw = mwInfo;
+                                        }
                                     }
 
                                     // this is where the Artifice Armor perk shows up, but not the slot
@@ -4080,9 +4119,22 @@ export class ParseService {
                 }
             }
             const locked: boolean = (itm.state & ItemState.Locked) > 0;
-            const masterworked = (itm.state & ItemState.Masterwork) > 0;
+            const masterworked = (itm.state & ItemState.Masterwork) > 0 || mw?.tier >= 10;
             const tracked = (itm.state & ItemState.Tracked) > 0;
             const shaped = (itm.state & ItemState.Shaped) > 0;
+            if (shaped && mw==null) {
+                mw = {
+                    hash: '0',
+                    name: 'None',
+                    desc: '',
+                    icon: null,
+                    tier: 0,
+                    godTierPve: false,
+                    godTierPvp: false,
+                    recommendedPvpMws: [],
+                    recommendedPveMws: []
+                };
+            }
             const deepsight = deepSightProgress != null || (itm.state & ItemState.Deepsight) > 0;
             let notShaped = desc.inventory.recipeItemHash && !shaped;
 
