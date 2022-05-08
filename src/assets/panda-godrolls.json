@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v3",
-  "date": "2022-03-18T20:42:18.365Z",
-  "manifestVersion": "102501.22.03.05.2000-4-bnet.43247",
+  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v4",
+  "date": "2022-05-08T02:29:19.109Z",
+  "manifestVersion": "104642.22.04.26.1901-1-bnet.44142",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -31649,6 +31649,99 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "the title",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "high-caliber rounds",
+          "stats for all",
+          "one for all"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "smallbore",
+          "appended mag",
+          "armor-piercing rounds",
+          "grave robber",
+          "threat detector",
+          "swashbuckler",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range",
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "dynamic sway reduction",
+          "moving target"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "extended barrel",
+          "high-caliber rounds",
+          "steady hands",
+          "perpetual motion",
+          "swashbuckler"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "the title",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "high-caliber rounds",
+          "stats for all",
+          "one for all"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "smallbore",
+          "appended mag",
+          "armor-piercing rounds",
+          "grave robber",
+          "threat detector",
+          "swashbuckler",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "moving target",
+          "extended barrel",
+          "high-caliber rounds",
+          "steady hands"
+        ],
+        "goodPerks": [
+          "hammer-forged rifling",
+          "smallbore",
+          "ricochet rounds",
+          "perpetual motion",
+          "threat detector",
+          "swashbuckler"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "the vision",
