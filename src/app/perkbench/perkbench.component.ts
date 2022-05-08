@@ -18,6 +18,7 @@ import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, PandaGodrollsSer
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
+import { environment as env } from '@env/environment';
 import { format } from 'date-fns';
 import { del, set } from 'idb-keyval';
 import { BehaviorSubject, combineLatest } from 'rxjs';
@@ -235,7 +236,7 @@ export class PerkbenchComponent extends ChildComponent {
 
   async fetchGodrolls(): Promise<CompleteGodRolls> {
     return await this.httpClient
-      .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json`)
+      .get<CompleteGodRolls>(`/assets/panda-godrolls.min.json?v=${env.versions.app}`)
       .toPromise();
   }
 
