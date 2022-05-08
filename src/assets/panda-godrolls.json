@@ -1,6 +1,6 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v4",
-  "date": "2022-05-08T02:29:19.109Z",
+  "title": "Official D2Checklist Rolls - Meggito Witch Queen Edition v4.1",
+  "date": "2022-05-08T02:49:55.699Z",
   "manifestVersion": "104642.22.04.26.1901-1-bnet.44142",
   "rolls": [
     {
@@ -31726,10 +31726,10 @@
           "range"
         ],
         "greatPerks": [
-          "moving target",
           "extended barrel",
           "high-caliber rounds",
-          "steady hands"
+          "steady hands",
+          "moving target"
         ],
         "goodPerks": [
           "hammer-forged rifling",
@@ -31740,8 +31740,8 @@
           "swashbuckler"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "the vision",
