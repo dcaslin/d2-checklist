@@ -171,7 +171,7 @@
             *ngIf="signedOnUserService.gearMetadata$|async as gm">
             <div class="gm-section">
               <a class="margin-left-10 fake-link" matTooltip="Items in your vault" [routerLink]="['/gear']"
-                [queryParams]="{ owner: 'vault'}">
+                [queryParams]="{ owner: BUCKET_ID_VAULT_X}">
                 <fa-icon [icon]="iconService.fadVault"></fa-icon> <span class="margin-left-10 currency-text">{{gm.vault.count}} / {{gm.vault.total}}</span>
               </a>
             </div>

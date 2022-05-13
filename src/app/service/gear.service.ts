@@ -5,7 +5,7 @@ import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
 import { ManifestInventoryItem } from './destiny-cache.service';
 import { MarkService } from './mark.service';
-import { Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target } from './model';
+import { BUCKET_ID_SHARED, BUCKET_ID_VAULT, Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
 import { PreferredStatService } from './preferred-stat.service';
@@ -239,13 +239,59 @@ export class GearService {
 
     public canEquip(itm: InventoryItem) {
         // ignore itm.canEquip
-        if (itm.equipped.getValue() == true || (itm.owner.getValue().id == 'vault') || (itm.owner.getValue().id == 'shared')) {
+        if (itm.equipped.getValue() == true || (itm.owner.getValue().id == BUCKET_ID_VAULT) || (itm.owner.getValue().id == BUCKET_ID_SHARED)) {
             itm.canReallyEquip = false;
         } else if (itm.classAllowed === ClassAllowed.Any || ClassAllowed[itm.classAllowed] === (itm.owner.getValue() as Character).className) {
             itm.canReallyEquip = true;
         } else {
             itm.canReallyEquip = false;
         }
+    }
+
+    private async clearVaultToCharacter(target: Character, player: Player,  shouldIgnoreFunc: ClearInvChecker, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<number> {
+        console.log('Clearing vault to '+target.label);
+
+        let moved = 0;
+        for (const i of player.gear) {
+            // it's in the vault
+            if (i.owner && i.owner.getValue().id == BUCKET_ID_VAULT) {
+                // weapons, or armor of the proper class are worth checking
+                const worthChecking = i.type == ItemType.Weapon || (i.type == ItemType.Armor && target.classType == i.classAllowed);
+                if (!worthChecking) {
+                    continue;
+                }
+                // check if this item should still be ignored (for example, if it's Junk and we're doing shard mode, no point in removing that)
+                if (shouldIgnoreFunc(i)) {
+                    continue;
+                }
+                const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
+                if (targetBucket.items.length < i.inventoryBucket.itemCount) {
+                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
+                    try {
+                        let success;
+                        if (i.postmaster === true) {
+                            const owner = i.owner.getValue();
+                            success = await this.transfer(player, i, owner, vaultStatus, progressTracker$);
+                            if (success) {
+                                if (owner.id === target.characterId) {
+                                    moved++;
+                                    continue;
+                                }
+                            }
+                        }
+                        success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
+                        if (success) {
+                            moved++;
+                        }
+                    } catch (e) {
+                        console.log('Error on move: ' + e);
+                    }
+                }
+            }
+        }
+        console.log(`Moved ${moved} items to ${target.label}`);
+        return moved;
+
     }
 
     private async clearInvForMode(target: Target, player: Player, shouldIgnoreFunc: ClearInvChecker, itemType: ItemType, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<boolean> {
@@ -292,6 +338,22 @@ export class GearService {
         }
         console.log('Done clearing inventory. ' + totalErr + ' errors.');
         return true;
+    }
+
+    public async emptyVault(player: Player, progressTracker$: Subject<void>): Promise<number> {
+        const notTarget = player.characters[0];
+
+        let totalMoved = 0;
+        for (const target of player.characters) {
+            // skip current player
+            if (target.characterId==notTarget.characterId) continue;
+            
+            const vaultStatus = { isFull: false };
+            let charMoved = await this.clearVaultToCharacter(target, player, isJunk, vaultStatus, progressTracker$);
+            totalMoved+=charMoved;
+
+        }
+        return totalMoved;        
     }
 
     public async shardBlues(player: Player, progressTracker$: Subject<void>): Promise<void> {
@@ -828,7 +890,7 @@ export class GearService {
             }
 
             // if the target is the vault, we just need to put it there
-            if (target.id == 'vault') {
+            if (target.id == BUCKET_ID_VAULT) {
                 let owner = itm.owner.getValue();
                 if (owner == player.shared) {
                     owner = player.characters[0];
@@ -846,7 +908,7 @@ export class GearService {
                 itm.owner.next(player.vault);
                 itm.options.splice(itm.options.indexOf(itm.owner.getValue()), 1);
 
-            } else if (itm.owner.getValue().id == 'vault' || itm.postmaster) {
+            } else if (itm.owner.getValue().id == BUCKET_ID_VAULT || itm.postmaster) {
                 let tempTarget = target;
                 if (target == player.shared) {
                     tempTarget = player.characters[0];

@@ -5,6 +5,10 @@ import { DestinyEnergyType } from 'bungie-api-ts/destiny2';
 import { BehaviorSubject } from 'rxjs';
 import { ManifestInventoryItem } from './destiny-cache.service';
 
+
+export const BUCKET_ID_VAULT = 'vault';
+export const BUCKET_ID_SHARED = 'shared';
+
 export const BUCKET_WEAPON_KINETIC = 1498876634;
 export const BUCKET_WEAPON_ENERGY = 2465295065;
 export const BUCKET_WEAPON_POWER = 953998645;
@@ -1032,14 +1036,14 @@ export abstract class Target {
 
 export class Vault extends Target {
     constructor() {
-        super('Vault', 'vault');
+        super('Vault', BUCKET_ID_VAULT);
     }
 }
 
 
 export class Shared extends Target {
     constructor() {
-        super('Shared', 'shared');
+        super('Shared', BUCKET_ID_SHARED);
     }
 }
 
@@ -1321,6 +1325,7 @@ export class Const {
 
 
     public static readonly HIDE_MILESTONES: string[] = [
+        '1960571846', '2092845811', '2441610527', '3044632693', // daily focus for Guardian Games
         '534869653', // xur
         '3341030123', // rewiring the light
         // '3031052508','2953722265','3632712541' // battlegrounds
