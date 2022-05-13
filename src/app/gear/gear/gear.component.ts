@@ -272,6 +272,15 @@ export class GearComponent extends ChildComponent implements OnInit {
     await this.load(true);
     await this.syncLocks();
   }
+  
+  public async emptyVault() {
+
+    await this.load(true);
+    const totalMoved = await this.gearService.emptyVault(this.player$.getValue(), this.gearFilterStateService.filterUpdated$);
+    await this.load(true);
+    await this.syncLocks();
+    this.notificationService.info(`Moved ${totalMoved} items from vault to idle characters.`);
+  }
 
   public async syncLocks() {
     await this.load();

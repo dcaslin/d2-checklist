@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ApiInventoryBucket, ClassAllowed, InventoryItem, ItemType, Target } from './model';
+import { ApiInventoryBucket, BUCKET_ID_SHARED, ClassAllowed, InventoryItem, ItemType, Target } from './model';
 
 export class Pile {
     highest: InventoryItem[] = [];
@@ -67,7 +67,7 @@ export class BucketService {
         let returnMe = this.buckets[target.id][desc.hash];
         if (returnMe == null) {
             console.log('No bucket found for ' + target.label + '|' + desc.displayProperties.name + ', using shared');
-            returnMe = this.buckets['shared'][desc.hash];
+            returnMe = this.buckets[BUCKET_ID_SHARED][desc.hash];
         }
         // if our bucket is truly empty b/c we hvae a classified weapon equipped, we need to make it on the fly
         if (returnMe == null) {

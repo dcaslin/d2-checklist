@@ -10,7 +10,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 import { Bucket, BucketService } from './bucket.service';
-import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, InventorySocket, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
+import { Activity, ActivityMode, AggHistoryCache, AggHistoryEntry, BUCKET_ID_VAULT, BungieGlobalSearchResult, BungieGroupMember, BungieMember, BungieMembership, Character, ClanInfo, ClanRow, Const, InventoryItem, InventorySocket, MilestoneStatus, Player, PublicMilestone, PublicMilestonesAndActivities, SearchResult, Target, UserInfo, Vault } from './model';
 import { NotificationService } from './notification.service';
 import { ParseService } from './parse.service';
 import { SimpleParseService } from './simple-parse.service';
@@ -653,7 +653,7 @@ export class BungieService implements OnDestroy {
 
     public async insertFreeSocket(player: Player, item: InventoryItem, socket: InventorySocket, plugItemHash: string): Promise<boolean> {
         let owner = item.owner.getValue().id;
-        if (owner == 'vault') {
+        if (owner == BUCKET_ID_VAULT) {
             owner = player.characters[0].id;
         }
         await this.postReq('Destiny2/Actions/Items/InsertSocketPlugFree/', {

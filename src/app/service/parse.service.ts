@@ -1241,7 +1241,10 @@ export class ParseService {
                     rewards = '???';
                 }
             }
-            if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
+            if (ms.milestoneHash == 2136320298 && rewards == '???') { // VoD
+                rewards = 'Pinnacle Gear';
+
+            } else if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
                 rewards = 'Powerful Gear (Tier 1)';
             } else if (ms.milestoneHash == 3312774044) { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
@@ -2527,8 +2530,8 @@ export class ParseService {
         this.addPseudoMilestone('1888320892', milestonesByKey, milestoneList);
         // GoA
         this.addPseudoMilestone('973171461', milestonesByKey, milestoneList);
-        // VoD 1925223180
-        this.addPseudoMilestone('1925223180', milestonesByKey, milestoneList);
+        // VoD 2136320298
+        this.addPseudoMilestone('2136320298', milestonesByKey, milestoneList);
         // Preservation
         this.addPseudoMilestone('4081841674', milestonesByKey, milestoneList);
         // Altars 2321298069

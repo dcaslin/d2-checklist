@@ -10,7 +10,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 import { AuthService } from './service/auth.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { IconService } from './service/icon.service';
-import { ClanRow, Const, SelectedUser, UserInfo } from './service/model';
+import { BUCKET_ID_VAULT, ClanRow, Const, SelectedUser, UserInfo } from './service/model';
 import { NotificationService } from './service/notification.service';
 import { PwaService } from './service/pwa.service';
 import { SignedOnUserService } from './service/signed-on-user.service';
@@ -59,6 +59,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private ref: ChangeDetectorRef) {
 
 
+    const BUCKET_ID_VAULT_X = BUCKET_ID_VAULT;
     const defaultTheme = getDefaultTheme();
     this.componentCssClass = defaultTheme;
     this.overlayContainer.getContainerElement().classList.add(defaultTheme);
