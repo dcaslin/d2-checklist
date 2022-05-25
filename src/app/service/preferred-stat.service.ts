@@ -87,6 +87,9 @@ export class PreferredStatService {
     if (!stats) {
       return 0;
     }
+
+    // halloween masks
+    if (!stats[destinyClass]) { return 0;}
     if (stats.stats[destinyClass][stat.name] > 0) {
       return stats.stats[destinyClass][stat.name];
     }
@@ -99,6 +102,8 @@ export class PreferredStatService {
     }
     const cur = this.stats$.getValue();
     if (!cur) { return 0; }
+    // halloween masks
+    if (!cur.stats[destinyClass]) { return 0;}
     if (cur.stats[destinyClass][stat.name] > 0) {
       return cur.stats[destinyClass][stat.name];
     }
