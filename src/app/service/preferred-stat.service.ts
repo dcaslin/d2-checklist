@@ -89,7 +89,10 @@ export class PreferredStatService {
     }
 
     // halloween masks
-    if (!stats[destinyClass]) { return 0;}
+    
+    if (!stats.stats[destinyClass]) { 
+      return 0;
+    }
     if (stats.stats[destinyClass][stat.name] > 0) {
       return stats.stats[destinyClass][stat.name];
     }
