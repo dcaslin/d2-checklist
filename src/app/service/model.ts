@@ -1328,6 +1328,7 @@ export class Const {
         '1960571846', '2092845811', '2441610527', '3044632693', // daily focus for Guardian Games
         '534869653', // xur
         '3341030123', // rewiring the light
+        '243742733', // For the Light… Against the Light 243742733
         // '3031052508','2953722265','3632712541' // battlegrounds
     ];
 
