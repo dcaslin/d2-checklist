@@ -39,8 +39,8 @@ export class PreferredStatService {
     const defaultStats: ClassStatPrefs = {
       Hunter: {
         Mobility: 100,
-        Resilience: 50,
-        Recovery: 100,
+        Resilience: 100,
+        Recovery: 50,
         Discipline: 0,
         Intellect: 0,
         Strength: 0
@@ -55,10 +55,10 @@ export class PreferredStatService {
       },
       Warlock: {
         Mobility: 0,
-        Resilience: 25,
+        Resilience: 100,
         Recovery: 100,
         Discipline: 50,
-        Intellect: 50,
+        Intellect: 0,
         Strength: 0
       },
     };

@@ -538,14 +538,23 @@ export class ParseService {
                         }
                     }
                     if (act.phases != null && act.phases.length > 0) {
-                        for (const p of act.phases) {
-
-                            phases.push(p.complete);
-                            if (p.complete) {
-                                complete++;
+                        // skip phases on weekly rotating raid b/c it's bugged, use presence of activity challenge as completion
+                        if (milestonesByKey[ms.milestoneHash]?.publicInfo?.weeklyRaid) {
+                            if (act.challenges?.length==0) {
+                                complete = 1;
+                                total = 1;
                             }
-                            total++;
+                        } else {
+                            for (const p of act.phases) {
+
+                                phases.push(p.complete);
+                                if (p.complete) {
+                                    complete++;
+                                }
+                                total++;
+                            }
                         }
+                        
                     }
                 }
                 if (total === 0) { total++; }
@@ -1137,6 +1146,9 @@ export class ParseService {
             msMilestones.push(ms);
         });
         for (const ms of msMilestones) {
+            let skipMe = false; // flag to skip a milestone we detect as should be hidden
+            let specialRaidWeekly = false;
+            let specialDungeonWeekly = false;
             let activityRewards = '';
             const desc = await this.destinyCacheService.getMilestone(ms.milestoneHash);
             if (desc == null) {
@@ -1151,6 +1163,26 @@ export class ParseService {
             if (ms.activities != null) {
                 for (const act of ms.activities) {
                     const aDesc = await this.destinyCacheService.getActivity(act.activityHash);
+                    
+                    if (act.challengeObjectiveHashes) {
+                        // skip weekly dungeons that aren't active
+                        if (desc.displayProperties?.name.toLowerCase().indexOf('weekly dungeon challenge') >= 0) {
+                            if (act.challengeObjectiveHashes.length == 0) {
+                                skipMe = true;
+                            }
+                        }
+                        // handle weekly raid rotation
+                        for (const ch of act.challengeObjectiveHashes) {
+                            const oDesc = await this.destinyCacheService.getObjective(ch);
+                            if (oDesc?.displayProperties?.name.toLowerCase().indexOf('weekly raid') >= 0) {
+                                specialRaidWeekly = true;
+                            } else if (oDesc?.displayProperties?.name.toLowerCase().indexOf('weekly dungeon') >= 0) {
+                                specialDungeonWeekly = true;
+                            }
+                        }
+
+                    }
+                    
                     const modifiers: NameDesc[] = [];
                     if (act.modifierHashes != null && act.modifierHashes.length > 0) {
                         for (const n of act.modifierHashes) {
@@ -1171,7 +1203,7 @@ export class ParseService {
                             const amDesc = await this.destinyCacheService.getActivityMode(amHash);
                             activityIcon = amDesc.displayProperties.icon;
                         }
-                    }
+                    }                    
                     activities.push({
                         hash: act.activityHash,
                         name: aDesc.displayProperties.name,
@@ -1181,6 +1213,9 @@ export class ParseService {
                         icon: activityIcon,
                         modifiers: modifiers
                     });
+                }
+                if (skipMe) {
+                    continue;
                 }
             } else if (ms.availableQuests) {
                 for (const q of ms.availableQuests) {
@@ -1253,11 +1288,11 @@ export class ParseService {
             } else if (ms.milestoneHash == 1437935813) { // Weekly Vanguard
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
-                rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 3632712541 && rewards == '???') { // battlegrounds
-                rewards = 'Powerful Gear (Tier 1)';
+                rewards = 'Pinnacle Gear (Weak)';            
             } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // VoG
                 rewards = 'Powerful Gear (Tier 3)';
+            } else if (specialRaidWeekly) {
+                rewards = 'Pinnacle Gear';
             }
             const boost = this.parseMilestonePl(rewards);
             const sDesc = desc.displayProperties.description;
@@ -1274,22 +1309,25 @@ export class ParseService {
                 boost,
                 milestoneType: desc.milestoneType,
                 dependsOn: [],
-                doubled: this.isDoubled(activities)
+                doubled: this.isDoubled(activities),
+                weeklyDungeon: specialDungeonWeekly,
+                weeklyRaid: specialRaidWeekly
             };
-            if (pushMe.hash == '3628293757') {
-                pushMe.name = 'Trials Three Wins';
-            } else if (pushMe.hash == '3628293755') {
-                pushMe.name = 'Trials Five Wins';
-                pushMe.dependsOn = ['3628293757'];
-            } else if (pushMe.hash == '3628293753') {
-                pushMe.name = 'Trials Seven Wins';
-                pushMe.dependsOn = ['3628293757', '3628293755'];
-            } else if (pushMe.hash == '3632712541') {
-                pushMe.name = 'Battlegrounds Playlist';
-            } else if (pushMe.hash == '3568317242') {
-                pushMe.dependsOn = ['1639406072'];
-            } else if (pushMe.hash == '1322124257') {
-                pushMe.dependsOn = ['1639406072', '3568317242'];
+            
+            if (pushMe.hash == '1830402470') { // Nighmare reaper 2
+                pushMe.dependsOn = ['1018585205'];
+            } else if (pushMe.hash == '1755625435') { // Nighmare reaper 3
+                pushMe.dependsOn = ['1830402470', '1018585205'];
+            }
+            if (specialDungeonWeekly) {
+                if (pushMe.activities?.length>0) {
+                    pushMe.name = `${pushMe.name}: ${pushMe.activities[0].name}`;
+                }
+            }
+            if (specialRaidWeekly) {
+                if (pushMe.activities?.length>0) {
+                    pushMe.name = `Weekly Raid Challenge: ${pushMe.name}`;
+                }
             }
 
             returnMe.push(pushMe);
