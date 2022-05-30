@@ -77,7 +77,6 @@ export class PandaGodrollsService implements OnDestroy {
         manifestVersion: allRolls.manifestVersion
       };
       this.meta$.next(meta);
-      console.dir(meta);
 
       const data: { [name: string]: GunInfo } = {};
       for (const c of temp) {
@@ -313,12 +312,50 @@ export class PandaGodrollsService implements OnDestroy {
   }
 
   public static isValid(completeRolls: CompleteGodRolls): boolean {
-
     if (!completeRolls || !completeRolls.rolls) {
       return false;
     }
     if (!completeRolls.rolls?.length || !completeRolls.date || !completeRolls.manifestVersion) {
       return false;
+    }
+    const loaded = {};
+    // check for dupes
+    for (const roll of completeRolls.rolls) {
+      if(roll.pvp) {
+        if (roll.mnk) {
+          const key = `${roll.name}-pvp-mnk`;
+          if (loaded[key]) {
+            console.log(`%c    Duplicate for ${key}`, LOG_CSS);
+          }
+          loaded[key] = true;
+        }
+        if (roll.controller) {
+
+          const key = `${roll.name}-pvp-controller`;
+          if (loaded[key]) {
+            console.log(`%c    Duplicate for ${key}`, LOG_CSS);
+          }
+          loaded[key] = true;
+        }
+      }
+      if (roll.pve) {
+        if (roll.mnk) {
+          const key = `${roll.name}-pve-mnk`;
+          if (loaded[key]) {
+            console.log(`%c    Duplicate for ${key}`, LOG_CSS);
+          }
+          loaded[key] = true;
+
+        }
+        if (roll.controller) {
+          const key = `${roll.name}-pve-controller`;
+          if (loaded[key]) {
+            console.log(`%c    Duplicate for ${key}`, LOG_CSS);
+          }
+          loaded[key] = true;
+          
+        }
+      } 
     }
     return true;
   }
