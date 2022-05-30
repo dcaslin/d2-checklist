@@ -398,7 +398,7 @@ export class PerkbenchComponent extends ChildComponent {
         console.log(`${w.desc.displayProperties.name} has missing perk: ${c}`);
       } else if (currentCanRollPlugName.indexOf(c) < 0) {
         parent.defunctPerks.push(c);
-        console.log(`${w.desc.displayProperties.name} has defunct perks: ${c}`);
+        // console.log(`${w.desc.displayProperties.name} has defunct perks: ${c}`);
       }
     }
   }
@@ -534,7 +534,19 @@ export class PerkbenchComponent extends ChildComponent {
           }
         }
         if (hasRandomRoll) {
-          gunsWithSockets.push(gi);
+          const existing = gunsWithSockets.find(x=>x.desc.displayProperties.name == gi.desc.displayProperties.name);
+          if (existing) {
+            if (existing.season>gi.season) {
+              // ignore it
+            } else {
+              console.log(`--- Replacing ${gi.desc.displayProperties.name} from season ${existing.season} with ${gi.season}`);
+              gunsWithSockets.splice(gunsWithSockets.indexOf(existing), 1);
+              gunsWithSockets.push(gi);
+            }
+          } else {
+            gunsWithSockets.push(gi);
+          }
+
         }
       }
     }

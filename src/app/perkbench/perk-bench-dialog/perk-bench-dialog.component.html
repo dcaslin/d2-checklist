@@ -30,7 +30,7 @@
                     </mat-button-toggle-group>
                 </div>
                 <div>
-                    <button mat-stroked-button (click)="cloneRoll()" [matTooltip]="'Clone from alternative platform roll'">
+                    <button mat-stroked-button (click)="cloneRoll()" [matTooltip]="'Clone from alternative platform roll. THIS WILL OVERWRITE THE CURRENT PAGE.'">
                         <fa-icon [icon]="iconService.falCopy"></fa-icon> {{parent.isController?'Mnk':'Console'}}
                     </button>
                     &nbsp;
