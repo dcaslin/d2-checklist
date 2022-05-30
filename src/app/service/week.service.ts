@@ -745,6 +745,17 @@ export class WeekService {
     };
   }
 
+  private getWeeklyDungeon(publicMilestones: PublicMilestonesAndActivities): string {
+    const ms = publicMilestones.publicMilestones.find(x => x.weeklyDungeon);
+    return ms ? ms.name: null;
+  }
+  
+  private getWeeklyRaid(publicMilestones: PublicMilestonesAndActivities): string {
+    const ms = publicMilestones.publicMilestones.find(x => x.weeklyRaid);
+    return ms ? ms.name: null;
+  }
+
+
   private getRaidChallenge(publicMilestones: PublicMilestonesAndActivities): RaidChallenge | null {
     if (publicMilestones?.publicMilestones) {
       // const vogMs = publicMilestones.publicMilestones.find(x => x.hash == '2279677721');
@@ -822,6 +833,8 @@ export class WeekService {
     const currWeek = await this.getCurrWeek(publicMilestones);
     const lostSectors = await this.getLostSectors();
     const raidChallenge = this.getRaidChallenge(publicMilestones);
+    const weeklyDungeon = this.getWeeklyDungeon(publicMilestones);
+    const weeklyRaid = this.getWeeklyRaid(publicMilestones);
     return {
       week: currWeek,
       raidChallenge,
@@ -829,7 +842,9 @@ export class WeekService {
       altarOfSorrowsWeapon: await this.destinyCacheService.getInventoryItem(altarWeaponKey),
       wellMode: `The Wellspring: ${wellMode}`,
       wellWeapon: await this.destinyCacheService.getInventoryItem(wellWeaponKey),
-      lostSectors: lostSectors
+      lostSectors: lostSectors,
+      weeklyDungeon, 
+      weeklyRaid
     };
   }
 }
@@ -842,7 +857,8 @@ export interface Today {
   lostSectors: LostSectors;
   wellMode: string;
   wellWeapon: ItemDisplay;
-
+  weeklyDungeon: string;
+  weeklyRaid: string;
 }
 
 export interface LostSectors {

@@ -68,6 +68,7 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
   '/common/destiny2_content/icons/4368a3e344977c5551407845ede830c2.png': 15,
   '/common/destiny2_content/icons/b0406992c49c84bdc5febad94048dc01.png': 16,
+  '/common/destiny2_content/icons/81edbfbf0bacf8e2117c00d1d6115f1b.png': 17,
 
 
   // events
@@ -437,6 +438,7 @@ export class PerkbenchComponent extends ChildComponent {
     const dbInvItem = await this.destinyCacheService.getInventoryItemTable();
 
     for (const key of Object.keys(dbInvItem)) {
+     
       const ii = dbInvItem[key];
       // possible perk, bucket type consumable
       if (
@@ -455,7 +457,7 @@ export class PerkbenchComponent extends ChildComponent {
           ii.sockets?.socketCategories?.length > 0
         ) {
           if (ii.itemType != ItemType.Dummy) {
-            if (!ii.displayProperties.name.endsWith('(Adept)')) {
+            if (!ii.displayProperties.name.endsWith('(Adept)')) {             
               guns.push(ii);
             }
           }
@@ -463,7 +465,7 @@ export class PerkbenchComponent extends ChildComponent {
       }
     }
     const gunsWithSockets: GunInfo[] = [];
-    for (const desc of guns) {
+    for (const desc of guns) {     
       let hasRandomRoll = false;
       for (const jCat of desc.sockets.socketCategories) {
         // we only care about weapon perks

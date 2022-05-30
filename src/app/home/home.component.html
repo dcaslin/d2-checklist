@@ -233,6 +233,22 @@
     </mat-card>
   </div>
   <div>
+    <mat-card *ngIf="today.weeklyDungeon">
+      <mat-card-header>
+        <mat-card-title>{{today.weeklyDungeon}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        Pinnacle awards once/wk/account. Repeatedly farmable for legendaries.
+      </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="today.weeklyRaid">
+      <mat-card-header>
+        <mat-card-title>{{today.weeklyRaid}}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        Pinnacle awards once/wk/account. Repeatedly farmable for legendaries.
+      </mat-card-content>
+    </mat-card>
     <mat-card>
       <mat-card-header>
         <mat-card-title>{{today.wellMode}}</mat-card-title>

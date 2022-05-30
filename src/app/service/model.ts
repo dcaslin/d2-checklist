@@ -366,6 +366,8 @@ export interface PublicMilestone {
     type?: string;
     dependsOn: string[];
     doubled: boolean;
+    weeklyDungeon: boolean;
+    weeklyRaid: boolean;
 
 }
 
@@ -1329,6 +1331,7 @@ export class Const {
         '534869653', // xur
         '3341030123', // rewiring the light
         '243742733', // For the Light… Against the Light 243742733
+        '3581618338', // Master class - guardian games
         // '3031052508','2953722265','3632712541' // battlegrounds
     ];
 
