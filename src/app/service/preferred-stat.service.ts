@@ -47,10 +47,10 @@ export class PreferredStatService {
       },
       Titan: {
         Mobility: 0,
-        Resilience: 50,
+        Resilience: 100,
         Recovery: 100,
         Discipline: 50,
-        Intellect: 50,
+        Intellect: 0,
         Strength: 0
       },
       Warlock: {
