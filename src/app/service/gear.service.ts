@@ -771,7 +771,9 @@ export class GearService {
         try {
             const success = await this.bungieService.insertFreeSocket(this.signedOnUserService.player$.getValue(), item, socket, plug.hash);
             if (success) {
-                socket.active.active = false;
+                if (socket.active) {
+                    socket.active.active = false;
+                }
                 plug.active = true;
                 socket.active = plug;
             }
@@ -806,7 +808,7 @@ export class GearService {
                 if (!newCost) {
                     newCost = 0;
                 }
-                const activeCost = socket.active.energyCost;
+                const activeCost = socket.active ? socket.active.energyCost : 0;
                 socket.plugs = [newPlug];
                 socket.active = newPlug;
                 item.energyUsed = item.energyUsed - activeCost + newCost;

@@ -1149,6 +1149,7 @@ export class ParseService {
             let skipMe = false; // flag to skip a milestone we detect as should be hidden
             let specialRaidWeekly = false;
             let specialDungeonWeekly = false;
+            let specialName = null;
             let activityRewards = '';
             const desc = await this.destinyCacheService.getMilestone(ms.milestoneHash);
             if (desc == null) {
@@ -1159,7 +1160,7 @@ export class ParseService {
                 continue;
             }
             let icon = desc.displayProperties.icon;
-            const activities: MilestoneActivity[] = [];
+            const activities: MilestoneActivity[] = [];            
             if (ms.activities != null) {
                 for (const act of ms.activities) {
                     const aDesc = await this.destinyCacheService.getActivity(act.activityHash);
@@ -1176,11 +1177,13 @@ export class ParseService {
                             const oDesc = await this.destinyCacheService.getObjective(ch);
                             if (oDesc?.displayProperties?.name.toLowerCase().indexOf('weekly raid') >= 0) {
                                 specialRaidWeekly = true;
+                                specialName = `Weekly Raid Challenge: ${desc.displayProperties.name}`;
                             } else if (oDesc?.displayProperties?.name.toLowerCase().indexOf('weekly dungeon') >= 0) {
                                 specialDungeonWeekly = true;
+                                const actName = aDesc.displayProperties.name.replace(': Normal', '');
+                                specialName = `${desc.displayProperties.name}: ${actName}`;
                             }
                         }
-
                     }
                     
                     const modifiers: NameDesc[] = [];
@@ -1247,6 +1250,18 @@ export class ParseService {
                     }
                 }
             }
+            if (desc.displayProperties.name.toLowerCase().indexOf('iron banner challenge')>=0 && desc.activities) {
+                for (const act of desc.activities) {
+                    for (const c of act.challenges) {
+                        if (c.challengeObjectiveHash) {
+                            const oDesc = await this.destinyCacheService.getObjective(c.challengeObjectiveHash);
+                            if (oDesc.completionValue) {
+                                specialName = `Iron Banner: ${oDesc.completionValue} matches`;
+                            }
+                        }
+                    }
+                }
+            }
             const dAct = {};
             for (const a of activities) {
                 const key = a.name + ' ' + a.modifiers.length;
@@ -1298,7 +1313,7 @@ export class ParseService {
             const sDesc = desc.displayProperties.description;
             const pushMe: PublicMilestone = {
                 hash: ms.milestoneHash + '',
-                name: desc.displayProperties.name,
+                name: specialName ? specialName: desc.displayProperties.name,
                 desc: sDesc,
                 start: ms.startDate,
                 end: ms.endDate,
@@ -1318,18 +1333,13 @@ export class ParseService {
                 pushMe.dependsOn = ['1018585205'];
             } else if (pushMe.hash == '1755625435') { // Nighmare reaper 3
                 pushMe.dependsOn = ['1830402470', '1018585205'];
+            } else if (pushMe.hash == '4111516206') { // IB 7
+                pushMe.dependsOn = ['4111516205'];
+            }  else if (pushMe.hash == '4111516207') { // IB 12
+                pushMe.dependsOn = ['4111516205', '4111516206'];
+            }  else if (pushMe.hash == '4111516200') { // IB 18
+                pushMe.dependsOn = ['4111516205', '4111516206', '4111516207'];
             }
-            if (specialDungeonWeekly) {
-                if (pushMe.activities?.length>0) {
-                    pushMe.name = `${pushMe.name}: ${pushMe.activities[0].name}`;
-                }
-            }
-            if (specialRaidWeekly) {
-                if (pushMe.activities?.length>0) {
-                    pushMe.name = `Weekly Raid Challenge: ${pushMe.name}`;
-                }
-            }
-
             returnMe.push(pushMe);
         }
 

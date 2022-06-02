@@ -34,7 +34,7 @@ export class SelectModDialogComponent {
   }
 
   canFit(plug: ManifestInventoryItem): boolean {
-    const current = this.socket.active.energyCost;
+    const current = this.socket.active? this.socket.active.energyCost : 0;
     const newCost = plug.plug?.energyCost?.energyCost || 0;
     const change = newCost - current;
     return (change + this.item.energyUsed) <= this.item.energyCapacity;
