@@ -357,7 +357,7 @@ function isSocketInteresting(socket: InventorySocket): boolean {
 async function tryToInsertMod(gearService: GearService, item: InventoryItem, socket: InventorySocket, target: ManifestInventoryItem,
     choices: ManifestInventoryItem[], log$: BehaviorSubject<string[]>, previewOnly: boolean): Promise<boolean> {
     if (target) {
-        if ((target.hash + '') == socket.active.hash) {
+        if ((target.hash + '') == socket.active?.hash) {
             // already loaded
             const msg = `  [${target.displayProperties.name} already loaded on ${item.name}]`;
             log$.getValue().push(msg);
@@ -475,7 +475,7 @@ async function clearModsOnItem(gearService: GearService, item: InventoryItem, lo
             continue;
         }
         // is it already empty?
-        if (socket.active.empty) {
+        if (!socket.active || socket.active.empty) {
             continue;
         }
         if (ignoreGeneral || ignoreSeasonal) {
@@ -490,7 +490,7 @@ async function clearModsOnItem(gearService: GearService, item: InventoryItem, lo
         // can we empty it?
         const target = socket.sourcePlugs.find(p => p.displayProperties.name.includes('Empty'));
         if (target) {
-            const logMe = `- ${socket.active.name} from ${item.name}`;
+            const logMe = `- ${socket.active?.name} from ${item.name}`;
             const log = log$.getValue();
             log.push(logMe);
             log$.next(log);

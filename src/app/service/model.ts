@@ -413,6 +413,7 @@ export interface PrivLoadoutRequirement {
 export interface PrivMilestoneActivity {
     activityHash: string;
     challengeObjectiveHashes: any[];
+    challenges: any[];
     modifierHashes: string[];
     loadoutRequirementIndex: number;
 }
@@ -840,7 +841,7 @@ export class InventoryItem {
     public exoticCatalystTriumph: TriumphRecordNode;
 
     canFit(socket: InventorySocket, plug: ManifestInventoryItem): boolean {
-        const current = socket.active.energyCost;
+        const current = socket.active ? socket.active.energyCost : 0;
         const newCost = plug.plug?.energyCost?.energyCost || 0;
         const change = newCost - current;
         return (change + this.energyUsed) <= this.energyCapacity;
