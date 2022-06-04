@@ -24241,7 +24241,7 @@
         ]
       },
       "mnk": true,
-      "controller": false
+      "controller": true
     },
     {
       "name": "roar of the bear",
