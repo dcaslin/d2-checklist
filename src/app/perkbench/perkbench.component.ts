@@ -164,8 +164,8 @@ export class PerkbenchComponent extends ChildComponent {
             (x) =>
               x.roll == null ||
               (this.isController
-                ? x.roll.controller == null
-                : x.roll.mnk == null)
+                ? x.roll.controller == null || this.isEmpty(x.roll.controller)
+                : x.roll.mnk == null || this.isEmpty(x.roll.mnk))
           );
         }
         if (this.showIncompleteOnly) {
@@ -218,6 +218,19 @@ export class PerkbenchComponent extends ChildComponent {
 
   changeConsole() {
     localStorage.setItem('perkbench-is-console', '' + this.isController);
+  }
+
+  isEmpty(roll: GunRolls) : boolean {
+    if (!roll.pvp) return true;
+    if (!roll.pve) return true;
+    return this.isGunRollEmpty(roll.pvp) || this.isGunRollEmpty(roll.pve);
+  }
+
+  isGunRollEmpty(roll: GunRoll): boolean {
+    if (roll.greatPerks!=null && roll.greatPerks.length>0) return false;
+    if (roll.goodPerks!=null && roll.goodPerks.length>0) return false;
+    if (roll.masterwork!=null && roll.masterwork.length>0) return false;
+    return true;
   }
 
   sort(val: string) {
