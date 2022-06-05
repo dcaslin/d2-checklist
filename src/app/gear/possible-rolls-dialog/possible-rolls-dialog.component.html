@@ -1,10 +1,10 @@
 <div mat-dialog-title style="margin-bottom: 0px">
     {{item.name}}
-    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{item.typeName}}</span>
-
+    
+    <span class="margin-left-10 simple-darker-caption-no-margin">{{item.typeName}}</span>
+    <span class="margin-left-10 accent-text" *ngIf="item.craftProgress?.level">Lvl {{item.craftProgress.level}}</span>
 </div>
 <mat-dialog-content style="font-size: smaller;">
-
     <table class="tidy-auto-table">
         <tr *ngIf="item.masterwork">
             <th [attr.colspan]="maxPlugs">
@@ -26,7 +26,7 @@
         <ng-container *ngFor="let socket of item.sockets">
             <tr *ngIf="!socket.isWeaponMod && socket.possiblePlugs.length>0">
                 <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [class.half-opacity]="!plug.currentlyCanRoll">
-                    <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)"></d2c-god-roll-plug>
+                    <d2c-god-roll-plug [plug]="plug" [debugmode]="(parent.debugmode|async)" [currentLevel]="item.craftProgress?.level"></d2c-god-roll-plug>
                     <ng-container *ngIf="!plug.currentlyCanRoll">*</ng-container>
                 </td>
                 <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">

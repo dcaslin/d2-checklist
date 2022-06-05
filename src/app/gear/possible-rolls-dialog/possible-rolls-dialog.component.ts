@@ -21,8 +21,6 @@ export class PossibleRollsDialogComponent {
   maxPlugs = 0;
   constructor(
     public iconService: IconService,
-    private clipboardService: ClipboardService,
-    private notificationService: NotificationService,
     public dialogRef: MatDialogRef<PossibleRollsDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.item = data.item;

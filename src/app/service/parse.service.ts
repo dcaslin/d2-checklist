@@ -4129,7 +4129,7 @@ export class ParseService {
                                     plugs.push(oPlug);
                                 }
                                 sockets.push(new InventorySocket(jCat.socketCategoryHash, plugWhitelist, plugs, possiblePlugs, index, sourcePlugs));
-                                if (socketDesc.randomizedPlugSetHash) {
+                                if (socketDesc.randomizedPlugSetHash) {                                    
                                     const randomRollsDesc: any = await this.destinyCacheService.getPlugSet(socketDesc.randomizedPlugSetHash);
                                     if (randomRollsDesc && randomRollsDesc.reusablePlugItems) {
                                         for (const option of randomRollsDesc.reusablePlugItems) {
@@ -4141,6 +4141,9 @@ export class ParseService {
                                                 plugName, plugDesc.displayProperties.description,
                                                 plugDesc.displayProperties.icon, false, plugDesc.plug.energyCost,
                                                 plugDesc.itemTypeDisplayName);
+                                            if (option.craftingRequirements?.requiredLevel > 0) {
+                                                oPlug.requiredLevel = option.craftingRequirements.requiredLevel;
+                                            }
                                             oPlug.currentlyCanRoll = option.currentlyCanRoll;
                                             possiblePlugs.push(oPlug);
                                         }

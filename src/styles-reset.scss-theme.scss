@@ -162,6 +162,10 @@
     color: mat.get-color-from-palette($foreground, secondary-text);
   }
 
+  .normal-weight {
+    font-weight: 400;
+  }
+
 
   .simple-darker-larger-caption {
     margin: 5px 0 7px;

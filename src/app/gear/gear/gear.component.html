@@ -422,7 +422,7 @@
                 <div *ngIf="i.craftProgress as obj" class="obj-desc">
                   <div class="total-progress">
                     <mat-progress-bar class="progress-bar" color="accent" mode="determinate" [value]="obj.percent"></mat-progress-bar>
-                    <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% To Level {{obj.level}}<br>{{obj.date|date:'shortDate'}}</div>
+                    <div class="simple-caption"><span class="normal-weight">Level {{obj.level}}</span>: {{obj.percent|number : '1.0-0'}}% tnl <br>{{obj.date|date:'shortDate'}}</div>
                   </div>
                 </div>
 

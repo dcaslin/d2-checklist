@@ -1,13 +1,30 @@
-<ng-container *ngIf="plug.empty">  
-    <fa-icon [icon]="iconService.farSquare"></fa-icon>
+<ng-container *ngIf="plug.empty">
+  <fa-icon [icon]="iconService.farSquare"></fa-icon>
 </ng-container>
 <ng-container *ngIf="!plug.empty">
-  <fa-icon [icon]="iconService.fasSwords" *ngIf="plug.pandaPvp>0" class="perk" [class.accent-text]="plug.pandaPvp>1"
-    [matTooltip]="plug.pandaPvp>1?'This is the best PVP perk for this weapon':'This is a good PVP perk for this weapon'">
-  </fa-icon>
-  <i *ngIf="plug.pandaPve>0" class="icon-strike perk" [class.accent-text]="plug.pandaPve>1"
-    [matTooltip]="plug.pandaPve>1?'This is the best PVE perk for this weapon':'This is a good PVE perk for this weapon'"></i>
-  <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space"><span class="pad-right" *ngIf="plug.enhanced"><fa-icon [icon]="iconService.fasUp"></fa-icon></span>{{plug.name}}</span>
+  
+  <div>
+    <fa-icon [icon]="iconService.fasSwords" *ngIf="plug.pandaPvp>0" class="perk" [class.accent-text]="plug.pandaPvp>1"
+      [matTooltip]="plug.pandaPvp>1?'This is the best PVP perk for this weapon':'This is a good PVP perk for this weapon'">
+    </fa-icon>
+    <i *ngIf="plug.pandaPve>0" class="icon-strike perk" [class.accent-text]="plug.pandaPve>1"
+      [matTooltip]="plug.pandaPve>1?'This is the best PVE perk for this weapon':'This is a good PVE perk for this weapon'"></i>
+    <span [matTooltip]="plug.desc" matTooltipClass="preserve-white-space">
+      <span class="pad-right" *ngIf="plug.enhanced">
+        <fa-icon [icon]="iconService.fasUp"></fa-icon>
+      </span>
+      {{plug.name}}
+    </span>
+  </div>
+  <div class="simple-darker-caption-no-margin" *ngIf="plug.requiredLevel">
+    <ng-container *ngIf="currentLevel">
+      <fa-icon [icon]="iconService.fasCheckSquare" class="mat-option.mat-selected"
+        *ngIf="currentLevel>=plug.requiredLevel"></fa-icon>
+      <fa-icon [icon]="iconService.farSquare" *ngIf="currentLevel<plug.requiredLevel"></fa-icon>
+    </ng-container>
+    Level {{plug.requiredLevel}}
+  </div>
+  
   <ng-container *ngIf="debugmode"> {{plug.hash}} {{plug.originTrait}} x
     <button mat-icon-button (click)="copyToClipboard()">
       <fa-icon [icon]="iconService.farCopy"></fa-icon>
