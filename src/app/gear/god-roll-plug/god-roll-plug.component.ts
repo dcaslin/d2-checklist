@@ -16,6 +16,8 @@ export class GodRollPlugComponent {
   @Input() plug: InventoryPlug;
 
   @Input() debugmode: boolean;
+  
+  @Input() currentLevel: number|null;
 
   constructor(
     public iconService: IconService,

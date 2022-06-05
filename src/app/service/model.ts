@@ -1583,6 +1583,7 @@ export class InventoryPlug {
     public desc: string;
     public selectedPossible = false; // used for possible roll screen only
     public inventoryStats: InventoryStat[] = [];
+    public requiredLevel: number|null;
 
     public getPandaRating() {
         return Math.max(this.pandaPve, this.pandaPvp);
