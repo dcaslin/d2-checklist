@@ -3,7 +3,7 @@
 </ng-container>
 <ng-container *ngIf="!plug.empty">
   
-  <div>
+  <div class="inline-block">
     <fa-icon [icon]="iconService.fasSwords" *ngIf="plug.pandaPvp>0" class="perk" [class.accent-text]="plug.pandaPvp>1"
       [matTooltip]="plug.pandaPvp>1?'This is the best PVP perk for this weapon':'This is a good PVP perk for this weapon'">
     </fa-icon>
