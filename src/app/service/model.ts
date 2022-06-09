@@ -388,7 +388,7 @@ export interface MilestoneActivity {
 }
 
 export interface LegendLostSectorActivity extends MilestoneActivity {
-    info: LostSectorInfo;
+    info: LostSectorInstance;
 }
 
 export interface PrivPublicMilestone {
@@ -1744,18 +1744,24 @@ export interface LostSector {
     soloReward: string;
 }
 
-export interface LostSectorInfo {
+export interface LostSectorMeta {
     abbrev: string;
+    directorLocation: string;
+    legend: LostSectorInstance;
+    master: LostSectorInstance;
+  }
+  
+  export interface LostSectorInstance {
     hash: string;
     shields: string[];
     champions: Champion[];
-}
-
-interface Champion {
+  }
+  
+  interface Champion {
     name: string;
     count: number;
-}
-
+  }
+  
 export interface PursuitTuple {
     vendorItem: InventoryItem;
     characterItem: InventoryItem;
