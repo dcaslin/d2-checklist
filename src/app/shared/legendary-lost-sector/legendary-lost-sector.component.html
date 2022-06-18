@@ -7,6 +7,9 @@
       <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
     </div>
     <div mat-line class="ls-line">
+      Location: {{ls.directorLocation}}
+    </div>
+    <div mat-line class="ls-line">
       {{n.ll}} PL - {{n.modifiers?.length}}<fa-icon [icon]="iconService.fasBurn" class="fa-icon"></fa-icon>
     </div>
     <div mat-line class="ls-line">

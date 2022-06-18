@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { add, differenceInDays, differenceInHours, differenceInWeeks, parseISO, subHours } from 'date-fns';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
-import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInstance, LostSectorMeta, NameDesc, PublicMilestonesAndActivities } from './model';
-import { ParseService } from './parse.service';
 import { LS_LOOT, LS_ROTATION } from './lost-sector-reference';
+import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInstance, NameDesc, PublicMilestonesAndActivities } from './model';
+import { ParseService } from './parse.service';
 
 @Injectable({
   providedIn: 'root'
@@ -213,11 +213,13 @@ export class WeekService {
       day: referenceDate.toISOString(),
       legendaryLostSector: {
         icon: recordDescForIcon.displayProperties.icon,
+        directorLocation: LS_ROTATION[lsIndex].directorLocation,
         activity: legendActivity,
         soloReward: loot
       },
       masterLostSector: {
         icon: recordDescForIcon.displayProperties.icon,
+        directorLocation: LS_ROTATION[lsIndex].directorLocation,
         activity: masterActivity,
         soloReward: loot
       }
