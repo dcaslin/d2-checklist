@@ -1740,6 +1740,7 @@ export interface VendorItemInfo {
 
 export interface LostSector {
     activity: LegendLostSectorActivity;
+    directorLocation: string;
     icon: string;
     soloReward: string;
 }

@@ -2611,9 +2611,9 @@ export class ParseService {
         this.addPseudoMilestone('1755625435', milestonesByKey, milestoneList, ['1830402470']);
 
         // Witch Queen 100K
-        this.addPseudoMilestone('363309766', milestonesByKey, milestoneList, ['400869111']);
+        this.addPseudoMilestone('363309766', milestonesByKey, milestoneList);
         // Witch Queen completion
-        this.addPseudoMilestone('2595878741', milestonesByKey, milestoneList, ['400869108']);
+        this.addPseudoMilestone('2595878741', milestonesByKey, milestoneList);
         
         // // Crucible 
         // this.addPseudoMilestone('3312774044', milestonesByKey, milestoneList);
