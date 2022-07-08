@@ -3190,8 +3190,8 @@ export class ParseService {
                 searchText += ' has:reward';
             }
         }
-        // it has other incomplete intervals, it's not really done
-        if (incompIntPercent != null && incompIntPercent < 100) {
+        // if this is involved in a title and the state is complete, respect it, even if there are other intervals
+        if (!title && incompIntPercent != null && incompIntPercent < 100) {
             complete = false;
         }
         return {
