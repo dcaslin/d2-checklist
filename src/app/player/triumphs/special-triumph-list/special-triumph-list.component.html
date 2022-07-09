@@ -1,49 +1,110 @@
-<ng-container *ngIf="rows$|async as rows">
+<ng-container *ngIf="{player: state.player|async, showCrafted: showCrafted$ | async} as o">
+    <ng-container *ngIf="rows$|async as rows">
+        <ng-container *ngIf="sort$|async as sort">
+            <h4 class="triumph-score">{{title$|async}}
 
-    <ng-container *ngIf="sort$|async as sort">
-        <h4 class="triumph-score">{{title$|async}}
-            <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
-                Hide Completed
-            </mat-checkbox>
-        </h4>
-        <div>
-            <table class="responsive-table">
-                <thead>
-                    <tr>
-                        <th>
-                            <span class="fake-link gear-sort" (click)="sortRows('name')">Name
-                                <d2c-sort-indicator field="name" [currVal]="sort.name" [descending]="!sort.ascending">
-                                </d2c-sort-indicator>
-                            </span>
-                        </th>
-                        <th>
-                            <span class="fake-link gear-sort" (click)="sortRows('progress')">Progress
-                                <d2c-sort-indicator field="progress" [currVal]="sort.name" [descending]="!sort.ascending">
-                                </d2c-sort-indicator>
-                            </span>
-                        </th>
-                        <th>Desc</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <ng-container *ngFor="let t of rows">
-                        <tr *ngIf="!state.hideCompleteTriumphs || !t.complete || !t.redeemed">
-                            <td class="lead" data-label="">
-                                <d2c-triumph-name [t]="t" [debugmode]="debugmode|async" (navigate)="navigate($event)">
-                                </d2c-triumph-name>
-                            </td>
-                            <td class="left" data-label="">
-                                {{t.percent}}%
-                                <mat-progress-bar class="low-hanging-node-prog" mode="determinate" [value]="t.percent">
-                                </mat-progress-bar>
-                            </td>
-                            <td class="left" data-label="">
-                                <d2c-triumph-objectives [triumph]="t"></d2c-triumph-objectives>
-                            </td>
+                <ng-container *ngIf="!o.showCrafted">
+                    <mat-checkbox class="hide-complete-triumphs" [(ngModel)]="state.hideCompleteTriumphs">
+                        Hide Completed
+                    </mat-checkbox>
+                </ng-container>
+                <ng-container *ngIf="o.showCrafted">
+                    <mat-form-field class="margin-left-10">
+                        <mat-label>Filter</mat-label>
+                        <mat-select [(ngModel)]="craftedFilter">
+                            <ng-container *ngFor="let c of craftedFilterChoices">
+                                <mat-option *ngIf="!o.player.privateGear || c.value.indexOf('CRAFTED')<0"
+                                    [value]="c.value">{{c.name}}</mat-option>
+                            </ng-container>
+
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+            </h4>
+            <div>
+                <p *ngIf="o.player.privateGear && o.showCrafted">
+                    Private gear is hidden on this account, so crafting and attunement status will not be reported. Sign in or modify Bungie.net privacy settings to fix this.
+                </p>
+                <table class="responsive-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="fake-link gear-sort" (click)="sortRows('name')">Name
+                                    <d2c-sort-indicator field="name" [currVal]="sort.name"
+                                        [descending]="!sort.ascending">
+                                    </d2c-sort-indicator>
+                                </span>
+                            </th>
+                            <th>
+                                <span class="fake-link gear-sort" (click)="sortRows('progress')">Progress
+                                    <d2c-sort-indicator field="progress" [currVal]="sort.name"
+                                        [descending]="!sort.ascending">
+                                    </d2c-sort-indicator>
+                                </span>
+                            </th>
+                            <th>Desc</th>
                         </tr>
-                    </ng-container>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let t of rows">
+                            <tr *ngIf="shouldShow(t)">
+                                <td class="lead" data-label="">
+                                    <div class="flex-row">
+                                        <div *ngIf="o.showCrafted && t.icon as icon">
+                                            <div class="list-icon divider-border"
+                                                [style.background-image]="'url(//www.bungie.net' + icon + ')'">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <d2c-triumph-name [t]="t" [debugmode]="debugmode|async"
+                                                (navigate)="navigate($event)">
+                                            </d2c-triumph-name>
+                                            <ng-container *ngIf="o.showCrafted && !o.player.privateGear">
+                                                <div *ngIf="t.complete">
+                                                    <span *ngIf="t.crafted.length==0" class="crafted-text">Craft me!</span>
+                                                    <ng-container *ngFor="let i of t.crafted">
+                                                        <div *ngIf="i.craftProgress as obj">
+                                                            <div class="total-progress">
+                                                                <mat-progress-bar class="progress-bar" color="accent"
+                                                                    mode="determinate" [value]="obj.percent">
+                                                                </mat-progress-bar>
+                                                                <div class="simple-caption"><span
+                                                                        class="normal-weight">Level {{obj.level}}</span>:
+                                                                    {{obj.percent|number : '1.0-0'}}% tnl
+                                                                    <br>{{obj.date|date:'shortDate'}}</div>
+                                                            </div>                                                        
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                                <div *ngIf="!t.complete && t.redborder.length>0">
+                                                    <span class="crafted-text">{{t.redborder.length}} Deepsight held to attune.</span>
+                                                    <ng-container *ngFor="let i of t.redborder">
+                                                        <div *ngIf="i.deepSightProgress as obj" class="obj-desc">
+                                                            <div class="total-progress">
+                                                              <mat-progress-bar class="progress-bar" color="warn" mode="determinate" [value]="obj.percent"></mat-progress-bar>
+                                                              <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% Attuned</div>
+                                                            </div>
+                                                          </div>
+                                                    </ng-container>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="left" data-label="">
+                                    {{t.percent}}%
+                                    <mat-progress-bar class="low-hanging-node-prog" mode="determinate"
+                                        [value]="t.percent">
+                                    </mat-progress-bar>
+                                </td>
+                                <td class="left" data-label="">
+                                    <d2c-triumph-objectives [triumph]="t"></d2c-triumph-objectives>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+        </ng-container>
     </ng-container>
 </ng-container>

@@ -2178,6 +2178,8 @@ export class ParseService {
         const bounties: InventoryItem[] = [];
         const quests: InventoryItem[] = [];
         const gear: InventoryItem[] = [];
+        const itemCompObjectivesData = resp.itemComponents?.objectives?.data;
+        const privateGear = itemCompObjectivesData==null || Object.keys(itemCompObjectivesData).length==0;
         let checklists: Checklist[] = [];
 
         let charChecklists: CharChecklist[] = [];
@@ -2464,7 +2466,16 @@ export class ParseService {
                 
                 exoticCatalystTriumphs = this.findLeaves(searchableTriumphs, [2744330515]);
                 patternTriumphs = this.findLeaves(searchableTriumphs, [127506319, 3289524180, 1464475380]);
-
+                if (!privateGear) {
+                    for (const p of patternTriumphs) {
+                        // search gear for a weapon matching that name that is crafted
+                        const crafted = gear.filter((g) => {  return g.name == p.name && g.crafted; });
+                        p.crafted = crafted;
+                        const redborder = gear.filter((g) => {  return g.name == p.name && g.deepSightProgress; });
+                        p.redborder = redborder;
+                        
+                    }
+                }
                 // const mmxix = this.handleRecordNode([], '2254764897', records, showZeroPtTriumphs, showInvisTriumphs, false);
                 // searchableTriumphs.push(mmxix);
                 // const mmxx = this.handleRecordNode([], '4239091332', records, showZeroPtTriumphs, showInvisTriumphs, false);
@@ -2570,7 +2581,7 @@ export class ParseService {
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs);
+            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs, privateGear);
     }
 
     // these are items that are not in the public milestones and also disappear on completion
@@ -3483,7 +3494,7 @@ export class ParseService {
         }
     }
 
-    private parseShapedMasterwork(plugDesc: any): MasterworkInfo {
+    private parseCraftedMasterwork(plugDesc: any): MasterworkInfo {
         let invStat = null;
 
         // find max invstat 
@@ -3815,12 +3826,12 @@ export class ParseService {
                             objectives.push(iObj);
                             deepSightProgress = iObj;
                         }
-                        const shapedLevel = pObj.objectivesPerPlug['659359923'] || pObj.objectivesPerPlug['1922808508'] || pObj.objectivesPerPlug['4029346515'];
-                        if (shapedLevel != null && shapedLevel.length>0) {
+                        const craftedLevel = pObj.objectivesPerPlug['659359923'] || pObj.objectivesPerPlug['1922808508'] || pObj.objectivesPerPlug['4029346515'];
+                        if (craftedLevel != null && craftedLevel.length>0) {
                             let dateCrafted: number = null;
                             let level: number = null;
                             let objective: WeaponShapeLevelObjective = null;
-                            for (const o of shapedLevel) {
+                            for (const o of craftedLevel) {
                                 const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
                                 if (oDesc.uiStyle == DestinyObjectiveUiStyle.CraftingWeaponLevel || oDesc.progressDescription == 'Weapon Level' ) {
                                     level = o.progress;
@@ -4102,7 +4113,7 @@ export class ParseService {
                                             continue;
                                         }
                                     } else  if (plugDesc.itemTypeAndTierDisplayName.indexOf('Enhanced Intrinsic')>0 && plugDesc.investmentStats?.length > 0) {
-                                        const mwInfo = this.parseShapedMasterwork(plugDesc);
+                                        const mwInfo = this.parseCraftedMasterwork(plugDesc);
                                         if (mwInfo != null) {
                                             mw = mwInfo;
                                         }
@@ -4186,8 +4197,8 @@ export class ParseService {
             const locked: boolean = (itm.state & ItemState.Locked) > 0;
             const masterworked = (itm.state & ItemState.Masterwork) > 0 || mw?.tier >= 10;
             const tracked = (itm.state & ItemState.Tracked) > 0;
-            const shaped = (itm.state & ItemState.Shaped) > 0;
-            if (shaped && mw==null) {
+            const crafted = (itm.state & ItemState.Crafted) > 0;
+            if (crafted && mw==null) {
                 mw = {
                     hash: '0',
                     name: 'None',
@@ -4201,7 +4212,7 @@ export class ParseService {
                 };
             }
             const deepsight = deepSightProgress != null || (itm.state & ItemState.Deepsight) > 0;
-            let notShaped = desc.inventory.recipeItemHash && !shaped;
+            let notCrafted = desc.inventory.recipeItemHash && !crafted;
 
             const bucketOrder = null;
 
@@ -4222,14 +4233,14 @@ export class ParseService {
             if (masterworked) {
                 searchText += ' is:masterwork';
             }
-            if (shaped) {
-                searchText += ' is:shaped';
+            if (crafted) {
+                searchText += ' is:crafted';
             }
             if (deepsight) {
                 searchText += ' is:deepsight';
             }
-            if (notShaped) {
-                searchText += ' is:notshaped';
+            if (notCrafted) {
+                searchText += ' is:notcrafted';
             }
             if (sockets != null) {
                 for (const s of sockets) {
@@ -4399,7 +4410,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, shaped, deepsight, deepSightProgress, craftProgress, notShaped
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, crafted, deepsight, deepSightProgress, craftProgress, notCrafted
             );
         } catch (exc) {
             console.dir(itemComp);

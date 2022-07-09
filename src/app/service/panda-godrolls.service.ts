@@ -189,7 +189,7 @@ export class PandaGodrollsService implements OnDestroy {
     if (i.pandaPve < 1 && i.pandaPvp < 1) {
       i.searchText = i.searchText + ' is:notgoodroll';
       i.godRollInfo = i.godRollInfo + ' is:notgoodroll';
-      if (!i.shaped && !i.deepsight) {
+      if (!i.crafted && !i.deepsight) {
         i.searchText = i.searchText + ' is:notinteresting';
       }
     }

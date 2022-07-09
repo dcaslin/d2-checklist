@@ -44,11 +44,40 @@ export class SpecialTriumphListComponent extends ChildComponent {
 
   public title$: BehaviorSubject<string> = new BehaviorSubject('');
   public sort$: BehaviorSubject<Sort> = new BehaviorSubject({
-    name: 'name',
-    ascending: true
+    name: 'progress',
+    ascending: false
   });
 
   public rows$: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
+  public showCrafted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public craftedFilter = 'TODO';
+  public craftedFilterChoices = [
+    {
+      name: 'Todo (Not Crafted + Incomplete)',
+      value: 'TODO',
+
+    },
+    {
+      name: 'Attune',
+      value: 'ATTUNE_TO_CRAFT'
+    },
+    {
+      name: 'Incomplete',
+      value: 'INCOMPLETE'
+    },
+    {
+      name: 'Not Crafted',
+      value: 'NOT_CRAFTED'
+    }, 
+    {
+      name: 'Crafted',
+      value: 'CRAFTED'
+    },
+    {
+      name: 'All',
+      value: 'ALL'
+    }
+  ];
 
   constructor(storageService: StorageService,
     private router: Router,
@@ -66,11 +95,12 @@ export class SpecialTriumphListComponent extends ChildComponent {
         if (data.flavor == 'catalysts') {
           sortMe = player.exoticCatalystTriumphs;
           this.title$.next('Exotic Catalysts');
+          this.showCrafted$.next(false);
         } else if (data.flavor == 'patterns') {
           sortMe = player.patternTriumphs;
           this.title$.next('Patterns');
+          this.showCrafted$.next(true);
         }
-        console.log(`latest ${sort.name} ${sort.ascending}`);
         if (sort.name == 'name') {
           sortMe.sort(sortByName);
         } else if (sort.name == 'progress') {
@@ -83,6 +113,38 @@ export class SpecialTriumphListComponent extends ChildComponent {
       });
 
     this.sort$.next(this.sort$.getValue());
+  }
+
+  public shouldShow(t: TriumphRecordNode): boolean {    
+    if (this.showCrafted$.getValue()) {
+      if (this.craftedFilter=='TODO') {
+        if (!t.complete || (t.complete && t.crafted?.length==0)) {
+          return true;
+        }
+      } else if (this.craftedFilter=='INCOMPLETE') {
+        if (!t.complete) {
+          return true;
+        }
+      } else if (this.craftedFilter=='NOT_CRAFTED') {
+        if (t.complete && t.crafted.length==0) {
+          return true;
+        }
+      } else if (this.craftedFilter=='CRAFTED') {
+        if (t.complete && t.crafted.length>0) {
+          return true;
+        }
+      } else if (this.craftedFilter=='ATTUNE_TO_CRAFT') {
+        if (!t.complete && t.redborder.length>0) {
+          return true;
+        }
+      } 
+      else if (this.craftedFilter=='ALL') {
+        return true;
+      }
+      return false;
+    } else {
+      return !this.state.hideCompleteTriumphs || !t.complete || !t.redeemed
+    }
   }
 
 
