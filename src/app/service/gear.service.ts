@@ -33,7 +33,7 @@ function isNeverTrue(i: InventoryItem): boolean {
 }
 
 function isGrind(i: InventoryItem): boolean {
-    return i.deepsight || (i.shaped && i.craftProgress?.level < 20);
+    return i.deepsight || (i.crafted && i.craftProgress?.level < 20);
 }
 
 @Injectable()
@@ -186,7 +186,6 @@ export class GearService {
                 if (g.deepsight) {
                     const patternTriumph = player.patternTriumphs.find(x => x.name == g.name);
                     if (patternTriumph) {
-                        console.log(`Found pattern triumph for ${g.name} -> ${patternTriumph.name}`);
                         g.patternTriumph = patternTriumph;
                     }
                 }

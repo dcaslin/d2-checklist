@@ -1,9 +1,9 @@
 <ng-container *ngIf="i.icon!=null">
-    <div *ngIf="hideMenu" class="item divider-border" [class.shaped]="i.shaped" [class.deepsight]="i.deepsight" [class.masterworked]="i.masterworked">
+    <div *ngIf="hideMenu" class="item divider-border" [class.crafted]="i.crafted" [class.deepsight]="i.deepsight" [class.masterworked]="i.masterworked">
         <ng-container *ngTemplateOutlet="iconContents"></ng-container>
     </div>
 
-    <div *ngIf="!hideMenu" class="pointer item divider-border"  [class.shaped]="i.shaped" [class.deepsight]="i.deepsight" [class.masterworked]="i.masterworked"
+    <div *ngIf="!hideMenu" class="pointer item divider-border"  [class.crafted]="i.crafted" [class.deepsight]="i.deepsight" [class.masterworked]="i.masterworked"
         [matMenuTriggerFor]="itemMenu">
         <ng-container *ngTemplateOutlet="iconContents"></ng-container>
     </div>

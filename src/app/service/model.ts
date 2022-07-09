@@ -183,7 +183,7 @@ export enum ItemState {
     Locked = 1,
     Tracked = 2,
     Masterwork = 4,
-    Shaped = 8, // Crafted
+    Crafted = 8, // Crafted
     Deepsight = 16, // HighlightedObjective
 
 }
@@ -312,6 +312,8 @@ export interface TriumphRecordNode extends TriumphNode {
     pointsToBadge: boolean;
     badge?: Badge;
     rewardItems: NameQuantity[];
+    crafted?: InventoryItem[];
+    redborder?: InventoryItem[];
 }
 
 export interface TriumphCollectibleNode extends TriumphNode {
@@ -692,6 +694,7 @@ export class Player {
     readonly transitoryData: ProfileTransitoryData;
     readonly minsPlayed: number;
     readonly gearMetaData: GearMetaData;
+    readonly privateGear: boolean;
     maxLL = 0;
     maxLLFraction?: Fraction;
     aggHistory: AggHistoryEntry[] = [];
@@ -709,7 +712,8 @@ export class Player {
         seals: Seal[], badges: Badge[],
         title: string, seasonChallengeEntries: SeasonalChallengeEntry[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
-        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData, patternTriumphs: TriumphRecordNode[], exoticCatalystTriumphs: TriumphRecordNode[],) {
+        specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData, patternTriumphs: TriumphRecordNode[], exoticCatalystTriumphs: TriumphRecordNode[],
+        privateGear: boolean) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -761,6 +765,7 @@ export class Player {
         this.patternTriumphs = patternTriumphs;
         this.exoticCatalystTriumphs = exoticCatalystTriumphs;
         this.pursuitGear = this.gear ? this.gear.filter(g => g.objectives?.length > 0 && g.type != ItemType.Subclass) : [];
+        this.privateGear = privateGear;
     }
 
     public getWeeklyXp(): number {
@@ -832,9 +837,9 @@ export class InventoryItem {
     readonly collectibleHash: string;
     public lowLinks: LowLinks;
     readonly versionNumber: number;
-    readonly shaped: boolean;
+    readonly crafted: boolean;
     readonly deepsight: boolean;
-    readonly notShaped: boolean;
+    readonly notCrafted: boolean;
     readonly deepSightProgress: ItemObjective;
     readonly craftProgress: WeaponShapeLevelObjective;
     public patternTriumph: TriumphRecordNode;
@@ -887,8 +892,8 @@ export class InventoryItem {
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
         specialModSockets: string[], collectibleHash: string, versionNumber: number, 
-        shaped: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective,
-        notShaped: boolean
+        crafted: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective,
+        notCrafted: boolean
     ) {
         this.id = id;
         this.hash = hash;
@@ -944,11 +949,11 @@ export class InventoryItem {
         this.specialModSockets = specialModSockets;
         this.collectibleHash = collectibleHash;
         this.versionNumber = versionNumber;
-        this.shaped = shaped;
+        this.crafted = crafted;
         this.deepsight = deepsight;
         this.deepSightProgress = deepSightProgress;
         this.craftProgress = craftProgress;
-        this.notShaped = notShaped;
+        this.notCrafted = notCrafted;
     }
 }
 
