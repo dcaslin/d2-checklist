@@ -41,6 +41,7 @@ export class SimpleParseService {
     let psn: BungieMemberPlatform;
     let bnet: BungieMemberPlatform;
     let steam: BungieMemberPlatform;
+    let epic: BungieMemberPlatform;
     if (r.xboxDisplayName != null) {
         xbl = new BungieMemberPlatform(r.xboxDisplayName, Const.XBL_PLATFORM);
     }
@@ -51,11 +52,14 @@ export class SimpleParseService {
 
         bnet = new BungieMemberPlatform(r.blizzardDisplayName, Const.BNET_PLATFORM);
     }
+    if (r.egsDisplayName != null) {
+        epic = new BungieMemberPlatform(r.egsDisplayName, Const.EPIC_PLATFORM);
+    }
     if (r.steamDisplayName != null) {
         steam = new BungieMemberPlatform(r.steamDisplayName, Const.STEAM_PLATFORM);
     }
-    if (xbl == null && psn == null && bnet == null && steam == null) { return null; }
-    return new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet, steam);
+    if (xbl == null && psn == null && bnet == null && steam == null && epic == null) { return null; }
+    return new BungieMember(r.displayName, r.membershipId, xbl, psn, bnet, steam, epic);
 
 }
 
@@ -238,5 +242,6 @@ interface PrivBungieMember {
   statusText: string;
   statusDate: string;
   blizzardDisplayName: string;
+  egsDisplayName: string;
 }
 

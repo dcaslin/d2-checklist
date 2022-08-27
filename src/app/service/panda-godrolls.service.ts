@@ -35,8 +35,9 @@ export class PandaGodrollsService implements OnDestroy {
     if (controllerPref != null) {
       controller = 'true' == controllerPref;
     } else {
-      // if no explicit prep, assume MnK on steam, controller otherwise
-      if (selectedUser != null && selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type) {
+      // if no explicit prep, assume MnK on steam/epic, controller otherwise
+      if (selectedUser != null && (selectedUser.userInfo.membershipType == Const.STEAM_PLATFORM.type 
+        || selectedUser.userInfo.membershipType == Const.EPIC_PLATFORM.type) ) {
         controller = false;
       } else {
         controller = true;

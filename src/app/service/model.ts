@@ -492,16 +492,19 @@ export class BungieMember {
     psn: BungieMemberPlatform;
     bnet: BungieMemberPlatform;
     steam: BungieMemberPlatform;
+    epic: BungieMemberPlatform;
 
     constructor(name: string, id: string, xbl: BungieMemberPlatform,
         psn: BungieMemberPlatform, bnet: BungieMemberPlatform,
-        steam: BungieMemberPlatform) {
+        steam: BungieMemberPlatform,
+        epic: BungieMemberPlatform) {
         this.id = id;
         this.name = name;
         this.xbl = xbl;
         this.psn = psn;
         this.bnet = bnet;
         this.steam = steam;
+        this.epic = epic;
     }
 }
 
@@ -1329,6 +1332,7 @@ export class Const {
     public static readonly STEAM_PLATFORM = new Platform(3, 'STEAM', 'Steam', faSteam);
     public static readonly BNET_PLATFORM = new Platform(4, 'BNET', 'Battle.net', faWindows);
     public static readonly STADIA_PLATFORM = new Platform(5, 'STADIA', 'Stadia', faGoogle);
+    public static readonly EPIC_PLATFORM = new Platform(6, 'EPIC', 'Epic', faWindows);
 
 
 
@@ -1342,15 +1346,17 @@ export class Const {
     ];
 
     public static readonly PLATFORMS_ARRAY = [
-        Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM
-    ]; // Const.BNET_PLATFORM
+        Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM, 
+        Const.EPIC_PLATFORM
+    ];
 
     public static readonly PLATFORMS_DICT = {
         '1': Const.XBL_PLATFORM,
         '2': Const.PSN_PLATFORM,
         '3': Const.STEAM_PLATFORM,
         // '4': Const.BNET_PLATFORM,
-        '5': Const.STADIA_PLATFORM
+        '5': Const.STADIA_PLATFORM,
+        '6': Const.EPIC_PLATFORM
     };
 
     public static readonly MISSION_ARTIFACT_KEY = '22222222';
