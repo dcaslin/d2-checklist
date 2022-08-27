@@ -580,7 +580,7 @@ export class BungieService implements OnDestroy {
         if (player?.characters?.length > 0) {
             return player;
         }
-        // try STEAM, then XBL, then PSN then STADIA
+        // try the platforms in order
         // skip the one we already tried above
         for (let cntr = 0; cntr < Const.PLATFORMS_ARRAY.length; cntr++) {
             const tryMe = Const.PLATFORMS_ARRAY[cntr].type;
