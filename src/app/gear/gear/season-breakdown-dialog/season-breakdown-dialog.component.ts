@@ -71,7 +71,8 @@ export class SeasonBreakdownDialogComponent {
   private static generateSeasons(): SeasonRow[] {
     return [
       { name: 'Combat', details: true, season: 0, note: 'Charged w/ Light + Warmind' },
-      { name: 'Artifice', details: true, season: 10, note: 'Artfice mod slot' },
+      { name: 'Artifice', details: true, season: 10, note: 'Artifice mod slot' },
+      { name: 'Raid KF', details: true, season: 6, note: 'King\'s Fall dedicated' },
       { name: 'Raid VoD', details: true, season: 5, note: 'Vow of the Disciple dedicated' },
       { name: 'Raid VoG', details: true, season: 4, note: 'Vault of Glass dedicated' },
       { name: 'Raid DSC', details: true, season: 3, note: 'Deepstone Crypt dedicated' },

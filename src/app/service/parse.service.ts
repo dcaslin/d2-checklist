@@ -1291,7 +1291,7 @@ export class ParseService {
                     rewards = '???';
                 }
             }
-            if (ms.milestoneHash == 2136320298 && rewards == '???') { // VoD
+            if (ms.milestoneHash == 292102995 && rewards == '???') { // KF
                 rewards = 'Pinnacle Gear';
 
             // } else if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
@@ -4028,17 +4028,17 @@ export class ParseService {
                                         specialModSockets.push('combat');
                                         seasonalModSlot = 0;
                                         coveredSeasons.push(0);
-                                    } else if ('Garden of Salvation Raid Mod' == modSocketType) {
+                                    } else if ('enhancements.raid_garden'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
                                         specialModSockets.push('gos');
                                         searchText += 'has:modgos';
                                         seasonalModSlot = 2;
                                         coveredSeasons.push(2);
-                                    } else if ('Deep Stone Crypt Raid Mod' == modSocketType) {
+                                    } else if ('enhancements.raid_descent'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
                                         specialModSockets.push('deepstone');
                                         searchText += 'has:moddeepstone';
                                         seasonalModSlot = 3;
                                         coveredSeasons.push(3);
-                                    } else if ('Vault of Glass Armor Mod' == modSocketType) {
+                                    } else if ('enhancements.raid_v520'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
                                         specialModSockets.push('vog');
                                         searchText += 'has:modvog';
                                         seasonalModSlot = 4;
@@ -4047,12 +4047,12 @@ export class ParseService {
                                         specialModSockets.push('vod');
                                         searchText += 'has:modvod';
                                         seasonalModSlot = 5;
-                                        coveredSeasons.push(5);
-                                    // } else if ('Vow of the Disciple Armor Mod' == modSocketType) {
-                                    //     specialModSockets.push('vod');
-                                    //     searchText += 'has:modvod';
-                                    //     seasonalModSlot = 5;
-                                    //     coveredSeasons.push(5);
+                                        coveredSeasons.push(5);                                   
+                                    }  else if ('enhancements.raid_v620'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
+                                        specialModSockets.push('kf');
+                                        searchText += 'has:modkf';
+                                        seasonalModSlot = 6;
+                                        coveredSeasons.push(6);                                   
                                     } else if (modSocketType?.indexOf('Last Wish Raid Mod') >= 0) {
                                         specialModSockets.push('lw');
                                         searchText += 'has:modlw';
