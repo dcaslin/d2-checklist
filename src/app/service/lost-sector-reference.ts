@@ -680,24 +680,57 @@ const LS_SKYDOCK: LostSectorMeta = {
   }
 }
 
+
+const LS_RIFT: LostSectorMeta = {
+  abbrev: 'Rift',
+  directorLocation: 'Nessus',
+  legend: {
+    hash: '1551471969',
+    shields: ['?(?)'],
+    champions: [
+      {
+        name: '?',
+        count: 1
+      },
+      {
+        name: '??',
+        count: 1
+      }
+    ]
+  },
+  master: {
+    hash: '1551471974',
+    shields: ['?(?)'],
+    champions: [
+      {
+        name: '?',
+        count: 1
+      },
+      {
+        name: '??',
+        count: 1
+      }
+    ]
+  }
+}
+
 export const  LS_LOOT = [
-  'Chest',
-  'Head',
   'Legs',
   'Arms',
+  'Chest',
+  'Head',
 ];
 
 export const LS_ROTATION = [
-  
+  LS_EXCAVATION_SITE,
+  LS_CONCEALED_VOID,
+  LS_BUNKER_E15,
+  LS_CONFLUX,
+  LS_RIFT,
   LS_K1_CREW,
   LS_K1_LOGISTICS,
-  LS_K1_REVELATION,
   LS_K1_COMMUNION,
-  LS_CONFLUX,
-  LS_METAMORPHOSIS,
-  LS_SEPULCHER,
-  LS_EXTRACTION,
-  LS_EXCAVATION_SITE,
   LS_SKYDOCK,
+  LS_SCAVENGERS_DEN,
   LS_QUARRY,
 ];
