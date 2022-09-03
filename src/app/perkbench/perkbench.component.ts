@@ -67,21 +67,50 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/b07d89064a1fc9a8e061f59b7c747fa5.png': 14,
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
   '/common/destiny2_content/icons/4368a3e344977c5551407845ede830c2.png': 15,
+  '/common/destiny2_content/icons/dd4dd93c5606998595d9e5a06d5bfc9c.png': 15,
   '/common/destiny2_content/icons/b0406992c49c84bdc5febad94048dc01.png': 16,
+  '/common/destiny2_content/icons/4fe83598190610f122497d22579a1fd9.png': 16,
   '/common/destiny2_content/icons/81edbfbf0bacf8e2117c00d1d6115f1b.png': 17,
+  '/common/destiny2_content/icons/f359d68324ae21522c299983ff1ef9f2.png': 18,
 
 
   // events
-  '/common/destiny2_content/icons/d91c738e8179465a165e35f7a249701b.png': 101,
-  '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102,
-  '/common/destiny2_content/icons/0a93338035464bade265763e190b9f12.png': 105,
+  '/common/destiny2_content/icons/d91c738e8179465a165e35f7a249701b.png': 101, // Dawning
+  '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102, // Crimson
+  '/common/destiny2_content/icons/24ee3aca8624643ed02b684b2f7ef78b.png': 103, // Solstice
+  '/common/destiny2_content/icons/215100c99216b9c0bd83b9daa50ace45.png': 104, // Festival of the Lost
+  '/common/destiny2_content/icons/0a93338035464bade265763e190b9f12.png': 105, // The Revelry
+  '/common/destiny2_content/icons/8b0d9b848bfb49077fe018e6f80a2939.png': 105, 
+  '/common/destiny2_content/icons/64e07aa12c7c9956ee607ccb5b3c6718.png': 106, // Guardian Games
   '/common/destiny2_content/icons/97c65a76255ef764a9a98f24e50b859d.png': 106,
-  '/common/destiny2_content/icons/dd4dd93c5606998595d9e5a06d5bfc9c.png': 107,
-  '/common/destiny2_content/icons/215100c99216b9c0bd83b9daa50ace45.png': 104,
-  '/common/destiny2_content/icons/5f5bed34dcd062be8302ce27b542dce9.png': 103,
-  '/common/destiny2_content/icons/4fe83598190610f122497d22579a1fd9.png': 200 // Witch Queen
 };
 
+const SEASON_TO_DESC = {
+  1: 'Season of the Forge',
+  2: 'Season of the Drifter',
+  3: 'Season of Opulence',
+  4: 'Season of Dawn',
+  5: 'Season of the Worthy',
+  6: 'Season of Arrivals',
+  7: 'Season of the Splicer',
+  8: 'Season of the Lost',
+  9: 'Season of the Hunt',
+  10: 'Season of the Chosen',
+  11: 'Season of the Undying',
+  12: 'Season of the Dawn',
+  13: 'Season of the Splicer',
+  14: 'Season of the Lost',
+  15: 'Season of the Hunt',
+  16: 'Season of the Chosen',
+  17: 'Season of the Undying',
+  18: 'Season of the Dawn',
+  101: 'Dawning',
+  102: 'Crimson Days',
+  103: 'Solstice of Heroes',
+  104: 'Festival of the Lost',
+  105: 'The Revelry',
+  106: 'Guardian Games',
+};
 
 function isSpecificRollIncomplete(g: GunRoll) {
   const hasGoodPerks = g.goodPerks?.length >= 1;
@@ -533,12 +562,14 @@ export class PerkbenchComponent extends ChildComponent {
         if (dmgType == 'Thermal') {
           dmgType = 'Solar';
         }
+        const season = WATERMARK_TO_SEASON[desc.iconWatermark]
         const gi: GunInfo = {
           desc,
           sockets,
           type: desc.itemTypeDisplayName,
           damage: dmgType,
-          season: WATERMARK_TO_SEASON[desc.iconWatermark],
+          season,
+          seasonDesc: SEASON_TO_DESC[season],
         };
         if (gi.season == null) {
           gi.season = -1;
@@ -635,4 +666,5 @@ export interface GunInfo {
   type: string;
   damage: string;
   season: number;
+  seasonDesc: string;
 }

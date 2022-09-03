@@ -149,7 +149,7 @@
                                 (click)="showRolls(r)">{{r.info.desc.displayProperties.name}}</span></td>
                         <td>{{r.info.type}}</td>
                         <td>{{r.info.damage}}</td>
-                        <td>{{r.info.season}}</td>
+                        <td>{{r.info.season}} - {{r.info.seasonDesc}}</td>
                         <td>
                             <fa-icon
                                 *ngIf="r.roll == null || (isController ? r.roll.controller == null : r.roll.mnk == null); else hasRoll"
