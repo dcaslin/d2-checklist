@@ -29,6 +29,8 @@ import { GearUtilitiesDialogComponent } from './gear-utilities-dialog/gear-utili
 import { ModHelperDialogComponent } from './mod-helper-dialog/mod-helper-dialog.component';
 import { OptimizeGunPerksDialogComponent } from './optimize-gun-perks-dialog/optimize-gun-perks-dialog.component';
 import { SeasonBreakdownDialogComponent } from './season-breakdown-dialog/season-breakdown-dialog.component';
+import { ShardModeDialogComponent } from './shard-mode-dialog/shard-mode-dialog.component';
+import { UpgradeModeDialogComponent } from './upgrade-mode-dialog/upgrade-mode-dialog.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -266,13 +268,6 @@ export class GearComponent extends ChildComponent implements OnInit {
     await this.syncLocks();
   }
 
-  public async shardBlues() {
-    await this.load(true);
-    await this.gearService.shardBlues(this.player$.getValue(), this.gearFilterStateService.filterUpdated$);
-    await this.load(true);
-    await this.syncLocks();
-  }
-  
   public async emptyVault() {
 
     await this.load(true);
@@ -340,7 +335,7 @@ export class GearComponent extends ChildComponent implements OnInit {
   }
 
   showCopies(i: InventoryItem) {
-    const copies = this.gearService.findCopies(i, this.player$.getValue());
+    const copies = GearService.findCopies(i, this.player$.getValue());
     this.openGearDialog(i, copies, false);
   }
 
@@ -447,22 +442,31 @@ export class GearComponent extends ChildComponent implements OnInit {
     this.pageInfo$.next(pageInfo);
   }
 
-  public async shardMode(itemType?: ItemType) {
-    await this.load(true);
-    await this.gearService.shardMode(this.player$.getValue(), this.gearFilterStateService.filterUpdated$, itemType);
-    this.gearFilterStateService.filterUpdated$.next();
+  public showShardModeDialog() {
+
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+
+    dc.data = {
+      parent: this,
+    };
+    this.dialog.open(ShardModeDialogComponent, dc);
+  }
+
+  
+  public showUpgradeModeDialog() {
+    const dc = new MatDialogConfig();
+    dc.disableClose = false;
+
+    dc.data = {
+      parent: this,
+    };
+    this.dialog.open(UpgradeModeDialogComponent, dc);
   }
 
   public async clearInv(itemType?: ItemType) {
     await this.load(true);
     await this.gearService.clearInv(this.player$.getValue(), this.gearFilterStateService.filterUpdated$, itemType);
-  }
-
-  public async upgradeMode(itemType?: ItemType) {
-    await this.load(true);
-    await this.gearService.upgradeMode(this.player$.getValue(), this.gearFilterStateService.filterUpdated$, itemType);
-    await this.load(true);
-    await this.syncLocks();
   }
 
   public async load(quiet?: boolean) {

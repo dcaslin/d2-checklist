@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { getHttpErrorMsg, sleep } from '@app/shared/utilities';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { debounceTime, tap } from 'rxjs/operators';
 import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
-import { ManifestInventoryItem } from './destiny-cache.service';
+import { ManifestInventoryItem, SimpleInventoryItem } from './destiny-cache.service';
 import { MarkService } from './mark.service';
 import { BUCKET_ID_SHARED, BUCKET_ID_VAULT, Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target, Vault } from './model';
 import { NotificationService } from './notification.service';
@@ -17,6 +18,13 @@ interface VaultStatus {
 
 interface ClearInvChecker {
     (item: InventoryItem): boolean;
+}
+
+
+export interface Operation {
+    item: SimpleInventoryItem;
+    action: string;
+    error?: boolean;
 }
 
 function isJunk(i: InventoryItem): boolean {
@@ -40,6 +48,9 @@ function isGrind(i: InventoryItem): boolean {
 export class GearService {
 
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    private _operatingOn$: BehaviorSubject<Operation> = new BehaviorSubject(null);
+
+    public operatingOn$: Observable<Operation>;
 
     public static sortGear(sortBy: string, sortDesc: boolean, tempGear: InventoryItem[]) {
         if (sortBy.startsWith('masterwork.') || sortBy == 'mods' || sortBy.startsWith('stat.')) {
@@ -161,6 +172,13 @@ export class GearService {
         private bucketService: BucketService,
         private pandaService: PandaGodrollsService,
         private preferredStatService: PreferredStatService) {
+        this.operatingOn$ = this._operatingOn$.asObservable().pipe(
+            tap((o) => {
+                if (o) {
+                    console.log(`${o.item.displayProperties.name}: ${o.action} `);
+                }
+            }),
+            debounceTime(50));
     }
 
     public async loadGear(selectedUser: SelectedUser): Promise<Player> {
@@ -187,6 +205,9 @@ export class GearService {
                     const patternTriumph = player.patternTriumphs.find(x => x.name == g.name);
                     if (patternTriumph) {
                         g.patternTriumph = patternTriumph;
+                        if (patternTriumph.percent<100) {
+                            g.searchText += ' is:needrecipe ';
+                        }
                     }
                 }
                 if (g.tier == 'Exotic') {
@@ -247,8 +268,8 @@ export class GearService {
         }
     }
 
-    private async clearVaultToCharacter(target: Character, player: Player,  shouldIgnoreFunc: ClearInvChecker, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<number> {
-        console.log('Clearing vault to '+target.label);
+    private async clearVaultToCharacter(target: Character, player: Player, shouldIgnoreFunc: ClearInvChecker, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<number> {
+        console.log('Clearing vault to ' + target.label);
 
         let moved = 0;
         for (const i of player.gear) {
@@ -265,10 +286,14 @@ export class GearService {
                 }
                 const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                 if (targetBucket.items.length < i.inventoryBucket.itemCount) {
-                    console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
+
                     try {
                         let success;
                         if (i.postmaster === true) {
+                            this._operatingOn$.next({
+                                item: i.toSimpleInventoryItem(),
+                                action: 'Pull from Postmaster'
+                            });
                             const owner = i.owner.getValue();
                             success = await this.transfer(player, i, owner, vaultStatus, progressTracker$);
                             if (success) {
@@ -278,6 +303,10 @@ export class GearService {
                                 }
                             }
                         }
+                        this._operatingOn$.next({
+                            item: i.toSimpleInventoryItem(),
+                            action: 'Move to ' + target.label
+                        });
                         success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                         if (success) {
                             moved++;
@@ -311,6 +340,10 @@ export class GearService {
                                 continue;
                             }
                             try {
+                                this._operatingOn$.next({
+                                    item: i.toSimpleInventoryItem(),
+                                    action: 'Move to vault'
+                                });
                                 this.notificationService.info('Moving ' + i.name + ' to vault');
                                 await this.transfer(player, i, player.vault, vaultStatus, progressTracker$);
                                 if (vaultStatus.isFull) {
@@ -319,6 +352,11 @@ export class GearService {
                                 }
                                 moved++;
                             } catch (e) {
+                                this._operatingOn$.next({
+                                    item: i.toSimpleInventoryItem(),
+                                    action: 'Move to vault',
+                                    error: true
+                                });
                                 console.log('Error moving ' + i.name + ' to vault: ' + e);
                                 console.dir(e);
                                 err++;
@@ -345,17 +383,18 @@ export class GearService {
         let totalMoved = 0;
         for (const target of player.characters) {
             // skip current player
-            if (target.characterId==notTarget.characterId) continue;
-            
+            if (target.characterId == notTarget.characterId) continue;
+
             const vaultStatus = { isFull: false };
             let charMoved = await this.clearVaultToCharacter(target, player, isJunk, vaultStatus, progressTracker$);
-            totalMoved+=charMoved;
+            totalMoved += charMoved;
 
         }
-        return totalMoved;        
+        this._operatingOn$.next(null);
+        return totalMoved;
     }
 
-    public async shardBlues(player: Player, progressTracker$: Subject<void>): Promise<void> {
+    public async shardBlues(player: Player, progressTracker$: Subject<void>, itemType?: ItemType): Promise<string> {
         // tag all unmarked blues as junk
         let tagCount = 0;
         for (const item of player.gear) {
@@ -368,10 +407,10 @@ export class GearService {
             }
         }
         this.notificationService.success(`Tagged ${tagCount} unmarked blues as junk. Starting blue shard mode.`);
-        this.shardMode(player, progressTracker$, null, true);
+        return this.shardMode(player, progressTracker$, itemType, true);
     }
 
-    public async shardMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType, bluesOnly?: boolean) {
+    public async shardMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType, bluesOnly?: boolean): Promise<string> {
         const target = player.characters[0];
         let moved = 0;
         let tryCount = 0;
@@ -401,7 +440,10 @@ export class GearService {
                         }
                         const targetBucket = this.bucketService.getBucket(target, i.inventoryBucket);
                         if (targetBucket.items.length < i.inventoryBucket.itemCount) {
-                            console.log('Move ' + i.name + ' to ' + target.label + ' ' + targetBucket.desc.displayProperties.name);
+                            this._operatingOn$.next({
+                                item: i.toSimpleInventoryItem(),
+                                action: 'Move to ' + target.label
+                            });
                             try {
                                 let success;
                                 if (i.postmaster === true) {
@@ -420,6 +462,11 @@ export class GearService {
                                     incrementalWork++;
                                 }
                             } catch (e) {
+                                this._operatingOn$.next({
+                                    item: i.toSimpleInventoryItem(),
+                                    action: 'Move to ' + target.label,
+                                    error: true
+                                });
                                 console.log('Error on move: ' + e);
                             }
                         }
@@ -430,14 +477,15 @@ export class GearService {
         const msg = 'Moved ' + moved + ' items to ' + target.label;
         // re sync locks to work around bungie bug where things get locked
         await this.processGearLocks(player);
+        this._operatingOn$.next(null);
         if (!invClearedSuccessfully) {
-            this.notificationService.success('There were problems clear your non-junk gear. Be careful sharding things. If you have space, try moving some items to other characters to free up some space. Despite all that: ' + msg);
+            return 'There were problems clear your non-junk gear. Be careful sharding things. If you have space, try moving some items to other characters to free up some space. Despite all that: ' + msg;
         } else if (vaultStatus.isFull) {
-            this.notificationService.success('Your vault was too full to finish. Despite all that: ' + msg);
+            return 'Your vault was too full to finish. Despite all that: ' + msg;
         } else if (moved == 0) {
-            this.notificationService.success('Nothing left to shard!');
+            return 'Nothing left to shard!';
         } else {
-            this.notificationService.success('Done! All set to start sharding! ' + msg);
+            return 'Done! All set to start sharding! ' + msg;
         }
     }
 
@@ -535,7 +583,7 @@ export class GearService {
         return copies;
     }
 
-    public findCopies(i: InventoryItem, player: Player): InventoryItem[] {
+    public static findCopies(i: InventoryItem, player: Player): InventoryItem[] {
         const copies = [i];
         for (const g of player.gear) {
             if (g.hash === i.hash && g.id != i.id) {
@@ -552,6 +600,10 @@ export class GearService {
         for (const i of items) {
             try {
                 if (target.id !== i.owner.getValue().id) {
+                    this._operatingOn$.next({
+                        item: i.toSimpleInventoryItem(),
+                        action: 'Move to ' + target.label
+                    });
                     this.notificationService.info('Moving ' + i.name + ' to ' + target.label);
                     const success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                     if (!success) {
@@ -566,6 +618,10 @@ export class GearService {
                     }
                 } else if (i.postmaster) {
                     this.notificationService.info('Pulling ' + i.name + ' from postmaster.');
+                    this._operatingOn$.next({
+                        item: i.toSimpleInventoryItem(),
+                        action: 'Pull from postmaster'
+                    });
                     const success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                     if (!success) {
                         console.log(`${i.name} could not be moved to ${target.label} b/c bucket was full.`);
@@ -625,6 +681,10 @@ export class GearService {
                             let success;
                             if (i.postmaster === true) {
                                 const owner = i.owner.getValue();
+                                this._operatingOn$.next({
+                                    item: i.toSimpleInventoryItem(),
+                                    action: 'Pull from Postmaster'
+                                });
                                 success = await this.transfer(player, i, owner, vaultStatus, progressTracker$);
                                 if (success) {
                                     if (owner.id === target.characterId) {
@@ -633,6 +693,10 @@ export class GearService {
                                     }
                                 }
                             }
+                            this._operatingOn$.next({
+                                item: i.toSimpleInventoryItem(),
+                                action: 'Move to ' + target.label
+                            });
                             success = await this.transfer(player, i, target, vaultStatus, progressTracker$);
                             if (success) {
                                 moved++;
@@ -657,7 +721,7 @@ export class GearService {
     }
 
 
-    public async upgradeMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType) {
+    public async upgradeMode(player: Player, progressTracker$: Subject<void>, itemType?: ItemType): Promise<string> {
         const target = player.characters[0];
         const vaultStatus = { isFull: false };
         const clearSuccess = await this.clearInvForMode(target, player, isNeverTrue, itemType, vaultStatus, progressTracker$);
@@ -666,7 +730,7 @@ export class GearService {
         for (const i of player.gear) {
             // is it marked for upgrade
             if (i.mark == 'upgrade' && (itemType == null || i.type == itemType)) {
-                let copies = this.findCopies(i, player);
+                let copies = GearService.findCopies(i, player);
                 copies = copies.filter(copy => copy.mark == 'infuse');
                 copies = copies.filter(copy => copy.power > i.power);
                 // nothing to infuse
@@ -675,8 +739,7 @@ export class GearService {
                 }
                 copies.push(i);
                 console.dir(copies);
-                copies = copies.filter(copy => (copy.owner.getValue().id != target.id) || copy.postmaster);
-
+                copies = copies.filter(copy => (copy.owner.getValue().id != target.id));
                 console.dir(copies);
                 // nothing to infuse
                 if (copies.length == 0) {
@@ -693,6 +756,10 @@ export class GearService {
                             let success = false;
                             let postMasterSuccess = true;
                             if (moveMe.postmaster === true) {
+                                this._operatingOn$.next({
+                                    item: moveMe.toSimpleInventoryItem(),
+                                    action: 'Pull from Postmaster'
+                                });
                                 const owner = moveMe.owner.getValue();
                                 postMasterSuccess = await this.transfer(player, moveMe, owner, { isFull: false }, progressTracker$);
                                 if (owner.id === target.characterId) {
@@ -700,6 +767,10 @@ export class GearService {
                                 }
                             }
                             if (postMasterSuccess && moveMe.owner.getValue().id != target.id) {
+                                this._operatingOn$.next({
+                                    item: moveMe.toSimpleInventoryItem(),
+                                    action: 'Move to ' + target.label
+                                });
                                 success = await this.transfer(player, moveMe, target, { isFull: false }, progressTracker$);
                             }
                             if (success) {
@@ -715,17 +786,18 @@ export class GearService {
                 }
             }
         }
+        this._operatingOn$.next(null);
         const msg = 'Moved ' + moved + ' items to ' + target.label;
 
         // re sync locks to work around bungie bug where things get locked
         // await this.processGearLocks(player);
 
         if (totalErr > 0) {
-            this.notificationService.success('There were ' + totalErr + ' problems moving your gear. Despite that: ' + msg);
+            return 'There were ' + totalErr + ' problems moving your gear. Despite that: ' + msg;
         } else if (moved == 0) {
-            this.notificationService.success('Nothing left to cheaply upgrade!');
+            return 'Nothing left to cheaply upgrade!';
         } else {
-            this.notificationService.success('Done! All set to start upgrading! ' + msg);
+            return 'Done! All set to start upgrading! ' + msg;
         }
     }
 
@@ -833,7 +905,6 @@ export class GearService {
         const log = [];
         log$.next(log);
         for (const i of fixMe) {
-            console.log(i.name);
             this.notificationService.info('Fixing ' + i.name);
             const perkSockets = i.sockets.filter(s => s.isWeaponPerk);
             for (const s of perkSockets) {

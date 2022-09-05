@@ -75,6 +75,8 @@ import {
   faStarOfLife as fasStarOfLife,
   faHammerCrash as fasHammerCrash,
   faUserBountyHunter as fasUserBountyHunter,
+  faSuitcase as fasSuitcase,
+  faHome as fasHome,
 } from '@fortawesome/pro-solid-svg-icons';
 
 
@@ -85,6 +87,8 @@ import {
 })
 export class IconService {
   // NOTE: farSquare is actually falSquare
+  public readonly fasHome = fasHome;
+  public readonly fasSuitcase = fasSuitcase;
   public readonly fasUserBountyHunter = fasUserBountyHunter;
   public readonly fasUp = fasUp;
   public readonly fasShirt = fasShirt;

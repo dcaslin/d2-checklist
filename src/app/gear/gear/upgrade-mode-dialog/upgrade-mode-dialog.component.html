@@ -1,0 +1,79 @@
+<div class="mat-typography">
+    <h2 mat-dialog-title>Upgrade Mode
+
+        <button mat-button (click)="parent.load()">
+            <fa-icon [icon]="iconService.fasSyncAlt" [spin]="operating$|async"></fa-icon>
+        </button>
+
+    </h2>
+    <mat-dialog-content>
+        <p class="max-width-500">
+            You can save Upgrade Modules when you infuse an item into the same type.
+            Use the buttons below to clear the inventory on your current character and replace it sets of items where
+            you marked at least one "Upgrade" and another "Infuse".
+
+            You might want to <span class="fake-link" (click)="emptyVault()">Empty Vault</span> first to make this go
+            more smoothly.
+        </p>
+        <div class="flex-row">
+            <div><button mat-stroked-button (click)="upgradeMode(ItemType.Weapon)">Upgrade Weapons</button></div>
+            <div><button mat-stroked-button (click)="upgradeMode(ItemType.Armor)">Upgrade Armor</button></div>
+            <div><button mat-stroked-button (click)="upgradeMode()">Upgrade Both</button></div>
+        </div>
+
+        <div class="flex-row" *ngIf="data$|async as data">
+            <div>
+                <table class="tidy-auto-table">
+                    <tr>
+                        <th></th>
+                        <th>Weapon</th>
+                        <th matTooltip="Number of items tagged as infusion fodder">
+                            <fa-icon [icon]="iconService.fasBolt" [fixedWidth]="true"></fa-icon>
+                        </th>
+                        <th matTooltip="Items in the active char inventory">
+                            <fa-icon [icon]="iconService.fasHome"></fa-icon>
+                        </th>
+                        <th matTooltip="Items that need to be moved">
+                            <fa-icon [icon]="iconService.fasSuitcase"></fa-icon>
+                        </th>
+                    </tr>
+                    <tr *ngFor="let tuple of data.weapons">
+                        <td><d2c-manifest-item-icon [desc]="tuple.desc" [small]="true"></d2c-manifest-item-icon></td>
+                        <td>{{tuple.upgradeMe.name}}</td>
+                        <td>{{tuple.infuseMe.length}}</td>
+                        <td>{{tuple.home}}</td>
+                        <td>{{tuple.away}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table class="tidy-auto-table">
+                    <tr>
+                        <th></th>
+                        <th>Armor</th>
+                        <th matTooltip="Number of items tagged as infusion fodder"><fa-icon [icon]="iconService.fasBolt" [fixedWidth]="true"></fa-icon></th>
+                        <th matTooltip="Items in the active char inventory"><fa-icon [icon]="iconService.fasHome"></fa-icon></th>
+                        <th matTooltip="Items that need to be moved"><fa-icon [icon]="iconService.fasSuitcase"></fa-icon></th>
+                    </tr>
+                    <tr *ngFor="let tuple of data.armor">
+                        <td><d2c-manifest-item-icon [desc]="tuple.desc" [small]="true"></d2c-manifest-item-icon></td>
+                        <td>{{tuple.upgradeMe.name}}</td>
+                        <td>{{tuple.infuseMe.length}}</td>
+                        <td>{{tuple.home}}</td>
+                        <td>{{tuple.away}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div>
+            <div *ngIf="gearService.operatingOn$|async as o">
+                <h4><d2c-item-icon [i]="o.item" [hideMenu]="true"></d2c-item-icon> {{o.item.name}}: {{o.action}}</h4>
+                <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            </div>
+        </div>
+    </mat-dialog-content>
+    <div mat-dialog-actions>
+        <button mat-stroked-button (click)="emptyVault()">Empty Vault <span class="simple-caption-darker-no-margin margin-10" *ngIf="gm$|async as gm">{{gm.vault.count}} / {{gm.vault.total}}</span></button>
+        <button mat-button mat-dialog-close>Close</button>
+    </div>
+</div>

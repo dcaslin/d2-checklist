@@ -16,12 +16,14 @@ import { ModHelperDialogComponent } from './gear/mod-helper-dialog/mod-helper-di
 import { WritableSocketsComponent } from './writable-sockets/writable-sockets.component';
 import { SelectModDialogComponent } from './gear/select-mod-dialog/select-mod-dialog.component';
 import { OptimizeGunPerksDialogComponent } from './gear/optimize-gun-perks-dialog/optimize-gun-perks-dialog.component';
+import { ShardModeDialogComponent } from './gear/shard-mode-dialog/shard-mode-dialog.component';
+import { UpgradeModeDialogComponent } from './gear/upgrade-mode-dialog/upgrade-mode-dialog.component';
 
 @NgModule({
   imports: [
     SharedModule, ClipboardModule
   ],
   declarations: [GearComponent, GearToggleComponent, GearCompareDialogComponent, GearHelpDialogComponent, BulkOperationsHelpDialogComponent, GearUtilitiesDialogComponent,
-    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent, WritablePlugComponent, ModHelperDialogComponent, WritableSocketsComponent, SelectModDialogComponent, OptimizeGunPerksDialogComponent]
+    ArmorPerksDialogComponent, TargetArmorStatsDialogComponent, PossibleRollsDialogComponent, TargetArmorStatsDialogComponent, GearCompareDialogComponent, SeasonBreakdownDialogComponent, WritablePlugComponent, ModHelperDialogComponent, WritableSocketsComponent, SelectModDialogComponent, OptimizeGunPerksDialogComponent, ShardModeDialogComponent, UpgradeModeDialogComponent]
 })
 export class GearModule  { }
