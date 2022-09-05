@@ -636,6 +636,7 @@ export class GearService {
                 console.log('Error moving ' + i.name + ': ' + e);
             }
         }
+        this._operatingOn$.next(null);
         this.notificationService.info(`Done bulk move. Moved ${successCnt} / ${items.length} successfully.`);
 
     }
@@ -739,7 +740,8 @@ export class GearService {
                 }
                 copies.push(i);
                 console.dir(copies);
-                copies = copies.filter(copy => (copy.owner.getValue().id != target.id));
+                
+                copies = copies.filter(copy => (copy.owner.getValue().id != target.id || copy.postmaster));
                 console.dir(copies);
                 // nothing to infuse
                 if (copies.length == 0) {
