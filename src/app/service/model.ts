@@ -3,7 +3,7 @@ import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
 import { DestinyEnergyType } from 'bungie-api-ts/destiny2';
 import { BehaviorSubject } from 'rxjs';
-import { ManifestInventoryItem } from './destiny-cache.service';
+import { ManifestInventoryItem, SimpleInventoryItem } from './destiny-cache.service';
 
 
 export const BUCKET_ID_VAULT = 'vault';
@@ -957,6 +957,19 @@ export class InventoryItem {
         this.deepSightProgress = deepSightProgress;
         this.craftProgress = craftProgress;
         this.notCrafted = notCrafted;
+    }
+
+    public toSimpleInventoryItem(): SimpleInventoryItem {
+        return {
+            redacted: this.redacted,
+            displayProperties: {
+                icon: this.icon,
+                name: this.name,
+                description: this.desc,
+                hasIcon: this.icon !== null && this.icon !== undefined && this.icon !== '',
+            },
+            iconWatermark: this.iconWatermark,
+        }
     }
 }
 

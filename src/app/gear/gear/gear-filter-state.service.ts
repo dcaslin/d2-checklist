@@ -912,6 +912,7 @@ export class GearFilterStateService implements OnDestroy {
       godRolls$: new BehaviorSubject(generateState(godRollConfig,
         [
 
+          new Choice('is:needrecipe', 'Need Recipe'),
           new Choice('is:deepsight', 'Deepsight'),
           new Choice('is:crafted', 'Crafted'),
           new Choice('is:godroll', 'God Roll'),

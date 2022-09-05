@@ -6,7 +6,7 @@ import { IconService } from '@app/service/icon.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'd2c-bulk-operations-help-dialog',
   templateUrl: './bulk-operations-help-dialog.component.html',
-  styleUrls: ['../gear.component.scss']
+  styleUrls: ['./bulk-operations-help-dialog.component.scss']
 })
 export class BulkOperationsHelpDialogComponent {
   constructor(

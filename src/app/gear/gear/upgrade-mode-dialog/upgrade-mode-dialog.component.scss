@@ -1,0 +1,21 @@
+
+  
+  .flex-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+  }
+  
+  
+  .flex-row>div {
+    margin: 5px;
+  }
+
+  table.tidy-auto-table td {
+    vertical-align: middle !important;
+  }
+
+  fake-link {
+    text-decoration: underline;
+  }

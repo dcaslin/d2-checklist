@@ -282,9 +282,14 @@ export interface Destiny2CoreSettings {
 }
 
 
-export interface ManifestInventoryItem {
+export interface SimpleInventoryItem {
   displayProperties: DisplayProperties;
+  redacted: boolean;
   iconWatermark: string;
+
+}
+
+export interface ManifestInventoryItem extends SimpleInventoryItem {
   tooltipNotifications: any[];
   backgroundColor: any;
   itemTypeDisplayName: string;
@@ -315,7 +320,6 @@ export interface ManifestInventoryItem {
   isWrapper: boolean;
   hash: number;
   index: number;
-  redacted: boolean;
   blacklisted: boolean;
   quality: Quality;
   sockets: any;

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
+import { ManifestInventoryItem, SimpleInventoryItem } from '@app/service/destiny-cache.service';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
   styleUrls: ['./manifest-item-icon.component.scss']
 })
 export class ManifestItemIconComponent {
-  @Input() desc: ManifestInventoryItem;
+  @Input() desc: SimpleInventoryItem;
   @Input() small = false;
 
 }

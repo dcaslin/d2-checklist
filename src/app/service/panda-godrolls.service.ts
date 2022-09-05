@@ -129,7 +129,7 @@ export class PandaGodrollsService implements OnDestroy {
         i.noGodRollInfo = true;
         if (i.tier == 'Legendary') {
           i.searchText = i.searchText + ' is:nodata';
-          console.log('%cNo panda for: ' + i.name, LOG_CSS);
+          // console.log('%cNo panda for: ' + i.name, LOG_CSS);
         }
         continue;
       }

@@ -199,35 +199,7 @@
       <button mat-menu-item (click)="clearInv(ItemType.Armor)">
         Armor Only
       </button>
-    </mat-menu>
-    <mat-menu #menuBulkShard="matMenu">
-      <button mat-menu-item (click)="shardMode()">
-        All
-      </button>
-      <button mat-menu-item (click)="shardMode(ItemType.Weapon)">
-        Weapons Only
-      </button>
-      <button mat-menu-item (click)="shardMode(ItemType.Armor)">
-        Armor Only
-      </button>
-      <button mat-menu-item (click)="shardBlues()">
-        Shard Blues
-      </button>
-      <button mat-menu-item (click)="emptyVault()">
-        Empty Vault
-      </button>
-    </mat-menu>
-    <mat-menu #menuBulkUpgrade="matMenu">
-      <button mat-menu-item (click)="upgradeMode()">
-        All
-      </button>
-      <button mat-menu-item (click)="upgradeMode(ItemType.Weapon)">
-        Weapons Only
-      </button>
-      <button mat-menu-item (click)="upgradeMode(ItemType.Armor)">
-        Armor Only
-      </button>
-    </mat-menu>
+    </mat-menu>    
 
     <mat-menu #menuBulk="matMenu">
       <button mat-menu-item (click)="showBulkOperationHelp()">
@@ -247,10 +219,10 @@
       <button mat-menu-item (click)="syncLocks()">
         <fa-icon [icon]="iconService.fasLockAlt"></fa-icon>&ensp;Sync Locks
       </button>
-      <button mat-menu-item [matMenuTriggerFor]="menuBulkShard">
+      <button mat-menu-item (click)="showShardModeDialog()">
         <fa-icon [icon]="iconService.fasTrash"></fa-icon>&ensp;Shard Mode
       </button>
-      <button mat-menu-item [matMenuTriggerFor]="menuBulkUpgrade">
+      <button mat-menu-item (click)="showUpgradeModeDialog()">
         <fa-icon [icon]="iconService.fasLevelUp"></fa-icon>&ensp;Upgrade Mode
       </button>
       <button mat-menu-item [matMenuTriggerFor]="menuBulkClear">
