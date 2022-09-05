@@ -69,7 +69,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
         }
 
         
-        const held = i.owner.getValue().id == target.id ? 1 : 0;
+        const held = i.owner.getValue().id == target.id && !i.postmaster ? 1 : 0;
           
         let copies = GearService.findCopies(i, player);
         copies = copies.filter(copy => copy.mark == 'infuse');
@@ -83,7 +83,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
         if (copies.length == 0) {
             continue;
         } 
-        const home = held + copies.filter(copy => copy.owner.getValue().id == target.id).length;
+        const home = held + copies.filter(copy => copy.owner.getValue().id == target.id && !copy.postmaster).length;
         
         const tuple: Tuple = {
           desc: i.toSimpleInventoryItem(),
