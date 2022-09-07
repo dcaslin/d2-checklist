@@ -14,7 +14,7 @@ import {
   ItemType
 } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, PandaGodrollsService, RYKER_GOD_ROLLS_URL } from '@app/service/panda-godrolls.service';
+import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, GUN_SUFFIXES, PandaGodrollsService, RYKER_GOD_ROLLS_URL } from '@app/service/panda-godrolls.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -111,6 +111,7 @@ const SEASON_TO_DESC = {
   105: 'The Revelry',
   106: 'Guardian Games',
 };
+
 
 function isSpecificRollIncomplete(g: GunRoll) {
   const hasGoodPerks = g.goodPerks?.length >= 1;
@@ -358,17 +359,14 @@ export class PerkbenchComponent extends ChildComponent {
 
   private static cookNameForRolls(name: string): string {
     name = name.toLowerCase();
-    const suffix = ' (Adept)'.toLowerCase();
-    if (name.endsWith(suffix)) {
-      name = name.substring(0, name.length - suffix.length);
-    }
-    const vogsuffix = ' (Timelost)'.toLowerCase();
-    if (name.endsWith(vogsuffix)) {
-      name = name.substring(0, name.length - vogsuffix.length);
+    for (const suffix of GUN_SUFFIXES) {
+      if (name.endsWith(suffix.toLowerCase())) {
+        name = name.substring(0, name.length - suffix.length);
+      }  
     }
     return name;
   }
-
+  
   private static combine(
     gunRolls: GunRolls[],
     weapons: GunInfo[]
