@@ -9,6 +9,8 @@ import { NotificationService } from './notification.service';
 
 const LOG_CSS = `color: mediumpurple`;
 export const CUSTOM_GOD_ROLLS = 'custom-god-rolls';
+
+export const GUN_SUFFIXES = [' (Adept)', ' (Timelost)', ' (Harrowed)'];
 export const RYKER_GOD_ROLLS_URL = 'https://docs.google.com/spreadsheets/d/1bHsAqGldtzvQnq2kIhNArr_15taYDkHEhCq7jjhSqF0/edit#gid=1523804770';
 
 @Injectable({
@@ -115,13 +117,10 @@ export class PandaGodrollsService implements OnDestroy {
         continue;
       }
       let name = i.name.toLowerCase();
-      const suffix = ' (Adept)'.toLowerCase();
-      if (name.endsWith(suffix)) {
-        name = name.substring(0, name.length - suffix.length);
-      }
-      const vogsuffix = ' (Timelost)'.toLowerCase();
-      if (name.endsWith(vogsuffix)) {
-        name = name.substring(0, name.length - vogsuffix.length);
+      for (const suffix of GUN_SUFFIXES) {
+        if (name.endsWith(suffix.toLowerCase())) {
+          name = name.substring(0, name.length - suffix.length);
+        }  
       }
       const key = name;
       const info = this.data[key];
