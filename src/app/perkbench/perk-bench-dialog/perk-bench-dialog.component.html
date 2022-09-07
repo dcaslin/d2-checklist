@@ -1,45 +1,48 @@
 <div mat-dialog-title style="margin-bottom: 0px">
-    {{r.info.desc.displayProperties.name}}
-    <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{r.info.type}}</span>
+    <div>
+        {{r.info.desc.displayProperties.name}}
+        <span style="margin-left: 10px" class="simple-darker-caption-no-margin">{{r.info.type}}</span>
+    </div>
+    <div class="flex-row reset-font">
+        <div>
+            <mat-button-toggle-group class="pad-left" [(ngModel)]="parent.isController"
+                (change)="parent.changeConsole();parent.filterChanged$.next(true);updatePlatform()">
+                <mat-button-toggle [value]="false">MnK <fa-icon *ngIf="!parent.isController" class="pad-left"
+                        [icon]="iconService.fasCheck"></fa-icon>
+                </mat-button-toggle>
+                <mat-button-toggle [value]="true">Console <fa-icon *ngIf="parent.isController" class="pad-left"
+                        [icon]="iconService.fasCheck"></fa-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+
+        <div>
+            <mat-button-toggle-group class="pad-left" [(ngModel)]="clickMode">
+                <mat-button-toggle *ngFor="let enum of clickOptions" [value]="enum">
+                    <fa-icon *ngIf="enum==clickModeEnum.GodRollPvP || enum==clickModeEnum.GoodRollPvP"
+                        [class.accent-text]="enum==clickModeEnum.GodRollPvP" [icon]="iconService.fasSwords"></fa-icon>
+                    <i *ngIf="enum==clickModeEnum.GodRollPvE || enum==clickModeEnum.GoodRollPvE"
+                        [class.accent-text]="enum==clickModeEnum.GodRollPvE" class="icon-strike"></i>
+                    {{enum}}
+                    <fa-icon *ngIf="clickMode==enum" class="pad-left" [icon]="iconService.fasCheck"></fa-icon>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <div>
+            <button mat-stroked-button (click)="cloneRoll()"
+                [matTooltip]="'Clone from alternative platform roll. THIS WILL OVERWRITE THE CURRENT PAGE.'">
+                <fa-icon [icon]="iconService.falCopy"></fa-icon> {{parent.isController?'Mnk':'Console'}}
+            </button>
+            &nbsp;
+            <button mat-stroked-button color="warn" (click)="clearRoll()">
+                <fa-icon [icon]="iconService.fasTrashAlt"></fa-icon> Clear
+            </button>
+        </div>
+    </div>
 </div>
 <mat-dialog-content class="mat-typography">
     <ng-container *ngIf="pve$|async as pve">
         <ng-container *ngIf="pvp$|async as pvp">
-
-            <div class="flex-row">
-                <div>
-                    <mat-button-toggle-group class="pad-left" [(ngModel)]="parent.isController"
-                        (change)="parent.changeConsole();parent.filterChanged$.next(true);updatePlatform()">
-                        <mat-button-toggle [value]="false">MnK <fa-icon *ngIf="!parent.isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
-                        <mat-button-toggle [value]="true">Console <fa-icon *ngIf="parent.isController" class="pad-left" [icon]="iconService.fasCheck"></fa-icon></mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-                
-                <div>
-                    <mat-button-toggle-group class="pad-left" [(ngModel)]="clickMode">
-                        <mat-button-toggle *ngFor="let enum of clickOptions" [value]="enum">
-                            <fa-icon
-                                *ngIf="enum==clickModeEnum.GodRollPvP || enum==clickModeEnum.GoodRollPvP"
-                                [class.accent-text]="enum==clickModeEnum.GodRollPvP"
-                                [icon]="iconService.fasSwords"></fa-icon>
-                            <i *ngIf="enum==clickModeEnum.GodRollPvE || enum==clickModeEnum.GoodRollPvE"
-                                [class.accent-text]="enum==clickModeEnum.GodRollPvE" class="icon-strike"></i>
-                            {{enum}}
-                            <fa-icon *ngIf="clickMode==enum" class="pad-left" [icon]="iconService.fasCheck"></fa-icon>
-                        </mat-button-toggle>
-                    </mat-button-toggle-group>
-                </div>
-                <div>
-                    <button mat-stroked-button (click)="cloneRoll()" [matTooltip]="'Clone from alternative platform roll. THIS WILL OVERWRITE THE CURRENT PAGE.'">
-                        <fa-icon [icon]="iconService.falCopy"></fa-icon> {{parent.isController?'Mnk':'Console'}}
-                    </button>
-                    &nbsp;
-                    <button mat-stroked-button color="warn" (click)="clearRoll()">
-                        <fa-icon [icon]="iconService.fasTrashAlt"></fa-icon> Clear
-                    </button>
-                </div>
-            </div>
-
             <table class="tidy-auto-table">
                 <tr>
                     <th [attr.colspan]="maxPlugs">
@@ -62,8 +65,8 @@
 
                 <ng-container *ngFor="let socket of r.info.sockets">
                     <tr *ngIf="socket.possiblePlugs.length>0">
-                        <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc" matTooltipClass="preserve-white-space"
-                            [class.half-opacity]="!plug.currentlyCanRoll">
+                        <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc"
+                            matTooltipClass="preserve-white-space" [class.half-opacity]="!plug.currentlyCanRoll">
                             <div class="fake-link" (click)="togglePerk(plug.name.toLowerCase())">
                                 <fa-icon *ngIf="pvp.greatPerks.includes(plug.name.toLowerCase())" class="accent-text"
                                     [icon]="iconService.fasSwords"></fa-icon>
@@ -72,7 +75,9 @@
                                 <i *ngIf="pve.greatPerks.includes(plug.name.toLowerCase())"
                                     class="icon-strike accent-text perk"></i>
                                 <i *ngIf="pve.goodPerks.includes(plug.name.toLowerCase())" class="icon-strike perk"></i>
-                                <span class="pad-right" *ngIf="plug.enhanced"><fa-icon [icon]="iconService.fasUp"></fa-icon></span>{{plug.name}}
+                                <span class="pad-right" *ngIf="plug.enhanced">
+                                    <fa-icon [icon]="iconService.fasUp"></fa-icon>
+                                </span>{{plug.name}}
                             </div>
                         </td>
                         <td *ngFor="let i of makeArray(maxPlugs - socket.possiblePlugs.length)">
