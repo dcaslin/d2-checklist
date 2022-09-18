@@ -686,15 +686,15 @@ const LS_RIFT: LostSectorMeta = {
   directorLocation: 'Nessus',
   legend: {
     hash: '1551471969',
-    shields: ['?(?)'],
+    shields: ['Solar(?)', 'Arc(?)'],
     champions: [
       {
-        name: '?',
-        count: 1
+        name: 'Overload',
+        count: -1
       },
       {
-        name: '??',
-        count: 1
+        name: 'Barrier',
+        count: -1
       }
     ]
   },
