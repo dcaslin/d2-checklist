@@ -1167,7 +1167,8 @@ export class ParseService {
                     
                     if (act.challengeObjectiveHashes) {
                         // skip weekly dungeons that aren't active
-                        if (desc.displayProperties?.name.toLowerCase().indexOf('weekly dungeon challenge') >= 0) {
+                        // Grasp of Avarice 1092691445 does not show up in the weekly public profile if active
+                        if (desc?.friendlyName?.indexOf('WEEKLY_DUNGEON_ROTATOR')>=0) {
                             if (act.challengeObjectiveHashes.length == 0) {
                                 skipMe = true;
                             }
@@ -1180,8 +1181,7 @@ export class ParseService {
                                 specialName = `Weekly Raid Challenge: ${desc.displayProperties.name}`;
                             } else if (oDesc?.displayProperties?.name.toLowerCase().indexOf('weekly dungeon') >= 0) {
                                 specialDungeonWeekly = true;
-                                const actName = aDesc.displayProperties.name.replace(': Normal', '');
-                                specialName = `${desc.displayProperties.name}: ${actName}`;
+                                specialName = `Weekly Dungeon Challenge: ${desc.displayProperties.name}`;
                             }
                         }
                     }
@@ -1306,15 +1306,17 @@ export class ParseService {
                 rewards = 'Pinnacle Gear (Weak)';            
             } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // VoG
                 rewards = 'Powerful Gear (Tier 3)';
-            } else if (specialRaidWeekly) {
+            }
+            // if VoG is weekly raid it'll set T3 Powerful above and then replace w/ Pinnacle here
+            if ((specialDungeonWeekly || specialRaidWeekly) && (rewards!='Pinnacle Gear')) {
+                console.log(`Fixing rewards for special weekly activity ${specialName}`)
                 rewards = 'Pinnacle Gear';
             }
             const boost = this.parseMilestonePl(rewards);
-            const sDesc = desc.displayProperties.description;
             const pushMe: PublicMilestone = {
                 hash: ms.milestoneHash + '',
                 name: specialName ? specialName: desc.displayProperties.name,
-                desc: sDesc,
+                desc: desc.displayProperties.description,
                 start: ms.startDate,
                 end: ms.endDate,
                 order: ms.order,
@@ -1342,6 +1344,47 @@ export class ParseService {
             }
             returnMe.push(pushMe);
         }
+        // if we have no special weekly dungeon, its Grasp of Avarice 1092691445, which is missing due to bug
+        if (returnMe.find(m => m.weeklyDungeon)== null) {
+            const raid = returnMe.find(m => m.weeklyRaid);
+            if (raid) {
+                console.log(`Missing weekly dungeon, adding GoA`)
+                const GOA_HASH = 1092691445;
+                const GOA_ACT_HASH = 3774021532;
+                const desc = await this.destinyCacheService.getMilestone(GOA_HASH);
+                const aDesc = await this.destinyCacheService.getActivity(GOA_ACT_HASH);
+                const pushMe: PublicMilestone = {
+                    hash: GOA_HASH + '',
+                    name: `Weekly Dungeon Challenge: ${desc.displayProperties.name}`,
+                    desc: desc.displayProperties.description,
+                    start: raid.start,
+                    end: raid.end,
+                    order: 31,
+                    icon: desc.displayProperties.icon,
+                    activities: [
+                        {
+                            hash: GOA_ACT_HASH+'',
+                            name: aDesc.displayProperties.name,
+                            desc: aDesc.displayProperties.description,
+                            ll: aDesc.activityLightLevel,
+                            tier: aDesc.tier,
+                            icon: aDesc.displayProperties.icon,
+                            modifiers: []
+                        }
+                    ],
+                    rewards: 'Pinnacle Gear',
+                    boost: this.parseMilestonePl('Pinnacle Gear'),
+                    milestoneType: desc.milestoneType,
+                    dependsOn: [],
+                    doubled: false,
+                    weeklyDungeon: true,
+                    weeklyRaid: false
+                };
+                returnMe.push(pushMe);
+            }
+        }
+            
+
 
         const empireHunts: MilestoneActivity[] = [];
         const empireHuntKeys: string[] = [];
@@ -2074,7 +2117,7 @@ export class ParseService {
                                         activityAvailable = true;
                                     }
 
-                                    // hack for Trials rounds where the activity is sometimes missing anyway asdf
+                                    // hack for Trials rounds where the activity is sometimes missing anyway
                                     // if (!activityAvailable && this.ALWAYS_AVAILABLE_MS.indexOf(missingKey) >= 0) {
                                     //     activityAvailable = true;
                                     // }
@@ -2663,7 +2706,7 @@ export class ParseService {
     // do this all in one place at the last minute
     // since we gather up milestones from all sorts of places
     private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings) {
-        const presage = milestoneList.find(x => x.key == '3927548661');
+        // const presage = milestoneList.find(x => x.key == '3927548661');
         // if (presage) {
         //     presage.name = 'Presage Weekly';
         // }
@@ -2683,10 +2726,10 @@ export class ParseService {
         if (nfCompletions) {
             nfCompletions.name = 'Nightfall - Completions';
         }
-        const graspOfAvarice = milestoneList.find(x => x.key == '973171461');
-        if (graspOfAvarice) {
-            graspOfAvarice.name = 'Grasp Of Avarice Weekly';
-        }
+        // const graspOfAvarice = milestoneList.find(x => x.key == '973171461');
+        // if (graspOfAvarice) {
+        //     graspOfAvarice.name = 'Grasp Of Avarice Weekly';
+        // }
         
         const witchQueenPinnacle = milestoneList.find(x => x.key == '363309766');
         if (witchQueenPinnacle) {
