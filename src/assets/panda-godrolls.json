@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito S18.1",
-  "date": "2022-09-07T17:51:08.231Z",
-  "manifestVersion": "108125.22.08.29.2044-1-bnet.46276",
+  "title": "Official D2Checklist Rolls - Meggito S18.1+FoL",
+  "date": "2022-10-28T14:00:33.316Z",
+  "manifestVersion": "109397.22.10.17.1900-3-bnet.47018",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -4410,69 +4410,23 @@
     },
     {
       "name": "braytech werewolf",
-      "sheet": "arrivals - controller",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
         ],
         "greatPerks": [
-          "fluted barrel",
-          "high-caliber rounds",
-          "fourth time's the charm",
-          "swashbuckler"
-        ],
-        "goodPerks": [
-          "polygonal rifling",
-          "smallbore",
+          "arrowhead brake",
           "appended mag",
-          "flared magwell",
-          "dynamic sway reduction",
+          "subsistence",
           "vorpal weapon"
-        ]
-      },
-      "pvp": {
-        "masterwork": [
-          "stability"
-        ],
-        "greatPerks": [
-          "polygonal rifling",
-          "ricochet rounds",
-          "dynamic sway reduction",
-          "tap the trigger"
         ],
         "goodPerks": [
-          "smallbore",
-          "fluted barrel",
-          "high-caliber rounds",
-          "slideshot",
-          "elemental capacitor",
-          "eye of the storm"
-        ]
-      },
-      "mnk": false,
-      "controller": true
-    },
-    {
-      "name": "braytech werewolf",
-      "sheet": "arrivals - mnk",
-      "pve": {
-        "masterwork": [
-          "reload speed"
-        ],
-        "greatPerks": [
-          "fluted barrel",
-          "high-caliber rounds",
-          "fourth time's the charm",
-          "swashbuckler"
-        ],
-        "goodPerks": [
-          "smallbore",
-          "hammer-forged rifling",
-          "appended mag",
           "armor-piercing rounds",
-          "mulligan",
-          "vorpal weapon",
-          "unrelenting"
+          "flared magwell",
+          "pugilist",
+          "kill clip",
+          "swashbuckler"
         ]
       },
       "pvp": {
@@ -4480,19 +4434,57 @@
           "range"
         ],
         "greatPerks": [
-          "hammer-forged rifling",
-          "high-caliber rounds",
+          "arrowhead brake",
+          "ricochet rounds",
           "dynamic sway reduction",
-          "tap the trigger"
+          "kill clip"
         ],
         "goodPerks": [
-          "smallbore",
-          "fluted barrel",
+          "high-caliber rounds",
+          "pugilist",
+          "swashbuckler",
+          "tap the trigger"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "braytech werewolf",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "subsistence",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "armor-piercing rounds",
+          "flared magwell",
+          "pugilist",
+          "kill clip",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
           "ricochet rounds",
-          "light mag",
-          "slideshot",
-          "elemental capacitor",
-          "eye of the storm"
+          "dynamic sway reduction",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "pugilist",
+          "swashbuckler",
+          "tap the trigger"
         ]
       },
       "mnk": true,
@@ -18640,7 +18632,7 @@
     },
     {
       "name": "jurassic green",
-      "sheet": "lost - controller",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
@@ -18652,37 +18644,28 @@
           "frenzy"
         ],
         "goodPerks": [
-          "fluted barrel",
-          "corkscrew rifling",
-          "alloy magazine",
+          "armor-piercing rounds",
           "flared magwell",
-          "extended mag",
-          "threat detector",
-          "multikill clip",
-          "dragonfly",
-          "wellspring"
+          "perpetual motion",
+          "incandescent",
+          "golden tricorn"
         ]
       },
       "pvp": {
         "masterwork": [
-          "stability",
-          "range"
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
-          "high-caliber rounds",
-          "heating up",
-          "multikill clip"
+          "ricochet rounds",
+          "rangefinder",
+          "adrenaline junkie"
         ],
         "goodPerks": [
-          "chambered compensator",
-          "extended barrel",
-          "ricochet rounds",
-          "tunnel vision",
+          "high-caliber rounds",
+          "perpetual motion",
           "killing wind",
-          "rangefinder",
-          "unrelenting",
-          "wellspring"
+          "multikill clip"
         ]
       },
       "mnk": false,
@@ -18690,7 +18673,7 @@
     },
     {
       "name": "jurassic green",
-      "sheet": "lost - mnk",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
@@ -18702,37 +18685,28 @@
           "frenzy"
         ],
         "goodPerks": [
-          "fluted barrel",
-          "corkscrew rifling",
-          "alloy magazine",
+          "armor-piercing rounds",
           "flared magwell",
-          "extended mag",
-          "threat detector",
-          "multikill clip",
-          "dragonfly",
-          "wellspring"
+          "perpetual motion",
+          "incandescent",
+          "golden tricorn"
         ]
       },
       "pvp": {
         "masterwork": [
-          "range",
           "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
-          "high-caliber rounds",
-          "tunnel vision",
-          "multikill clip"
+          "ricochet rounds",
+          "rangefinder",
+          "adrenaline junkie"
         ],
         "goodPerks": [
-          "corkscrew rifling",
-          "smallbore",
-          "ricochet rounds",
+          "high-caliber rounds",
+          "perpetual motion",
           "killing wind",
-          "heating up",
-          "rangefinder",
-          "unrelenting",
-          "wellspring"
+          "multikill clip"
         ]
       },
       "mnk": true,
@@ -20455,6 +20429,102 @@
           "assault mag",
           "threat detector",
           "killing wind"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "mechabre",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "clown cartridge",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "corkscrew rifling",
+          "tactical mag",
+          "flared magwell",
+          "triple tap",
+          "auto-loading holster",
+          "high-impact reserves",
+          "voltshot"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "snapshot sights",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "smallbore",
+          "tactical mag",
+          "flared magwell",
+          "perpetual motion",
+          "no distractions",
+          "moving target",
+          "swashbuckler"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "mechabre",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "clown cartridge",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "corkscrew rifling",
+          "tactical mag",
+          "flared magwell",
+          "triple tap",
+          "auto-loading holster",
+          "high-impact reserves",
+          "voltshot"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "snapshot sights",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "smallbore",
+          "tactical mag",
+          "flared magwell",
+          "perpetual motion",
+          "no distractions",
+          "moving target",
+          "swashbuckler"
         ]
       },
       "mnk": true,
@@ -29580,7 +29650,7 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "handling"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -29599,8 +29669,8 @@
           "headstone"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "something new",
@@ -29628,7 +29698,7 @@
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "stability"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -29647,8 +29717,8 @@
           "headstone"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "sorrow's verse",
