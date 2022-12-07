@@ -127,7 +127,7 @@ export class WeekService {
 
   // the week of the chosen season, so far
   public static getSeasonWeek(): number {
-    const seasonEpoch = parseISO('2022-08-23T17:00:00Z'); // #UPDATEME parseISO('2022-05-24T17:00:00Z'); 
+    const seasonEpoch = parseISO('2022-12-06T17:00:00Z'); // #UPDATEME parseISO('2022-05-24T17:00:00Z'); 
     const numWeeks = differenceInWeeks(new Date(), seasonEpoch);
     return numWeeks + 1;
   }
