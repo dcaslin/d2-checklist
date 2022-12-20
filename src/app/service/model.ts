@@ -698,6 +698,8 @@ export class Player {
     readonly minsPlayed: number;
     readonly gearMetaData: GearMetaData;
     readonly privateGear: boolean;
+    readonly responseMintedTimestamp: string;
+    readonly secondaryComponentsMintedTimestamp: string;
     maxLL = 0;
     maxLLFraction?: Fraction;
     aggHistory: AggHistoryEntry[] = [];
@@ -716,7 +718,7 @@ export class Player {
         title: string, seasonChallengeEntries: SeasonalChallengeEntry[], hasHiddenClosest: boolean,
         accountProgressions: Progression[], artifactPowerBonus: number, transitoryData: ProfileTransitoryData,
         specialAccountProgressions: SpecialAccountProgressions, gearMeta: GearMetaData, patternTriumphs: TriumphRecordNode[], exoticCatalystTriumphs: TriumphRecordNode[],
-        privateGear: boolean) {
+        privateGear: boolean, responseMintedTimestamp: string, secondaryComponentsMintedTimestamp: string ) {
         this.profile = profile;
         this.characters = characters;
         this.currentActivity = currentActivity;
@@ -769,6 +771,8 @@ export class Player {
         this.exoticCatalystTriumphs = exoticCatalystTriumphs;
         this.pursuitGear = this.gear ? this.gear.filter(g => g.objectives?.length > 0 && g.type != ItemType.Subclass) : [];
         this.privateGear = privateGear;
+        this.responseMintedTimestamp = responseMintedTimestamp;
+        this.secondaryComponentsMintedTimestamp = secondaryComponentsMintedTimestamp;
     }
 
     public getWeeklyXp(): number {

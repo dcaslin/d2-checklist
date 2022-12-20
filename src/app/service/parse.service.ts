@@ -2624,7 +2624,7 @@ export class ParseService {
             rankups, superprivate, hasWellRested, checklists, charChecklists, triumphScore, recordTree, colTree,
             gear, vault, shared, lowHangingTriumphs, searchableTriumphs, searchableCollection,
             seals, badges, title, seasonChallengeEntries, hasHiddenClosest, accountProgressions, artifactPowerBonus,
-            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs, privateGear);
+            transitoryData, specialProgressions, gearMeta, patternTriumphs, exoticCatalystTriumphs, privateGear, resp.responseMintedTimestamp, resp.secondaryComponentsMintedTimestamp);
     }
 
     // these are items that are not in the public milestones and also disappear on completion

@@ -81,13 +81,20 @@
         </div>
         <div>
             <div *ngIf="gearService.operatingOn$|async as o">
-                <h4><d2c-manifest-item-icon [desc]="o.item" [small]="true"></d2c-manifest-item-icon> {{o.item.displayProperties.name}}: {{o.action}}</h4>
+                <h4>
+                    <ng-container *ngIf="o.item!=null">
+                        <d2c-manifest-item-icon [desc]="o.item" [small]="true"></d2c-manifest-item-icon> 
+                        {{o.item.displayProperties.name}}: 
+                    </ng-container>
+                     {{o.action}}
+                </h4>
                 <mat-progress-bar mode="indeterminate"></mat-progress-bar>
             </div>
         </div>
     </mat-dialog-content>
     <div mat-dialog-actions>
         <button mat-stroked-button (click)="emptyVault()">Empty Vault <span class="simple-caption-darker-no-margin margin-10" *ngIf="gm$|async as gm">{{gm.vault.count}} / {{gm.vault.total}}</span></button>
+        <button mat-stroked-button (click)="syncLocks()">Sync Locks</button>
         <button mat-button mat-dialog-close>Close</button>
     </div>
 </div>
