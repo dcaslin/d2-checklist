@@ -198,7 +198,7 @@ export class WeekService {
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(magicHour);
-    const lsEpoch = parseISO('2022-09-02T17:00:00.000Z'); // 2021-08-24 is our current reference date
+    const lsEpoch = parseISO('2022-12-17T17:00:00.000Z'); // 2021-08-24 is our current reference date
     // diff in hours ignores DST
     const lsDays = Math.floor(differenceInHours(referenceDate, lsEpoch) / 24);
     const lsIndex = lsDays % LS_ROTATION.length;
