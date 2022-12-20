@@ -98,9 +98,6 @@ export class UpgradeModeDialogComponent extends ChildComponent {
           data.armor.push(tuple);
         }
       }
-
-
-
       this.data$.next(data);
     });
   }
@@ -108,6 +105,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
   public async upgradeMode(itemType?: ItemType) {
     this.operating$.next(true);
     try {
+      this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
       // dummy subject to avoid repainting gear component prematurely
       const msg = await this.gearService.upgradeMode(this.parent.player$.getValue(), new Subject<void>(), itemType);
@@ -117,6 +115,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
       this.parent.gearFilterStateService.filterUpdated$.next();
       this.notificationService.success(msg);
     } finally {
+      this.parent.gearService.clearOperatingOn();
       this.operating$.next(false);
     }
   }
@@ -124,6 +123,7 @@ export class UpgradeModeDialogComponent extends ChildComponent {
   public async emptyVault() {
     this.operating$.next(true);
     try {
+      this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
       await this.parent.load(true);
       const totalMoved = await this.parent.gearService.emptyVault(this.parent.player$.getValue(), new Subject<void>());
       await this.parent.load(true);
@@ -131,6 +131,19 @@ export class UpgradeModeDialogComponent extends ChildComponent {
       this.parent.gearFilterStateService.filterUpdated$.next();
       this.notificationService.info(`Moved ${totalMoved} items from vault to idle characters.`);
     } finally {
+      this.parent.gearService.clearOperatingOn();
+      this.operating$.next(false);
+    }
+  }
+
+  public async syncLocks() {
+    this.operating$.next(true);
+    try {      
+      this.parent.gearService.setExplicitOperatingOnMessage(`Refreshing inventory from Bungie`);
+      await this.parent.load(true);
+      await this.parent.gearService.processGearLocks(this.parent.player$.getValue(), true);
+    } finally {
+      this.parent.gearService.clearOperatingOn();
       this.operating$.next(false);
     }
 

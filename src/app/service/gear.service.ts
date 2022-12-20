@@ -48,7 +48,7 @@ function isGrind(i: InventoryItem): boolean {
 export class GearService {
 
     public loading: BehaviorSubject<boolean> = new BehaviorSubject(false);
-    private _operatingOn$: BehaviorSubject<Operation> = new BehaviorSubject(null);
+    public _operatingOn$: BehaviorSubject<Operation> = new BehaviorSubject(null);
 
     public operatingOn$: Observable<Operation>;
 
@@ -175,13 +175,13 @@ export class GearService {
         this.operatingOn$ = this._operatingOn$.asObservable().pipe(
             tap((o) => {
                 if (o) {
-                    console.log(`${o.item.displayProperties.name}: ${o.action} `);
-                }
+                    console.log(`${o.item?.displayProperties?.name}: ${o.action} `);
+                } 
             }),
             debounceTime(50));
     }
 
-    public async loadGear(selectedUser: SelectedUser): Promise<Player> {
+    public async loadGear(selectedUser: SelectedUser, lastPlayer: Player): Promise<Player> {
         try {
             this.loading.next(true);
             const player = await this.bungieService.getChars(selectedUser.userInfo.membershipType,
@@ -189,6 +189,18 @@ export class GearService {
                 'CharacterEquipment', 'CharacterInventories', 'ItemObjectives',
                 'ItemInstances', 'ItemPerks', 'ItemStats', 'ItemSockets', 'ItemPlugStates',
                 'ItemCommonData', 'ProfileInventories', 'ItemReusablePlugs', 'ItemPlugObjectives', 'StringVariables', 'PresentationNodes', 'Records'], false, true);
+            if (lastPlayer) {
+                if (lastPlayer.responseMintedTimestamp>player.responseMintedTimestamp) {
+                    console.log(`STALE RESPONSE`);
+                    this.notificationService.info('Stale response from Bungie. Please try again.');
+                    return null;
+                } else if (lastPlayer.responseMintedTimestamp==player.responseMintedTimestamp) {
+                    console.log(`NOTHING NEW HERE`);
+                    this.notificationService.info('Bungie shows no profile changes. Please try again.');
+                    return null;
+
+                }
+            }
             // Craftables ?
             // update gear counts on title bar
             this.signedOnUserService.gearMetadata$.next(player.gearMetaData);
@@ -268,8 +280,20 @@ export class GearService {
         }
     }
 
+    public setExplicitOperatingOnMessage(msg: string) {
+        this._operatingOn$.next({
+            item: null,
+            action: msg
+        });
+    }
+
+    public clearOperatingOn() {
+        this._operatingOn$.next(null);
+    }
+
     private async clearVaultToCharacter(target: Character, player: Player, shouldIgnoreFunc: ClearInvChecker, vaultStatus: VaultStatus, progressTracker$: Subject<void>): Promise<number> {
         console.log('Clearing vault to ' + target.label);
+
 
         let moved = 0;
         for (const i of player.gear) {
@@ -804,36 +828,52 @@ export class GearService {
     }
 
 
-    public async processGearLocks(player: Player): Promise<void> {
+    public async processGearLocks(player: Player, suppressNotifications?: boolean): Promise<void> {
         const gear = player.gear;
         let lockCnt = 0;
         let unlockedCnt = 0;
         let errCnt = 0;
-        for (const i of gear) {
-            if (i.mark == null) { continue; }
-            if (i.mark == 'upgrade' || i.mark == 'keep' || i.mark == 'archive') {
-                if (i.locked.getValue() == false) {
-                    try {
-                        await this.setLock(player, i, true);
-                        this.notificationService.info('Locked ' + i.name + ' on ' + i.owner.getValue().label);
-                        lockCnt++;
-                    } catch (e) {
-                        this.notificationService.info('Failed to lock ' + i.name + ' on ' + i.owner.getValue().label);
-                        errCnt++;
+        try {
+            for (const i of gear) {
+                if (i.mark == null) { continue; }
+                if (i.mark == 'upgrade' || i.mark == 'keep' || i.mark == 'archive') {
+                    if (i.locked.getValue() == false) {
+                        try {
+                            this._operatingOn$.next({
+                                item: i.toSimpleInventoryItem(),
+                                action: 'Locking'
+                            });
+                            await this.setLock(player, i, true);
+                            if (!suppressNotifications) {
+                                this.notificationService.info('Locked ' + i.name + ' on ' + i.owner.getValue().label);
+                            }
+                            lockCnt++;
+                        } catch (e) {
+                            this.notificationService.info('Failed to lock ' + i.name + ' on ' + i.owner.getValue().label);
+                            errCnt++;
+                        }
                     }
-                }
-            } else if (i.mark == 'junk' || i.mark == 'infuse') {
-                if (i.locked.getValue() == true) {
-                    try {
-                        await this.setLock(player, i, false);
-                        this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.getValue().label);
-                        unlockedCnt++;
-                    } catch (e) {
-                        this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.getValue().label);
-                        errCnt++;
+                } else if (i.mark == 'junk' || i.mark == 'infuse') {
+                    if (i.locked.getValue() == true) {
+                        try {
+                            this._operatingOn$.next({
+                                item: i.toSimpleInventoryItem(),
+                                action: 'Unlocking'
+                            });
+                            await this.setLock(player, i, false);
+                            if (!suppressNotifications) {
+                                this.notificationService.info('Unlocked ' + i.name + ' on ' + i.owner.getValue().label);
+                            }
+                            unlockedCnt++;
+                        } catch (e) {
+                            this.notificationService.info('Failed to unlock ' + i.name + ' on ' + i.owner.getValue().label);
+                            errCnt++;
+                        }
                     }
                 }
             }
+        } finally {
+            this._operatingOn$.next(null);
         }
         this.notificationService.info('Sync complete. Locked ' + lockCnt + ' items. Unlocked ' + unlockedCnt + ' items. ' + errCnt + ' errors.');
     }

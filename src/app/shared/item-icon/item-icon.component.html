@@ -1,4 +1,4 @@
-<ng-container *ngIf="i.icon!=null">
+<ng-container *ngIf="i!=null && i.icon!=null">
     <div *ngIf="hideMenu" class="item divider-border" [class.crafted]="i.crafted" [class.deepsight]="i.deepsight" [class.masterworked]="i.masterworked">
         <ng-container *ngTemplateOutlet="iconContents"></ng-container>
     </div>

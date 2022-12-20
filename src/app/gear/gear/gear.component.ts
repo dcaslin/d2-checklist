@@ -479,9 +479,13 @@ export class GearComponent extends ChildComponent implements OnInit {
       if (this.selectedUser == null) {
         this.player$.next(null);
       } else {
-        const p = await this.gearService.loadGear(this.selectedUser);
+        const p = await this.gearService.loadGear(this.selectedUser, this.player$.getValue());
+        // stale response, ignore it
+        if (p==null) {
+          return;
+        }
         this.player$.next(p);
-        // a few of our toggles and our automompletes are stocked by the players inventory
+        // a few of our toggles and our autcompletes are stocked by the players inventory
         // only do this once; might be buggy if a new type shows up post load but pretty unlikely
         // browser refresh would fix anyway
         if (p?.gear?.length > 0) {
