@@ -13,6 +13,7 @@ const FUSION_MW = ['Charge Time', 'Handling', 'Range', 'Reload Speed', 'Stabilit
 const SWORD_MW = ['Impact'];
 const GL_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity'];
 const ROCKET_MW = ['Blast Radius', 'Handling', 'Reload Speed', 'Velocity']; // 'Stability','Range',
+const GLAIVE_MW = ['Handling', 'Range', 'Reload Speed', 'Shield Duration'];
 
 
 export enum ClickMode {
@@ -116,7 +117,9 @@ export class PerkBenchDialogComponent extends ChildComponent {
     } else if (this.r.info.type == 'Grenade Launcher') {
       this.mwOptions = GL_MW;
     } else if (this.r.info.type == 'Combat Bow') {
-      this.mwOptions = BOW_MW  ;
+      this.mwOptions = BOW_MW;
+    } else if (this.r.info.type == 'Glaive') {
+      this.mwOptions = GLAIVE_MW;
     } else {
       this.mwOptions = NORMAL_MW;
     }

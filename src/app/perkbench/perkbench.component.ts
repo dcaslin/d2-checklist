@@ -72,6 +72,7 @@ const WATERMARK_TO_SEASON = {
   '/common/destiny2_content/icons/4fe83598190610f122497d22579a1fd9.png': 16,
   '/common/destiny2_content/icons/81edbfbf0bacf8e2117c00d1d6115f1b.png': 17,
   '/common/destiny2_content/icons/f359d68324ae21522c299983ff1ef9f2.png': 18,
+  '/common/destiny2_content/icons/1a68ada4fb21371c5f2b7e2eae1ebce8.png': 19,
 
 
   // events
@@ -445,15 +446,29 @@ export class PerkbenchComponent extends ChildComponent {
 
   private static rebuildRolls(mappedRolls: MappedRoll[]): GunRolls[] {
     const returnMe: GunRolls[] = [];
+    
+    const loaded = {};
     for (const mr of mappedRolls) {
       if (!mr.roll) {
         continue;
       }
       if (mr.roll.controller) {
-        returnMe.push(mr.roll.controller);
+        const key = `${mr.roll.controller.name}-controller`;
+        if (loaded[key]) {
+          console.log(`%c    Skipping duplicate for ${key}`);
+        } else {
+          loaded[key] = true;
+          returnMe.push(mr.roll.controller);
+        } 
       }
       if (mr.roll.mnk) {
-        returnMe.push(mr.roll.mnk);
+        const key = `${mr.roll.controller.name}-mnk`;
+        if (loaded[key]) {
+          console.log(`%c    Skipping duplicate for ${key}`);
+        } else {
+          loaded[key] = true;
+          returnMe.push(mr.roll.mnk);
+        }
       }
     }
     return returnMe;
@@ -477,8 +492,7 @@ export class PerkbenchComponent extends ChildComponent {
     const guns: ManifestInventoryItem[] = [];
     const dbInvItem = await this.destinyCacheService.getInventoryItemTable();
 
-    for (const key of Object.keys(dbInvItem)) {
-     
+    for (const key of Object.keys(dbInvItem)) {     
       const ii = dbInvItem[key];
       // possible perk, bucket type consumable
       if (
@@ -505,7 +519,7 @@ export class PerkbenchComponent extends ChildComponent {
       }
     }
     const gunsWithSockets: GunInfo[] = [];
-    for (const desc of guns) {     
+    for (const desc of guns) {
       let hasRandomRoll = false;
       for (const jCat of desc.sockets.socketCategories) {
         // we only care about weapon perks
@@ -578,21 +592,42 @@ export class PerkbenchComponent extends ChildComponent {
         if (hasRandomRoll) {
           const existing = gunsWithSockets.find(x=>x.desc.displayProperties.name == gi.desc.displayProperties.name);
           if (existing) {
-            if (existing.season>gi.season) {
-              // ignore it
-            } else {
-              console.log(`--- Replacing ${gi.desc.displayProperties.name} from season ${existing.season} with ${gi.season}`);
+            // make the most recent gun the golden copy, (not sure this matters)
+            let source = gi;
+            let target = existing;
+            if (gi.season > existing.season) {
               gunsWithSockets.splice(gunsWithSockets.indexOf(existing), 1);
               gunsWithSockets.push(gi);
+              source = existing;
+              target = gi;
+            } else {
+              source = gi;
+              target = existing;
             }
+            console.log(`--- Merging ${source.desc.displayProperties.name} from season ${source.season} into existing gun from ${target.season}`);
+            PerkbenchComponent.mergeGuns(target, source);
           } else {
             gunsWithSockets.push(gi);
           }
-
         }
       }
     }
     return gunsWithSockets;
+  }
+  private static mergeGuns(target: GunInfo, source: GunInfo) {
+    const socketsToCompareCount = Math.min(target.sockets.length, source.sockets.length)
+    
+    for (let i=0; i<socketsToCompareCount; i++) {
+      const targetSocket = target.sockets[i];
+      const sourceSocket = source.sockets[i];
+      // add all plugs from source to target
+      for (const plug of sourceSocket.possiblePlugs) {
+        targetSocket
+        if (!targetSocket.possiblePlugs.find(x=>x.name == plug.name)) {
+          targetSocket.possiblePlugs.push(plug);
+        }
+      }
+    }
   }
 
   public exportToFile() {
