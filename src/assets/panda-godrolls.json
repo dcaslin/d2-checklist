@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito S18.1+FoL",
-  "date": "2022-10-28T14:00:33.316Z",
-  "manifestVersion": "109397.22.10.17.1900-3-bnet.47018",
+  "title": "Official D2Checklist Rolls - Meggito S19+Dawning",
+  "date": "2022-12-20T18:07:13.983Z",
+  "manifestVersion": "111215.22.12.12.1450-6-bnet.47957",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -893,6 +893,92 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "albruna-d",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "triple tap",
+          "firing line"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "tactical mag",
+          "flared magwell",
+          "clown cartridge",
+          "field prep",
+          "frenzy",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "moving target",
+          "snapshot sights"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "elemental capacitor",
+          "perpetual motion",
+          "opening shot"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "albruna-d",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "triple tap",
+          "firing line"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "tactical mag",
+          "flared magwell",
+          "clown cartridge",
+          "field prep",
+          "frenzy",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "moving target",
+          "snapshot sights"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "elemental capacitor",
+          "perpetual motion",
+          "opening shot"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "allied demand",
@@ -2162,6 +2248,87 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "aurvandil fr6",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accelerated coils",
+          "reconstruction",
+          "chill clip"
+        ],
+        "goodPerks": [
+          "enhanced battery",
+          "ionized battery",
+          "subsistence",
+          "golden tricorn",
+          "demolitionist"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "projection fuse",
+          "firmly planted",
+          "elemental capacitor"
+        ],
+        "goodPerks": [
+          "swashbuckler",
+          "demolitionist",
+          "accelerated coils"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "aurvandil fr6",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accelerated coils",
+          "reconstruction",
+          "chill clip"
+        ],
+        "goodPerks": [
+          "enhanced battery",
+          "ionized battery",
+          "subsistence",
+          "golden tricorn",
+          "demolitionist"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "projection fuse",
+          "firmly planted",
+          "hammer-forged rifling",
+          "swashbuckler"
+        ],
+        "goodPerks": [
+          "demolitionist",
+          "accelerated coils",
+          "arrowhead brake",
+          "elemental capacitor"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "austringer",
@@ -3931,6 +4098,92 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "blowout",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "impact casing",
+          "field prep",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "linear compensator",
+          "smart drift control",
+          "alloy casing",
+          "demolitionist",
+          "ambitious assassin",
+          "lasting impression",
+          "chain reaction"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "black powder",
+          "impulse amplifier",
+          "chain reaction"
+        ],
+        "goodPerks": [
+          "smart drift control",
+          "countermass",
+          "high-velocity rounds",
+          "cluster bomb"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "blowout",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "impact casing",
+          "field prep",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "linear compensator",
+          "smart drift control",
+          "alloy casing",
+          "demolitionist",
+          "ambitious assassin",
+          "lasting impression",
+          "chain reaction"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "black powder",
+          "impulse amplifier",
+          "chain reaction"
+        ],
+        "goodPerks": [
+          "smart drift control",
+          "countermass",
+          "high-velocity rounds",
+          "cluster bomb"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "bonechiller",
@@ -7622,6 +7875,83 @@
       "controller": false
     },
     {
+      "name": "dark decider",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "tactical mag",
+          "subsistence",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "flared magwell",
+          "golden tricorn",
+          "dragonfly"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accurized rounds",
+          "dynamic sway reduction",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "flared magwell",
+          "iron grip",
+          "iron reach"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "dark decider",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "tactical mag",
+          "subsistence",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "flared magwell",
+          "golden tricorn",
+          "dragonfly"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accurized rounds",
+          "dynamic sway reduction",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "iron grip",
+          "iron reach"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "darkest before",
       "sheet": "lost - controller",
       "pve": {
@@ -8618,6 +8948,91 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "disparity",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "rapid hit",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "tactical mag",
+          "appended mag",
+          "outlaw",
+          "headstone",
+          "desperado"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accurized rounds",
+          "rapid hit",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "steady rounds",
+          "eye of the storm",
+          "moving target",
+          "headseeker",
+          "desperado"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "disparity",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "rapid hit",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "tactical mag",
+          "appended mag",
+          "outlaw",
+          "headstone",
+          "desperado"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range",
+          "handling"
+        ],
+        "greatPerks": [
+          "accurized rounds",
+          "rapid hit",
+          "kill clip",
+          "hammer-forged rifling"
+        ],
+        "goodPerks": [
+          "steady rounds",
+          "eye of the storm",
+          "headseeker",
+          "desperado",
+          "smallbore"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "distant relation",
@@ -11205,6 +11620,85 @@
       "controller": false
     },
     {
+      "name": "exalted truth",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "outlaw",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "kill clip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "rangefinder",
+          "eye of the storm"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "hammer-forged rifling",
+          "killing wind"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "exalted truth",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "outlaw",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "kill clip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "accurized rounds",
+          "rangefinder",
+          "eye of the storm",
+          "hammer-forged rifling"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "killing wind"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "exile's curse",
       "sheet": "chosen - controller",
       "pve": {
@@ -12661,6 +13155,177 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "fioritura-59",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "hammer-forged rifling",
+          "flared magwell",
+          "pugilist",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "light mag",
+          "appended mag",
+          "threat detector",
+          "golden tricorn",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability",
+          "range"
+        ],
+        "greatPerks": [
+          "hammer-forged rifling",
+          "ricochet rounds",
+          "killing wind",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "high-caliber rounds",
+          "threat detector",
+          "pugilist",
+          "swashbuckler",
+          "moving target"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "fioritura-59",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "hammer-forged rifling",
+          "flared magwell",
+          "pugilist",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "light mag",
+          "appended mag",
+          "threat detector",
+          "golden tricorn",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "hammer-forged rifling",
+          "ricochet rounds",
+          "killing wind",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "threat detector",
+          "pugilist",
+          "swashbuckler"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "fire and forget",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accelerated coils",
+          "field prep",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "enhanced battery",
+          "ionized battery",
+          "headstone",
+          "outlaw",
+          "chill clip",
+          "frenzy"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "projection fuse",
+          "rangefinder",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "demolitionist",
+          "headstone",
+          "killing wind",
+          "arrowhead brake"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "fire and forget",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accelerated coils",
+          "field prep",
+          "vorpal weapon"
+        ],
+        "goodPerks": [
+          "enhanced battery",
+          "ionized battery",
+          "headstone",
+          "outlaw",
+          "chill clip",
+          "frenzy"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "projection fuse",
+          "rangefinder",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "demolitionist",
+          "headstone",
+          "killing wind",
+          "arrowhead brake"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "firefright",
@@ -17435,6 +18100,87 @@
       "controller": false
     },
     {
+      "name": "ikelos_hc_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "appended mag",
+          "subsistence",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "golden tricorn",
+          "rampage",
+          "rapid hit",
+          "triple tap",
+          "tactical mag",
+          "extended mag",
+          "fluted barrel",
+          "corkscrew rifling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability",
+          "range"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "accurized rounds",
+          "rapid hit",
+          "rampage"
+        ],
+        "goodPerks": [
+          "hammer-forged rifling"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "ikelos_hc_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "appended mag",
+          "subsistence",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "golden tricorn",
+          "rampage",
+          "rapid hit",
+          "triple tap",
+          "tactical mag",
+          "extended mag",
+          "fluted barrel",
+          "corkscrew rifling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "accurized rounds",
+          "rapid hit",
+          "rampage"
+        ],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "ikelos_sg_v1.0.2",
       "sheet": "arrivals - controller",
       "pve": {
@@ -17530,6 +18276,88 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "ikelos_sg_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "barrel shroud",
+          "tactical mag",
+          "grave robber",
+          "one-two punch"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "appended mag",
+          "light mag",
+          "subsistence",
+          "pugilist",
+          "trench barrel",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range",
+          "handling"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "accurized rounds",
+          "threat detector",
+          "swashbuckler"
+        ],
+        "goodPerks": [
+          "corkscrew rifling"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "ikelos_sg_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "barrel shroud",
+          "tactical mag",
+          "grave robber",
+          "one-two punch"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "appended mag",
+          "light mag",
+          "subsistence",
+          "pugilist",
+          "trench barrel",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range",
+          "handling"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "accurized rounds",
+          "threat detector",
+          "swashbuckler"
+        ],
+        "goodPerks": [
+          "corkscrew rifling"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "ikelos_smg_v1.0.2",
@@ -17623,6 +18451,94 @@
       "controller": false
     },
     {
+      "name": "ikelos_smg_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "feeding frenzy",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "flared magwell",
+          "corkscrew rifling",
+          "smallbore",
+          "seraph rounds",
+          "perpetual motion",
+          "threat detector",
+          "frenzy"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "accurized rounds",
+          "killing wind",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "seraph rounds",
+          "dynamic sway reduction",
+          "perpetual motion",
+          "tap the trigger"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "ikelos_smg_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "feeding frenzy",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "flared magwell",
+          "corkscrew rifling",
+          "smallbore",
+          "seraph rounds",
+          "perpetual motion",
+          "threat detector",
+          "frenzy"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "accurized rounds",
+          "killing wind",
+          "rangefinder",
+          "hammer-forged rifling"
+        ],
+        "goodPerks": [
+          "seraph rounds",
+          "perpetual motion",
+          "tap the trigger",
+          "smallbore",
+          "extended barrel"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "ikelos_sr_v1.0.2",
       "sheet": "arrivals - controller",
       "pve": {
@@ -17712,6 +18628,82 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "ikelos_sr_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "overflow",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "tactical mag",
+          "extended mag",
+          "fourth time's the charm",
+          "focused fury"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "elemental capacitor",
+          "moving target",
+          "accurized rounds",
+          "fluted barrel"
+        ],
+        "goodPerks": [
+          "seraph rounds",
+          "perpetual motion"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "ikelos_sr_v1.0.3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "overflow",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "tactical mag",
+          "extended mag",
+          "fourth time's the charm",
+          "focused fury"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "elemental capacitor",
+          "moving target",
+          "accurized rounds",
+          "fluted barrel"
+        ],
+        "goodPerks": [
+          "seraph rounds",
+          "perpetual motion"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "imperative",
@@ -18435,6 +19427,90 @@
       "controller": false
     },
     {
+      "name": "jararaca-3sr",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "rapid hit",
+          "headstone"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "light mag",
+          "perpetual motion",
+          "fourth time's the charm",
+          "kill clip",
+          "golden tricorn"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "rapid hit",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "headstone",
+          "perpetual motion",
+          "high-caliber rounds"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "jararaca-3sr",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "rapid hit",
+          "headstone"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "light mag",
+          "perpetual motion",
+          "fourth time's the charm",
+          "kill clip",
+          "golden tricorn"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "ricochet rounds",
+          "kill clip",
+          "hammer-forged rifling",
+          "perpetual motion"
+        ],
+        "goodPerks": [
+          "headstone",
+          "high-caliber rounds",
+          "arrowhead brake",
+          "smallbore",
+          "rapid hit"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "jian 7 rifle",
       "sheet": "worthy - controller",
       "pve": {
@@ -18629,6 +19705,94 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "judgment of kelgorath",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "overflow",
+          "incandescent"
+        ],
+        "goodPerks": [
+          "auxiliary reserves",
+          "supercooled accelerator",
+          "light mag",
+          "appended mag",
+          "demolitionist",
+          "pugilist",
+          "unstoppable force",
+          "close to melee"
+        ]
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "immovable object",
+          "unstoppable force"
+        ],
+        "goodPerks": [
+          "auxiliary reserves",
+          "supercooled accelerator",
+          "light mag",
+          "appended mag",
+          "demolitionist",
+          "pugilist",
+          "impulse amplifier",
+          "harmony"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "judgment of kelgorath",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "overflow",
+          "incandescent"
+        ],
+        "goodPerks": [
+          "auxiliary reserves",
+          "supercooled accelerator",
+          "light mag",
+          "appended mag",
+          "demolitionist",
+          "pugilist",
+          "unstoppable force",
+          "close to melee"
+        ]
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [
+          "low-impedance windings",
+          "swap mag",
+          "immovable object",
+          "unstoppable force"
+        ],
+        "goodPerks": [
+          "auxiliary reserves",
+          "supercooled accelerator",
+          "light mag",
+          "appended mag",
+          "demolitionist",
+          "pugilist",
+          "impulse amplifier",
+          "harmony"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "jurassic green",
@@ -19445,6 +20609,95 @@
       "controller": false
     },
     {
+      "name": "liminal vigil",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "corkscrew rifling",
+          "flared magwell",
+          "headstone",
+          "desperado"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "appended mag",
+          "armor-piercing rounds",
+          "threat detector",
+          "surrounded",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "ricochet rounds",
+          "tap the trigger",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "high-caliber rounds",
+          "perpetual motion",
+          "headstone",
+          "kill clip",
+          "desperado"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "liminal vigil",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "corkscrew rifling",
+          "flared magwell",
+          "headstone",
+          "desperado"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "appended mag",
+          "armor-piercing rounds",
+          "threat detector",
+          "surrounded",
+          "swashbuckler"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "ricochet rounds",
+          "rangefinder",
+          "hammer-forged rifling",
+          "headstone"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "perpetual motion",
+          "kill clip",
+          "desperado",
+          "smallbore",
+          "extended barrel",
+          "tap the trigger"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "line in the sand",
       "sheet": "dawn - controller",
       "pve": {
@@ -19627,6 +20880,95 @@
       "controller": false
     },
     {
+      "name": "lodbrok-c",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "demolitionist",
+          "adrenaline junkie"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "flared magwell",
+          "extended mag",
+          "perpetual motion",
+          "osmosis",
+          "cascade point",
+          "target lock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability",
+          "range"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "ricochet rounds",
+          "dynamic sway reduction",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "high-caliber rounds",
+          "perpetual motion",
+          "demolitionist",
+          "tap the trigger"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "lodbrok-c",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "demolitionist",
+          "adrenaline junkie"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "flared magwell",
+          "extended mag",
+          "perpetual motion",
+          "osmosis",
+          "cascade point",
+          "target lock"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "ricochet rounds",
+          "kill clip",
+          "hammer-forged rifling",
+          "perpetual motion"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "demolitionist",
+          "tap the trigger",
+          "smallbore",
+          "dynamic sway reduction"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "lonesome",
       "sheet": "drifter",
       "pve": {
@@ -19721,6 +21063,92 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "long arm",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "rapid hit",
+          "explosive payload"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "subsistence",
+          "dragonfly",
+          "adrenaline junkie"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "opening shot",
+          "rapid hit",
+          "steady rounds",
+          "fluted barrel"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "hip-fire grip",
+          "explosive payload"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "long arm",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "rapid hit",
+          "explosive payload"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "subsistence",
+          "dragonfly",
+          "adrenaline junkie"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "opening shot",
+          "rapid hit",
+          "steady rounds",
+          "fluted barrel"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "hip-fire grip",
+          "explosive payload"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "long shadow",
@@ -23297,6 +24725,93 @@
       "controller": false
     },
     {
+      "name": "path of least resistance",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "tactical battery",
+          "subsistence",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "focused fury",
+          "one for all",
+          "adaptive munitions",
+          "stats for all",
+          "enhanced battery",
+          "ionized battery",
+          "smallbore",
+          "corkscrew rifling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "smallbore",
+          "projection fuse",
+          "dynamic sway reduction",
+          "tap the trigger"
+        ],
+        "goodPerks": [
+          "gutshot straight",
+          "tactical battery",
+          "particle repeater",
+          "hammer-forged rifling"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "path of least resistance",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "tactical battery",
+          "subsistence",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "focused fury",
+          "one for all",
+          "adaptive munitions",
+          "stats for all",
+          "enhanced battery",
+          "ionized battery",
+          "smallbore",
+          "corkscrew rifling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "projection fuse",
+          "dynamic sway reduction",
+          "tap the trigger",
+          "hammer-forged rifling"
+        ],
+        "goodPerks": [
+          "gutshot straight",
+          "tactical battery",
+          "smallbore"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "patron of lost causes",
       "sheet": "dawn - controller",
       "pve": {
@@ -25087,6 +26602,90 @@
       "controller": false
     },
     {
+      "name": "prolonged engagement",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "subsistence",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "appended mag",
+          "feeding frenzy",
+          "outlaw",
+          "multikill clip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "rangefinder",
+          "killing wind",
+          "ricochet rounds",
+          "arrowhead brake"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "high-caliber rounds",
+          "eye of the storm",
+          "headstone"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "prolonged engagement",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "subsistence",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "appended mag",
+          "feeding frenzy",
+          "outlaw",
+          "multikill clip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "ricochet rounds",
+          "killing wind",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "high-caliber rounds",
+          "eye of the storm",
+          "headstone"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "prophet of doom",
       "sheet": "undying",
       "pve": {
@@ -26583,6 +28182,85 @@
       "controller": false
     },
     {
+      "name": "retrofit escapade",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "feeding frenzy",
+          "golden tricorn"
+        ],
+        "goodPerks": [
+          "vorpal weapon",
+          "frenzy",
+          "field prep",
+          "fourth time's the charm",
+          "flared magwell",
+          "tactical mag"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accurized rounds",
+          "zen moment",
+          "tap the trigger"
+        ],
+        "goodPerks": [
+          "rampage",
+          "heating up"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "retrofit escapade",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "feeding frenzy",
+          "golden tricorn"
+        ],
+        "goodPerks": [
+          "vorpal weapon",
+          "frenzy",
+          "field prep",
+          "fourth time's the charm",
+          "flared magwell",
+          "tactical mag"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accurized rounds",
+          "tap the trigger",
+          "heating up"
+        ],
+        "goodPerks": [
+          "rampage"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "retrofuturist",
       "sheet": "chosen - controller",
       "pve": {
@@ -27043,6 +28721,106 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "rose",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "rapid hit",
+          "vorpal weapon",
+          "smooth grip"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "elemental capacitor",
+          "explosive payload",
+          "polymer grip",
+          "combat grip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "moving target",
+          "eye of the storm",
+          "smooth grip"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "hammer-forged rifling",
+          "elemental capacitor",
+          "rapid hit",
+          "rangefinder",
+          "explosive payload",
+          "polymer grip",
+          "combat grip"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "rose",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "rapid hit",
+          "vorpal weapon",
+          "smooth grip"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "elemental capacitor",
+          "explosive payload",
+          "polymer grip",
+          "combat grip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "accurized rounds",
+          "eye of the storm",
+          "smooth grip",
+          "hammer-forged rifling",
+          "perpetual motion"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "rapid hit",
+          "rangefinder",
+          "explosive payload",
+          "polymer grip",
+          "combat grip",
+          "fluted barrel",
+          "slideshot"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "royal chase",
@@ -30188,6 +31966,38 @@
       "controller": false
     },
     {
+      "name": "stay frosty",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "stay frosty",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [],
+        "greatPerks": [],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "steel sybil z-14",
       "sheet": "forsaken",
       "pve": {
@@ -32775,6 +34585,89 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "terminus horizon",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "rapid hit",
+          "target lock"
+        ],
+        "goodPerks": [
+          "extended mag",
+          "demolitionist",
+          "dragonfly",
+          "voltshot",
+          "adrenaline junkie"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability",
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "rapid hit",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "high-caliber rounds",
+          "demolitionist",
+          "cascade point"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "terminus horizon",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "rapid hit",
+          "target lock"
+        ],
+        "goodPerks": [
+          "extended mag",
+          "demolitionist",
+          "dragonfly",
+          "voltshot",
+          "adrenaline junkie"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "ricochet rounds",
+          "rapid hit",
+          "high-impact reserves",
+          "smallbore"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "demolitionist",
+          "cascade point",
+          "hammer-forged rifling"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "the comedian",
@@ -37323,6 +39216,86 @@
       "controller": false
     },
     {
+      "name": "tripwire canary",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "elastic string",
+          "fiberglass arrow shaft",
+          "archer's tempo",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "explosive head",
+          "rapid hit",
+          "dragonfly",
+          "polymer string"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "draw time"
+        ],
+        "greatPerks": [
+          "elastic string",
+          "fiberglass arrow shaft",
+          "archer's tempo",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "explosive head",
+          "successful warm-up",
+          "rapid hit",
+          "polymer string"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "tripwire canary",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "elastic string",
+          "fiberglass arrow shaft",
+          "archer's tempo",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "explosive head",
+          "rapid hit",
+          "dragonfly",
+          "polymer string"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "draw time"
+        ],
+        "greatPerks": [
+          "elastic string",
+          "fiberglass arrow shaft",
+          "archer's tempo",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "explosive head",
+          "successful warm-up",
+          "rapid hit",
+          "polymer string"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "trophy hunter",
       "sheet": "dawn - controller",
       "pve": {
@@ -38209,6 +40182,89 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "unwavering duty",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "subsistence",
+          "incandescent"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "tactical mag",
+          "extended mag",
+          "ambitious assassin",
+          "field prep",
+          "killing tally",
+          "focused fury"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "dynamic sway reduction",
+          "tap the trigger"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "tactical mag",
+          "killing wind"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "unwavering duty",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "subsistence",
+          "incandescent"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "tactical mag",
+          "extended mag",
+          "ambitious assassin",
+          "field prep",
+          "killing tally",
+          "focused fury"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "accurized rounds",
+          "tap the trigger",
+          "hammer-forged rifling",
+          "killing wind"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "dynamic sway reduction"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "uriel's gift",
@@ -39145,6 +41201,88 @@
       "controller": false
     },
     {
+      "name": "wendigo gl3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "chain reaction",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "linear compensator",
+          "smart drift control",
+          "spike grenades",
+          "auto-loading holster",
+          "field prep",
+          "golden tricorn",
+          "explosive light"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "proximity grenades",
+          "impulse amplifier",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "smart drift control",
+          "countermass",
+          "explosive light"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "wendigo gl3",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "chain reaction",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "linear compensator",
+          "smart drift control",
+          "spike grenades",
+          "auto-loading holster",
+          "field prep",
+          "golden tricorn",
+          "explosive light"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "proximity grenades",
+          "impulse amplifier",
+          "rangefinder"
+        ],
+        "goodPerks": [
+          "smart drift control",
+          "countermass",
+          "explosive light"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "whispering slab",
       "sheet": "arrivals - controller",
       "pve": {
@@ -39429,6 +41567,96 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "wilderflight",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "blinding grenades",
+          "auto-loading holster",
+          "disruption break"
+        ],
+        "goodPerks": [
+          "linear compensator",
+          "smart drift control",
+          "spike grenades",
+          "demolitionist",
+          "unrelenting",
+          "frenzy",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "proximity grenades",
+          "auto-loading holster",
+          "disruption break"
+        ],
+        "goodPerks": [
+          "pugilist",
+          "adrenaline junkie",
+          "demolitionist",
+          "high-velocity rounds",
+          "smart drift control",
+          "countermass"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "wilderflight",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "blinding grenades",
+          "auto-loading holster",
+          "disruption break"
+        ],
+        "goodPerks": [
+          "linear compensator",
+          "smart drift control",
+          "spike grenades",
+          "demolitionist",
+          "unrelenting",
+          "frenzy",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "proximity grenades",
+          "auto-loading holster",
+          "disruption break"
+        ],
+        "goodPerks": [
+          "pugilist",
+          "adrenaline junkie",
+          "demolitionist",
+          "high-velocity rounds",
+          "smart drift control",
+          "countermass"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "wishbringer",
