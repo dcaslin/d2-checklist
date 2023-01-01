@@ -2954,7 +2954,7 @@ export class ParseService {
                 } else if (isSpecialRankProgression && ap.hash == '3008065600') {
                     returnMe.gambitRank = ap;
 
-                } else if (isSpecialRankProgression && ap.hash == '1647151960') {
+                } else if (isSpecialRankProgression && ap.hash == '3696598664') {
                     returnMe.glory = ap;
 
                 } else if (isSpecialRankProgression && ap.hash == '457612306') {
