@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -33,7 +33,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   readonly platformMap = Const.PLATFORMS_DICT;
 
   
-  gamerTagControl = new FormControl();
+  gamerTagControl = new UntypedFormControl();
 
   hideAnnouncement = true;
   bountiesExpanded = 'true' === localStorage.getItem('expand-bounties');
