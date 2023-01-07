@@ -269,6 +269,7 @@ export class BungieService implements OnDestroy {
     public static getActivityModes(): ActivityMode[] {
         return [
             new ActivityMode(0, 'All', 'All'), // None
+            new ActivityMode(91, 'Iron Banner Zone Control', 'Iron Banner Zone Control'),
             new ActivityMode(7, 'All - PvE', 'All PvE'),
             new ActivityMode(5, 'All - PvP', 'All PvP'),
             new ActivityMode(4, 'Raid', 'Raid'),

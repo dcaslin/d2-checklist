@@ -212,6 +212,11 @@ public static parseBungieMembers(results: PrivBungieMember[]): BungieMember[] {
     if (mode === 84) { return 'Trials Of Osiris'; }
     if (mode === 85) { return 'Dares'; }
     if (mode === 86) { return 'Wellspring'; }
+    if (mode === 87) { return 'Lost Sector'; }
+    if (mode === 88) { return 'Rift'; }
+    if (mode === 89) { return 'Zone Control'; }
+    if (mode === 90) { return 'Iron Banner Rift'; }
+    if (mode === 91) { return 'Iron Banner Zone Control'; }
     return 'Unknown ' + mode;
   }
 }
