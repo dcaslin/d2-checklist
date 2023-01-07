@@ -144,7 +144,6 @@
       }
     }
   },
-  "defaultProject": "d2-checklist",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "d2c",
@@ -156,6 +155,8 @@
   },
   "cli": {
     "analytics": false,
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
