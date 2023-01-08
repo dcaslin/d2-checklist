@@ -65,6 +65,9 @@ export class PlayerEfficiencyGraphComponent {
 
     const data: ScatterCube[] = [];
     for (const a of player.aggHistory) {
+      if (a.type != 'raid') {
+        continue;
+      } 
       const comp = a.activityCompletions;
       const hours = a.activitySecondsPlayed / (60 * 60);
       data.push({
