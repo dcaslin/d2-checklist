@@ -1,6 +1,6 @@
 {
   "name": "d2-checklist",
-  "version": "19.1.3",
+  "version": "19.2.0",
   "manifest": "111215.22.12.12.1450-6-bnet.47957",
   "license": "MIT",
   "scripts": {
@@ -10,7 +10,6 @@
     "stage-beta-keys": "node stage-beta-config.js",
     "docker-start": "ng serve --host 0.0.0.0 --ssl",
     "buildStats": "ng build --configuration=production --stats-json",
-    "analyze": "npx webpack-bundle-analyzer dist/stats.json",
     "build": "ng build",
     "lint": "ng lint",
     "build:prod": "ng build --configuration production",
