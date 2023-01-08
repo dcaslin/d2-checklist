@@ -47,7 +47,8 @@
     "lz-string": "1.4.4",
     "ng2-charts": "^4.1.1",
     "ngx-clipboard": "^15.0.1",
-    "rxjs": "~6.6.6"
+    "rxjs": "~6.6.6",
+    "zone.js": "~0.11.4"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^14.2.10",
