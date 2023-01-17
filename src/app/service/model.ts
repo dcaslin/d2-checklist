@@ -1360,6 +1360,9 @@ export class Const {
         '243742733', // For the Light… Against the Light 243742733
         '3581618338', // Master class - guardian games
         // '3031052508','2953722265','3632712541' // battlegrounds
+        '4043054273', // Sweetness and Light for FotL
+        '1719934518', // Dawning Duty
+        '1194402836', // Astral Seas
     ];
 
     public static readonly PLATFORMS_ARRAY = [
