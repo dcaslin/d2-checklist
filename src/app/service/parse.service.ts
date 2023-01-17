@@ -73,8 +73,8 @@ import { SimpleParseService } from './simple-parse.service';
 
 const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 
-const ARTIFACT_UNLOCK_PERK_PROG_HASH = '2026300734'; // #UPDATEME 2587634425 old 2779402444 old 2779402444 2557524386 oldest 3094108685
-const ARTIFACT_POWER_BONUS_PROG_HASH = '2668790903'; // #UPDATEME 3320783176 old 2214434133 old 243419342 1793560787 oldest 978389300
+const ARTIFACT_UNLOCK_PERK_PROG_HASH = '4027620195'; // #UPDATEME 2587634425 old 2779402444 old 2779402444 2557524386 oldest 3094108685
+const ARTIFACT_POWER_BONUS_PROG_HASH = '1656313730'; // #UPDATEME 3320783176 old 2214434133 old 243419342 1793560787 oldest 978389300
 
 
 export const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
@@ -1181,7 +1181,10 @@ export class ParseService {
                                 specialName = `Weekly Raid Challenge: ${desc.displayProperties.name}`;
                             } else if (oDesc?.displayProperties?.name.toLowerCase().indexOf('weekly dungeon') >= 0) {
                                 specialDungeonWeekly = true;
-                                specialName = `Weekly Dungeon Challenge: ${desc.displayProperties.name}`;
+                                // this week the Milestone name is "Pit of Heresy" but the activity name is "Shattered Throne"
+                                // ST is the correct one
+                                specialName = `Weekly Dungeon Challenge: ${aDesc.displayProperties.name}`;
+                                console.log(`special dungeon weekly: ${specialName}`);
                             }
                         }
                     }
