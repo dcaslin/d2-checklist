@@ -77,7 +77,6 @@ export class VendorService {
     // if that worked out well, cache it for next time
     this.setCachedVendor(c, resp);
     target.next(returnMe);
-    //ASDF
   }
 
   private async applyCacheVendor(target: Subject<CharacterVendorData>, c: Character) {

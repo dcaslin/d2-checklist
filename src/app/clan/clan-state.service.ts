@@ -1076,7 +1076,6 @@ export class ClanStateService {
     let loadAggNum = 0;
     for (const m of this.sortedMembers.getValue()) {
       try {
-        // asdf
         if (!m.currentPlayer()) {
           console.log(`    Skipping ${m.destinyUserInfo.displayName}`);
           continue;

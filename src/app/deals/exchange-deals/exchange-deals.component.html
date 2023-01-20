@@ -20,7 +20,7 @@
                 <tr *ngFor="let c of vd.data">
                     <td>
                         <ng-container *ngIf="c.target">
-                            <d2c-manifest-item-icon [desc]="c.target" [small]="true"></d2c-manifest-item-icon>
+                            <d2c-manifest-item-icon [desc]="c.target"></d2c-manifest-item-icon>
                             <div class="deal-label">
                                 <span
                                     *ngIf="c.saleItem.vendorItemInfo.quantity>1">{{c.saleItem.vendorItemInfo.quantity|number}}
@@ -32,7 +32,7 @@
                     <td>{{c.targetCount|number}}</td>
                     <td>
                         <ng-container *ngIf="c.cost">
-                            <d2c-manifest-item-icon [desc]="c.cost.desc" [small]="true"></d2c-manifest-item-icon>
+                            <d2c-manifest-item-icon [desc]="c.cost.desc"></d2c-manifest-item-icon>
                             <div class="deal-label">{{c.cost.count|number}} {{c.cost.desc.displayProperties.name}}</div>
                         </ng-container>
                     </td>

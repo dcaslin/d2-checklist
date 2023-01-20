@@ -38,7 +38,7 @@
                         </th>
                     </tr>
                     <tr *ngFor="let tuple of data.weapons">
-                        <td><d2c-manifest-item-icon [desc]="tuple.desc" [small]="true"></d2c-manifest-item-icon></td>
+                        <td><d2c-manifest-item-icon [desc]="tuple.desc"></d2c-manifest-item-icon></td>
                         <td>{{tuple.upgradeMe.name}}</td>
                         <td>{{tuple.infuseMe.length}}</td>
                         <td>{{tuple.home}}</td>
@@ -56,7 +56,7 @@
                         <th matTooltip="Items that need to be moved"><fa-icon [icon]="iconService.fasSuitcase"></fa-icon></th>
                     </tr>
                     <tr *ngFor="let tuple of data.armor">
-                        <td><d2c-manifest-item-icon [desc]="tuple.desc" [small]="true"></d2c-manifest-item-icon></td>
+                        <td><d2c-manifest-item-icon [desc]="tuple.desc"></d2c-manifest-item-icon></td>
                         <td>{{tuple.upgradeMe.name}}</td>
                         <td>{{tuple.infuseMe.length}}</td>
                         <td>{{tuple.home}}</td>
@@ -69,7 +69,7 @@
             <div *ngIf="gearService.operatingOn$|async as o">
                 <h4>
                     <ng-container *ngIf="o.item!=null">
-                        <d2c-manifest-item-icon [desc]="o.item" [small]="true"></d2c-manifest-item-icon> 
+                        <d2c-manifest-item-icon [desc]="o.item"></d2c-manifest-item-icon> 
                         {{o.item.displayProperties.name}}: 
                     </ng-container>
                      {{o.action}}
