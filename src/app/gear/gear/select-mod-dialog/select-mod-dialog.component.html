@@ -9,7 +9,7 @@
         <tr *ngFor="let p of socket.sourcePlugs" [class.fake-link]="item.canFit(socket, p)" [class.disabled]="!item.canFit(socket, p)" (click)="select(p)"
             [class.accent-bg-text]="socket.active.hash == p.hash">
             <td>
-                <d2c-manifest-item-icon [desc]="p" [small]="true"></d2c-manifest-item-icon>
+                <d2c-manifest-item-icon [desc]="p"></d2c-manifest-item-icon>
                 {{p.hash}}
             </td>
 

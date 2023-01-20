@@ -1,3 +1,4 @@
+import { NgOptimizedImage, IMAGE_LOADER, ImageLoaderConfig } from '@angular/common';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
@@ -59,6 +60,7 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
 
 @NgModule({
   imports: [
+    NgOptimizedImage,
     PipeModule,
     CommonModule,
     FormsModule,
@@ -169,6 +171,15 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
     ScrollingModule,
     SignInRequiredModule,
     MilestoneCheckModule
+  ],
+  providers: [
+    {
+      provide: IMAGE_LOADER,
+      useValue: (config: ImageLoaderConfig) => {
+        return `https://www.bungie.net${config.src}`;
+      }
+    },
+    // provideCloudflareLoader('https://www.bungie.net/'),
   ]
 })
 export class SharedModule {  

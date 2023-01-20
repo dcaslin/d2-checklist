@@ -9,9 +9,9 @@
     </div>
 
     <ng-template #iconContents>
-        <img [src]="'//www.bungie.net' + i.icon" class="item-image" [class.redacted]="i.redacted" loading="lazy">
+        <img [ngSrc]="i.icon" width="70" height="70" class="item-image" [class.redacted]="i.redacted">
         <div class="icon-watermark" *ngIf="i.iconWatermark">
-            <img [src]="'//www.bungie.net' + i.iconWatermark" class="img" loading="lazy">
+            <img [ngSrc]="i.iconWatermark" width="50" height="50" class="img">
         </div>
         <div *ngIf="i.power>0" class="primary-stat"
             [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"

@@ -10,6 +10,5 @@ import { ManifestInventoryItem, SimpleInventoryItem } from '@app/service/destiny
 })
 export class ManifestItemIconComponent {
   @Input() desc: SimpleInventoryItem;
-  @Input() small = false;
 
 }
