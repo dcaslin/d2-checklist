@@ -178,7 +178,7 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
       useValue: (config: ImageLoaderConfig) => {
         return `https://www.bungie.net${config.src}`;
       }
-    },
+    }, 
     // provideCloudflareLoader('https://www.bungie.net/'),
   ]
 })

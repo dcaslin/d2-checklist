@@ -15,7 +15,11 @@
             <ng-container *ngIf="debugmode|async">{{s.hash}}</ng-container>
           </mat-panel-title>
           <mat-panel-description [class.accent-text]="s.complete">
-            {{s.progress}} / {{s.completionValue}}
+            {{s.progress}} / {{s.completionValue}} 
+            <span class="pad-left-more pad-right"  *ngIf="s.gildTotal>0">
+              <fa-icon [icon]="iconService.fadShieldAlt"></fa-icon>
+               {{s.gildProgress}} / {{s.gildTotal}}
+            </span>
           </mat-panel-description>
         </mat-expansion-panel-header>
         <div class="seal-body" *ngIf="s.hash==openEntryId">

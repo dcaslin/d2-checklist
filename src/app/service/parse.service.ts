@@ -1842,10 +1842,11 @@ export class ParseService {
         let gildTotal = 0;
         let gildProgress = 0;
         for (const c of node.children) {
-            if (c.complete) {
+            const gilded = (c as TriumphRecordNode).forTitleGilding;
+            if (c.complete && !gilded) {
                 progress++;
             }
-            if ((c as TriumphRecordNode).forTitleGilding) {
+            if (gilded) {
                 gildTotal++;
                 if (c.complete) {
                     gildProgress++;
