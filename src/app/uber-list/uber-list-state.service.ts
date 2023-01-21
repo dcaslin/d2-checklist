@@ -877,6 +877,7 @@ const ICON_FIXES = {
   '2709491520': '69482069', // VANGUARD_WEEKLY_BOUNTIES
   '3802603984': '248695599', // GAMBIT_WEEKLY_BOUNTIES
   'PSUEDO_MASTER_EMPIRE': '2531198101', // MASTER_EMPIRE_HUNTS
+  'PSUEDO_LEGENDARY_SERAPH': '1043079869', // MASTER_EMPIRE_HUNTS
 };
 
 interface UberFilterSettings {
@@ -1088,7 +1089,7 @@ const CLASSIFICATIONS: Classification[] = [
   {
     name: 'Throneworld',
     vendor: 'Fynch',
-    milestoneNames: ['wellspring', 'fynch'],
+    milestoneNames: ['wellspring', 'fynch', 'preservation', 'witch queen', 'altars of reflection', 'tank buster', 'disciple', 'spire of the watcher'],
     bountyLabels: ['throneworld.bounties']
   },
   {
@@ -1121,24 +1122,77 @@ const CLASSIFICATIONS: Classification[] = [
   //   milestoneNames: ['astral', 'wayfinder', 'shattered'],
   //   bountyLabels: ['seasons.season15.ritual.bounties']
   // },
-  
+  {
+    name: 'Helm - S17',
+    vendor: 'Crown of Sorrow',
+    milestoneNames: ['containment'],
+    bountyLabels: ['seasons.season17.ritual.bounties']
+  },
+  {
+    name: 'Helm - S18',
+    vendor: 'Star Chart',
+    milestoneNames: ['mutiny', 'ketch'],
+    bountyLabels: ['seasons.season18.ritual.bounties']
+  },
+  {
+    name: 'Helm - S19',
+    vendor: 'Exo Frame',
+    milestoneNames: ['seraph', 'reintegration'],
+    bountyLabels: ['seasons.season19.ritual.bounties']
+  },
   {
     name: 'Moon',
     vendor: 'Lectern/Eris',
-    milestoneNames: [],
+    milestoneNames: ['garden', 'heresy'],
     bountyLabels: ['v460.luna']
+  },
+  {
+    name: 'Legends',
+    vendor: 'Director',
+    milestoneNames: ['vault', 'king\'s fall', 'prophecy'],
+    bountyLabels: []
   },
   {
     name: 'Dreaming City',
     vendor: 'Petra',
-    milestoneNames: [],
+    milestoneNames: ['last wish'],
     bountyLabels: ['open_world.d2.v400.dreaming_city']
   },
   {
     name: 'Europa',
     vendor: 'Variks',
-    milestoneNames: ['europa'],
+    milestoneNames: ['europa', 'deep stone'],
     bountyLabels: ['europa.bounties']
+  },
+  {
+    name: 'EDZ',
+    vendor: 'Devrim',
+    milestoneNames: [],
+    bountyLabels: ['bounties.destinations.edz']
+  },
+  {
+    name: 'Transmog',
+    vendor: 'Ada-1',
+    milestoneNames: [],
+    bountyLabels: ['bounties.transmog']
+  },
+  {
+    name: 'Cosmodrome',
+    vendor: 'Han Jobs',
+    milestoneNames: [],
+    bountyLabels: ['cosmodrome.bounties']
+  },
+  {
+    name: 'Nessus',
+    vendor: 'Failsafe',
+    milestoneNames: [],
+    bountyLabels: ['v400.bounties.destinations.myriad']
+  },
+  {
+    name: 'Clan',
+    vendor: 'Surya Hawthorne',
+    milestoneNames: ['clan rewards'],
+    bountyLabels: ['bounties.clans']
   },
   {
     name: 'Unclassified',
@@ -1175,6 +1229,9 @@ function classify(x: (MilestoneRow | PursuitRow)): void {
         break;
       }
     }
+    if (!classified) {     
+      console.log(`Unclassified bounty with label: ${p.label}`)
+    }
   } else if (x.type == 'quest') {
     // const p = x as PursuitRow;
   } else if (x.type == 'milestone') {
@@ -1192,6 +1249,9 @@ function classify(x: (MilestoneRow | PursuitRow)): void {
       if (classified) {
         break;
       }
+    }
+    if (!classified) {     
+      console.log(`Unclassified milestone with name: ${t}`)
     }
   }
   if (!classified) {
