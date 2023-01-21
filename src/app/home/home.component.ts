@@ -60,7 +60,7 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private signedOnUserService: SignedOnUserService,
+    public signedOnUserService: SignedOnUserService,
     public bungieService: BungieService,
     public  elasticSearchService: ElasticSearchService,
     private authService: AuthService,

@@ -125,7 +125,6 @@ export class VendorService {
         legendary: [],
         exotic: [],
         collection: [],
-        exchange: [],
         bansheeWeapons: []
       };
     }
@@ -147,7 +146,6 @@ export class VendorService {
       legendary: goodLegendaryDeals,
       exotic: exoticDeals,
       collection: collectionItems,
-      exchange: exchange,
       bansheeWeapons: bansheeWeapons
     };
     return returnMe;
@@ -776,6 +774,5 @@ export interface VendorDeals {
   legendary: ClassInventoryBucket[];
   exotic: ExoticInventoryBucket[];
   collection: VendorCollection[];
-  exchange: VendorCurrencies[];
   bansheeWeapons: InventoryItem[][];
 }

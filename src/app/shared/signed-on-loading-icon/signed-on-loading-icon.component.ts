@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 
@@ -9,6 +9,8 @@ import { SignedOnUserService } from '@app/service/signed-on-user.service';
   styleUrls: ['./signed-on-loading-icon.component.scss']
 })
 export class SignedOnLoadingIconComponent {
+
+  @Input() showVendorState = true;
 
   constructor(
     public signedOnUserService: SignedOnUserService,

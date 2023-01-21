@@ -463,7 +463,7 @@ export class BungieService implements OnDestroy {
     //     }
     // }
 
-    private async _publicMsHack(): Promise<any> {
+    private async fetchFailSafePublicMilestone(): Promise<any> {
         try {
             return await this.makeReq('Destiny2/Milestones/');
         } catch (err) {
@@ -485,9 +485,9 @@ export class BungieService implements OnDestroy {
             return this.publicMilestonesAndActivities;
         }
         try {
-            const resp = await this._publicMsHack();
-            const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities,CharacterProgressions');
-            const reply = await this.parseService.parsePublicMilestones(resp, resp2);
+            const resp = await this.fetchFailSafePublicMilestone();
+            // const resp2 = await this.makeReq('Destiny2/1/Profile/4611686018434964640/?components=CharacterActivities,CharacterProgressions');
+            const reply = await this.parseService.parsePublicMilestones(resp);
             this.publicMilestonesAndActivities = reply;
             return reply;
         } catch (err) {

@@ -4,7 +4,7 @@
 </fa-stack>
 
 <ng-template #notLoadingPlayer>
-    <fa-stack  *ngIf="signedOnUserService.vendorsLoading$|async; else notLoadingVendor" size="1x" style="opacity: 0.5;" >
+    <fa-stack  *ngIf="showVendorState && signedOnUserService.vendorsLoading$|async; else notLoadingVendor" size="1x" style="opacity: 0.5;" >
         <fa-icon [icon]="iconService.fasCircleNotch" [spin]="true" stackItemSize="2x"></fa-icon>
         <fa-icon [icon]="iconService.fasStore" [inverse]="false" stackItemSize="1x"></fa-icon>
     </fa-stack>

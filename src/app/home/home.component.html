@@ -176,25 +176,6 @@
         </mat-list>
       </mat-card-content>
     </mat-card>
-    <ng-container *ngIf="today.publicMilestones.empireHunts as hunts">
-      <mat-card *ngIf="hunts.length>0">
-        <mat-card-header>
-          <mat-card-title>{{removeActivitySuffix(hunts[0].name)}}
-          </mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <mat-list>
-            <mat-list-item *ngFor="let n of hunts" class="fake-link" (click)="showBurns(n)">
-              <div mat-line>
-                <span class="underline">{{removeActivityPrefixes(n.name)}}</span> - {{n.ll}} <span
-                  class="left simple-caption-darker-no-margin">{{n.modifiers.length}} modifiers</span>
-                <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-              </div>
-            </mat-list-item>
-          </mat-list>
-        </mat-card-content>
-      </mat-card>
-    </ng-container>
   </div>
   <div>
     <mat-card *ngIf="today.publicMilestones.strikes as strikes">
