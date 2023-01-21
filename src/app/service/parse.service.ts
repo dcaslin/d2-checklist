@@ -1138,7 +1138,7 @@ export class ParseService {
         return false;
     }
 
-    public async parsePublicMilestones(resp: any, sampleProfile: any): Promise<PublicMilestonesAndActivities> {
+    public async parsePublicMilestones(resp: any): Promise<PublicMilestonesAndActivities> {
         const msMilestones: PrivPublicMilestone[] = [];
         const returnMe: PublicMilestone[] = [];
         Object.keys(resp).forEach(key => {
@@ -1184,7 +1184,6 @@ export class ParseService {
                                 // this week the Milestone name is "Pit of Heresy" but the activity name is "Shattered Throne"
                                 // ST is the correct one
                                 specialName = `Weekly Dungeon Challenge: ${aDesc.displayProperties.name}`;
-                                console.log(`special dungeon weekly: ${specialName}`);
                             }
                         }
                     }
@@ -1387,33 +1386,6 @@ export class ParseService {
             }
         }
             
-
-
-        const empireHunts: MilestoneActivity[] = [];
-        const empireHuntKeys: string[] = [];
-
-        if (sampleProfile?.characterActivities?.data) {
-            for (const key of Object.keys(sampleProfile.characterActivities.data)) {
-                const charAct = sampleProfile.characterActivities.data[key];
-                if (charAct?.availableActivities?.length > 0) {
-                    for (const aa of charAct.availableActivities) {
-                        const vDesc: any = await this.destinyCacheService.getActivity(aa.activityHash);
-                        if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
-                            if (empireHuntKeys.includes(aa.activityHash)) {
-                                continue;
-                            }
-                            if (aa.recommendedLight < 1150) {
-                                continue;
-                            }
-                            empireHuntKeys.push(aa.activityHash);
-                            const milestoneActivity = await this.buildMilestoneActivity(aa);
-                            empireHunts.push(milestoneActivity);
-                        }
-                    }
-                }
-            }
-        }
-
         returnMe.sort((a, b) => {
             if (a.boost.sortVal < b.boost.sortVal) { return 1; }
             if (a.boost.sortVal > b.boost.sortVal) { return -1; }
@@ -1436,7 +1408,6 @@ export class ParseService {
             crucible: returnMe.find(x => x.hash == '3312774044'),
             nightfall: returnMe.find(x => x.hash == '2029743966'),
             strikes: returnMe.find(x => x.hash == '1437935813'),
-            empireHunts,
             weekStart: weekStart
         };
 
@@ -1474,15 +1445,6 @@ export class ParseService {
                     }
                 }
             }
-        }
-        if (pmsa.empireHunts) {
-            pmsa.empireHunts.sort((a, b) => {
-                const mla = a?.modifiers?.length;
-                const mlb = b?.modifiers?.length;
-                if (mla > mlb) { return -1; }
-                if (mla < mlb) { return 1; }
-                return 0;
-            });
         }
 
         return pmsa;
@@ -2066,40 +2028,26 @@ export class ParseService {
                     for (const key of Object.keys(oProgs)) {
                         const c: Character = charsDict[key];
                         const availableActivities: { [key: string]: boolean } = {};
-                        // if (resp.characterActivities
-                        //     && resp.characterActivities.data
-                        //     && resp.characterActivities.data[key]
-                        //     && resp.characterActivities.data[key].availableActivities
-                        // ) {
-                        //     // do some weirdness for Master Empire hunts
-                        //     let hasAccessTo1280EmpireHunt = false;
-                        //     let incomplete1280Hunt = false;
-                        //     for (const aa of resp.characterActivities.data[key].availableActivities) {
-                        //         availableActivities[aa.activityHash] = true;
-                        //         if (aa.recommendedLight == (Const.SEASON_PINNACLE_CAP + 20)) {
-                        //             // while we're here check for Empire Hunt pinnacle.
-                        //             // must be 1280 or don't bother looking (even though the object shows up at lower PLs)
-                        //             const vDesc: any = await this.destinyCacheService.getActivity(aa.activityHash);
-                        //             // is this an empire hunt
-                        //             if (vDesc?.displayProperties?.name?.startsWith('Empire Hunt')) {
-                        //                 hasAccessTo1280EmpireHunt = true;
-                        //                 if (aa.challenges?.length > 0) {
-                        //                     for (const challenge of aa.challenges) {
-                        //                         if (challenge.objective?.objectiveHash == 1980717736) {
-                        //                             // if this is here it shouldn't be complete, these disappear when complete
-                        //                             if (!challenge.objective.complete) {
-                        //                                 incomplete1280Hunt = true;
-                        //                                 break;
-                        //                             }
+                      
+                        if (resp.characterActivities
+                            && resp.characterActivities.data
+                            && resp.characterActivities.data[key]
+                            && resp.characterActivities.data[key].availableActivities
+                        ) {
+                            const legendSeraphActivity = resp.characterActivities.data[key].availableActivities.find(x => x.activityHash == 995051012);
+                            var pinnacleChallenge = null;
+                            if (legendSeraphActivity?.challenges) {
+                                pinnacleChallenge = legendSeraphActivity.challenges.find(x => x.objective?.objectiveHash == 2667467981);
+                            }
+                            if (legendSeraphActivity && pinnacleChallenge) {
+                                c.milestones[Const.PSUEDO_LEGENDARY_SERAPH] = new MilestoneStatus(Const.PSUEDO_LEGENDARY_SERAPH, pinnacleChallenge.objective.complete,  
+                                    pinnacleChallenge.objective.complete? 1 : 0, null, null, [], false, c.notReady);
 
-                        //                         }
-                        //                     }
-                        //                 }
-                        //             }
-                        //         }
-                        //     }
-                        //     c.milestones[Const.PSUEDO_MASTER_EMPIRE_HUNT] = new MilestoneStatus(Const.PSUEDO_MASTER_EMPIRE_HUNT, !incomplete1280Hunt, incomplete1280Hunt ? 0 : 1, null, null, [], !hasAccessTo1280EmpireHunt, c.notReady);
-                        // }
+                            } else {
+                                c.milestones[Const.PSUEDO_LEGENDARY_SERAPH] = new MilestoneStatus(Const.PSUEDO_LEGENDARY_SERAPH, true,  1, null, null, [], !legendSeraphActivity, c.notReady);
+
+                            }
+                        }
                         for (const missingKey of Object.keys(milestonesByKey)) {
 
                             if (c.milestones[missingKey] == null) {
@@ -2689,19 +2637,20 @@ export class ParseService {
         // this.addPseudoMilestone('3568317242', milestonesByKey, milestoneList);
         // this.addPseudoMilestone('1322124257', milestonesByKey, milestoneList);
 
-        // const mseh: MileStoneName = {
-        //     key: Const.PSUEDO_MASTER_EMPIRE_HUNT,
-        //     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
-        //     rewards: 'Pinnacle Gear',
-        //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-        //     name: 'Master Empire Hunt',
-        //     desc: 'Complete a Master Empire Hunt',
-        //     hasPartial: false,
-        //     neverDisappears: true,
-        //     dependsOn: []
-        // };
-        // milestoneList.push(mseh);
-        // milestonesByKey[mseh.key] = mseh;
+         const msSeraph: MileStoneName = {
+            key: Const.PSUEDO_LEGENDARY_SERAPH,
+            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+            rewards: 'Pinnacle Gear',
+            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+            name: 'Legenary Seraph\'s Shield',
+            desc: 'Complete Seraph\'s Shield on Legendary',
+            hasPartial: false,
+            neverDisappears: true,
+            dependsOn: []
+        };
+        milestoneList.push(msSeraph);
+        milestonesByKey[msSeraph.key] = msSeraph;
+
     }
 
 

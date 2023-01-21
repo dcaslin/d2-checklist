@@ -349,7 +349,6 @@ export interface PublicMilestonesAndActivities {
     crucible: PublicMilestone;
     strikes: PublicMilestone;
     nightfall: PublicMilestone;
-    empireHunts: MilestoneActivity[];
     weekStart: Date;
 }
 
@@ -1379,11 +1378,10 @@ export class Const {
         '6': Const.EPIC_PLATFORM
     };
 
-    public static readonly MISSION_ARTIFACT_KEY = '22222222';
     // public static readonly  PSUEDO_HERESY_KEY = 'PSUEDO-HERESY';
     // public static readonly PROPHECY_KEY = '44444444';
     // public static readonly PSUEDO_PRESAGE = 'PSUEDO-PRESAGE';
-    // public static readonly PSUEDO_MASTER_EMPIRE_HUNT = 'PSUEDO_MASTER_EMPIRE';
+    public static readonly PSUEDO_LEGENDARY_SERAPH = 'PSUEDO_LEGENDARY_SERAPH';
 
     public static readonly LIGHT_TOO_LOW = 1529; // 1519; // #UPDATEME  -61 from pinnacle in the past
     private static readonly SEASON_SOFT_CAP = 1530; // 1520; // #UPDATEME
