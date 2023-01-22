@@ -206,7 +206,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:goodrollpve' },
   { value: 'is:goodrollpvp' },
   { value: 'is:notgoodroll'},
-  { value: 'is:notinteresting', desc: 'Not good/god/deepsight/crafted'},
+  { value: 'is:notinteresting', desc: 'Not Good/God/Crafted'},
   { value: 'is:crafted', desc: 'Crafted for Witch Queen' },
   { value: 'is:notcrafted', desc: 'A non-craftabled drop of a weapon you can shape' },
   { value: 'is:deepsight', desc: 'Witch Queen Deepsight Weapon' },
@@ -921,9 +921,9 @@ export class GearFilterStateService implements OnDestroy {
           new Choice('is:godrollpvp', 'God Roll PVP'),
           new Choice('is:goodrollpve', 'Good Roll PVE'),
           new Choice('is:goodrollpvp', 'Good Roll PVP'),
-          new Choice('is:fixme', 'Suboptimal perks active'),
+          new Choice('is:fixme', 'Suboptimal Perks Active'),
           new Choice('is:notcrafted', 'Not Crafted'),
-          new Choice('is:notinteresting', 'Not good/god/deepsight/crafted')
+          new Choice('is:notinteresting', 'Not Good/God/Crafted')
         ], currentTab.type)),
       weaponBuckets$: new BehaviorSubject(generateState(weaponBucketsConfig,
         this.generateBucketChoices(ItemType.Weapon), currentTab.type)),
