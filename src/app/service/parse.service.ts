@@ -4376,6 +4376,9 @@ export class ParseService {
                 }
             }
             searchText += name;
+            if ('Jötunn' === desc.displayProperties.name) {
+                searchText += 'Jotunn ';
+            }
             searchText = searchText.toLowerCase();
             const watermarkIcons = desc?.quality?.displayVersionWatermarkIcons;
             let iconWatermark = null;
