@@ -528,6 +528,11 @@ export class VendorService {
           continue;
         }
       }
+      // gift of the thunder gods is no longer accessible
+      if (key == '1423393512') {
+        continue;
+      }
+
       const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, key, vendor, dynamicStrings);
       returnMe = returnMe.concat(items);
     }
