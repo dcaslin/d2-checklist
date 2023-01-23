@@ -31,7 +31,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTooltipModule, MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -179,7 +179,12 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
         return `https://www.bungie.net${config.src}`;
       }
     }, 
-    // provideCloudflareLoader('https://www.bungie.net/'),
+    {
+      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+      useValue: {
+        disableTooltipInteractivity: true
+      },
+    }
   ]
 })
 export class SharedModule {  
