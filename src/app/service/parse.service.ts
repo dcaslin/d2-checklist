@@ -2643,7 +2643,7 @@ export class ParseService {
             resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
             rewards: 'Pinnacle Gear',
             boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-            name: 'Legenary Seraph\'s Shield',
+            name: 'Legendary Seraph\'s Shield',
             desc: 'Complete Seraph\'s Shield on Legendary',
             hasPartial: false,
             neverDisappears: true,
