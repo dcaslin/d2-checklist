@@ -6,7 +6,7 @@ import { Bucket, BucketService } from './bucket.service';
 import { BungieService } from './bungie.service';
 import { ManifestInventoryItem, SimpleInventoryItem } from './destiny-cache.service';
 import { MarkService } from './mark.service';
-import { BUCKET_ID_SHARED, BUCKET_ID_VAULT, Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target, Vault } from './model';
+import { BUCKET_ID_SHARED, BUCKET_ID_VAULT, Character, ClassAllowed, InventoryItem, InventoryPlug, InventorySocket, ItemType, Player, SelectedUser, Target, WeaponShapeLevelObjective } from './model';
 import { NotificationService } from './notification.service';
 import { PandaGodrollsService } from './panda-godrolls.service';
 import { PreferredStatService } from './preferred-stat.service';
@@ -121,6 +121,44 @@ export class GearService {
                         return sortDesc ? -1 : 1;
                     } else if (aV > bV) {
                         return sortDesc ? 1 : -1;
+                    } else {
+                        return 0;
+                    }
+                } catch (e) {
+                    console.log('Error sorting: ' + e);
+                    return 0;
+                }
+            });
+        } else if (sortBy.startsWith('progress.')) {
+            const prog = sortBy.substring('progress.'.length);
+            tempGear.sort((a: any, b: any): number => {
+                try {
+                    const aObj = a[prog] as WeaponShapeLevelObjective;
+                    const bObj = b[prog] as WeaponShapeLevelObjective;
+
+                    // regardless of our we want null progress to go last
+                    if (aObj == null && bObj == null) {
+                        return 0;
+                    }
+                    if (aObj == null) {
+                        return 1;
+                    }
+                    if (bObj == null) {
+                        return -1;
+                    }
+                    let aV = aObj.progress;
+                    if (aObj.level) {
+                        aV = 100*aObj.level + aObj.progress;
+                    }
+                    let bV = bObj.progress;
+                    if (bObj.level) {
+                        bV = 100 * bObj.level + bObj.progress;
+                    }
+                
+                    if (aV < bV) {
+                        return sortDesc ? 1 : -1;
+                    } else if (aV > bV) {
+                        return sortDesc ? -1 : 1;
                     } else {
                         return 0;
                     }
