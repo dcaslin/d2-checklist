@@ -3739,6 +3739,8 @@ export class ParseService {
                     type = ItemType.ExchangeMaterial;
                 } else if (desc.itemType === ItemType.Ship) {
                     type = ItemType.Vehicle;
+                } else if (desc.itemType === ItemType.None && desc.inventory.recipeItemHash) {
+                    type = ItemType.Weapon;
                 } else if (
                     type != ItemType.Weapon
                     && type != ItemType.Armor

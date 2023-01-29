@@ -658,6 +658,11 @@ export class VendorService {
     if (!data) {
       return null;
     }
+    // these are unlockable rewards, not things for sale
+    if (costs.length===0) {
+      return null;
+    }
+    vendorSearchText += data.searchText;
     data.vendorItemInfo = {
       vendor: vendor,
       status: await this.parseSaleItemStatus(vendor.hash, i.failureIndexes),

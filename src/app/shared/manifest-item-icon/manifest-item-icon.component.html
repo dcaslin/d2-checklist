@@ -1,11 +1,11 @@
 <ng-container *ngIf="desc.displayProperties.icon!=null">
     <div class="item divider-border item-small">
-        <img [ngSrc]="desc.displayProperties.icon" width="35" height="35" [ngClass]="{
+        <img [src]="'https://www.bungie.net'+desc.displayProperties.icon" width="35" height="35" [ngClass]="{
             'redacted':desc.redacted,
             'item-image': true
-          }">
+          }" loading="lazy" alt="…">
         <div *ngIf="desc.iconWatermark" class="item-watermark icon-watermark-small">
-            <img class="img" [ngSrc]="desc.iconWatermark" width="25" height="25">
+            <img class="img" [src]="'https://www.bungie.net'+desc.iconWatermark" width="25" height="25" loading="lazy" alt="…">
         </div>
     </div>
 </ng-container>
