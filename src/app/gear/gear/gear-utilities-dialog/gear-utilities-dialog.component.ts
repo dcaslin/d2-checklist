@@ -60,7 +60,7 @@ export class GearUtilitiesDialogComponent {
     public dialogRef: MatDialogRef<GearUtilitiesDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
 
-    this.dimSyncChoice = this.markService.currentMarks$.getValue().dimSyncChoice;
+    this.dimSyncChoice = this.markService.currentMarks$.getValue()?.dimSyncChoice;
     this.dimSyncOption = this.getOptionFromValue();
     this.parent = data.parent;
     this.data = data;

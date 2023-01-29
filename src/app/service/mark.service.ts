@@ -106,7 +106,11 @@ export class MarkService implements OnDestroy {
         // save a copy of our DIM server state for diffing on save
         this.cleanMarks$.next(cloneMarks(marks));
         // if the user has not mad ea DIM selection, eventually have the UI prompt them
-        return (marks.dimSyncChoice == null);
+        const needDecision = marks.dimSyncChoice == null;
+        if (needDecision) {
+            console.log('DIM Sync decision needed');
+        }
+        return needDecision;
     }
 
 
@@ -273,18 +277,23 @@ export class MarkService implements OnDestroy {
                 if (mark == 'upgrade') {
                     item.markLabel = 'Upgrade';
                     item.mark = mark;
+                    item.searchText = item.searchText + ' tag:upgrade';
                 } else if (mark == 'keep') {
                     item.markLabel = 'Keep';
                     item.mark = mark;
+                    item.searchText = item.searchText + ' tag:keep';
                 } else if (mark == 'infuse') {
                     item.markLabel = 'Infuse';
                     item.mark = mark;
+                    item.searchText = item.searchText + ' tag:infuse';
                 } else if (mark == 'junk') {
                     item.markLabel = 'Junk';
                     item.mark = mark;
+                    item.searchText = item.searchText + ' tag:junk';
                 } else if (mark == 'archive') {
                     item.markLabel = 'Archive';
                     item.mark = mark;
+                    item.searchText = item.searchText + ' tag:archive';
                 } else {
                     console.log('%c   Ignoring mark: ' + mark, LOG_CSS);
                     continue;
