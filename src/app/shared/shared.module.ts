@@ -172,20 +172,7 @@ import { CharacterPursuitDialogComponent } from './character-pursuit-dialog/char
     SignInRequiredModule,
     MilestoneCheckModule
   ],
-  providers: [
-    {
-      provide: IMAGE_LOADER,
-      useValue: (config: ImageLoaderConfig) => {
-        return `https://www.bungie.net${config.src}`;
-      }
-    }, 
-    {
-      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
-      useValue: {
-        disableTooltipInteractivity: true
-      },
-    }
-  ]
+  providers: []
 })
 export class SharedModule {  
 }
