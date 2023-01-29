@@ -251,7 +251,12 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'has:modlw', desc: 'Armor includes Last Wish raid mod slot' },
   { value: 'has:modartifice', desc: 'Armor includes Artifice mod slot' },
   { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' },
-  { value: 'has:modspecial', desc: 'Armor has an extra Raid/Artifice/etc slot' }
+  { value: 'has:modspecial', desc: 'Armor has an extra Raid/Artifice/etc slot' },
+  { value: 'tag:upgrade', desc: 'Tagged for upgrade' },
+  { value: 'tag:keep', desc: 'Tagged to keep' },
+  { value: 'tag:infuse', desc: 'Tagged as infusion fuel' },
+  { value: 'tag:junk', desc: 'Tagged as junk' },
+  { value: 'tag:archive', desc: 'Tagged as archive' }
 ];
 
 const GEAR_FILTER_KEY = 'D2C-GEAR-FILTER';
@@ -562,7 +567,7 @@ export class GearFilterStateService implements OnDestroy {
         this.filterTags$.next(rawFilter.split(' and '));
       }
       const newFilteredOptions = [];
-      if (rawFilter.startsWith('is:') || rawFilter.startsWith('has:')) {
+      if (rawFilter.startsWith('is:') || rawFilter.startsWith('has:')|| rawFilter.startsWith('tag:')) {
         for (const o of this.autoCompleteOptions) {
           if (o.value.startsWith(rawFilter)) {
             newFilteredOptions.push(o);
@@ -912,18 +917,18 @@ export class GearFilterStateService implements OnDestroy {
       godRolls$: new BehaviorSubject(generateState(godRollConfig,
         [
 
+          new Choice('is:goodroll', 'Good/God Roll'),
+          new Choice('is:notinteresting', 'Not Good/God/Crafted'),
           new Choice('is:needrecipe', 'Need Recipe'),
-          new Choice('is:deepsight', 'Deepsight'),
           new Choice('is:crafted', 'Crafted'),
           new Choice('is:godroll', 'God Roll'),
-          new Choice('is:goodroll', 'Good Roll'),
           new Choice('is:godrollpve', 'God Roll PVE'),
           new Choice('is:godrollpvp', 'God Roll PVP'),
           new Choice('is:goodrollpve', 'Good Roll PVE'),
           new Choice('is:goodrollpvp', 'Good Roll PVP'),
           new Choice('is:fixme', 'Suboptimal Perks Active'),
           new Choice('is:notcrafted', 'Not Crafted'),
-          new Choice('is:notinteresting', 'Not Good/God/Crafted')
+          new Choice('is:deepsight', 'Deepsight'),
         ], currentTab.type)),
       weaponBuckets$: new BehaviorSubject(generateState(weaponBucketsConfig,
         this.generateBucketChoices(ItemType.Weapon), currentTab.type)),
