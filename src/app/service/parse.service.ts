@@ -2233,7 +2233,12 @@ export class ParseService {
                             } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
                                 parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
-                            } else {
+                            } else if (detailedInv && parsed.inventoryBucket?.hash === 2422292810) {
+                                // FORBIDDEN BUCKET =) 
+                                console.log(`Ignoring ${parsed.name} in the forbidden bucket`)
+
+                            }
+                            else {
                                 // if (parsed.objectives && parsed.objectives.length > 0) {
                                 //     parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 //     quests.push(parsed);
