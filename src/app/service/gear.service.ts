@@ -136,7 +136,7 @@ export class GearService {
                     const aObj = a[prog] as WeaponShapeLevelObjective;
                     const bObj = b[prog] as WeaponShapeLevelObjective;
 
-                    // regardless of our we want null progress to go last
+                    // regardless of everything else, we want null progress to go last
                     if (aObj == null && bObj == null) {
                         return 0;
                     }
@@ -148,13 +148,12 @@ export class GearService {
                     }
                     let aV = aObj.progress;
                     if (aObj.level) {
-                        aV = 100*aObj.level + aObj.progress;
+                        aV = 100*aObj.level + aObj.percent;
                     }
                     let bV = bObj.progress;
                     if (bObj.level) {
-                        bV = 100 * bObj.level + bObj.progress;
+                        bV = 100 * bObj.level + bObj.percent;
                     }
-                
                     if (aV < bV) {
                         return sortDesc ? 1 : -1;
                     } else if (aV > bV) {
