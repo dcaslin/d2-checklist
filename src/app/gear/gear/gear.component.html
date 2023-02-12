@@ -455,10 +455,10 @@
                 <button mat-button (click)="showCopies(i)">
                   <fa-icon [icon]="iconService.falClone"></fa-icon> {{i.copies}}
                 </button>
-                <div class="vertical-pad" *ngIf="i.dupesByEnergyAndSeason">
-                  <button mat-button (click)="showSimilarArmorBySlotAndEnergy(i)">
+                <div class="vertical-pad" *ngIf="i.dupesByArmorSlot">
+                  <button mat-button (click)="showSimilarArmorBySlot(i)">
                     <fa-icon [icon]="iconService.falPlusSquare"></fa-icon>
-                    {{i.dupesTaggedToKeep}} / {{i.dupesByEnergyAndSeason}}
+                    {{i.dupesTaggedToKeep}} / {{i.dupesByArmorSlot}}
                   </button>
                 </div>
                 <div class="vertical-pad" *ngIf="i.dupesByFrameSlotAndEnergy">
