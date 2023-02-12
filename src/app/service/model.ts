@@ -834,7 +834,7 @@ export class InventoryItem {
     public preferredStatPoints: number;
     public readonly seasonalModSlot: number;
     public readonly powerCap: number;
-    public dupesByEnergyAndSeason?: number;
+    public dupesByArmorSlot?: number;
     public dupesTaggedToKeep?: number;
     public dupesByFrameSlotAndEnergy?: number;
     public coveredSeasons?: number[];
