@@ -482,7 +482,10 @@ export class UberListStateService implements OnDestroy {
         };
       }
       if (vendorHash) {
-        desc.displayProperties.icon = dbVendor[vendorHash].displayProperties?.smallTransparentIcon;
+        if (!dbVendor[vendorHash]) {
+          console.log(`missing vendor ${vendorHash}`);
+        }
+        desc.displayProperties.icon = dbVendor[vendorHash]?.displayProperties?.smallTransparentIcon;
       }
     } else if (!desc?.displayProperties) {
       console.dir(msn);
@@ -877,7 +880,7 @@ const ICON_FIXES = {
   '2709491520': '69482069', // VANGUARD_WEEKLY_BOUNTIES
   '3802603984': '248695599', // GAMBIT_WEEKLY_BOUNTIES
   'PSUEDO_MASTER_EMPIRE': '2531198101', // MASTER_EMPIRE_HUNTS
-  'PSUEDO_LEGENDARY_SERAPH': '1043079869', // MASTER_EMPIRE_HUNTS
+  'PSUEDO_LEGENDARY_SERAPH': '2384113223', // MASTER_EMPIRE_HUNTS
 };
 
 interface UberFilterSettings {
