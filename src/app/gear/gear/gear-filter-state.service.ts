@@ -862,6 +862,7 @@ export class GearFilterStateService implements OnDestroy {
         new Choice(null, 'Unmarked')
       ], currentTab.type)),
       energyType$: new BehaviorSubject(generateState(energyConfig, [
+        // new Choice(`${EnergyType.Strand}`, 'Strand'), TODO whenever strand armor shows up
         new Choice(`${EnergyType.Stasis}`, 'Stasis'),
         new Choice(`${EnergyType.Arc}`, 'Arc'),
         new Choice(`${EnergyType.Thermal}`, 'Solar'),
@@ -883,6 +884,7 @@ export class GearFilterStateService implements OnDestroy {
       damageType$: new BehaviorSubject(generateState(damageConfig,
         [
           new Choice(`${DamageType.Kinetic}`, 'Kinetic'),
+          new Choice(`${DamageType.Strand}`, 'Strand'),
           new Choice(`${DamageType.Stasis}`, 'Stasis'),
           new Choice(`${DamageType.Arc}`, 'Arc'),
           new Choice(`${DamageType.Thermal}`, 'Solar'),

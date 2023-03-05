@@ -17,7 +17,9 @@
             [class.void]="i.damageType===DamageType.Void || i.energyType===EnergyType.Void"
             [class.arc]="i.damageType===DamageType.Arc || i.energyType===EnergyType.Arc"
             [class.solar]="i.damageType===DamageType.Thermal || i.energyType===EnergyType.Thermal"
-            [class.stasis]="i.damageType===DamageType.Stasis || i.energyType===EnergyType.Stasis">
+            [class.stasis]="i.damageType===DamageType.Stasis || i.energyType===EnergyType.Stasis"
+            [class.strand]="i.damageType===DamageType.Strand"
+            >
             {{i.power}}
         </div>
 

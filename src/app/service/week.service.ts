@@ -127,7 +127,7 @@ export class WeekService {
 
   // the week of the chosen season, so far
   public static getSeasonWeek(): number {
-    const seasonEpoch = parseISO('2022-12-06T17:00:00Z'); // #UPDATEME parseISO('2022-05-24T17:00:00Z'); 
+    const seasonEpoch = parseISO('2023-02-28T17:00:00Z'); // #UPDATEME parseISO('2022-12-06T17:00:00Z'); 
     const numWeeks = differenceInWeeks(new Date(), seasonEpoch);
     return numWeeks + 1;
   }
@@ -204,9 +204,9 @@ export class WeekService {
     const lsIndex = lsDays % LS_ROTATION.length;
     const lsLootIndex = lsDays % LS_LOOT.length;
     const loot = LS_LOOT[lsLootIndex];
-    // TODO update this when PL's change
-    const legendActivity = await this.buildLostSectorActivity(LS_ROTATION[lsIndex].legend, 1560);
-    const masterActivity = await this.buildLostSectorActivity(LS_ROTATION[lsIndex].master, 1590);
+    // TODO #UPDATEME
+    const legendActivity = await this.buildLostSectorActivity(LS_ROTATION[lsIndex].legend, 1830);
+    const masterActivity = await this.buildLostSectorActivity(LS_ROTATION[lsIndex].master, 1840);
 
     const recordDescForIcon: any = await this.destinyCacheService.getRecord(3838089785);
     return {

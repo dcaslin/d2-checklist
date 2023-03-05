@@ -196,6 +196,7 @@ export enum DamageType {
     Void = 4,
     Raid = 5,
     Stasis = 6,
+    Strand = 7,
 }
 
 export enum EnergyType {
@@ -1383,11 +1384,11 @@ export class Const {
     // public static readonly PSUEDO_PRESAGE = 'PSUEDO-PRESAGE';
     public static readonly PSUEDO_LEGENDARY_SERAPH = 'PSUEDO_LEGENDARY_SERAPH';
 
-    public static readonly LIGHT_TOO_LOW = 1529; // 1519; // #UPDATEME  -61 from pinnacle in the past
-    private static readonly SEASON_SOFT_CAP = 1530; // 1520; // #UPDATEME
+    public static readonly LIGHT_TOO_LOW = 1749; // #UPDATEME  -61 from pinnacle in the past
+    private static readonly SEASON_SOFT_CAP = 1750; // #UPDATEME
     // legendary campaign reward 1520
-    public static readonly SEASON_HARD_CAP = 1580; // 1570; // #UPDATEME
-    public static readonly SEASON_PINNACLE_CAP = 1590; // 1580; // #UPDATEME
+    public static readonly SEASON_HARD_CAP = 1800; // #UPDATEME
+    public static readonly SEASON_PINNACLE_CAP = 1810; // #UPDATEME
 
 
     public static readonly BOOST_UNKNOWN = 'BOOST_UNKNOWN';

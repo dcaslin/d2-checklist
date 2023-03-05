@@ -461,6 +461,7 @@ export class VendorService {
     const buckets = await this.destinyCacheService.getInventoryBucketTable();
     const returnMe: ClassInventoryBucket[] = [];
     const classTypes = [ClassAllowed.Titan, ClassAllowed.Warlock, ClassAllowed.Hunter];
+    // todo once strand armor shows up
     const energyTypes = [EnergyType.Arc, EnergyType.Thermal, EnergyType.Void, EnergyType.Stasis];
     for (const key of Object.keys(buckets)) {
       const val: ApiInventoryBucket = buckets[key];
