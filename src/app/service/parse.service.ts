@@ -73,8 +73,6 @@ import { SimpleParseService } from './simple-parse.service';
 
 const IGNORE_WEAPON_PERK_STATS = [3511092054]; // Elemental capactor
 
-const ARTIFACT_UNLOCK_PERK_PROG_HASH = '4027620195'; // #UPDATEME 2587634425 old 2779402444 old 2779402444 2557524386 oldest 3094108685
-const ARTIFACT_POWER_BONUS_PROG_HASH = '1656313730'; // #UPDATEME 3320783176 old 2214434133 old 243419342 1793560787 oldest 978389300
 
 
 export const INTERPOLATION_PATTERN = /\{var:\d+\}/g;
@@ -109,6 +107,8 @@ export class ParseService {
 
     ACCOUNT_LEVEL = [
         '4203877294', // Fynch #UPDATEME
+        '527867935', // Xur
+        '1471185389', // Gunsmith
         // '1983115403', // House of light 
         // '3611983588', // CROW
         // '2126988316', // Obelisk: Mars
@@ -310,8 +310,6 @@ export class ParseService {
             if (p.progressionHash === 3759191272) { name = 'Guided Trials'; }
             if (p.progressionHash === 1273404180) { name = 'Guided Nightfall'; }
             if (p.progressionHash === 3381682691) { name = 'Guided Raid'; }
-            if (p.progressionHash === +ARTIFACT_UNLOCK_PERK_PROG_HASH) { name = 'Artifact Perk Unlocks'; }
-            if (p.progressionHash === +ARTIFACT_POWER_BONUS_PROG_HASH) { name = 'Artifact Power Bonus'; }
 
 
             prog.name = name;
@@ -1634,19 +1632,7 @@ export class ParseService {
         const _art = resp.profileProgression.data.seasonalArtifact;
 
         let pointProg = _art.pointProgression;
-        if (pointProg == null) {
-            pointProg = this.getSpecificCharProg(resp, chars, ARTIFACT_UNLOCK_PERK_PROG_HASH);
-            if (pointProg == null) {
-                return null;
-            }
-        }
         let powerProg = _art.powerBonusProgression;
-        if (powerProg == null) {
-            powerProg = this.getSpecificCharProg(resp, chars, ARTIFACT_POWER_BONUS_PROG_HASH);
-            if (powerProg == null) {
-                return null;
-            }
-        }
 
         const pointProgDesc = await this.destinyCacheService.getProgression(pointProg.progressionHash);
         let parsedProg: Progression = ParseService.parseProgression(pointProg,
@@ -3459,6 +3445,8 @@ export class ParseService {
             return 'Void';
         } else if (damageType == DamageType.Stasis) {
             return 'Stasis';
+        } else if (damageType == DamageType.Strand) {
+            return 'Strand';
         } else {
             return '';
         }
@@ -3472,6 +3460,8 @@ export class ParseService {
         } else if (damageType == DamageType.Void) {
             return true;
         } else if (damageType == DamageType.Stasis) {
+            return true;
+        } else if (damageType == DamageType.Strand) {
             return true;
         } else {
             return false;
@@ -3490,6 +3480,8 @@ export class ParseService {
             return 'Void';
         } else if (energyType == EnergyType.Stasis) {
             return 'Stasis';
+        // } else if (energyType == EnergyType.Strand) {
+        //     return 'Strand'; // TODO once strand armor exists
         } else {
             return '';
         }
