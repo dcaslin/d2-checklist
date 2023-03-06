@@ -276,7 +276,7 @@ export class GearService {
                     item.copies = items.length;
                     let copies = null;
                     if (item.type === ItemType.Armor) {
-                        copies = this.findSimilarArmor(item, player, false, false);
+                        copies = this.findSimilarArmor(item, player, false);
                         item.dupesByArmorSlot = copies.length;
                     }
                     if (item.type === ItemType.Weapon) {
@@ -608,7 +608,7 @@ export class GearService {
     }
 
     // finds armor of the same tier/class/slot and, optionally seasonal mod slot and energy type
-    public findSimilarArmor(i: InventoryItem, player: Player, season?: boolean, burn?: boolean): InventoryItem[] {
+    public findSimilarArmor(i: InventoryItem, player: Player, season?: boolean): InventoryItem[] {
         const copies = [i];
         // if (i.tier != 'Legendary') {
         //     return [];
@@ -630,11 +630,7 @@ export class GearService {
                 if (i.tier != g.tier) {
                     continue;
                 }
-                if (burn) {
-                    if (i.energyType != g.energyType) {
-                        continue;
-                    }
-                } else if (season) {
+                if (season) {
                     if (i.seasonalModSlot != g.seasonalModSlot) {
                         continue;
                     }

@@ -1,7 +1,6 @@
 import { faGoogle, faPlaystation, faSteam, faWindows, faXbox } from '@fortawesome/free-brands-svg-icons';
 import { faUsers } from '@fortawesome/free-solid-svg-icons';
 import { IconDefinition } from '@fortawesome/pro-light-svg-icons';
-import { DestinyEnergyType } from 'bungie-api-ts/destiny2';
 import { BehaviorSubject } from 'rxjs';
 import { ManifestInventoryItem, SimpleInventoryItem } from './destiny-cache.service';
 
@@ -24,11 +23,8 @@ export const enum StatHashes {
     Accuracy = 1591432999,
     AimAssistance = 1345609583,
     AmmoCapacity = 925767036,
-    AnyEnergyTypeCost = 3578062600,
     ArcCost = 3779394102,
     ArcDamageResistance = 1546607978,
-    ArcEnergyCapacity = 3625423501,
-    AspectEnergyCapacity = 2223994109,
     Attack = 1480404414,
     BlastRadius = 3614673599,
     Boost = 3017642079,
@@ -39,7 +35,6 @@ export const enum StatHashes {
     DrawTime = 447667954,
     Durability = 360359141,
     FragmentCost = 119204074,
-    GhostEnergyCapacity = 237763788,
     GuardEfficiency = 2762071195,
     GuardEndurance = 3736848092,
     GuardResistance = 209426660,
@@ -65,7 +60,6 @@ export const enum StatHashes {
     ScoreMultiplier = 2733264856,
     SolarCost = 3344745325,
     SolarDamageResistance = 1546607979,
-    SolarEnergyCapacity = 2018193158,
     Speed = 1501155019,
     Stability = 155624089,
     StasisCost_3950461274 = 3950461274,
@@ -76,7 +70,6 @@ export const enum StatHashes {
     Velocity = 2523465841,
     VoidCost = 2399985800,
     VoidDamageResistance = 1546607980,
-    VoidEnergyCapacity = 16120457,
     Zoom = 3555269338,
 }
 
@@ -197,14 +190,6 @@ export enum DamageType {
     Raid = 5,
     Stasis = 6,
     Strand = 7,
-}
-
-export enum EnergyType {
-    Any = 0,
-    Arc = 1,
-    Thermal = 2,
-    Void = 3,
-    Stasis = 6,
 }
 
 export interface MasterworkInfo {
@@ -796,7 +781,6 @@ export class InventoryItem {
     readonly quantity: number;
     power: number;
     readonly damageType: DamageType;
-    readonly energyType: EnergyType;
     readonly stats: InventoryStat[];
     readonly sockets: InventorySocket[];
     readonly objectives: ItemObjective[];
@@ -812,7 +796,7 @@ export class InventoryItem {
     readonly masterwork: MasterworkInfo;
     public tracked: boolean;
     readonly questline: Questline;
-    readonly energyCapacity: number;
+    readonly armorCapacity: number;
     energyUsed: number;
     readonly totalStatPoints: number;
     public searchText: string;
@@ -856,7 +840,7 @@ export class InventoryItem {
         const current = socket.active ? socket.active.energyCost : 0;
         const newCost = plug.plug?.energyCost?.energyCost || 0;
         const change = newCost - current;
-        return (change + this.energyUsed) <= this.energyCapacity;
+        return (change + this.energyUsed) <= this.armorCapacity;
       }
 
     statPointTier(): number {
@@ -891,13 +875,13 @@ export class InventoryItem {
     constructor(id: string, hash: string, name: string, equipped: boolean, canEquip: boolean, owner: Target,
         icon: string, iconWatermark: string,
         type: ItemType, typeName: string, quantity: number,
-        power: number, damageType: DamageType, energyType: EnergyType, stats: InventoryStat[],
+        power: number, damageType: DamageType, stats: InventoryStat[],
         sockets: InventorySocket[], objectives: ItemObjective[], desc: string, classAllowed: ClassAllowed,
         bucketOrder: number, aggProgress: number, values: NameQuantity[], expirationDate: string,
         locked: boolean, masterworked: boolean, masterwork: MasterworkInfo, tracked: boolean,
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
-        energyCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
+        armorCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
         specialModSockets: string[], collectibleHash: string, versionNumber: number, 
         crafted: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective,
         notCrafted: boolean
@@ -916,7 +900,6 @@ export class InventoryItem {
         this.quantity = quantity;
         this.power = power;
         this.damageType = damageType;
-        this.energyType = energyType;
         this.stats = stats;
         this.sockets = sockets;
         this.objectives = objectives;
@@ -947,7 +930,7 @@ export class InventoryItem {
 
         this.postmaster = postmaster;
         this.energyUsed = energyUsed;
-        this.energyCapacity = energyCapacity;
+        this.armorCapacity = armorCapacity;
         this.totalStatPoints = totalStatPoints;
         this.seasonalModSlot = seasonalModSlot;
         this.coveredSeasons = coveredSeasons;
@@ -1806,8 +1789,6 @@ export interface PrivPlugSetEntry {
 
 export interface PrivPlugEnergyCost {
     energyCost: number;
-    energyTypeHash: string;
-    energyType: DestinyEnergyType;
 }
 
 export interface DynamicStrings {

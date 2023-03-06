@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
-import { ItemType, DamageType, EnergyType, InventoryItem } from '@app/service/model';
+import { ItemType, DamageType, InventoryItem } from '@app/service/model';
 import { IconService } from '@app/service/icon.service';
 
 @Component({
@@ -11,7 +11,6 @@ import { IconService } from '@app/service/icon.service';
 })
 export class ItemEnergyIndicatorComponent{
   ItemType = ItemType;
-  EnergyType = EnergyType;
   DamageType = DamageType;
 
   @Input() i: InventoryItem;

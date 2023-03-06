@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
-import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
+import { DamageType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
@@ -20,7 +20,6 @@ export class GearCompareDialogComponent extends ChildComponent {
   sortDesc = true;
 
   ItemType = ItemType;
-  EnergyType = EnergyType;
   DamageType = DamageType;
   hideJunk = false;
   source: InventoryItem;

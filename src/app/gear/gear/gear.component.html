@@ -84,7 +84,6 @@
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.weaponBuckets$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.armorBuckets$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.damageType$"> </d2c-gear-toggle>
-      <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.energyType$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.weaponTypes$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.ammoTypes$"> </d2c-gear-toggle>
       <d2c-gear-toggle [state$]="gearFilterStateService.toggleData.vehicleBuckets$"> </d2c-gear-toggle>
@@ -274,8 +273,8 @@
             </th>
             <th class="limited-gear-width"
               *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
-              <span class="fake-link gear-sort" (click)="sort('energyCapacity')">Energy
-                <d2c-sort-indicator field="energyCapacity" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
+              <span class="fake-link gear-sort" (click)="sort('armorCapacity')">Energy
+                <d2c-sort-indicator field="armorCapacity" [currVal]="gearFilterStateService.sortBy$|async" [descending]="gearFilterStateService.sortDesc$|async">
                 </d2c-sort-indicator>
               </span>
             </th>
@@ -472,10 +471,10 @@
 
               <td class="limited-gear-width"
                 *ngIf="option.type==ItemType.Armor || option.type==ItemType.Ghost">
-                <span class="mod-obj"> {{i.energyUsed}} / {{i.energyCapacity}} <d2c-season-indicator [season]="i.seasonalModSlot">
+                <span class="mod-obj"> {{i.energyUsed}} / {{i.armorCapacity}} <d2c-season-indicator [season]="i.seasonalModSlot">
                   </d2c-season-indicator> </span>
-                <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.energyCapacity>=10?'accent':'primary'"
-                  [value]="i.energyCapacity*10">
+                <mat-progress-bar mode="determinate" class="mw-progress" [color]="i.armorCapacity>=10?'accent':'primary'"
+                  [value]="i.armorCapacity*10">
                 </mat-progress-bar>
                 <d2c-writable-sockets [item]="i" (socketsChanged)="changeDetection.detectChanges()"></d2c-writable-sockets>
               </td>
@@ -619,9 +618,6 @@
               </button>
               <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlot(i)">
                 By slot
-              </button>
-              <button *ngIf="option.type==ItemType.Armor" mat-menu-item (click)="showSimilarArmorBySlotAndEnergy(i)">
-                By slot &amp; energy
               </button>
             </mat-menu>
           </ng-container>

@@ -3,16 +3,14 @@ import { Injectable } from '@angular/core';
 import { currentXur } from '@d2api/date';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { BehaviorSubject, concat, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { from, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
 import { LowLineService } from './lowline.service';
 import {
   ApiInventoryBucket, Character,
-  CharacterVendorData, ClassAllowed,
-  DynamicStrings,
-  EnergyType, InventoryItem, ItemType,
+  CharacterVendorData, ClassAllowed, InventoryItem, ItemType,
   Player, Vendor,
   VendorCost,
   VendorDynamicStrings
@@ -430,15 +428,13 @@ export class VendorService {
   private async findLegendaryArmorDeals(player: Player, vendorArmor: InventoryItem[]) {
     this.preferredStatService.processGear(player);
     const bucketMap: { [key: string]: ClassInventoryBucket; } = {};
-    const shouldIgnoreEnergy = this.preferredStatService.stats$.getValue()?.ignoreEnergyOnVendorArmorDeals;
-    const buckets = await this.getBuckets(shouldIgnoreEnergy);
+    const buckets = await this.getBuckets();
     for (const bucket of buckets) {
-      bucketMap[bucket.bucket.hash.toString() + bucket.energyType.toString() + bucket.classType.toString()] = bucket;
+      bucketMap[bucket.bucket.hash.toString() + bucket.classType.toString()] = bucket;
     }
     const allItems = player.gear.filter(i => i.type == ItemType.Armor).concat(vendorArmor).filter(i => i.tier == 'Legendary');
     for (const i of allItems) {
-      const energyType = shouldIgnoreEnergy ? EnergyType.Any : i.energyType;
-      const bucket = bucketMap[i.inventoryBucket.hash.toString() + energyType.toString() + i.classAllowed.toString()];
+      const bucket = bucketMap[i.inventoryBucket.hash.toString() + i.classAllowed.toString()];
       if (!bucket) {
         // console.log(`Skipping ${i.name}`);
         continue;
@@ -456,38 +452,21 @@ export class VendorService {
     return buckets;
   }
 
-  private async getBuckets(shouldIgnoreEnergy: boolean): Promise<ClassInventoryBucket[]> {
+  private async getBuckets(): Promise<ClassInventoryBucket[]> {
     // one per armor slot, one per class
     const buckets = await this.destinyCacheService.getInventoryBucketTable();
     const returnMe: ClassInventoryBucket[] = [];
     const classTypes = [ClassAllowed.Titan, ClassAllowed.Warlock, ClassAllowed.Hunter];
-    // todo once strand armor shows up
-    const energyTypes = [EnergyType.Arc, EnergyType.Thermal, EnergyType.Void, EnergyType.Stasis];
     for (const key of Object.keys(buckets)) {
       const val: ApiInventoryBucket = buckets[key];
       if (val.index >= 3 && val.index <= 7) {
         for (const classType of classTypes) {
-          if (shouldIgnoreEnergy) {
-
             returnMe.push({
               bucket: val,
               classType,
-              energyType: EnergyType.Any,
               gear: [],
               marginalValue: 0
             });
-
-          } else {
-            for (const energyType of energyTypes) {
-              returnMe.push({
-                bucket: val,
-                classType,
-                energyType,
-                gear: [],
-                marginalValue: 0
-              });
-            }
-          }
         }
       }
     }
@@ -752,7 +731,6 @@ export interface ExoticInventoryBucket {
 export interface ClassInventoryBucket {
   bucket: ApiInventoryBucket;
   classType: ClassAllowed;
-  energyType: EnergyType;
   gear: InventoryItem[];
   marginalValue: number;
   hasDeal?: boolean;

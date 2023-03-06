@@ -2,10 +2,9 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, EnergyType, InventoryItem, InventoryStat, ItemType, NumComparison, Player } from '@app/service/model';
+import { ApiInventoryBucket, ApiItemTierType, ClassAllowed, DamageType, DestinyAmmunitionType, InventoryItem, InventoryStat, ItemType, NumComparison, Player } from '@app/service/model';
 import { IconDefinition } from '@fortawesome/free-brands-svg-icons';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { Action } from 'rxjs/internal/scheduler/Action';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 
@@ -157,7 +156,7 @@ function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<
   if (compResult != null) {
     return compResult;
   }
-  compResult = _processComparison('is:energy', actual, i.energyCapacity);
+  compResult = _processComparison('has:capacity', actual, i.armorCapacity);
   if (compResult != null) {
     return compResult;
   }
@@ -197,7 +196,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:godroll', desc: 'A god roll in EVERY slot' },
   { value: 'is:fixme', desc: 'Best perk unselected' },
   { value: 'is:light>=', desc: 'Filter by PL' },
-  { value: 'is:energy>=', desc: 'Filter by energy pts 1-10' },
+  { value: 'has:capacity>=', desc: 'Filter by armor mod capacity pts 1-10' },
   { value: 'is:prefpoints>=', desc: 'Total of ALL stat pts' },
   { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },
   { value: 'is:postmaster' },
@@ -775,13 +774,6 @@ export class GearFilterStateService implements OnDestroy {
       displayTabs: [ItemType.Armor],
       grabValue: (x: InventoryItem) => x.inventoryBucket.displayProperties.name
     };
-    const energyConfig: ToggleConfig = {
-      title: 'Energy',
-      debugKey: 'Armor Energy Type',
-      icon: iconService.fasBolt,
-      displayTabs: [ItemType.Armor],
-      grabValue: (x: InventoryItem) => x.energyType
-    };
     const seasonConfig: ToggleConfig = {
       title: 'Season Mods',
       debugKey: 'Seasonal Mods',
@@ -860,14 +852,6 @@ export class GearFilterStateService implements OnDestroy {
         new Choice('junk', 'Junk'),
         new Choice('archive', 'Archive'),
         new Choice(null, 'Unmarked')
-      ], currentTab.type)),
-      energyType$: new BehaviorSubject(generateState(energyConfig, [
-        // new Choice(`${EnergyType.Strand}`, 'Strand'), TODO whenever strand armor shows up
-        new Choice(`${EnergyType.Stasis}`, 'Stasis'),
-        new Choice(`${EnergyType.Arc}`, 'Arc'),
-        new Choice(`${EnergyType.Thermal}`, 'Solar'),
-        new Choice(`${EnergyType.Void}`, 'Void'),
-        new Choice(`${EnergyType.Any}`, 'Any')
       ], currentTab.type)),
       seasons$: new BehaviorSubject(generateState(seasonConfig, [
         new Choice('special', 'Any Special'),
@@ -1054,7 +1038,6 @@ export interface ToggleData {
   weaponTypes$: BehaviorSubject<ToggleState>;
   ammoTypes$: BehaviorSubject<ToggleState>;
   armorBuckets$: BehaviorSubject<ToggleState>;
-  energyType$: BehaviorSubject<ToggleState>;
   seasons$: BehaviorSubject<ToggleState>;
   damageType$: BehaviorSubject<ToggleState>;
   vehicleBuckets$: BehaviorSubject<ToggleState>;

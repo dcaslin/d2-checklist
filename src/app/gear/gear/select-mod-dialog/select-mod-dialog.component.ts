@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ManifestInventoryItem } from '@app/service/destiny-cache.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
-import { EnergyType, InventoryItem, InventorySocket } from '@app/service/model';
+import { InventoryItem, InventorySocket } from '@app/service/model';
 
 @Component({
   selector: 'd2c-select-mod-dialog',
@@ -13,7 +13,6 @@ import { EnergyType, InventoryItem, InventorySocket } from '@app/service/model';
 export class SelectModDialogComponent {
   public item: InventoryItem;
   public socket: InventorySocket;
-  public EnergyType = EnergyType;
 
   constructor(
     public gearService: GearService,
@@ -37,7 +36,7 @@ export class SelectModDialogComponent {
     const current = this.socket.active? this.socket.active.energyCost : 0;
     const newCost = plug.plug?.energyCost?.energyCost || 0;
     const change = newCost - current;
-    return (change + this.item.energyUsed) <= this.item.energyCapacity;
+    return (change + this.item.energyUsed) <= this.item.armorCapacity;
   }
 
   select(plug: ManifestInventoryItem) {

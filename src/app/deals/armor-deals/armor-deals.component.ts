@@ -37,7 +37,7 @@ export class ArmorDealsComponent {
   }
 
   showLegendaryDialog(show: ClassInventoryBucket) {
-    const title = `${ParseService.cookEnergyType(show.energyType)} ${ClassAllowed[show.classType]} ${show.bucket.displayProperties.name}`;
+    const title = `${ClassAllowed[show.classType]} ${show.bucket.displayProperties.name}`;
     this.showDialog(title, show.gear);
   }
 

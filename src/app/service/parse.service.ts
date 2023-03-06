@@ -30,7 +30,6 @@ import {
     DestinyAmmunitionType,
     DestinyObjectiveUiStyle,
     DynamicStrings,
-    EnergyType,
     Fraction,
     GearMetaData,
     InventoryItem,
@@ -3453,7 +3452,7 @@ export class ParseService {
         }
     }
 
-    private static isEnergyType(damageType: DamageType): boolean {
+    private static isDamageTypeEnergy(damageType: DamageType): boolean {
         if (damageType == DamageType.Arc) {
             return true;
         } else if (damageType == DamageType.Thermal) {
@@ -3466,25 +3465,6 @@ export class ParseService {
             return true;
         } else {
             return false;
-        }
-    }
-
-
-    public static cookEnergyType(energyType: EnergyType): string {
-        if (energyType == EnergyType.Any) {
-            return 'Any';
-        } else if (energyType == EnergyType.Arc) {
-            return 'Arc';
-        } else if (energyType == EnergyType.Thermal) {
-            return 'Solar';
-        } else if (energyType == EnergyType.Void) {
-            return 'Void';
-        } else if (energyType == EnergyType.Stasis) {
-            return 'Stasis';
-        // } else if (energyType == EnergyType.Strand) {
-        //     return 'Strand'; // TODO once strand armor exists
-        } else {
-            return '';
         }
     }
 
@@ -3872,9 +3852,8 @@ export class ParseService {
             }
             let power = 0;
             let damageType: DamageType = DamageType.None;
-            let energyType: EnergyType = EnergyType.Any;
-            let energyCapacity: number = null;
-            let energyUsed: number = null;
+            let armorCapacity: number = null;
+            let capacityUsed: number = null;
             let totalStatPoints: number = null;
             let equipped = false;
             let canEquip = false;
@@ -3912,9 +3891,8 @@ export class ParseService {
                         canEquip = instanceData.canEquip;
                         if (instanceData.energy != null) {
                             const itmEnergy: PrivItemEnergy = instanceData.energy;
-                            energyType = itmEnergy.energyType;
-                            energyCapacity = itmEnergy.energyCapacity;
-                            energyUsed = itmEnergy.energyUsed;
+                            armorCapacity = itmEnergy.energyCapacity;
+                            capacityUsed = itmEnergy.energyUsed;
 
                         }
                     }
@@ -4002,16 +3980,7 @@ export class ParseService {
                                             const plugDef = await this.destinyCacheService.getInventoryItem(x.plugItemHash);
                                             plugDefs.push(plugDef);
                                         }
-                                        plugDefs = plugDefs.filter(x => x != null).filter(x => {
-                                            const et = x.plug?.energyCost?.energyType;
-                                            if (!et) {
-                                                return true;
-                                            }
-                                            if (et == EnergyType.Any) {
-                                                return true;
-                                            }
-                                            return et == energyType;
-                                        });
+                                        plugDefs = plugDefs.filter(x => x != null);
                                         sourcePlugs = plugDefs;
                                         const socketTypeDesc = await this.destinyCacheService.getSocketType(socketDesc.socketTypeHash);
                                         if (socketTypeDesc?.plugWhitelist) {
@@ -4253,11 +4222,8 @@ export class ParseService {
             if (damageType != null && damageType != DamageType.None) {
                 searchText += ' ' + ParseService.cookDamageType(damageType);
             }
-            if (ParseService.isEnergyType(damageType)) {
+            if (ParseService.isDamageTypeEnergy(damageType)) {
                 searchText += ' energy';
-            }
-            if (energyType != null) {
-                searchText += ' ' + ParseService.cookEnergyType(energyType);
             }
             if (ammoType != null) {
                 searchText += ' ' + DestinyAmmunitionType[ammoType];
@@ -4404,11 +4370,11 @@ export class ParseService {
             return new InventoryItem(itm.itemInstanceId, '' + itm.itemHash, name,
                 equipped, canEquip, owner, icon, iconWatermark, type, itemTypeDisplayName,
                 itm.quantity,
-                power, damageType, energyType, stats, sockets, objectives,
+                power, damageType, stats, sockets, objectives,
                 description,
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
-                isRandomRoll, ammoType, postmaster, energyUsed, energyCapacity, totalStatPoints, seasonalModSlot,
+                isRandomRoll, ammoType, postmaster, capacityUsed, armorCapacity, totalStatPoints, seasonalModSlot,
                 coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, crafted, deepsight, deepSightProgress, craftProgress, notCrafted
             );
         } catch (exc) {
@@ -4606,8 +4572,6 @@ interface PrivPartyMember {
 
 interface PrivItemEnergy {
     energyCapacity: number;
-    energyType: number;
-    energyTypeHash: number;
     energyUnused: number;
     energyUsed: number;
 }

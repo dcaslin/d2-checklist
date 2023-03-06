@@ -14,19 +14,10 @@
             </td>
 
             <td>
-                <span [class.void-text]="p.plug?.energyCost?.energyType===EnergyType.Void"
-                    [class.arc-text]="p.plug?.energyCost?.energyType===EnergyType.Arc"
-                    [class.solar-text]="p.plug?.energyCost?.energyType===EnergyType.Thermal"
-                    [class.stasis-text]="p.plug?.energyCost?.energyType===EnergyType.Stasis">
-                    {{p.displayProperties.name}}</span>
+                {{p.displayProperties.name}}
             </td>
             <td>
-                <span [class.void-text]="p.plug?.energyCost?.energyType===EnergyType.Void"
-                    [class.arc-text]="p.plug?.energyCost?.energyType===EnergyType.Arc"
-                    [class.solar-text]="p.plug?.energyCost?.energyType===EnergyType.Thermal"
-                    [class.stasis-text]="p.plug?.energyCost?.energyType===EnergyType.Stasis">
-                    {{p.plug?.energyCost?.energyCost}}
-                </span>
+                 {{p.plug?.energyCost?.energyCost}}
             </td>
             <!-- <td>
                 {{canFit(p)}}
