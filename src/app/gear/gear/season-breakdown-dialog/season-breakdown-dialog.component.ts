@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DestinyCacheService } from '@app/service/destiny-cache.service';
 import { IconService } from '@app/service/icon.service';
-import { Character, EnergyType, InventoryItem, Player } from '@app/service/model';
+import { Character, InventoryItem, Player } from '@app/service/model';
 import { BehaviorSubject } from 'rxjs';
 import { GearComponent } from '../gear.component';
 @Component({
@@ -107,10 +106,11 @@ class SeasonBucket {
   constructor(name: string, items: InventoryItem[]) {
     this.name = name;
     this.all = new ItemBundle(items);
-    this.arc = new ItemBundle(items.filter(i => i.energyType == EnergyType.Arc));
-    this.solar = new ItemBundle(items.filter(i => i.energyType == EnergyType.Thermal));
-    this.void = new ItemBundle(items.filter(i => i.energyType == EnergyType.Void));
-    this.stasis = new ItemBundle(items.filter(i => i.energyType == EnergyType.Stasis));
+    // todo #ENERGY
+    this.arc = new ItemBundle(items);
+    this.solar = new ItemBundle(items);
+    this.void = new ItemBundle(items);
+    this.stasis = new ItemBundle(items);
   }
 }
 

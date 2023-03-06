@@ -64,8 +64,7 @@ export class PreferredStatService {
     };
     return {
       stats: defaultStats,
-      showAllStats: false,
-      ignoreEnergyOnVendorArmorDeals: false
+      showAllStats: false
     };
   }
 
@@ -142,7 +141,6 @@ export interface DetailedPreferredStats {
   // class, stat name, true/false
   stats: ClassStatPrefs;
   showAllStats: boolean;
-  ignoreEnergyOnVendorArmorDeals: boolean;
 }
 
 interface ClassStatPrefs {

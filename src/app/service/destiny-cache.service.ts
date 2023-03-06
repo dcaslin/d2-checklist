@@ -243,7 +243,6 @@ export class DestinyCacheService {
 }
 export interface CacheLite {
   Class: any;
-  EnergyType: any;
   Gender: any;
   InventoryBucket: any;
   ItemTierType: any;

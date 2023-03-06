@@ -47,9 +47,6 @@
               <d2c-horizontal-sort *ngIf="model.type == ItemType.Weapon" field="damageType" [currVal]="sortBy"
                 [descending]="sortDesc" (sort)="sort($event)">Energy
               </d2c-horizontal-sort>
-              <d2c-horizontal-sort *ngIf="model.type == ItemType.Armor" field="energyType" [currVal]="sortBy"
-                [descending]="sortDesc" (sort)="sort($event)">Energy
-              </d2c-horizontal-sort>
             </div>
           </th>
           <ng-container *ngFor="let i of sortedItems|async">
@@ -62,12 +59,12 @@
         </tr>
         <tr *ngIf="model.type==ItemType.Armor">
           <th>
-            <d2c-horizontal-sort field="energyCapacity" [currVal]="sortBy" [descending]="sortDesc"
+            <d2c-horizontal-sort field="armorCapacity" [currVal]="sortBy" [descending]="sortDesc"
               (sort)="sort($event)">Capacity</d2c-horizontal-sort>
           </th>
           <ng-container *ngFor="let i of sortedItems|async">
             <td [class.owned]="i.vendorItemInfo==null">
-              {{i.energyCapacity}}
+              {{i.armorCapacity}}
             </td>
           </ng-container>
         </tr>

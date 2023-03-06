@@ -4,7 +4,7 @@ import { GearCompareDialogComponent } from '@app/gear/gear/gear-compare-dialog/g
 import { SortEvent } from '@app/gear/gear/gear-compare-dialog/horizontal-sort/horizontal-sort.component';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
-import { DamageType, EnergyType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
+import { DamageType, InventoryItem, InventoryStat, ItemType } from '@app/service/model';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
 import { BehaviorSubject } from 'rxjs';
@@ -22,7 +22,6 @@ export class ArmorCompareDialogComponent extends ChildComponent {
   hideJunk = false;
 
   ItemType = ItemType;
-  EnergyType = EnergyType;
   DamageType = DamageType;
   maxPlugs: number[] = [];
 

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { DamageType, EnergyType, InventoryItem, ItemType, Target } from '@app/service/model';
+import { DamageType, InventoryItem, ItemType, Target } from '@app/service/model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -11,7 +11,6 @@ import { DamageType, EnergyType, InventoryItem, ItemType, Target } from '@app/se
 })
 export class ItemIconComponent  {
   ItemType = ItemType;
-  EnergyType = EnergyType;
   DamageType = DamageType;
 
   @Input() i: InventoryItem;

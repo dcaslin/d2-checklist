@@ -8,7 +8,7 @@ import { PlayerStateService } from '@app/player/player-state.service';
 import { GearService } from '@app/service/gear.service';
 import { IconService } from '@app/service/icon.service';
 import { MarkService } from '@app/service/mark.service';
-import { Character, ClassAllowed, Const, DamageType, EnergyType, InventoryItem, ItemType, Player, SelectedUser, Target } from '@app/service/model';
+import { Character, ClassAllowed, Const, DamageType, InventoryItem, ItemType, Player, SelectedUser, Target } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
 import { PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { OLD_PREF_STATS_KEY, PreferredStatService } from '@app/service/preferred-stat.service';
@@ -78,7 +78,6 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   ItemType = ItemType;
   DamageType = DamageType;
-  EnergyType = EnergyType;
   ClassAllowed = ClassAllowed;
 
   trackGearItem(index, item) {
@@ -341,11 +340,6 @@ export class GearComponent extends ChildComponent implements OnInit {
 
   showSimilarArmorBySlot(i: InventoryItem) {
     const copies = this.gearService.findSimilarArmor(i, this.player$.getValue());
-    this.openGearDialog(i, copies, true);
-  }
-
-  showSimilarArmorBySlotAndEnergy(i: InventoryItem) {
-    const copies = this.gearService.findSimilarArmor(i, this.player$.getValue(), false, true);
     this.openGearDialog(i, copies, true);
   }
 
