@@ -1300,7 +1300,7 @@ export class ParseService {
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070) { // Weekly Gambit
                 rewards = 'Pinnacle Gear (Weak)';
-            } else if (ms.milestoneHash == 1437935813) { // Weekly Vanguard
+            } else if (ms.milestoneHash == 1942283261) { // Weekly Vanguard/Nightfall
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
                 rewards = 'Pinnacle Gear (Weak)';            
@@ -2668,7 +2668,8 @@ export class ParseService {
         }
         const nfCompletions = milestoneList.find(x => x.key == '1942283261');
         if (nfCompletions) {
-            nfCompletions.name = 'Nightfall - Completions';
+            nfCompletions.name = 'Weekly Strike Challenge';
+            nfCompletions.desc = 'Complete Strikes (Vanguard or Nightfall) with matching sublass';
         }
         // const graspOfAvarice = milestoneList.find(x => x.key == '973171461');
         // if (graspOfAvarice) {
