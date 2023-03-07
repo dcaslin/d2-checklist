@@ -2662,10 +2662,10 @@ export class ParseService {
         // if (vog) {
         //     vog.name = 'Vault of Glass';
         // }
-        const nfScore = milestoneList.find(x => x.key == '2029743966');
-        if (nfScore) {
-            nfScore.name = 'Nightfall - 100K';
-        }
+        // const nfScore = milestoneList.find(x => x.key == '2029743966');
+        // if (nfScore) {
+        //     nfScore.name = 'Nightfall - 100K';
+        // }
         const nfCompletions = milestoneList.find(x => x.key == '1942283261');
         if (nfCompletions) {
             nfCompletions.name = 'Weekly Strike Challenge';
