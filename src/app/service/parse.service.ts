@@ -385,7 +385,8 @@ export class ParseService {
     private async addPseudoMilestone(key: string, milestonesByKey: { [id: string]: MileStoneName }, milestoneList: MileStoneName[], dependsOn?: string[]) {
         if (milestonesByKey[key] == null && key != '534869653') {  // skip Xur
             const skipDesc = await this.destinyCacheService.getMilestone(key);
-            if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4)) {
+            // liberator's path is incorrectly filed as type 1, tutorial
+            if (skipDesc != null && (skipDesc.milestoneType == 3 || skipDesc.milestoneType == 4 || key == '309103887')) {
                 let descRewards = await this.parseMilestoneRewards(skipDesc);
                 if (descRewards == null || descRewards.trim().length == 0) {
                     descRewards = 'Unknown';
@@ -404,6 +405,7 @@ export class ParseService {
                 milestonesByKey[ms2.key] = ms2;
             } else if (skipDesc != null) {
                 // do nothing
+                console.log(`Skipping known milestone ${skipDesc.displayProperties.name} (${skipDesc.hash}) type = ${skipDesc.milestoneType}`);
             } else {
                 console.log('Skipping unknown milestone: ' + key);
             }
@@ -2580,6 +2582,9 @@ export class ParseService {
        
         // GoS
         this.addPseudoMilestone('2712317338', milestonesByKey, milestoneList);
+
+        // War table - Liberator's Path
+        this.addPseudoMilestone('309103887', milestonesByKey, milestoneList);
         // VoG
         this.addPseudoMilestone('1888320892', milestonesByKey, milestoneList);
         // GoA
@@ -2649,31 +2654,17 @@ export class ParseService {
     // do this all in one place at the last minute
     // since we gather up milestones from all sorts of places
     private cookMileStones(milestoneList: MileStoneName[], dynamicStrings: DynamicStrings) {
-        // const presage = milestoneList.find(x => x.key == '3927548661');
-        // if (presage) {
-        //     presage.name = 'Presage Weekly';
-        // }
-        // const prophecy = milestoneList.find(x => x.key == '825965416');
-        // if (prophecy) {
-        //     prophecy.name = 'Prophecy Weekly';
-        // }
-        // const vog = milestoneList.find(x => x.key == '2279677721');
-        // if (vog) {
-        //     vog.name = 'Vault of Glass';
-        // }
+       
         const nfScore = milestoneList.find(x => x.key == '2029743966');
         if (nfScore) {
-            nfScore.name = 'Nightfall - 100K';
+            nfScore.name = 'Nightfall - 200K total';
         }
         const nfCompletions = milestoneList.find(x => x.key == '1942283261');
         if (nfCompletions) {
             nfCompletions.name = 'Weekly Strike Challenge';
             nfCompletions.desc = 'Complete Strikes (Vanguard or Nightfall) with matching sublass';
         }
-        // const graspOfAvarice = milestoneList.find(x => x.key == '973171461');
-        // if (graspOfAvarice) {
-        //     graspOfAvarice.name = 'Grasp Of Avarice Weekly';
-        // }
+       
         
         const witchQueenPinnacle = milestoneList.find(x => x.key == '363309766');
         if (witchQueenPinnacle) {
@@ -2683,42 +2674,19 @@ export class ParseService {
         if (witchQueenWeekly) {
             witchQueenWeekly.name = 'Witch Queen Story - Completion';
         }
-        // 1639406072, 3568317242, 1322124257
-        // | s 3789620084
 
-        // const netcrasher = milestoneList.find(x => x.key == '966446952');
-        // if (netcrasher && netcrasher.rewards == 'Unknown') {
-        //     netcrasher.rewards = 'Powerful Legacy Gear';
-        //     netcrasher.boost = this.parseMilestonePl(netcrasher.rewards);
-        // }
-        // const shatteredChampions = milestoneList.find(x => x.key == '3789620084');
-        // if (shatteredChampions && shatteredChampions.rewards == 'Unknown') {
-        //     shatteredChampions.rewards = 'Pinnacle Gear';
-        //     shatteredChampions.boost = this.parseMilestonePl(shatteredChampions.rewards);
-        // }
-        // astral alignment 1
-        // let aa = milestoneList.find(x => x.key == '1639406072');
-        // if (aa && aa.rewards == '???') {
-        //     aa.rewards = 'Powerful Gear (Tier 3)';
-        //     aa.boost = this.parseMilestonePl(aa.rewards);
-        // }
-        // astral alignment 2
-        let aa = milestoneList.find(x => x.key == '3568317242');
-        if (aa && aa.rewards == '???') {
-            aa.rewards = 'Powerful Gear (Tier 2)';
+        // daring deliverance 1235829702
+        let aa = milestoneList.find(x => x.key == '1235829702');
+        if (aa && aa.rewards == 'Unknown') {
+            aa.rewards = 'Pinnacle';
             aa.boost = this.parseMilestonePl(aa.rewards);
         }
-        // astral alignment 3
-        aa = milestoneList.find(x => x.key == '1322124257');
-        if (aa && aa.rewards == '???') {
-            aa.rewards = 'Powerful Gear (Tier 3)';
+        // liberator's path 309103887
+        aa = milestoneList.find(x => x.key == '309103887');
+        if (aa && aa.rewards == 'Unknown') {
+            aa.rewards = 'Pinnacle';
             aa.boost = this.parseMilestonePl(aa.rewards);
         }
-        // const rewiringTheLight = milestoneList.find(x => x.key == '3341030123');
-        // if (rewiringTheLight && rewiringTheLight.rewards == 'Pinnacle Gear') {
-        //     rewiringTheLight.rewards = 'Powerful Gear (Tier 3)';
-        //     rewiringTheLight.boost = this.parseMilestonePl(rewiringTheLight.rewards);
-        // }
         for (const m of milestoneList) {
             m.desc = ParseService.dynamicStringReplace(m.desc, null, dynamicStrings);
         }
