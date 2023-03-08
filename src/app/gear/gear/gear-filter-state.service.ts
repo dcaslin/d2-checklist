@@ -136,7 +136,7 @@ function _processFilterTag(actual: string, i: InventoryItem, statChoiceMap: Map<
   if (actual == 'is:unlocked') {
     return !i.locked.getValue();
   }
-  let compResult = _processComparison('is:light', actual, i.power);
+  let compResult = _processComparison('is:power', actual, i.power);
   if (compResult != null) {
     return compResult;
   }
@@ -195,7 +195,7 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:goodroll', desc: 'At least a good roll in each slot' },
   { value: 'is:godroll', desc: 'A god roll in EVERY slot' },
   { value: 'is:fixme', desc: 'Best perk unselected' },
-  { value: 'is:light>=', desc: 'Filter by PL' },
+  { value: 'is:power>=', desc: 'Filter by PL' },
   { value: 'has:capacity>=', desc: 'Filter by armor mod capacity pts 1-10' },
   { value: 'is:prefpoints>=', desc: 'Total of ALL stat pts' },
   { value: 'is:stattotal>=', desc: 'Total of ALL stat pts' },
@@ -210,10 +210,10 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'is:notcrafted', desc: 'A non-craftabled drop of a weapon you can shape' },
   { value: 'is:deepsight', desc: 'Witch Queen Deepsight Weapon' },
   { value: 'is:masterwork', desc: 'Fully MW\'d' },
-  { value: 'is:light<=' },
-  { value: 'is:light>' },
-  { value: 'is:light<' },
-  { value: 'is:light=' },
+  { value: 'is:power<=' },
+  { value: 'is:power>' },
+  { value: 'is:power<' },
+  { value: 'is:power=' },
   { value: 'is:copies>', desc: 'Duplicate counts' },
   { value: 'is:copies>=' },
   { value: 'is:copies<' },
