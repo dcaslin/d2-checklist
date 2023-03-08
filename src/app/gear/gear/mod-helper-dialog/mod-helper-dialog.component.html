@@ -1,7 +1,6 @@
 <h5 mat-dialog-title class="title-row">Mod Wizard
     <button mat-icon-button (click)="parent.load()">
         <fa-icon [icon]="iconService.fasSyncAlt" [spin]="parent.loading|async"></fa-icon>
-        <!--[spin]="vendorsLoading"-->
     </button>
 </h5>
 
@@ -10,7 +9,7 @@
         <fa-icon *ngIf="(gearService.loading|async)===true" [icon]="iconService.farSpinner" [spin]="true" size="3x"
             [fixedWidth]="true"></fa-icon>
     </div>
-    <p class="info-text">This operates based on your currently equipped inventory. Pick your activity and priority weapons, and we'll do the rest.
+    <p class="info-text">This operates based on your currently equipped inventory. Pick your activity and priority energy, and we'll do the rest.
         <code>Preview</code> will do a dry run, showing what mods would be removed and equipped. <code>Apply</code> will actually modify your armor.
     </p>
     <div class="nav-toggles char-row" *ngIf="parent.player$|async as player">
@@ -33,38 +32,29 @@
             </td>
         </tr>
         <tr>
-            <td>Priority Weapon</td>
+            <td>Priority Energy</td>
             <td>
-                <mat-radio-group [(ngModel)]="modChoices.priorityWeapon" aria-label="Select an option">
+                <mat-radio-group [(ngModel)]="modChoices.prioritEnergy" aria-label="Select an option">
                     <mat-radio-button *ngFor="let w of weapons$|async" [value]="w">{{w.name}}</mat-radio-button>
                 </mat-radio-group>
             </td>
         </tr>
         <tr>
-            <td>Secondary Weapon</td>
+            <td>Secondary Energy</td>
             <td>
-                <mat-radio-group [(ngModel)]="modChoices.secondaryWeapon" aria-label="Select an option">
+                <mat-radio-group [(ngModel)]="modChoices.secondaryEnergy" aria-label="Select an option">
                     <mat-radio-button *ngFor="let w of weapons$|async" [value]="w">{{w.name}}</mat-radio-button>
                     <mat-radio-button [value]="null">None</mat-radio-button>
 
                 </mat-radio-group>
             </td>
-        </tr>
-        <tr *ngIf="modChoices.pve">
-            <td>Champions?</td>
-            <td>
-                <mat-checkbox [(ngModel)]="modChoices.champions"></mat-checkbox>
-            </td>
-        </tr>       
+        </tr>  
         <tr>
             <td>Seasonal Mods</td>
             <td>
-                <mat-radio-group [(ngModel)]="modChoices.seasonApproach" aria-label="Select an option">
-                    <mat-radio-button [value]="SeasonalApproach.LeaveAlone">Leave Alone</mat-radio-button>
-                    <mat-radio-button [value]="SeasonalApproach.Simple">
-                        <ng-container *ngIf="modChoices.pve">Protective Light</ng-container>
-                        <ng-container *ngIf="!modChoices.pve">High Energy Fire</ng-container>
-                    </mat-radio-button>
+                <mat-radio-group [(ngModel)]="modChoices.otherModApproach" aria-label="Select an option">
+                    <mat-radio-button [value]="OtherModApproach.LeaveAlone">Leave Alone</mat-radio-button>
+                    <mat-radio-button [value]="OtherModApproach.Simple">Empty</mat-radio-button>
                 </mat-radio-group>
             </td>
         </tr>

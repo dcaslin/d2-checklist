@@ -6,17 +6,28 @@ import { BehaviorSubject } from 'rxjs';
 
 export interface ModChoices {
     pve: boolean;
-    priorityWeapon: InventoryItem;
-    secondaryWeapon: InventoryItem;
-    champions: boolean;
-    seasonApproach: SeasonalApproach;
+    priorityEnergy: EnergyApproach;
+    secondarEnergy: EnergyApproach;
+    otherModApproach: OtherModApproach;
     preferredStat: PreferredStat;
 }
 
-export enum SeasonalApproach {
+export enum OtherModApproach {
     LeaveAlone = 0,
-    Simple = 1
+    Empty = 1
 }
+
+
+export enum EnergyApproach {
+    Harmonic = 0,
+    Kinetic = 1,
+    Arc = 2,
+    Solar = 3,
+    Void = 4,
+    Stasis = 6,
+    Strand = 7,
+}
+
 
 export enum PreferredStat {
     LeaveAlone = 0,
@@ -60,24 +71,18 @@ export const PreferredStats = [
 ];
 
 
-
 enum SocketSlotType {
     None = 0,
-    General = 1,
+    StatEnhancement = 1,
     Mod = 2,
-    Season = 3
 }
-
 
 function getSocketSlotType(socket: InventorySocket): SocketSlotType {
     if (socket.plugWhitelist.length == 0) {
         return SocketSlotType.None;
     }
-    if (socket.plugWhitelist.find(x => x.startsWith('enhancements.season_'))) {
-        return SocketSlotType.Season;
-    }
     if (socket.plugWhitelist.find(x => x.startsWith('enhancements.v2_general'))) {
-        return SocketSlotType.General;
+        return SocketSlotType.StatEnhancement;
     }
     if (socket.plugWhitelist.find(x => x.startsWith('enhancements.v2_'))) {
         return SocketSlotType.Mod;

@@ -126,9 +126,8 @@ export class ModHelperDialogComponent extends ChildComponent {
   private defaultChoices(): ModChoices {
     return {
       pve: true,
-      priorityWeapon: null,
-      secondaryWeapon: null,
-      champions: false,
+      priorityEnergy: null,
+      secondaryEnergy: null,
       seasonApproach: SeasonalApproach.LeaveAlone,
       preferredStat: PreferredStat.LeaveAlone
     };
