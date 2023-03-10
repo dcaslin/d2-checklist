@@ -831,7 +831,6 @@ export class InventoryItem {
     readonly crafted: boolean;
     readonly deepsight: boolean;
     readonly notCrafted: boolean;
-    readonly deepSightProgress: ItemObjective;
     readonly craftProgress: WeaponShapeLevelObjective;
     public patternTriumph: TriumphRecordNode;
     public exoticCatalystTriumph: TriumphRecordNode;
@@ -883,7 +882,7 @@ export class InventoryItem {
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         armorCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
         specialModSockets: string[], collectibleHash: string, versionNumber: number, 
-        crafted: boolean, deepsight: boolean, deepSightProgress: ItemObjective, craftProgress: WeaponShapeLevelObjective,
+        crafted: boolean, deepsight: boolean, craftProgress: WeaponShapeLevelObjective,
         notCrafted: boolean
     ) {
         this.id = id;
@@ -941,7 +940,6 @@ export class InventoryItem {
         this.versionNumber = versionNumber;
         this.crafted = crafted;
         this.deepsight = deepsight;
-        this.deepSightProgress = deepSightProgress;
         this.craftProgress = craftProgress;
         this.notCrafted = notCrafted;
     }

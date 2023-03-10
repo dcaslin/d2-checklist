@@ -25,7 +25,7 @@
     Level {{plug.requiredLevel}}
   </div>
   
-  <ng-container *ngIf="debugmode"> {{plug.hash}} {{plug.originTrait}} x
+  <ng-container *ngIf="debugmode"> plug hash: {{plug.hash}} origin Trait: {{plug.originTrait}}
     <button mat-icon-button (click)="copyToClipboard()">
       <fa-icon [icon]="iconService.farCopy"></fa-icon>
     </button>

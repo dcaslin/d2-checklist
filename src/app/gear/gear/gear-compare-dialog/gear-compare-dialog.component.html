@@ -151,14 +151,7 @@
                                 <input matInput placeholder="Notes" maxlength="100" [(ngModel)]="i.notes"
                                     placeholder="Notes" (ngModelChange)="parent.itemNotesChanged(i)"
                                     [matAutocomplete]="hashTagAuto">
-                            </mat-form-field>
-                            <div *ngIf="i.deepSightProgress as obj" class="obj-desc">
-                                <div class="total-progress">
-                                    <mat-progress-bar class="progress-bar progress-bar" color="warn" mode="determinate"
-                                        [value]="obj.percent"></mat-progress-bar>
-                                    <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% Attuned</div>
-                                </div>
-                            </div>
+                            </mat-form-field>                            
                             <div *ngIf="i.craftProgress as obj" class="obj-desc">
                                 <div class="total-progress">
                                     <mat-progress-bar class="progress-bar progress-bar" color="accent"

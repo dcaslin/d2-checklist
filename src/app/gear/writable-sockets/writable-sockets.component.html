@@ -1,5 +1,7 @@
 <ng-container *ngFor="let socket of item.sockets; first as isFirstSocket">
-    <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} </div>
+    <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} 
+        <br/>
+    </div>
     <ng-container *ngIf="!socket.isWeaponMod || !socket.empty">
         <ng-container *ngIf="socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length>0">
             <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
@@ -23,4 +25,7 @@
         </ng-container>
 
     </ng-container>
+    <div *ngIf="debugmode|async">
+        <br/>
+    </div>
 </ng-container>
