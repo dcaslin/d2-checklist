@@ -77,15 +77,7 @@
                                                     </ng-container>
                                                 </div>
                                                 <div *ngIf="!t.complete && t.redborder.length>0">
-                                                    <span class="crafted-text">{{t.redborder.length}} Deepsight held to attune.</span>
-                                                    <ng-container *ngFor="let i of t.redborder">
-                                                        <div *ngIf="i.deepSightProgress as obj" class="obj-desc">
-                                                            <div class="total-progress">
-                                                              <mat-progress-bar class="progress-bar" color="warn" mode="determinate" [value]="obj.percent"></mat-progress-bar>
-                                                              <div class="simple-caption">{{obj.percent|number : '1.0-0'}}% Attuned</div>
-                                                            </div>
-                                                          </div>
-                                                    </ng-container>
+                                                    <span class="crafted-text">{{t.redborder.length}} Deepsight held to attune.</span>                                                    
                                                 </div>
                                             </ng-container>
                                         </div>

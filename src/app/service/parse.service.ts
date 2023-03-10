@@ -2458,7 +2458,7 @@ export class ParseService {
                         // search gear for a weapon matching that name that is crafted
                         const crafted = gear.filter((g) => {  return g.name == p.name && g.crafted; });
                         p.crafted = crafted;
-                        const redborder = gear.filter((g) => {  return g.name == p.name && g.deepSightProgress; });
+                        const redborder = gear.filter((g) => {  return g.name == p.name && g.deepsight; });
                         p.redborder = redborder;
                         
                     }
@@ -3589,7 +3589,7 @@ export class ParseService {
 
             let type: ItemType = desc.itemType;
             let itemTypeDisplayName = desc.itemTypeDisplayName;
-            let deepSightProgress: ItemObjective = null;
+            
             let craftProgress: WeaponShapeLevelObjective = null;
 
             // store any weapon perks whose stat mods we need to disregard: Currently only Elemental Capacitor
@@ -3746,30 +3746,7 @@ export class ParseService {
                 
                 if (itemComp.plugObjectives?.data) {
                     const pObj: any = itemComp.plugObjectives.data[itm.itemInstanceId];
-                    if (pObj?.objectivesPerPlug) {
-                        const deepSightRes = pObj.objectivesPerPlug['213377779'] || pObj.objectivesPerPlug['2400712188'] || pObj.objectivesPerPlug['3632593563'];
-                        if (deepSightRes != null && deepSightRes.length>0) {                            
-                            const o = deepSightRes[0];
-                            const oDesc = await this.destinyCacheService.getObjective(o.objectiveHash);
-                            
-                            const iObj: ItemObjective = {
-                                hash: o.objectiveHash,
-                                completionValue: oDesc.completionValue,
-                                progressDescription: ParseService.dynamicStringReplace(oDesc.progressDescription, null, dynamicStrings),
-                                progress: o.progress == null ? 0 : o.progress,
-                                complete: o.complete,
-                                percent: 0
-                            };
-
-
-                            if (iObj.completionValue != null && iObj.completionValue > 0) {
-                                progTotal += 100 * iObj.progress / iObj.completionValue;
-                                progCnt++;
-                                iObj.percent = Math.floor(100 * iObj.progress / iObj.completionValue);
-                            }
-                            objectives.push(iObj);
-                            deepSightProgress = iObj;
-                        }
+                    if (pObj?.objectivesPerPlug) {                        
                         const craftedLevel = pObj.objectivesPerPlug['659359923'] || pObj.objectivesPerPlug['1922808508'] || pObj.objectivesPerPlug['4029346515'];
                         if (craftedLevel != null && craftedLevel.length>0) {
                             let dateCrafted: number = null;
@@ -3837,6 +3814,7 @@ export class ParseService {
             let inventoryBucket: ApiInventoryBucket = null;
             let tier = null;
             let isRandomRoll = false;
+            let deepsight = false;
             if (itemComp && (detailedInv || type === ItemType.MissionArtifact)) {
                 if (desc.inventory != null) {
                     tier = desc.inventory.tierTypeName;
@@ -4056,6 +4034,12 @@ export class ParseService {
                                         coveredSeasons.push(10);
                                     }
                                     if (plugName == null) { continue; }
+
+                                    // this will have name "Deepsihght Resonance"
+                                    // this is how we deptect deepsight armor now
+                                    if (plugDesc.plug?.plugCategoryHash==2748073883) {
+                                        deepsight = true;
+                                    }
                                     // this is where weapon frames and armor are added
                                     const oPlug = new InventoryPlug(plugDesc.hash,
                                         plugName, plugDesc.displayProperties.description,
@@ -4139,7 +4123,6 @@ export class ParseService {
                     recommendedPveMws: []
                 };
             }
-            const deepsight = deepSightProgress != null || (itm.state & ItemState.Deepsight) > 0;
             let notCrafted = desc.inventory.recipeItemHash && !crafted;
 
             const bucketOrder = null;
@@ -4338,7 +4321,7 @@ export class ParseService {
                 desc.classType, bucketOrder, aggProgress, values, itm.expirationDate,
                 locked, masterworked, mw, tracked, questline, searchText, inventoryBucket, tier, options.slice(),
                 isRandomRoll, ammoType, postmaster, capacityUsed, armorCapacity, totalStatPoints, seasonalModSlot,
-                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, crafted, deepsight, deepSightProgress, craftProgress, notCrafted
+                coveredSeasons, powerCap, redacted, specialModSockets, desc.collectibleHash, itm.versionNumber, crafted, deepsight, craftProgress, notCrafted
             );
         } catch (exc) {
             console.dir(itemComp);
