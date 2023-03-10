@@ -3956,12 +3956,7 @@ export class ParseService {
                                         }
                                     }
                                     const modSocketType = emptyModSocketDesc?.itemTypeDisplayName;
-                                    if ('Combat Style Armor Mod' == modSocketType) {
-                                        searchText += 'has:modcombat';
-                                        specialModSockets.push('combat');
-                                        seasonalModSlot = 0;
-                                        coveredSeasons.push(0);
-                                    } else if ('enhancements.raid_garden'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
+                                    if ('enhancements.raid_garden'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
                                         specialModSockets.push('gos');
                                         searchText += 'has:modgos';
                                         seasonalModSlot = 2;

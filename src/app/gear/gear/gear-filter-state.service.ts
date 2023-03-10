@@ -249,7 +249,6 @@ const FIXED_AUTO_COMPLETE_OPTIONS: AutoCompleteOption[] = [
   { value: 'has:modgos', desc: 'Armor includes Garden of Salvation Crypt mod slot' },
   { value: 'has:modlw', desc: 'Armor includes Last Wish raid mod slot' },
   { value: 'has:modartifice', desc: 'Armor includes Artifice mod slot' },
-  { value: 'has:modcombat', desc: 'Armor can use standard Beyond Light mods' },
   { value: 'has:modspecial', desc: 'Armor has an extra Raid/Artifice/etc slot' },
   { value: 'tag:upgrade', desc: 'Tagged for upgrade' },
   { value: 'tag:keep', desc: 'Tagged to keep' },
@@ -862,7 +861,6 @@ export class GearFilterStateService implements OnDestroy {
         new Choice('deepstone', 'Deepstone Crypt'),
         new Choice('gos', 'Garden of Salvation'),
         new Choice('lw', 'Last Wish'),
-        new Choice('combat', 'Combat'),
         new Choice('none', 'None')
       ], currentTab.type)),
       damageType$: new BehaviorSubject(generateState(damageConfig,

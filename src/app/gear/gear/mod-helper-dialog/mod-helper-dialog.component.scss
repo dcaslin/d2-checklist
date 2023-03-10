@@ -26,6 +26,7 @@ table.responsive-table{
     .mat-radio-group {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
     }
 
     .mat-radio-button ~ .mat-radio-button {
