@@ -38,7 +38,12 @@ export class SeasonBreakdownDialogComponent {
       const charGear = player.gear.filter(g => (g.classAllowed == charSeasons.char.classType && g.tier != 'Exotic') );
       for (const season of charSeasons._seasons.getValue()) {
         season.buckets = [];
-        const seasonGear = charGear.filter(g => g.coveredSeasons && g.coveredSeasons.includes(season.season));
+        let seasonGear: InventoryItem[];
+        if (season.season == 0) {
+          seasonGear = charGear;
+        } else {
+          seasonGear = charGear.filter(g => g.coveredSeasons && g.coveredSeasons.includes(season.season));
+        }
         const helmets = seasonGear.filter(g => g.inventoryBucket.displayProperties.name == 'Helmet');
         season.buckets.push(new SeasonBucket('Helmet', helmets));
         const arms = seasonGear.filter(g => g.inventoryBucket.displayProperties.name == 'Gauntlets');
@@ -69,7 +74,7 @@ export class SeasonBreakdownDialogComponent {
 
   private static generateSeasons(): SeasonRow[] {
     return [
-      { name: 'Combat', details: true, season: 0, note: 'Charged w/ Light + Warmind' },
+      { name: 'Any', details: true, season: 0, note: 'Everything in one place' },
       { name: 'Artifice', details: true, season: 10, note: 'Artifice mod slot' },
       { name: 'Raid KF', details: true, season: 6, note: 'King\'s Fall dedicated' },
       { name: 'Raid VoD', details: true, season: 5, note: 'Vow of the Disciple dedicated' },
@@ -98,19 +103,10 @@ interface SeasonRow {
 class SeasonBucket {
   name: string;
   all: ItemBundle;
-  arc: ItemBundle;
-  solar: ItemBundle;
-  void: ItemBundle;
-  stasis: ItemBundle;
 
   constructor(name: string, items: InventoryItem[]) {
     this.name = name;
     this.all = new ItemBundle(items);
-    // todo #ENERGY
-    this.arc = new ItemBundle(items);
-    this.solar = new ItemBundle(items);
-    this.void = new ItemBundle(items);
-    this.stasis = new ItemBundle(items);
   }
 }
 

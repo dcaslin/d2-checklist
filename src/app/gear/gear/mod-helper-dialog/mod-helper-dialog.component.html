@@ -34,8 +34,8 @@
         <tr>
             <td>Priority Energy</td>
             <td>
-                <mat-radio-group [(ngModel)]="modChoices.prioritEnergy" aria-label="Select an option">
-                    <mat-radio-button *ngFor="let w of weapons$|async" [value]="w">{{w.name}}</mat-radio-button>
+                <mat-radio-group [(ngModel)]="modChoices.priorityEnergy" aria-label="Select an option">
+                    <mat-radio-button *ngFor="let c of choices" [value]="c">{{getEnergyApproachString(c)}}</mat-radio-button>
                 </mat-radio-group>
             </td>
         </tr>
@@ -43,21 +43,12 @@
             <td>Secondary Energy</td>
             <td>
                 <mat-radio-group [(ngModel)]="modChoices.secondaryEnergy" aria-label="Select an option">
-                    <mat-radio-button *ngFor="let w of weapons$|async" [value]="w">{{w.name}}</mat-radio-button>
                     <mat-radio-button [value]="null">None</mat-radio-button>
+                    <mat-radio-button *ngFor="let c of choices" [value]="c">{{getEnergyApproachString(c)}}</mat-radio-button>
 
                 </mat-radio-group>
             </td>
-        </tr>  
-        <tr>
-            <td>Seasonal Mods</td>
-            <td>
-                <mat-radio-group [(ngModel)]="modChoices.otherModApproach" aria-label="Select an option">
-                    <mat-radio-button [value]="OtherModApproach.LeaveAlone">Leave Alone</mat-radio-button>
-                    <mat-radio-button [value]="OtherModApproach.Simple">Empty</mat-radio-button>
-                </mat-radio-group>
-            </td>
-        </tr>
+        </tr>       
         <tr>
             <td>Preferred Stat</td>
             <td>
