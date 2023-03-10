@@ -10,7 +10,6 @@
             [class.accent-bg-text]="socket.active.hash == p.hash">
             <td>
                 <d2c-manifest-item-icon [desc]="p"></d2c-manifest-item-icon>
-                {{p.hash}}
             </td>
 
             <td>
@@ -18,6 +17,7 @@
             </td>
             <td>
                  {{p.plug?.energyCost?.energyCost}}
+                 <div *ngIf="!item.canFit(socket, p)" class="simple-caption">Not enough capacity</div>
             </td>
             <!-- <td>
                 {{canFit(p)}}
