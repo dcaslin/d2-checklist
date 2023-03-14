@@ -47,16 +47,12 @@
                 Last played: {{player.profile.dateLastPlayed | d2cAgoHumanized }}
               </ng-container>
               <span *ngIf="player.currentActivity!=null">
-                Playing now: {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started 
+                Playing now: {{player.currentActivity.type}} - {{player.currentActivity.name}} | Started
                 {{player.currentActivity.dateActivityStarted | d2cAgoHumanized }}
               </span>
             </div>
 
-            <div class="button-row">              
-              <a mat-button href="https://destiny2utils.com/" rel="noopener" target="_blank" rel="noopener">
-                <fa-icon [icon]="iconService.fasLevelUp" class="menu-icon"></fa-icon>
-                <span class="d-none d-md-inline">Destiny 2 Utils</span>
-              </a>
+            <div class="button-row">
               <a mat-button [routerLink]="['/party', player.characters[0].membershipType, player.characters[0].membershipId]">
                 <fa-icon class="menu-icon" [icon]="iconService.falGamepad"
                   [class.accent-text]="player.currentActivity!=null"></fa-icon>
