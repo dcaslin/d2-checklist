@@ -913,6 +913,7 @@ export class GearFilterStateService implements OnDestroy {
           new Choice('is:fixme', 'Suboptimal Perks Active'),
           new Choice('is:notcrafted', 'Not Crafted'),
           new Choice('is:deepsight', 'Deepsight'),
+          new Choice('is:nodata', 'God Roll not yet avail'),
         ], currentTab.type)),
       weaponBuckets$: new BehaviorSubject(generateState(weaponBucketsConfig,
         this.generateBucketChoices(ItemType.Weapon), currentTab.type)),
