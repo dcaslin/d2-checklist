@@ -2674,6 +2674,14 @@ export class ParseService {
         if (witchQueenWeekly) {
             witchQueenWeekly.name = 'Witch Queen Story - Completion';
         }
+        const rootOfNightmares = milestoneList.find(x => x.key == '3699252268');
+        if (rootOfNightmares?.name?.indexOf('###') > -1) {
+            rootOfNightmares.name = 'Root of Nightmares Raid';
+        }
+        if (rootOfNightmares) {
+            rootOfNightmares.rewards = 'Pinnacle';
+            rootOfNightmares.boost = this.parseMilestonePl(rootOfNightmares.rewards);
+        }
 
         // daring deliverance 1235829702
         let aa = milestoneList.find(x => x.key == '1235829702');
