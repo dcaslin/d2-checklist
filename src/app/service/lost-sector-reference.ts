@@ -714,6 +714,107 @@ const LS_RIFT: LostSectorMeta = {
   }
 }
 
+
+const LS_THRILLADROME: LostSectorMeta = {
+  abbrev: 'Thrilladrome',
+  directorLocation: 'Neomuna',
+  legend: {
+    hash: '584726932',
+    shields: ['Arc(1)', 'Void(6)'],
+    champions: [
+      {
+        name: 'Overload',
+        count: 2
+      },
+      {
+        name: 'Barrier',
+        count: 3
+      }
+    ]
+  },
+  master: {
+    hash: '584726931',
+    shields: ['Arc(1)', 'Void(5)'],
+    champions: [
+      {
+        name: 'Overload',
+        count: 3
+      },
+      {
+        name: 'Barrier',
+        count: 4
+      }
+    ]
+  }
+}
+
+const LS_HYDROPONICS: LostSectorMeta = {
+  abbrev: 'Hydroponics',
+  directorLocation: 'Neomuna',
+  legend: {
+    hash: '1869786712',
+    shields: ['None'],
+    champions: [
+      {
+        name: 'Barrier',
+        count: 2
+      },
+      {
+        name: 'Unstoppable',
+        count: 2
+      }
+    ]
+  },
+  master: {
+    hash: '1869786719',
+    shields: ['None'],
+    champions: [
+      {
+        name: 'Barrier',
+        count: 2
+      },
+      {
+        name: 'Unstoppable',
+        count: 4
+      }
+    ]
+  }
+}
+
+const LS_GILDED_PRECEPT: LostSectorMeta = {
+  abbrev: 'Gilded',
+  directorLocation: 'Neomuna',
+  legend: {
+    hash: '2983905025',
+    shields: ['Solar(?)', 'Void(?)'],
+    champions: [
+      {
+        name: 'Barrier',
+        count: 2
+      },
+      {
+        name: 'Unstoppable',
+        count: 2
+      }
+    ]
+  },
+  master: {
+    hash: '2983905030',
+    shields: ['Solar(?)', 'Void(?)'],
+    champions: [
+      {
+        name: 'Barrier',
+        count: -1
+      },
+      {
+        name: 'Unstoppable',
+        count: -1
+      }
+    ]
+  }
+}
+
+
 export const  LS_LOOT = [
   'Arms',
   'Chest',
@@ -722,15 +823,15 @@ export const  LS_LOOT = [
 ];
 
 export const LS_ROTATION = [
-  LS_K1_LOGISTICS,
-  LS_K1_CREW,
-  LS_K1_REVELATION, 
-  LS_K1_COMMUNION,
-  LS_BUNKER_E15,
-  LS_CONCEALED_VOID,
-  LS_PERDITION,
-  LS_SEPULCHER,
-  LS_EXTRACTION,
-  LS_CHAMBER_OF_STARLIGHT,
+  LS_THRILLADROME,
+  LS_HYDROPONICS,
+  LS_GILDED_PRECEPT,
+  LS_EXCAVATION_SITE,
+  LS_SKYDOCK,
+  LS_QUARRY,
   LS_APHELIONS_REST,
+  LS_CHAMBER_OF_STARLIGHT,
+  LS_PERDITION,
+  LS_BUNKER_E15,
+  LS_CONFLUX,
 ];
