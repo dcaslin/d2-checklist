@@ -1292,19 +1292,15 @@ export class ParseService {
                     rewards = '???';
                 }
             }
-            if (ms.milestoneHash == 292102995 && rewards == '???') { // KF
-                rewards = 'Pinnacle Gear';
-
-            // } else if (ms.milestoneHash == 541780856 && rewards == '???') { // Deepstone Crypt
-            //     rewards = 'Powerful Gear (Tier 1)';
-            } else if (ms.milestoneHash == 3312774044) { // Crucible Playlist
+            
+            if (ms.milestoneHash == 3312774044) { // Crucible Playlist
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3448738070) { // Weekly Gambit
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 1942283261) { // Weekly Vanguard/Nightfall
                 rewards = 'Pinnacle Gear (Weak)';
             } else if (ms.milestoneHash == 3603098564) { // override clan weekly
-                rewards = 'Pinnacle Gear (Weak)';            
+                rewards = 'Pinnacle Gear';            
             } else if (ms.milestoneHash == 1888320892 && rewards == '???') { // VoG
                 rewards = 'Powerful Gear (Tier 3)';
             }
@@ -2017,25 +2013,25 @@ export class ParseService {
                         const c: Character = charsDict[key];
                         const availableActivities: { [key: string]: boolean } = {};
                       
-                        if (resp.characterActivities
-                            && resp.characterActivities.data
-                            && resp.characterActivities.data[key]
-                            && resp.characterActivities.data[key].availableActivities
-                        ) {
-                            const legendSeraphActivity = resp.characterActivities.data[key].availableActivities.find(x => x.activityHash == 995051012);
-                            var pinnacleChallenge = null;
-                            if (legendSeraphActivity?.challenges) {
-                                pinnacleChallenge = legendSeraphActivity.challenges.find(x => x.objective?.objectiveHash == 2667467981);
-                            }
-                            if (legendSeraphActivity && pinnacleChallenge) {
-                                c.milestones[Const.PSUEDO_LEGENDARY_SERAPH] = new MilestoneStatus(Const.PSUEDO_LEGENDARY_SERAPH, pinnacleChallenge.objective.complete,  
-                                    pinnacleChallenge.objective.complete? 1 : 0, null, null, [], false, c.notReady);
+                        // if (resp.characterActivities
+                        //     && resp.characterActivities.data
+                        //     && resp.characterActivities.data[key]
+                        //     && resp.characterActivities.data[key].availableActivities
+                        // ) {
+                        //     const legendSeraphActivity = resp.characterActivities.data[key].availableActivities.find(x => x.activityHash == 995051012);
+                        //     var pinnacleChallenge = null;
+                        //     if (legendSeraphActivity?.challenges) {
+                        //         pinnacleChallenge = legendSeraphActivity.challenges.find(x => x.objective?.objectiveHash == 2667467981);
+                        //     }
+                        //     if (legendSeraphActivity && pinnacleChallenge) {
+                        //         c.milestones[Const.PSUEDO_LEGENDARY_SERAPH] = new MilestoneStatus(Const.PSUEDO_LEGENDARY_SERAPH, pinnacleChallenge.objective.complete,  
+                        //             pinnacleChallenge.objective.complete? 1 : 0, null, null, [], false, c.notReady);
 
-                            } else {
-                                c.milestones[Const.PSUEDO_LEGENDARY_SERAPH] = new MilestoneStatus(Const.PSUEDO_LEGENDARY_SERAPH, true,  1, null, null, [], !legendSeraphActivity, c.notReady);
+                        //     } else {
+                        //         c.milestones[Const.PSUEDO_LEGENDARY_SERAPH] = new MilestoneStatus(Const.PSUEDO_LEGENDARY_SERAPH, true,  1, null, null, [], !legendSeraphActivity, c.notReady);
 
-                            }
-                        }
+                        //     }
+                        // }
                         for (const missingKey of Object.keys(milestonesByKey)) {
 
                             if (c.milestones[missingKey] == null) {
@@ -2633,19 +2629,19 @@ export class ParseService {
         // this.addPseudoMilestone('3568317242', milestonesByKey, milestoneList);
         // this.addPseudoMilestone('1322124257', milestonesByKey, milestoneList);
 
-         const msSeraph: MileStoneName = {
-            key: Const.PSUEDO_LEGENDARY_SERAPH,
-            resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
-            rewards: 'Pinnacle Gear',
-            boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
-            name: 'Legendary Seraph\'s Shield',
-            desc: 'Complete Seraph\'s Shield on Legendary',
-            hasPartial: false,
-            neverDisappears: true,
-            dependsOn: []
-        };
-        milestoneList.push(msSeraph);
-        milestonesByKey[msSeraph.key] = msSeraph;
+        //  const msSeraph: MileStoneName = {
+        //     key: Const.PSUEDO_LEGENDARY_SERAPH,
+        //     resets: milestonesByKey['3603098564'].resets, // use weekly clan XP
+        //     rewards: 'Pinnacle Gear',
+        //     boost: Const.BOOST_DROP_TABLE[Const.BOOST_PINNACLE],
+        //     name: 'Legendary Seraph\'s Shield',
+        //     desc: 'Complete Seraph\'s Shield on Legendary',
+        //     hasPartial: false,
+        //     neverDisappears: true,
+        //     dependsOn: []
+        // };
+        // milestoneList.push(msSeraph);
+        // milestonesByKey[msSeraph.key] = msSeraph;
 
     }
 
@@ -2657,7 +2653,8 @@ export class ParseService {
        
         const nfScore = milestoneList.find(x => x.key == '2029743966');
         if (nfScore) {
-            nfScore.name = 'Nightfall - 200K total';
+            nfScore.name = 'Nightfall 200K';
+            nfScore.desc = 'Complete Nightfalls until your total score reaches 200K';
         }
         const nfCompletions = milestoneList.find(x => x.key == '1942283261');
         if (nfCompletions) {

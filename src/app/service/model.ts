@@ -1363,7 +1363,7 @@ export class Const {
     // public static readonly  PSUEDO_HERESY_KEY = 'PSUEDO-HERESY';
     // public static readonly PROPHECY_KEY = '44444444';
     // public static readonly PSUEDO_PRESAGE = 'PSUEDO-PRESAGE';
-    public static readonly PSUEDO_LEGENDARY_SERAPH = 'PSUEDO_LEGENDARY_SERAPH';
+    // public static readonly PSUEDO_LEGENDARY_SERAPH = 'PSUEDO_LEGENDARY_SERAPH';
 
     public static readonly LIGHT_TOO_LOW = 1749; // #UPDATEME  -61 from pinnacle in the past
     private static readonly SEASON_SOFT_CAP = 1750; // #UPDATEME
