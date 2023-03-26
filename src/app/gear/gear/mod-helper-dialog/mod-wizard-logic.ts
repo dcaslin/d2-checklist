@@ -252,8 +252,10 @@ function chooseModTarget(item: InventoryItem, socket: InventorySocket, choices: 
         }
 
     } else if (item.inventoryBucket.displayProperties.name == 'Chest Armor') {
-        // todo maybe later
-        return null;
+        if (choices.pve) {
+            return null;
+        }
+       
         // if (choices.pve) {
         //     if (!previousChoices.find(x => x.displayProperties.name.includes('Concussive'))) {
         //         const concussive = socket.sourcePlugs.find(x => x.displayProperties.name.startsWith('Concussive'));
@@ -267,10 +269,7 @@ function chooseModTarget(item: InventoryItem, socket: InventorySocket, choices: 
         //             return sniper;
         //         }
         //     }
-
-        // } else {
-        //     return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, 'Unflinching ', ' Aim');
-        // }
+        return chooseWeaponPlug(socket, primaryTargetType, secondaryTargetType, previousChoices, 'Unflinching ', ' Aim');
     } else if (item.inventoryBucket.displayProperties.name == 'Leg Armor') {
         if (choices.pve) {
             let target: ManifestInventoryItem = null;
@@ -359,7 +358,12 @@ export async function applyMods(gearService: GearService, notificationService: N
     log.push('* Removing mods from armor');
     log$.next(log);
     for (const item of armor) {
+        // leave class items alone
         if (item.inventoryBucket.displayProperties.name == 'Class Armor') {
+            continue;
+        }
+        // leave chest armor alone for pve
+        if (modChoices.pve && item.inventoryBucket.displayProperties.name == 'Chest Armor') {
             continue;
         }
         await clearModsOnItem(gearService, item, log$, modChoices.preferredStat == PreferredStat.LeaveAlone, previewOnly);
