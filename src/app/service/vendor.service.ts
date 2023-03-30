@@ -236,6 +236,13 @@ export class VendorService {
         data: tessShaders
       });
     }
+    const adaShaders = this.checkCollectionForVendor(player, vendorItems, '350061650', ItemType.Shader);
+    if (adaShaders.length > 0) {
+      returnMe.push({
+        vendor: adaShaders[0].vendorItemInfo.vendor,
+        data: adaShaders
+      });
+    }
     return returnMe;
   }
 
