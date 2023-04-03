@@ -816,10 +816,10 @@ const LS_GILDED_PRECEPT: LostSectorMeta = {
 
 
 export const  LS_LOOT = [
-  'Arms',
   'Chest',
   'Head',
   'Legs',
+  'Arms',
 ];
 
 export const LS_ROTATION = [
