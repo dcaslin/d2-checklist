@@ -2542,7 +2542,7 @@
           "arrowhead brake",
           "ricochet rounds",
           "rangefinder",
-          "moving target"
+          "headseeker"
         ],
         "goodPerks": [
           "chambered compensator",
@@ -2550,7 +2550,8 @@
           "high-caliber rounds",
           "heating up",
           "killing wind",
-          "elemental capacitor"
+          "elemental capacitor",
+          "moving target"
         ]
       },
       "mnk": true,
@@ -2587,7 +2588,7 @@
           "arrowhead brake",
           "rangefinder",
           "high-caliber rounds",
-          "elemental capacitor"
+          "headseeker"
         ],
         "goodPerks": [
           "smallbore",
@@ -2596,7 +2597,8 @@
           "extended barrel",
           "ricochet rounds",
           "perpetual motion",
-          "multikill clip"
+          "multikill clip",
+          "elemental capacitor"
         ]
       },
       "mnk": false,
