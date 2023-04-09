@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito S19+Dawning",
-  "date": "2022-12-21T15:54:02.866Z",
-  "manifestVersion": "111215.22.12.12.1450-6-bnet.47957",
+  "title": "Official D2Checklist Rolls -S20 Prerelease",
+  "date": "2023-04-09T21:00:54.748Z",
+  "manifestVersion": "114609.23.03.26.1900-1-bnet.49479",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -537,6 +537,94 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "acasia's dejection",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "enhanced battery",
+          "envious assassin",
+          "target lock"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "tactical battery",
+          "reconstruction",
+          "rewind rounds",
+          "paracausal affinity",
+          "frenzy"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "projection fuse",
+          "perpetual motion",
+          "target lock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "tactical battery",
+          "keep away",
+          "reconstruction",
+          "high-impact reserves"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "acasia's dejection",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "enhanced battery",
+          "envious assassin",
+          "target lock"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "tactical battery",
+          "reconstruction",
+          "rewind rounds",
+          "paracausal affinity",
+          "frenzy"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "projection fuse",
+          "perpetual motion",
+          "target lock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "tactical battery",
+          "keep away",
+          "reconstruction",
+          "high-impact reserves"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "accrued redemption",
@@ -2423,6 +2511,96 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "autumn wind",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "demolitionist",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "smallbore",
+          "armor-piercing rounds",
+          "flared magwell",
+          "pugilist",
+          "envious assassin"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "rangefinder",
+          "moving target"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "smallbore",
+          "high-caliber rounds",
+          "heating up",
+          "killing wind",
+          "elemental capacitor"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "autumn wind",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "demolitionist",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "smallbore",
+          "armor-piercing rounds",
+          "flared magwell",
+          "pugilist",
+          "envious assassin"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability",
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "rangefinder",
+          "high-caliber rounds",
+          "elemental capacitor"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "heating up",
+          "killing wind",
+          "extended barrel",
+          "ricochet rounds",
+          "perpetual motion",
+          "multikill clip"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "avalanche",
@@ -4936,6 +5114,94 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "briar's contempt",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accelerated coils",
+          "rewind rounds",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "enhanced battery",
+          "ionized battery",
+          "reconstruction",
+          "envious assassin",
+          "high-impact reserves",
+          "focused fury"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "projection fuse",
+          "keep away",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "adagio",
+          "harmony",
+          "slideshot",
+          "full bore",
+          "hammer-forged rifling"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "briar's contempt",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "accelerated coils",
+          "rewind rounds",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "enhanced battery",
+          "ionized battery",
+          "reconstruction",
+          "envious assassin",
+          "high-impact reserves",
+          "focused fury"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "charge time"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "projection fuse",
+          "keep away",
+          "high-impact reserves"
+        ],
+        "goodPerks": [
+          "adagio",
+          "harmony",
+          "slideshot",
+          "full bore",
+          "hammer-forged rifling"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "brigand's law",
@@ -19569,6 +19835,94 @@
       "controller": false
     },
     {
+      "name": "koraxis's distress",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "spike grenades",
+          "field prep",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "harmony",
+          "full court",
+          "paracausal affinity",
+          "envious assassin",
+          "reconstruction",
+          "alloy casing",
+          "smart drift control",
+          "linear compensator"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "proximity grenades",
+          "impulse amplifier",
+          "harmony"
+        ],
+        "goodPerks": [
+          "chain reaction",
+          "high-velocity rounds",
+          "smart drift control",
+          "linear compensator"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "koraxis's distress",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "spike grenades",
+          "field prep",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "harmony",
+          "full court",
+          "paracausal affinity",
+          "envious assassin",
+          "reconstruction",
+          "alloy casing",
+          "smart drift control",
+          "linear compensator"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "blast radius"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "proximity grenades",
+          "impulse amplifier",
+          "harmony"
+        ],
+        "goodPerks": [
+          "chain reaction",
+          "high-velocity rounds",
+          "smart drift control",
+          "linear compensator"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
       "name": "krait",
       "sheet": "perkbench",
       "pve": {
@@ -22005,6 +22359,95 @@
       "controller": false
     },
     {
+      "name": "mykel's reverence",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "appended mag",
+          "rewind rounds",
+          "frenzy",
+          "fluted barrel"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "light mag",
+          "pugilist",
+          "thresh",
+          "swashbuckler",
+          "harmony"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "ricochet rounds",
+          "perpetual motion",
+          "tap the trigger",
+          "smallbore"
+        ],
+        "goodPerks": [
+          "hammer-forged rifling",
+          "high-caliber rounds",
+          "elemental capacitor",
+          "swashbuckler",
+          "offhand strike",
+          "fluted barrel"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "mykel's reverence",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "appended mag",
+          "rewind rounds",
+          "frenzy",
+          "fluted barrel"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "light mag",
+          "pugilist",
+          "thresh",
+          "swashbuckler",
+          "harmony"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "extended barrel",
+          "ricochet rounds",
+          "perpetual motion",
+          "tap the trigger"
+        ],
+        "goodPerks": [
+          "hammer-forged rifling",
+          "high-caliber rounds",
+          "elemental capacitor",
+          "swashbuckler",
+          "offhand strike"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "nameless midnight",
       "sheet": "forsaken",
       "pve": {
@@ -22360,6 +22803,96 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "nessa's oblation",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "assault mag",
+          "reconstruction",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "corkscrew rifling",
+          "appended mag",
+          "tactical mag",
+          "fourth time's the charm",
+          "dragonfly",
+          "vorpal weapon",
+          "destabilizing rounds"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "reconstruction",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "hammer-forged rifling",
+          "smallbore",
+          "assault mag",
+          "demolitionist",
+          "harmony"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "nessa's oblation",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "assault mag",
+          "reconstruction",
+          "frenzy"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "corkscrew rifling",
+          "appended mag",
+          "tactical mag",
+          "fourth time's the charm",
+          "dragonfly",
+          "vorpal weapon",
+          "destabilizing rounds"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "accurized rounds",
+          "reconstruction",
+          "opening shot",
+          "hammer-forged rifling"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "assault mag",
+          "demolitionist",
+          "harmony",
+          "fluted barrel"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "new purpose",
@@ -28228,6 +28761,100 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "rufus's fury",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "reconstruction",
+          "target lock"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "smallbore",
+          "armor-piercing rounds",
+          "light mag",
+          "rewind rounds",
+          "thresh",
+          "frenzy",
+          "paracausal affinity"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "perpetual motion",
+          "target lock"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "smallbore",
+          "high-caliber rounds",
+          "reconstruction",
+          "moving target",
+          "tap the trigger",
+          "harmony"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "rufus's fury",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "reconstruction",
+          "target lock"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "smallbore",
+          "armor-piercing rounds",
+          "light mag",
+          "rewind rounds",
+          "thresh",
+          "frenzy",
+          "paracausal affinity"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "perpetual motion",
+          "target lock"
+        ],
+        "goodPerks": [
+          "chambered compensator",
+          "smallbore",
+          "high-caliber rounds",
+          "reconstruction",
+          "moving target",
+          "tap the trigger",
+          "harmony"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "sacred provenance",
@@ -34783,6 +35410,94 @@
       },
       "mnk": true,
       "controller": false
+    },
+    {
+      "name": "the immortal",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "perpetual motion",
+          "target lock"
+        ],
+        "goodPerks": [
+          "polygonal rifling",
+          "smallbore",
+          "armor-piercing rounds",
+          "flared magwell",
+          "threat detector",
+          "surplus",
+          "demolitionist",
+          "hatchling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "hammer-forged rifling",
+          "ricochet rounds",
+          "rangefinder",
+          "target lock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "high-caliber rounds",
+          "threat detector",
+          "kill clip"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "the immortal",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "perpetual motion",
+          "target lock"
+        ],
+        "goodPerks": [
+          "polygonal rifling",
+          "smallbore",
+          "armor-piercing rounds",
+          "flared magwell",
+          "threat detector",
+          "surplus",
+          "demolitionist",
+          "hatchling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "hammer-forged rifling",
+          "ricochet rounds",
+          "rangefinder",
+          "target lock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "high-caliber rounds",
+          "threat detector",
+          "kill clip"
+        ]
+      },
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "the inquisitor",
@@ -41643,8 +42358,8 @@
           "enduring guard"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "zephyr",
@@ -41683,8 +42398,8 @@
           "enduring guard"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     }
   ]
 }
