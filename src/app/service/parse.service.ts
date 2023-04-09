@@ -1419,24 +1419,20 @@ export class ParseService {
             });
             for (const nfa of pmsa.nightfall.activities) {
                 if (nfa.name.endsWith('Grandmaster')) {
-                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 40)) {
-                        nfa.ll = Const.SEASON_PINNACLE_CAP + 40;
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 30)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP + 30;
                     }
                 } else if (nfa.name.endsWith('Master')) {
-                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 20)) {
-                        nfa.ll = Const.SEASON_PINNACLE_CAP + 20;
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 30)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP + 30;
                     }
                 } else if (nfa.name.endsWith('Legend')) {
-                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP - 10)) {
-                        nfa.ll = Const.SEASON_PINNACLE_CAP - 10;
+                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP + 20)) {
+                        nfa.ll = Const.SEASON_PINNACLE_CAP + 20;
                     }
                 } else if (nfa.name.endsWith('Hero')) {
                     if (nfa.ll < (Const.SEASON_PINNACLE_CAP - 40)) {
                         nfa.ll = Const.SEASON_PINNACLE_CAP - 40;
-                    }
-                } else if (nfa.name.endsWith('Adept')) {
-                    if (nfa.ll < (Const.SEASON_PINNACLE_CAP - 80)) {
-                        nfa.ll = Const.SEASON_PINNACLE_CAP - 80;
                     }
                 }
             }
