@@ -33,7 +33,7 @@ jobs:
         PROD_DIM_API_KEY: ${{ secrets.DIM_API_KEY }} 
     - run: ng build --configuration production
     - name: copy file via ssh key
-      uses: appleboy/scp-action@98930d398ce425af0148ea8a0e3295cd04fe2b7a
+      uses: appleboy/scp-action@v0.1.4
       env:
         HOST: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.UID }}
