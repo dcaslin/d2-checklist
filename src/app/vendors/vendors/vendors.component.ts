@@ -22,7 +22,7 @@ export class VendorsComponent implements OnInit, OnDestroy {
     { text: 'Armor', icon: this.iconService.farHelmetBattle, types: [ItemType.Armor] },
     { text: 'Mods', icon: this.iconService.farCog, types: [ItemType.GearMod] },
     { text: 'Exchange', icon: this.iconService.farBalanceScale, types: [ItemType.ExchangeMaterial, ItemType.CurrencyExchange] },
-    { text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost] }];
+    { text: 'Cosmetics', icon: this.iconService.farPalette, types: [ItemType.Ship, ItemType.Vehicle, ItemType.Emote, ItemType.Ghost, ItemType.Shader] }];
 
 
   public visibleFilterText: string = null;
