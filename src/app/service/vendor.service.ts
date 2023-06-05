@@ -179,9 +179,10 @@ export class VendorService {
     const returnMe = [];
     for (const c of checkMe) {
 
-      if (c.vendorItemInfo?.status !== null) {
-        continue;
-      }
+      // this check caused Ada shaders to not show up, hopefully no side-effects
+      // if (c.vendorItemInfo?.status !== null) {
+      //   continue;
+      // }
       if (c.collectibleHash) {
         const collectionItem = player.searchableCollection.find(i => i.hash == c.collectibleHash);
         if (!collectionItem || !collectionItem.complete) {
@@ -200,19 +201,34 @@ export class VendorService {
     // type == 99 and seller is banshee (for gun mods), compare to collections? "Rampage Spec Banshee-44 672118013" 1990124610
     // type == 100 and seller is tess, compare to collections "Resilient Laurel Tess Everis 3361454721"
     const returnMe: VendorCollection[] = [];
-    const xurArmor = this.checkCollectionForVendor(player, vendorItems, '2190858386', ItemType.Armor);
-    if (xurArmor.length > 0) {
-      returnMe.push({
-        vendor: xurArmor[0].vendorItemInfo.vendor,
-        data: xurArmor
-      });
+
+
+    const shaderVendors = [
+      '3361454721', // tess
+      '350061650', // ada
+    ];
+    for (const v of shaderVendors) {
+      const shaders = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Shader);
+      if (shaders.length > 0) {
+        returnMe.push({
+          vendor: shaders[0].vendorItemInfo.vendor,
+          data: shaders
+        });
+      }
     }
-    const adaArmor = this.checkCollectionForVendor(player, vendorItems, '350061650', ItemType.Armor);
-    if (adaArmor.length > 0) {
-      returnMe.push({
-        vendor: adaArmor[0].vendorItemInfo.vendor,
-        data: adaArmor
-      });
+
+    const armorVendors = [
+      '350061650', // ada
+      '2190858386', // xur
+    ];
+    for (const v of armorVendors) {
+      const armor = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Armor);
+      if (armor.length > 0) {
+        returnMe.push({
+          vendor: armor[0].vendorItemInfo.vendor,
+          data: armor
+        });
+      }
     }
     const modVendors = [
       '672118013', // banshee
@@ -229,19 +245,18 @@ export class VendorService {
         });
       }
     }
-    const tessShaders = this.checkCollectionForVendor(player, vendorItems, '3361454721', ItemType.Shader);
-    if (tessShaders.length > 0) {
-      returnMe.push({
-        vendor: tessShaders[0].vendorItemInfo.vendor,
-        data: tessShaders
-      });
-    }
-    const adaShaders = this.checkCollectionForVendor(player, vendorItems, '350061650', ItemType.Shader);
-    if (adaShaders.length > 0) {
-      returnMe.push({
-        vendor: adaShaders[0].vendorItemInfo.vendor,
-        data: adaShaders
-      });
+    const weaponVendors = [
+      '672118013', // bansheer
+      '2190858386', // xur
+    ];
+    for (const v of weaponVendors) {
+      const weapons = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Weapon);
+      if (weapons.length > 0) {
+        returnMe.push({
+          vendor: weapons[0].vendorItemInfo.vendor,
+          data: weapons
+        });
+      }
     }
     return returnMe;
   }
