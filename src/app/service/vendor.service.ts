@@ -656,6 +656,10 @@ export class VendorService {
     i.itemInstanceId = i.vendorItemIndex;
     // last arg is item progressions, which will always be empty from a vendor
     const data: InventoryItem = await this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
+    if (i.itemHash == '1371145734') {
+      console.log('Look here again!')
+      console.dir(data);
+    }
     i.owner = char;
     // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
     if (!data) {
