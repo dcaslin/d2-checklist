@@ -7,7 +7,6 @@ import { from, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
-import { LowLineService } from './lowline.service';
 import {
   ApiInventoryBucket, Character,
   CharacterVendorData, ClassAllowed, InventoryItem, ItemType,
@@ -32,7 +31,6 @@ export class VendorService {
     private bungieService: BungieService,
     private notificationService: NotificationService,
     private destinyCacheService: DestinyCacheService,
-    private lowlineService: LowLineService,
     private preferredStatService: PreferredStatService,
     private pandaGodRollsService: PandaGodrollsService,
     private parseService: ParseService) {
@@ -537,11 +535,7 @@ export class VendorService {
 
       const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, key, vendor, dynamicStrings);
       returnMe = returnMe.concat(items);
-    }
-    for (const i of returnMe) {
-      i.lowLinks = this.lowlineService.buildItemLink(i.hash);
-
-    }
+    }    
     this.preferredStatService.processItems(returnMe);
     this.pandaGodRollsService.processItems(returnMe);
     this.parseService.applyTagsToItem(returnMe);

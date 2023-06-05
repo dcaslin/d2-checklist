@@ -39,7 +39,6 @@ import { BungieService } from './service/bungie.service';
 import { DestinyCacheService } from './service/destiny-cache.service';
 import { GearService } from './service/gear.service';
 import { IconService } from './service/icon.service';
-import { LowLineService } from './service/lowline.service';
 import { MarkService } from './service/mark.service';
 import { NotificationService } from './service/notification.service';
 import { PandaGodrollsService } from './service/panda-godrolls.service';
@@ -121,7 +120,6 @@ import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dia
     DestinyCacheService,
     GearService,
     IconService,
-    LowLineService,
     MarkService,
     NotificationService,
     ParseService,

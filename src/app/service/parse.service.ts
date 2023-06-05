@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { parseISO } from 'date-fns';
 import { DestinyCacheService, ManifestInventoryItem, Season, SeasonPass } from './destiny-cache.service';
-import { LowLineService } from './lowline.service';
 import {
     Activity,
     AggHistoryEntry,
@@ -122,8 +121,8 @@ export class ParseService {
 
     ];
 
-    constructor(private destinyCacheService: DestinyCacheService, private lowlineService: LowLineService) {
-        this.lowlineService.init();
+    constructor(private destinyCacheService: DestinyCacheService) {
+        
     }
 
     private static dedupeArray(arr: any[]): any[] {
@@ -1558,7 +1557,6 @@ export class ParseService {
                         name: name,
                         checked: checked,
                         video: entry.video,
-                        lowLinks: this.lowlineService.buildChecklistLink(hash),
                         desc: cDesc
                     };
                     checkListItems.push(checklistItem);
@@ -1699,7 +1697,6 @@ export class ParseService {
                                     allDone: false,
                                     // weird adventures that are only once per account
                                     oncePerAccount: (hash === 844419501 || hash === 1942564430) ? true : false,
-                                    lowLinks: this.lowlineService.buildChecklistLink(hash),
                                     checked: []
                                 };
                                 checklist.entries.push(checklistItem);
@@ -2206,11 +2203,9 @@ export class ParseService {
                             if (parsed.type === ItemType.Bounty) {
                                 // ignore expired
                                 if (!parsed.expired) {
-                                    parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                     bounties.push(parsed);
                                 }
                             } else if (parsed.type === ItemType.Quest || parsed.type === ItemType.QuestStep) {
-                                parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 quests.push(parsed);
                             } else if (detailedInv && parsed.inventoryBucket?.hash === 2422292810) {
                                 // FORBIDDEN BUCKET =) 
@@ -2219,7 +2214,6 @@ export class ParseService {
                             }
                             else {
                                 // if (parsed.objectives && parsed.objectives.length > 0) {
-                                //     parsed.lowLinks = this.lowlineService.buildItemLink(parsed.hash);
                                 //     quests.push(parsed);
                                 //     console.log(`Non quest pushed ${parsed.name}`);
 
@@ -3176,7 +3170,6 @@ export class ParseService {
             title: title,
             children: null,
             path: path,
-            lowLinks: this.lowlineService.buildRecordLink(key),
             interval: isInterval,
             earned: earnedPts,
             score: totalPts,
