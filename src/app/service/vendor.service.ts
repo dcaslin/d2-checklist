@@ -134,7 +134,7 @@ export class VendorService {
     // if any vendor exotic armor (Xur), look exactly by item type
     const exoticDeals = this.findExoticArmorDeals(player, interestingVendorArmor);
     const collectionItems = this.checkCollections(player, vendorItems);
-    const exchange = await this.getExchangeInfo(player, vendorItems);
+    // const exchange = await this.getExchangeInfo(player, vendorItems);
     const returnMe = {
       playerLoading: false,
       vendorsLoading,
@@ -199,6 +199,9 @@ export class VendorService {
     // type == 99 and seller is banshee (for gun mods), compare to collections? "Rampage Spec Banshee-44 672118013" 1990124610
     // type == 100 and seller is tess, compare to collections "Resilient Laurel Tess Everis 3361454721"
     const returnMe: VendorCollection[] = [];
+    if (vendorItems?.length == 0) {
+      return returnMe;
+    }
 
 
     const shaderVendors = [
@@ -572,6 +575,9 @@ export class VendorService {
 
 
   private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem> {
+    if (i.itemHash == '1371145734') {
+      console.log('Look here!')
+    }
     if (i.itemHash == null && i.itemHash === 0) { return null; }
     const iDesc: any = await this.destinyCacheService.getInventoryItem(i.itemHash);
     if (iDesc == null) { return null; }
