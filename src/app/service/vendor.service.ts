@@ -207,6 +207,7 @@ export class VendorService {
     ];
     for (const v of shaderVendors) {
       const shaders = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Shader);
+      console.log(`Found ${shaders.length} shaders for ${v}`)
       if (shaders.length > 0) {
         returnMe.push({
           vendor: shaders[0].vendorItemInfo.vendor,
