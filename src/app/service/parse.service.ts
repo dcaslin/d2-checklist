@@ -3657,6 +3657,8 @@ export class ParseService {
                     type = ItemType.Shader;
                 } else if (type === ItemType.Dummy && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
                     type = ItemType.Shader;
+                } else if (type === ItemType.None && desc.itemTypeDisplayName.indexOf('Shader') >= 0) {
+                    type = ItemType.Shader;
                 } else if ((type === ItemType.Dummy || type == ItemType.Mod || type === ItemType.None) && desc.displayProperties.name.endsWith('Element')) {
                     // type = ItemType.ExchangeMaterial;       
                     // itemTypeDisplayName = 'Shaping Material';
