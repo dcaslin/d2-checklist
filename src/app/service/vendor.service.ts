@@ -575,9 +575,6 @@ export class VendorService {
 
 
   private async parseSaleItem(vendor: Vendor, char: Character, resp: any, i: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem> {
-    if (i.itemHash == '1371145734') {
-      console.log('Look here!')
-    }
     if (i.itemHash == null && i.itemHash === 0) { return null; }
     const iDesc: any = await this.destinyCacheService.getInventoryItem(i.itemHash);
     if (iDesc == null) { return null; }
@@ -656,10 +653,6 @@ export class VendorService {
     i.itemInstanceId = i.vendorItemIndex;
     // last arg is item progressions, which will always be empty from a vendor
     const data: InventoryItem = await this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
-    if (i.itemHash == '1371145734') {
-      console.log('Look here again!')
-      console.dir(data);
-    }
     i.owner = char;
     // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
     if (!data) {
