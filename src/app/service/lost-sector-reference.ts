@@ -786,11 +786,11 @@ const LS_GILDED_PRECEPT: LostSectorMeta = {
   directorLocation: 'Neomuna',
   legend: {
     hash: '2983905025',
-    shields: ['Solar(?)', 'Void(?)'],
+    shields: ['Solar(2)', 'Void(2)'],
     champions: [
       {
         name: 'Barrier',
-        count: 2
+        count: 1
       },
       {
         name: 'Unstoppable',
@@ -800,15 +800,15 @@ const LS_GILDED_PRECEPT: LostSectorMeta = {
   },
   master: {
     hash: '2983905030',
-    shields: ['Solar(?)', 'Void(?)'],
+    shields: ['Solar(0)', 'Void(4)'],
     champions: [
       {
         name: 'Barrier',
-        count: -1
+        count: 3
       },
       {
         name: 'Unstoppable',
-        count: -1
+        count: 2
       }
     ]
   }
