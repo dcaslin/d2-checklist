@@ -132,6 +132,16 @@ export class PandaGodrollsService implements OnDestroy {
         }
         continue;
       }
+      if (info.controller == null && info.mnk != null) {
+        info.controller = info.mnk;
+        console.log(`%cMissing controller roll for '${name}'.`, LOG_CSS);
+        
+      }
+      if (info.mnk == null && info.controller != null) {
+        info.mnk = info.controller;
+        console.log(`%cMissing mnk roll for '${name}'.`, LOG_CSS);
+        
+      }
       let rolls: GunRolls = null;
       if (this.isController) {
         rolls = info.controller;
