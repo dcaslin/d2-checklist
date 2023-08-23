@@ -1,67 +1,98 @@
-      <h1>Destiny 2 Checklist</h1>
-      <div class="actions">
-        <a class="space-right" mat-raised-button color="accent" rel="noopener"
-          href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
-          <fa-icon [icon]="iconService.fabPaypal"></fa-icon> Donate
-        </a>
-        <a class="space-right" mat-raised-button target="_blank" rel="noopener"
-          href="https://twitter.com/D2Checklist">
-          <fa-icon [icon]="iconService.fabTwitter"></fa-icon> @D2Checklist
-        </a>
-        <a class="space-right" mat-raised-button target="_blank" rel="noopener"
-          href="https://www.reddit.com/r/destinychecklistnet">
-          <fa-icon [icon]="iconService.fabReddit"></fa-icon> /r/destinychecklistnet
-        </a>
-        <a class="space-right" mat-raised-button target="_blank" rel="noopener"
-          href="https://github.com/dcaslin/d2-checklist/">
-          <fa-icon [icon]="iconService.fabGithub"></fa-icon> Source Code
-        </a>
-      </div>
-      <div class="get-started">
-        <section class="body-1">
-          <p>
-            This site's goal is to help people have more fun with Destiny 2. As the game changes so will its features.
-            Focus is generally on tracking data for yourself, your friends and your clan.
-          </p>
-        </section>
-        <section class="body-2">
-          <p>This site is <a href="https://github.com/dcaslin/d2-checklist/" target="_blank">open sourced on GitHub</a>,
-            and actively supported via
-            <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">Reddit</a> and
-            <a href="https://twitter.com/D2Checklist" target="_blank" rel="noopener">Twitter</a>.
-          </p>
-          <p>
-            If you don't like ads, just pop over to the <a routerLink="/settings">settings page</a> and disable
-            them. The site will remember your settings in the future.
-            That same settings page also has options to choose a dark (or pink) theme.
-          </p>
-          <p> You can help support the site by using one of the Amazon links below:</p>
-          <div class="link-row">
-              <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-Bungie-Inc/dp/1950366243/ref=as_li_ss_il?crid=16TGVQDA83BPQ&dchild=1&keywords=destiny+grimoire+anthology+volume+3&qid=1595305777&sprefix=destiny+grim,aps,144&sr=8-1&linkCode=li2&tag=destinychecklist-20&linkId=c2fba9e3844cd6ceada6ac06d8b92f3a&language=en_US" target="_blank"><img border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1950366243&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US" ></a><img src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1950366243" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-              <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-II-Kingdoms/dp/1945683694/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572494623&s=books&sr=1-1&linkCode=li2&tag=destinychecklist-20&linkId=aeaa782e14ab0b4b2e97e0c4d71caae1&language=en_US" target="_blank"><img border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1945683694&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US" ></a><img src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1945683694" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-              <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-Vol-I/dp/1945683449/ref=as_li_ss_il?keywords=destiny+grimoire+bungie&qid=1563114029&s=digital-text&sr=1-1-catcorr&linkCode=li2&tag=destinychecklist-20&linkId=37dc3afddb326a358af1b5c12d42aff5&language=en_US"
-                target="_blank"><img border="0"
-                  src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1945683449&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
-                src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1945683449"
-                width="1" height="1" border="0" alt="" />
-              <a href="https://www.amazon.com/Destiny-Comic-Collection-Bungie-Inc/dp/1945683953/ref=as_li_ss_il?keywords=destiny+grimoire&qid=1563112028&s=gateway&sr=8-3&linkCode=li2&tag=destinychecklist-20&linkId=6e6720c3a56e4556600bb79caa360f79&language=en_US"
-                target="_blank"><img border="0"
-                  src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1945683953&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
-                src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1945683953"
-                width="1" height="1" border="0" alt="" />
-              <a href="https://www.amazon.com/Art-Destiny-Bungie/dp/1608874206/ref=as_li_ss_il?keywords=destiny+grimoire&qid=1563112028&s=gateway&sr=8-7&linkCode=li2&tag=destinychecklist-20&linkId=8b2700b846e4ba71bbff0883d59fe8ef&language=en_US"
-                target="_blank"><img border="0"
-                  src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1608874206&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
-                src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1608874206"
-                width="1" height="1" border="0" alt="" />
-              <a href="https://www.amazon.com/Art-Destiny-2-Bungie/dp/168383111X/ref=as_li_ss_il?keywords=destiny+grimoire&qid=1563112028&s=gateway&sr=8-4&linkCode=li2&tag=destinychecklist-20&linkId=c35ad54587438920f3db1f9252eb0714&language=en_US"
-                target="_blank"><img border="0"
-                  src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=168383111X&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
-                src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=168383111X"
-                width="1" height="1" border="0" alt="" />
-                <a href="https://www.amazon.com/Destiny-2-Official-Poster-Collection/dp/1683831136/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572495020&s=books&sr=1-16&linkCode=li2&tag=destinychecklist-20&linkId=9c41ba3613627160d05a6ee5a1e8d139&language=en_US" target="_blank"><img border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1683831136&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US" ></a><img src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1683831136" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-                <a href="https://www.amazon.com/Destiny-Poster-Collection-Insights-Collections/dp/1608874222/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572495020&s=books&sr=1-17&linkCode=li2&tag=destinychecklist-20&linkId=a21b9b9b0f6c22c4a0d7ca605e221847&language=en_US" target="_blank"><img border="0" src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1608874222&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US" ></a><img src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1608874222" width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
-            </div>
-          
-        </section>
-      </div>
+<h1>Destiny 2 Checklist</h1>
+<div class="actions">
+  <a class="space-right" mat-raised-button color="accent" rel="noopener"
+    href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VBASBDZD7HAHS">
+    <fa-icon [icon]="iconService.fabPaypal"></fa-icon> Donate
+  </a>
+  <a class="space-right" mat-raised-button target="_blank" rel="noopener" href="https://twitter.com/D2Checklist">
+    <fa-icon [icon]="iconService.fabTwitter"></fa-icon> @D2Checklist
+  </a>
+  <a class="space-right" mat-raised-button target="_blank" rel="noopener"
+    href="https://www.reddit.com/r/destinychecklistnet">
+    <fa-icon [icon]="iconService.fabReddit"></fa-icon> /r/destinychecklistnet
+  </a>
+  <a class="space-right" mat-raised-button target="_blank" rel="noopener"
+    href="https://github.com/dcaslin/d2-checklist/">
+    <fa-icon [icon]="iconService.fabGithub"></fa-icon> Source Code
+  </a>
+</div>
+<div class="get-started">
+  <section class="body-1">
+    <p>
+      This site's goal is to help people have more fun with Destiny 2. As the game changes so will its features.
+      Focus is generally on tracking data for yourself, your friends and your clan.
+    </p>
+  </section>
+  <section class="body-2">
+    <p>This site is <a href="https://github.com/dcaslin/d2-checklist/" target="_blank">open sourced on GitHub</a>,
+      and actively supported via
+      <a href="https://www.reddit.com/r/destinychecklistnet" target="_blank" rel="noopener">Reddit</a> and
+      <a href="https://twitter.com/D2Checklist" target="_blank" rel="noopener">Twitter</a>.
+    </p>
+    <p>
+      If you don't like ads, just pop over to the <a routerLink="/settings">settings page</a> and disable
+      them. The site will remember your settings in the future.
+      That same settings page also has options to choose a dark (or pink) theme.
+    </p>
+    <p> You can help support the site by using one of the Amazon links below:</p>
+    <div class="link-row">
+      <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-Vol-I/dp/1945683449/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572495020&s=books&sr=1-2&linkCode=li2&tag=destinychecklist-20&linkId=9f131e392b1f7808bc240d2989d4ae41&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1945683449&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1945683449"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-II-Kingdoms/dp/1945683694/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572494623&s=books&sr=1-1&linkCode=li2&tag=destinychecklist-20&linkId=aeaa782e14ab0b4b2e97e0c4d71caae1&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1945683694&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1945683694"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-Bungie-Inc/dp/1950366243/ref=as_li_ss_il?crid=16TGVQDA83BPQ&dchild=1&keywords=destiny+grimoire+anthology+volume+3&qid=1595305777&sprefix=destiny+grim,aps,144&sr=8-1&linkCode=li2&tag=destinychecklist-20&linkId=c2fba9e3844cd6ceada6ac06d8b92f3a&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1950366243&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1950366243"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      <a href="https://www.amazon.com/Destiny-Grimoire-IV-Royal-Will/dp/1957721030?crid=IA1K1TGTB3ZV&keywords=destiny+grimoire+anthology+volume+4&qid=1692821264&sprefix=destiny+grimoire+anthology+volume+%2Caps%2C122&sr=8-1&linkCode=li2&tag=destinychecklist-20&linkId=4cc65095feea4874a15fd38418ed4cdc&language=en_US&ref_=as_li_ss_il"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1957721030&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1957721030"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-Legions-Adrift/dp/195772109X?crid=39W1I79LRUHAJ&keywords=destiny+grimoire+anthology+volume+5&qid=1692821318&sprefix=destiny+grimoire+anthology+volume+%2Caps%2C188&sr=8-1&linkCode=li2&tag=destinychecklist-20&linkId=232c918fa9c420ec458d2c5b6a557b86&language=en_US&ref_=as_li_ss_il"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=195772109X&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=195772109X"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      <a href="https://www.amazon.com/Destiny-Grimoire-Anthology-VI-Partners/dp/1957721111?crid=20HW7HIL70Q5U&keywords=destiny+grimoire+anthology+volume+6&qid=1692821346&sprefix=destiny+grimoire+anthology+volume+6%2Caps%2C130&sr=8-1&linkCode=li2&tag=destinychecklist-20&linkId=bcd6fd7113888569564e45e23c74a8fc&language=en_US&ref_=as_li_ss_il"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1957721111&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1957721111"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+
+      <a href="https://www.amazon.com/Destiny-Comic-Collection-Bungie-Inc/dp/1945683953/ref=as_li_ss_il?keywords=destiny+grimoire&qid=1563112028&s=gateway&sr=8-3&linkCode=li2&tag=destinychecklist-20&linkId=6e6720c3a56e4556600bb79caa360f79&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1945683953&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1945683953"
+        width="1" height="1" border="0" alt="" />
+      <a href="https://www.amazon.com/Art-Destiny-Bungie/dp/1608874206/ref=as_li_ss_il?keywords=destiny+grimoire&qid=1563112028&s=gateway&sr=8-7&linkCode=li2&tag=destinychecklist-20&linkId=8b2700b846e4ba71bbff0883d59fe8ef&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1608874206&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1608874206"
+        width="1" height="1" border="0" alt="" />
+      <a href="https://www.amazon.com/Art-Destiny-2-Bungie/dp/168383111X/ref=as_li_ss_il?keywords=destiny+grimoire&qid=1563112028&s=gateway&sr=8-4&linkCode=li2&tag=destinychecklist-20&linkId=c35ad54587438920f3db1f9252eb0714&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=168383111X&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=168383111X"
+        width="1" height="1" border="0" alt="" />
+      <a href="https://www.amazon.com/Destiny-2-Official-Poster-Collection/dp/1683831136/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572495020&s=books&sr=1-16&linkCode=li2&tag=destinychecklist-20&linkId=9c41ba3613627160d05a6ee5a1e8d139&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1683831136&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1683831136"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+      <a href="https://www.amazon.com/Destiny-Poster-Collection-Insights-Collections/dp/1608874222/ref=as_li_ss_il?keywords=Destiny+Grimoire+Anthology&qid=1572495020&s=books&sr=1-17&linkCode=li2&tag=destinychecklist-20&linkId=a21b9b9b0f6c22c4a0d7ca605e221847&language=en_US"
+        target="_blank"><img border="0"
+          src="//ws-na.amazon-adsystem.com/widgets/q?_encoding=UTF8&ASIN=1608874222&Format=_SL160_&ID=AsinImage&MarketPlace=US&ServiceVersion=20070822&WS=1&tag=destinychecklist-20&language=en_US"></a><img
+        src="https://ir-na.amazon-adsystem.com/e/ir?t=destinychecklist-20&language=en_US&l=li2&o=1&a=1608874222"
+        width="1" height="1" border="0" alt="" style="border:none !important; margin:0px !important;" />
+    </div>
+
+  </section>
+</div>

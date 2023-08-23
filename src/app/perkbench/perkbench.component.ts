@@ -14,7 +14,7 @@ import {
   ItemType
 } from '@app/service/model';
 import { NotificationService } from '@app/service/notification.service';
-import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, GUN_SUFFIXES, PandaGodrollsService, RYKER_GOD_ROLLS_URL } from '@app/service/panda-godrolls.service';
+import { CompleteGodRolls, CUSTOM_GOD_ROLLS, GunRoll, GunRolls, GUN_SUFFIXES, PandaGodrollsService } from '@app/service/panda-godrolls.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { StorageService } from '@app/service/storage.service';
 import { ChildComponent } from '@app/shared/child.component';
@@ -152,7 +152,6 @@ function isIncomplete(isController: boolean, roll: MappedRoll): boolean {
 })
 export class PerkbenchComponent extends ChildComponent {
   public isController = true;
-  public RYKER_GOD_ROLLS_URL = RYKER_GOD_ROLLS_URL;
   public sortBy = 'season';
   public sortDesc = true;
   public filterText = '';
