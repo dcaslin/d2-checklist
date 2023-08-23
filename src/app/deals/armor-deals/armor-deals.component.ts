@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { TargetArmorStatsDialogComponent } from '@app/gear/target-armor-stats-dialog/target-armor-stats-dialog.component';
 import { IconService } from '@app/service/icon.service';
-import { ClassAllowed, InventoryItem } from '@app/service/model';
+import { ClassAllowed, DestinyClasses, InventoryItem } from '@app/service/model';
 import { ParseService } from '@app/service/parse.service';
 import { SignedOnUserService } from '@app/service/signed-on-user.service';
 import { ClassInventoryBucket, ExoticInventoryBucket, VendorDeals } from '@app/service/vendor.service';
@@ -16,6 +16,8 @@ import { ArmorCompareDialogComponent } from '../armor-compare-dialog/armor-compa
 })
 export class ArmorDealsComponent {
   @Input() vendorDeals: VendorDeals;
+
+  public DestinyClasses = DestinyClasses;
 
   constructor(
     public dialog: MatDialog,
