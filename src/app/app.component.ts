@@ -171,10 +171,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
   private static getFinalComponent(r: ActivatedRoute): string {
+    // TODO port to gtag
     // grab platform while we're here
-    if (r.snapshot.params.platform != null) {
-      (window as any).ga('set', 'platform', r.snapshot.params.platform);
-    }
+    // if (r.snapshot.params.platform != null) {
+    //   (window as any).ga('set', 'platform', r.snapshot.params.platform);
+    // }
     if (r.children != null && r.children.length > 0) {
       if (r.routeConfig != null) {
         return r.routeConfig.path + '/' + AppComponent.getFinalComponent(r.children[0]);
@@ -215,8 +216,11 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
             }
 
             const path = AppComponent.getFinalComponent(route);
-            (window as any).ga('set', 'disabled-ads', this.disableads);
-            (window as any).ga('send', 'pageview', path);
+            // todo port to gtag
+            //(window as any).ga('set', 'disabled-ads', this.disableads);
+            // (window as any).ga('send', 'pageview', path);
+            (window as any).gtag('set', 'page_path', path);
+            (window as any).gtag('event', 'page_view');
           } catch (err) {
             console.dir(err);
           }
