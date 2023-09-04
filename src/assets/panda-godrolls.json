@@ -9466,6 +9466,70 @@
       "controller": false
     },
     {
+      "name": "dead messenger",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "the fundamentals",
+          "short-action stock",
+          "demolitionist"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "implosion rounds",
+          "short-action stock",
+          "demolitionist",
+          "the fundamentals"
+        ],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "dead messenger",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "the fundamentals",
+          "short-action stock",
+          "demolitionist"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "implosion rounds",
+          "short-action stock",
+          "demolitionist",
+          "the fundamentals"
+        ],
+        "goodPerks": []
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "dead weight",
       "sheet": "perkbench",
       "pve": {
