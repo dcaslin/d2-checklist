@@ -475,8 +475,20 @@ export class PerkbenchComponent extends ChildComponent {
 
   private buildRollJson(): CompleteGodRolls {
     const newRolls = PerkbenchComponent.rebuildRolls(this.rolls$.getValue());
-    // sort newRolls by name ascending
-    newRolls.sort((a, b) => a.name.localeCompare(b.name));
+    // sort newRolls by name ascending and also always have mnk first then controller
+    newRolls.sort((a, b) => {
+      if (a.name == b.name) {
+        if (a.mnk && !b.mnk) {
+          return -1;
+        } else if (!a.mnk && b.mnk) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    });
     const downloadMe: CompleteGodRolls = {
       title: this.currentTitle,
       date: new Date().toISOString(),
