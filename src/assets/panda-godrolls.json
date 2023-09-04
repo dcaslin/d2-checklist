@@ -5657,7 +5657,7 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "handling"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -5671,12 +5671,11 @@
           "accurized rounds",
           "tactical mag",
           "keep away",
-          "perpetual motion",
           "explosive payload"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "brya's love",
@@ -5705,7 +5704,7 @@
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "stability"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -5719,11 +5718,12 @@
           "accurized rounds",
           "tactical mag",
           "keep away",
+          "perpetual motion",
           "explosive payload"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "bug-out bag",
@@ -6907,8 +6907,8 @@
           "hatchling"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "cataphract gl3",
@@ -6950,8 +6950,8 @@
           "hatchling"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "chattering bone",
@@ -9596,8 +9596,8 @@
           "killing wind"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "deadpan delivery",
@@ -9640,8 +9640,8 @@
           "killing wind"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "deafening whisper",
@@ -11850,24 +11850,25 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "handling"
         ],
         "greatPerks": [
-          "arrowhead brake",
           "ricochet rounds",
           "zen moment",
-          "tap the trigger"
+          "fluted barrel",
+          "target lock"
         ],
         "goodPerks": [
-          "fluted barrel",
-          "smallbore",
           "moving target",
-          "heating up",
-          "target lock"
+          "extended barrel",
+          "arrowhead brake",
+          "high-caliber rounds",
+          "well-rounded",
+          "tap the trigger"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "eleatic principle",
@@ -11894,25 +11895,24 @@
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "stability"
         ],
         "greatPerks": [
+          "arrowhead brake",
           "ricochet rounds",
           "zen moment",
-          "fluted barrel",
-          "target lock"
+          "tap the trigger"
         ],
         "goodPerks": [
+          "fluted barrel",
+          "smallbore",
           "moving target",
-          "extended barrel",
-          "arrowhead brake",
-          "high-caliber rounds",
-          "well-rounded",
-          "tap the trigger"
+          "heating up",
+          "target lock"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "elegy-49",
@@ -16361,8 +16361,8 @@
           "en garde"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "geodetic hsm",
@@ -16402,8 +16402,8 @@
           "en garde"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "glacioclasm",
@@ -18155,11 +18155,11 @@
           "smallbore",
           "flared magwell",
           "rangefinder",
-          "moving target"
+          "demolitionist"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "heliocentric qsc",
@@ -18199,11 +18199,11 @@
           "smallbore",
           "flared magwell",
           "rangefinder",
-          "demolitionist"
+          "moving target"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "heretic",
@@ -19459,7 +19459,7 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -19473,11 +19473,12 @@
           "rapid hit",
           "fragile focus",
           "moving target",
-          "opening shot"
+          "opening shot",
+          "hammer-forged rifling"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "igneous hammer",
@@ -19504,7 +19505,7 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "stability"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -19518,12 +19519,11 @@
           "rapid hit",
           "fragile focus",
           "moving target",
-          "opening shot",
-          "hammer-forged rifling"
+          "opening shot"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "ignition code",
@@ -21852,23 +21852,21 @@
       },
       "pvp": {
         "masterwork": [
-          "range",
-          "stability"
+          "range"
         ],
         "greatPerks": [
-          "smallbore",
           "accurized rounds",
           "killing wind",
-          "eye of the storm"
+          "eye of the storm",
+          "hammer-forged rifling"
         ],
         "goodPerks": [
-          "fluted barrel",
-          "hammer-forged rifling",
-          "quickdraw"
+          "quickdraw",
+          "smallbore"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "kept confidence",
@@ -21894,21 +21892,23 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "range",
+          "stability"
         ],
         "greatPerks": [
+          "smallbore",
           "accurized rounds",
           "killing wind",
-          "eye of the storm",
-          "hammer-forged rifling"
+          "eye of the storm"
         ],
         "goodPerks": [
-          "quickdraw",
-          "smallbore"
+          "fluted barrel",
+          "hammer-forged rifling",
+          "quickdraw"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "kindled orchid",
@@ -23186,8 +23186,8 @@
           "headstone"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "locus locutus",
@@ -23230,8 +23230,8 @@
           "headstone"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "lodbrok-c",
@@ -23901,8 +23901,8 @@
           "eye of the storm"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "luna regolith iii",
@@ -23947,8 +23947,8 @@
           "eye of the storm"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "lunulata-4b",
@@ -26201,7 +26201,7 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -26210,18 +26210,18 @@
           "headseeker"
         ],
         "goodPerks": [
-          "chambered compensator",
           "smallbore",
           "flared magwell",
           "high-caliber rounds",
           "enlightened action",
-          "heating up",
-          "moving target",
-          "kill clip"
+          "kill clip",
+          "extended barrel",
+          "rangefinder",
+          "moving target"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "nightshade",
@@ -26247,7 +26247,7 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -26256,18 +26256,18 @@
           "headseeker"
         ],
         "goodPerks": [
+          "chambered compensator",
           "smallbore",
           "flared magwell",
           "high-caliber rounds",
           "enlightened action",
-          "kill clip",
-          "extended barrel",
-          "rangefinder",
-          "moving target"
+          "heating up",
+          "moving target",
+          "kill clip"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "no feelings",
@@ -26574,19 +26574,19 @@
           "range"
         ],
         "greatPerks": [
-          "arrowhead brake",
           "projection fuse",
           "fragile focus",
-          "elemental capacitor"
+          "hammer-forged rifling",
+          "kickstart"
         ],
         "goodPerks": [
           "smallbore",
           "under pressure",
-          "kickstart"
+          "elemental capacitor"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "nox perennial v",
@@ -26614,19 +26614,19 @@
           "range"
         ],
         "greatPerks": [
+          "arrowhead brake",
           "projection fuse",
           "fragile focus",
-          "hammer-forged rifling",
-          "kickstart"
+          "elemental capacitor"
         ],
         "goodPerks": [
           "smallbore",
           "under pressure",
-          "elemental capacitor"
+          "kickstart"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "occluded finality",
@@ -28404,8 +28404,8 @@
           "moving target"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "persuader",
@@ -28445,8 +28445,8 @@
           "moving target"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "phyllotactic spiral",
@@ -29299,8 +29299,8 @@
           "golden tricorn"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "point of the stag",
@@ -29344,8 +29344,8 @@
           "golden tricorn"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "pointed inquiry",
@@ -29739,8 +29739,8 @@
           "successful warm-up"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "pre astyanax iv",
@@ -29785,8 +29785,8 @@
           "successful warm-up"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "premonition",
@@ -30444,7 +30444,8 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range",
+          "handling"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -30453,17 +30454,17 @@
           "headseeker"
         ],
         "goodPerks": [
-          "chambered compensator",
           "smallbore",
           "steady rounds",
           "moving target",
           "enlightened action",
           "golden tricorn",
-          "kill clip"
+          "kill clip",
+          "extended barrel"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "psi hermetic v",
@@ -30490,8 +30491,7 @@
       },
       "pvp": {
         "masterwork": [
-          "range",
-          "handling"
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -30500,17 +30500,17 @@
           "headseeker"
         ],
         "goodPerks": [
+          "chambered compensator",
           "smallbore",
           "steady rounds",
           "moving target",
           "enlightened action",
           "golden tricorn",
-          "kill clip",
-          "extended barrel"
+          "kill clip"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "punching out",
@@ -30808,25 +30808,24 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range"
         ],
         "greatPerks": [
-          "fluted barrel",
           "ricochet rounds",
           "dynamic sway reduction",
-          "rampage"
+          "rampage",
+          "hammer-forged rifling"
         ],
         "goodPerks": [
           "smallbore",
-          "flared magwell",
           "high-caliber rounds",
           "under pressure",
-          "killing wind",
-          "adrenaline junkie"
+          "adrenaline junkie",
+          "fluted barrel"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "qua xaphan v",
@@ -30854,24 +30853,25 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "stability"
         ],
         "greatPerks": [
+          "fluted barrel",
           "ricochet rounds",
           "dynamic sway reduction",
-          "rampage",
-          "hammer-forged rifling"
+          "rampage"
         ],
         "goodPerks": [
           "smallbore",
+          "flared magwell",
           "high-caliber rounds",
           "under pressure",
-          "adrenaline junkie",
-          "fluted barrel"
+          "killing wind",
+          "adrenaline junkie"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "quickfang",
@@ -32474,13 +32474,32 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "vorpal weapon",
+          "short-action stock",
+          "4-timer refit"
+        ],
+        "goodPerks": [
+          "armor-piercing rounds",
+          "hand-laid stock",
+          "frenzy refit"
+        ]
       },
       "pvp": {
         "masterwork": [],
-        "greatPerks": [],
-        "goodPerks": []
+        "greatPerks": [
+          "fluted barrel",
+          "ricochet rounds",
+          "moving target",
+          "short-action stock",
+          "pressurized refit"
+        ],
+        "goodPerks": [
+          "arrowhead brake",
+          "eye of the storm"
+        ]
       },
       "mnk": true,
       "controller": false
@@ -33706,8 +33725,8 @@
           "wellspring"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "semiotician",
@@ -33746,8 +33765,8 @@
           "wellspring"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "senuna si6",
@@ -39966,8 +39985,8 @@
           "pugilist"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "the eremite",
@@ -40011,8 +40030,8 @@
           "pugilist"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "the fool's remedy",
@@ -40221,26 +40240,25 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "handling"
         ],
         "greatPerks": [
           "fluted barrel",
           "ricochet rounds",
-          "moving target",
-          "kill clip"
+          "kill clip",
+          "enlightened action"
         ],
         "goodPerks": [
           "smallbore",
-          "polygonal rifling",
           "high-caliber rounds",
-          "flared magwell",
-          "demolitionist",
-          "enlightened action",
-          "adrenaline junkie"
+          "adrenaline junkie",
+          "corkscrew rifling",
+          "perpetual motion",
+          "demolitionist"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "the guiding sight",
@@ -40267,25 +40285,26 @@
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "stability"
         ],
         "greatPerks": [
           "fluted barrel",
           "ricochet rounds",
-          "kill clip",
-          "enlightened action"
+          "moving target",
+          "kill clip"
         ],
         "goodPerks": [
           "smallbore",
+          "polygonal rifling",
           "high-caliber rounds",
-          "adrenaline junkie",
-          "corkscrew rifling",
-          "perpetual motion",
-          "demolitionist"
+          "flared magwell",
+          "demolitionist",
+          "enlightened action",
+          "adrenaline junkie"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "the hero's burden",
@@ -41813,7 +41832,7 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -41822,18 +41841,18 @@
           "target lock"
         ],
         "goodPerks": [
-          "smallbore",
           "hammer-forged rifling",
-          "flared magwell",
           "high-caliber rounds",
           "overflow",
           "rangefinder",
           "swashbuckler",
-          "fragile focus"
+          "fragile focus",
+          "extended barrel",
+          "light mag"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "the showrunner",
@@ -41859,7 +41878,7 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "stability"
         ],
         "greatPerks": [
           "fluted barrel",
@@ -41868,18 +41887,18 @@
           "target lock"
         ],
         "goodPerks": [
+          "smallbore",
           "hammer-forged rifling",
+          "flared magwell",
           "high-caliber rounds",
           "overflow",
           "rangefinder",
           "swashbuckler",
-          "fragile focus",
-          "extended barrel",
-          "light mag"
+          "fragile focus"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "the spiteful fang",
@@ -45240,20 +45259,19 @@
         "greatPerks": [
           "hammer-forged rifling",
           "accurized rounds",
-          "dynamic sway reduction",
-          "target lock"
+          "target lock",
+          "killing wind"
         ],
         "goodPerks": [
           "smallbore",
-          "corkscrew rifling",
-          "killing wind",
           "perpetual motion",
           "fragile focus",
-          "tap the trigger"
+          "dynamic sway reduction",
+          "multikill clip"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "unending tempest",
@@ -45285,19 +45303,20 @@
         "greatPerks": [
           "hammer-forged rifling",
           "accurized rounds",
-          "target lock",
-          "killing wind"
+          "dynamic sway reduction",
+          "target lock"
         ],
         "goodPerks": [
           "smallbore",
+          "corkscrew rifling",
+          "killing wind",
           "perpetual motion",
           "fragile focus",
-          "dynamic sway reduction",
-          "multikill clip"
+          "tap the trigger"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "unexpected resurgence",
@@ -46483,24 +46502,24 @@
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range"
         ],
         "greatPerks": [
           "fluted barrel",
           "accurized rounds",
           "perpetual motion",
-          "zen moment"
+          "rampage"
         ],
         "goodPerks": [
           "smallbore",
           "enlightened action",
-          "moving target",
-          "rampage",
-          "kill clip"
+          "kill clip",
+          "hammer-forged rifling",
+          "snapshot sights"
         ]
       },
-      "mnk": true,
-      "controller": false
+      "mnk": false,
+      "controller": true
     },
     {
       "name": "warden's law",
@@ -46526,24 +46545,24 @@
       },
       "pvp": {
         "masterwork": [
-          "range"
+          "stability"
         ],
         "greatPerks": [
           "fluted barrel",
           "accurized rounds",
           "perpetual motion",
-          "rampage"
+          "zen moment"
         ],
         "goodPerks": [
           "smallbore",
           "enlightened action",
-          "kill clip",
-          "hammer-forged rifling",
-          "snapshot sights"
+          "moving target",
+          "rampage",
+          "kill clip"
         ]
       },
-      "mnk": false,
-      "controller": true
+      "mnk": true,
+      "controller": false
     },
     {
       "name": "wastelander m5",

@@ -479,9 +479,9 @@ export class PerkbenchComponent extends ChildComponent {
     newRolls.sort((a, b) => {
       if (a.name == b.name) {
         if (a.mnk && !b.mnk) {
-          return -1;
-        } else if (!a.mnk && b.mnk) {
           return 1;
+        } else if (!a.mnk && b.mnk) {
+          return -1;
         } else {
           return 0;
         }
