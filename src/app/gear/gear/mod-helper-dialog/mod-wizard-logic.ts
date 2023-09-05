@@ -428,7 +428,6 @@ async function clearModsOnItem(gearService: GearService, item: InventoryItem, lo
             log.push(logMe);
             log$.next(log);
             await gearService.insertFreeSocketForArmorMod(item, socket, target, previewOnly);
-            // do we need to sleep here?
         }
     }
 }

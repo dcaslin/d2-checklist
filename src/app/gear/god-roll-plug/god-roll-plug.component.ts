@@ -11,7 +11,6 @@ import { ClipboardService } from 'ngx-clipboard';
   styleUrls: ['./god-roll-plug.component.scss']
 })
 export class GodRollPlugComponent {
-  // TODO allow switching perk here
 
   @Input() plug: InventoryPlug;
 

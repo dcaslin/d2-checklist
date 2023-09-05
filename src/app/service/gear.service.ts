@@ -940,6 +940,8 @@ export class GearService {
         }
     }
 
+    // insertFreeSocketForArmorMod  is just slotting a mod into a socket
+    // "Free" means that it doesn't cost any currency, not like the bad old days
     public async insertFreeSocketForArmorMod(item: InventoryItem, socket: InventorySocket, plug: ManifestInventoryItem, previewOnly?: boolean): Promise<boolean> {
 
         const newPlug = new InventoryPlug(plug.hash + '', plug.displayProperties.name, plug.displayProperties.description, plug.displayProperties.icon, true, plug.plug?.energyCost, '', true, []);
@@ -965,10 +967,6 @@ export class GearService {
             console.dir(x);
             const msg = getHttpErrorMsg(x);
             this.notificationService.fail(`Failed to insert socket: ${msg}`);
-            // todo remove this
-            // socket.plugs = [newPlug];
-            // socket.active = newPlug;
-            // socket.empty = newPlug.empty;
             return false;
         }
         finally {

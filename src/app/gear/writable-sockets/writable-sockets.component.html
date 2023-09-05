@@ -1,31 +1,42 @@
 <ng-container *ngFor="let socket of item.sockets; first as isFirstSocket">
-    <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}} 
-        <br/>
+    <div *ngIf="debugmode|async" (click)="dump(socket)">Socket Cat: {{socket.socketCategoryHash}}
+        <br />
     </div>
-    <ng-container *ngIf="!socket.isWeaponMod || !socket.empty">
-        <ng-container *ngIf="socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length>0">
-            <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
-                [class.margin-5]="socket.empty" (click)="selectMod(socket)" class="fake-link">
-                <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                    <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async">
-                    </d2c-writable-plug>
-                    <ng-container *ngIf="!isLastPlug"> | </ng-container>
-                </ng-container>
-            </div>
-        </ng-container>
-        <ng-container *ngIf="!socket.isArmorMod && !socket.empty">
-            <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
-                [class.margin-5]="socket.empty">
-                <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
-                    <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async">
-                    </d2c-writable-plug>
-                    <ng-container *ngIf="!isLastPlug"> | </ng-container>
-                </ng-container>
-            </div>
-        </ng-container>
-
+    <!-- Armor sockets are always selectable b/c they're mods-->
+    <ng-container *ngIf="socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length>0">
+        <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
+            [class.margin-5]="socket.empty" (click)="selectMod(socket)" class="fake-link">
+            <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
+                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async">
+                </d2c-writable-plug>
+                <ng-container *ngIf="!isLastPlug"> | </ng-container>
+            </ng-container>
+        </div>
     </ng-container>
+    <!-- Weapon sockets with >0 sourcePlugs are selectable via modal -->
+    <ng-container *ngIf="!socket.isArmorMod && socket.sourcePlugs && socket.sourcePlugs.length>0">
+        <div [class.top-divider]="!isFirstSocket"
+            (click)="selectMod(socket)" class="fake-link">
+            <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
+                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async">
+                </d2c-writable-plug>
+                <ng-container *ngIf="!isLastPlug"> | </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+    <!-- Other weapon sockets are selectable via clicking on a finite list  -->
+    <ng-container *ngIf="!socket.isArmorMod && !socket.empty && (!socket.sourcePlugs || socket.sourcePlugs.length==0)">
+        <div [class.top-divider]="!isFirstSocket && !socket.empty" [class.inline]="socket.empty"
+            [class.margin-5]="socket.empty">
+            <ng-container *ngFor="let plug of socket.plugs; last as isLastPlug">
+                <d2c-writable-plug [item]="item" [socket]="socket" [plug]="plug" [debugmode]="debugmode|async">
+                </d2c-writable-plug>
+                <ng-container *ngIf="!isLastPlug"> | </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+
     <div *ngIf="debugmode|async">
-        <br/>
+        <br />
     </div>
 </ng-container>
