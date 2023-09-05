@@ -3572,6 +3572,12 @@ export class ParseService {
 
 
     public async parseInvItem(itm: PrivInventoryItem, owner: Target, itemComp: any, detailedInv: boolean, options: Target[], characterProgressions: any, resp?: any, dynamicStrings?: DynamicStrings): Promise<InventoryItem> {
+        // for debugging, show only one specific item, 
+        // ONLY DO THIS FOR EQUIPPED ITEMS, this will us into thinking the inv load failed
+        // if you do it for unequipped items, we'll think the entire inv loaded properly and it will delete all your tags!
+        // if (itm.itemInstanceId!='6917529867878011327') {
+        //     return null;
+        // }
         try {
             const desc: any = await this.destinyCacheService.getInventoryItem(itm.itemHash);
             if (desc == null) {
@@ -3905,7 +3911,6 @@ export class ParseService {
                                 if (socketDesc.singleInitialItemHash != null) {
                                     const emptyModSocketDesc = await this.destinyCacheService.getInventoryItem(socketDesc.singleInitialItemHash);
                                     if ((socketDesc.singleInitialItemHash == 0 || emptyModSocketDesc.displayProperties.name == 'Empty Mod Socket') && socketDesc.reusablePlugSetHash) {
-                                        // TODO handle already equipped plugs which may show as not equippable (for example Anti-Barrier Auto Rifle)
                                         const plugSetHash = socketDesc.reusablePlugSetHash;
                                         let pp: PrivPlugSetEntry[] = [];
                                         const profilePlugs = resp?.profilePlugSets?.data?.plugs[plugSetHash] as PrivPlugSetEntry[];
@@ -3916,6 +3921,15 @@ export class ParseService {
                                         if (charPlugs) {
                                             pp = pp.concat(charPlugs);
                                         }
+                                        // Adept mods are loaded from the response below
+                                        // if you remove this line it won't change many things, but it will cause adept mods 
+                                        // to stop showing as an option for Adept weapons
+                                        const compData = resp.itemComponents.reusablePlugs.data[itm.itemInstanceId]
+                                        if (compData && compData.plugs && compData.plugs[index]) {
+                                            const respComponentPlugs: PrivPlugSetEntry[] = compData.plugs[index];
+                                            pp = pp.concat(respComponentPlugs);
+                                        }
+
                                         pp = pp.filter(x => x.enabled && x.canInsert);
                                         let plugDefs = [];
                                         for (const x of pp) {
@@ -4031,7 +4045,7 @@ export class ParseService {
                                     }
                                     if (plugName == null) { continue; }
 
-                                    // this will have name "Deepsihght Resonance"
+                                    // this will have name "Deepsight Resonance"
                                     // this is how we deptect deepsight armor now
                                     if (plugDesc.plug?.plugCategoryHash==2748073883) {
                                         deepsight = true;

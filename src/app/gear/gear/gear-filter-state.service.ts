@@ -352,6 +352,9 @@ export class GearFilterStateService implements OnDestroy {
             };
             for (const key of Object.keys(this.toggleData)) {
               const t = this.toggleData[key];
+              if (!t.getValue().choices) {
+                continue;
+              }
               const deselectedVals: string[] = t.getValue().choices.filter(c => !c.value).map(c => c.matchValue);
               if (deselectedVals.length > 0) {
                 filterSettings.deselectedChoices[key] = deselectedVals;
@@ -501,7 +504,7 @@ export class GearFilterStateService implements OnDestroy {
     this.orMode = false;
     for (const toggle$ of this.toggleDataArray) {
       const val = toggle$.getValue();
-      const choices = val.choices.slice(0);
+      const choices = val.choices?.slice(0);
       choices.forEach(x => x.value = true);
       toggle$.next(generateState(val.config, choices, val.visibleItemType));
     }
@@ -636,14 +639,14 @@ export class GearFilterStateService implements OnDestroy {
     this.resetFilters();
     if (shortcutInfo.owner) {
       const val = this.toggleData.owners$.getValue();
-      const choices = val.choices.slice(0);
+      const choices = val.choices?.slice(0);
 
       choices.forEach(x => x.value = (x.matchValue == shortcutInfo.owner));
       this.toggleData.owners$.next(generateState(val.config, choices, val.visibleItemType));
     }
     if (shortcutInfo.postmaster) {
       const val = this.toggleData.postmaster$.getValue();
-      const choices = val.choices.slice(0);
+      const choices = val.choices?.slice(0);
       choices.forEach(x => x.value = (x.matchValue == true));
       this.toggleData.postmaster$.next(generateState(val.config, choices, val.visibleItemType));
     }
