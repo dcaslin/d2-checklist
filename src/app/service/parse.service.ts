@@ -3924,7 +3924,7 @@ export class ParseService {
                                         // Adept mods are loaded from the response below
                                         // if you remove this line it won't change many things, but it will cause adept mods 
                                         // to stop showing as an option for Adept weapons
-                                        const compData = resp.itemComponents.reusablePlugs.data[itm.itemInstanceId]
+                                        const compData = resp?.itemComponents.reusablePlugs.data[itm.itemInstanceId]
                                         if (compData && compData.plugs && compData.plugs[index]) {
                                             const respComponentPlugs: PrivPlugSetEntry[] = compData.plugs[index];
                                             pp = pp.concat(respComponentPlugs);
