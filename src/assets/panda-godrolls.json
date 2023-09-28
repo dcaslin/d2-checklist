@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Meggito S22.0",
-  "date": "2023-09-04T02:37:00.087Z",
-  "manifestVersion": "118365.23.08.23.1700-1-bnet.51829",
+  "title": "Official D2Checklist Rolls - Meggito S22.2",
+  "date": "2023-09-28T13:29:17.137Z",
+  "manifestVersion": "119105.23.09.20.1915-2-bnet.52254",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -535,6 +535,94 @@
           "swordmaster's guard",
           "balanced guard",
           "en garde"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "abyss defiant",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "reconstruction",
+          "incandescent"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "flared magwell",
+          "subsistence",
+          "heal clip",
+          "target lock",
+          "kill clip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range",
+          "handling"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "kill clip",
+          "reconstruction"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "high-caliber rounds",
+          "eye of the storm",
+          "swashbuckler"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "abyss defiant",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "reconstruction",
+          "incandescent"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "smallbore",
+          "flared magwell",
+          "subsistence",
+          "heal clip",
+          "target lock",
+          "kill clip"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "zen moment",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "high-caliber rounds",
+          "reconstruction",
+          "eye of the storm",
+          "swashbuckler"
         ]
       },
       "mnk": true,
@@ -9009,6 +9097,66 @@
       "controller": false
     },
     {
+      "name": "crowning duologue",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "impact casing",
+          "auto-loading holster",
+          "chain reaction"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "demolitionist",
+          "chain reaction"
+        ],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "crowning duologue",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "impact casing",
+          "auto-loading holster",
+          "chain reaction"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "demolitionist",
+          "chain reaction"
+        ],
+        "goodPerks": []
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "d.f.a.",
       "sheet": "perkbench",
       "pve": {
@@ -13883,6 +14031,96 @@
           "feeding frenzy",
           "swashbuckler",
           "sympathetic arsenal"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "fang of ir yût",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "rewind rounds",
+          "precision instrument"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "corkscrew rifling",
+          "flared magwell",
+          "extended mag",
+          "rapid hit",
+          "shoot to loot",
+          "sword logic",
+          "hatchling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "keep away",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "high-caliber rounds",
+          "rapid hit",
+          "surplus",
+          "opening shot"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "fang of ir yût",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "rewind rounds",
+          "precision instrument"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "corkscrew rifling",
+          "flared magwell",
+          "extended mag",
+          "rapid hit",
+          "shoot to loot",
+          "sword logic",
+          "hatchling"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "keep away",
+          "kill clip"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "high-caliber rounds",
+          "rapid hit",
+          "surplus",
+          "opening shot"
         ]
       },
       "mnk": true,
@@ -27638,6 +27876,86 @@
       "controller": false
     },
     {
+      "name": "oversoul edict",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "keep away",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "demolitionist",
+          "adrenaline junkie",
+          "sword logic"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "keep away",
+          "headseeker"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "eye of the storm",
+          "moving target",
+          "sword logic"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "oversoul edict",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "flared magwell",
+          "keep away",
+          "voltshot"
+        ],
+        "goodPerks": [
+          "appended mag",
+          "demolitionist",
+          "adrenaline junkie",
+          "sword logic"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "stability"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "ricochet rounds",
+          "keep away",
+          "headseeker"
+        ],
+        "goodPerks": [
+          "high-caliber rounds",
+          "eye of the storm",
+          "moving target",
+          "sword logic"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "palmyra-b",
       "sheet": "perkbench",
       "pve": {
@@ -36093,6 +36411,93 @@
       "controller": false
     },
     {
+      "name": "song of ir yût",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "reconstruction",
+          "bait and switch"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "rewind rounds",
+          "feeding frenzy",
+          "target lock",
+          "sword logic"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "ricochet rounds",
+          "target lock",
+          "zen moment"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "high-caliber rounds",
+          "demolitionist",
+          "elemental capacitor",
+          "keep away"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "song of ir yût",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "reload speed"
+        ],
+        "greatPerks": [
+          "arrowhead brake",
+          "appended mag",
+          "reconstruction",
+          "bait and switch"
+        ],
+        "goodPerks": [
+          "fluted barrel",
+          "flared magwell",
+          "rewind rounds",
+          "feeding frenzy",
+          "target lock",
+          "sword logic"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "ricochet rounds",
+          "keep away",
+          "target lock"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "high-caliber rounds",
+          "demolitionist",
+          "elemental capacitor"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
       "name": "sorrow's verse",
       "sheet": "lost - controller",
       "pve": {
@@ -38001,6 +38406,98 @@
           "outlaw",
           "zen moment",
           "snapshot sights"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "swordbreaker",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "handling",
+          "range"
+        ],
+        "greatPerks": [
+          "barrel shroud",
+          "assault mag",
+          "subsistence",
+          "one-two punch"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "demolitionist",
+          "pugilist",
+          "golden tricorn",
+          "sword logic"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling",
+          "range"
+        ],
+        "greatPerks": [
+          "barrel shroud",
+          "accurized rounds",
+          "threat detector",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "assault mag",
+          "slideshot",
+          "elemental capacitor"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "swordbreaker",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "handling",
+          "range"
+        ],
+        "greatPerks": [
+          "barrel shroud",
+          "assault mag",
+          "subsistence",
+          "one-two punch"
+        ],
+        "goodPerks": [
+          "corkscrew rifling",
+          "tactical mag",
+          "appended mag",
+          "demolitionist",
+          "pugilist",
+          "golden tricorn",
+          "sword logic"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "handling",
+          "range"
+        ],
+        "greatPerks": [
+          "barrel shroud",
+          "accurized rounds",
+          "threat detector",
+          "opening shot"
+        ],
+        "goodPerks": [
+          "smallbore",
+          "corkscrew rifling",
+          "assault mag",
+          "slideshot",
+          "elemental capacitor"
         ]
       },
       "mnk": true,
@@ -47434,6 +47931,66 @@
           "cornered",
           "adagio"
         ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "word of crota",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "demolitionist",
+          "adrenaline junkie"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "killing wind",
+          "rampage"
+        ],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "word of crota",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "handling"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "appended mag",
+          "demolitionist",
+          "adrenaline junkie"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "range"
+        ],
+        "greatPerks": [
+          "fluted barrel",
+          "accurized rounds",
+          "killing wind",
+          "rampage"
+        ],
+        "goodPerks": []
       },
       "mnk": true,
       "controller": false
