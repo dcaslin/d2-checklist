@@ -34,56 +34,71 @@ import { PerkBenchDialogComponent } from './perk-bench-dialog/perk-bench-dialog.
 // God bless DIM
 
 const WATERMARK_TO_SEASON = {
-  '/common/destiny2_content/icons/0dac2f181f0245cfc64494eccb7db9f7.png': 1,
+  '/common/destiny2_content/icons/fb50cd68a9850bd323872be4f6be115c.png': 1,
   '/common/destiny2_content/icons/dd71a9a48c4303fd8546433d63e46cc7.png': 1,
-  '/common/destiny2_content/icons/591f14483308beaad3278c3cd397e284.png': 2,
+  '/common/destiny2_content/icons/2c024f088557ca6cceae1e8030c67169.png': 2,
   '/common/destiny2_content/icons/50d36366595897d49b5d33e101c8fd07.png': 2,
-  '/common/destiny2_content/icons/e10338777d1d8633e073846e613a1c1f.png': 3,
+  '/common/destiny2_content/icons/ed6c4762c48bd132d538ced83c1699a6.png': 3,
   '/common/destiny2_content/icons/aaa61f6c70478d87de0df41e5709a773.png': 3,
-  '/common/destiny2_content/icons/0669efb55951e8bc9e99f3989eacc861.png': 4,
-  '/common/destiny2_content/icons/02478e165d7d8d2a9f39c2796e7aac12.png': 4,
-  '/common/destiny2_content/icons/bbddbe06ab72b61e708afc4fdbe15d95.png': 5,
+  '/common/destiny2_content/icons/1b6c8b94cec61ea42edb1e2cb6b45a31.png': 4,
+  '/common/destiny2_content/icons/eb621df1be42ae5db9e8cd20eda17c44.png': 4,
+  '/common/destiny2_content/icons/448f071a7637fcefb2fccf76902dcf7d.png': 5,
   '/common/destiny2_content/icons/c23c9ec8709fecad87c26b64f5b2b9f5.png': 5,
-  '/common/destiny2_content/icons/f9110e633634d112cff72a67159e3b12.png': 6,
+  '/common/destiny2_content/icons/1448dde4efdb57b07f5473f87c4fccd7.png': 6,
   '/common/destiny2_content/icons/e4a1a5aaeb9f65cc5276fd4d86499c70.png': 6,
-  '/common/destiny2_content/icons/785e5a64153cabd5637d68dcccb7fea6.png': 7,
+  '/common/destiny2_content/icons/5364cc3900dc3615cb0c4b03c6221942.png': 7,
   '/common/destiny2_content/icons/69bb11f24279c7a270c6fac3317005b2.png': 7,
-  '/common/destiny2_content/icons/d4141b2247cf999c73d3dc409f9d00f7.png': 8,
-  '/common/destiny2_content/icons/82a8d6f2b1e4ee14e853d4ffbe031406.png': 8,
-  '/common/destiny2_content/icons/8aae1c411642683d341b2c4f16a7130c.png': 8,
+  '/common/destiny2_content/icons/2352f9d04dc842cfcdda77636335ded9.png': 8,
   '/common/destiny2_content/icons/ee3f5bb387298acbdb03c01940701e63.png': 8,
-  '/common/destiny2_content/icons/ac012e11fa8bb032b923ad85e2ffb29c.png': 9,
+  '/common/destiny2_content/icons/e8fe681196baf74917fa3e6f125349b0.png': 8,
+  '/common/destiny2_content/icons/82a8d6f2b1e4ee14e853d4ffbe031406.png': 8,
+  '/common/destiny2_content/icons/3ba38a2b9538bde2b45ec9313681d617.png': 9,
   '/common/destiny2_content/icons/9b7e4bbc576fd15fbf44dfa259f8b86a.png': 9,
-  '/common/destiny2_content/icons/3d335ddc3ec6668469aae60baad8548d.png': 10,
+  '/common/destiny2_content/icons/b12630659223b53634e9f97c0a0a8305.png': 10,
   '/common/destiny2_content/icons/e27a4f39c1bb8c6f89613648afaa3e9f.png': 10,
-  '/common/destiny2_content/icons/796813aa6cf8afe55aed4efc2f9c609b.png': 11,
+  '/common/destiny2_content/icons/4c25426263cacf963777cd4988340838.png': 11,
   '/common/destiny2_content/icons/49dc693c5f3411b9638b97f38a70b69f.png': 11,
-  '/common/destiny2_content/icons/2347cc2407b51e1debbac020bfcd0224.png': 12,
-  '/common/destiny2_content/icons/d3cffdcb881085bc4fe19d9671c9eb0c.png': 12,
-  '/common/destiny2_content/icons/0aff1f4463f6f44e9863370ab1ce6983.png': 12,
+  '/common/destiny2_content/icons/9e0f43538efe9f8d04546b4b0af6cc43.png': 12,
   '/common/destiny2_content/icons/1f702463c5e0c4e25c9f00a730dbc6ac.png': 12,
-  '/common/destiny2_content/icons/6a52f7cd9099990157c739a8260babea.png': 13,
+  '/common/destiny2_content/icons/be3c0a95a8d1abc6e7c875d4294ba233.png': 12,
+  '/common/destiny2_content/icons/d3cffdcb881085bc4fe19d9671c9eb0c.png': 12,
+  '/common/destiny2_content/icons/0ec87dd7ef282db27e1fc337e9545cd0.png': 12,
+  '/common/destiny2_content/icons/5ac4a1d48a5221993a41a5bb524eda1b.png': 13,
   '/common/destiny2_content/icons/e197b731c11556b17664b90a87dd0c11.png': 13,
-  '/common/destiny2_content/icons/b07d89064a1fc9a8e061f59b7c747fa5.png': 14,
+  '/common/destiny2_content/icons/23968435c2095c0f8119d82ee222c672.png': 14,
   '/common/destiny2_content/icons/a9faab035e2f59f802e99641a3aaab9e.png': 14,
-  '/common/destiny2_content/icons/4368a3e344977c5551407845ede830c2.png': 15,
-  '/common/destiny2_content/icons/dd4dd93c5606998595d9e5a06d5bfc9c.png': 15,
-  '/common/destiny2_content/icons/b0406992c49c84bdc5febad94048dc01.png': 16,
-  '/common/destiny2_content/icons/4fe83598190610f122497d22579a1fd9.png': 16,
-  '/common/destiny2_content/icons/81edbfbf0bacf8e2117c00d1d6115f1b.png': 17,
-  '/common/destiny2_content/icons/f359d68324ae21522c299983ff1ef9f2.png': 18,
-  '/common/destiny2_content/icons/1a68ada4fb21371c5f2b7e2eae1ebce8.png': 19,
+  '/common/destiny2_content/icons/671a19eca92ad9dcf39d4e9c92fcdf75.png': 15,
+  '/common/destiny2_content/icons/d92e077d544925c4f37e564158f8f76a.png': 15,
+  '/common/destiny2_content/icons/6e4fdb4800c34ccac313dd1598bd7589.png': 16,
+  '/common/destiny2_content/icons/b973f89ecd631a3e3d294e98268f7134.png': 16,
+  '/common/destiny2_content/icons/d05833668bcb5ae25344dd4538b1e0b2.png': 16,
+  '/common/destiny2_content/icons/ab075a3679d69f40b8c2a319635d60a9.png': 17,
+  '/common/destiny2_content/icons/a3923ae7d2376a1c4eb0f1f154da7565.png': 18,
+  '/common/destiny2_content/icons/e775dcb3d47e3d54e0e24fbdb64b5763.png': 19,
+  '/common/destiny2_content/icons/31445f1891ce9eb464ed1dcf28f43613.png': 20,
+  '/common/destiny2_content/icons/af00bdcd3e3b89e6e85c1f63ebc0b4e4.png': 20,
+  '/common/destiny2_content/icons/a568c77f423d1b49aeccbce0e7af79f6.png': 20,
+  '/common/destiny2_content/icons/6026e9d64e8c2b19f302dafb0286897b.png': 21,
+  '/common/destiny2_content/icons/3de52d90db7ee2feb086ef6665b736b6.png': 22,
+  '/common/destiny2_content/icons/a2fb48090c8bc0e5785975fab9596ab5.png': 23,
 
 
   // events
+  '/common/destiny2_content/icons/ad7fdb049d430c1fac1d20cf39059702.png': 101,
+  '/common/destiny2_content/icons/04de56db6d59127239ed51e82d16c06c.png': 102,
+  '/common/destiny2_content/icons/52523b49e5965f6f33ab86710215c676.png': 103,
+  '/common/destiny2_content/icons/f80e39c767f309f0b2be625dae0e3744.png': 104,
+  '/common/destiny2_content/icons/65097e226318b8581ad535b33827e01a.png': 105,
+  '/common/destiny2_content/icons/8b0d9b848bfb49077fe018e6f80a2939.png': 105,
   '/common/destiny2_content/icons/d91c738e8179465a165e35f7a249701b.png': 101, // Dawning
   '/common/destiny2_content/icons/f80e5bb37ddd09573fd768af932075b4.png': 102, // Crimson
   '/common/destiny2_content/icons/24ee3aca8624643ed02b684b2f7ef78b.png': 103, // Solstice
   '/common/destiny2_content/icons/215100c99216b9c0bd83b9daa50ace45.png': 104, // Festival of the Lost
   '/common/destiny2_content/icons/0a93338035464bade265763e190b9f12.png': 105, // The Revelry
-  '/common/destiny2_content/icons/8b0d9b848bfb49077fe018e6f80a2939.png': 105, 
+  // '/common/destiny2_content/icons/8b0d9b848bfb49077fe018e6f80a2939.png': 105,
   '/common/destiny2_content/icons/64e07aa12c7c9956ee607ccb5b3c6718.png': 106, // Guardian Games
   '/common/destiny2_content/icons/97c65a76255ef764a9a98f24e50b859d.png': 106,
+  '/common/destiny2_content/icons/efdb35540cd169fa6e334995c2ce87b6.png': 106, 
 };
 
 const SEASON_TO_DESC = {
@@ -105,6 +120,12 @@ const SEASON_TO_DESC = {
   16: 'Season of the Chosen',
   17: 'Season of the Undying',
   18: 'Season of the Dawn',
+  19: 'Season of the Seraph',
+  20: 'Season of Defiance',
+  21: 'Season of the Deep',
+  22: 'Season of the Witch',
+  23: 'Season of the Wish',
+  // #UPDATEME
   101: 'Dawning',
   102: 'Crimson Days',
   103: 'Solstice of Heroes',
@@ -250,16 +271,16 @@ export class PerkbenchComponent extends ChildComponent {
     localStorage.setItem('perkbench-is-console', '' + this.isController);
   }
 
-  isEmpty(roll: GunRolls) : boolean {
+  isEmpty(roll: GunRolls): boolean {
     if (!roll.pvp) return true;
     if (!roll.pve) return true;
     return this.isGunRollEmpty(roll.pvp) || this.isGunRollEmpty(roll.pve);
   }
 
   isGunRollEmpty(roll: GunRoll): boolean {
-    if (roll.greatPerks!=null && roll.greatPerks.length>0) return false;
-    if (roll.goodPerks!=null && roll.goodPerks.length>0) return false;
-    if (roll.masterwork!=null && roll.masterwork.length>0) return false;
+    if (roll.greatPerks != null && roll.greatPerks.length > 0) return false;
+    if (roll.goodPerks != null && roll.goodPerks.length > 0) return false;
+    if (roll.masterwork != null && roll.masterwork.length > 0) return false;
     return true;
   }
 
@@ -362,11 +383,11 @@ export class PerkbenchComponent extends ChildComponent {
     for (const suffix of GUN_SUFFIXES) {
       if (name.endsWith(suffix.toLowerCase())) {
         name = name.substring(0, name.length - suffix.length);
-      }  
+      }
     }
     return name;
   }
-  
+
   private static combine(
     gunRolls: GunRolls[],
     weapons: GunInfo[]
@@ -445,7 +466,7 @@ export class PerkbenchComponent extends ChildComponent {
 
   private static rebuildRolls(mappedRolls: MappedRoll[]): GunRolls[] {
     const returnMe: GunRolls[] = [];
-    
+
     const loaded = {};
     for (const mr of mappedRolls) {
       if (!mr.roll) {
@@ -458,7 +479,7 @@ export class PerkbenchComponent extends ChildComponent {
         } else {
           loaded[key] = true;
           returnMe.push(mr.roll.controller);
-        } 
+        }
       }
       if (mr.roll.mnk) {
         const key = `${mr.roll.controller.name}-mnk`;
@@ -503,7 +524,7 @@ export class PerkbenchComponent extends ChildComponent {
     const guns: ManifestInventoryItem[] = [];
     const dbInvItem = await this.destinyCacheService.getInventoryItemTable();
 
-    for (const key of Object.keys(dbInvItem)) {     
+    for (const key of Object.keys(dbInvItem)) {
       const ii = dbInvItem[key];
       // possible perk, bucket type consumable
       if (
@@ -522,7 +543,7 @@ export class PerkbenchComponent extends ChildComponent {
           ii.sockets?.socketCategories?.length > 0
         ) {
           if (ii.itemType != ItemType.Dummy) {
-            if (!ii.displayProperties.name.endsWith('(Adept)')) {             
+            if (!ii.displayProperties.name.endsWith('(Adept)')) {
               guns.push(ii);
             }
           }
@@ -592,7 +613,7 @@ export class PerkbenchComponent extends ChildComponent {
           type: desc.itemTypeDisplayName,
           damage: dmgType,
           season,
-          seasonDesc: SEASON_TO_DESC[season],
+          seasonDesc: SEASON_TO_DESC[season]?.toLowerCase() ?? 'unknown',
         };
         if (gi.season == null) {
           gi.season = -1;
@@ -601,7 +622,7 @@ export class PerkbenchComponent extends ChildComponent {
           }
         }
         if (hasRandomRoll) {
-          const existing = gunsWithSockets.find(x=>x.desc.displayProperties.name == gi.desc.displayProperties.name);
+          const existing = gunsWithSockets.find(x => x.desc.displayProperties.name == gi.desc.displayProperties.name);
           if (existing) {
             // make the most recent gun the golden copy, (not sure this matters)
             let source = gi;
@@ -627,14 +648,14 @@ export class PerkbenchComponent extends ChildComponent {
   }
   private static mergeGuns(target: GunInfo, source: GunInfo) {
     const socketsToCompareCount = Math.min(target.sockets.length, source.sockets.length)
-    
-    for (let i=0; i<socketsToCompareCount; i++) {
+
+    for (let i = 0; i < socketsToCompareCount; i++) {
       const targetSocket = target.sockets[i];
       const sourceSocket = source.sockets[i];
       // add all plugs from source to target
       for (const plug of sourceSocket.possiblePlugs) {
         targetSocket
-        if (!targetSocket.possiblePlugs.find(x=>x.name == plug.name)) {
+        if (!targetSocket.possiblePlugs.find(x => x.name == plug.name)) {
           targetSocket.possiblePlugs.push(plug);
         }
       }

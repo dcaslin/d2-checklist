@@ -127,7 +127,7 @@ export class WeekService {
 
   // the week of the chosen season, so far
   public static getSeasonWeek(): number {
-    const seasonEpoch = parseISO('2023-05-23T17:00:00Z'); // #UPDATEME parseISO('2023-02-28T17:00:00Z'); 
+    const seasonEpoch = parseISO('2023-11-28T17:00:00Z'); // #UPDATEME parseISO('2023-02-28T17:00:00Z'); 
     const numWeeks = differenceInWeeks(new Date(), seasonEpoch);
     return numWeeks + 1;
   }
@@ -198,7 +198,7 @@ export class WeekService {
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(magicHour);
-    const lsEpoch = parseISO('2023-02-28T17:00:00.000Z'); // 2021-08-24 is our current reference date
+    const lsEpoch = parseISO('2023-11-28T17:00:00.000Z'); // 2021-08-24 is our current reference date
     // diff in hours ignores DST
     const lsDays = Math.floor(differenceInHours(referenceDate, lsEpoch) / 24);
     const lsIndex = lsDays % LS_ROTATION.length;
