@@ -16,6 +16,7 @@ import { PwaService } from './service/pwa.service';
 import { SignedOnUserService } from './service/signed-on-user.service';
 import { StorageService } from './service/storage.service';
 import { getDefaultTheme } from './shared/utilities';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -56,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
     private route: ActivatedRoute,
     public dialog: MatDialog,
     private pwaService: PwaService,
+    private location: Location,
     private ref: ChangeDetectorRef) {
 
 
@@ -214,13 +216,19 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit {
                 this.navigating$.next(false);
               }, 200);
             }
-
             const path = AppComponent.getFinalComponent(route);
-            // todo port to gtag
-            //(window as any).ga('set', 'disabled-ads', this.disableads);
-            // (window as any).ga('send', 'pageview', path);
-            (window as any).gtag('set', 'page_path', path);
-            (window as any).gtag('event', 'page_view');
+            const finalPath =  window.location.origin + '/' + path.replace(/:/g, '');
+
+            const event = {
+              event: 'page_view',
+              page_title: 'D2Checklist',
+              page_location: finalPath,
+              uri: path,
+              disabled_ads: this.disableads
+            };
+            console.dir(event);
+
+            (<any>window).dataLayer.push(event);
           } catch (err) {
             console.dir(err);
           }
