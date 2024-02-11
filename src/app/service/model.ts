@@ -1739,7 +1739,6 @@ export interface VendorCost {
 }
 
 export interface VendorItemInfo {
-    tags?: string[];
     vendor: Vendor;
     status: string;
     quantity: number;

@@ -247,7 +247,6 @@ export interface CacheLite {
   InventoryBucket: any;
   ItemTierType: any;
   PowerCap: any;
-  PursuitTags: { [key: string]: string[] };
   Race: any;
   Stat: any;
   destiny2CoreSettings: Destiny2CoreSettings;

@@ -542,7 +542,6 @@ export class VendorService {
     }    
     this.preferredStatService.processItems(returnMe);
     this.pandaGodRollsService.processItems(returnMe);
-    this.parseService.applyTagsToItem(returnMe);
     return returnMe;
   }
 

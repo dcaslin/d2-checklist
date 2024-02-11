@@ -42,24 +42,6 @@
   flex-shrink: 1;
 }
 
-.bounty-shopping-cart {
-  padding: 5px;
-}
-
-.bounty-tags {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.mobile-bounty-tags {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
 .hide-mobile-table-cell {
   display: none;
   visibility: hidden;
@@ -119,8 +101,4 @@
     display: none;
     visibility: hidden;
   }
-  .mobile-bounty-tags {
-    display: none;
-    visibility: hidden;
-  }  
 }

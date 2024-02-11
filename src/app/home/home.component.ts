@@ -36,7 +36,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   gamerTagControl = new UntypedFormControl();
 
   hideAnnouncement = true;
-  bountiesExpanded = 'true' === localStorage.getItem('expand-bounties');
   dealsExpanded = 'false' !== localStorage.getItem('expand-deals');
 
   selectedPlatform: Platform;
@@ -47,11 +46,6 @@ export class HomeComponent extends ChildComponent implements OnInit, OnDestroy {
   onHideAnnouncement() {
     this.hideAnnouncement = true;
     localStorage.setItem('hide-announcement-content-vault', 'true');
-  }
-
-  onToggleBounties(val: boolean) {
-    this.bountiesExpanded = val;
-    localStorage.setItem('expand-bounties', val.toString());
   }
 
   onToggleDeals(val: boolean) {
