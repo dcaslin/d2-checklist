@@ -776,7 +776,7 @@ export class ClanStateService {
 
   public downloadCsvReport() {
     const sDate = new Date().toISOString().slice(0, 10);
-    let sCsv = 'member,platform,chars,lastPlayed days ago,Artifact,Season Rank,Triumph Score,Glory,Gambit,Crucible,Vanguard,Weekly XP,max LL,';
+    let sCsv = 'member,platform,chars,lastPlayed days ago,Artifact,Season Rank,Triumph Score,Trials,Glory,Gambit,Crucible,Vanguard,Weekly XP,max LL,';
     this.modelPlayer.getValue().milestoneList.forEach(m => {
       let tempName = m.name;
       tempName = m.name.replace(',', '_');
@@ -808,6 +808,11 @@ export class ClanStateService {
       }
 
       sCsv += member.currentPlayer().triumphScore + ',';
+      if (member.currentPlayer().trialsRank) {
+        sCsv += member.currentPlayer().trialsRank.currentProgress + ',';
+      } else {
+        sCsv += '-,';
+      }
       if (member.currentPlayer().glory) {
         sCsv += member.currentPlayer().glory.currentProgress + ',';
       } else {
@@ -931,6 +936,9 @@ export class ClanStateService {
         return ClanStateService.compareGlory(a, b, sort.ascending);
       } else if (sort.name === 'crucibleRank') {
         return ClanStateService.compareCrucibleRank(a, b, sort.ascending);
+      } else if (sort.name === 'trialsRank') {
+        return ClanStateService.compareTrialsRank(a, b, sort.ascending);
+      
       } else if (sort.name === 'vanguardRank') {
         return ClanStateService.compareVanguardRank(a, b, sort.ascending);
       } else if (sort.name === 'gambitRank') {
@@ -1030,6 +1038,15 @@ export class ClanStateService {
     if (b.currentPlayer() != null && b.currentPlayer().crucibleRank != null) { bX = b.currentPlayer().crucibleRank.completeProgress; }
     return ClanStateService.simpleCompare(aX, bX, reverse);
   }
+
+  private static compareTrialsRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
+    let aX = 0;
+    let bX = 0;
+    if (a.currentPlayer() != null && a.currentPlayer().trialsRank != null) { aX = a.currentPlayer().trialsRank.completeProgress; }
+    if (b.currentPlayer() != null && b.currentPlayer().trialsRank != null) { bX = b.currentPlayer().trialsRank.completeProgress; }
+    return ClanStateService.simpleCompare(aX, bX, reverse);
+  }
+  
   
   private static compareVanguardRank(a: BungieGroupMember, b: BungieGroupMember, reverse?: boolean): number {
     let aX = 0;
