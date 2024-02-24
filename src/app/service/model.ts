@@ -639,6 +639,7 @@ export interface SpecialAccountProgressions {
     crucibleRank: Progression;
     gambitRank: Progression;
     vanguardRank: Progression;
+    trialsRank: Progression;
 }
 
 export class Player {
@@ -674,6 +675,7 @@ export class Player {
     readonly hasHiddenClosest: boolean;
     readonly accountProgressions: Progression[];
     readonly glory: Progression;
+    readonly trialsRank: Progression;
     readonly seasonRank: Progression;
     readonly crucibleRank: Progression;
     readonly vanguardRank: Progression;
@@ -746,6 +748,7 @@ export class Player {
         this.transitoryData = transitoryData;
         if (specialAccountProgressions) {
             this.glory = specialAccountProgressions.glory;
+            this.trialsRank = specialAccountProgressions.trialsRank;
             this.gambitRank = specialAccountProgressions.gambitRank;
             this.vanguardRank = specialAccountProgressions.vanguardRank;
             this.crucibleRank = specialAccountProgressions.crucibleRank;

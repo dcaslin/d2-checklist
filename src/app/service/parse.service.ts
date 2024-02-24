@@ -2847,7 +2847,8 @@ export class ParseService {
             seasonRank: null,
             crucibleRank: null,
             gambitRank: null,
-            vanguardRank: null
+            vanguardRank: null, 
+            trialsRank: null
         };
         if (accountProgressions != null) {
             const currentRankProgressionHashes: number[] = this.destinyCacheService.cacheLite.destiny2CoreSettings.currentRankProgressionHashes;
@@ -2870,6 +2871,9 @@ export class ParseService {
                     returnMe.seasonRank = ap;
                 } else if (ap.hash == sp.prestigeProgressionHash) {
                     prestige = ap;
+                } else if (ap.hash == '2755675426') {
+                    returnMe.trialsRank = ap;
+                    console.log(`Trials rank ${ap.level}`);
                 }
             }
             if (prestige != null && returnMe.seasonRank != null) {
