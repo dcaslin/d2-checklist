@@ -1,7 +1,7 @@
 {
-  "title": "Official D2Checklist Rolls - Dweezil S23.0",
-  "date": "2024-01-03T14:36:56.656Z",
-  "manifestVersion": "124517.23.12.13.1741-2-bnet.53455",
+  "title": "Official D2Checklist Rolls - Dweezil S23.1",
+  "date": "2024-03-16T16:40:39.118Z",
+  "manifestVersion": "224515.24.03.06.1941-1-bnet.54349",
   "rolls": [
     {
       "name": "1000 yard stare",
@@ -20430,6 +20430,66 @@
         "goodPerks": [
           "heating up"
         ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "hullabaloo",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "envious assassin",
+          "cascade point"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "impulse amplifier",
+          "disruption break"
+        ],
+        "goodPerks": []
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "hullabaloo",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "envious assassin",
+          "cascade point"
+        ],
+        "goodPerks": []
+      },
+      "pvp": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "impulse amplifier",
+          "disruption break"
+        ],
+        "goodPerks": []
       },
       "mnk": true,
       "controller": false
@@ -40876,31 +40936,33 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [
-          "handling"
+          "handling",
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
           "tactical mag",
           "outlaw",
-          "hatchling"
+          "hatchling",
+          "fourth time's the charm",
+          "precision instrument"
         ],
-        "goodPerks": [
-          "fourth time's the charm"
-        ]
+        "goodPerks": []
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
           "moving target",
           "kill clip",
-          "accurized rounds"
+          "accurized rounds",
+          "steady rounds",
+          "zen moment"
         ],
         "goodPerks": [
           "explosive payload",
-          "zen moment",
           "flared magwell"
         ]
       },
@@ -40912,7 +40974,7 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [
-          "handling"
+          "stability"
         ],
         "greatPerks": [
           "arrowhead brake",
@@ -40932,12 +40994,13 @@
           "arrowhead brake",
           "steady rounds",
           "moving target",
-          "kill clip"
+          "kill clip",
+          "flared magwell",
+          "enlightened action"
         ],
         "goodPerks": [
           "explosive payload",
-          "zen moment",
-          "flared magwell"
+          "zen moment"
         ]
       },
       "mnk": true,
@@ -44910,15 +44973,17 @@
           "surrounded",
           "arrowhead brake",
           "flared magwell",
-          "threat detector"
+          "threat detector",
+          "smallbore",
+          "ricochet rounds",
+          "repulsor brace",
+          "destabilizing rounds"
         ],
         "goodPerks": [
           "polygonal rifling",
-          "smallbore",
           "tactical mag",
           "perpetual motion",
-          "vorpal weapon",
-          "repulsor brace"
+          "vorpal weapon"
         ]
       },
       "pvp": {
@@ -44933,10 +44998,11 @@
           "hammer-forged rifling",
           "smallbore",
           "ricochet rounds",
-          "offhand strike"
+          "offhand strike",
+          "dynamic sway reduction",
+          "swashbuckler"
         ],
         "goodPerks": [
-          "dynamic sway reduction",
           "threat detector"
         ]
       },
@@ -44957,15 +45023,17 @@
           "surrounded",
           "arrowhead brake",
           "flared magwell",
-          "threat detector"
+          "threat detector",
+          "smallbore",
+          "ricochet rounds",
+          "repulsor brace",
+          "destabilizing rounds"
         ],
         "goodPerks": [
           "polygonal rifling",
-          "smallbore",
           "tactical mag",
           "perpetual motion",
-          "vorpal weapon",
-          "repulsor brace"
+          "vorpal weapon"
         ]
       },
       "pvp": {
@@ -44980,10 +45048,11 @@
           "arrowhead brake",
           "ricochet rounds",
           "dynamic sway reduction",
-          "rangefinder"
+          "rangefinder",
+          "smallbore",
+          "swashbuckler"
         ],
         "goodPerks": [
-          "smallbore",
           "threat detector"
         ]
       },
