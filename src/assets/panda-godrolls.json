@@ -1,5 +1,5 @@
 {
-  "title": "Official D2Checklist Rolls - Dweezil S23.3",
+  "title": "Official D2Checklist Rolls - Dweezil S23.4",
   "date": "2024-04-30T22:58:20.344Z",
   "manifestVersion": "225429.24.04.25.0940-1-bnet.55105",
   "rolls": [
@@ -44528,6 +44528,94 @@
           "smart drift control",
           "linear compensator",
           "spike grenades"
+        ]
+      },
+      "mnk": true,
+      "controller": false
+    },
+    {
+      "name": "the mountaintop",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "spike grenades",
+          "ambitious assassin",
+          "recombination"
+        ],
+        "goodPerks": [
+          "smart drift control",
+          "linear compensator",
+          "high-velocity rounds",
+          "auto-loading holster",
+          "overflow",
+          "frenzy",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "impulse amplifier",
+          "recombination"
+        ],
+        "goodPerks": [
+          "harmony",
+          "auto-loading holster",
+          "sticky grenades",
+          "linear compensator",
+          "smart drift control"
+        ]
+      },
+      "mnk": false,
+      "controller": true
+    },
+    {
+      "name": "the mountaintop",
+      "sheet": "perkbench",
+      "pve": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "spike grenades",
+          "ambitious assassin",
+          "recombination"
+        ],
+        "goodPerks": [
+          "smart drift control",
+          "linear compensator",
+          "high-velocity rounds",
+          "auto-loading holster",
+          "overflow",
+          "frenzy",
+          "vorpal weapon"
+        ]
+      },
+      "pvp": {
+        "masterwork": [
+          "velocity"
+        ],
+        "greatPerks": [
+          "quick launch",
+          "high-velocity rounds",
+          "impulse amplifier",
+          "recombination"
+        ],
+        "goodPerks": [
+          "harmony",
+          "auto-loading holster",
+          "sticky grenades",
+          "linear compensator",
+          "smart drift control"
         ]
       },
       "mnk": true,
