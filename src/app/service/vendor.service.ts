@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { currentXur } from '@d2api/date';
 import { environment as env } from '@env/environment';
 import { get as idbGet, set as idbSet } from 'idb-keyval';
-import { from, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { forkJoin, from, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { catchError, concatAll, map } from 'rxjs/operators';
 import { API_ROOT, BungieService } from './bungie.service';
 import { DestinyCacheService, ManifestInventoryItem } from './destiny-cache.service';
@@ -19,6 +19,15 @@ import { PandaGodrollsService } from './panda-godrolls.service';
 import { INTERPOLATION_PATTERN, ParseService } from './parse.service';
 import { PreferredStatService } from './preferred-stat.service';
 
+
+const SOCKET_VENDORS = [
+  '672118013',// Banshee-44
+  '3442679730',// Xûr
+  '350061650',// Ada-1
+  '3751514131',// Strange Gear Offers
+];
+
+const BULK_VENDORS_KEY = '123';
 
 @Injectable({
   providedIn: 'root'
@@ -61,54 +70,106 @@ export class VendorService {
   }
 
   private async applyRemoteVendor(target: Subject<CharacterVendorData>, c: Character) {
-    const url = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' +
-      c.characterId + '/Vendors/?components=Vendors,VendorSales,ItemObjectives, ItemInstances, ItemPerks, ItemStats, ItemSockets, ItemPlugStates, ItemCommonData, ProfileInventories, ItemReusablePlugs, ItemPlugObjectives, StringVariables';
-    const resp = await this.streamReq('loadVendors', url).toPromise();
-    const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
+
+    const components = [
+      'Vendors',
+      'VendorSales',
+      'ItemObjectives',
+      'ItemInstances',
+      'ItemPerks',
+      'ItemStats',
+      'ItemSockets',
+      'ItemPlugStates',
+      'ItemCommonData',
+      'ProfileInventories',
+      'ItemReusablePlugs',
+      'ItemPlugObjectives',
+      'StringVariables'
+    ]
+    // TODO call vendors* for a select set of vendors (or maybe all?)
+    // then also fire off a vendor/id for Banshee, Xur &  Strange Gear Offers, replacing those items in the list?
+    const bulkUrl = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' + c.characterId + '/Vendors/?components=' + components.join(',');
+
+    const bulkResp = this.streamReq('loadVendors', bulkUrl);
+
+    let requests = [bulkResp];
+    for (const key of SOCKET_VENDORS) {
+      const socketVendorUrl = 'Destiny2/' + c.membershipType + '/Profile/' + c.membershipId + '/Character/' + c.characterId + '/Vendors/' + key + '?components=' + components.join(',');
+      requests.push(this.streamReq('loadVendors', socketVendorUrl))
+    }
+    // fork join all the requests
+    const resps = await forkJoin(requests).toPromise();
+    let cntr = 0;
+    const responseHolder: { [key: string]: any } = {};
+    for (const r of resps) {
+      if (cntr == 0) {
+        responseHolder[BULK_VENDORS_KEY] = r;
+      } else {
+        responseHolder[SOCKET_VENDORS[cntr - 1]] = r;
+      }
+      cntr++
+    }
+
     const returnMe: CharacterVendorData = {
       char: c,
-      data: await this.parseVendorData(c, resp, dynamicStrings),
+      data: await this.parseVendorData(c, responseHolder),
       cached: false
     };
     // if that worked out well, cache it for next time
-    this.setCachedVendor(c, resp);
+    await this.setCachedVendor(c, responseHolder);
     target.next(returnMe);
   }
 
   private async applyCacheVendor(target: Subject<CharacterVendorData>, c: Character) {
-    const resp = await this.getCachedVendor(c);
-    if (resp == null) {
+    const responsesHolder: { [key: string]: any } = {};
+    const bulkResp = await this.getCachedVendor(c, BULK_VENDORS_KEY);
+    if (bulkResp == null) {
       return;
     }
-    const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
+    responsesHolder[BULK_VENDORS_KEY] = bulkResp;
+    for (const key of SOCKET_VENDORS) {
+      const vendorData = await this.getCachedVendor(c, key);
+      if (vendorData == null) {
+        return;
+      }
+      responsesHolder[key] = vendorData;
+    }
+
     const returnMe: CharacterVendorData = {
       char: c,
-      data: await this.parseVendorData(c, resp, dynamicStrings),
+      data: await this.parseVendorData(c, responsesHolder),
       cached: true,
-      ts: resp.ts,
+      ts: bulkResp.ts,
       loading: true
     };
     target.next(returnMe);
   }
 
-  private static getVendorCacheKey(c: Character) {
-    const key = 'vendor2-' + env.versions.app + '-' + c.membershipType + '-' + c.membershipId + ' - ' + c.characterId;
+  private static getVendorCacheKey(c: Character, vendorId: string) {
+    const key = 'vendor2-' + env.versions.app + '-' + c.membershipType + '-' + c.membershipId + ' - ' + c.characterId + '-' + vendorId;
     return key;
   }
 
-  private async getCachedVendor(c: Character): Promise<any> {
-    const key = VendorService.getVendorCacheKey(c);
+  private async getCachedVendor(c: Character, vendorId: string): Promise<any> {
+    const key = VendorService.getVendorCacheKey(c, vendorId);
     const cachedResponse = await idbGet(key);
     return cachedResponse;
   }
 
-  private async setCachedVendor(c: Character, resp: any): Promise<any> {
-    // shallow copy
-    const cacheMe = Object.assign({}, resp);
-    cacheMe.cached = true;
-    cacheMe.ts = Date.now();
-    const key = VendorService.getVendorCacheKey(c);
-    return await idbSet(key, cacheMe);
+  private async setCachedVendor(c: Character, responsesHolder: { [key: string]: any }) {
+
+    for (const key of Object.keys(responsesHolder)) {
+      const resp = responsesHolder[key];
+      if (resp == null) {
+        continue;
+      }
+      // shallow copy
+      const cacheMe = Object.assign({}, resp);
+      cacheMe.cached = true;
+      cacheMe.ts = Date.now();
+      const cacheKey = VendorService.getVendorCacheKey(c, key);
+      return await idbSet(cacheKey, cacheMe);
+    }
   }
 
   public async calcDeals(player: Player, vendors: CharacterVendorData[]): Promise<VendorDeals> {
@@ -232,24 +293,10 @@ export class VendorService {
         });
       }
     }
-    const modVendors = [
-      '672118013', // banshee
-      '350061650', // ada
-      '1712236153', // splicer
-      '2414821461', // wayfinder
-    ];
-    for (const v of modVendors) {
-      const mods = this.checkCollectionForVendor(player, vendorItems, v, ItemType.GearMod);
-      if (mods.length > 0) {
-        returnMe.push({
-          vendor: mods[0].vendorItemInfo.vendor,
-          data: mods
-        });
-      }
-    }
     const weaponVendors = [
-      '672118013', // bansheer
+      '672118013', // banshee
       '2190858386', // xur
+      '3751514131', // Strange Gear Offers
     ];
     for (const v of weaponVendors) {
       const weapons = this.checkCollectionForVendor(player, vendorItems, v, ItemType.Weapon);
@@ -305,7 +352,7 @@ export class VendorService {
     const bansheeConsumables = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '672118013' && i.type == ItemType.ExchangeMaterial);
     // const adaConsumables  = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '350061650' && i.type == ItemType.ExchangeMaterial);
     const rahoolCurrency = vendorItems.filter(i => i.vendorItemInfo?.vendor?.hash == '2255782930' && (i.type == ItemType.CurrencyExchange || i.type == ItemType.ExchangeMaterial));
-    
+
     const costs: { [key: string]: number; } = {};
     for (const g of rahoolCurrency.concat(bansheeConsumables)) {
       for (const c of g.vendorItemInfo.costs) {
@@ -334,7 +381,7 @@ export class VendorService {
       const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(targetHash);
       let targetCount;
       if (targetHash == '1022552290' || targetHash == '3159615086') { // legendary shards or glimmer
-        const currency = player.currencies.find(x => x.hash == targetHash);       
+        const currency = player.currencies.find(x => x.hash == targetHash);
         if (currency != null) {
           targetCount = currency.count;
         }
@@ -348,7 +395,7 @@ export class VendorService {
         cost: null,
         costCount: null
       };
-      
+
       VendorService.setCost(costs, v);
       rahoolItems.push(v);
     }
@@ -380,29 +427,7 @@ export class VendorService {
         data: bansheeItems
       });
     }
-    // Banshee and Ada sell the same stuff, don't waste our time w/ Ada
-    // const adaItems: VendorCurrency[] = [];
-    // for (const g of adaConsumables) {
-    //   const targetCount = player.gear.filter(i => i.hash == g.hash).reduce((result, item) => { return result + item.quantity; }, 0);
-    //   const targetDesc: ManifestInventoryItem = await this.destinyCacheService.getInventoryItem(g.hash);
-    //   const v: VendorCurrency = {
-    //     saleItem: g,
-    //     target: targetDesc,
-    //     targetCount,
-    //     cost: null,
-    //     costCount: null
-    //   };
-    //   VendorService.setCost(costs, v);
-    //   if (v.cost != null) {
-    //     adaItems.push(v);
-    //   }
-    // }
-    // if (adaItems.length > 0) {
-    //   returnMe.push({
-    //     vendor: adaItems[0].saleItem.vendorItemInfo.vendor,
-    //     data: adaItems
-    //   });
-    // }
+  
     return returnMe;
   }
 
@@ -485,12 +510,12 @@ export class VendorService {
       const val: ApiInventoryBucket = buckets[key];
       if (val.index >= 3 && val.index <= 7) {
         for (const classType of classTypes) {
-            returnMe.push({
-              bucket: val,
-              classType,
-              gear: [],
-              marginalValue: 0
-            });
+          returnMe.push({
+            bucket: val,
+            classType,
+            gear: [],
+            marginalValue: 0
+          });
         }
       }
     }
@@ -521,36 +546,55 @@ export class VendorService {
   }
 
 
-  private async parseVendorData(char: Character, resp: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem[]> {
-    if (resp == null || resp.sales == null) { return null; }
+  private async parseVendorData(char: Character, responses: { [key: string]: any }): Promise<InventoryItem[]> {
+    // make sure we have all the data we need
+    if (responses == null) { return null; }
+    for (const key of Object.keys(responses)) {
+      const resp = responses[key];
+      if (resp == null) {
+        return null;
+      }
+    }
     let returnMe = [];
-    for (const key of Object.keys(resp.sales.data)) {
-      const vendor = resp.sales.data[key];
-      // skip xur if he's not here
-      if (key == '2190858386') {
-        if (!currentXur()) {
+
+    for (let responseKey in responses) {
+      const resp = responses[responseKey];
+      const dynamicStrings = VendorService.buildVendorDynamicStrings(resp);
+      if (responseKey == BULK_VENDORS_KEY) {
+        // this is our bulk pile of vendors without sockets
+        for (const vendorKey of Object.keys(resp.sales.data)) {
+          // if this is in our socket vendors list, skip it, we'll get it directly below
+          if (SOCKET_VENDORS.indexOf(vendorKey) >= 0) {
+            continue;
+          }
+          const vendor = resp.sales.data[vendorKey];
+          const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, vendorKey, vendor.saleItems, dynamicStrings, resp.vendors.data[vendorKey]);
+          returnMe = returnMe.concat(items);
+        }
+        
+
+      } else {
+        // skip xur if he's not around
+        if ((responseKey == '2190858386' || responseKey =='3751514131') && !currentXur()) {
           continue;
         }
+        // this is an individual socket vendor
+        const respVendorData = resp.vendor.data;
+        const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, responseKey, resp.sales.data, dynamicStrings, respVendorData);
+        returnMe = returnMe.concat(items);
       }
-      // gift of the thunder gods is no longer accessible
-      if (key == '1423393512') {
-        continue;
-      }
-
-      const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, key, vendor, dynamicStrings);
-      returnMe = returnMe.concat(items);
-    }    
+    }
     this.preferredStatService.processItems(returnMe);
     this.pandaGodRollsService.processItems(returnMe);
     this.parseService.applyTagsToItem(returnMe);
     return returnMe;
   }
 
-  private async parseIndividualVendor(resp: any, char: Character, vendorKey: string, v: any, dynamicStrings: VendorDynamicStrings): Promise<InventoryItem[]> {
-    if (v.saleItems == null) { return []; }
+  private async parseIndividualVendor(resp: any, char: Character, vendorKey: string, saleItems: any, dynamicStrings: VendorDynamicStrings, respVendorData: any): Promise<InventoryItem[]> {
+    if (saleItems == null) { return []; }
     const vDesc: any = await this.destinyCacheService.getVendor(vendorKey);
     if (vDesc == null) { return []; }
-    if (resp.vendors.data[vendorKey] == null) {
+    if (respVendorData == null) {
       // vendor isn't here right now;
       return [];
     }
@@ -559,11 +603,11 @@ export class VendorService {
       name: vDesc.displayProperties.name,
       icon: vDesc.displayProperties.icon,
       displayProperties: vDesc.displayProperties,
-      nextRefreshDate: resp.vendors.data[vendorKey].nextRefreshDate
+      nextRefreshDate: respVendorData.nextRefreshDate
     };
     const items: InventoryItem[] = [];
-    for (const key of Object.keys(v.saleItems)) {
-      const i = v.saleItems[key];
+    for (const key of Object.keys(saleItems)) {
+      const i = saleItems[key];
       const oItem = await this.parseSaleItem(vendor, char, resp, i, dynamicStrings);
       if (oItem != null) {
         items.push(oItem);
@@ -651,15 +695,17 @@ export class VendorService {
     vendorSearchText += iDesc.itemTypeAndTierDisplayName + ' ';
     // vendorIndex acts as psuedo instance id, so just set it ahead of processing
     i.itemInstanceId = i.vendorItemIndex;
+    // single vendor will have this directly, all vendors will require a lookup
+    let itmComp = resp.itemComponents[vendor.hash] ? resp.itemComponents[vendor.hash] : resp.itemComponents;
     // last arg is item progressions, which will always be empty from a vendor
-    const data: InventoryItem = await this.parseService.parseInvItem(i, char, resp.itemComponents[vendor.hash], true, [], null);
+    const data: InventoryItem = await this.parseService.parseInvItem(i, char, itmComp, true, [], null);
     i.owner = char;
     // emblems, shader recycles, and all sorts of other random stuff will be null here, ignore them
     if (!data) {
       return null;
     }
     // these are unlockable rewards, not things for sale
-    if (costs.length===0) {
+    if (costs.length === 0) {
       return null;
     }
     vendorSearchText += data.searchText;
