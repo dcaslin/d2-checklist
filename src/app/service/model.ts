@@ -1368,11 +1368,11 @@ export class Const {
     // public static readonly PSUEDO_PRESAGE = 'PSUEDO-PRESAGE';
     // public static readonly PSUEDO_LEGENDARY_SERAPH = 'PSUEDO_LEGENDARY_SERAPH';
 
-    public static readonly LIGHT_TOO_LOW = 1749; // #UPDATEME  -61 from pinnacle in the past
-    private static readonly SEASON_SOFT_CAP = 1750; // #UPDATEME
+    public static readonly LIGHT_TOO_LOW = 1900; // #UPDATEME  -61 from pinnacle in the past
+    private static readonly SEASON_SOFT_CAP = 1940; // #UPDATEME
     // legendary campaign reward 1520
-    public static readonly SEASON_HARD_CAP = 1800; // #UPDATEME
-    public static readonly SEASON_PINNACLE_CAP = 1810; // #UPDATEME
+    public static readonly SEASON_HARD_CAP = 1990; // #UPDATEME
+    public static readonly SEASON_PINNACLE_CAP = 2000; // #UPDATEME
 
 
     public static readonly BOOST_UNKNOWN = 'BOOST_UNKNOWN';
