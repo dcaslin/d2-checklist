@@ -125,6 +125,7 @@ const SEASON_TO_DESC = {
   21: 'Season of the Deep',
   22: 'Season of the Witch',
   23: 'Season of the Wish',
+  24: 'Episode: Echoes',
   // #UPDATEME
   101: 'Dawning',
   102: 'Crimson Days',
