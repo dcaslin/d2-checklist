@@ -65,7 +65,6 @@
                             </td>
                             <td *ngIf="option.text == 'Bounties' && i.type==ItemType.Bounty; else notBounty">
                                 <div class="dashed-border bounty"
-                                    [class.selected-dashed-border]="shoppingListHashes[i.hash]"
                                     (click)="toggleVendorBounty.emit(i.hash)">
                                     <div class="bounty-title">
                                         <div [matTooltip]="i.desc">
@@ -83,14 +82,6 @@
 
                                         <div class="type-caption">{{i.typeName}}</div>
                                     </div>
-                                    <div class="bounty-shopping-cart">
-                                        <fa-icon [icon]="iconService.falShoppingCart"
-                                            [class.accent-text]="shoppingListHashes[i.hash]"
-                                            [class.disabled-text]="!shoppingListHashes[i.hash]"></fa-icon>
-                                    </div>
-                                </div>
-                                <div class="mobile-bounty-tags" *ngIf="i.vendorItemInfo?.tags as tags">
-                                    <div class="bounty-chip" *ngFor="let t of tags">{{t}}</div>
                                 </div>
                             </td>
                             <ng-template #notBounty>
@@ -106,7 +97,7 @@
                                 </td>
                             </ng-template>
 
-                            <td *ngIf="option.text == 'Weapons' && i.type==ItemType.Weapon">                                
+                            <td *ngIf="option.text == 'Weapons' && i.type==ItemType.Weapon">
                                 <div *ngFor="let socket of i.sockets" class="bottom-divider">
                                     <div *ngIf="debugmode">Socket Cat: {{socket.socketCategoryHash}} </div>
                                     <span *ngFor="let plug of socket.plugs; last as isLastPlug" [class.not-selected-plug]="!plug.active">
@@ -140,9 +131,6 @@
                                 <ng-container *ngIf="i.vendorItemInfo as vi">
                                     <div *ngFor="let o of vi.objectives">
                                         {{o.total}} {{o.units}}
-                                    </div>
-                                    <div class="bounty-tags" *ngIf="vi.tags">
-                                        <div class="bounty-chip" *ngFor="let t of vi.tags">{{t}}</div>
                                     </div>
                                 </ng-container>
                             </td>

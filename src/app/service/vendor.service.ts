@@ -427,7 +427,7 @@ export class VendorService {
         data: bansheeItems
       });
     }
-  
+
     return returnMe;
   }
 
@@ -571,7 +571,7 @@ export class VendorService {
           const items: InventoryItem[] = await this.parseIndividualVendor(resp, char, vendorKey, vendor.saleItems, dynamicStrings, resp.vendors.data[vendorKey]);
           returnMe = returnMe.concat(items);
         }
-        
+
 
       } else {
         // skip xur if he's not around
@@ -586,7 +586,6 @@ export class VendorService {
     }
     this.preferredStatService.processItems(returnMe);
     this.pandaGodRollsService.processItems(returnMe);
-    this.parseService.applyTagsToItem(returnMe);
     return returnMe;
   }
 

@@ -26,7 +26,6 @@ import { GamerTagSearchComponent } from './gamer-tag-search/gamer-tag-search.com
 import { GearModule } from './gear';
 import { LoggedInGuard } from './guards/logged-in.guard';
 import { HistoryModule } from './history';
-import { BountySetsDialogComponent } from './home/bounty-sets-dialog/bounty-sets-dialog.component';
 import { PartyComponent } from './party/party.component';
 import { PGCRModule } from './pgcr';
 import { PlayerModule } from './player';
@@ -48,8 +47,6 @@ import { StorageService } from './service/storage.service';
 import { WeekService } from './service/week.service';
 import { SettingsModule } from './settings';
 import { ChildComponent } from './shared/child.component';
-import { BountyShoppingListContainerComponent } from './shopping-list/bounty-shopping-list-container/bounty-shopping-list-container.component';
-import { BountyShoppingListComponent } from './shopping-list/bounty-shopping-list/bounty-shopping-list.component';
 import { TestbedComponent } from './testbed/testbed.component';
 import { VendorsContainerComponent } from './vendors/vendors-container/vendors-container.component';
 import { VendorsComponent } from './vendors/vendors/vendors.component';
@@ -108,8 +105,8 @@ import { UberRowDialogComponent } from './uber-list/uber-row-dialog/uber-row-dia
     ChildComponent,
     SuccessSnackbarComponent, InfoSnackbarComponent, WarnSnackbarComponent,
     SelectPlatformDialogComponent, GamerTagSearchComponent, PartyComponent, PrivacyComponent, TestbedComponent, VendorsComponent, VendorsContainerComponent,
-    BountyShoppingListComponent, BountyShoppingListContainerComponent, BountySetsDialogComponent, HomeComponent, BurnDialogComponent,
-    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ArmorDealsComponent, 
+    HomeComponent, BurnDialogComponent,
+    DealsContainerComponent, DealsComponent, CollectionDealsComponent, ArmorDealsComponent,
     ArmorCompareDialogComponent, PlayerCurrenciesComponent, RobotHomeComponent, AppStatusComponent, UberPursuitCheckComponent, WeaponDealsComponent, WeaponCompareDialogComponent, PerkbenchComponent, PerkBenchDialogComponent, UberListToggleComponent, UberListParentComponent, UberListBuilderComponent, UberListViewComponent, UberRowDialogComponent
   ],
   providers: [
