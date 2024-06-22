@@ -42,7 +42,6 @@ export class VendorsComponent implements OnInit, OnDestroy {
 
   @Input() debugmode: boolean;
   @Input() currUser: SelectedUser;
-  @Input() shoppingListHashes: { [key: string]: boolean };
   @Input() loading: boolean;
   @Input() vendorsLoading: boolean;
 

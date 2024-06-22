@@ -14,7 +14,6 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./vendors-container.component.scss']
 })
 export class VendorsContainerComponent extends ChildComponent implements OnInit, OnDestroy {
-  readonly shoppingListHashes$: BehaviorSubject<{ [key: string]: boolean }> = new BehaviorSubject({});
   public charId$ = new BehaviorSubject<string|null>(null);
   public tab$ = new BehaviorSubject<string|null>(null);
 
@@ -26,29 +25,8 @@ export class VendorsContainerComponent extends ChildComponent implements OnInit,
     storageService: StorageService
   ) {
     super(storageService);
-    this.storageService.settingFeed.pipe(
-      takeUntil(this.unsubscribe$))
-      .subscribe(
-        x => {
-          let sl = x.shoppinglist as { [key: string]: boolean };
-          sl = sl ? sl : {};
-          this.shoppingListHashes$.next(sl);
-        });
   }
 
-
-  onToggleVendorBounty(hash: string) {
-    const slh = this.shoppingListHashes$.getValue();
-    let newVal = true;
-    if (slh && slh[hash] === true) {
-      newVal = false;
-    }
-    if (!newVal) {
-      this.storageService.untrackHashList('shoppinglist', hash);
-    } else {
-      this.storageService.trackHashList('shoppinglist', hash);
-    }
-  }
 
   onCharIdSelect(charId: string) {
     console.log(`onCharIdSelect(${charId})`);

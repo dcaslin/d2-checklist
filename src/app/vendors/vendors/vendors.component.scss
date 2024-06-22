@@ -5,7 +5,7 @@
 
 .char-row {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
 }
 
@@ -15,7 +15,7 @@
 
 .filter-row {
   display: flex;
-  flex-direction: row; 
+  flex-direction: row;
   align-items: center;
 }
 
@@ -40,24 +40,6 @@
 .bounty-title {
   flex-grow: 1;
   flex-shrink: 1;
-}
-
-.bounty-shopping-cart {
-  padding: 5px;
-}
-
-.bounty-tags {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.mobile-bounty-tags {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
 }
 
 .hide-mobile-table-cell {
@@ -92,7 +74,7 @@
 
 
 @media screen and (min-width: 1019px) {
-  
+
   .hide-mobile-inline {
     display: inline;
     visibility: visible;
@@ -119,8 +101,4 @@
     display: none;
     visibility: hidden;
   }
-  .mobile-bounty-tags {
-    display: none;
-    visibility: hidden;
-  }  
 }
