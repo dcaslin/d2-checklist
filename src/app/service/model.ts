@@ -884,7 +884,7 @@ export class InventoryItem {
         questline: Questline, searchText: string, inventoryBucket: ApiInventoryBucket, tier: string, options: Target[],
         isRandomRoll: boolean, ammoType: DestinyAmmunitionType, postmaster: boolean, energyUsed: number,
         armorCapacity: number, totalStatPoints: number, seasonalModSlot: number, coveredSeasons: number[], powerCap: number, redacted: boolean,
-        specialModSockets: string[], collectibleHash: string, versionNumber: number, 
+        specialModSockets: string[], collectibleHash: string, versionNumber: number,
         crafted: boolean, deepsight: boolean, craftProgress: WeaponShapeLevelObjective,
         notCrafted: boolean
     ) {
@@ -1350,7 +1350,7 @@ export class Const {
     ];
 
     public static readonly PLATFORMS_ARRAY = [
-        Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM, 
+        Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM,
         Const.EPIC_PLATFORM
     ];
 
@@ -1742,7 +1742,6 @@ export interface VendorCost {
 }
 
 export interface VendorItemInfo {
-    tags?: string[];
     vendor: Vendor;
     status: string;
     quantity: number;
@@ -1765,18 +1764,18 @@ export interface LostSectorMeta {
     legend: LostSectorInstance;
     master: LostSectorInstance;
   }
-  
+
   export interface LostSectorInstance {
     hash: string;
     shields: string[];
     champions: Champion[];
   }
-  
+
   interface Champion {
     name: string;
     count: number;
   }
-  
+
 export interface PursuitTuple {
     vendorItem: InventoryItem;
     characterItem: InventoryItem;

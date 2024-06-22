@@ -211,7 +211,7 @@ export class DestinyCacheService {
     // // for perf debugguning
     // if (t0 != null) {
     //   const t1 = performance.now();
-    
+
     //   console.log(`%c${tableName} ${method} loaded in ${(t1 - t0).toFixed(2)}ms`, LOG_CSS);
     // }
     return returnMe;
@@ -247,7 +247,6 @@ export interface CacheLite {
   InventoryBucket: any;
   ItemTierType: any;
   PowerCap: any;
-  PursuitTags: { [key: string]: string[] };
   Race: any;
   Stat: any;
   destiny2CoreSettings: Destiny2CoreSettings;
