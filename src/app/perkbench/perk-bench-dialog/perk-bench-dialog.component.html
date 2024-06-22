@@ -44,25 +44,7 @@
     <ng-container *ngIf="pve$|async as pve">
         <ng-container *ngIf="pvp$|async as pvp">
             <table class="tidy-auto-table">
-                <tr>
-                    <th [attr.colspan]="maxPlugs">
-                        PVE Masterwork:
-                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
-                            <mat-checkbox [checked]="pve.masterwork.includes(mw.toLowerCase())"
-                                (change)="onMwCheckChange($event.checked,mw, pve.masterwork)">{{mw}}</mat-checkbox>
-                        </span>
-                    </th>
-                </tr>
-                <tr>
-                    <th [attr.colspan]="maxPlugs">
-                        PVP Masterwork:
-                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
-                            <mat-checkbox [checked]="pvp.masterwork.includes(mw.toLowerCase())"
-                                (change)="onMwCheckChange($event.checked, mw, pvp.masterwork)">{{mw}}</mat-checkbox>
-                        </span>
-                    </th>
-                </tr>
-
+                
                 <ng-container *ngFor="let socket of r.info.sockets">
                     <tr *ngIf="socket.possiblePlugs.length>0">
                         <td *ngFor="let plug of socket.possiblePlugs; last as isLastPlug" [matTooltip]="plug.desc"
@@ -85,6 +67,25 @@
                         </td>
                     </tr>
                 </ng-container>
+
+                <tr>
+                    <th [attr.colspan]="maxPlugs">
+                        PVE Masterwork:
+                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
+                            <mat-checkbox [checked]="pve.masterwork.includes(mw.toLowerCase())"
+                                (change)="onMwCheckChange($event.checked,mw, pve.masterwork)">{{mw}}</mat-checkbox>
+                        </span>
+                    </th>
+                </tr>
+                <tr>
+                    <th [attr.colspan]="maxPlugs">
+                        PVP Masterwork:
+                        <span class="pad-right pad-left" *ngFor="let mw of mwOptions; last as isLast">
+                            <mat-checkbox [checked]="pvp.masterwork.includes(mw.toLowerCase())"
+                                (change)="onMwCheckChange($event.checked, mw, pvp.masterwork)">{{mw}}</mat-checkbox>
+                        </span>
+                    </th>
+                </tr>
 
 
             </table>

@@ -995,24 +995,7 @@ export class ParseService {
         ParseService.setEfficiency(returnMe);
         return returnMe;
     }
-
-    public applyTagsToItem(items: InventoryItem[]) {
-        const tags = this.destinyCacheService.cacheLite.PursuitTags!;
-        const used = {};
-        for (const s of items) {
-            if (!tags[s.hash] || tags[s.hash].length == 0) {
-                continue;
-            }
-            // don't double count bounties, werner-99 has an issue with this
-            if (used[s.hash]) {
-                continue;
-            }
-            used[s.hash] = true;
-            const itemTags = tags[s.hash];
-            s.vendorItemInfo.tags = itemTags.slice(0);
-        }
-    }
-
+    
     private async parseMilestoneRewards(desc: any): Promise<string> {
         if (desc == null) { return ''; }
         let rewards = '';

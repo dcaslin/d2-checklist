@@ -72,35 +72,12 @@
       </mat-panel-description>
     </mat-expansion-panel-header>
 
-    <mat-card-content class="grid-parent bounty-shopping-list-parent">
+    <mat-card-content class="grid-parent deals-parent">
       <d2c-deals-container></d2c-deals-container>
     </mat-card-content>
   </mat-expansion-panel>
 </mat-card>
 
-
-<mat-card *ngIf="isSignedOn$|async">
-  <mat-expansion-panel class="mat-elevation-z0" [expanded]='bountiesExpanded' (opened)="onToggleBounties(true)"
-    (closed)="onToggleBounties(false)">
-    <mat-expansion-panel-header>
-
-      <mat-panel-title>
-        <span class="mat-card-header">
-          <span class="mat-card-title title-hack">Bounties</span>
-        </span>
-      </mat-panel-title>
-
-      <mat-panel-description>
-        Grouped Bounties & Shopping List
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-
-    <mat-card-content class="grid-parent bounty-shopping-list-parent">
-      <d2c-bounty-shopping-list-container *ngIf="bountiesExpanded"></d2c-bounty-shopping-list-container>
-    </mat-card-content>
-  </mat-expansion-panel>
-
-</mat-card>
 <div class="grid-parent" *ngIf="today && today.publicMilestones" width="100%">
 
   <div>
@@ -177,7 +154,7 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <div>
+  <div *ngIf="today.publicMilestones.strikes||today.publicMilestones.crucible">
     <mat-card *ngIf="today.publicMilestones.strikes as strikes">
       <mat-card-header>
         <mat-card-title>Strike Playlist <span *ngIf="strikes.doubled" class="warn-text pad-left">Double ranks!</span></mat-card-title>
@@ -309,8 +286,8 @@
 
 <mat-autocomplete #elasticAuto="matAutocomplete" (optionSelected)="select($event)"  [displayWith]="displayFn">
   <mat-option *ngFor="let v of elasticSearchService.filteredAutoCompleteOptions$|async" [value]="v">
-    
+
     <img class="option-img" aria-hidden [src]="'https://www.bungie.net' + v.iconPath " height="36">
-    {{v.displayName}} <fa-icon [icon]="platformMap[v.membershipType].icon"></fa-icon> <span class="pad-left simple-caption-darker-no-margin">{{v.lastPlayed|d2cAgoHumanized}}</span> 
+    {{v.displayName}} <fa-icon [icon]="platformMap[v.membershipType].icon"></fa-icon> <span class="pad-left simple-caption-darker-no-margin">{{v.lastPlayed|d2cAgoHumanized}}</span>
   </mat-option>
 </mat-autocomplete>
