@@ -76,6 +76,7 @@ export class SeasonBreakdownDialogComponent {
     return [
       { name: 'Any', details: true, season: 0, note: 'Everything in one place' },
       { name: 'Artifice', details: true, season: 10, note: 'Artifice mod slot' },
+      { name: 'Raid SE', details: true, season: 8, note: 'Salvation\'s Edge dedicated' },
       { name: 'Raid KF', details: true, season: 6, note: 'King\'s Fall dedicated' },
       { name: 'Raid VoD', details: true, season: 5, note: 'Vow of the Disciple dedicated' },
       { name: 'Raid VoG', details: true, season: 4, note: 'Vault of Glass dedicated' },

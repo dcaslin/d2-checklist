@@ -3961,7 +3961,12 @@ export class ParseService {
                                         searchText += 'has:modlw';
                                         seasonalModSlot = 1;
                                         coveredSeasons.push(1);
-                                    }
+                                    } else if ('enhancements.raid_v800'==emptyModSocketDesc?.plug?.plugCategoryIdentifier) {
+                                        specialModSockets.push('se');
+                                        searchText += 'has:modse';
+                                        seasonalModSlot = 8;
+                                        coveredSeasons.push(8);                                   
+                                    } 
                                 }
                                 const socketVal = socketArray[index];
                                 const plugs: InventoryPlug[] = [];
