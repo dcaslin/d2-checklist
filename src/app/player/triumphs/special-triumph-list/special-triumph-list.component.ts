@@ -51,6 +51,7 @@ export class SpecialTriumphListComponent extends ChildComponent {
   public rows$: BehaviorSubject<TriumphRecordNode[]> = new BehaviorSubject([]);
   public showCrafted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public craftedFilter = 'TODO';
+  public craftedWildCardFilter = '';
   public craftedFilterChoices = [
     {
       name: 'Todo (Not Crafted + Incomplete)',
@@ -115,31 +116,38 @@ export class SpecialTriumphListComponent extends ChildComponent {
     this.sort$.next(this.sort$.getValue());
   }
 
+  private filterPatternName(t: TriumphRecordNode): boolean {
+    if (this.craftedWildCardFilter == '') {
+      return true;
+    }
+    return t.name.toLowerCase().includes(this.craftedWildCardFilter.toLowerCase());
+  }
+
   public shouldShow(t: TriumphRecordNode): boolean {    
     if (this.showCrafted$.getValue()) {
       if (this.craftedFilter=='TODO') {
         if (!t.complete || (t.complete && t.crafted?.length==0)) {
-          return true;
+          return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='INCOMPLETE') {
         if (!t.complete) {
-          return true;
+          return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='NOT_CRAFTED') {
         if (t.complete && t.crafted.length==0) {
-          return true;
+          return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='CRAFTED') {
         if (t.complete && t.crafted.length>0) {
-          return true;
+          return this.filterPatternName(t);
         }
       } else if (this.craftedFilter=='ATTUNE_TO_CRAFT') {
         if (!t.complete && t.redborder.length>0) {
-          return true;
+          return this.filterPatternName(t);
         }
       } 
       else if (this.craftedFilter=='ALL') {
-        return true;
+        return this.filterPatternName(t);
       }
       return false;
     } else {

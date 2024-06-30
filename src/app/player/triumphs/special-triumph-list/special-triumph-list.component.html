@@ -9,6 +9,7 @@
                     </mat-checkbox>
                 </ng-container>
                 <ng-container *ngIf="o.showCrafted">
+                    
                     <mat-form-field class="margin-left-10">
                         <mat-label>Filter</mat-label>
                         <mat-select [(ngModel)]="craftedFilter">
@@ -18,6 +19,10 @@
                             </ng-container>
 
                         </mat-select>
+                    </mat-form-field>
+                    <mat-form-field class="margin-left-10">
+                        <mat-label>Search Patterns By Name</mat-label>
+                        <input matInput [(ngModel)]="craftedWildCardFilter" placeholder="Search Patterns By Name">
                     </mat-form-field>
                 </ng-container>
             </h4>
