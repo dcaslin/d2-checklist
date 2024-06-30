@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { add, differenceInDays, differenceInHours, differenceInWeeks, parseISO, subHours } from 'date-fns';
 import { BungieService } from './bungie.service';
 import { DestinyCacheService } from './destiny-cache.service';
-import { LS_LOOT, LS_ROTATION } from './lost-sector-reference';
+import { LS_ROTATION } from './lost-sector-reference';
 import { ItemDisplay, LegendLostSectorActivity, LostSector, LostSectorInstance, NameDesc, PublicMilestonesAndActivities } from './model';
 import { ParseService } from './parse.service';
 
@@ -198,12 +198,12 @@ export class WeekService {
     }
     // set our reference time to 5PM UTC arbitrarily so we're consistent
     referenceDate.setUTCHours(magicHour);
-    const lsEpoch = parseISO('2023-11-28T17:00:00.000Z'); // 2021-08-24 is our current reference date
+    const lsEpoch = parseISO('2024-06-19T17:00:00.000Z');
     // diff in hours ignores DST
     const lsDays = Math.floor(differenceInHours(referenceDate, lsEpoch) / 24);
     const lsIndex = lsDays % LS_ROTATION.length;
-    const lsLootIndex = lsDays % LS_LOOT.length;
-    const loot = LS_LOOT[lsLootIndex];
+    // const lsLootIndex = lsDays % LS_LOOT.length;
+    // const loot = LS_LOOT[lsLootIndex];
     // TODO #UPDATEME
     const legendActivity = await this.buildLostSectorActivity(LS_ROTATION[lsIndex].legend, 1830);
     const masterActivity = await this.buildLostSectorActivity(LS_ROTATION[lsIndex].master, 1840);
@@ -215,13 +215,13 @@ export class WeekService {
         icon: recordDescForIcon.displayProperties.icon,
         directorLocation: LS_ROTATION[lsIndex].directorLocation,
         activity: legendActivity,
-        soloReward: loot
+        // soloReward: loot
       },
       masterLostSector: {
         icon: recordDescForIcon.displayProperties.icon,
         directorLocation: LS_ROTATION[lsIndex].directorLocation,
         activity: masterActivity,
-        soloReward: loot
+        // soloReward: loot
       }
     };
   }
