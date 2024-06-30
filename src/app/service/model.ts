@@ -1748,7 +1748,7 @@ export interface LostSector {
     activity: LegendLostSectorActivity;
     directorLocation: string;
     icon: string;
-    soloReward: string;
+    // soloReward: string;
 }
 
 export interface LostSectorMeta {

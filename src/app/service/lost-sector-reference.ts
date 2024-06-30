@@ -815,23 +815,125 @@ const LS_GILDED_PRECEPT: LostSectorMeta = {
 }
 
 
-export const  LS_LOOT = [
-  'Chest',
-  'Head',
-  'Legs',
-  'Arms',
-];
+const LS_BROKEN_DEEP: LostSectorMeta = {
+  abbrev: 'Broken',
+  directorLocation: 'Pale Heart',
+  legend: {
+    hash: '2875391872',
+    shields: ['?(?)', '?(?)'],
+    champions: [
+      {
+        name: '???',
+        count: 1
+      },
+      {
+        name: '???',
+        count: 2
+      }
+    ]
+  },
+  master: {
+    hash: '2875391879',
+    shields: ['?(?)', '?(?)'],
+    champions: [
+      {
+        name: '???',
+        count: 3
+      },
+      {
+        name: '???',
+        count: 2
+      }
+    ]
+  }
+}
+
+
+const LS_BLOOMING_DEEP: LostSectorMeta = {
+  abbrev: 'Blooming',
+  directorLocation: 'Pale Heart',
+  legend: {
+    hash: '3995113176',
+    shields: ['?(?)', '?(?)'],
+    champions: [
+      {
+        name: '???',
+        count: 1
+      },
+      {
+        name: '???',
+        count: 2
+      }
+    ]
+  },
+  master: {
+    hash: '3995113183',
+    shields: ['?(?)', '?(?)'],
+    champions: [
+      {
+        name: '???',
+        count: 3
+      },
+      {
+        name: '???',
+        count: 2
+      }
+    ]
+  }
+}
+
+
+const LS_FORGOTTEN_DEEP: LostSectorMeta = {
+  abbrev: 'Forgotten',
+  directorLocation: 'Pale Heart',
+  legend: {
+    hash: '699527776',
+    shields: ['?(?)', '?(?)'],
+    champions: [
+      {
+        name: '???',
+        count: 1
+      },
+      {
+        name: '???',
+        count: 2
+      }
+    ]
+  },
+  master: {
+    hash: '3995113183',
+    shields: ['?(?)', '?(?)'],
+    champions: [
+      {
+        name: '???',
+        count: 3
+      },
+      {
+        name: '???',
+        count: 2
+      }
+    ]
+  }
+}
+
+
+// export const  LS_LOOT = [
+//   'Chest',
+//   'Head',
+//   'Legs',
+//   'Arms',
+// ];
 
 export const LS_ROTATION = [
-  LS_APHELIONS_REST,
-  LS_BAY_OF_DROWNED_WISHES,
-  LS_CHAMBER_OF_STARLIGHT,
+  LS_THRILLADROME,
+  LS_HYDROPONICS,
+  LS_VELES_LABYRINTH,
+  LS_EXODUS_GARDEN,
+  LS_BROKEN_DEEP,
+  LS_BLOOMING_DEEP,
+  LS_FORGOTTEN_DEEP,
   LS_PERDITION,
   LS_BUNKER_E15,
   LS_CONCEALED_VOID,
-  LS_THRILLADROME,
-  LS_GILDED_PRECEPT,
-  LS_SCAVENGERS_DEN,
-  LS_SKYDOCK,
-  LS_QUARRY,
+  LS_CONFLUX,
 ];
