@@ -154,42 +154,6 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <div *ngIf="today.publicMilestones.strikes||today.publicMilestones.crucible">
-    <mat-card *ngIf="today.publicMilestones.strikes as strikes">
-      <mat-card-header>
-        <mat-card-title>Strike Playlist <span *ngIf="strikes.doubled" class="warn-text pad-left">Double ranks!</span></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list *ngIf="strikes.activities[0] as strike">
-          <mat-list-item *ngFor="let n of strike.modifiers">
-            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-            <div mat-line [matTooltip]="n.desc"> {{n.name}}
-              <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-            </div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-    <mat-card *ngIf="today.publicMilestones.crucible as crucible">
-      <mat-card-header>
-        <mat-card-title>Crucible <span *ngIf="crucible.doubled" class="warn-text pad-left">Double ranks!</span></mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let n of crucible.activities ">
-            <span mat-list-icon class="list-icon" [class.invert]="n.icon.endsWith('png')"
-              [class.brighten]="n.icon.endsWith('jpg')" *ngIf="n.icon"
-              [style.background-image]="'url(//www.bungie.net' + n.icon + ')'"></span>
-            <div mat-line> {{n.name}}
-              <span class="tiny" *ngIf="debugmode|async">{{n.hash}}</span>
-            </div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-  </div>
   <div>
     <mat-card *ngIf="today.weeklyDungeon">
       <mat-card-header>

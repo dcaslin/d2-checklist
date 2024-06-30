@@ -332,8 +332,6 @@ export interface ItemPerks {
 
 export interface PublicMilestonesAndActivities {
     publicMilestones: PublicMilestone[];
-    crucible: PublicMilestone;
-    strikes: PublicMilestone;
     nightfall: PublicMilestone;
     weekStart: Date;
 }
@@ -1339,14 +1337,9 @@ export class Const {
 
     public static readonly HIDE_MILESTONES: string[] = [
         '1960571846', '2092845811', '2441610527', '3044632693', // daily focus for Guardian Games
-        '534869653', // xur
-        '3341030123', // rewiring the light
-        '243742733', // For the Light… Against the Light 243742733
         '3581618338', // Master class - guardian games
-        // '3031052508','2953722265','3632712541' // battlegrounds
-        '4043054273', // Sweetness and Light for FotL
+        '1390643273', // Sweetness and Light for FotL
         '1719934518', // Dawning Duty
-        '1194402836', // Astral Seas
     ];
 
     public static readonly PLATFORMS_ARRAY = [
