@@ -1340,7 +1340,22 @@ export class Const {
         '3581618338', // Master class - guardian games
         '1390643273', // Sweetness and Light for FotL
         '1719934518', // Dawning Duty
+        '3129232757', // ranked pvp 
+        '3161426499', // ranked pvp
     ];
+
+    // map string:string
+    public static readonly MILESTONE_REWARD_OVERRIDES: { [key: string]: string } = {
+        '541780856': 'Legendary Gear', // Deepstone Crypt
+        '540415767': 'Legendary Gear', // Crota's End
+        '1888320892': 'Legendary Gear', // Vault of Glass
+        '292102995': 'Legendary Gear', // King's Fall
+        '3181387331': 'Legendary Gear', // Last Wish
+        '3699252268': 'Legendary Gear', // Root of nightmares
+        '2136320298': 'Legendary Gear', // Vow
+        '2712317338': 'Legendary Gear', // Garden of Salvation
+    };
+
 
     public static readonly PLATFORMS_ARRAY = [
         Const.XBL_PLATFORM, Const.STEAM_PLATFORM, Const.PSN_PLATFORM, Const.STADIA_PLATFORM, Const.BNET_PLATFORM,
