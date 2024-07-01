@@ -1227,10 +1227,8 @@ export class ParseService {
             } else if (activityRewards && activityRewards.trim().length > 0) {
                 rewards = activityRewards;
             } else {
-                let checkMe = '' + desc.displayProperties.name + desc.displayProperties.description;
-                checkMe = checkMe.toLowerCase();
-                if (checkMe.indexOf('raid') >= 0 || checkMe.indexOf('garden of salvation') >= 0) {
-                    rewards = 'Legendary Gear';
+                if (Const.MILESTONE_REWARD_OVERRIDES[ms.milestoneHash]) {
+                    rewards = Const.MILESTONE_REWARD_OVERRIDES[ms.milestoneHash];
                 } else {
                     console.log(desc.displayProperties.name + ' - ' + desc.hash + ' is missing rewards');
                     rewards = '???';
@@ -2502,21 +2500,28 @@ export class ParseService {
             x.boost = this.parseMilestonePl(x.rewards);
 
         });
-        const enterprisingExplorer1 = milestoneList.find(x => x.key == '118566180');
-        if (enterprisingExplorer1) {
-            enterprisingExplorer1.rewards = 'Pinnacle';
-            enterprisingExplorer1.boost = this.parseMilestonePl(enterprisingExplorer1.rewards);
-        }
-        const enterprisingExplorer2 = milestoneList.find(x => x.key == '373284212');
-        if (enterprisingExplorer2) {
-            enterprisingExplorer2.rewards = 'Powerful';
-            enterprisingExplorer2.boost = this.parseMilestonePl(enterprisingExplorer2.rewards);
-        }
-        const enterprisingExplorer3 = milestoneList.find(x => x.key == '373284213');
-        if (enterprisingExplorer3) {
-            enterprisingExplorer3.rewards = 'Powerful';
-            enterprisingExplorer3.boost = this.parseMilestonePl(enterprisingExplorer3.rewards);
-        }
+        // enterprising explorer 1
+        milestoneList.filter(x => x.key == '118566180').map((x) => {
+            x.rewards = 'Pinnacle';
+            x.boost = this.parseMilestonePl(x.rewards);
+        })
+        // enterprising explorer 2 and 3
+        milestoneList.filter(x => (x.key == '373284212'|| x.key == '373284213')).map((x) => {
+            x.rewards = 'Powerful';
+            x.boost = this.parseMilestonePl(x.rewards);
+        })
+        // enterprising explorer 1
+        milestoneList.filter(x => x.key == '118566180').map((x) => {
+            x.rewards = 'Pinnacle';
+            x.boost = this.parseMilestonePl(x.rewards);
+        })
+        // 3940691952 iconoclasm
+        // 1952013998 ascent
+        // 3353906074 dissent
+        milestoneList.filter(x => (x.key == '3940691952'|| x.key == '1952013998' || x.key == '3353906074')).map((x) => {
+            x.rewards = 'Pinnacle';
+            x.boost = this.parseMilestonePl(x.rewards);
+        })
         for (const m of milestoneList) {
             m.desc = ParseService.dynamicStringReplace(m.desc, null, dynamicStrings);
         }
