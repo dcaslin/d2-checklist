@@ -52,6 +52,16 @@ export class SpecialTriumphListComponent extends ChildComponent {
   public showCrafted$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public craftedFilter = 'TODO';
   public craftedWildCardFilter = '';
+  public craftedWildCardFilterChoice = [
+    {
+      name: 'current seasonal',
+      value: 'LOST SIGNAL,ILL OMEN,FAITH-KEEPER,TIMEWORN WAYFARER,VEILED THREAT,SIGHTLINE SURVEY',
+    },
+    {
+      name: 'ghost',
+      value: 'THE CALL,NO HESITATION,SOMEDAY,EMBRACED IDENTITY,PRO MEMORIA,FALSE IDOLS,BOLD ENDINGS,AXIAL LACUNA',
+    }
+  ]
   public craftedFilterChoices = [
     {
       name: 'Todo (Not Crafted + Incomplete)',
@@ -120,7 +130,14 @@ export class SpecialTriumphListComponent extends ChildComponent {
     if (this.craftedWildCardFilter == '') {
       return true;
     }
-    return t.name.toLowerCase().includes(this.craftedWildCardFilter.toLowerCase());
+    var found = false
+    for (const [_, value] of this.craftedWildCardFilter.toLowerCase().split(",").entries()) {
+      if (value != '' && t.name.toLowerCase().includes(value)) {
+        found = true
+        break
+      }
+    }
+    return found
   }
 
   public shouldShow(t: TriumphRecordNode): boolean {    

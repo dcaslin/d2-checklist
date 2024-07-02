@@ -9,7 +9,7 @@
                     </mat-checkbox>
                 </ng-container>
                 <ng-container *ngIf="o.showCrafted">
-                    
+
                     <mat-form-field class="margin-left-10">
                         <mat-label>Filter</mat-label>
                         <mat-select [(ngModel)]="craftedFilter">
@@ -20,9 +20,20 @@
 
                         </mat-select>
                     </mat-form-field>
-                    <mat-form-field class="margin-left-10">
-                        <mat-label>Search Patterns By Name</mat-label>
-                        <input matInput [(ngModel)]="craftedWildCardFilter" placeholder="Search Patterns By Name">
+                    <mat-form-field class="margin-left-10" [style.width.px]=375>
+                        <mat-label>Search Patterns By Name (single or comma separated names)</mat-label>
+                        <input matInput [(ngModel)]="craftedWildCardFilter" [matAutocomplete]="auto" type="text"
+                            placeholder="Search Patterns By Name (single or comma separated names)">
+                        <button mat-button *ngIf="craftedWildCardFilter" matSuffix mat-icon-button aria-label="Clear"
+                            (click)="craftedWildCardFilter=''">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                        <mat-autocomplete #auto="matAutocomplete">
+                            <mat-option *ngFor="let i of craftedWildCardFilterChoice" [value]="i.value"
+                                [disabled]="i.value==null">
+                                {{i.name}}
+                            </mat-option>
+                        </mat-autocomplete>
                     </mat-form-field>
                 </ng-container>
             </h4>
@@ -77,12 +88,12 @@
                                                                         class="normal-weight">Level {{obj.level}}</span>:
                                                                     {{obj.percent|number : '1.0-0'}}% tnl
                                                                     <br>{{obj.date|date:'shortDate'}}</div>
-                                                            </div>                                                        
+                                                            </div>
                                                         </div>
                                                     </ng-container>
                                                 </div>
                                                 <div *ngIf="!t.complete && t.redborder.length>0">
-                                                    <span class="crafted-text">{{t.redborder.length}} Deepsight held to attune.</span>                                                    
+                                                    <span class="crafted-text">{{t.redborder.length}} Deepsight held to attune.</span>
                                                 </div>
                                             </ng-container>
                                         </div>
