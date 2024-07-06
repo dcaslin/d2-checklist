@@ -1,6 +1,6 @@
 {
-  "title": "Official D2Checklist Rolls - Dweezil S24.1",
-  "date": "2024-06-29T22:46:17.732Z",
+  "title": "Official D2Checklist Rolls - Dweezil S24.2 (+IB)",
+  "date": "2024-07-06T15:24:53.725Z",
   "manifestVersion": "226342.24.06.19.1730-2-bnet.56014",
   "rolls": [
     {
@@ -8387,7 +8387,7 @@
     },
     {
       "name": "claws of the wolf",
-      "sheet": "outlaw",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
@@ -8395,37 +8395,33 @@
         "greatPerks": [
           "arrowhead brake",
           "appended mag",
-          "outlaw",
+          "perpetual motion",
           "rampage"
         ],
         "goodPerks": [
-          "chambered compensator",
-          "extended barrel",
-          "extended mag",
-          "flared magwell",
-          "slideshot",
           "kill clip",
-          "high-impact reserves"
+          "destabilizing rounds",
+          "repulsor brace",
+          "armor-piercing rounds",
+          "flared magwell"
         ]
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "range"
         ],
         "greatPerks": [
           "arrowhead brake",
           "ricochet rounds",
-          "slideshot",
-          "rangefinder"
+          "headseeker",
+          "kill clip"
         ],
         "goodPerks": [
-          "chambered compensator",
-          "extended barrel",
+          "zen moment",
+          "elemental capacitor",
+          "perpetual motion",
           "high-caliber rounds",
-          "snapshot sights",
-          "outlaw",
-          "full auto trigger system",
-          "kill clip"
+          "flared magwell"
         ]
       },
       "mnk": false,
@@ -8433,7 +8429,7 @@
     },
     {
       "name": "claws of the wolf",
-      "sheet": "outlaw",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
@@ -8441,17 +8437,15 @@
         "greatPerks": [
           "arrowhead brake",
           "appended mag",
-          "outlaw",
+          "perpetual motion",
           "rampage"
         ],
         "goodPerks": [
-          "chambered compensator",
-          "extended barrel",
-          "extended mag",
-          "flared magwell",
-          "slideshot",
           "kill clip",
-          "high-impact reserves"
+          "destabilizing rounds",
+          "repulsor brace",
+          "armor-piercing rounds",
+          "flared magwell"
         ]
       },
       "pvp": {
@@ -8461,17 +8455,15 @@
         "greatPerks": [
           "arrowhead brake",
           "ricochet rounds",
-          "slideshot",
-          "rangefinder"
+          "headseeker",
+          "kill clip"
         ],
         "goodPerks": [
-          "chambered compensator",
-          "extended barrel",
+          "zen moment",
+          "elemental capacitor",
+          "perpetual motion",
           "high-caliber rounds",
-          "snapshot sights",
-          "outlaw",
-          "full auto trigger system",
-          "kill clip"
+          "flared magwell"
         ]
       },
       "mnk": true,
@@ -9805,44 +9797,43 @@
     },
     {
       "name": "crimil's dagger",
-      "sheet": "forge",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
         ],
         "greatPerks": [
-          "fastdraw hcs",
+          "fluted barrel",
           "appended mag",
           "outlaw",
-          "kill clip"
+          "explosive payload"
         ],
         "goodPerks": [
-          "steadyhand hcs",
-          "truesight hcs",
+          "corkscrew rifling",
+          "smallbore",
           "tactical mag",
-          "extended mag",
-          "triple tap"
+          "flared magwell",
+          "enlightened action",
+          "strategist",
+          "precision instrument"
         ]
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "range"
         ],
         "greatPerks": [
-          "steadyhand hcs",
-          "tactical mag",
-          "rangefinder",
-          "timed payload"
+          "accurized rounds",
+          "fluted barrel",
+          "enlightened action",
+          "hammer-forged rifling",
+          "kill clip"
         ],
         "goodPerks": [
-          "fastdraw hcs",
-          "steady rounds",
-          "accurized rounds",
-          "outlaw",
           "moving target",
-          "explosive payload",
-          "opening shot",
-          "kill clip"
+          "strategist",
+          "smallbore",
+          "precision instrument"
         ]
       },
       "mnk": false,
@@ -9850,44 +9841,45 @@
     },
     {
       "name": "crimil's dagger",
-      "sheet": "forge",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
         ],
         "greatPerks": [
-          "fastdraw hcs",
+          "fluted barrel",
           "appended mag",
           "outlaw",
-          "kill clip"
+          "explosive payload"
         ],
         "goodPerks": [
-          "steadyhand hcs",
-          "truesight hcs",
+          "corkscrew rifling",
+          "smallbore",
           "tactical mag",
-          "extended mag",
-          "triple tap"
+          "flared magwell",
+          "enlightened action",
+          "strategist",
+          "precision instrument"
         ]
       },
       "pvp": {
         "masterwork": [
-          "handling"
+          "range",
+          "stability"
         ],
         "greatPerks": [
-          "steadyhand hcs",
-          "tactical mag",
-          "rangefinder",
-          "timed payload"
+          "accurized rounds",
+          "fluted barrel",
+          "enlightened action",
+          "precision instrument"
         ],
         "goodPerks": [
-          "fastdraw hcs",
-          "steady rounds",
-          "accurized rounds",
-          "outlaw",
+          "zen moment",
+          "kill clip",
           "moving target",
-          "explosive payload",
-          "opening shot",
-          "kill clip"
+          "strategist",
+          "hammer-forged rifling",
+          "smallbore"
         ]
       },
       "mnk": true,
@@ -25598,42 +25590,41 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [
-          "handling"
+          "reload speed"
         ],
         "greatPerks": [
           "arrowhead brake",
-          "flared magwell",
-          "enlightened action",
+          "appended mag",
+          "keep away",
           "target lock"
         ],
         "goodPerks": [
+          "fluted barrel",
           "smallbore",
-          "corkscrew rifling",
-          "appended mag",
-          "armor-piercing rounds",
-          "keep away",
+          "tactical mag",
+          "flared magwell",
           "slice",
-          "hatchling",
-          "onslaught"
+          "onslaught",
+          "hatchling"
         ]
       },
       "pvp": {
         "masterwork": [
-          "stability"
+          "handling"
         ],
         "greatPerks": [
           "arrowhead brake",
-          "ricochet rounds",
+          "accurized rounds",
           "keep away",
-          "tap the trigger"
+          "target lock"
         ],
         "goodPerks": [
-          "high-caliber rounds",
-          "slice",
+          "tap the trigger",
           "onslaught",
-          "smallbore",
-          "extended barrel",
-          "enlightened action"
+          "dynamic sway reduction",
+          "elemental capacitor",
+          "hammer-forged rifling",
+          "smallbore"
         ]
       },
       "mnk": false,
@@ -25644,23 +25635,22 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [
-          "handling"
+          "reload speed"
         ],
         "greatPerks": [
           "arrowhead brake",
-          "flared magwell",
-          "enlightened action",
+          "appended mag",
+          "keep away",
           "target lock"
         ],
         "goodPerks": [
+          "fluted barrel",
           "smallbore",
-          "corkscrew rifling",
-          "appended mag",
-          "armor-piercing rounds",
-          "keep away",
+          "tactical mag",
+          "flared magwell",
           "slice",
-          "hatchling",
-          "onslaught"
+          "onslaught",
+          "hatchling"
         ]
       },
       "pvp": {
@@ -25669,17 +25659,17 @@
         ],
         "greatPerks": [
           "arrowhead brake",
-          "ricochet rounds",
+          "accurized rounds",
           "keep away",
-          "tap the trigger"
+          "target lock"
         ],
         "goodPerks": [
-          "chambered compensator",
-          "smallbore",
-          "high-caliber rounds",
-          "slice",
+          "tap the trigger",
+          "onslaught",
           "dynamic sway reduction",
-          "onslaught"
+          "elemental capacitor",
+          "hammer-forged rifling",
+          "smallbore"
         ]
       },
       "mnk": true,
@@ -33346,14 +33336,16 @@
           "elastic string",
           "fiberglass arrow shaft",
           "archer's tempo",
-          "precision instrument"
+          "vorpal weapon"
         ],
         "goodPerks": [
           "flexible string",
           "polymer string",
           "straight fletching",
           "helical fletching",
-          "vorpal weapon",
+          "pugilist",
+          "strategist",
+          "precision instrument",
           "golden tricorn"
         ]
       },
@@ -33368,13 +33360,13 @@
           "eye of the storm"
         ],
         "goodPerks": [
-          "polymer string",
-          "flexible string",
-          "helical fletching",
-          "straight fletching",
+          "golden tricorn",
           "elemental capacitor",
-          "swashbuckler",
-          "golden tricorn"
+          "strategist",
+          "straight fletching",
+          "helical fletching",
+          "flexible string",
+          "polymer string"
         ]
       },
       "mnk": false,
@@ -33391,14 +33383,16 @@
           "elastic string",
           "fiberglass arrow shaft",
           "archer's tempo",
-          "precision instrument"
+          "vorpal weapon"
         ],
         "goodPerks": [
           "flexible string",
           "polymer string",
           "straight fletching",
           "helical fletching",
-          "vorpal weapon",
+          "pugilist",
+          "strategist",
+          "precision instrument",
           "golden tricorn"
         ]
       },
@@ -33413,13 +33407,13 @@
           "eye of the storm"
         ],
         "goodPerks": [
-          "polymer string",
-          "flexible string",
-          "helical fletching",
-          "straight fletching",
+          "golden tricorn",
           "elemental capacitor",
-          "swashbuckler",
-          "golden tricorn"
+          "strategist",
+          "straight fletching",
+          "helical fletching",
+          "flexible string",
+          "polymer string"
         ]
       },
       "mnk": true,
@@ -36955,7 +36949,7 @@
     },
     {
       "name": "riiswalker",
-      "sheet": "splicer - controller",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
@@ -36963,43 +36957,31 @@
         "greatPerks": [
           "barrel shroud",
           "assault mag",
-          "vorpal weapon",
-          "discord"
+          "discord",
+          "harmony"
         ],
         "goodPerks": [
           "corkscrew rifling",
-          "smallbore",
-          "tactical mag",
           "appended mag",
-          "slideways",
-          "swashbuckler",
-          "demolitionist",
-          "surplus"
+          "tactical mag"
         ]
       },
       "pvp": {
-        "masterwork": [
-          "range",
-          "handling"
-        ],
+        "masterwork": [],
         "greatPerks": [
-          "quickdraw",
           "barrel shroud",
           "accurized rounds",
           "slideshot",
-          "opening shot"
+          "iron reach"
         ],
         "goodPerks": [
-          "corkscrew rifling",
-          "smallbore",
-          "surplus",
+          "opening shot",
+          "fragile focus",
           "killing wind",
-          "swashbuckler",
-          "unrelenting",
-          "vorpal weapon",
+          "slickdraw",
           "assault mag",
-          "iron reach",
-          "fragile focus"
+          "smallbore",
+          "corkscrew rifling"
         ]
       },
       "mnk": false,
@@ -37007,7 +36989,7 @@
     },
     {
       "name": "riiswalker",
-      "sheet": "splicer - controller",
+      "sheet": "perkbench",
       "pve": {
         "masterwork": [
           "reload speed"
@@ -37015,43 +36997,31 @@
         "greatPerks": [
           "barrel shroud",
           "assault mag",
-          "vorpal weapon",
-          "discord"
+          "discord",
+          "harmony"
         ],
         "goodPerks": [
           "corkscrew rifling",
-          "smallbore",
-          "tactical mag",
           "appended mag",
-          "slideways",
-          "swashbuckler",
-          "demolitionist",
-          "surplus"
+          "tactical mag"
         ]
       },
       "pvp": {
-        "masterwork": [
-          "range",
-          "handling"
-        ],
+        "masterwork": [],
         "greatPerks": [
-          "quickdraw",
           "barrel shroud",
           "accurized rounds",
           "slideshot",
-          "opening shot"
+          "iron reach"
         ],
         "goodPerks": [
-          "corkscrew rifling",
-          "smallbore",
-          "surplus",
+          "opening shot",
+          "fragile focus",
           "killing wind",
-          "swashbuckler",
-          "unrelenting",
-          "vorpal weapon",
+          "slickdraw",
           "assault mag",
-          "iron reach",
-          "fragile focus"
+          "smallbore",
+          "corkscrew rifling"
         ]
       },
       "mnk": true,
@@ -45656,22 +45626,22 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [
-          "handling"
+          "reload speed"
         ],
         "greatPerks": [
-          "arrowhead brake",
+          "fluted barrel",
           "appended mag",
-          "demolitionist",
-          "precision instrument"
+          "perpetual motion",
+          "hatchling"
         ],
         "goodPerks": [
-          "fluted barrel",
+          "corkscrew rifling",
+          "tactical mag",
           "flared magwell",
-          "light mag",
-          "enlightened action",
-          "perpetual motion",
-          "adrenaline junkie",
-          "kill clip"
+          "slice",
+          "demolitionist",
+          "precision instrument",
+          "cascade point"
         ]
       },
       "pvp": {
@@ -45680,17 +45650,18 @@
         ],
         "greatPerks": [
           "fluted barrel",
-          "ricochet rounds",
-          "kill clip",
-          "enlightened action"
+          "accurized rounds",
+          "perpetual motion",
+          "kill clip"
         ],
         "goodPerks": [
-          "smallbore",
-          "high-caliber rounds",
-          "adrenaline junkie",
           "corkscrew rifling",
-          "perpetual motion",
-          "demolitionist"
+          "smallbore",
+          "steady rounds",
+          "enlightened action",
+          "moving target",
+          "to the pain",
+          "precision instrument"
         ]
       },
       "mnk": false,
@@ -45701,22 +45672,22 @@
       "sheet": "perkbench",
       "pve": {
         "masterwork": [
-          "handling"
+          "reload speed"
         ],
         "greatPerks": [
-          "arrowhead brake",
+          "fluted barrel",
           "appended mag",
-          "demolitionist",
-          "precision instrument"
+          "perpetual motion",
+          "hatchling"
         ],
         "goodPerks": [
-          "fluted barrel",
+          "corkscrew rifling",
+          "tactical mag",
           "flared magwell",
-          "light mag",
-          "enlightened action",
-          "perpetual motion",
-          "adrenaline junkie",
-          "kill clip"
+          "slice",
+          "demolitionist",
+          "precision instrument",
+          "cascade point"
         ]
       },
       "pvp": {
@@ -45725,18 +45696,18 @@
         ],
         "greatPerks": [
           "fluted barrel",
-          "ricochet rounds",
-          "moving target",
+          "accurized rounds",
+          "perpetual motion",
           "kill clip"
         ],
         "goodPerks": [
+          "corkscrew rifling",
           "smallbore",
-          "polygonal rifling",
-          "high-caliber rounds",
-          "flared magwell",
-          "demolitionist",
+          "steady rounds",
           "enlightened action",
-          "adrenaline junkie"
+          "moving target",
+          "to the pain",
+          "precision instrument"
         ]
       },
       "mnk": true,
